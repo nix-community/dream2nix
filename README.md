@@ -1,4 +1,4 @@
-## dream2nix - A generic framework for 2nix tools
+## [WIP] dream2nix - A generic framework for 2nix tools
 dream2nix is an approach to create a generic framework for 2nix tools.
 It focuses on the following aspects:
   - Modularity
@@ -76,7 +76,7 @@ Translation:
     - pure translation (FOD compatible): resolve against online index, reproducibly
 
 URLs, metadata (standardized format):
-  - Produced by `Translation`. Contains URLs + hashes for sources and metadata relevant for building. The basic format is standardized and equivalent across all languages/frameworks, so that fetching works always the same. It is not relevant which steps/strategies have been taken to create this data. From this point on, there are no impurities. This format will contain everything necessary for a fully reproducible build. The metadata allows different attributes for different languages/frameworks as those require individual approaches. A specific builder for every framework will later read this metadata and translate it to build instructions.
+  - Produced by `Translation`. Contains URLs + hashes for sources and metadata relevant for building. The basic format is standardized and equivalent across all languages/frameworks, so that fetching works always the same. It is not relevant which steps/strategies have been taken to create this data. From this point on, there are no impurities. This format will contain everything necessary for a fully reproducible build. The metadata allows different attributes for different languages/frameworks as those require individual approaches. A specific builder for every framework will later read this metadata and transform it into build instructions.
   This format can always be copied into nixpkgs, not requiring any IFD (given the nix code for the builder exists within nixpkgs).
 
 Fetching:
