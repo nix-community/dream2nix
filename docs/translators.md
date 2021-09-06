@@ -29,9 +29,11 @@ Usage inside nixpkgs:
 - generic lock file must be pre-generated using dream2nix cli
 
 ## external (running outside of nix build)
-Suitable if the method used to process the input contains impurities, like for example:
-- queries to an online index
-- packages must be downloaded to require important meta data like dependencies.
+Suitable if:
+- the input is missing URLs or hashes
+- the method used to process the input contains impurities, like for example:
+  - queries to an online index with varying responses
+  - packages must be downloaded to discover important meta data like dependencies.
 
 Usage outside of nixpkgs:
 - generic lock file must be pre-generated using dream2nix cli

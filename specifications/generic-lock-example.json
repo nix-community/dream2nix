@@ -12,9 +12,9 @@
     }
   },
 
-  "meta-generic": {
-    "buildsystem": "python",
-    "buildsystemFormatVersion": 1,
+  "generic": {
+    "buildSystem": "python",
+    "buildSystemFormatVersion": 1,
     "producedBy": "translator-poetry-1",
     "system": "x86_64-linux",
     "dependencyGraph": {
@@ -24,7 +24,7 @@
     }
   },
 
-  "meta-buildsystem": {
+  "buildSystem": {
     "sourceFormats": {
       "requests": "sdist",
       "certifi": "wheel"
