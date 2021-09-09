@@ -16,8 +16,7 @@
                 "fetchurl",
                 "git",
                 "github",
-                "gitlab",
-                "tarball"
+                "gitlab"
               ]
             },
             "url": {
@@ -58,14 +57,6 @@
                   "rev": { "type": "string" }
                 }
               }
-            },
-            {
-              "if": {
-                "properties": { "type": { "const": "tarball" } }
-              },
-              "then": {
-                "properties": { "url": { "type": "string" } }
-              }
             }
           ]
         }
@@ -79,7 +70,6 @@
         "buildSystem": { "type": "string" },
         "buildSystemFormatVersion": { "type": "integer" },
         "producedBy": { "type": "string" },
-        "system": { "type": "string" },
         "dependencyGraph": {
           "type": "object",
           "properties": {

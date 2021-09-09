@@ -1,0 +1,6 @@
+{
+  "inputFiles": [
+    "./some_project_src/requirements.txt",
+    "./some_project_src/requirements-dev.txt"
+  ]
+}
