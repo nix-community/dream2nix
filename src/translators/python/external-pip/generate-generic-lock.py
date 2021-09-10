@@ -71,7 +71,7 @@ def main():
 
   # dump generic lock to stdout (json)
   with open(output_file, 'w') as lock:
-    json.dump(generic_lock, lock, indent=2)2
+    json.dump(generic_lock, lock, indent=2)
 
 
 if __name__ == "__main__":

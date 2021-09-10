@@ -158,9 +158,6 @@ Potery uses `pyproject.toml` and `poetry.lock` to lock dependencies
         // (not relevant for building)
         "producedBy": "translator-poetry-1",
 
-        // target system
-        "system": "x86_64-linux",
-
         // dependency graph of the packages
         "dependencyGraph": {
           "requests": [
