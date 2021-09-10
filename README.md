@@ -6,6 +6,8 @@ It focuses on the following aspects:
   - Maintainability
   - Nixpkgs Compatibility (not enforcing IFD)
   - Code de-duplication across 2nix tools
+  - Code de-duplication in nixpkgs
+  - Risk free opt-in FOD fetching
   - Common UI across 2nix tools
   - Reduce effort to develop new 2nix solutions
 
@@ -25,12 +27,14 @@ The following phases which are generic to basically all existing 2nix solutions:
   - fetching sources
   - building/installing packages
 
-... should be separated from each other with well defined interfaces.  
+... should be separated from each other with well defined interfaces.
+
 This will allow for free compsition of different approaches for these phases.
-Examples:
-  - Often more than one requirements / lock-file format exists within an ecosystem. Adding support for a new format should be easy and won't require re-inventing the whole procedure.
-  - Different resolving/fetching strategies: Some users might prefer a more automated approach via IFD, while others are focusing on upstreaming to nixpkgs, where generating intermediary code or lock-files might be the only option.
-  - Fetching a list of sources in theory should be a standard process. Yet, in practice, many 2nix tools struggle fetching sources from git or including local source trees. A generic fetching layer can reduce effort for maintainers.
+The user should be able to freely choose between:
+  - input metadata formats (eg. lock file formats)
+  - metadata fetching/translation strategies: IFD vs. in-tree
+  - source fetching strategies: granular fetching vs fetching via single large FOD to minimize expression file size
+  - installation strategies: build dependencies individually vs inside a single derivation.
 
 ### Customizability
 Every Phase mentioned in the previous section should be customizable at a high degree via override functions. Practical examples:
@@ -38,7 +42,6 @@ Every Phase mentioned in the previous section should be customizable at a high d
   - fetch sources from alternative locations
   - replace or modify sources
   - customize the build/installation procedure
-
 
 ### Maintainability
 Due to the modular architecture with strict interfaces, contributers can add support for new lock-file formats or new strategies for fetching, building, installing more easily.
@@ -48,11 +51,18 @@ Depending on where the nix code is used, different approaches are desired or dis
 All solutions which follow the dream2nix specification will be compatible with both approaches without having to re-invent the tool.
 
 ### Code de-duplication
-Common problems that apply to many 2nix solutions can be solved once. Examples:
+Common problems that apply to many 2nix solutions can be solved once by the framework. Examples:
   - handling cyclic dependencies
   - handling sources from various origins (http, git, local, ...)
   - generate nixpkgs/hydra friendly output (no IFD)
   - good user interface
+
+### Code de-duplication in nixpkgs
+Essential components like package update scripts or fetching and override logic are provided by the dream2nix framework and are stored only once in the source tree instead of several times.
+
+### Risk free opt-in FOD fetching
+Optionally, to save more storag space, individual hashes for source can be ommited and a single large FOD used instead.
+Due to a unified minimalistic fetching layer the risk of FOD hash breakages should be very low.
 
 ### Common UI across many 2nix tools
 2nix solutions which follow the dream2nix framework will have a unified UI for workflows like project initialization or code generation. This will allow quicker onboarding of new users by providing familiar workflows across different build systems.
@@ -88,6 +98,7 @@ Input:
   - requirement contstraints
   - requirement files
   - lock-files
+  - project's source tree
 
 Translator:
   - read input and generate generic lock format containing:

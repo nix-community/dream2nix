@@ -20,7 +20,8 @@
       "requests": [
         "certifi"
       ]
-    }
+    },
+    "sourcesCombinedHash": "deadbeefdeadbeefdeadbeefdeadbeefdeadbeef"
   },
 
   "buildSystem": {

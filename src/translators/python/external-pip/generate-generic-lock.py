@@ -47,12 +47,14 @@ def main():
     generic={
       "buildSystem": "python",
       "buildSystemFormatVersion": 1,
-      "producedBy": "translator-external-pip",
+      "producedBy": "external-pip",
 
       # This translator is not aware of the exact dependency graph.
       # This restricts us to use a single derivation builder later,
       # which will install all packages at once
       "dependencyGraph": None,
+
+      "sourcesCombinedHash": None,
     },
     buildSystem={
       "pythonAttr": f"python{sys.version_info.major}{sys.version_info.minor}",
