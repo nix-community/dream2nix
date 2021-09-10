@@ -21,7 +21,9 @@ python.pkgs.buildPythonPackage {
   unpackPhase = ''
     mkdir dist 
     for file in $src; do
-      fname=$(echo $file | cut -d "-" -f 2-)
+      # pick right most element of path
+      fname=''${file##*/}
+      fname=$(stripHash $fname)
       cp $file dist/$fname
     done
   '';

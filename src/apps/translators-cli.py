@@ -1,6 +1,7 @@
 import argparse
 import json
 import os
+import re
 import subprocess as sp
 import sys
 import tempfile
@@ -13,6 +14,11 @@ with open (os.environ.get("translatorsJsonFile")) as f:
 # TODO: detection translator automatically according to files
 def auto_detect_translator(files, subsystem):
   return list(translators[subsystem].keys())[0]
+
+
+def stripHashesFromLock(lock):
+  for source in lock['sources'].values():
+    del source['hash']
 
 
 def parse_args():
@@ -38,6 +44,12 @@ def parse_args():
     "-o", "--output",
     help="output file/directory (generic lock)",
     default="./dream.lock"
+  )
+
+  parser.add_argument(
+    "-c", "--combined",
+    help="Store only one hash for all sources combined (smaller lock file -> larger FOD)",
+    action="store_true"
   )
 
   parser.add_argument(
@@ -90,8 +102,49 @@ def main():
       [f"{translators[subsystem][translator]}/bin/translate", inputJson.name] + sys.argv[1:]
     )
 
+  # raise error if output wasn't produced
   if not os.path.isfile(output):
     raise Exception(f"Translator '{translator}' failed to create dream.lock")
+
+  # read produced lock file
+  with open(output) as f:
+    lock = json.load(f)
+
+  # calculate combined hash
+  if args.combined:
+
+    print("Start building combined sourced FOD to get output hash")
+
+    # remove hashes from lock file and init sourcesCombinedHash with emtpy string
+    stripHashesFromLock(lock)
+    lock['generic']['sourcesCombinedHash'] = ""
+    with open(output, 'w') as f:
+      json.dump(lock, f, indent=2)
+
+    # compute FOD hash of combined sources
+    dream2nix_src = os.environ.get("dream2nixSrc")
+    proc = sp.run(
+      [
+        "nix", "build", "--impure", "-L", "--expr",
+        f"(import {dream2nix_src} {{}}).fetchSources {{ genericLock = {output}; }}"
+      ],
+      capture_output=True,
+    )
+
+    # read the output hash from the failed build log
+    match = re.search(r"FOD_PATH=(.*=)", proc.stderr.decode())
+    if not match:
+      print(proc.stderr.decode())
+      print(proc.stdout.decode())
+      raise Exception("Could not find FOD hash in FOD log")
+    hash = match.groups()[0]
+    print(f"Computed FOD hash: {hash}")
+
+    # store the hash in the lock
+    lock['generic']['sourcesCombinedHash'] = hash
+    with open(output, 'w') as f:
+      json.dump(lock, f, indent=2)
+    
 
   print(f"Created {output}")
 

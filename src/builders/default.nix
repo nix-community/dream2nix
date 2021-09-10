@@ -1,8 +1,8 @@
 {
   callPackage,
 }:
-rec {
-  python = rec {
+{
+  python =  rec {
 
     default = simpleBuilder;
 

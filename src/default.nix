@@ -23,22 +23,58 @@ rec {
 
   # automatically find a suitable builder for a given generic lock
   findBuilder = genericLock:
-    let 
+    let
       buildSystem = genericLock.generic.buildSystem;
     in
       builders."${buildSystem}".default;
+
+
+  # detect if granular or combined fetching must be used
+  findFetcher = genericLock:
+      if null != genericLock.generic.sourcesCombinedHash then
+        fetchers.combinedFetcher
+      else
+        fetchers.defaultFetcher;
+
+
+  parseLock = lock:
+    if builtins.isPath lock || builtins.isString lock then
+      builtins.fromJSON (builtins.readFile lock)
+    else
+      lock;
+
+
+  fetchSources =
+    {
+      genericLock,
+      builder ? findBuilder (parseLock genericLock),
+      fetcher ? findFetcher (parseLock genericLock)
+    }:
+    let
+      # is generic lock is a file, read and parse it
+      genericLock' = (parseLock genericLock);
+      fetched = fetcher {
+        sources = genericLock'.sources;
+        sourcesCombinedHash = genericLock'.generic.sourcesCombinedHash;
+      };
+    in
+      fetched;
 
 
   # automatically build package defined by generic lock
   buildPackage = 
     {
       genericLock,
-      builder ? findBuilder genericLock,
-      fetcher ? fetchers.defaultFetcher
-    }:
+      builder ? findBuilder (parseLock genericLock),
+      fetcher ? findFetcher (parseLock genericLock)
+    }@args:
+    let
+      # is generic lock is a file, read and parse it
+      genericLock' = (parseLock genericLock);
+    in
     builder {
-      inherit genericLock;
-      fetchedSources = fetcher { sources = genericLock.sources; };
+      genericLock = genericLock';
+      fetchedSources = (fetchSources args).fetchedSources;
     };
    
 }
