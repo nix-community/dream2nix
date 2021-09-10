@@ -26,6 +26,8 @@ let
   # Put all translator executables in a json file.
   # This will allow the cli to call the translators of different build systems
   # in a standardised way
+  # TODO: This doesn't scale as it requires all translators being built.
+  #       Redesign this, to call the individual translators using nix run ... 
   translatorsJsonFile = callPackage ({ bash, lib, runCommand, ... }:
     runCommand
       "translators.json"
@@ -47,10 +49,6 @@ let
   ) {};
 
 in
-
-# the unified translator cli
-callPackage ({ python3, writeScriptBin, ... }:
-  writeScriptBin "cli" ''
-    translatorsJsonFile=${translatorsJsonFile} ${python3}/bin/python ${./cli.py} "$@"
-  ''
-) {}
+{
+  inherit translators translatorsJsonFile;
+}

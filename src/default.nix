@@ -8,7 +8,7 @@ in
 
 rec {
 
-  apps = callPackage ./apps { inherit location; };
+  apps = callPackage ./apps { inherit location translators; };
 
   builders = callPackage ./builders {};
 

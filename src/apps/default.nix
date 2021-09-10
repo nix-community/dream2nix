@@ -1,18 +1,22 @@
 {
   pkgs,
   location,
+  translators,
 }:
 let
   callPackage = pkgs.callPackage;
 in
 {
-  # translate cli
-  translate = callPackage ({ writeScript, }:
-    writeScript
-      "translate"
-      ''${import ../translators { inherit pkgs; }}/bin/cli "$@"''
+
+  # the unified translator cli
+  translate = callPackage ({ python3, writeScript, ... }:
+    writeScript "cli" ''
+      translatorsJsonFile=${translators.translatorsJsonFile} \
+        ${python3}/bin/python ${./translators-cli.py} "$@"
+    ''
   ) {};
 
+  # install the framework to a specified location by copying the code
   install = callPackage ({ writeScript, }:
     writeScript
       "install"
