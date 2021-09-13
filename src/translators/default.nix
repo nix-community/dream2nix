@@ -1,52 +1,36 @@
 { pkgs }: 
 let
 
+  lib = pkgs.lib;
+
   callPackage = pkgs.callPackage;
 
   # every translator must provide 'bin/translate'
   translatorExec = translatorPkg: "${translatorPkg}/bin/translate";
 
-  # the list of all available translators
-  translators = {
+  dirNames = dir: lib.attrNames (lib.filterAttrs (name: type: type == "directory") (builtins.readDir dir));
 
-    python = {
+  translators =
+    lib.genAttrs (dirNames ./.) (subsystem:
+      lib.genAttrs
+        (lib.filter (dir: builtins.pathExists (./. + "/${subsystem}/${dir}")) [ "impure" "ifd" "pure-nix" ])
+        (transType:
+          lib.genAttrs (dirNames (./. + "/${subsystem}/${transType}")) (translatorName:
+            callPackage (./. + "/${subsystem}/${transType}/${translatorName}") {}
+        )
+      )
+    );
 
-      # minimal POC python translator using pip. Type: 'external'
-      external-pip-python36 = callPackage ./python/external-pip { python = pkgs.python36; };
-      external-pip-python37 = callPackage ./python/external-pip { python = pkgs.python37; };
-      external-pip-python38 = callPackage ./python/external-pip { python = pkgs.python38; };
-      external-pip-python39 = callPackage ./python/external-pip { python = pkgs.python39; };
-      external-pip-python310 = callPackage ./python/external-pip { python = pkgs.python310; };
-
-      # TODO: add more translators
-
-    };
-  };
-
-  # Put all translator executables in a json file.
-  # This will allow the cli to call the translators of different build systems
-  # in a standardised way
-  # TODO: This doesn't scale as it requires all translators being built.
-  #       Redesign this, to call the individual translators using nix run ... 
-  translatorsJsonFile = callPackage ({ bash, lib, runCommand, ... }:
-    runCommand
-      "translators.json"
-      {
-        buildInputs = lib.flatten 
-          (
-            lib.mapAttrsToList
-              (subsystem: translators:
-                lib.attrValues translators
-              )
-              translators
-          );
-      }
-      # 'unsafeDiscardStringContext' is safe in thix context because all store paths are declared as buildInputs
-      ''
-        #!${bash}/bin/bash
-        cp ${builtins.toFile "translators.json" (builtins.unsafeDiscardStringContext (builtins.toJSON translators))} $out
-      ''
-  ) {};
+  # dump the list of available translators to a json file so they can be listed in the CLI
+  translatorsJsonFile = pkgs.writeText "translators.json" (builtins.toJSON (
+    lib.genAttrs (dirNames ./.) (subsystem:
+      lib.genAttrs 
+        (lib.filter (dir: builtins.pathExists (./. + "/${subsystem}/${dir}")) [ "impure" "ifd" "pure-nix" ])
+        (transType:
+          dirNames (./. + "/${subsystem}/${transType}")
+        )
+    )
+  ));
 
 in
 {

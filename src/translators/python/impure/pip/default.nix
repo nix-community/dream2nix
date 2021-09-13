@@ -1,7 +1,7 @@
 {
   bash,
   jq,
-  python,
+  python3,
   writeScriptBin,
   ...
 }:
@@ -22,7 +22,7 @@ writeScriptBin "translate" ''
   outputFile=$(${jq}/bin/jq '.outputFile' -c -r $jsonInput)
 
   # pip executable
-  pip=${python.pkgs.pip}/bin/pip
+  pip=${python3.pkgs.pip}/bin/pip
 
   # prepare temporary directory
   tmp=translateTmp
@@ -37,7 +37,7 @@ writeScriptBin "translate" ''
     -r ''${inputFiles/$'\n'/$' -r '}
 
   # generate the generic lock from the downloaded list of files
-  ${python}/bin/python ${./generate-generic-lock.py} $tmp $outputFile
+  ${python3}/bin/python ${./generate-generic-lock.py} $tmp $outputFile
 
   rm -rf $tmp
 ''

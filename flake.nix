@@ -25,10 +25,12 @@
       {
         overlay = curr: prev: {};
 
+        defaultApp = forAllSystems (system: self.apps."${system}".cli);
+
         apps = forAllSystems (system: {
-          translate = {
+          cli = {
             "type" = "app";
-            "program" = builtins.toString (dream2nixFor."${system}".apps.translate);
+            "program" = builtins.toString (dream2nixFor."${system}".apps.cli);
           };
           install = {
             "type" = "app";

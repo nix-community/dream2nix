@@ -9,11 +9,11 @@ in
 {
 
   # the unified translator cli
-  translate = callPackage ({ python3, writeScript, ... }:
+  cli = callPackage ({ python3, writeScript, ... }:
     writeScript "cli" ''
       translatorsJsonFile=${translators.translatorsJsonFile} \
       dream2nixSrc=${../.} \
-        ${python3}/bin/python ${./translators-cli.py} "$@"
+        ${python3}/bin/python ${./cli.py} "$@"
     ''
   ) {};
 
