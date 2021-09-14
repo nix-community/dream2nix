@@ -49,6 +49,10 @@ def translate(args):
     outputFile=output,
   )
 
+  # remove output files if exists
+  if os.path.exists(output):
+    os.remove(output)
+
   # dump translator arguments to json file and execute translator
   with tempfile.NamedTemporaryFile("w") as inputJsonFile:
     json.dump(translatorInput, inputJsonFile, indent=2)

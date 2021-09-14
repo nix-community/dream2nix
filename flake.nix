@@ -3,12 +3,13 @@
 
   inputs = {
     nixpkgs.url = "nixpkgs/nixos-unstable";
+    npmlock2nix = { url = "github:nix-community/npmlock2nix"; flake = false; };
   };
 
-  outputs = { self, nixpkgs }:
+  outputs = { self, nixpkgs, npmlock2nix }:
     let
 
-      lib = nixpkgs.lib; 
+      lib = nixpkgs.lib;
 
       supportedSystems = [ "x86_64-linux" ];
 
@@ -19,7 +20,13 @@
         overlays = [ self.overlay ];
       });
 
-      dream2nixFor = forAllSystems (system: import ./src { pkgs = nixpkgsFor."${system}"; } );
+      dream2nixFor = forAllSystems (system: import ./src rec {
+        pkgs = nixpkgsFor."${system}";
+        externalSources = pkgs.runCommand "dream2nix-imported" {} ''
+          mkdir -p $out/npmlock2nix
+          cp ${npmlock2nix}/{internal.nix,LICENSE} $out/npmlock2nix/
+        '';
+      });
 
     in
       {

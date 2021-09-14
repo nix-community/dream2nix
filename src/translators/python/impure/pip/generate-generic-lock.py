@@ -6,7 +6,7 @@ import sys
 
 
 def main():
-  direcotry = sys.argv[1]
+  directory = sys.argv[1]
   output_file = sys.argv[2]
 
   packages = {}
@@ -15,7 +15,7 @@ def main():
   #  - url
   #  - sha256
   #  - format (sdist/wheel)
-  for path in list(glob(direcotry + '/*')):
+  for path in list(glob(directory + '/*')):
     _, _, file = path.rpartition('/')
 
     print(f"processing file: {file}")
