@@ -1,20 +1,29 @@
 {
   pkgs ? import <nixpkgs> {},
+  externalSources ?
+    if builtins.getEnv "d2nExternalSources" != "" then
+      builtins.getEnv "d2nExternalSources"
+    else
+      ./external,
 }:
 
 let
   callPackage = pkgs.callPackage;
+
+  externals = {
+    npmlock2nix = callPackage "${externalSources}/npmlock2nix/internal.nix" {};
+  };
 in
 
 rec {
 
-  apps = callPackage ./apps { inherit location translators; };
+  apps = callPackage ./apps { inherit externalSources location translators; };
 
   builders = callPackage ./builders {};
 
   fetchers = callPackage ./fetchers {};
 
-  translators = callPackage ./translators {};
+  translators = callPackage ./translators { inherit externalSources externals location; };
 
 
   # the location of the dream2nix framework for self references (update scripts, etc.)

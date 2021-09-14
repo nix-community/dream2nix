@@ -1,54 +1,79 @@
-{ pkgs }: 
+{
+  pkgs,
+
+  externalSources,
+  externals,
+  location,
+}: 
 let
 
+  lib = pkgs.lib;
+
   callPackage = pkgs.callPackage;
+  callTranslator = file: name: args: pkgs.callPackage file (args // {
+    inherit externals;
+    translatorName = name;
+  });
 
   # every translator must provide 'bin/translate'
   translatorExec = translatorPkg: "${translatorPkg}/bin/translate";
 
-  # the list of all available translators
-  translators = {
+  # directory names of a given directory
+  dirNames = dir: lib.attrNames (lib.filterAttrs (name: type: type == "directory") (builtins.readDir dir));
 
-    python = {
+  # wrapPureTranslator
+  wrapPureTranslator = translatorAttrPath: pkgs.writeScriptBin "translate" ''
+    #!${pkgs.bash}/bin/bash
 
-      # minimal POC python translator using pip. Type: 'external'
-      external-pip-python36 = callPackage ./python/external-pip { python = pkgs.python36; };
-      external-pip-python37 = callPackage ./python/external-pip { python = pkgs.python37; };
-      external-pip-python38 = callPackage ./python/external-pip { python = pkgs.python38; };
-      external-pip-python39 = callPackage ./python/external-pip { python = pkgs.python39; };
-      external-pip-python310 = callPackage ./python/external-pip { python = pkgs.python310; };
+    echo wrapPureTranslator
 
-      # TODO: add more translators
+    jsonInputFile=$1
+    outputFile=$(${pkgs.jq}/bin/jq '.outputFile' -c -r $jsonInputFile)
+    export d2nExternalSources=${externalSources}
 
-    };
-  };
+    nix eval --impure --raw --expr "
+      builtins.toJSON (
+        (import ${location} {}).translators.translatorsInternal.${
+          lib.concatStringsSep "." translatorAttrPath
+        }.translate 
+          (builtins.fromJSON (builtins.readFile '''$1'''))
+      )
+    " | ${pkgs.jq}/bin/jq > $outputFile
+  '';
 
-  # Put all translator executables in a json file.
-  # This will allow the cli to call the translators of different build systems
-  # in a standardised way
-  # TODO: This doesn't scale as it requires all translators being built.
-  #       Redesign this, to call the individual translators using nix run ... 
-  translatorsJsonFile = callPackage ({ bash, lib, runCommand, ... }:
-    runCommand
+  mkTranslatorsSet = function:
+    lib.genAttrs (dirNames ./.) (subsystem:
+      lib.genAttrs
+        (lib.filter (dir: builtins.pathExists (./. + "/${subsystem}/${dir}")) [ "impure" "ifd" "pure" ])
+        (transType: function subsystem transType)
+    );
+
+  
+  translators = mkTranslatorsSet (subsystem: type:
+    lib.genAttrs (dirNames (./. + "/${subsystem}/${type}")) (translatorName:
+      if type == "impure" then
+        callTranslator (./. + "/${subsystem}/${type}/${translatorName}") translatorName {}
+      else
+        wrapPureTranslator [ subsystem type translatorName ]
+    )
+  );
+
+  translatorsInternal = mkTranslatorsSet (subsystem: type:
+    lib.genAttrs (dirNames (./. + "/${subsystem}/${type}")) (translatorName:
+      callTranslator (./. + "/${subsystem}/${type}/${translatorName}") translatorName {}
+    )
+  );
+
+  translatorsJsonFile =
+    pkgs.writeText
       "translators.json"
-      {
-        buildInputs = lib.flatten 
-          (
-            lib.mapAttrsToList
-              (subsystem: translators:
-                lib.attrValues translators
-              )
-              translators
-          );
-      }
-      # 'unsafeDiscardStringContext' is safe in thix context because all store paths are declared as buildInputs
-      ''
-        #!${bash}/bin/bash
-        cp ${builtins.toFile "translators.json" (builtins.unsafeDiscardStringContext (builtins.toJSON translators))} $out
-      ''
-  ) {};
+      (builtins.toJSON
+        (mkTranslatorsSet (subsystem: type:
+          dirNames (./. + "/${subsystem}/${type}")
+        )
+      ));
 
 in
 {
-  inherit translators translatorsJsonFile;
+  inherit translators translatorsInternal translatorsJsonFile;
 }

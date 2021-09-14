@@ -10,6 +10,7 @@ It focuses on the following aspects:
   - Risk free opt-in FOD fetching
   - Common UI across 2nix tools
   - Reduce effort to develop new 2nix solutions
+  - Exploration and adoption of new nix features
 
 ### Motivation
 2nix tools, or in other words, tools converting instructions of other build systems to nix build instructions, are an important part of the nix/nixos ecosystem. These tools make packaging workflows easier and often allow to manage complexity that would be hard or impossible to manage without.
@@ -64,7 +65,7 @@ Essential components like package update scripts or fetching and override logic 
 Optionally, to save more storag space, individual hashes for source can be ommited and a single large FOD used instead.
 Due to a unified minimalistic fetching layer the risk of FOD hash breakages should be very low.
 
-### Common UI across many 2nix tools
+### Common UI across many 2nix solutions
 2nix solutions which follow the dream2nix framework will have a unified UI for workflows like project initialization or code generation. This will allow quicker onboarding of new users by providing familiar workflows across different build systems.
 
 ### Reduced effort to develop new 2nix solutions

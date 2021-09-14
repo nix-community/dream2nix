@@ -1,5 +1,7 @@
 {
   pkgs,
+
+  externalSources,
   location,
   translators,
 }:
@@ -9,11 +11,13 @@ in
 {
 
   # the unified translator cli
-  translate = callPackage ({ python3, writeScript, ... }:
+  cli = callPackage ({ python3, writeScript, ... }:
     writeScript "cli" ''
+      export d2nExternalSources=${externalSources}
+
       translatorsJsonFile=${translators.translatorsJsonFile} \
       dream2nixSrc=${../.} \
-        ${python3}/bin/python ${./translators-cli.py} "$@"
+        ${python3}/bin/python ${./cli.py} "$@"
     ''
   ) {};
 
@@ -35,6 +39,8 @@ in
         fi
 
         cp -r ${location}/* $target/
+        mkdir $target/external
+        cp -r ${externalSources}/* $target/external/
         chmod -R +w $target
       ''
   ) {};
