@@ -110,7 +110,7 @@ let
       selectedSubsystems = if split != [ "" ] then [ (lib.elemAt split 0) ] else buildSystems;
       selectedTypes = if lib.length split > 1 then [ (lib.elemAt split 1) ] else translatorTypes;
       selectedName = if lib.length split > 2 then lib.elemAt split 2 else null;
-      compatible = builtins.trace "split: ${builtins.toString (builtins.length split)} subs: ${builtins.toString selectedSubsystems} types: ${builtins.toString selectedTypes} name: ${builtins.toString selectedName}"
+      compatible =
         lib.mapAttrs (subsystem: types:
           lib.mapAttrs (type: translators:
             lib.filterAttrs (name: translator:
