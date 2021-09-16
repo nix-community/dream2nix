@@ -4,6 +4,7 @@
   externalSources,
   location,
   translators,
+  ...
 }:
 let
   callPackage = pkgs.callPackage;

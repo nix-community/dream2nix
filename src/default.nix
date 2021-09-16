@@ -8,10 +8,16 @@
 }:
 
 let
-  callPackage = pkgs.callPackage;
+
+  utils = callPackage ./utils.nix {};
+
+  callPackage = f: args: pkgs.callPackage f (args // {
+    inherit callPackage;
+    inherit utils;
+  });
 
   externals = {
-    npmlock2nix = callPackage "${externalSources}/npmlock2nix/internal.nix" {};
+    npmlock2nix = pkgs.callPackage "${externalSources}/npmlock2nix/internal.nix" {};
   };
 in
 
