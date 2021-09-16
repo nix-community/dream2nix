@@ -11,7 +11,7 @@ with open (os.environ.get("translatorsJsonFile")) as f:
   translators = json.load(f)
 
 
-def stripHashesFromLock(lock):
+def strip_hashes_from_lock(lock):
   for source in lock['sources'].values():
     del source['hash']
 
@@ -28,13 +28,11 @@ def list(args):
   print(out)
 
 
-
 def translate(args):
 
   dream2nix_src = os.environ.get("dream2nixSrc")
 
   files = args.input
-  translator = args.translator
 
   # determine output directory
   if os.path.isdir(args.output):
@@ -45,11 +43,12 @@ def translate(args):
 
   # translator arguments
   translatorInput = dict(
-    inputFiles=files,
+    inputPaths=files,
     outputFile=output,
+    selector=args.translator or "",
   )
 
-  # remove output files if exists
+  # remove output file if exists
   if os.path.exists(output):
     os.remove(output)
 
@@ -57,12 +56,17 @@ def translate(args):
   with tempfile.NamedTemporaryFile("w") as inputJsonFile:
     json.dump(translatorInput, inputJsonFile, indent=2)
     inputJsonFile.seek(0) # flushes write cache
+    env = os.environ.copy()
+    env.update(dict(
+      FUNC_ARGS=inputJsonFile.name
+    ))
     procBuild = sp.run(
       [
         "nix", "build", "--impure", "--expr",
-        f"(import {dream2nix_src} {{}}).translators.translators.{translator}", "-o", "translator"
+        f"(import {dream2nix_src} {{}}).translators.selectTranslatorBin {{}}", "-o", "translator"
       ],
       capture_output=True,
+      env=env
     )
     if procBuild.returncode:
       print("Building translator failed", file=sys.stdout)
@@ -77,7 +81,7 @@ def translate(args):
 
   # raise error if output wasn't produced
   if not os.path.isfile(output):
-    raise Exception(f"Translator '{translator}' failed to create dream.lock")
+    raise Exception(f"Translator failed to create dream.lock")
 
   # read produced lock file
   with open(output) as f:
@@ -89,7 +93,7 @@ def translate(args):
     print("Start building FOD for combined sources to get output hash")
 
     # remove hashes from lock file and init sourcesCombinedHash with emtpy string
-    stripHashesFromLock(lock)
+    strip_hashes_from_lock(lock)
     lock['generic']['sourcesCombinedHash'] = ""
     with open(output, 'w') as f:
       json.dump(lock, f, indent=2)
@@ -152,7 +156,7 @@ def parse_args():
   translate_parser.add_argument(
     "-t", "--translator",
     help="select translator (list via: 'dream2nix list')",
-    default="auto"
+    default=""
   )
 
   translate_parser.add_argument(

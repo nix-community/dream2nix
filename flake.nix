@@ -32,6 +32,8 @@
       {
         overlay = curr: prev: {};
 
+        lib.dream2nix = dream2nixFor;
+
         defaultApp = forAllSystems (system: self.apps."${system}".cli);
 
         apps = forAllSystems (system: {
@@ -43,6 +45,12 @@
             "type" = "app";
             "program" = builtins.toString (dream2nixFor."${system}".apps.install);
           };
+        });
+
+        devShell = forAllSystems (system: nixpkgsFor."${system}".mkShell {
+          shellHook = ''
+            export NIX_PATH=nixpkgs=${nixpkgs}
+          '';
         });
       };
 }

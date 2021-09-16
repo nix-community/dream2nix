@@ -16,6 +16,7 @@
     "buildSystem": "python",
     "buildSystemFormatVersion": 1,
     "producedBy": "translator-poetry-1",
+    "rootPackage": "requests",
     "dependencyGraph": {
       "requests": [
         "certifi"

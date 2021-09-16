@@ -28,7 +28,7 @@ Usage outside of nixpkgs:
 Usage inside nixpkgs:
 - generic lock file must be pre-generated using dream2nix cli
 
-## external (running outside of nix build)
+## impure (running outside of nix build)
 Suitable if:
 - the input is missing URLs or hashes
 - the method used to process the input contains impurities, like for example:
