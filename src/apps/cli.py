@@ -16,7 +16,7 @@ def strip_hashes_from_lock(lock):
     del source['hash']
 
 
-def list(args):
+def list_translators(args):
   out = "Available translators per build system"
   for subsystem, trans_types in translators.items():
     displayed = []
@@ -32,7 +32,15 @@ def translate(args):
 
   dream2nix_src = os.environ.get("dream2nixSrc")
 
-  files = args.input
+  inputPaths = args.input
+
+  # check if all inputs exist
+  for path in inputPaths:
+    if not os.path.exists(path):
+      raise Exception(f"Input path '{path}' does not exist")
+
+  inputFiles = list(filter(lambda p: os.path.isfile(p), inputPaths))
+  inputDirectories = list(filter(lambda p: os.path.isdir(p), inputPaths))
 
   # determine output directory
   if os.path.isdir(args.output):
@@ -43,7 +51,8 @@ def translate(args):
 
   # translator arguments
   translatorInput = dict(
-    inputPaths=files,
+    inputFiles=inputFiles,
+    inputDirectories=inputDirectories,
     outputFile=output,
     selector=args.translator or "",
   )
@@ -143,7 +152,7 @@ def parse_args():
     description="list available translators"
   )
 
-  list_parser.set_defaults(func=list)
+  list_parser.set_defaults(func=list_translators)
 
   translate_parser = sub.add_parser(
     "translate",
@@ -173,7 +182,7 @@ def parse_args():
 
   translate_parser.add_argument(
     "input",
-    help="input files containing relevant metadata",
+    help="input files or directories containing sources and metadata",
     nargs="+"
   )
 

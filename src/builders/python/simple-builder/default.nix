@@ -20,7 +20,7 @@ python.pkgs.buildPythonPackage {
   nativeBuildInputs = [ pkgs.autoPatchelfHook python.pkgs.wheelUnpackHook ];
   unpackPhase = ''
     mkdir dist 
-    for file in $src; do
+    for file in ${lib.attrValues fetchedSources}; do
       # pick right most element of path
       fname=''${file##*/}
       fname=$(stripHash $fname)

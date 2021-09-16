@@ -1,18 +1,21 @@
 {
+  lib,
+
   externals,
   translatorName,
   utils,
   ...
 }:
 
-let
+{
   translate =
     {
-      inputPaths,
+      inputDirectories,
+      inputFiles,
       ...
     }:
     let
-      parsed = externals.npmlock2nix.readLockfile (builtins.elemAt inputPaths 0);
+      parsed = externals.npmlock2nix.readLockfile (builtins.elemAt inputFiles 0);
     in
     {
       sources = builtins.mapAttrs (pname: pdata:{
@@ -34,10 +37,15 @@ let
       };
     };
 
-    compatiblePaths = paths: utils.compatibleTopLevelPaths ".*(package-lock\\.json)" paths;
-
-in
-
-{
-  inherit translate compatiblePaths;
+  compatiblePaths =
+    {
+      inputDirectories,
+      inputFiles,
+    }@args:
+    builtins.trace (lib.attrValues args)
+    {
+      inputDirectories = [];
+      inputFiles =
+        lib.filter (f: builtins.match ".*(package-lock\\.json)" f != null) args.inputFiles;
+    };
 }

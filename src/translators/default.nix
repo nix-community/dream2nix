@@ -85,16 +85,24 @@ let
       ));
 
   # filter translators by compatibility for the given input paths
-  compatibleTranslators = paths: translators_:
+  compatibleTranslators =
+    {
+      inputDirectories,
+      inputFiles,
+      translators,
+    }:
     let
       compatible = 
         lib.mapAttrs (subsystem: types:
-          lib.mapAttrs (type: translators:
+          lib.mapAttrs (type: translators_:
             lib.filterAttrs (name: translator:
-              translator ? compatiblePaths && translator.compatiblePaths paths == paths
-            ) translators
+              translator ? compatiblePaths
+              &&
+                translator.compatiblePaths { inherit inputDirectories inputFiles; }
+                == { inherit inputDirectories inputFiles; }
+            ) translators_
           ) types
-        ) translators_;
+        ) translators;
     in
       # purge empty attrsets
       lib.filterAttrsRecursive (k: v: v != {}) (lib.filterAttrsRecursive (k: v: v != {}) compatible);
@@ -129,17 +137,24 @@ let
   selectTranslatorBin = utils.makeCallableViaEnv (
     {
       selector,  # like 'python.impure' or 'python.impure.pip'
-      inputPaths,  # input paths to translate
+      inputDirectories,  # input paths to translate
+      inputFiles,  # input paths to translate
       ...
     }:
     let
       selectedTranslators = reduceTranslatorsBySelector selector translators;
-      compatTranslators = compatibleTranslators inputPaths selectedTranslators;
+      compatTranslators = compatibleTranslators {
+        inherit inputDirectories inputFiles;
+        translators = selectedTranslators;
+      };
     in
       if selectedTranslators == {} then
         throw "The selector '${selector}' does not select any known translators"
       else if compatTranslators == {} then
-        throw "Could not find any translator which is compatible to the given inputs: ${builtins.toString inputPaths}"
+        throw ''
+          Could not find any translator which is compatible to the given inputs:
+            - ${builtins.concatStringsSep "\n  - " (inputDirectories ++ inputFiles)}
+        ''
       else
         (lib.head (lib.attrValues (lib.head (lib.attrValues (lib.head (lib.attrValues compatTranslators)))))).translateBin
   );
