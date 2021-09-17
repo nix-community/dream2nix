@@ -23,9 +23,9 @@ let
   defaultFetched = (defaultFetcher { inherit sources; }).fetchedSources;
 
   # extract the arguments from the individual fetcher calls
-  fetcherArgsAll =
+  FODArgsAll =
     let
-      fetcherArgsAll' =
+      FODArgsAll' =
         lib.mapAttrs
           (pname: fetched:
 
@@ -35,24 +35,20 @@ let
                 passthru.originalArgs = args;
               })).originalArgs
 
-            # handle non-FOD sources
-            else if lib.isDerivation fetched || lib.isStorePath fetched then
-              null
+            # handle unknown sources
+            else if fetched == "unknown" then
+              "unknown"
 
             # error out on unknown source types
             else
               throw ''
                 Error while generating FOD fetcher for combined sources.
                 Cannot classify source of '${pname}'.
-                Known source types:
-                  - FOD
-                  - derivation
-                  - store path
               ''
           )
           defaultFetched;
     in
-      lib.filterAttrs (pname: fetcherArgs: fetcherArgs != null) fetcherArgsAll';
+      lib.filterAttrs (pname: fetcherArgs: fetcherArgs != "unknown") FODArgsAll';
 
   # convert arbitrary types to string, like nix does with derivation arguments
   toString = x:
@@ -99,7 +95,7 @@ let
         popd
         rm -r workdir
         export out=$OUT_ORIG
-      '') fetcherArgsAll )}
+      '') FODArgsAll )}
 
     echo "FOD_PATH=$(${nix}/bin/nix hash-path $out)"
   '';
@@ -109,7 +105,7 @@ let
       nativeBuildInputs' = lib.foldl (a: b: a ++ b) [] (
         lib.mapAttrsToList
           (pname: fetcherArgs: (fetcherArgs.nativeBuildInputs or []))
-          fetcherArgsAll
+          FODArgsAll
       );
     in
       stdenv.mkDerivation rec {
@@ -130,9 +126,9 @@ in
   fetchedSources =
     # attrset: pname -> path of downloaded source
     lib.genAttrs (lib.attrNames sources) (pname:
-      if fetcherArgsAll ? "${pname}" then
-        "${FODAllSources}/${fetcherArgsAll."${pname}".name}"
+      if FODArgsAll ? "${pname}" then
+        "${FODAllSources}/${FODArgsAll."${pname}".name}"
       else
-        sources."${pname}"
+        defaultFetched."${pname}"
     );
 }

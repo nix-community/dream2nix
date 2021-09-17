@@ -1,5 +1,6 @@
 {
   pkgs ? import <nixpkgs> {},
+  lib ? pkgs.lib,
   externalSources ?
     if builtins.getEnv "d2nExternalSources" != "" then
       builtins.getEnv "d2nExternalSources"
@@ -63,17 +64,37 @@ rec {
     {
       genericLock,
       builder ? findBuilder (parseLock genericLock),
-      fetcher ? findFetcher (parseLock genericLock)
+      fetcher ? findFetcher (parseLock genericLock),
+      sourceOverrides ? oldSources: {},
     }:
     let
-      # is generic lock is a file, read and parse it
+      # if generic lock is a file, read and parse it
       genericLock' = (parseLock genericLock);
       fetched = fetcher {
         sources = genericLock'.sources;
         sourcesCombinedHash = genericLock'.generic.sourcesCombinedHash;
       };
+      sourcesToReplace = sourceOverrides fetched.fetchedSources;
+      sourcesOverridden = lib.mapAttrs (pname: source:
+        sourcesToReplace."${pname}" or source
+      ) fetched.fetchedSources;
+      sourcesEnsuredOverridden = lib.mapAttrs (pname: source:
+        if source == "unknown" then throw ''
+          Source '${pname}' is unknown. Please override using:
+          dream2nix.buildPackage {
+            ...
+            sourceOverrides = oldSources: {
+              "${pname}" = ...;
+            };
+            ...
+          };
+        ''
+        else source
+      ) sourcesOverridden;
     in
-      fetched;
+      fetched // {
+        fetchedSources = sourcesEnsuredOverridden;
+      };
 
 
   # automatically build package defined by generic lock
@@ -81,10 +102,11 @@ rec {
     {
       genericLock,
       builder ? findBuilder (parseLock genericLock),
-      fetcher ? findFetcher (parseLock genericLock)
+      fetcher ? findFetcher (parseLock genericLock),
+      sourceOverrides ? oldSources: {},
     }@args:
     let
-      # is generic lock is a file, read and parse it
+      # if generic lock is a file, read and parse it
       genericLock' = (parseLock genericLock);
     in
     builder {

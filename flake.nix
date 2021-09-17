@@ -22,6 +22,7 @@
 
       dream2nixFor = forAllSystems (system: import ./src rec {
         pkgs = nixpkgsFor."${system}";
+        inherit lib;
         externalSources = pkgs.runCommand "dream2nix-imported" {} ''
           mkdir -p $out/npmlock2nix
           cp ${npmlock2nix}/{internal.nix,LICENSE} $out/npmlock2nix/
