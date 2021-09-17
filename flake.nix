@@ -48,6 +48,9 @@
         });
 
         devShell = forAllSystems (system: nixpkgsFor."${system}".mkShell {
+          buildInputs = with nixpkgsFor."${system}"; [
+            nixUnstable
+          ];
           shellHook = ''
             export NIX_PATH=nixpkgs=${nixpkgs}
           '';

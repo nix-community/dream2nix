@@ -1,5 +1,6 @@
 {
   callPackage,
+  ...
 }:
 rec {
   defaultFetcher = callPackage ./default-fetcher.nix {};

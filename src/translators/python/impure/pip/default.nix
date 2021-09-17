@@ -13,6 +13,7 @@
 {
 
   # the input format is specified in /specifications/translator-call-example.json
+  # this script receives a json file including the input paths and specialArgs
   translateBin = writeScriptBin "translate" ''
     #!${bash}/bin/bash
 
@@ -23,29 +24,31 @@
 
     # read the json input
     outputFile=$(${jq}/bin/jq '.outputFile' -c -r $jsonInput)
+    pythonAttr=$(${jq}/bin/jq '.pythonAttr' -c -r $jsonInput)
     inputDirectories=$(${jq}/bin/jq '.inputDirectories | .[]' -c -r $jsonInput)
     inputFiles=$(${jq}/bin/jq '.inputFiles | .[]' -c -r $jsonInput)
 
-
-    # pip executable
-    pip=${python3.pkgs.pip}/bin/pip
+    # build python and pip executables
+    tmpBuild=$(mktemp -d)
+    cd $tmpBuild
+    nix build --impure --expr "(import <nixpkgs> {}).$pythonAttr" -o python
+    nix build --impure --expr "(import <nixpkgs> {}).$pythonAttr.pkgs.pip" -o pip
+    cd -
 
     # prepare temporary directory
-    tmp=translateTmp
-    rm -rf $tmp
-    mkdir $tmp
+    tmp=$(mktemp -d)
 
     # download files according to requirements
-    $pip download \
+    $tmpBuild/pip/bin/pip download \
       --no-cache \
       --dest $tmp \
       --progress-bar off \
       -r ''${inputFiles/$'\n'/$' -r '}
 
     # generate the generic lock from the downloaded list of files
-    ${python3}/bin/python ${./generate-generic-lock.py} $tmp $outputFile
+    $tmpBuild/python/bin/python ${./generate-generic-lock.py} $tmp $outputFile
 
-    rm -rf $tmp
+    rm -rf $tmp $tmpBuild
   '';
 
 
@@ -59,4 +62,19 @@
       inputDirectories = [];
       inputFiles = lib.filter (f: builtins.match ".*(requirements).*\\.txt" f != null) args.inputFiles;
     };
+
+  # define special args and provide defaults
+  specialArgs = {
+    
+    # the python attribute
+    pythonAttr = {
+      default = "python3${lib.elemAt (lib.splitString "." python3.version) 1}";
+      description = "python version to translate for";
+      examples = [
+        "python27"
+        "python39"
+        "python310"
+      ];
+    };
+  };
 }

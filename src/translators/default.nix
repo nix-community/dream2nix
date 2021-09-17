@@ -11,19 +11,23 @@
 let
 
   lib = pkgs.lib;
+
   callTranslator = subsystem: type: name: file: args: 
     let
       translator = callPackage file (args // {
         inherit externals;
         translatorName = name;
       });
+      translatorWithBin =
+        # if the translator is a pure nix translator,
+        # generate a translatorBin for CLI compatibility
+        if translator ? translateBin then translator
+        else translator // {
+          translateBin = wrapPureTranslator [ subsystem type name ];
+        };
     in
-      # if the translator is a pure nix translator,
-      # generate a translatorBin for CLI compatibility
-      if translator ? translateBin then translator
-      else translator // {
-        translateBin = wrapPureTranslator [ subsystem type name ];
-      };
+      translatorWithBin // { inherit subsystem type name; };
+      
 
   buildSystems = dirNames ./.;
 
@@ -74,15 +78,17 @@ let
     )
   );
 
-  # json file exposing all existing translators to CLI
+  # json file exposing all existing translators to CLI including their special args
   translatorsJsonFile =
-    pkgs.writeText
-      "translators.json"
-      (builtins.toJSON
-        (mkTranslatorsSet (subsystem: type:
-          dirNames (./. + "/${subsystem}/${type}")
+    let
+      data = lib.mapAttrsRecursiveCond
+        (as: !(as ? "translateBin"))
+        (k: v:
+          v.specialArgs or {}
         )
-      ));
+        translators;
+    in
+    pkgs.writeText "translators.json" (builtins.toJSON data);
 
   # filter translators by compatibility for the given input paths
   compatibleTranslators =
@@ -134,7 +140,7 @@ let
 
 
   # return the correct translator bin for the given input paths
-  selectTranslatorBin = utils.makeCallableViaEnv (
+  selectTranslator = utils.makeCallableViaEnv (
     {
       selector,  # like 'python.impure' or 'python.impure.pip'
       inputDirectories,  # input paths to translate
@@ -156,10 +162,23 @@ let
             - ${builtins.concatStringsSep "\n  - " (inputDirectories ++ inputFiles)}
         ''
       else
-        (lib.head (lib.attrValues (lib.head (lib.attrValues (lib.head (lib.attrValues compatTranslators)))))).translateBin
+        lib.head (lib.attrValues (lib.head (lib.attrValues (lib.head (lib.attrValues compatTranslators)))))
   );
+
+  selectTranslatorJSON = args:
+    let
+      translator = (selectTranslator args);
+      data = {
+        SpecialArgsDefaults =
+          lib.mapAttrs
+            (name: def: def.default)
+            translator.specialArgs or {};
+        inherit (translator) subsystem type name;
+      };
+    in
+      builtins.toJSON data;
 
 in
 {
-  inherit translators translatorsJsonFile selectTranslatorBin;
+  inherit translators translatorsJsonFile selectTranslatorJSON;
 }

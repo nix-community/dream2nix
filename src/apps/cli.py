@@ -21,10 +21,23 @@ def list_translators(args):
   for subsystem, trans_types in translators.items():
     displayed = []
     for trans_type, translators_ in trans_types.items():
-      for translator in translators_:
-        displayed.append(f"{trans_type}.{translator}")
+      for trans_name, translator in translators_.items():
+        lines = tuple(
+          f"{trans_type}.{trans_name}",
+        )
+        if translator:
+          lines += (
+            f"\n      special args:",
+          )
+          for argName, argData in translator.items():
+            lines += (
+              f"\n        --arg_{argName} {{value}}",
+              f"\n            default: {argData['default']}",
+              f"\n            examples: {', '.join(argData['examples'])}",
+            )
+        displayed.append(''.join(lines))
     nl = '\n'
-    out += f"\n  - {subsystem}.{f'{nl}  - {subsystem}.'.join(displayed)}"
+    out += f"\n\n  - {subsystem}.{f'{nl}  - {subsystem}.'.join(displayed)}"
   print(out)
 
 
@@ -33,6 +46,12 @@ def translate(args):
   dream2nix_src = os.environ.get("dream2nixSrc")
 
   inputPaths = args.input
+
+  # collect special args
+  specialArgs = {}
+  for argName, argVal in vars(args).items():
+    if argName.startswith("arg_"):
+      specialArgs[argName[4:]] = argVal
 
   # check if all inputs exist
   for path in inputPaths:
@@ -56,6 +75,7 @@ def translate(args):
     outputFile=output,
     selector=args.translator or "",
   )
+  translatorInput.update(specialArgs)
 
   # remove output file if exists
   if os.path.exists(output):
@@ -69,19 +89,45 @@ def translate(args):
     env.update(dict(
       FUNC_ARGS=inputJsonFile.name
     ))
-    procBuild = sp.run(
+    procEval = sp.run(
       [
-        "nix", "build", "--impure", "--expr",
-        f"(import {dream2nix_src} {{}}).translators.selectTranslatorBin {{}}", "-o", "translator"
+        "nix", "eval", "--impure", "--raw", "--expr",
+        f"((import {dream2nix_src} {{}}).translators.selectTranslatorJSON {{}})",
       ],
       capture_output=True,
       env=env
+    )
+    if procEval.returncode:
+      print("Selecting translator failed", file=sys.stdout)
+      print(procEval.stderr.decode(), file=sys.stderr)
+      exit(1)
+
+    # parse data for auto selected translator
+    resultEval = json.loads(procEval.stdout)
+    subsystem = resultEval['subsystem']
+    trans_type = resultEval['type']
+    trans_name = resultEval['name']
+
+    # include default values into input data
+    translatorInputWithDefaults = resultEval['SpecialArgsDefaults']
+    translatorInputWithDefaults.update(translatorInput)
+    json.dump(translatorInputWithDefaults, inputJsonFile, indent=2)
+    inputJsonFile.seek(0)
+
+    # build the translator bin
+    procBuild = sp.run(
+      [
+        "nix", "build", "--impure", "-o", "translator", "--expr",
+        f"(import {dream2nix_src} {{}}).translators.translators.{subsystem}.{trans_type}.{trans_name}.translateBin",
+      ],
+      capture_output=True,
     )
     if procBuild.returncode:
       print("Building translator failed", file=sys.stdout)
       print(procBuild.stderr.decode(), file=sys.stderr)
       exit(1)
 
+    # execute translator
     translatorPath = os.path.realpath("translator")
     os.remove("translator")
     sp.run(
@@ -154,6 +200,9 @@ def parse_args():
 
   list_parser.set_defaults(func=list_translators)
 
+
+  # PARSER FOR TRNASLATOR
+
   translate_parser = sub.add_parser(
     "translate",
     prog="translate",
@@ -185,6 +234,13 @@ def parse_args():
     help="input files or directories containing sources and metadata",
     nargs="+"
   )
+
+  # parse special args
+  # (custom parameters required by individual translators)
+  parsed, unknown = translate_parser.parse_known_args()
+  for arg in unknown:
+    if arg.startswith("--arg_"):
+      translate_parser.add_argument(arg.split('=')[0])
 
   args = parser.parse_args()
 
