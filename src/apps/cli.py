@@ -13,7 +13,8 @@ with open (os.environ.get("translatorsJsonFile")) as f:
 
 def strip_hashes_from_lock(lock):
   for source in lock['sources'].values():
-    del source['hash']
+    if 'hash' in source:
+      del source['hash']
 
 
 def list(args):

@@ -4,6 +4,7 @@
   fetchFromGitLab,
   fetchgit,
   fetchurl,
+  writeScript,
 
   lib,
   ...
@@ -36,6 +37,8 @@
         inherit (source) url;
         sha256 = source.hash or null;
       }
+    else if source.type == "path" then
+      writeScript "fakePath" "foo"
     else throw "unsupported source type '${source.type}'"
   ) sources;
 }
