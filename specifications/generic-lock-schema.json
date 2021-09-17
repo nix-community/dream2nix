@@ -29,6 +29,12 @@
           "allOf": [
             {
               "if": {
+                "properties": { "type": { "const": "unknown" } }
+              },
+              "then": { "properties": {} }
+            },
+            {
+              "if": {
                 "properties": { "type": { "const": "fetchurl" } }
               },
               "then": {

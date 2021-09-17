@@ -1,3 +1,6 @@
+# this fetcher takes an attrset of sources and combines all contained FODs
+# to one large FOD. Non-FOD sources like derivations and store paths are
+# not touched
 {
   defaultFetcher,
 
@@ -20,11 +23,36 @@ let
   defaultFetched = (defaultFetcher { inherit sources; }).fetchedSources;
 
   # extract the arguments from the individual fetcher calls
-  fetcherArgsAll = lib.mapAttrs (pname: fetched:
-    (fetched.overrideAttrs (args: {
-      passthru.originalArgs = args;
-    })).originalArgs
-  ) defaultFetched;
+  fetcherArgsAll =
+    let
+      fetcherArgsAll' =
+        lib.mapAttrs
+          (pname: fetched:
+
+            # handle FOD sources
+            if lib.all (attr: fetched ? "${attr}") [ "outputHash" "outputHashAlgo" "outputHashMode" ] then
+              (fetched.overrideAttrs (args: {
+                passthru.originalArgs = args;
+              })).originalArgs
+
+            # handle non-FOD sources
+            else if lib.isDerivation fetched || lib.isStorePath fetched then
+              null
+
+            # error out on unknown source types
+            else
+              throw ''
+                Error while generating FOD fetcher for combined sources.
+                Cannot classify source of '${pname}'.
+                Known source types:
+                  - FOD
+                  - derivation
+                  - store path
+              ''
+          )
+          defaultFetched;
+    in
+      lib.filterAttrs (pname: fetcherArgs: fetcherArgs != null) fetcherArgsAll';
 
   # convert arbitrary types to string, like nix does with derivation arguments
   toString = x:
@@ -61,16 +89,17 @@ let
 
     mkdir $out
 
-    ${lib.concatStringsSep "\n" (lib.mapAttrsToList (pname: fetcherArgs: ''
-      OUT_ORIG=$out
-      export out=$OUT_ORIG/${fetcherArgs.name}
-      mkdir workdir
-      pushd workdir
-      ${fetchItem pname fetcherArgs}
-      popd
-      rm -r workdir
-      export out=$OUT_ORIG
-    '') fetcherArgsAll )}
+    ${lib.concatStringsSep "\n" (lib.mapAttrsToList (pname: fetcherArgs:
+      ''
+        OUT_ORIG=$out
+        export out=$OUT_ORIG/${fetcherArgs.name}
+        mkdir workdir
+        pushd workdir
+        ${fetchItem pname fetcherArgs}
+        popd
+        rm -r workdir
+        export out=$OUT_ORIG
+      '') fetcherArgsAll )}
 
     echo "FOD_PATH=$(${nix}/bin/nix hash-path $out)"
   '';
@@ -101,6 +130,9 @@ in
   fetchedSources =
     # attrset: pname -> path of downloaded source
     lib.genAttrs (lib.attrNames sources) (pname:
-      "${FODAllSources}/${fetcherArgsAll."${pname}".name}"
+      if fetcherArgsAll ? "${pname}" then
+        "${FODAllSources}/${fetcherArgsAll."${pname}".name}"
+      else
+        sources."${pname}"
     );
 }

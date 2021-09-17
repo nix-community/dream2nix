@@ -36,6 +36,8 @@
         inherit (source) url;
         sha256 = source.hash or null;
       }
+    else if source.type == "unknown" then
+      null
     else throw "unsupported source type '${source.type}'"
   ) sources;
 }

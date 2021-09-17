@@ -145,7 +145,7 @@ def translate(args):
   # calculate combined hash
   if args.combined:
 
-    print("Start building FOD for combined sources to get output hash")
+    print("Building FOD of combined sources to retrieve output hash")
 
     # remove hashes from lock file and init sourcesCombinedHash with emtpy string
     strip_hashes_from_lock(lock)
