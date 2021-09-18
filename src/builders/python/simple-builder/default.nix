@@ -6,11 +6,11 @@
 
 {
   fetchedSources,
-  genericLock,
+  dreamLock,
 }:
 
 let
-  python = pkgs."${genericLock.buildSystem.pythonAttr}";
+  python = pkgs."${dreamLock.buildSystem.pythonAttr}";
 in
 
 python.pkgs.buildPythonPackage {

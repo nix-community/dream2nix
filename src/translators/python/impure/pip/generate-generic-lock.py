@@ -44,7 +44,7 @@ def main():
     )
 
   # create generic lock
-  generic_lock = dict(
+  dream_lock = dict(
     sources={},
     generic={
       "buildSystem": "python",
@@ -68,7 +68,7 @@ def main():
 
   # populate sources of generic lock
   for pname, data in packages.items():
-    generic_lock['sources'][pname] = dict(
+    dream_lock['sources'][pname] = dict(
       url=data['url'],
       hash=data['sha256'],
       type='fetchurl',
@@ -77,7 +77,7 @@ def main():
   # dump generic lock to stdout (json)
   print(jsonInput['outputFile'])
   with open(jsonInput['outputFile'], 'w') as lock:
-    json.dump(generic_lock, lock, indent=2)
+    json.dump(dream_lock, lock, indent=2)
 
 
 if __name__ == "__main__":

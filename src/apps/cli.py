@@ -177,7 +177,7 @@ def translate(args):
     proc = sp.run(
       [
         "nix", "build", "--impure", "-L", "--expr",
-        f"(import {dream2nix_src} {{}}).fetchSources {{ genericLock = {output}; }}"
+        f"(import {dream2nix_src} {{}}).fetchSources {{ dreamLock = {output}; }}"
       ],
       capture_output=True,
     )

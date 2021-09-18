@@ -39,16 +39,16 @@ rec {
 
 
   # automatically find a suitable builder for a given generic lock
-  findBuilder = genericLock:
+  findBuilder = dreamLock:
     let
-      buildSystem = genericLock.generic.buildSystem;
+      buildSystem = dreamLock.generic.buildSystem;
     in
       builders."${buildSystem}".default;
 
 
   # detect if granular or combined fetching must be used
-  findFetcher = genericLock:
-      if null != genericLock.generic.sourcesCombinedHash then
+  findFetcher = dreamLock:
+      if null != dreamLock.generic.sourcesCombinedHash then
         fetchers.combinedFetcher
       else
         fetchers.defaultFetcher;
@@ -63,17 +63,17 @@ rec {
 
   fetchSources =
     {
-      genericLock,
-      builder ? findBuilder (parseLock genericLock),
-      fetcher ? findFetcher (parseLock genericLock),
+      dreamLock,
+      builder ? findBuilder (parseLock dreamLock),
+      fetcher ? findFetcher (parseLock dreamLock),
       sourceOverrides ? oldSources: {},
     }:
     let
       # if generic lock is a file, read and parse it
-      genericLock' = (parseLock genericLock);
+      dreamLock' = (parseLock dreamLock);
       fetched = fetcher {
-        sources = genericLock'.sources;
-        sourcesCombinedHash = genericLock'.generic.sourcesCombinedHash;
+        sources = dreamLock'.sources;
+        sourcesCombinedHash = dreamLock'.generic.sourcesCombinedHash;
       };
       sourcesToReplace = sourceOverrides fetched.fetchedSources;
       sourcesOverridden = lib.mapAttrs (pname: source:
@@ -101,17 +101,17 @@ rec {
   # automatically build package defined by generic lock
   buildPackage = 
     {
-      genericLock,
-      builder ? findBuilder (parseLock genericLock),
-      fetcher ? findFetcher (parseLock genericLock),
+      dreamLock,
+      builder ? findBuilder (parseLock dreamLock),
+      fetcher ? findFetcher (parseLock dreamLock),
       sourceOverrides ? oldSources: {},
     }@args:
     let
       # if generic lock is a file, read and parse it
-      genericLock' = (parseLock genericLock);
+      dreamLock' = (parseLock dreamLock);
     in
     builder {
-      genericLock = genericLock';
+      dreamLock = dreamLock';
       fetchedSources = (fetchSources args).fetchedSources;
     };
    
