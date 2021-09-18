@@ -46,7 +46,7 @@
       -r ''${inputFiles/$'\n'/$' -r '}
 
     # generate the generic lock from the downloaded list of files
-    $tmpBuild/python/bin/python ${./generate-generic-lock.py} $tmp $outputFile
+    $tmpBuild/python/bin/python ${./generate-generic-lock.py} $tmp $jsonInput
 
     rm -rf $tmp $tmpBuild
   '';
@@ -75,6 +75,22 @@
         "python39"
         "python310"
       ];
+      type = "argument";
     };
+
+    main = {
+      default = "";
+      description = "name of the main package";
+      examples = [
+        "some-package"
+      ];
+      type = "argument";
+    };
+
+    application = {
+      description = "build application instead of package";
+      type = "flag";
+    };
+
   };
 }

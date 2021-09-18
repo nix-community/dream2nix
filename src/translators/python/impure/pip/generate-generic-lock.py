@@ -7,7 +7,9 @@ import sys
 
 def main():
   directory = sys.argv[1]
-  output_file = sys.argv[2]
+
+  with open(sys.argv[2]) as f:
+    jsonInput = json.load(f)
 
   packages = {}
 
@@ -46,8 +48,7 @@ def main():
     sources={},
     generic={
       "buildSystem": "python",
-      "buildSystemFormatVersion": 1,
-      "producedBy": "external-pip",
+      "mainPackage": None,
 
       # This translator is not aware of the exact dependency graph.
       # This restricts us to use a single derivation builder later,
@@ -57,6 +58,8 @@ def main():
       "sourcesCombinedHash": None,
     },
     buildSystem={
+      "main": jsonInput['main'],
+      "application": jsonInput['application'],
       "pythonAttr": f"python{sys.version_info.major}{sys.version_info.minor}",
       "sourceFormats":
         {pname: data['format'] for pname, data in packages.items()}
@@ -72,7 +75,8 @@ def main():
     )
 
   # dump generic lock to stdout (json)
-  with open(output_file, 'w') as lock:
+  print(jsonInput['outputFile'])
+  with open(jsonInput['outputFile'], 'w') as lock:
     json.dump(generic_lock, lock, indent=2)
 
 

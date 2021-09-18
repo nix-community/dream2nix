@@ -171,7 +171,12 @@ let
       data = {
         SpecialArgsDefaults =
           lib.mapAttrs
-            (name: def: def.default)
+            (name: def:
+              if def.type == "flag" then
+                false
+              else
+                def.default
+            )
             translator.specialArgs or {};
         inherit (translator) subsystem type name;
       };

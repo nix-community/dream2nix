@@ -20,6 +20,7 @@ let
   externals = {
     npmlock2nix = pkgs.callPackage "${externalSources}/npmlock2nix/internal.nix" {};
   };
+
 in
 
 rec {

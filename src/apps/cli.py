@@ -16,6 +16,11 @@ def strip_hashes_from_lock(lock):
     del source['hash']
 
 
+def order_dict(d):
+  return {k: order_dict(v) if isinstance(v, dict) else v
+    for k, v in sorted(d.items())}
+
+
 def list_translators(args):
   out = "Available translators per build system"
   for subsystem, trans_types in translators.items():
@@ -30,11 +35,20 @@ def list_translators(args):
             f"\n      special args:",
           )
           for argName, argData in translator.items():
-            lines += (
-              f"\n        --arg_{argName} {{value}}",
-              f"\n            default: {argData['default']}",
-              f"\n            examples: {', '.join(argData['examples'])}",
-            )
+            if argData['type'] == 'argument':
+              lines += (
+                f"\n        --arg_{argName} {{value}}",
+                f"\n            description: {argData['description']}",
+                f"\n            default: {argData['default']}",
+                f"\n            examples: {', '.join(argData['examples'])}",
+              )
+            elif argData['type'] == 'flag':
+              lines += (
+                f"\n        --flag_{argName}",
+                f"\n            description: {argData['description']}",
+              )
+            else:
+              raise Exception(f"Unknown type '{argData['type']}' of argument '{arg_Name}'")
         displayed.append(''.join(lines))
     nl = '\n'
     out += f"\n\n  - {subsystem}.{f'{nl}  - {subsystem}.'.join(displayed)}"
@@ -52,6 +66,8 @@ def translate(args):
   for argName, argVal in vars(args).items():
     if argName.startswith("arg_"):
       specialArgs[argName[4:]] = argVal
+    elif argName.startswith("flag_"):
+      specialArgs[argName[5:]] = True
 
   # check if all inputs exist
   for path in inputPaths:
@@ -141,8 +157,12 @@ def translate(args):
   # read produced lock file
   with open(output) as f:
     lock = json.load(f)
+  
+  # write translator information to lock file
+  lock['generic']['translatedBy'] = f"{subsystem}.{trans_type}.{trans_name}"
+  lock['generic']['translatorParams'] = " ".join(sys.argv[2:])
 
-  # calculate combined hash
+  # calculate combined hash if --combined was specified
   if args.combined:
 
     print("Building FOD of combined sources to retrieve output hash")
@@ -174,7 +194,7 @@ def translate(args):
     # store the hash in the lock
     lock['generic']['sourcesCombinedHash'] = hash
     with open(output, 'w') as f:
-      json.dump(lock, f, indent=2)
+      json.dump(order_dict(lock), f, indent=2)
     
 
   print(f"Created {output}")
@@ -241,6 +261,8 @@ def parse_args():
   for arg in unknown:
     if arg.startswith("--arg_"):
       translate_parser.add_argument(arg.split('=')[0])
+    if arg.startswith("--flag_"):
+      translate_parser.add_argument(arg.split('=')[0], action='store_true')
 
   args = parser.parse_args()
 

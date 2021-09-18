@@ -74,7 +74,6 @@
       "type": "object",
       "properties": {
         "buildSystem": { "type": "string" },
-        "buildSystemFormatVersion": { "type": "integer" },
         "producedBy": { "type": "string" },
         "dependencyGraph": {
           "type": "object",

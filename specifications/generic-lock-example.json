@@ -14,9 +14,9 @@
 
   "generic": {
     "buildSystem": "python",
-    "buildSystemFormatVersion": 1,
-    "producedBy": "translator-poetry-1",
-    "rootPackage": "requests",
+    "translatedBy": "python.pure.poetry",
+    "translatorParams": "--flag_application",
+    "mainPackage": "requests",
     "dependencyGraph": {
       "requests": [
         "certifi"
