@@ -15,6 +15,22 @@
         "type": "indirect"
       }
     },
+    "node2nix": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1613594272,
+        "narHash": "sha256-fcnPNexhowSkatLSl+0dat5oDaWKH53Pg+VKrE8+x+Q=",
+        "owner": "svanderburg",
+        "repo": "node2nix",
+        "rev": "0c94281ea98f1b17532176106f90f909aa133704",
+        "type": "github"
+      },
+      "original": {
+        "owner": "svanderburg",
+        "repo": "node2nix",
+        "type": "github"
+      }
+    },
     "npmlock2nix": {
       "flake": false,
       "locked": {
@@ -34,6 +50,7 @@
     "root": {
       "inputs": {
         "nixpkgs": "nixpkgs",
+        "node2nix": "node2nix",
         "npmlock2nix": "npmlock2nix"
       }
     }

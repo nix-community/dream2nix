@@ -43,6 +43,9 @@ in
         mkdir $target/external
         cp -r ${externalSources}/* $target/external/
         chmod -R +w $target
+
+        echo "Installed dream2nix successfully to '$target'."
+        echo "Please check/modify settings in '$target/config.json'"
       ''
   ) {};
 }

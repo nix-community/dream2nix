@@ -26,7 +26,12 @@ let
           translateBin = wrapPureTranslator [ subsystem type name ];
         };
     in
-      translatorWithBin // { inherit subsystem type name; };
+      translatorWithBin // {
+        inherit subsystem type name;
+        translate = args:
+          translator.translate
+            ((getSpecialArgsDefaults translator.specialArgs or {}) // args);
+      };
       
 
   buildSystems = dirNames ./.;
@@ -45,7 +50,7 @@ let
       bin = pkgs.writeScriptBin "translate" ''
         #!${pkgs.bash}/bin/bash
 
-        jsonInputFile=$1
+        jsonInputFile=$(realpath $1)
         outputFile=$(${pkgs.jq}/bin/jq '.outputFile' -c -r $jsonInputFile)
         export d2nExternalSources=${externalSources}
 
@@ -165,19 +170,21 @@ let
         lib.head (lib.attrValues (lib.head (lib.attrValues (lib.head (lib.attrValues compatTranslators)))))
   );
 
+  getSpecialArgsDefaults = specialArgsDef:
+    lib.mapAttrs
+      (name: def:
+        if def.type == "flag" then
+          false
+        else
+          def.default
+      )
+      specialArgsDef;
+
   selectTranslatorJSON = args:
     let
       translator = (selectTranslator args);
       data = {
-        SpecialArgsDefaults =
-          lib.mapAttrs
-            (name: def:
-              if def.type == "flag" then
-                false
-              else
-                def.default
-            )
-            translator.specialArgs or {};
+        SpecialArgsDefaults = getSpecialArgsDefaults (translator.specialArgs or {});
         inherit (translator) subsystem type name;
       };
     in

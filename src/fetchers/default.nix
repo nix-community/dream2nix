@@ -1,5 +1,8 @@
 {
   callPackage,
+
+  # config
+  allowBuiltinFetchers,
   ...
 }:
 rec {

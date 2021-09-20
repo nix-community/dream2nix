@@ -13,7 +13,8 @@ with open (os.environ.get("translatorsJsonFile")) as f:
 
 def strip_hashes_from_lock(lock):
   for source in lock['sources'].values():
-    del source['hash']
+    if 'hash' in source:
+      del source['hash']
 
 
 def order_dict(d):
@@ -75,7 +76,9 @@ def translate(args):
       raise Exception(f"Input path '{path}' does not exist")
 
   inputFiles = list(filter(lambda p: os.path.isfile(p), inputPaths))
+  inputFiles = list(map(lambda p:os.path.realpath(p), inputFiles))
   inputDirectories = list(filter(lambda p: os.path.isdir(p), inputPaths))
+  inputDirectories = list(map(lambda p:os.path.realpath(p), inputDirectories))
 
   # determine output directory
   if os.path.isdir(args.output):
@@ -161,6 +164,17 @@ def translate(args):
   # write translator information to lock file
   lock['generic']['translatedBy'] = f"{subsystem}.{trans_type}.{trans_name}"
   lock['generic']['translatorParams'] = " ".join(sys.argv[2:])
+
+  # clean up dependency graph
+  # remove empty entries
+  if 'dependencyGraph' in lock['generic']:
+    for pname, deps in lock['generic']['dependencyGraph'].copy().items():
+      if not deps:
+        del lock['generic']['dependencyGraph'][pname]
+  
+  # re-write dream.lock
+  with open(output, 'w') as f:
+    json.dump(lock, f, indent=2)
 
   # calculate combined hash if --combined was specified
   if args.combined:

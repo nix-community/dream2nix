@@ -3,10 +3,11 @@
 
   inputs = {
     nixpkgs.url = "nixpkgs/nixos-unstable";
+    node2nix = { url = "github:svanderburg/node2nix"; flake = false; };
     npmlock2nix = { url = "github:nix-community/npmlock2nix"; flake = false; };
   };
 
-  outputs = { self, nixpkgs, npmlock2nix }:
+  outputs = { self, nixpkgs, node2nix, npmlock2nix }:
     let
 
       lib = nixpkgs.lib;
@@ -20,13 +21,16 @@
         overlays = [ self.overlay ];
       });
 
+      externalSourcesFor = forAllSystems (system: nixpkgsFor."${system}".runCommand "dream2nix-vendored" {} ''
+        mkdir -p $out/{npmlock2nix,node2nix}
+        cp ${npmlock2nix}/{internal.nix,LICENSE} $out/npmlock2nix/
+        cp ${node2nix}/{nix/node-env.nix,LICENSE} $out/node2nix/
+      '');
+
       dream2nixFor = forAllSystems (system: import ./src rec {
         pkgs = nixpkgsFor."${system}";
+        externalSources = externalSourcesFor."${system}";
         inherit lib;
-        externalSources = pkgs.runCommand "dream2nix-imported" {} ''
-          mkdir -p $out/npmlock2nix
-          cp ${npmlock2nix}/{internal.nix,LICENSE} $out/npmlock2nix/
-        '';
       });
 
     in
@@ -54,6 +58,7 @@
           ];
           shellHook = ''
             export NIX_PATH=nixpkgs=${nixpkgs}
+            export d2nExternalSources=${externalSourcesFor."${system}"}
           '';
         });
       };
