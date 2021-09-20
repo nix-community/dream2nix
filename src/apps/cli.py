@@ -6,6 +6,8 @@ import subprocess as sp
 import sys
 import tempfile
 
+import networkx as nx
+
 
 with open (os.environ.get("translatorsJsonFile")) as f:
   translators = json.load(f)
@@ -167,14 +169,38 @@ def translate(args):
 
   # clean up dependency graph
   # remove empty entries
+  depGraph = lock['generic']['dependencyGraph']
   if 'dependencyGraph' in lock['generic']:
-    for pname, deps in lock['generic']['dependencyGraph'].copy().items():
+    for pname, deps in depGraph.copy().items():
       if not deps:
-        del lock['generic']['dependencyGraph'][pname]
-  
-  # re-write dream.lock
-  with open(output, 'w') as f:
-    json.dump(lock, f, indent=2)
+        del depGraph[pname]
+
+  # remove cyclic dependencies
+  edges = set()
+  for pname, deps in depGraph.items():
+    for dep in deps:
+      edges.add((pname, dep))
+  G = nx.DiGraph(sorted(list(edges)))
+  cycle_count = 0
+  removed_edges = []
+  for pname in list(depGraph.keys()):
+    try:
+      while True:
+        cycle = nx.find_cycle(G, pname)
+        cycle_count += 1
+        # remove_dependecy(indexed_pkgs, G, cycle[-1][0], cycle[-1][1])
+        node_from, node_to = cycle[-1][0], cycle[-1][1]
+        G.remove_edge(node_from, node_to)
+        depGraph[node_from].remove(node_to)
+        removed_edges.append((node_from, node_to))
+    except nx.NetworkXNoCycle:
+      continue
+  if removed_edges:
+    removed_cycles_text = 'Removed Cyclic dependencies:'
+    for node, removed_node in removed_edges:
+      removed_cycles_text += f"\n  {node} -> {removed_node}"
+    print(removed_cycles_text)
+  lock['generic']['dependencyCyclesRemoved'] = True
 
   # calculate combined hash if --combined was specified
   if args.combined:
@@ -207,9 +233,10 @@ def translate(args):
 
     # store the hash in the lock
     lock['generic']['sourcesCombinedHash'] = hash
-    with open(output, 'w') as f:
-      json.dump(order_dict(lock), f, indent=2)
-    
+  
+  # re-write dream.lock
+  with open(output, 'w') as f:
+    json.dump(order_dict(lock), f, indent=2)
 
   print(f"Created {output}")
 

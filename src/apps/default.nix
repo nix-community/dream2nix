@@ -8,17 +8,19 @@
 }:
 let
   callPackage = pkgs.callPackage;
+
+  cliPython = pkgs.python3.withPackages (ps: [ ps.networkx ]);
 in
 {
 
   # the unified translator cli
-  cli = callPackage ({ python3, writeScript, ... }:
+  cli = callPackage ({ writeScript, ... }:
     writeScript "cli" ''
       export d2nExternalSources=${externalSources}
 
       translatorsJsonFile=${translators.translatorsJsonFile} \
       dream2nixSrc=${../.} \
-        ${python3}/bin/python ${./cli.py} "$@"
+        ${cliPython}/bin/python ${./cli.py} "$@"
     ''
   ) {};
 

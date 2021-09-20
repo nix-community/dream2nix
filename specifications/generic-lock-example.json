@@ -19,6 +19,7 @@
     "translatedBy": "python.pure.poetry",
     "translatorParams": "--flag_application",
     "mainPackage": "requests",
+    "dependencyCyclesRemoved": true,
     "dependencyGraph": {
       "requests": [
         "certifi"
