@@ -54,6 +54,7 @@
 
         devShell = forAllSystems (system: nixpkgsFor."${system}".mkShell {
           buildInputs = with nixpkgsFor."${system}"; [
+            cntr
             nixUnstable
           ];
           shellHook = ''

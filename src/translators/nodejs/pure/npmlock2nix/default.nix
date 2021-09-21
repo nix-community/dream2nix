@@ -117,11 +117,20 @@
         producedBy = translatorName;
         mainPackage = parsed.name;
         dependencyGraph =
+          {
+            "${parsed.name}" =
+              lib.mapAttrsToList
+                (pname: pdata: "${pname}#${getVersion pdata}")
+                (lib.filterAttrs
+                  (pname: pdata: ! (pdata.dev or false) || dev)
+                  parsed.dependencies);
+          }
+          //
           lib.listToAttrs 
-          (map
-            (dep: lib.nameValuePair dep.name dep.depsExact )
-            (lib.flatten (parseDependencies packageLockWithPinnedVersions))
-          );
+            (map
+              (dep: lib.nameValuePair dep.name dep.depsExact)
+              (lib.flatten (parseDependencies packageLockWithPinnedVersions))
+            );
         sourcesCombinedHash = null;
       };
 

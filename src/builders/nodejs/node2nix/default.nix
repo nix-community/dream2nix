@@ -3,7 +3,6 @@
 {
   externals,
   node2nix ? externals.node2nix,
-
   lib,
   pkgs,
   ...
@@ -24,29 +23,33 @@ let
 
   node2nixEnv = node2nix nodejs;
 
-  # make node2nix compatible sources
-  makeSource = name: {
-    name = lib.head (lib.splitString "#" name);
-    packageName = lib.head (lib.splitString "#" name);
-    version = dreamLock.sources."${name}".version;
-    src = fetchedSources."${name}";
-    dependencies = lib.forEach dreamLock.generic.dependencyGraph."${name}" or [] (dependency:
-      makeSource dependency
-    );
-  };
+  node2nixDependencies =
+    let
+      makeSource = name: {
+        name = lib.head (lib.splitString "#" name);
+        packageName = lib.head (lib.splitString "#" name);
+        version = dreamLock.sources."${name}".version;
+        src = fetchedSources."${name}";
+        dependencies =
+          lib.forEach
+            (lib.filter
+              (depName: ! builtins.elem depName dreamLock.generic.dependencyGraph."${mainPackageName}")
+              (dreamLock.generic.dependencyGraph."${name}" or []))
+            (dependency:
+              makeSource dependency
+            );
+      };
+    in
+      lib.forEach
+        dreamLock.generic.dependencyGraph."${mainPackageName}"
+        (dependency: makeSource dependency);
 
   callNode2Nix = funcName: args:
     node2nixEnv."${funcName}" rec {
       name = mainPackageName;
       packageName = name;
       version = dreamLock.sources."${mainPackageName}".version;
-      dependencies =
-        lib.forEach
-          (lib.filter
-            (pname: pname != mainPackageName)
-            (lib.attrNames dreamLock.generic.dependencyGraph)
-          )
-          (dependency: makeSource dependency);
+      dependencies = node2nixDependencies;
       # buildInputs ? []
       # npmFlags ? ""
       # dontNpmInstall ? false

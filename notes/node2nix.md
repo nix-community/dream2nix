@@ -2,7 +2,6 @@
 
 ### Bad caching
 - packages are all unpacked at once inside a build instead of in individual derivations
-- packages are unpackged several times in different directories (symlinks could be used)
 
 ### Bad build performance
  - unpacking is done sequentially
