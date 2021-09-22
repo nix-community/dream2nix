@@ -1,6 +1,10 @@
 {
-  "inputPaths": [
-    "./some_project_src/requirements.txt",
-    "./some_project_src/requirements-dev.txt"
+  "inputDirectories": [
+    "./some_project_src"
+  ],
+
+  "inputFiles": [
+    "./a/b/c/requirements.txt",
+    "./a/b/c/requirements-dev.txt"
   ]
 }

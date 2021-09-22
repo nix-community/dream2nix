@@ -8,17 +8,19 @@
 }:
 let
   callPackage = pkgs.callPackage;
+
+  cliPython = pkgs.python3.withPackages (ps: [ ps.networkx ]);
 in
 {
 
   # the unified translator cli
-  cli = callPackage ({ python3, writeScript, ... }:
+  cli = callPackage ({ writeScript, ... }:
     writeScript "cli" ''
       export d2nExternalSources=${externalSources}
 
       translatorsJsonFile=${translators.translatorsJsonFile} \
       dream2nixSrc=${../.} \
-        ${python3}/bin/python ${./cli.py} "$@"
+        ${cliPython}/bin/python ${./cli.py} "$@"
     ''
   ) {};
 
@@ -43,6 +45,9 @@ in
         mkdir $target/external
         cp -r ${externalSources}/* $target/external/
         chmod -R +w $target
+
+        echo "Installed dream2nix successfully to '$target'."
+        echo "Please check/modify settings in '$target/config.json'"
       ''
   ) {};
 }

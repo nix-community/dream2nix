@@ -29,6 +29,12 @@
           "allOf": [
             {
               "if": {
+                "properties": { "type": { "const": "unknown" } }
+              },
+              "then": { "properties": {} }
+            },
+            {
+              "if": {
                 "properties": { "type": { "const": "fetchurl" } }
               },
               "then": {
@@ -68,7 +74,6 @@
       "type": "object",
       "properties": {
         "buildSystem": { "type": "string" },
-        "buildSystemFormatVersion": { "type": "integer" },
         "producedBy": { "type": "string" },
         "dependencyGraph": {
           "type": "object",

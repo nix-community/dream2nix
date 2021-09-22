@@ -1,26 +1,46 @@
+# A very simple single derivation python builder
+
 {
   lib,
   pkgs,
+  ...
 }:
 
 {
   fetchedSources,
-  genericLock,
+  dreamLock,
 }:
 
 let
-  python = pkgs."${genericLock.buildSystem.pythonAttr}";
+  python = pkgs."${dreamLock.buildSystem.pythonAttr}";
+
+  buildFunc =
+    if dreamLock.buildSystem.application then
+      python.pkgs.buildPythonApplication
+    else
+      python.pkgs.buildPythonPackage;
+
+  mainPackageName = dreamLock.generic.mainPackage;
+
+  packageName =
+    if mainPackageName == null then
+      if dreamLock.buildSystem.application then
+        "application"
+      else
+        "environment"
+    else
+      mainPackageName;
 in
 
-python.pkgs.buildPythonPackage {
-  name = "python-environment";
+buildFunc {
+  name = packageName;
   format = "";
-  src = lib.attrValues fetchedSources;
+  src = fetchedSources."${toString (mainPackageName)}" or null;
   buildInputs = pkgs.pythonManylinuxPackages.manylinux1;
   nativeBuildInputs = [ pkgs.autoPatchelfHook python.pkgs.wheelUnpackHook ];
   unpackPhase = ''
     mkdir dist 
-    for file in $src; do
+    for file in ${builtins.toString (lib.attrValues fetchedSources)}; do
       # pick right most element of path
       fname=''${file##*/}
       fname=$(stripHash $fname)
@@ -31,7 +51,7 @@ python.pkgs.buildPythonPackage {
     runHook preInstall
     mkdir -p "$out/${python.sitePackages}"
     export PYTHONPATH="$out/${python.sitePackages}:$PYTHONPATH"
-    ${python}/bin/python -m pip install ./dist/*.{whl,tar.gz,zip} \
+    ${python}/bin/python -m pip install ./dist/*.{whl,tar.gz,zip} $src \
       --no-index \
       --no-warn-script-location \
       --prefix="$out" \

@@ -163,9 +163,6 @@ Potery uses `pyproject.toml` and `poetry.lock` to lock dependencies
         // this indicates which builder must be used
         "buildSystem": "python",
 
-        // versioning the format to ensure builder compatibility
-        "buildSystemFormatVersion": 1,
-
         // translator which generated this file
         // (not relevant for building)
         "producedBy": "translator-poetry-1",

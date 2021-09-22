@@ -7,7 +7,9 @@ import sys
 
 def main():
   directory = sys.argv[1]
-  output_file = sys.argv[2]
+
+  with open(sys.argv[2]) as f:
+    jsonInput = json.load(f)
 
   packages = {}
 
@@ -42,12 +44,11 @@ def main():
     )
 
   # create generic lock
-  generic_lock = dict(
+  dream_lock = dict(
     sources={},
     generic={
       "buildSystem": "python",
-      "buildSystemFormatVersion": 1,
-      "producedBy": "external-pip",
+      "mainPackage": None,
 
       # This translator is not aware of the exact dependency graph.
       # This restricts us to use a single derivation builder later,
@@ -57,6 +58,8 @@ def main():
       "sourcesCombinedHash": None,
     },
     buildSystem={
+      "main": jsonInput['main'],
+      "application": jsonInput['application'],
       "pythonAttr": f"python{sys.version_info.major}{sys.version_info.minor}",
       "sourceFormats":
         {pname: data['format'] for pname, data in packages.items()}
@@ -65,15 +68,16 @@ def main():
 
   # populate sources of generic lock
   for pname, data in packages.items():
-    generic_lock['sources'][pname] = dict(
+    dream_lock['sources'][pname] = dict(
       url=data['url'],
       hash=data['sha256'],
       type='fetchurl',
     )
 
   # dump generic lock to stdout (json)
-  with open(output_file, 'w') as lock:
-    json.dump(generic_lock, lock, indent=2)
+  print(jsonInput['outputFile'])
+  with open(jsonInput['outputFile'], 'w') as lock:
+    json.dump(dream_lock, lock, indent=2)
 
 
 if __name__ == "__main__":

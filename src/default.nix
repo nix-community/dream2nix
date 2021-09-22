@@ -1,8 +1,11 @@
 {
   pkgs ? import <nixpkgs> {},
+  lib ? pkgs.lib,
   externalSources ?
-    if builtins.getEnv "d2nExternalSources" != "" then
+    # if called via CLI, load externals via env
+    if builtins ? getEnv && builtins.getEnv "d2nExternalSources" != "" then
       builtins.getEnv "d2nExternalSources"
+    # load from default dircetory
     else
       ./external,
 }:
@@ -13,23 +16,35 @@ let
 
   callPackage = f: args: pkgs.callPackage f (args // {
     inherit callPackage;
+    inherit externals;
+    inherit externalSources;
     inherit utils;
   });
 
   externals = {
     npmlock2nix = pkgs.callPackage "${externalSources}/npmlock2nix/internal.nix" {};
+    node2nix = nodejs: pkgs.callPackage "${externalSources}/node2nix/node-env.nix" { inherit nodejs; };
   };
+
+  config = builtins.fromJSON (builtins.readFile ./config.json);
+
 in
 
 rec {
 
-  apps = callPackage ./apps { inherit externalSources location translators; };
+  # apps for CLI and installation
+  apps = callPackage ./apps { inherit location translators; };
 
+  # builder implementaitons for all subsystems
   builders = callPackage ./builders {};
 
-  fetchers = callPackage ./fetchers {};
+  # fetcher implementations
+  fetchers = callPackage ./fetchers {
+    inherit (config) allowBuiltinFetchers;
+  };
 
-  translators = callPackage ./translators { inherit externalSources externals location; };
+  # the translator modules and utils for all subsystems
+  translators = callPackage ./translators { inherit location; };
 
 
   # the location of the dream2nix framework for self references (update scripts, etc.)
@@ -37,58 +52,87 @@ rec {
 
 
   # automatically find a suitable builder for a given generic lock
-  findBuilder = genericLock:
+  findBuilder = dreamLock:
     let
-      buildSystem = genericLock.generic.buildSystem;
+      buildSystem = dreamLock.generic.buildSystem;
     in
-      builders."${buildSystem}".default;
+      if ! builders ? "${buildSystem}" then
+        throw "Could not find any builder for subsystem '${buildSystem}'"
+      else
+        builders."${buildSystem}".default;
 
 
   # detect if granular or combined fetching must be used
-  findFetcher = genericLock:
-      if null != genericLock.generic.sourcesCombinedHash then
+  findFetcher = dreamLock:
+      if null != dreamLock.generic.sourcesCombinedHash then
         fetchers.combinedFetcher
       else
         fetchers.defaultFetcher;
 
 
+  # automatically parse dream.lock if passed as file
   parseLock = lock:
     if builtins.isPath lock || builtins.isString lock then
       builtins.fromJSON (builtins.readFile lock)
     else
       lock;
 
-
+  # fetch only sources and do not build
   fetchSources =
     {
-      genericLock,
-      builder ? findBuilder (parseLock genericLock),
-      fetcher ? findFetcher (parseLock genericLock)
+      dreamLock,
+      builder ? findBuilder (parseLock dreamLock),
+      fetcher ? findFetcher (parseLock dreamLock),
+      sourceOverrides ? oldSources: {},
+      allowBuiltinFetchers ? true,
     }:
     let
-      # is generic lock is a file, read and parse it
-      genericLock' = (parseLock genericLock);
+      # if generic lock is a file, read and parse it
+      dreamLock' = (parseLock dreamLock);
       fetched = fetcher {
-        sources = genericLock'.sources;
-        sourcesCombinedHash = genericLock'.generic.sourcesCombinedHash;
+        inherit allowBuiltinFetchers;
+        sources = dreamLock'.sources;
+        sourcesCombinedHash = dreamLock'.generic.sourcesCombinedHash;
       };
+      sourcesToReplace = sourceOverrides fetched.fetchedSources;
+      sourcesOverridden = lib.mapAttrs (pname: source:
+        sourcesToReplace."${pname}" or source
+      ) fetched.fetchedSources;
+      sourcesEnsuredOverridden = lib.mapAttrs (pname: source:
+        if source == "unknown" then throw ''
+          Source '${pname}' is unknown. Please override using:
+          dream2nix.buildPackage {
+            ...
+            sourceOverrides = oldSources: {
+              "${pname}" = ...;
+            };
+            ...
+          };
+        ''
+        else source
+      ) sourcesOverridden;
     in
-      fetched;
+      fetched // {
+        fetchedSources = sourcesEnsuredOverridden;
+      };
 
 
-  # automatically build package defined by generic lock
+  # build package defined by dream.lock
+  # TODO: rename to riseAndShine
   buildPackage = 
     {
-      genericLock,
-      builder ? findBuilder (parseLock genericLock),
-      fetcher ? findFetcher (parseLock genericLock)
+      dreamLock,
+      builder ? findBuilder (parseLock dreamLock),
+      fetcher ? findFetcher (parseLock dreamLock),
+      sourceOverrides ? oldSources: {},
+      allowBuiltinFetchers ? true,
     }@args:
     let
-      # is generic lock is a file, read and parse it
-      genericLock' = (parseLock genericLock);
+      # if generic lock is a file, read and parse it
+      dreamLock' = (parseLock dreamLock);
     in
     builder {
-      genericLock = genericLock';
+      dreamLock = dreamLock';
       fetchedSources = (fetchSources args).fetchedSources;
     };
    
