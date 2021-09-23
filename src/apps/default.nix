@@ -1,28 +1,19 @@
 {
   pkgs,
 
+  callPackage,
   externalSources,
   location,
   translators,
   ...
 }:
-let
-  callPackage = pkgs.callPackage;
-
-  cliPython = pkgs.python3.withPackages (ps: [ ps.networkx ]);
-in
 {
 
   # the unified translator cli
-  cli = callPackage ({ writeScript, ... }:
-    writeScript "cli" ''
-      export d2nExternalSources=${externalSources}
+  cli = callPackage (import ./cli) {};
 
-      translatorsJsonFile=${translators.translatorsJsonFile} \
-      dream2nixSrc=${../.} \
-        ${cliPython}/bin/python ${./cli.py} "$@"
-    ''
-  ) {};
+  # the contribute cli
+  contribute = callPackage (import ./contribute) {};
 
   # install the framework to a specified location by copying the code
   install = callPackage ({ writeScript, }:

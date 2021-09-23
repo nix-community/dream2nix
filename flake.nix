@@ -41,16 +41,14 @@
 
         defaultApp = forAllSystems (system: self.apps."${system}".cli);
 
-        apps = forAllSystems (system: {
-          cli = {
-            "type" = "app";
-            "program" = builtins.toString (dream2nixFor."${system}".apps.cli);
-          };
-          install = {
-            "type" = "app";
-            "program" = builtins.toString (dream2nixFor."${system}".apps.install);
-          };
-        });
+        apps = forAllSystems (system:
+          lib.mapAttrs (appName: app:
+            {
+              type = "app";
+              program = builtins.toString app;
+            }
+          ) dream2nixFor."${system}".apps
+        );
 
         devShell = forAllSystems (system: nixpkgsFor."${system}".mkShell {
           buildInputs = with nixpkgsFor."${system}"; [

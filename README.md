@@ -7,10 +7,11 @@ It focuses on the following aspects:
   - Nixpkgs Compatibility (not enforcing IFD)
   - Code de-duplication across 2nix tools
   - Code de-duplication in nixpkgs
-  - Risk free opt-in FOD fetching
+  - Risk free opt-in FOD fetching (no reproducibility issues)
   - Common UI across 2nix tools
   - Reduce effort to develop new 2nix solutions
   - Exploration and adoption of new nix features
+  - Simplified updating of packages
 
 ### Motivation
 2nix tools, or in other words, tools converting instructions of other build systems to nix build instructions, are an important part of the nix/nixos ecosystem. These tools make packaging workflows easier and often allow to manage complexity that would be hard or impossible to manage without.

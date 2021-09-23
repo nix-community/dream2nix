@@ -18,6 +18,8 @@ let
     inherit callPackage;
     inherit externals;
     inherit externalSources;
+    inherit location;
+    inherit translators;
     inherit utils;
   });
 
@@ -28,12 +30,8 @@ let
 
   config = builtins.fromJSON (builtins.readFile ./config.json);
 
-in
-
-rec {
-
   # apps for CLI and installation
-  apps = callPackage ./apps { inherit location translators; };
+  apps = callPackage ./apps {};
 
   # builder implementaitons for all subsystems
   builders = callPackage ./builders {};
@@ -44,12 +42,17 @@ rec {
   };
 
   # the translator modules and utils for all subsystems
-  translators = callPackage ./translators { inherit location; };
+  translators = callPackage ./translators {};
 
 
   # the location of the dream2nix framework for self references (update scripts, etc.)
   location = ./.;
 
+in
+
+rec {
+
+  inherit apps builders fetchers location translators;
 
   # automatically find a suitable builder for a given generic lock
   findBuilder = dreamLock:
