@@ -46,7 +46,7 @@
       -r ''${inputFiles/$'\n'/$' -r '}
 
     # generate the generic lock from the downloaded list of files
-    $tmpBuild/python/bin/python ${./generate-generic-lock.py} $tmp $jsonInput
+    $tmpBuild/python/bin/python ${./generate-dream-lock.py} $tmp $jsonInput
 
     rm -rf $tmp $tmpBuild
   '';
