@@ -6,5 +6,9 @@
   "inputFiles": [
     "./a/b/c/requirements.txt",
     "./a/b/c/requirements-dev.txt"
+  ],
+
+  "outputFile": [
+    "./a/b/c/dream.lock"
   ]
 }
