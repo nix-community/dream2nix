@@ -7,6 +7,7 @@
   externals,
   location,
   utils,
+  ...
 }: 
 let
 
