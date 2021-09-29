@@ -262,7 +262,7 @@ def parse_args():
   list_parser.set_defaults(func=list_translators)
 
 
-  # PARSER FOR TRNASLATOR
+  # PARSER FOR TRANSLATOR
 
   translate_parser = sub.add_parser(
     "translate",
@@ -280,7 +280,7 @@ def parse_args():
 
   translate_parser.add_argument(
     "-o", "--output",
-    help="output file/directory for the generic lock",
+    help="output file/directory for the dream.lock",
     default="./dream.lock"
   )
 
