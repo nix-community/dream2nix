@@ -79,7 +79,6 @@
     };
 
     main = {
-      default = "";
       description = "name of the main package";
       examples = [
         "some-package"
