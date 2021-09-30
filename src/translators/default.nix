@@ -45,7 +45,7 @@ let
   # directory names of a given directory
   dirNames = dir: lib.attrNames (lib.filterAttrs (name: type: type == "directory") (builtins.readDir dir));
 
-  # wrapPureTranslator
+  # adds a translateBin to a pure translator
   wrapPureTranslator = translatorAttrPath:
     let
       bin = pkgs.writeScriptBin "translate" ''
@@ -84,93 +84,28 @@ let
     )
   );
 
-  # json file exposing all existing translators to CLI including their special args
-  translatorsJsonFile =
-    let
-      data = lib.mapAttrsRecursiveCond
-        (as: !(as ? "translateBin"))
-        (k: v:
-          v.specialArgs or {}
-        )
-        translators;
-    in
-    pkgs.writeText "translators.json" (builtins.toJSON data);
+  # flat list of all translators
+  translatorsList = lib.collect (v: v ? translateBin) translators;
 
-  # filter translators by compatibility for the given input paths
-  compatibleTranslators =
+  # json file exposing all existing translators to CLI including their special args
+  translatorsForInput = utils.makeCallableViaEnv (
     {
       inputDirectories,
       inputFiles,
-      translators,
-    }:
-    let
-      compatible = 
-        lib.mapAttrs (subsystem: types:
-          lib.mapAttrs (type: translators_:
-            lib.filterAttrs (name: translator:
-              translator ? compatiblePaths
-              &&
-                translator.compatiblePaths { inherit inputDirectories inputFiles; }
-                == { inherit inputDirectories inputFiles; }
-            ) translators_
-          ) types
-        ) translators;
-    in
-      # purge empty attrsets
-      lib.filterAttrsRecursive (k: v: v != {}) (lib.filterAttrsRecursive (k: v: v != {}) compatible);
-
-  # reduce translators by a given selector
-  # selector examples:  
-  #  - "python"
-  #  - "python.impure"
-  #  - "python.impure.pip"
-  reduceTranslatorsBySelector = selector: translators_:
-    let
-      split = lib.splitString "." (lib.removeSuffix "." selector);
-      selectedSubsystems = if split != [ "" ] then [ (lib.elemAt split 0) ] else buildSystems;
-      selectedTypes = if lib.length split > 1 then [ (lib.elemAt split 1) ] else translatorTypes;
-      selectedName = if lib.length split > 2 then lib.elemAt split 2 else null;
-      compatible =
-        lib.mapAttrs (subsystem: types:
-          lib.mapAttrs (type: translators:
-            lib.filterAttrs (name: translator:
-              lib.elem subsystem selectedSubsystems
-              && lib.elem type selectedTypes
-              && lib.elem selectedName [ name null ]
-            ) translators
-          ) types
-        ) translators_;
-    in
-      # purge empty attrsets
-      lib.filterAttrsRecursive (k: v: v != {}) (lib.filterAttrsRecursive (k: v: v != {}) compatible);
-
-
-  # return the correct translator bin for the given input paths
-  selectTranslator = utils.makeCallableViaEnv (
-    {
-      selector,  # like 'python.impure' or 'python.impure.pip'
-      inputDirectories,  # input paths to translate
-      inputFiles,  # input paths to translate
-      ...
-    }:
-    let
-      selectedTranslators = reduceTranslatorsBySelector selector translators;
-      compatTranslators = compatibleTranslators {
-        inherit inputDirectories inputFiles;
-        translators = selectedTranslators;
-      };
-    in
-      if selectedTranslators == {} then
-        throw "The selector '${selector}' does not select any known translators"
-      else if compatTranslators == {} then
-        throw ''
-          Could not find any translator which is compatible to the given inputs:
-            - ${builtins.concatStringsSep "\n  - " (inputDirectories ++ inputFiles)}
-        ''
-      else
-        lib.head (lib.attrValues (lib.head (lib.attrValues (lib.head (lib.attrValues compatTranslators)))))
+    }@args:
+    lib.forEach translatorsList
+      (t: {
+        inherit (t)
+          name
+          specialArgs
+          subsystem
+          type
+        ;
+        compatible = t.compatiblePaths args == args;
+      })
   );
 
+  # pupulates a translators special args with defaults
   getSpecialArgsDefaults = specialArgsDef:
     lib.mapAttrs
       (name: def:
@@ -181,17 +116,7 @@ let
       )
       specialArgsDef;
 
-  selectTranslatorJSON = args:
-    let
-      translator = (selectTranslator args);
-      data = {
-        SpecialArgsDefaults = getSpecialArgsDefaults (translator.specialArgs or {});
-        inherit (translator) subsystem type name;
-      };
-    in
-      builtins.toJSON data;
-
 in
 {
-  inherit translators translatorsJsonFile selectTranslatorJSON;
+  inherit translators translatorsForInput;
 }

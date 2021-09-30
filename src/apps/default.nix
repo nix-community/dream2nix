@@ -11,6 +11,7 @@
 
   # the unified translator cli
   cli = callPackage (import ./cli) {};
+  cli2 = callPackage (import ./cli2) {};
 
   # the contribute cli
   contribute = callPackage (import ./contribute) {};
