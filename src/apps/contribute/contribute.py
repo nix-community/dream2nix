@@ -10,7 +10,7 @@ dream2nix_src = "./src"
 class ContributeCommand(Command):
 
     description = (
-        "Creates a basic <comment>pyproject.toml</> file in the current directory."
+        "Add a new module to dream2nix by initializing a template"
     )
 
     name = "contribute"
@@ -32,9 +32,6 @@ class ContributeCommand(Command):
 
 
     def handle(self):
-        module = self.option('module')
-        print(f"module: {module}")
-
         if self.io.is_interactive():
             self.line("")
             self.line(
