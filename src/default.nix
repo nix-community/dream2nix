@@ -12,10 +12,10 @@
 
 let
 
-  utils = callPackage ./utils.nix {};
+  utils = pkgs.callPackage ./utils.nix {};
 
-  callPackage = f: args: pkgs.callPackage f (args // {
-    inherit callPackage;
+  callPackageDream = f: args: pkgs.callPackage f (args // {
+    inherit callPackageDream;
     inherit externals;
     inherit externalSources;
     inherit location;
@@ -31,18 +31,18 @@ let
   config = builtins.fromJSON (builtins.readFile ./config.json);
 
   # apps for CLI and installation
-  apps = callPackage ./apps {};
+  apps = callPackageDream ./apps {};
 
   # builder implementaitons for all subsystems
-  builders = callPackage ./builders {};
+  builders = callPackageDream ./builders {};
 
   # fetcher implementations
-  fetchers = callPackage ./fetchers {
+  fetchers = callPackageDream ./fetchers {
     inherit (config) allowBuiltinFetchers;
   };
 
   # the translator modules and utils for all subsystems
-  translators = callPackage ./translators {};
+  translators = callPackageDream ./translators {};
 
 
   # the location of the dream2nix framework for self references (update scripts, etc.)

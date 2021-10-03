@@ -1,5 +1,5 @@
 {
-  callPackage,
+  callPackageDream,
   ...
 }:
 {
@@ -7,14 +7,14 @@
 
     default = simpleBuilder;
 
-    simpleBuilder = callPackage ./python/simple-builder {};
+    simpleBuilder = callPackageDream ./python/simple-builder {};
   };
 
   nodejs =  rec {
 
     default = node2nix;
 
-    node2nix = callPackage ./nodejs/node2nix {};
+    node2nix = callPackageDream ./nodejs/node2nix {};
   };
   
 }

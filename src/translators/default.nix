@@ -1,6 +1,6 @@
 {
   lib,
-  callPackage,
+  callPackageDream,
   pkgs,
 
   externalSources,
@@ -15,7 +15,7 @@ let
 
   callTranslator = subsystem: type: name: file: args: 
     let
-      translator = callPackage file (args // {
+      translator = callPackageDream file (args // {
         inherit externals;
         translatorName = name;
       });
@@ -35,15 +35,12 @@ let
       };
       
 
-  buildSystems = dirNames ./.;
+  buildSystems = utils.dirNames ./.;
 
   translatorTypes = [ "impure" "ifd" "pure" ];
 
   # every translator must provide 'bin/translate'
   translatorExec = translatorPkg: "${translatorPkg}/bin/translate";
-
-  # directory names of a given directory
-  dirNames = dir: lib.attrNames (lib.filterAttrs (name: type: type == "directory") (builtins.readDir dir));
 
   # adds a translateBin to a pure translator
   wrapPureTranslator = translatorAttrPath:
@@ -71,7 +68,7 @@ let
 
   # attrset of: subsystem -> translator-type -> (function subsystem translator-type)
   mkTranslatorsSet = function:
-    lib.genAttrs (dirNames ./.) (subsystem:
+    lib.genAttrs (utils.dirNames ./.) (subsystem:
       lib.genAttrs
         (lib.filter (dir: builtins.pathExists (./. + "/${subsystem}/${dir}")) translatorTypes)
         (transType: function subsystem transType)
@@ -79,7 +76,7 @@ let
 
   # attrset of: subsystem -> translator-type -> translator
   translators = mkTranslatorsSet (subsystem: type:
-    lib.genAttrs (dirNames (./. + "/${subsystem}/${type}")) (translatorName:
+    lib.genAttrs (utils.dirNames (./. + "/${subsystem}/${type}")) (translatorName:
       callTranslator subsystem type translatorName (./. + "/${subsystem}/${type}/${translatorName}") {}
     )
   );

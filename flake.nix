@@ -14,34 +14,34 @@
 
       supportedSystems = [ "x86_64-linux" ];
 
-      forAllSystems = f: lib.genAttrs supportedSystems (system: f system);
+      forAllSystems = f: lib.genAttrs supportedSystems (system:
+        f system (import nixpkgs { inherit system; overlays = [ self.overlay ]; })
+      );
 
-      nixpkgsFor = forAllSystems (system: import nixpkgs {
-        inherit system;
-        overlays = [ self.overlay ];
-      });
-
-      externalSourcesFor = forAllSystems (system: nixpkgsFor."${system}".runCommand "dream2nix-vendored" {} ''
+      externalSourcesFor = forAllSystems (system: pkgs: pkgs.runCommand "dream2nix-vendored" {} ''
         mkdir -p $out/{npmlock2nix,node2nix}
         cp ${npmlock2nix}/{internal.nix,LICENSE} $out/npmlock2nix/
         cp ${node2nix}/{nix/node-env.nix,LICENSE} $out/node2nix/
       '');
 
-      dream2nixFor = forAllSystems (system: import ./src rec {
-        pkgs = nixpkgsFor."${system}";
+      dream2nixFor = forAllSystems (system: pkgs: import ./src rec {
         externalSources = externalSourcesFor."${system}";
         inherit lib;
       });
 
     in
       {
-        overlay = curr: prev: {};
+        overlay = new: old: {
+          nix = old.writeScriptBin "nix" ''
+            ${new.nixUnstable}/bin/nix --option experimental-features "nix-command flakes" "$@"
+          '';
+        };
 
         lib.dream2nix = dream2nixFor;
 
-        defaultApp = forAllSystems (system: self.apps."${system}".cli);
+        defaultApp = forAllSystems (system: pkgs: self.apps."${system}".cli);
 
-        apps = forAllSystems (system:
+        apps = forAllSystems (system: pkgs:
           lib.mapAttrs (appName: app:
             {
               type = "app";
@@ -50,8 +50,8 @@
           ) dream2nixFor."${system}".apps
         );
 
-        devShell = forAllSystems (system: nixpkgsFor."${system}".mkShell {
-          buildInputs = with nixpkgsFor."${system}"; [
+        devShell = forAllSystems (system: pkgs: pkgs.mkShell {
+          buildInputs = with pkgs; [
             cntr
             nixUnstable
           ];
