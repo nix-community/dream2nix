@@ -1,7 +1,7 @@
 {
   pkgs,
 
-  callPackage,
+  callPackageDream,
   externalSources,
   location,
   translators,
@@ -10,14 +10,14 @@
 {
 
   # the unified translator cli
-  cli = callPackage (import ./cli) {};
-  cli2 = callPackage (import ./cli2) {};
+  cli = callPackageDream (import ./cli) {};
+  cli2 = callPackageDream (import ./cli2) {};
 
   # the contribute cli
-  contribute = callPackage (import ./contribute) {};
+  contribute = callPackageDream (import ./contribute) {};
 
   # install the framework to a specified location by copying the code
-  install = callPackage ({ writeScript, }:
+  install = callPackageDream ({ writeScript, }:
     writeScript
       "install"
       ''
