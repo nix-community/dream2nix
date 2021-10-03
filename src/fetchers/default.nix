@@ -35,6 +35,19 @@ rec {
   fetchViaShortcut = shortcut:
     let
 
+      checkArgs = fetcherName: args:
+        let
+          fetcher = fetchers."${fetcherName}";
+          unknownArgNames = lib.filter (argName: ! lib.elem argName fetcher.inputs) (lib.attrNames args);
+          missingArgNames = lib.filter (inputName: ! args ? "${inputName}") fetcher.inputs;
+        in
+          if lib.length unknownArgNames > 0 then
+            throw "Received unknown arguments for fetcher '${fetcherName}': ${b.toString unknownArgNames}"
+          else if lib.length missingArgNames > 0 then
+            throw "Missing arguments for fetcher '${fetcherName}': ${b.toString missingArgNames}"
+          else
+            args;
+
       fetchViaHttpUrl = 
         let
           fetcher = fetchers.fetchurl;
@@ -60,7 +73,7 @@ rec {
           ));
           fetcher = fetchers.git;
           args = params // { inherit url; };
-          fetcherOutputs = fetcher.outputs args;
+          fetcherOutputs = fetcher.outputs (checkArgs "git" args);
         in
           rec {
             hash = fetcherOutputs.calcHash "sha256";

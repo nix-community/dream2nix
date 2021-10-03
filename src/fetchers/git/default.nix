@@ -17,16 +17,28 @@ in
     "rev"
   ];
 
-  outputs = { url, ref ? null, rev ? null, ... }@inp: 
-    if ref == null && rev == null then
-      throw "At least 'rev' or 'ref' must be specified for fetcher 'git'"
-    else if rev != null && ! (builtins.match "[a-f0-9]*" rev) then
-      throw "Argument 'rev' for fetcher git must be a sha1 hash. Try using 'ref' instead"
-    else if ref != null && b.match "refs/(heads|tags)/.*" ref == null then
-      throw ''ref must be of format "refs/heads/branch-name" or "refs/tags/tag-name"''
+  versionField = "rev";
+
+  outputs = { url, rev }@inp:
+    if b.match "refs/(heads|tags)/.*" rev == null && builtins.match "[a-f0-9]*" rev == null then
+      throw ''rev must either be a sha1 hash or "refs/heads/branch-name" or "refs/tags/tag-name"''
     else
     let
+
       b = builtins;
+
+      ref =
+        if b.match "refs/(heads|tags)/.*" inp.rev != null then
+          inp.rev
+        else
+          null;
+
+      rev =
+        if b.match "refs/(heads|tags)/.*" inp.rev != null then
+          null
+        else
+          inp.rev;
+  
       refAndRev =
         (lib.optionalAttrs (ref != null) {
           inherit ref;
@@ -35,6 +47,7 @@ in
         (lib.optionalAttrs (rev != null) {
           inherit rev;
         });
+
     in
     {
 
