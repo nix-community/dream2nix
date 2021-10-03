@@ -1,7 +1,9 @@
 {
+  coreutils,
   lib,
   nix,
   runCommand,
+  writeScriptBin,
   ...
 }:
 let
@@ -59,5 +61,16 @@ rec {
       '';
     in
       b.readFile hashFile;
+
+  writePureShellScript = availablePrograms: script: writeScriptBin "run" ''
+    export PATH="${lib.makeBinPath availablePrograms}"
+    tmpdir=$(${coreutils}/bin/mktemp -d)
+    cd $tmpdir
+
+    ${script}
+
+    cd
+    ${coreutils}/bin/rm -rf $tmpdir
+  '';
 
 }

@@ -41,9 +41,11 @@ let
     inherit (config) allowBuiltinFetchers;
   };
 
+  # updater modules to find newest package versions
+  finders = callPackageDream ./finders {};
+
   # the translator modules and utils for all subsystems
   translators = callPackageDream ./translators {};
-
 
   # the location of the dream2nix framework for self references (update scripts, etc.)
   location = ./.;
@@ -52,7 +54,7 @@ in
 
 rec {
 
-  inherit apps builders fetchers location translators;
+  inherit apps builders fetchers finders location translators;
 
   # automatically find a suitable builder for a given generic lock
   findBuilder = dreamLock:
