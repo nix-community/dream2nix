@@ -14,6 +14,8 @@
     "rev"
   ];
 
+  versionField = "rev";
+
   outputs = { owner, repo, rev, ... }@inp: 
     let
       b = builtins;
