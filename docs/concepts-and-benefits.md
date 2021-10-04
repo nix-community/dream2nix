@@ -39,7 +39,7 @@ Common problems that apply to many 2nix solutions can be solved once by the fram
 Essential components like package update scripts or fetching and override logic are provided by the dream2nix framework and are stored only once in the source tree instead of several times.
 
 ### Risk free opt-in FOD fetching
-Optionally, to save more storag space, individual hashes for source can be ommited and a single large FOD used instead.
+Optionally, to save more storage space, individual hashes for source can be ommited and a single large FOD used instead.
 Due to a unified minimalistic fetching layer the risk of FOD hash breakages should be very low.
 
 ### Common UI across many 2nix solutions
