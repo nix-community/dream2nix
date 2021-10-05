@@ -19,12 +19,12 @@
     let
       parsed = externals.npmlock2nix.readLockfile (builtins.elemAt inputFiles 0);
 
-      parseGithubDepedency = dependency:
+      parseGithubDependency = dependency:
         externals.npmlock2nix.parseGitHubRef dependency.version;
 
       getVersion = dependency:
         if dependency ? from && dependency ? version then
-          builtins.substring 0 8 (parseGithubDepedency dependency).rev
+          builtins.substring 0 8 (parseGithubDependency dependency).rev
         else
           dependency.version;
 
