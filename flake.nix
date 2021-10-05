@@ -5,23 +5,25 @@
     nixpkgs.url = "nixpkgs/nixos-unstable";
     node2nix = { url = "github:svanderburg/node2nix"; flake = false; };
     npmlock2nix = { url = "github:nix-community/npmlock2nix"; flake = false; };
+    nix-parsec = { url = "github:nprindle/nix-parsec"; flake = false; };
   };
 
-  outputs = { self, nixpkgs, node2nix, npmlock2nix }:
+  outputs = { self, nix-parsec, nixpkgs, node2nix, npmlock2nix }:
     let
 
       lib = nixpkgs.lib;
 
-      supportedSystems = [ "x86_64-linux" ];
+      supportedSystems = [ "x86_64-linux" "x86_64-darwin" ];
 
       forAllSystems = f: lib.genAttrs supportedSystems (system:
         f system (import nixpkgs { inherit system; overlays = [ self.overlay ]; })
       );
 
       externalSourcesFor = forAllSystems (system: pkgs: pkgs.runCommand "dream2nix-vendored" {} ''
-        mkdir -p $out/{npmlock2nix,node2nix}
+        mkdir -p $out/{npmlock2nix,node2nix,nix-parsec}
         cp ${npmlock2nix}/{internal.nix,LICENSE} $out/npmlock2nix/
         cp ${node2nix}/{nix/node-env.nix,LICENSE} $out/node2nix/
+        cp ${nix-parsec}/{parsec,lexer}.nix $out/nix-parsec/
       '');
 
       dream2nixFor = forAllSystems (system: pkgs: import ./src rec {
@@ -52,10 +54,7 @@
         );
 
         devShell = forAllSystems (system: pkgs: pkgs.mkShell {
-          buildInputs = with pkgs; [
-            cntr
-            nixUnstable
-          ];
+          buildInputs = with pkgs; [ nixUnstable ] ++ lib.optionals stdenv.isLinux [ cntr ];
           shellHook = ''
             export NIX_PATH=nixpkgs=${nixpkgs}
             export d2nExternalSources=${externalSourcesFor."${system}"}

@@ -1,5 +1,21 @@
 {
   "nodes": {
+    "nix-parsec": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1614150306,
+        "narHash": "sha256-h5fZgIhwvekg5WTNDdrV5EJ4zxXvlSqITmPVuz/OM+w=",
+        "owner": "nprindle",
+        "repo": "nix-parsec",
+        "rev": "a28e73fce98227cc46edfdbb8518697c0982e034",
+        "type": "github"
+      },
+      "original": {
+        "owner": "nprindle",
+        "repo": "nix-parsec",
+        "type": "github"
+      }
+    },
     "nixpkgs": {
       "locked": {
         "lastModified": 1631015389,
@@ -49,6 +65,7 @@
     },
     "root": {
       "inputs": {
+        "nix-parsec": "nix-parsec",
         "nixpkgs": "nixpkgs",
         "node2nix": "node2nix",
         "npmlock2nix": "npmlock2nix"
