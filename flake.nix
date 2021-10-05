@@ -12,7 +12,7 @@
 
       lib = nixpkgs.lib;
 
-      supportedSystems = [ "x86_64-linux" ];
+      supportedSystems = [ "x86_64-linux" "x86_64-darwin" ];
 
       forAllSystems = f: lib.genAttrs supportedSystems (system: f system);
 
