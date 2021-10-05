@@ -5,7 +5,7 @@
 
   externalSources,
   externals,
-  location,
+  dream2nixWithExternals,
   utils,
   ...
 }: 
@@ -50,11 +50,10 @@ let
 
         jsonInputFile=$(realpath $1)
         outputFile=$(${pkgs.jq}/bin/jq '.outputFile' -c -r $jsonInputFile)
-        export d2nExternalSources=${externalSources}
 
         nix eval --impure --raw --expr "
           builtins.toJSON (
-            (import ${location} {}).translators.translators.${
+            (import ${dream2nixWithExternals} {}).translators.translators.${
               lib.concatStringsSep "." translatorAttrPath
             }.translate 
               (builtins.fromJSON (builtins.readFile '''$1'''))
@@ -85,7 +84,7 @@ let
   translatorsList = lib.collect (v: v ? translateBin) translators;
 
   # json file exposing all existing translators to CLI including their special args
-  translatorsForInput = utils.makeCallableViaEnv (
+  translatorsForInput =
     {
       inputDirectories,
       inputFiles,
@@ -99,8 +98,7 @@ let
           type
         ;
         compatible = t.compatiblePaths args == args;
-      })
-  );
+      });
 
   # pupulates a translators special args with defaults
   getSpecialArgsDefaults = specialArgsDef:

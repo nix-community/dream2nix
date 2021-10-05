@@ -18,8 +18,8 @@
   fetchedSources = lib.mapAttrs (pname: source:
     if source.type == "unknown" then
       "unknown"
-    else if fetchers ? "${source.type}" then
-      fetchSource source
+    else if fetchers.fetchers ? "${source.type}" then
+      fetchSource { inherit source; }
     else throw "unsupported source type '${source.type}'"
   ) sources;
 }

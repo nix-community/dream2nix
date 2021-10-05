@@ -9,7 +9,7 @@ from cleo.helpers import option
 
 import networkx as nx
 
-dream2nix_src = "./src"
+dream2nix_src = os.environ.get("dream2nixSrc")
 
 
 
@@ -25,9 +25,9 @@ class PackageCommand(Command):
     option(
       "source",
       None,
-      "source of the package",
+      "source of the package, can be a path or flake-like spec",
       flag=False,
-      multiple=True
+      multiple=False
     ),
     option("translator", None, "which translator to use", flag=False),
     option("output", None, "output file/directory for the dream.lock", flag=False),
@@ -59,6 +59,24 @@ class PackageCommand(Command):
       )
     }
 
+    # ensure output directory
+    output = self.option("output")
+    if not output:
+      output = './.'
+    if not os.path.isdir(output):
+      os.mkdir(output)
+    existingFiles = set(os.listdir(output))
+    if any(f in existingFiles for f in ('default.nix', 'dream.lock')):
+      print(
+        f"output directory {output} already contains a default.nix "
+        "or dream.lock. Delete first!",
+        file=sys.stderr,
+      )
+      exit(1)
+    output = os.path.realpath(output)
+    outputDreamLock = f"{output}/dream.lock"
+    outputDefaultNix = f"{output}/default.nix"
+
     # verify source
     source = self.option("source")
     if not source:
@@ -67,18 +85,19 @@ class PackageCommand(Command):
         f"Source not specified. Defaulting to current directory: {source}",
         file=sys.stderr,
       )
-    # check if source path exists
-    if not os.path.exists(source):
-      raise print(f"Input path '{path}' does not exist", file=sys.stdout)
-      exit(1)
-
-    # determine output file
-    output = self.option("output")
-    if not output:
-      output = './dream.lock'
-    if os.path.isdir(output):
-      output = f"{output}/dream.lock"
-    output = os.path.realpath(output)
+    # check if source is valid fetcher spec
+    sourceSpec = {}
+    if source.partition(':')[0] in os.environ.get("fetcherNames", None).split():
+      print(f"fetching source for '{source}'")
+      sourceSpec =\
+        callNixFunction("fetchers.translateShortcut", shortcut=source)
+      source =\
+        buildNixFunction("fetchers.fetchShortcut", shortcut=source)
+    else:
+      # check if source path exists
+      if not os.path.exists(source):
+        raise print(f"Input path '{path}' does not exist", file=sys.stdout)
+        exit(1)
 
     # select translator
     translatorsSorted = sorted(
@@ -93,14 +112,14 @@ class PackageCommand(Command):
       chosen = self.choice(
         'Select translator',
         list(map(
-          lambda t: f"{t['subsystem']}.{t['type']}.{t['name']}",
+          lambda t: f"{t['subsystem']}.{t['type']}.{t['name']}{'  (compatible)' if t['compatible'] else ''}",
           translatorsSorted
         )),
         0
       )
       translator = chosen
     translator = list(filter(
-      lambda t: [t['subsystem'], t['type'], t['name']] == translator.split('.'),
+      lambda t: [t['subsystem'], t['type'], t['name']] == translator.split('  (')[0].split('.'),
       translatorsSorted,
     ))[0]
 
@@ -151,18 +170,13 @@ class PackageCommand(Command):
     translator_input = dict(
       inputFiles=[],
       inputDirectories=[source],
-      outputFile=output,
+      outputFile=outputDreamLock,
     )
     translator_input.update(specified_extra_args)
 
-
-    # remove output file if exists
-    if os.path.exists(output):
-      os.remove(output)
-
     # build the translator bin
     t = translator
-    translator_path = buildNixDerivation(
+    translator_path = buildNixAttribute(
       f"translators.translators.{t['subsystem']}.{t['type']}.{t['name']}.translateBin"
     )
     
@@ -177,16 +191,31 @@ class PackageCommand(Command):
       )
     
     # raise error if output wasn't produced
-    if not os.path.isfile(output):
+    if not os.path.isfile(outputDreamLock):
       raise Exception(f"Translator failed to create dream.lock")
 
     # read produced lock file
-    with open(output) as f:
+    with open(outputDreamLock) as f:
       lock = json.load(f)
     
     # write translator information to lock file
-    lock['generic']['translatedBy'] = f"{subsystem}.{trans_type}.{trans_name}"
+    lock['generic']['translatedBy'] = f"{t['subsystem']}.{t['type']}.{t['name']}"
     lock['generic']['translatorParams'] = " ".join(sys.argv[2:])
+
+    # add main package source
+    mainPackage = lock['generic']['mainPackage']
+    if mainPackage:
+      mainSource = sourceSpec.copy()
+      if not mainSource:
+        mainSource = dict(
+          type="unknown",
+          version="unknown",
+        )
+      for field in ('versionField',):
+        if field in mainSource:
+          del mainSource[field]
+      mainSource['version'] = sourceSpec[sourceSpec['versionField']]
+      lock['sources'][mainPackage] = mainSource
 
     # clean up dependency graph
     # remove empty entries
@@ -224,21 +253,21 @@ class PackageCommand(Command):
     lock['generic']['dependencyCyclesRemoved'] = True
 
     # calculate combined hash if --combined was specified
-    if args.combined:
+    if self.option('combined'):
 
       print("Building FOD of combined sources to retrieve output hash")
 
       # remove hashes from lock file and init sourcesCombinedHash with emtpy string
       strip_hashes_from_lock(lock)
       lock['generic']['sourcesCombinedHash'] = ""
-      with open(output, 'w') as f:
+      with open(outputDreamLock, 'w') as f:
         json.dump(lock, f, indent=2)
 
       # compute FOD hash of combined sources
       proc = sp.run(
         [
           "nix", "build", "--impure", "-L", "--expr",
-          f"(import {dream2nix_src} {{}}).fetchSources {{ dreamLock = {output}; }}"
+          f"(import {dream2nix_src} {{}}).fetchSources {{ dreamLock = {outputDreamLock}; }}"
         ],
         capture_output=True,
       )
@@ -256,10 +285,20 @@ class PackageCommand(Command):
       lock['generic']['sourcesCombinedHash'] = hash
     
     # re-write dream.lock
-    with open(output, 'w') as f:
+    with open(outputDreamLock, 'w') as f:
       json.dump(order_dict(lock), f, indent=2)
 
-    print(f"Created {output}")
+    # create default.nix
+    template = callNixFunction(
+      'apps.apps.cli2.templateDefaultNix',
+      dream2nixLocationRelative=os.path.relpath(dream2nix_src, output)
+    )
+    # with open(f"{dream2nix_src}/apps/cli2/templateDefault.nix") as template:
+    with open(outputDefaultNix, 'w') as defaultNix:
+      defaultNix.write(template)
+
+    print(f"Created {output}/{{dream.lock,default.nix}}")
+
 
 
 def callNixFunction(function_path, **kwargs):
@@ -274,24 +313,59 @@ def callNixFunction(function_path, **kwargs):
       [
         "nix", "eval", "--impure", "--raw", "--expr",
         f'''
-          builtins.toJSON (
-            (import {dream2nix_src} {{}}).{function_path} {{}}
-          )
+          let
+            d2n = (import {dream2nix_src} {{}});
+          in
+            builtins.toJSON (
+              (d2n.utils.makeCallableViaEnv d2n.{function_path}) {{}}
+            )
         ''',
       ],
       capture_output=True,
       env=env
     )
   if proc.returncode:
-    print(f"Failed calling '{function_path}'", file=sys.stderr)
+    print(f"Failed calling nix function '{function_path}'", file=sys.stderr)
     print(proc.stderr.decode(), file=sys.stderr)
     exit(1)
 
-  # parse data for auto selected translator
+  # parse result data
   return json.loads(proc.stdout)
 
 
-def buildNixDerivation(attribute_path):
+def buildNixFunction(function_path, **kwargs):
+  with tempfile.NamedTemporaryFile("w") as input_json_file:
+    json.dump(dict(**kwargs), input_json_file, indent=2)
+    input_json_file.seek(0) # flushes write cache
+    env = os.environ.copy()
+    env.update(dict(
+      FUNC_ARGS=input_json_file.name
+    ))
+    proc = sp.run(
+      [
+        "nix", "build", "--impure", "-o", "tmp-result", "--expr",
+        f'''
+          let
+            d2n = (import {dream2nix_src} {{}});
+          in
+            (d2n.utils.makeCallableViaEnv d2n.{function_path}) {{}}
+        ''',
+      ],
+      capture_output=True,
+      env=env
+    )
+  if proc.returncode:
+    print(f"Failed calling nix function '{function_path}'", file=sys.stderr)
+    print(proc.stderr.decode(), file=sys.stderr)
+    exit(1)
+
+  # return store path of result
+  result = os.path.realpath("tmp-result")
+  os.remove("tmp-result")
+  return result
+
+
+def buildNixAttribute(attribute_path):
   proc = sp.run(
     [
       "nix", "build", "--impure", "-o", "tmp-result", "--expr",
@@ -316,6 +390,11 @@ def list_translators_for_source(sourcePath):
     inputFiles=[],
   )
   return list(sorted(translatorsList, key=lambda t: t['compatible']))
+
+
+def order_dict(d):
+  return {k: order_dict(v) if isinstance(v, dict) else v
+    for k, v in sorted(d.items())}
 
 
 application = Application("package")

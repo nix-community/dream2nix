@@ -26,6 +26,7 @@
 
       dream2nixFor = forAllSystems (system: pkgs: import ./src rec {
         externalSources = externalSourcesFor."${system}";
+        inherit pkgs;
         inherit lib;
       });
 
@@ -45,9 +46,9 @@
           lib.mapAttrs (appName: app:
             {
               type = "app";
-              program = builtins.toString app;
+              program = builtins.toString app.program;
             }
-          ) dream2nixFor."${system}".apps
+          ) dream2nixFor."${system}".apps.apps
         );
 
         devShell = forAllSystems (system: pkgs: pkgs.mkShell {

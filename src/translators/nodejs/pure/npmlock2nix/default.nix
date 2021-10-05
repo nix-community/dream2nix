@@ -17,7 +17,13 @@
       ...
     }:
     let
-      parsed = externals.npmlock2nix.readLockfile (builtins.elemAt inputFiles 0);
+      packageLock =
+        if inputDirectories != [] then
+          "${lib.elemAt inputDirectories 0}/package-lock.json"
+        else
+          lib.elemAt inputFiles 0;
+
+      parsed = externals.npmlock2nix.readLockfile packageLock;
 
       parseGithubDepedency = dependency:
         externals.npmlock2nix.parseGitHubRef dependency.version;
@@ -87,6 +93,8 @@
           )
           dependencies;
     in
+
+    # the dream lock
     rec {
       sources =
         let
@@ -145,9 +153,12 @@
       inputFiles,
     }@args:
     {
-      inputDirectories = [];
+      inputDirectories = lib.filter 
+        (utils.containsMatchingFile [ ''.*package-lock\.json'' ''.*package.json'' ])
+        args.inputDirectories;
+
       inputFiles =
-        lib.filter (f: builtins.match ".*(package-lock\\.json)" f != null) args.inputFiles;
+        lib.filter (f: builtins.match ''.*package-lock\.json'' f != null) args.inputFiles;
     };
 
   specialArgs = {
