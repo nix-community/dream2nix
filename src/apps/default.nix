@@ -8,11 +8,10 @@
   ...
 }:
 rec {
-  apps = { inherit cli cli2 contribute install; };
+  apps = { inherit cli contribute install; };
 
   # the unified translator cli
   cli = callPackageDream (import ./cli) {};
-  cli2 = callPackageDream (import ./cli2) {};
 
   # the contribute cli
   contribute = callPackageDream (import ./contribute) {};
