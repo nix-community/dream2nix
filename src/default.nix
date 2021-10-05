@@ -12,13 +12,16 @@
 
 let
 
+  b = builtins;
+
   utils = pkgs.callPackage ./utils.nix {};
 
   callPackageDream = f: args: pkgs.callPackage f (args // {
     inherit callPackageDream;
     inherit externals;
     inherit externalSources;
-    inherit location;
+    inherit fetchers;
+    inherit dream2nixWithExternals;
     inherit translators;
     inherit utils;
   });
@@ -48,13 +51,23 @@ let
   translators = callPackageDream ./translators {};
 
   # the location of the dream2nix framework for self references (update scripts, etc.)
-  location = ./.;
+  dream2nixWithExternals =
+    if b.pathExists (./. + "/external") then
+      ./.
+    else
+      pkgs.runCommand "dream2nix-full-src" {} ''
+        cp -r ${./.} $out
+        chmod +w $out
+        mkdir $out/external
+        ls -lah ${externalSources}
+        cp -r ${externalSources}/* $out/external/
+      '';
 
 in
 
 rec {
 
-  inherit apps builders fetchers finders location translators;
+  inherit apps builders fetchers finders dream2nixWithExternals translators utils;
 
   # automatically find a suitable builder for a given generic lock
   findBuilder = dreamLock:
@@ -123,8 +136,7 @@ rec {
 
 
   # build package defined by dream.lock
-  # TODO: rename to riseAndShine
-  buildPackage = 
+  riseAndShine = 
     {
       dreamLock,
       builder ? findBuilder (parseLock dreamLock),

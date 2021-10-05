@@ -25,14 +25,17 @@ rec {
   
   combinedFetcher = callPackageDream ./combined-fetcher.nix { inherit defaultFetcher; };
 
-  fetchSource = source:
+  fetchSource = { source, }:
     let
       fetcher = fetchers."${source.type}";
       fetcherOutputs = fetcher.outputs source;
     in
       fetcherOutputs.fetched (source.hash or null);
+  
+  fetchShortcut = { shortcut, }:
+    fetchSource { source = translateShortcut { inherit shortcut; }; };
 
-  fetchViaShortcut = shortcut:
+  translateShortcut = { shortcut, }:
     let
 
       checkArgs = fetcherName: args:
@@ -48,17 +51,19 @@ rec {
           else
             args;
 
-      fetchViaHttpUrl = 
+      translateHttpUrl = 
         let
           fetcher = fetchers.fetchurl;
           fetcherOutputs = fetchers.http.outputs { url = shortcut; };
         in
-          rec {
+          {
+            type = "fetchurl";
             hash = fetcherOutputs.calcHash "sha256";
-            fetched = fetcherOutputs.fetched hash;
+            url = shortcut;
+            versionField = fetcher.versionField;
           };
 
-      fetchViaGitShortcut =
+      translateGitShortcut =
         let
           urlAndParams = lib.elemAt (lib.splitString "+" shortcut) 1;
           splitUrlParams = lib.splitString "?" urlAndParams;
@@ -75,12 +80,14 @@ rec {
           args = params // { inherit url; };
           fetcherOutputs = fetcher.outputs (checkArgs "git" args);
         in
-          rec {
+          {
+            type = "git";
             hash = fetcherOutputs.calcHash "sha256";
-            fetched = fetcherOutputs.fetched hash;
+            inherit url;
+            versionField = fetcher.versionField;
           };
         
-      fetchViaRegularShortcut =
+      translateRegularShortcut =
         let
           splitNameParams = lib.splitString ":" (lib.removeSuffix "/" shortcut);
           fetcherName = lib.elemAt splitNameParams 0;
@@ -104,15 +111,16 @@ rec {
               Should be ${fetcherName}:${lib.concatStringsSep "/" fetcher.inputs}
             ''
           else
-            rec {
+            args // {
+              type = fetcherName;
               hash = fetcherOutputs.calcHash "sha256";
-              fetched = fetcherOutputs.fetched hash;
+              versionField = fetcher.versionField;
             };
     in
       if lib.hasPrefix "git+" (lib.head (lib.splitString ":" shortcut)) then
-        fetchViaGitShortcut
+        translateGitShortcut
       else if lib.hasPrefix "http://" shortcut || lib.hasPrefix  "https://" shortcut then
-        fetchViaHttpUrl
+        translateHttpUrl
       else
-        fetchViaRegularShortcut;
+        translateRegularShortcut;
 }
