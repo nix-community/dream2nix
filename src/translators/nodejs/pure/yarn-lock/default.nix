@@ -12,8 +12,6 @@
     {
       inputDirectories,
       inputFiles,
-
-      dev,
       ...
     }:
     let
@@ -23,19 +21,63 @@
         else
           lib.elemAt inputFiles 0;
       parser = import ./parser.nix { inherit lib; inherit (externals) nix-parsec;};
-      parsedLock = parser.parseLock yarnLock;
-      # TODO: parse input files
+      parsedLock = lib.foldAttrs (n: a: n // a) {} (parser.parseLock yarnLock).value;
+      nameFromLockName = lockName:
+        let
+          version = lib.last (lib.splitString "@" lockName);
+        in
+          lib.removeSuffix "@${version}" lockName;
+      sources = lib.mapAttrs' (dependencyName: dependencyAttrs:
+        let
+          name = nameFromLockName dependencyName;
+        in
+          lib.nameValuePair ("${name}#${dependencyAttrs.version}") (
+          if ! lib.hasInfix "@github:" dependencyName then
+            {
+              version = dependencyAttrs.version;  
+              hash = dependencyAttrs.integrity;
+              url = dependencyAttrs.resolved;
+              type = "fetchurl";
+            }
+          else
+            let
+               gitUrlInfos = lib.splitString "/" dependencyAttrs.resolved;
+            in
+            {
+              type = "github";
+              rev = lib.elemAt gitUrlInfos 6;
+              owner = lib.elemAt gitUrlInfos 3;
+              repo = lib.elemAt gitUrlInfos 4;
+            }
+          )) parsedLock;
+      dependencyGraph = lib.mapAttrs' (dependencyName: dependencyAttrs:
+      let
+        name = nameFromLockName dependencyName;
+        dependencies = dependencyAttrs.dependencies or [] ++ dependencyAttrs.optionalDependencies or [];
+        graph = lib.forEach dependencies (dependency: 
+          builtins.head (
+            lib.mapAttrsToList (name: value:
+            let
+              yarnName = "${name}@${value}";
+              version = parsedLock."${yarnName}".version;
+            in
+            "${name}#${version}"
+            ) dependency
+          )
+        );
+      in
+        lib.nameValuePair ("${name}#${dependencyAttrs.version}") graph) parsedLock;      
     in
     # TODO: produce dream lock like in /specifications/dream-lock-example.json
       
     rec {
-      sources =  true;
+      inherit sources;
 
       generic = {
         buildSystem = "nodejs";
         producedBy = translatorName;
         mainPackage = "test";
-        dependencyGraph = true;
+        inherit dependencyGraph;
         sourcesCombinedHash = null;
       };
 
@@ -57,12 +99,12 @@
       inputFiles,
     }@args:
     {
-      inputDirectories = [];
-      # TODO: insert regex here that matches valid input file names
-      # examples:
-      #   - ".*(requirements).*\\.txt"
-      #   - ".*(package-lock\\.json)"
-      inputFiles = lib.filter (f: builtins.match "# TODO: your regex" f != null) args.inputFiles;
+      inputDirectories = lib.filter 
+        (utils.containsMatchingFile [ ''.*yarn\.lock'' ''.*package.json'' ])
+        args.inputDirectories;
+
+      inputFiles =
+        lib.filter (f: builtins.match ''.*yarn\.lock'' f != null) args.inputFiles;
     };
 
 
@@ -73,25 +115,10 @@
   # String arguments contain a default value and examples. Flags do not.
   specialArgs = {
 
-    # Example: string option
-    # This will be exposed by the translate CLI command as --arg_the-answer
-    the-answer = {
-      default = "42";
-      description = "The Answer to the Ultimate Question of Life";
-      examples = [
-        "0"
-        "1234"
-      ];
-      type = "argument";
-    };
-
-    # Example: boolean option
-    # This will be exposed by the translate CLI command as --flag_example-flag
-    # The default value of boolean flags is always false
-    flat-earth = {
-      description = "Is the earth flat";
-      type = "flag";
-    };
+    # optionalDependencies = {
+    #   description = "Whether to include optional dependencies";
+    #   type = "flag";
+    # };
 
   };
 }
