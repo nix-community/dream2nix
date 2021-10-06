@@ -45,6 +45,7 @@ class PackageCommand(Command):
       flag=False,
       multiple=True
     ),
+    option("force", None, "override existing files", flag=True),
   ]
 
   def handle(self):
@@ -65,14 +66,20 @@ class PackageCommand(Command):
       output = './.'
     if not os.path.isdir(output):
       os.mkdir(output)
-    existingFiles = set(os.listdir(output))
-    if any(f in existingFiles for f in ('default.nix', 'dream.lock')):
-      print(
-        f"output directory {output} already contains a default.nix "
-        "or dream.lock. Delete first!",
-        file=sys.stderr,
-      )
-      exit(1)
+    filesToCreate = ('default.nix', 'dream.lock')
+    if self.option('force'):
+      for f in filesToCreate:
+        if os.path.isfile(f):
+          os.remove(f)
+    else:
+      existingFiles = set(os.listdir(output))
+      if any(f in existingFiles for f in filesToCreate):
+        print(
+          f"output directory {output} already contains a 'default.nix' "
+          "or 'dream.lock'. Delete first, or user '--force'.",
+          file=sys.stderr,
+        )
+        exit(1)
     output = os.path.realpath(output)
     outputDreamLock = f"{output}/dream.lock"
     outputDefaultNix = f"{output}/default.nix"
@@ -96,8 +103,9 @@ class PackageCommand(Command):
     else:
       # check if source path exists
       if not os.path.exists(source):
-        raise print(f"Input path '{path}' does not exist", file=sys.stdout)
+        print(f"Input source '{source}' does not exist", file=sys.stdout)
         exit(1)
+      source = os.path.realpath(source)
 
     # select translator
     translatorsSorted = sorted(
@@ -118,10 +126,22 @@ class PackageCommand(Command):
         0
       )
       translator = chosen
-    translator = list(filter(
-      lambda t: [t['subsystem'], t['type'], t['name']] == translator.split('  (')[0].split('.'),
-      translatorsSorted,
-    ))[0]
+      translator = list(filter(
+        lambda t: [t['subsystem'], t['type'], t['name']] == translator.split('  (')[0].split('.'),
+        translatorsSorted,
+      ))[0]
+    else:
+      translator = translator.split('.')
+      if len(translator) == 3:
+        translator = list(filter(
+          lambda t: [t['subsystem'], t['type'], t['name']] == translator,
+          translatorsSorted,
+        ))[0]
+      elif len(translator) == 1:
+        translator = list(filter(
+          lambda t:  [t['name']] == translator,
+          translatorsSorted,
+        ))[0]
 
     # raise error if any specified extra arg is unknown
     unknown_extra_args = set(specified_extra_args.keys()) - set(translator['specialArgs'].keys())
@@ -211,10 +231,11 @@ class PackageCommand(Command):
           type="unknown",
           version="unknown",
         )
-      for field in ('versionField',):
-        if field in mainSource:
-          del mainSource[field]
-      mainSource['version'] = sourceSpec[sourceSpec['versionField']]
+      else:
+        for field in ('versionField',):
+          if field in mainSource:
+            del mainSource[field]
+        mainSource['version'] = sourceSpec[sourceSpec['versionField']]
       lock['sources'][mainPackage] = mainSource
 
     # clean up dependency graph
@@ -290,8 +311,10 @@ class PackageCommand(Command):
 
     # create default.nix
     template = callNixFunction(
-      'apps.apps.cli2.templateDefaultNix',
-      dream2nixLocationRelative=os.path.relpath(dream2nix_src, output)
+      'apps.apps.cli.templateDefaultNix',
+      dream2nixLocationRelative=os.path.relpath(dream2nix_src, output),
+      dreamLock = lock,
+      sourcePathRelative = os.path.relpath(source, os.path.dirname(outputDefaultNix))
     )
     # with open(f"{dream2nix_src}/apps/cli2/templateDefault.nix") as template:
     with open(outputDefaultNix, 'w') as defaultNix:

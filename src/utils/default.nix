@@ -4,6 +4,9 @@
   nix,
   runCommand,
   writeScriptBin,
+
+  # dream2nix inputs
+  callPackageDream,
   ...
 }:
 let
@@ -11,6 +14,8 @@ let
 in
 
 rec {
+
+  readDreamLock = callPackageDream ./readDreamLock.nix {};
 
   isFile = path: (builtins.readDir (b.dirOf path))."${b.baseNameOf path}" ==  "regular";
 

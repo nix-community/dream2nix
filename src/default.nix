@@ -14,7 +14,7 @@ let
 
   b = builtins;
 
-  utils = pkgs.callPackage ./utils.nix {};
+  utils = callPackageDream ./utils {};
 
   callPackageDream = f: args: pkgs.callPackage f (args // {
     inherit callPackageDream;

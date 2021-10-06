@@ -15,11 +15,9 @@
       ...
     }:
     let
-      yarnLock =
-        if inputDirectories != [] then
-          "${lib.elemAt inputDirectories 0}/yarn.lock"
-        else
-          lib.elemAt inputFiles 0;
+      b = builtins;
+      yarnLock = "${lib.elemAt inputDirectories 0}/yarn.lock";
+      packageJSON = b.fromJSON (b.readFile "${lib.elemAt inputDirectories 0}/package.json");
       parser = import ./parser.nix { inherit lib; inherit (externals) nix-parsec;};
       parsedLock = lib.foldAttrs (n: a: n // a) {} (parser.parseLock yarnLock).value;
       nameFromLockName = lockName:
@@ -36,7 +34,7 @@
             {
               version = dependencyAttrs.version;  
               hash = dependencyAttrs.integrity;
-              url = dependencyAttrs.resolved;
+              url = lib.head (lib.splitString "#" dependencyAttrs.resolved);
               type = "fetchurl";
             }
           else
@@ -76,7 +74,7 @@
       generic = {
         buildSystem = "nodejs";
         producedBy = translatorName;
-        mainPackage = "test";
+        mainPackage = packageJSON.name;
         inherit dependencyGraph;
         sourcesCombinedHash = null;
       };
@@ -103,8 +101,7 @@
         (utils.containsMatchingFile [ ''.*yarn\.lock'' ''.*package.json'' ])
         args.inputDirectories;
 
-      inputFiles =
-        lib.filter (f: builtins.match ''.*yarn\.lock'' f != null) args.inputFiles;
+      inputFiles = [];
     };
 
 

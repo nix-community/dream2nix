@@ -49,12 +49,15 @@
       inputFiles,
     }@args:
     {
-      inputDirectories = [];
       # TODO: insert regex here that matches valid input file names
       # examples:
-      #   - ".*(requirements).*\\.txt"
-      #   - ".*(package-lock\\.json)"
-      inputFiles = lib.filter (f: builtins.match "# TODO: your regex" f != null) args.inputFiles;
+      #   - ''.*requirements.*\.txt''
+      #   - ''.*package-lock\.json''
+      inputDirectories = lib.filter 
+        (utils.containsMatchingFile [ ''TODO: regex1'' ''TODO: regex2'' ])
+        args.inputDirectories;
+      
+      inputFiles = [];
     };
 
 
@@ -65,8 +68,14 @@
   # String arguments contain a default value and examples. Flags do not.
   specialArgs = {
 
+    # Example: boolean option
+    # Flags always default to 'false' if not specified by the user
+    dev-dependenices = {
+      description = "Include dev dependencies";
+      type = "flag";
+    };
+
     # Example: string option
-    # This will be exposed by the translate CLI command as --arg_the-answer
     the-answer = {
       default = "42";
       description = "The Answer to the Ultimate Question of Life";
@@ -75,14 +84,6 @@
         "1234"
       ];
       type = "argument";
-    };
-
-    # Example: boolean option
-    # This will be exposed by the translate CLI command as --flag_example-flag
-    # The default value of boolean flags is always false
-    flat-earth = {
-      description = "Is the earth flat";
-      type = "flag";
     };
 
   };
