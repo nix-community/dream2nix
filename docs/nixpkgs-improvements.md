@@ -83,8 +83,8 @@
 #### Problem
 
 - Design issues (FOD-impurity, Maintainability, etc.) cannot be fixed easily and lead to long term suffering of maintainers.
-- Innovation often happens on individual tools and are not adapted ecosystem wide
-- New nix features will not be easily adapted as this will require updating many individual tools.
+- Innovation often happens on individual tools and are not adopted ecosystem wide
+- New nix features will not be easily adopted as this will require updating many individual tools.
 
 #### Solution
 

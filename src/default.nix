@@ -12,13 +12,16 @@
 
 let
 
-  utils = callPackage ./utils.nix {};
+  b = builtins;
 
-  callPackage = f: args: pkgs.callPackage f (args // {
-    inherit callPackage;
+  utils = pkgs.callPackage ./utils.nix {};
+
+  callPackageDream = f: args: pkgs.callPackage f (args // {
+    inherit callPackageDream;
     inherit externals;
     inherit externalSources;
-    inherit location;
+    inherit fetchers;
+    inherit dream2nixWithExternals;
     inherit translators;
     inherit utils;
   });
@@ -31,28 +34,40 @@ let
   config = builtins.fromJSON (builtins.readFile ./config.json);
 
   # apps for CLI and installation
-  apps = callPackage ./apps {};
+  apps = callPackageDream ./apps {};
 
   # builder implementaitons for all subsystems
-  builders = callPackage ./builders {};
+  builders = callPackageDream ./builders {};
 
   # fetcher implementations
-  fetchers = callPackage ./fetchers {
+  fetchers = callPackageDream ./fetchers {
     inherit (config) allowBuiltinFetchers;
   };
 
-  # the translator modules and utils for all subsystems
-  translators = callPackage ./translators {};
+  # updater modules to find newest package versions
+  finders = callPackageDream ./finders {};
 
+  # the translator modules and utils for all subsystems
+  translators = callPackageDream ./translators {};
 
   # the location of the dream2nix framework for self references (update scripts, etc.)
-  location = ./.;
+  dream2nixWithExternals =
+    if b.pathExists (./. + "/external") then
+      ./.
+    else
+      pkgs.runCommand "dream2nix-full-src" {} ''
+        cp -r ${./.} $out
+        chmod +w $out
+        mkdir $out/external
+        ls -lah ${externalSources}
+        cp -r ${externalSources}/* $out/external/
+      '';
 
 in
 
 rec {
 
-  inherit apps builders fetchers location translators;
+  inherit apps builders fetchers finders dream2nixWithExternals translators utils;
 
   # automatically find a suitable builder for a given generic lock
   findBuilder = dreamLock:
@@ -121,8 +136,7 @@ rec {
 
 
   # build package defined by dream.lock
-  # TODO: rename to riseAndShine
-  buildPackage = 
+  riseAndShine = 
     {
       dreamLock,
       builder ? findBuilder (parseLock dreamLock),

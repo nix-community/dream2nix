@@ -60,7 +60,8 @@
     }@args:
     {
       inputDirectories = [];
-      inputFiles = lib.filter (f: builtins.match ".*(requirements).*\\.txt" f != null) args.inputFiles;
+  
+      inputFiles = lib.filter (f: builtins.match ''.*requirements.*\.txt'' f != null) args.inputFiles;
     };
 
   # define special args and provide defaults
@@ -79,7 +80,6 @@
     };
 
     main = {
-      default = "";
       description = "name of the main package";
       examples = [
         "some-package"
