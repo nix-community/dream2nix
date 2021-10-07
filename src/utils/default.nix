@@ -17,6 +17,8 @@ rec {
 
   readDreamLock = callPackageDream ./readDreamLock.nix {};
 
+  readTextFile = file: lib.replaceStrings [ "\r\n" ] [ "\n" ] (b.readFile file);
+
   isFile = path: (builtins.readDir (b.dirOf path))."${b.baseNameOf path}" ==  "regular";
 
   isDir = path: (builtins.readDir (b.dirOf  path))."${b.baseNameOf path}" ==  "directory";

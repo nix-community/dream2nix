@@ -73,5 +73,5 @@ rec {
     (skipThen skipEmptyLinesAndComments
       (thenSkip (sepBy group newLine) eof));
 
-  parseLock = path: nix-parsec.parsec.runParser configFile (builtins.readFile path);
+  parseLock = text: nix-parsec.parsec.runParser configFile text;
 }

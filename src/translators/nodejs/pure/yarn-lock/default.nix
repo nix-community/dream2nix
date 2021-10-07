@@ -16,7 +16,7 @@
     }:
     let
       b = builtins;
-      yarnLock = "${lib.elemAt inputDirectories 0}/yarn.lock";
+      yarnLock = utils.readTextFile "${lib.elemAt inputDirectories 0}/yarn.lock";
       packageJSON = b.fromJSON (b.readFile "${lib.elemAt inputDirectories 0}/package.json");
       parser = import ./parser.nix { inherit lib; inherit (externals) nix-parsec;};
       tryParse = parser.parseLock yarnLock;
