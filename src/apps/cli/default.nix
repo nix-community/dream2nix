@@ -29,7 +29,12 @@ in
   templateDefaultNix =
     {
       dream2nixLocationRelative,
+      dreamLock,
+      sourcePathRelative,
     }:
+    let
+      mainPackage = dreamLock.generic.mainPackage;
+    in
     ''
       {
         dream2nix ? import ${dream2nixLocationRelative} {},
@@ -37,6 +42,11 @@ in
 
       (dream2nix.riseAndShine {
         dreamLock = ./dream.lock;
+        ${lib.optionalString (dreamLock.sources."${mainPackage}".type == "unknown") ''
+          sourceOverrides = oldSources: {
+              "${mainPackage}" = ./${sourcePathRelative};
+            };
+        ''}
       }).package.overrideAttrs (old: {
 
       })

@@ -51,7 +51,7 @@ let
         jsonInputFile=$(realpath $1)
         outputFile=$(${pkgs.jq}/bin/jq '.outputFile' -c -r $jsonInputFile)
 
-        nix eval --impure --raw --expr "
+        nix eval --show-trace --impure --raw --expr "
           builtins.toJSON (
             (import ${dream2nixWithExternals} {}).translators.translators.${
               lib.concatStringsSep "." translatorAttrPath

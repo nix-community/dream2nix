@@ -1,18 +1,23 @@
 # builder imported from node2nix
 
 {
-  externals,
-  node2nix ? externals.node2nix,
   lib,
   pkgs,
+
+  # dream2nix inputs
+  externals,
+  node2nix ? externals.node2nix,
+  utils,
   ...
 }:
 
 {
   fetchedSources,
   dreamLock,
-}:
+}@args:
 let
+  dreamLock = utils.readDreamLock { inherit (args) dreamLock; };
+
   mainPackageName = dreamLock.generic.mainPackage;
 
   nodejsVersion = dreamLock.buildSystem.nodejsVersion;

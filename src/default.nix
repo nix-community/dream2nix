@@ -14,7 +14,7 @@ let
 
   b = builtins;
 
-  utils = pkgs.callPackage ./utils.nix {};
+  utils = callPackageDream ./utils {};
 
   callPackageDream = f: args: pkgs.callPackage f (args // {
     inherit callPackageDream;
@@ -29,6 +29,10 @@ let
   externals = {
     npmlock2nix = pkgs.callPackage "${externalSources}/npmlock2nix/internal.nix" {};
     node2nix = nodejs: pkgs.callPackage "${externalSources}/node2nix/node-env.nix" { inherit nodejs; };
+    nix-parsec = rec {
+      lexer = import "${externalSources}/nix-parsec/lexer.nix" { inherit parsec; };
+      parsec = import "${externalSources}/nix-parsec/parsec.nix";
+    };
   };
 
   config = builtins.fromJSON (builtins.readFile ./config.json);
