@@ -24,5 +24,5 @@ in
 lib.recursiveUpdate
   lock
   {
-    generic.dependencyGraph."${mainPackage}" = dependencyGraph."${mainPackage}" or lib.attrNames dependencyGraph;
+    generic.dependencyGraph."${mainPackage}" = dependencyGraph."${mainPackage}" or (lib.attrNames dependencyGraph);
   }
