@@ -42,20 +42,8 @@
           name = nameFromLockName dependencyName;
         in
           lib.nameValuePair ("${name}#${dependencyAttrs.version}") (
-          if ! lib.hasInfix "@github:" dependencyName then
-            {
-              version = dependencyAttrs.version;  
-              hash = dependencyAttrs.integrity;
-              url = lib.head (lib.splitString "#" dependencyAttrs.resolved);
-              type = "fetchurl";
-            }
-          else if lib.hasInfix "@link:" dependencyName then
-            {
-              version = dependencyAttrs.version;     
-              path = lib.last (lib.splitString "@link:" dependencyName);
-              type = "path";
-            }
-          else
+          if lib.hasInfix "@github:" dependencyName
+              || lib.hasInfix "codeload.github.com/" dependencyAttrs.resolved then
             let
                gitUrlInfos = lib.splitString "/" dependencyAttrs.resolved;
             in
@@ -64,6 +52,23 @@
               rev = lib.elemAt gitUrlInfos 6;
               owner = lib.elemAt gitUrlInfos 3;
               repo = lib.elemAt gitUrlInfos 4;
+            }
+          else if lib.hasInfix "@link:" dependencyName then
+            {
+              version = dependencyAttrs.version;     
+              path = lib.last (lib.splitString "@link:" dependencyName);
+              type = "path";
+            }
+          else
+            {
+              version = dependencyAttrs.version;  
+              hash =
+                if dependencyAttrs ? integrity then
+                  dependencyAttrs.integrity
+                else
+                  throw "Missing integrity for ${dependencyName}";
+              url = lib.head (lib.splitString "#" dependencyAttrs.resolved);
+              type = "fetchurl";
             }
           )) parsedLock;
       dependencyGraph =
@@ -105,7 +110,7 @@
                 in
                   "${depName}#${dependencyAttrs.version}"
               )
-              packageJSON.dependencies;
+              (packageJSON.dependencies or {} // packageJSON.devDependencies or {});
         };
 
 

@@ -201,6 +201,7 @@ class PackageCommand(Command):
     )
     
     # dump translator arguments to json file and execute translator
+    print("Translating upstream metadata")
     with tempfile.NamedTemporaryFile("w") as input_json_file:
       json.dump(translator_input, input_json_file, indent=2)
       input_json_file.seek(0) # flushes write cache
