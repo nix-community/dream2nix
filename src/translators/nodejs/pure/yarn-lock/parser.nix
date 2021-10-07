@@ -2,7 +2,7 @@
 #
 # Load in nix repl and test, e.g.:
 #
-# nix-repl> parseConfigFile ./yarn.lock
+# nix-repl> parseLock ./yarn.lock
 # { type = "success"; value = ...; }
 
 { lib, nix-parsec }:
@@ -13,22 +13,20 @@ rec {
   inherit (nix-parsec) parsec;
 
   # Skip spaces and line comments and newlines
-  spaceComments = nix-parsec.lexer.space
-    (skipWhile1 (c: c == " " || c == "\t" || c == "\n"))
-    (nix-parsec.lexer.skipLineComment "#")
-    fail;
+  skipEmptyLinesAndComments = 
+    skipMany (alt
+      (skipWhile1 (c: c == " " || c == "\t" || c == "\n"))
+      (skipThen (string "#") (skipWhile (x: x != "\n")))
+    );
 
   charInsideQuotes = c: c != "\"";
   charOutsideQuotes = c: c != "\"" && c != "\n" && c != " " && c != "," && c != ":";
   unquotedString = takeWhile1 charOutsideQuotes;
   newLine = string "\n";
 
-  # use the nix-parsec quotedString
   quotedString = between (string "\"") (string "\"") (takeWhile1 charInsideQuotes);
 
-  # TODO add the relevant fmap to add the attributes
   version = skipThen (string "  version ") (thenSkip quotedString newLine);
-  # TODO instead of nextLine use an exact count of space and newline ?:w
   resolved = skipThen (string "  resolved ") (thenSkip quotedString newLine);
   integrity = skipThen (string "  integrity ") (thenSkip unquotedString newLine);
 
@@ -47,12 +45,14 @@ rec {
   dependencyNames = thenSkip (sepBy (alt quotedString unquotedString) (string ", ")) (string ":\n");
 
   dependencyAttrs = bind version (parsedVersion:
-    bind resolved (parsedResolved:
+    bind (optional resolved) (parsedResolved:
       bind (optional integrity) (parsedIntegrity:
         bind (optional dependencies) (parsedDependencies:
           bind (optional optionalDependencies) (parsedOptionalDependencies:
             pure (
-              { version = parsedVersion; resolved = parsedResolved; }
+              { version = parsedVersion; }
+              //
+              (if parsedResolved == [ ] then { } else { resolved = builtins.head parsedResolved; })
               //
               (if parsedIntegrity == [ ] then { } else { integrity = builtins.head parsedIntegrity; })
               //
@@ -61,6 +61,7 @@ rec {
               (if parsedOptionalDependencies == [ ] then { } else { optionalDependencies = builtins.head parsedOptionalDependencies; })
             )
           )))));
+
   namesToAttrsList = namesList: dependencyAttrs: map (dependencyName: lib.nameValuePair dependencyName dependencyAttrs) namesList;
 
   group =
@@ -69,7 +70,7 @@ rec {
         dependencyAttrs);
 
   configFile =
-    (skipThen spaceComments
+    (skipThen skipEmptyLinesAndComments
       (thenSkip (sepBy group newLine) eof));
 
   parseLock = path: nix-parsec.parsec.runParser configFile (builtins.readFile path);

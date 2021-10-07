@@ -19,7 +19,16 @@
       yarnLock = "${lib.elemAt inputDirectories 0}/yarn.lock";
       packageJSON = b.fromJSON (b.readFile "${lib.elemAt inputDirectories 0}/package.json");
       parser = import ./parser.nix { inherit lib; inherit (externals) nix-parsec;};
-      parsedLock = lib.foldAttrs (n: a: n // a) {} (parser.parseLock yarnLock).value;
+      tryParse = parser.parseLock yarnLock;
+      
+      parsedLock =
+        if tryParse.type == "success" then
+          lib.foldAttrs (n: a: n // a) {} tryParse.value
+        else
+          let
+            failureOffset = tryParse.value.offset;
+          in
+            throw "parser failed at: \n${lib.substring failureOffset (failureOffset + 50) tryParse.value.str}";
       nameFromLockName = lockName:
         let
           version = lib.last (lib.splitString "@" lockName);
@@ -36,6 +45,12 @@
               hash = dependencyAttrs.integrity;
               url = lib.head (lib.splitString "#" dependencyAttrs.resolved);
               type = "fetchurl";
+            }
+          else if lib.hasInfix "@link:" dependencyName then
+            {
+              version = dependencyAttrs.version;     
+              path = lib.last (lib.splitString "@link:" dependencyName);
+              type = "path";
             }
           else
             let
