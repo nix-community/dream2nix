@@ -77,7 +77,7 @@
                   depsExact = pdata.depsExact;
                 }]
               # handle http(s) dependency
-              else 
+              else
                 [rec {
                   name = "${pname}#${version}";
                   version = pdata.version;
@@ -125,6 +125,15 @@
         producedBy = translatorName;
         mainPackage = parsed.name;
         dependencyGraph =
+          {
+            "${parsed.name}" =
+              lib.mapAttrsToList
+                (pname: pdata: "${pname}#${getVersion pdata}")
+                (lib.filterAttrs
+                  (pname: pdata: ! (pdata.dev or false) || dev)
+                  parsed.dependencies);
+          }
+          //
           lib.listToAttrs 
             (map
               (dep: lib.nameValuePair dep.name dep.depsExact)

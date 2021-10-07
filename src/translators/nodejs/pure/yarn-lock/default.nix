@@ -20,6 +20,9 @@
       packageJSON = b.fromJSON (b.readFile "${lib.elemAt inputDirectories 0}/package.json");
       parser = import ./parser.nix { inherit lib; inherit (externals) nix-parsec;};
       tryParse = parser.parseLock yarnLock;
+
+      mainPackageName = packageJSON.name;
+      mainPackageKey = "${mainPackageName}#${packageJSON.version}";
       
       parsedLock =
         if tryParse.type == "success" then
@@ -63,25 +66,49 @@
               repo = lib.elemAt gitUrlInfos 4;
             }
           )) parsedLock;
-      dependencyGraph = lib.mapAttrs' (dependencyName: dependencyAttrs:
-      let
-        name = nameFromLockName dependencyName;
-        dependencies = dependencyAttrs.dependencies or [] ++ dependencyAttrs.optionalDependencies or [];
-        graph = lib.forEach dependencies (dependency: 
-          builtins.head (
-            lib.mapAttrsToList
-              (name: value:
-                let
-                  yarnName = "${name}@${value}";
-                  version = parsedLock."${yarnName}".version;
-                in
-                "${name}#${version}"
-              )
-              dependency
+      dependencyGraph =
+        (lib.mapAttrs'
+          (dependencyName: dependencyAttrs:
+            let
+              name = nameFromLockName dependencyName;
+              dependencies = dependencyAttrs.dependencies or [] ++ dependencyAttrs.optionalDependencies or [];
+              graph = lib.forEach dependencies (dependency: 
+                builtins.head (
+                  lib.mapAttrsToList
+                    (name: value:
+                      let
+                        yarnName = "${name}@${value}";
+                        version = parsedLock."${yarnName}".version;
+                      in
+                      "${name}#${version}"
+                    )
+                    dependency
+                )
+              );
+            in
+              lib.nameValuePair ("${name}#${dependencyAttrs.version}") graph
           )
-        );
-      in
-        lib.nameValuePair ("${name}#${dependencyAttrs.version}") graph) parsedLock;      
+          parsedLock
+        )
+        //
+        {
+          "${mainPackageName}" =
+            lib.mapAttrsToList
+              (depName: depSemVer:
+                let
+                  depYarnKey = "${depName}@${depSemVer}";
+                  dependencyAttrs =
+                    if ! parsedLock ? "${depYarnKey}" then
+                      throw "Cannot find entry for top level dependency: '${depYarnKey}'"
+                    else
+                      parsedLock."${depYarnKey}";
+                in
+                  "${depName}#${dependencyAttrs.version}"
+              )
+              packageJSON.dependencies;
+        };
+
+
     in
     # TODO: produce dream lock like in /specifications/dream-lock-example.json
       
@@ -91,7 +118,7 @@
       generic = {
         buildSystem = "nodejs";
         producedBy = translatorName;
-        mainPackage = packageJSON.name;
+        mainPackage = mainPackageName;
         inherit dependencyGraph;
         sourcesCombinedHash = null;
       };
