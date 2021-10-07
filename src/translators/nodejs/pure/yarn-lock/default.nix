@@ -28,7 +28,7 @@
           let
             failureOffset = tryParse.value.offset;
           in
-            throw "parser failed at: \n${lib.substring failureOffset (failureOffset + 50) tryParse.value.str}";
+            throw "parser failed at: \n${lib.substring failureOffset 50 tryParse.value.str}";
       nameFromLockName = lockName:
         let
           version = lib.last (lib.splitString "@" lockName);
@@ -69,13 +69,15 @@
         dependencies = dependencyAttrs.dependencies or [] ++ dependencyAttrs.optionalDependencies or [];
         graph = lib.forEach dependencies (dependency: 
           builtins.head (
-            lib.mapAttrsToList (name: value:
-            let
-              yarnName = "${name}@${value}";
-              version = parsedLock."${yarnName}".version;
-            in
-            "${name}#${version}"
-            ) dependency
+            lib.mapAttrsToList
+              (name: value:
+                let
+                  yarnName = "${name}@${value}";
+                  version = parsedLock."${yarnName}".version;
+                in
+                "${name}#${version}"
+              )
+              dependency
           )
         );
       in

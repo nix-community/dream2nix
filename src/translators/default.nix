@@ -1,8 +1,9 @@
 {
+  coreutils,
   lib,
-  callPackageDream,
   pkgs,
 
+  callPackageDream,
   externalSources,
   externals,
   dream2nixWithExternals,
@@ -48,7 +49,7 @@ let
       bin = pkgs.writeScriptBin "translate" ''
         #!${pkgs.bash}/bin/bash
 
-        jsonInputFile=$(realpath $1)
+        jsonInputFile=$(${coreutils}/bin/realpath $1)
         outputFile=$(${pkgs.jq}/bin/jq '.outputFile' -c -r $jsonInputFile)
 
         nix eval --show-trace --impure --raw --expr "
