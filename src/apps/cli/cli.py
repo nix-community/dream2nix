@@ -348,14 +348,10 @@ def checkLockJSON(lock):
         lock_schema=json.loads(lock_schema_raw)
     except Exception as e:
         print(e)
-    num=0
-    for i in  lock:
-        try:
-            validate(i,schema=lock_schema)
-            num = num +1
-        except Exception as e1:
+    try:
+        validate(lock,schema=lock_schema)
+    except Exception as e1:
             print(e1)
-            print(num)
 
 
 
