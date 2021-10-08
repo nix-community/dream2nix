@@ -154,6 +154,23 @@ class PackageCommand(Command):
       )
       exit(1)
 
+    # transform flags to bool
+    for argName, argVal in specified_extra_args.copy().items():
+      if translator['specialArgs'][argName]['type'] == 'flag':
+        if argVal.lower() in ('yes', 'y', 'true'):
+          specified_extra_args[argName] = True
+        elif argVal.lower() in ('no', 'n', 'false'):
+          specified_extra_args[argName] = False
+        else:
+          print(
+            f"Invalid value {argVal} for argument {argName}",
+            file=sys.stderr
+          )
+      
+    specified_extra_args =\
+      {k: (bool(v) if translator['specialArgs'][k]['type'] == 'flag' else v ) \
+          for k, v in specified_extra_args.items()}
+
     # on non-interactive session, assume defaults for unspecified extra args
     if not self.io.is_interactive():
       specified_extra_args.update(

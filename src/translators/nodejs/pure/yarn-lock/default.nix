@@ -12,6 +12,11 @@
     {
       inputDirectories,
       inputFiles,
+
+      # extraArgs
+      dev,
+      optional,
+      peer,
       ...
     }:
     let
@@ -76,8 +81,10 @@
           (dependencyName: dependencyAttrs:
             let
               name = nameFromLockName dependencyName;
-              dependencies = dependencyAttrs.dependencies or [] ++ dependencyAttrs.optionalDependencies or [];
-              graph = lib.forEach dependencies (dependency: 
+              dependencies = 
+                dependencyAttrs.dependencies or []
+                ++ (lib.optionals optional (dependencyAttrs.optionalDependencies or []));
+              graph = lib.forEach dependencies (dependency:
                 builtins.head (
                   lib.mapAttrsToList
                     (name: value:
@@ -110,7 +117,13 @@
                 in
                   "${depName}#${dependencyAttrs.version}"
               )
-              (packageJSON.dependencies or {} // packageJSON.devDependencies or {});
+              (
+                packageJSON.dependencies or {}
+                //
+                (lib.optionalAttrs dev (packageJSON.devDependencies or {}))
+                //
+                (lib.optionalAttrs peer (packageJSON.peerDependencies or {}))
+              );
         };
 
 
@@ -161,10 +174,20 @@
   # String arguments contain a default value and examples. Flags do not.
   specialArgs = {
 
-    # optionalDependencies = {
-    #   description = "Whether to include optional dependencies";
-    #   type = "flag";
-    # };
+    dev = {
+      description = "Whether to include development dependencies";
+      type = "flag";
+    };
+
+    optional = {
+      description = "Whether to include optional dependencies";
+      type = "flag";
+    };
+
+    peer = {
+      description = "Whether to include peer dependencies";
+      type = "flag";
+    };
 
   };
 }
