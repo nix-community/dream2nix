@@ -21,8 +21,5 @@ let
   dependencyGraph = lock.generic.dependencyGraph;
 
 in
-lib.recursiveUpdate
-  lock
-  {
-    generic.dependencyGraph."${mainPackage}" = dependencyGraph."${mainPackage}" or lib.attrNames dependencyGraph;
-  }
+lock
+

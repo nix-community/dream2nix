@@ -69,6 +69,7 @@
 
           shellHook = ''
             export NIX_PATH=nixpkgs=${nixpkgs}
+            export d2nExternalSources=${externalSourcesFor."${system}"}
           '';
         });
       };

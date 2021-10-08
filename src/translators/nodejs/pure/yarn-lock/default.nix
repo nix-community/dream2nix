@@ -12,14 +12,31 @@
     {
       inputDirectories,
       inputFiles,
+
+      # extraArgs
+      dev,
+      optional,
+      peer,
       ...
     }:
     let
       b = builtins;
-      yarnLock = "${lib.elemAt inputDirectories 0}/yarn.lock";
+      yarnLock = utils.readTextFile "${lib.elemAt inputDirectories 0}/yarn.lock";
       packageJSON = b.fromJSON (b.readFile "${lib.elemAt inputDirectories 0}/package.json");
       parser = import ./parser.nix { inherit lib; inherit (externals) nix-parsec;};
-      parsedLock = lib.foldAttrs (n: a: n // a) {} (parser.parseLock yarnLock).value;
+      tryParse = parser.parseLock yarnLock;
+
+      mainPackageName = packageJSON.name;
+      mainPackageKey = "${mainPackageName}#${packageJSON.version}";
+      
+      parsedLock =
+        if tryParse.type == "success" then
+          lib.foldAttrs (n: a: n // a) {} tryParse.value
+        else
+          let
+            failureOffset = tryParse.value.offset;
+          in
+            throw "parser failed at: \n${lib.substring failureOffset 50 tryParse.value.str}";
       nameFromLockName = lockName:
         let
           version = lib.last (lib.splitString "@" lockName);
@@ -30,14 +47,8 @@
           name = nameFromLockName dependencyName;
         in
           lib.nameValuePair ("${name}#${dependencyAttrs.version}") (
-          if ! lib.hasInfix "@github:" dependencyName then
-            {
-              version = dependencyAttrs.version;  
-              hash = dependencyAttrs.integrity;
-              url = lib.head (lib.splitString "#" dependencyAttrs.resolved);
-              type = "fetchurl";
-            }
-          else
+          if lib.hasInfix "@github:" dependencyName
+              || lib.hasInfix "codeload.github.com/" dependencyAttrs.resolved then
             let
                gitUrlInfos = lib.splitString "/" dependencyAttrs.resolved;
             in
@@ -47,24 +58,75 @@
               owner = lib.elemAt gitUrlInfos 3;
               repo = lib.elemAt gitUrlInfos 4;
             }
+          else if lib.hasInfix "@link:" dependencyName then
+            {
+              version = dependencyAttrs.version;     
+              path = lib.last (lib.splitString "@link:" dependencyName);
+              type = "path";
+            }
+          else
+            {
+              version = dependencyAttrs.version;  
+              hash =
+                if dependencyAttrs ? integrity then
+                  dependencyAttrs.integrity
+                else
+                  throw "Missing integrity for ${dependencyName}";
+              url = lib.head (lib.splitString "#" dependencyAttrs.resolved);
+              type = "fetchurl";
+            }
           )) parsedLock;
-      dependencyGraph = lib.mapAttrs' (dependencyName: dependencyAttrs:
-      let
-        name = nameFromLockName dependencyName;
-        dependencies = dependencyAttrs.dependencies or [] ++ dependencyAttrs.optionalDependencies or [];
-        graph = lib.forEach dependencies (dependency: 
-          builtins.head (
-            lib.mapAttrsToList (name: value:
+      dependencyGraph =
+        (lib.mapAttrs'
+          (dependencyName: dependencyAttrs:
             let
-              yarnName = "${name}@${value}";
-              version = parsedLock."${yarnName}".version;
+              name = nameFromLockName dependencyName;
+              dependencies = 
+                dependencyAttrs.dependencies or []
+                ++ (lib.optionals optional (dependencyAttrs.optionalDependencies or []));
+              graph = lib.forEach dependencies (dependency:
+                builtins.head (
+                  lib.mapAttrsToList
+                    (name: value:
+                      let
+                        yarnName = "${name}@${value}";
+                        version = parsedLock."${yarnName}".version;
+                      in
+                      "${name}#${version}"
+                    )
+                    dependency
+                )
+              );
             in
-            "${name}#${version}"
-            ) dependency
+              lib.nameValuePair ("${name}#${dependencyAttrs.version}") graph
           )
-        );
-      in
-        lib.nameValuePair ("${name}#${dependencyAttrs.version}") graph) parsedLock;      
+          parsedLock
+        )
+        //
+        {
+          "${mainPackageName}" =
+            lib.mapAttrsToList
+              (depName: depSemVer:
+                let
+                  depYarnKey = "${depName}@${depSemVer}";
+                  dependencyAttrs =
+                    if ! parsedLock ? "${depYarnKey}" then
+                      throw "Cannot find entry for top level dependency: '${depYarnKey}'"
+                    else
+                      parsedLock."${depYarnKey}";
+                in
+                  "${depName}#${dependencyAttrs.version}"
+              )
+              (
+                packageJSON.dependencies or {}
+                //
+                (lib.optionalAttrs dev (packageJSON.devDependencies or {}))
+                //
+                (lib.optionalAttrs peer (packageJSON.peerDependencies or {}))
+              );
+        };
+
+
     in
     # TODO: produce dream lock like in /specifications/dream-lock-example.json
       
@@ -74,7 +136,7 @@
       generic = {
         buildSystem = "nodejs";
         producedBy = translatorName;
-        mainPackage = packageJSON.name;
+        mainPackage = mainPackageName;
         inherit dependencyGraph;
         sourcesCombinedHash = null;
       };
@@ -112,10 +174,20 @@
   # String arguments contain a default value and examples. Flags do not.
   specialArgs = {
 
-    # optionalDependencies = {
-    #   description = "Whether to include optional dependencies";
-    #   type = "flag";
-    # };
+    dev = {
+      description = "Whether to include development dependencies";
+      type = "flag";
+    };
+
+    optional = {
+      description = "Whether to include optional dependencies";
+      type = "flag";
+    };
+
+    peer = {
+      description = "Whether to include peer dependencies";
+      type = "flag";
+    };
 
   };
 }
