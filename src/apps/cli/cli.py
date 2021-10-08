@@ -1,4 +1,5 @@
 import json
+from jsonschema import validate
 import os
 import re
 import subprocess as sp
@@ -324,6 +325,7 @@ class PackageCommand(Command):
       lock['generic']['sourcesCombinedHash'] = hash
     
     # re-write dream.lock
+    checkLockJSON(order_dict(lock))
     with open(outputDreamLock, 'w') as f:
       json.dump(order_dict(lock), f, indent=2)
 
@@ -339,6 +341,21 @@ class PackageCommand(Command):
       defaultNix.write(template)
 
     print(f"Created {output}/{{dream.lock,default.nix}}")
+
+def checkLockJSON(lock):
+    try:
+        lock_schema_raw=open(dream2nix_src+"/specifications/dream-lock-schema.json").read()
+        lock_schema=json.loads(lock_schema_raw)
+    except Exception as e:
+        print(e)
+    num=0
+    for i in  lock:
+        try:
+            validate(i,schema=lock_schema)
+            num = num +1
+        except Exception as e1:
+            print(e1)
+            print(num)
 
 
 
