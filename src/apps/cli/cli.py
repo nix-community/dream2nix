@@ -218,7 +218,7 @@ class PackageCommand(Command):
     )
     
     # dump translator arguments to json file and execute translator
-    print("Translating upstream metadata")
+    print("\nTranslating upstream metadata")
     with tempfile.NamedTemporaryFile("w") as input_json_file:
       json.dump(translator_input, input_json_file, indent=2)
       input_json_file.seek(0) # flushes write cache
@@ -284,12 +284,16 @@ class PackageCommand(Command):
           removed_edges.append((node_from, node_to))
       except nx.NetworkXNoCycle:
         continue
+    lock['generic']['dependenciesRemoved'] = {}
     if removed_edges:
+      lock['generic']['dependenciesRemoved'] = {}
       removed_cycles_text = 'Removed Cyclic dependencies:'
       for node, removed_node in removed_edges:
         removed_cycles_text += f"\n  {node} -> {removed_node}"
+        if node not in lock['generic']['dependenciesRemoved']:
+          lock['generic']['dependenciesRemoved'][node] = []
+        lock['generic']['dependenciesRemoved'][node].append(removed_node)
       print(removed_cycles_text)
-    lock['generic']['dependencyCyclesRemoved'] = True
 
     # calculate combined hash if --combined was specified
     if self.option('combined'):

@@ -14,6 +14,7 @@
 {
   fetchedSources,
   dreamLock,
+  ...
 }@args:
 let
   dreamLock = utils.readDreamLock { inherit (args) dreamLock; };
@@ -51,7 +52,7 @@ let
 
   callNode2Nix = funcName: args:
     node2nixEnv."${funcName}" rec {
-      name = mainPackageName;
+      name = lib.head (lib.splitString "#" mainPackageName);
       packageName = name;
       version = dreamLock.sources."${mainPackageName}".version;
       dependencies = node2nixDependencies;

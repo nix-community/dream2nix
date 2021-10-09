@@ -17,6 +17,7 @@ let
   utils = callPackageDream ./utils {};
 
   callPackageDream = f: args: pkgs.callPackage f (args // {
+    inherit builders;
     inherit callPackageDream;
     inherit externals;
     inherit externalSources;
@@ -103,7 +104,6 @@ rec {
   fetchSources =
     {
       dreamLock,
-      builder ? findBuilder (parseLock dreamLock),
       fetcher ? findFetcher (parseLock dreamLock),
       sourceOverrides ? oldSources: {},
       allowBuiltinFetchers ? true,
@@ -146,15 +146,20 @@ rec {
       builder ? findBuilder (parseLock dreamLock),
       fetcher ? findFetcher (parseLock dreamLock),
       sourceOverrides ? oldSources: {},
+      packageOverrides ? {},
+      builderArgs ? {},
       allowBuiltinFetchers ? true,
     }@args:
     let
       # if generic lock is a file, read and parse it
       dreamLock' = (parseLock dreamLock);
     in
-    builder {
+    builder ({
+      inherit packageOverrides;
       dreamLock = dreamLock';
-      fetchedSources = (fetchSources args).fetchedSources;
-    };
+      fetchedSources = (fetchSources {
+        inherit dreamLock fetcher sourceOverrides allowBuiltinFetchers;
+      }).fetchedSources;
+    } // builderArgs);
    
 }
