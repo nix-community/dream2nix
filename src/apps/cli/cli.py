@@ -46,6 +46,7 @@ class PackageCommand(Command):
       multiple=True
     ),
     option("force", None, "override existing files", flag=True),
+    option("default-nix", None, "create default.nix", flag=True),
   ]
 
   def handle(self):
@@ -66,7 +67,9 @@ class PackageCommand(Command):
       output = './.'
     if not os.path.isdir(output):
       os.mkdir(output)
-    filesToCreate = ('default.nix', 'dream.lock')
+    filesToCreate = ['dream.lock']
+    if self.option('default-nix'):
+      filesToCreate.append('default.nix')
     if self.option('force'):
       for f in filesToCreate:
         if os.path.isfile(f):
@@ -339,10 +342,12 @@ class PackageCommand(Command):
       sourcePathRelative = os.path.relpath(source, os.path.dirname(outputDefaultNix))
     )
     # with open(f"{dream2nix_src}/apps/cli2/templateDefault.nix") as template:
-    with open(outputDefaultNix, 'w') as defaultNix:
-      defaultNix.write(template)
+    if self.option('default-nix'):
+      with open(outputDefaultNix, 'w') as defaultNix:
+        defaultNix.write(template)
+        print(f"Created {output}/default.nix")
 
-    print(f"Created {output}/{{dream.lock,default.nix}}")
+    print(f"Created {output}/dream.lock")
 
 
 

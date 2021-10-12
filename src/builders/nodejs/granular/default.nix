@@ -88,14 +88,14 @@ let
       buildInputs = [ nodejs ];
 
       nodeDeps =
-          lib.forEach
-            (dependencyGraph."${pkgKey}" or [])
-            (depKey:
-              allPackages."${depKey}"
-            )
-          ++
-          lib.forEach (dreamLock.generic.dependenciesRemoved."${pkgKey}" or [])
-            (removedDep: standAlonePackages."${pkgKey}");
+        lib.forEach
+          (dependencyGraph."${pkgKey}" or [])
+          (depKey:
+            allPackages."${depKey}"
+          )
+        ++
+        lib.forEach (dreamLock.generic.dependenciesRemoved."${pkgKey}" or [])
+          (removedDep: standAlonePackages."${pkgKey}");
 
       dontUnpack = true;
 
