@@ -138,6 +138,45 @@ rec {
         fetchedSources = sourcesEnsuredOverridden;
       };
 
+  
+  justBuild =
+    {
+      source,
+    }@args:
+    let
+
+      translatorsForSource = translators.translatorsForInput {
+        inputFiles = [];
+        inputDirectories = [ source ];
+      };
+
+      t =
+        let
+          trans = b.filter (t: t.compatible && b.elem t.type [ "pure" "ifd" ]) translatorsForSource;
+        in
+          if trans != [] then lib.elemAt trans 0 else
+            throw "Could not find a suitable translator for input";
+
+      dreamLock' = translators.translators."${t.subsystem}"."${t.type}"."${t.name}".translate {
+        inputFiles = [];
+        inputDirectories = [ source ];
+      };
+
+      dreamLock = lib.recursiveUpdate dreamLock' {
+        sources."${dreamLock'.generic.mainPackage}" = {
+          type = "path";
+          path = source;
+          version = "unknown";
+        };
+      };
+
+      argsForRise = b.removeAttrs args [ "source" ];
+
+    in
+      (riseAndShine ({
+        inherit dreamLock;
+      } // argsForRise)).package;
+
 
   # build package defined by dream.lock
   riseAndShine = 
