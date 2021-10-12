@@ -61,10 +61,10 @@ The general architecture should consist of these components:
          └───────┬──┘        ▼
            ▲     │   ┌────────────┐
            │     └──►│Generic Lock│
-                     └─────────┬──┘
- impure/pure                   │   ┌────────┐
- online/offline                ├──►│Fetcher │◄── Same across all
- pure-nix/IFD/external         │   └────────┘    languages/frameworks
+           │         └─────────┬──┘
+  - pure-nix                   │   ┌────────┐
+  - IFD / recursive-nix        ├──►│Fetcher │◄── Same across all
+  - impure (external)          │   └────────┘    languages/frameworks
                                │       ▼
                                │   ┌────────┐
                                └──►│Builder │◄── Reads extra metadata
