@@ -1,3 +1,7 @@
+<p align="center">
+<img width="400" src="https://gist.githubusercontent.com/DavHau/755fed3774e89c0b9b8953a0a25309fa/raw/e2a12a60ae49aa5eb11b42775abdd1652dbe63c0/dream2nix-01.png">  
+</p>
+
 ## [WIP] dream2nix - A generic framework for 2nix tools
 
 dream2nix is a generic framework for 2nix converters (converting from other build systems to nix).  
