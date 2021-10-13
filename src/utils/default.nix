@@ -10,9 +10,15 @@
   ...
 }:
 let
+
   b = builtins;
+
+  overrideUtils = callPackageDream ./overrideUtils.nix {};
+
 in
 
+overrideUtils
+//
 rec {
 
   readDreamLock = callPackageDream ./readDreamLock.nix {};

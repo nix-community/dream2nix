@@ -17,6 +17,7 @@ let
   utils = callPackageDream ./utils {};
 
   callPackageDream = f: args: pkgs.callPackage f (args // {
+    inherit builders;
     inherit callPackageDream;
     inherit externals;
     inherit externalSources;
@@ -103,7 +104,6 @@ rec {
   fetchSources =
     {
       dreamLock,
-      builder ? findBuilder (parseLock dreamLock),
       fetcher ? findFetcher (parseLock dreamLock),
       sourceOverrides ? oldSources: {},
       allowBuiltinFetchers ? true,
@@ -138,6 +138,45 @@ rec {
         fetchedSources = sourcesEnsuredOverridden;
       };
 
+  
+  justBuild =
+    {
+      source,
+    }@args:
+    let
+
+      translatorsForSource = translators.translatorsForInput {
+        inputFiles = [];
+        inputDirectories = [ source ];
+      };
+
+      t =
+        let
+          trans = b.filter (t: t.compatible && b.elem t.type [ "pure" "ifd" ]) translatorsForSource;
+        in
+          if trans != [] then lib.elemAt trans 0 else
+            throw "Could not find a suitable translator for input";
+
+      dreamLock' = translators.translators."${t.subsystem}"."${t.type}"."${t.name}".translate {
+        inputFiles = [];
+        inputDirectories = [ source ];
+      };
+
+      dreamLock = lib.recursiveUpdate dreamLock' {
+        sources."${dreamLock'.generic.mainPackage}" = {
+          type = "path";
+          path = source;
+          version = "unknown";
+        };
+      };
+
+      argsForRise = b.removeAttrs args [ "source" ];
+
+    in
+      (riseAndShine ({
+        inherit dreamLock;
+      } // argsForRise)).package;
+
 
   # build package defined by dream.lock
   riseAndShine = 
@@ -146,15 +185,20 @@ rec {
       builder ? findBuilder (parseLock dreamLock),
       fetcher ? findFetcher (parseLock dreamLock),
       sourceOverrides ? oldSources: {},
+      packageOverrides ? {},
+      builderArgs ? {},
       allowBuiltinFetchers ? true,
     }@args:
     let
       # if generic lock is a file, read and parse it
       dreamLock' = (parseLock dreamLock);
     in
-    builder {
+    builder ({
+      inherit packageOverrides;
       dreamLock = dreamLock';
-      fetchedSources = (fetchSources args).fetchedSources;
-    };
+      fetchedSources = (fetchSources {
+        inherit dreamLock fetcher sourceOverrides allowBuiltinFetchers;
+      }).fetchedSources;
+    } // builderArgs);
    
 }

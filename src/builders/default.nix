@@ -1,4 +1,5 @@
 {
+  builders,
   callPackageDream,
   ...
 }:
@@ -15,6 +16,8 @@
     default = node2nix;
 
     node2nix = callPackageDream ./nodejs/node2nix {};
+
+    granular = callPackageDream ./nodejs/granular { inherit builders; };
   };
   
 }

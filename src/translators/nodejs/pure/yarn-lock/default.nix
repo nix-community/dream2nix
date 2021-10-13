@@ -57,6 +57,7 @@
               rev = lib.elemAt gitUrlInfos 6;
               owner = lib.elemAt gitUrlInfos 3;
               repo = lib.elemAt gitUrlInfos 4;
+              version = dependencyAttrs.version;
             }
           else if lib.hasInfix "@link:" dependencyName then
             {

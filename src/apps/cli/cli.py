@@ -46,6 +46,7 @@ class PackageCommand(Command):
       multiple=True
     ),
     option("force", None, "override existing files", flag=True),
+    option("default-nix", None, "create default.nix", flag=True),
   ]
 
   def handle(self):
@@ -66,7 +67,9 @@ class PackageCommand(Command):
       output = './.'
     if not os.path.isdir(output):
       os.mkdir(output)
-    filesToCreate = ('default.nix', 'dream.lock')
+    filesToCreate = ['dream.lock']
+    if self.option('default-nix'):
+      filesToCreate.append('default.nix')
     if self.option('force'):
       for f in filesToCreate:
         if os.path.isfile(f):
@@ -218,7 +221,7 @@ class PackageCommand(Command):
     )
     
     # dump translator arguments to json file and execute translator
-    print("Translating upstream metadata")
+    print("\nTranslating upstream metadata")
     with tempfile.NamedTemporaryFile("w") as input_json_file:
       json.dump(translator_input, input_json_file, indent=2)
       input_json_file.seek(0) # flushes write cache
@@ -284,12 +287,16 @@ class PackageCommand(Command):
           removed_edges.append((node_from, node_to))
       except nx.NetworkXNoCycle:
         continue
+    lock['generic']['dependenciesRemoved'] = {}
     if removed_edges:
+      lock['generic']['dependenciesRemoved'] = {}
       removed_cycles_text = 'Removed Cyclic dependencies:'
       for node, removed_node in removed_edges:
         removed_cycles_text += f"\n  {node} -> {removed_node}"
+        if node not in lock['generic']['dependenciesRemoved']:
+          lock['generic']['dependenciesRemoved'][node] = []
+        lock['generic']['dependenciesRemoved'][node].append(removed_node)
       print(removed_cycles_text)
-    lock['generic']['dependencyCyclesRemoved'] = True
 
     # calculate combined hash if --combined was specified
     if self.option('combined'):
@@ -335,10 +342,12 @@ class PackageCommand(Command):
       sourcePathRelative = os.path.relpath(source, os.path.dirname(outputDefaultNix))
     )
     # with open(f"{dream2nix_src}/apps/cli2/templateDefault.nix") as template:
-    with open(outputDefaultNix, 'w') as defaultNix:
-      defaultNix.write(template)
+    if self.option('default-nix'):
+      with open(outputDefaultNix, 'w') as defaultNix:
+        defaultNix.write(template)
+        print(f"Created {output}/default.nix")
 
-    print(f"Created {output}/{{dream.lock,default.nix}}")
+    print(f"Created {output}/dream.lock")
 
 
 
