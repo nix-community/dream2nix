@@ -21,12 +21,14 @@
       inherit (pkgs) callPackage runCommand curl cacert racket;
 
       b = builtins;
-      rktInfo = utils.readTextFile "${lib.elemAt inputDirectories 0}/info.rkt";
       parser = import ./parser.nix { inherit lib; inherit (externals) nix-parsec; };
-      pkgCatalog = callPackage ./catalog.nix { };
+
+      rktInfo = utils.readTextFile "${lib.elemAt inputDirectories 0}/info.rkt";
       parsedInfo = parser.parseRacketInfo rktInfo;
 
-      #TODO: Handle case where there is more than one collection
+      pkgCatalog = builtins.fromJSON
+        (builtins.readFile (callPackage ./catalog.nix { inherit parser; }));
+
       mainPackage = parsedInfo.collection;
       mainPackageKey = "${mainPackage}#${parsedInfo.version}";
 
