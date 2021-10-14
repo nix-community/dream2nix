@@ -18,28 +18,17 @@
       ...
     }:
     let
+      inherit (pkgs) callPackage runCommand curl cacert racket;
+
       b = builtins;
       rktInfo = utils.readTextFile "${lib.elemAt inputDirectories 0}/info.rkt";
       parser = import ./parser.nix { inherit lib; inherit (externals) nix-parsec; };
+      pkgCatalog = callPackage ./catalog.nix { };
       parsedInfo = parser.parseRacketInfo rktInfo;
 
       #TODO: Handle case where there is more than one collection
       mainPackage = parsedInfo.collection;
       mainPackageKey = "${mainPackage}#${parsedInfo.version}";
-
-      #TODO: This is sadly impure, getting around this by using wayback machine for now
-      # Would a way around this be to cache these changes ourselves in a better way than i am doing here?
-      # eg Have a github action that checks for changes to this file and caches it in dream to Nix with a date tag?
-      # or should this be converted into a impure translator...
-      pkgCatalog = pkgs.runCommand "fetch-racket-package-index" {
-        outputHash = "+U8FvM5Sf8QNJdH/L1V4L8nS49NAFZZxK0fnFRuLC/E=";
-        outputHashAlgo = "sha256";
-        outputHashMode = "recursive";
-        buildInputs = [ pkgs.curl ];
-        SSL_CERT_FILE = "${pkgs.cacert}/etc/ssl/certs/ca-bundle.crt";
-      } ''
-          curl https://web.archive.org/web/20211013170533/https://pkgs.racket-lang.org/pkgs-all --output $out
-        '';
 
       #TODO: At the present there is a bug in the parser which fails if escaped strings \" are inside a quoted string
       parsedPkgs = parser.parseRacketPkgs pkgCatalog;
@@ -50,7 +39,7 @@
       getBasePackages = pkg:
         b.tail (lib.attrsets.mapAttrsToList (name: value: name ) (b.readDir "${pkg}/share/racket/pkgs"));
 
-      basePackages = [ "racket" ] ++ (getBasePackages pkgs.racket);
+      basePackages = [ "racket" ] ++ (getBasePackages racket);
 
       convertToList = value:
         if b.typeOf value == "string" then [ value ] else value;
