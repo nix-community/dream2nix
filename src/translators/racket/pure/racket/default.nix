@@ -26,18 +26,17 @@
       rktInfo = utils.readTextFile "${lib.elemAt inputDirectories 0}/info.rkt";
       parsedInfo = parser.parseRacketInfo rktInfo;
 
-      pkgCatalog = builtins.fromJSON
-        (builtins.readFile (callPackage ./catalog.nix { inherit parser; }));
+      pkgCatalog = b.fromJSON
+        (b.readFile (callPackage ./catalog.nix { inherit parser; }));
 
+      #TODO: Handle case where there is more than one collection... How common is this?
       mainPackage = parsedInfo.collection;
       mainPackageKey = "${mainPackage}#${parsedInfo.version}";
-
-      #TODO: At the present there is a bug in the parser which fails if escaped strings \" are inside a quoted string
-      parsedPkgs = parser.parseRacketPkgs pkgCatalog;
 
       deps = parsedInfo.deps;
       build-deps = parsedInfo.build-deps;
 
+      # This could work for racket-minimal as well if needed
       getBasePackages = pkg:
         b.tail (lib.attrsets.mapAttrsToList (name: value: name ) (b.readDir "${pkg}/share/racket/pkgs"));
 
@@ -46,13 +45,13 @@
       convertToList = value:
         if b.typeOf value == "string" then [ value ] else value;
 
+      # TODO: deal with dependencies that have versions eg.
+      # (dependencies . (("base" #:version "7.6") ... ))
+      # currently we are just ignoring anything that has a version :/
       checkForBasePackages = list:
         b.filter (x: b.typeOf x != "list")
           (lib.lists.subtractLists basePackages (convertToList list));
 
-      # TODO: deal with dependencies that have versions eg.
-      # (dependencies . (("base" #:version "7.6") ... ))
-      # currently we are just ignoring anything that has a version :/
       extractSources = list:
         if b.length list == 0 then [] else
           let
@@ -123,8 +122,9 @@
       # build system specific attributes
       buildSystem = {
 
-        # will this have any effect on the final output?
-        racket = 8.0;
+        # make sure we are using the same racket in the build as we are when
+        # calculating the dependency graph
+        inherit racket;
         inherit build-deps;
       };
     };
