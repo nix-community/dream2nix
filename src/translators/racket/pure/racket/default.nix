@@ -48,12 +48,12 @@
       # (dependencies . (("base" #:version "7.6") ... ))
       # currently we are just ignoring anything that has a version :/
       extractSources = list:
-        let list' = builtins.filter (x: b.typeOf x != "list")
+        let list' = b.filter (x: b.typeOf x != "list")
           (lib.lists.subtractLists basePackages (convertToList list)); in
-        if builtins.length list' == 0 then [] else
+        if b.length list' == 0 then [] else
           let
-            pkg = builtins.head list';
-            tail = builtins.tail list';
+            pkg = b.head list';
+            tail = b.tail list';
             source = pkgCatalog.${pkg}.source;
             name = pkgCatalog.${pkg}.name;
             checksum = pkgCatalog.${pkg}.checksum;
