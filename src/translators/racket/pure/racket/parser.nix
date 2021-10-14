@@ -56,7 +56,7 @@ let
     in listLexeme (quotes (takeWhile1 validChar));
 
   identifier =
-    let validChar = c: match ''[a-zA-Z0-9:@_-]'' c != null;
+    let validChar = c: match ''[a-zA-Z0-9+|:@_-]'' c != null;
     in listLexeme (takeWhile1 validChar);
 
   atom = alt identifier quotedIdentifier;
@@ -70,7 +70,7 @@ let
     let item = head value;
     in
       if typeOf item != "list" then item else
-        if length item == 0 then null else
+        if length item == 0 then "" else
           if length item == 1 then head item else
             item;
 
@@ -95,14 +95,12 @@ let
   parseLispFile = path: runParser lisp (builtins.readFile path);
 
 in {
-  testLine = ''(test world "this is a \"test\" world")'';
-
   inherit parseLispFile;
 
-  parseRacketInfo = path: listToAttrs
-    (map racketInfoExtractor ((parseLispFile path).value));
+  parseRacketInfo = path:
+   listToAttrs (map racketInfoExtractor ((parseLispFile path).value));
 
-  parseRacketPkgs = path: listToAttrs
-    (map racketPkgsExtractor
-      (builtins.elemAt ((parseLispFile path).value) 0));
+  parseRacketPkgs = path:
+    listToAttrs (map racketPkgsExtractor
+      (runParser (skipThen outsideList sexpr) (builtins.readFile path)).value);
 }
