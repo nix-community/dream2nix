@@ -55,7 +55,7 @@
             pkg = b.head list';
             tail = b.tail list';
             source = pkgCatalog.${pkg}.source;
-            name = pkgCatalog.${pkg}.name;
+            name = "${pkgCatalog.${pkg}.name}#${(b.substring 0 6 checksum)}";
             checksum = pkgCatalog.${pkg}.checksum;
             dependencies = convertToList pkgCatalog.${pkg}.dependencies;
             gitUrlInfos = lib.splitString "/" source;
@@ -63,10 +63,11 @@
             [
               (if lib.hasInfix "github" source || lib.hasInfix "gitlab" source
                then
-                 {
+                 let type = if lib.hasInfix "github" source then "github" else "gitlab";
+                 in {
                    # A lot of packages do not have a versions instead use the git rev
-                   "${name}#${(b.substring 0 6 checksum)}" = {
-                     type = if lib.hasInfix "github" source then "github" else "gitlab";
+                   name = {
+                     inherit type;
                      rev = checksum;
                      owner = lib.elemAt gitUrlInfos 3;
                      #REVIEW: Does the `.git` suffix need to be trimmed?
@@ -75,7 +76,7 @@
                  }
                else
                  {
-                   "${name}#${(b.substring 0 6 checksum)}" = {
+                   name = {
                      source = source;
                      #TODO: What does this look like if they are not hosted on github or gitlab?
                    };
@@ -91,7 +92,8 @@
           let
             pkg = b.head list;
             tail = b.tail list;
-            name = pkgCatalog.${pkg}.name;
+            checksum = pkgCatalog.${pkg}.checksum;
+            name = "${pkgCatalog.${pkg}.name}#${(b.substring 0 6 checksum)}";
             dependencies = convertToList pkgCatalog.${pkg}.dependencies;
           in [
             name
