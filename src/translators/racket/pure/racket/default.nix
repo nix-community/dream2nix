@@ -44,20 +44,23 @@
       convertToList = value:
         if b.typeOf value == "string" then [ value ] else value;
 
+      checkForBasePackages = list:
+        b.filter (x: b.typeOf x != "list")
+          (lib.lists.subtractLists basePackages (convertToList list));
+
       # TODO: deal with dependencies that have versions eg.
       # (dependencies . (("base" #:version "7.6") ... ))
       # currently we are just ignoring anything that has a version :/
       extractSources = list:
-        let list' = b.filter (x: b.typeOf x != "list")
-          (lib.lists.subtractLists basePackages (convertToList list)); in
-        if b.length list' == 0 then [] else
+        if b.length list == 0 then [] else
           let
-            pkg = b.head list';
-            tail = b.tail list';
+            pkg = b.head list;
+            tail = b.tail list;
             source = pkgCatalog.${pkg}.source;
             name = "${pkgCatalog.${pkg}.name}#${(b.substring 0 6 checksum)}";
             checksum = pkgCatalog.${pkg}.checksum;
             dependencies = convertToList pkgCatalog.${pkg}.dependencies;
+            dependencies' = checkForBasePackages dependencies;
             gitUrlInfos = lib.splitString "/" source;
           in
             [
@@ -82,7 +85,7 @@
                    };
                  }
               )
-            ] ++ extractSources dependencies ++ extractSources tail;
+            ] ++ extractSources dependencies' ++ extractSources tail;
 
       sources = extractSources (convertToList deps);
 
@@ -95,9 +98,10 @@
             checksum = pkgCatalog.${pkg}.checksum;
             name = "${pkgCatalog.${pkg}.name}#${(b.substring 0 6 checksum)}";
             dependencies = convertToList pkgCatalog.${pkg}.dependencies;
+            dependencies' = checkForBasePackages dependencies;
           in [
             name
-            (constructDependencyGraph dependencies)
+            (constructDependencyGraph dependencies')
           ] ++ constructDependencyGraph tail;
 
       dependencyGraph = constructDependencyGraph deps;
