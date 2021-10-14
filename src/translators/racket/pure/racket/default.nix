@@ -61,21 +61,24 @@
             gitUrlInfos = lib.splitString "/" source;
           in
             [
-              (if lib.hasInfix "github" source
+              (if lib.hasInfix "github" source || lib.hasInfix "gitlab" source
                then
                  {
-                   type = "github";
-                   rev = checksum;
-                   owner = lib.elemAt gitUrlInfos 3;
-                   #REVIEW: Does the `.git` suffix need to be trimmed?
-                   repo = lib.elemAt gitUrlInfos 4;
+                   # A lot of packages do not have a versions instead use the git rev
+                   "${name}#${(b.substring 0 6 checksum)}" = {
+                     type = if lib.hasInfix "github" source then "github" else "gitlab";
+                     rev = checksum;
+                     owner = lib.elemAt gitUrlInfos 3;
+                     #REVIEW: Does the `.git` suffix need to be trimmed?
+                     repo = lib.elemAt gitUrlInfos 4;
+                   };
                  }
                else
                  {
-                   name = name;
-                   source = source;
-                   #TODO: What does this look like if they are not hosted on github?
-                   # eg. there are some on git repos on gitlab
+                   "${name}#${(b.substring 0 6 checksum)}" = {
+                     source = source;
+                     #TODO: What does this look like if they are not hosted on github or gitlab?
+                   };
                  }
               )
             ] ++ extractSources dependencies ++ extractSources tail;
