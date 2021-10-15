@@ -26,8 +26,10 @@
       rktInfo = utils.readTextFile "${lib.elemAt inputDirectories 0}/info.rkt";
       parsedInfo = parser.parseRacketInfo rktInfo;
 
-      pkgCatalog = b.fromJSON
-        (b.readFile (callPackage ./catalog.nix { inherit parser; }));
+      # NOTE: The parser is too slow to run on the complete racket package catalog so
+      # the output is saved directly in the repo as JSON for now
+      catalogDerivation = callPackage ./catalog.nix { inherit parser; };
+      pkgCatalog = b.fromJSON (b.readFile ./catalog.json);
 
       #TODO: Handle case where there is more than one collection... How common is this?
       mainPackage = parsedInfo.collection;
