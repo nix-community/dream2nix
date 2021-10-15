@@ -49,21 +49,35 @@ let
   quotes = between (string ''"'') (string ''"'');
   parens = between (string ''('') (string '')'');
 
-  # Need to account for the case where inside a quoted string will be a \"
-  # cannot ignore backspace char inside quotes
-  quotedIdentifier =
-    let validChar = c: c != ''"'';
-    in listLexeme (quotes (takeWhile1 validChar));
+  # TODO: Make this general
+  # This accounts for the case where inside a quoted string will be a \"
+  quotedIdentifier = ps:
+    let
+      str = elemAt ps 0;
+      offset = elemAt ps 1;
+      len = elemAt ps 2;
+      strLen = stringLength str;
+      # Search for the next offset that violates the predicate
+      go = ix:
+        if ix >= strLen || (substring ix 1 str) == ''"''
+          then ix
+        else if (substring ix 2 str) == ''\"''
+          then go (ix + 2)
+        else go (ix + 1);
+      endIx = go offset;
+      # The number of characters we found
+      numChars = endIx - offset;
+    in [(substring offset numChars str) endIx (len - numChars)];
 
   identifier =
     let validChar = c: match ''[a-zA-Z0-9+|:@_-]'' c != null;
     in listLexeme (takeWhile1 validChar);
 
-  atom = alt identifier quotedIdentifier;
+  atom = alt identifier (quotes quotedIdentifier);
   list = parens (many (listLexeme (alt atom list)));
 
   sexpr = alt atom list;
-  lisp = many (skipThen outsideList sexpr);
+  multi-lineSexpr = many (skipThen outsideList sexpr);
 
   # TODO: Make this recursive so that it removes empty arrays
   cleanValues = value:
@@ -92,15 +106,20 @@ let
     in
       nameValuePair name value';
 
-  parseLispFile = path: runParser lisp (builtins.readFile path);
+  parseLispFile = path: runParser multi-lineSexpr (builtins.readFile path);
 
 in {
   inherit parseLispFile;
 
-  parseRacketInfo = path:
-   listToAttrs (map racketInfoExtractor ((parseLispFile path).value));
+  parseRacketInfo = path: listToAttrs
+    (map racketInfoExtractor ((parseLispFile path).value));
 
-  parseRacketPkgs = path:
-    listToAttrs (map racketPkgsExtractor
+  # An Example of what NOT to do with nix-parsec
+  # This is a very long single line S-expression
+  # NOTE: it takes around 15 minutes to evaluate ./pkgs-all
+  # (on a fairly powerful machine)
+  parseRacketCatalog = path: listToAttrs
+    (map racketPkgsExtractor
       (runParser (skipThen outsideList sexpr) (builtins.readFile path)).value);
+
 }
