@@ -20,11 +20,10 @@
 { lib, nix-parsec }:
 
 with nix-parsec.parsec;
-with lib;
+with builtins;
 
 let
   inherit (nix-parsec) lexer;
-  inherit (builtins) match tail head length map typeOf elemAt;
 
   # Cannot use '' here as it strips white space
   # TODO: Get reference for this
@@ -94,7 +93,7 @@ let
       value = tail (tail parsedLisp);
       value' = cleanValues value;
     in
-      nameValuePair name value';
+      lib.attrsets.nameValuePair name value';
 
   racketPkgsExtractor = parsedLisp:
     let
@@ -102,11 +101,11 @@ let
       value = elemAt (tail (tail parsedLisp)) 0;
       value' = listToAttrs
         (map
-          (list: nameValuePair (head list) (cleanValues (tail list))) value);
+          (list: lib.attrsets.nameValuePair (head list) (cleanValues (tail list))) value);
     in
-      nameValuePair name value';
+      lib.attrsets.nameValuePair name value';
 
-  parseLispFile = path: runParser multi-lineSexpr (builtins.readFile path);
+  parseLispFile = path: runParser multi-lineSexpr (readFile path);
 
 in {
   inherit parseLispFile;
@@ -120,6 +119,6 @@ in {
   # (on a fairly powerful machine)
   parseRacketCatalog = path: listToAttrs
     (map racketPkgsExtractor
-      (runParser (skipThen outsideList sexpr) (builtins.readFile path)).value);
+      (runParser (skipThen outsideList sexpr) (readFile path)).value);
 
 }
