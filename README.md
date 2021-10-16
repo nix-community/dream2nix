@@ -1,5 +1,5 @@
 <p align="center">
-<img width="400" src="https://gist.githubusercontent.com/DavHau/755fed3774e89c0b9b8953a0a25309fa/raw/e2a12a60ae49aa5eb11b42775abdd1652dbe63c0/dream2nix-01.png">  
+<img width="400" src="https://gist.githubusercontent.com/DavHau/755fed3774e89c0b9b8953a0a25309fa/raw/e2a12a60ae49aa5eb11b42775abdd1652dbe63c0/dream2nix-01.png">
 </p>
 
 ## [WIP] dream2nix - A generic framework for 2nix tools
@@ -19,15 +19,12 @@ It focuses on the following aspects:
 - Exploration and adoption of new nix features
 - Simplified updating of packages
 
-### Motivation
-
-2nix converters, or in other words, tools converting instructions of other build systems to nix build instructions, are an important part of the nix/nixos ecosystem. These converters make packaging workflows easier and often allow to manage complexity that would be hard or impossible to manage without.
-
-Yet the current landscape of 2nix converters has certain weaknesses. Existing 2nix converters are very monolithic. Authors of these converters are often motivated by some specific use case and therefore the individual approaches are strongly biased and not flexible. All existing converters have quite different user interfaces, use different strategies of parsing, resolving, fetching and building while providing significantly different options for customizability. As a user of such converter it often feels like there is some part of it that suits the needs well, but at the same time it has undesirable hard coded behaviour. Often one would like to use some aspect of one converter combined with some aspect of another converter. One converter might do a good job in parsing a specific lock file format, but lacks customizability for building, while another one provides a good customization interface, but is unable to parse the lock file format. Some converters are restricted to use IFD or FOD, while others enforce code generation.
-
-The idea of this project is to create a standardized, generic, modular framework for 2nix solutions, aiming for better flexibility, maintainability and usability.
+The goal of this project is to create a standardized, generic, modular framework for 2nix solutions, aiming for better flexibility, maintainability and usability.
 
 The intention is to integrate many existing 2nix converters into this framework, thereby improving many of the previously named aspects and providing a unified UI for all 2nix solutions.
+
+### Watch the recent presentation
+[![dream2nix - A generic framework for 2nix tools](https://gist.githubusercontent.com/DavHau/755fed3774e89c0b9b8953a0a25309fa/raw/3c8b2c56f5fca3bf5c343ffc179136eef39d4d6a/dream2nix-youtube-talk.png)](https://www.youtube.com/watch?v=jqCfHMvCsfQ)
 
 ### Further Reading
 

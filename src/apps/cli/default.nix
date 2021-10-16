@@ -16,7 +16,7 @@ let
 
   b = builtins;
 
-  cliPython = python3.withPackages (ps: [ ps.networkx ps.cleo ]);
+  cliPython = python3.withPackages (ps: [ ps.networkx ps.cleo ps.jsonschema ]);
 
 in
 {
