@@ -85,7 +85,7 @@
               dependencies = 
                 dependencyAttrs.dependencies or []
                 ++ (lib.optionals optional (dependencyAttrs.optionalDependencies or []));
-              graph = lib.forEach dependencies (dependency:
+              depList = lib.forEach dependencies (dependency:
                 builtins.head (
                   lib.mapAttrsToList
                     (name: value:
@@ -99,7 +99,7 @@
                 )
               );
             in
-              lib.nameValuePair ("${name}#${dependencyAttrs.version}") graph
+              lib.nameValuePair ("${name}#${dependencyAttrs.version}") depList
           )
           parsedLock
         )
