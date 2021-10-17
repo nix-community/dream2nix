@@ -136,16 +136,20 @@ class PackageCommand(Command):
       ))[0]
     else:
       translator = translator.split('.')
-      if len(translator) == 3:
-        translator = list(filter(
-          lambda t: [t['subsystem'], t['type'], t['name']] == translator,
-          translatorsSorted,
-        ))[0]
-      elif len(translator) == 1:
-        translator = list(filter(
-          lambda t:  [t['name']] == translator,
-          translatorsSorted,
-        ))[0]
+      try:
+        if len(translator) == 3:
+          translator = list(filter(
+            lambda t: [t['subsystem'], t['type'], t['name']] == translator,
+            translatorsSorted,
+          ))[0]
+        elif len(translator) == 1:
+          translator = list(filter(
+            lambda t:  [t['name']] == translator,
+            translatorsSorted,
+          ))[0]
+      except IndexError:
+        print(f"Could not find translator '{'.'.join(translator)}'", file=sys.stderr)
+        exit(1)
 
     # raise error if any specified extra arg is unknown
     unknown_extra_args = set(specified_extra_args.keys()) - set(translator['specialArgs'].keys())

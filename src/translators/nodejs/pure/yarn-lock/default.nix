@@ -19,16 +19,13 @@
       peer,
       ...
     }:
+
     let
       b = builtins;
       yarnLock = utils.readTextFile "${lib.elemAt inputDirectories 0}/yarn.lock";
       packageJSON = b.fromJSON (b.readFile "${lib.elemAt inputDirectories 0}/package.json");
-      parser = import ./parser.nix { inherit lib; inherit (externals) nix-parsec;};
+      parser = import ../yarn-lock/parser.nix { inherit lib; inherit (externals) nix-parsec;};
       tryParse = parser.parseLock yarnLock;
-
-      mainPackageName = packageJSON.name;
-      mainPackageKey = "${mainPackageName}#${packageJSON.version}";
-      
       parsedLock =
         if tryParse.type == "success" then
           lib.foldAttrs (n: a: n // a) {} tryParse.value
@@ -37,117 +34,126 @@
             failureOffset = tryParse.value.offset;
           in
             throw "parser failed at: \n${lib.substring failureOffset 50 tryParse.value.str}";
-      nameFromLockName = lockName:
-        let
-          version = lib.last (lib.splitString "@" lockName);
-        in
-          lib.removeSuffix "@${version}" lockName;
-      sources = lib.mapAttrs' (dependencyName: dependencyAttrs:
-        let
-          name = nameFromLockName dependencyName;
-        in
-          lib.nameValuePair ("${name}#${dependencyAttrs.version}") (
-          if lib.hasInfix "@github:" dependencyName
-              || lib.hasInfix "codeload.github.com/" dependencyAttrs.resolved then
-            let
-               gitUrlInfos = lib.splitString "/" dependencyAttrs.resolved;
-            in
-            {
-              type = "github";
-              rev = lib.elemAt gitUrlInfos 6;
-              owner = lib.elemAt gitUrlInfos 3;
-              repo = lib.elemAt gitUrlInfos 4;
-              version = dependencyAttrs.version;
-            }
-          else if lib.hasInfix "@link:" dependencyName then
-            {
-              version = dependencyAttrs.version;     
-              path = lib.last (lib.splitString "@link:" dependencyName);
-              type = "path";
-            }
-          else
-            {
-              version = dependencyAttrs.version;  
-              hash =
-                if dependencyAttrs ? integrity then
-                  dependencyAttrs.integrity
-                else
-                  throw "Missing integrity for ${dependencyName}";
-              url = lib.head (lib.splitString "#" dependencyAttrs.resolved);
-              type = "fetchurl";
-            }
-          )) parsedLock;
-      dependencyGraph =
-        (lib.mapAttrs'
-          (dependencyName: dependencyAttrs:
-            let
-              name = nameFromLockName dependencyName;
-              dependencies = 
-                dependencyAttrs.dependencies or []
-                ++ (lib.optionals optional (dependencyAttrs.optionalDependencies or []));
-              graph = lib.forEach dependencies (dependency:
-                builtins.head (
-                  lib.mapAttrsToList
-                    (name: value:
-                      let
-                        yarnName = "${name}@${value}";
-                        version = parsedLock."${yarnName}".version;
-                      in
-                      "${name}#${version}"
-                    )
-                    dependency
-                )
-              );
-            in
-              lib.nameValuePair ("${name}#${dependencyAttrs.version}") graph
-          )
-          parsedLock
-        )
-        //
-        {
-          "${mainPackageName}" =
-            lib.mapAttrsToList
-              (depName: depSemVer:
-                let
-                  depYarnKey = "${depName}@${depSemVer}";
-                  dependencyAttrs =
-                    if ! parsedLock ? "${depYarnKey}" then
-                      throw "Cannot find entry for top level dependency: '${depYarnKey}'"
-                    else
-                      parsedLock."${depYarnKey}";
-                in
-                  "${depName}#${dependencyAttrs.version}"
-              )
-              (
-                packageJSON.dependencies or {}
-                //
-                (lib.optionalAttrs dev (packageJSON.devDependencies or {}))
-                //
-                (lib.optionalAttrs peer (packageJSON.peerDependencies or {}))
-              );
-        };
-
-
     in
-    # TODO: produce dream lock like in /specifications/dream-lock-example.json
-      
-    rec {
-      inherit sources;
+    
+    utils.simpleTranslate translatorName rec {
 
-      generic = {
-        buildSystem = "nodejs";
-        producedBy = translatorName;
-        mainPackage = mainPackageName;
-        inherit dependencyGraph;
-        sourcesCombinedHash = null;
-      };
+      inputData = parsedLock;
+      mainPackageName = packageJSON.name;
+      mainPackageVersion = packageJSON.version;
+      buildSystemName = "nodejs";
 
-      # build system specific attributes
-      buildSystem = {
-
-        # example
+      buildSystemAttrs = {
         nodejsVersion = 14;
       };
+
+      mainPackageDependencies =
+        lib.mapAttrsToList
+          (depName: depSemVer:
+            let
+              depYarnKey = "${depName}@${depSemVer}";
+              dependencyAttrs =
+                if ! inputData ? "${depYarnKey}" then
+                  throw "Cannot find entry for top level dependency: '${depYarnKey}'"
+                else
+                  inputData."${depYarnKey}";
+            in
+              {
+                name = depName;
+                version = dependencyAttrs.version;
+              }
+          )
+          (
+            packageJSON.dependencies or {}
+            //
+            (lib.optionalAttrs dev (packageJSON.devDependencies or {}))
+            //
+            (lib.optionalAttrs peer (packageJSON.peerDependencies or {}))
+          );
+
+      serializePackages = inputData:
+        lib.mapAttrsToList
+          (yarnName: depAttrs: depAttrs // { inherit yarnName; })
+          parsedLock;
+
+      getOriginalID = dependencyObject:
+        dependencyObject.yarnName;
+
+      getName = dependencyObject:
+        let
+          version = lib.last (lib.splitString "@" dependencyObject.yarnName);
+        in
+          lib.removeSuffix "@${version}" dependencyObject.yarnName;
+
+      getVersion = dependencyObject:
+          dependencyObject.version;
+
+      getDependencies = dependencyObject: getDepByNameVer: getDepByOriginalID:
+        let
+          dependencies =
+            dependencyObject.dependencies or []
+            ++ (lib.optionals optional (dependencyObject.optionalDependencies or []));
+        in
+          lib.forEach
+            dependencies
+            (dependency: 
+              builtins.head (
+                lib.mapAttrsToList
+                  (name: value:
+                    let
+                      yarnName = "${name}@${value}";
+                      depObject = getDepByOriginalID yarnName; 
+                      version = depObject.version;
+                    in
+                      { inherit name version; }
+                  )
+                  dependency
+              )
+            );
+
+      getSourceType = dependencyObject:
+        if lib.hasInfix "@github:" dependencyObject.yarnName
+            || lib.hasInfix "codeload.github.com/" dependencyObject.resolved then
+          "github"
+        else if lib.hasInfix "@link:" dependencyObject.yarnName then
+          "path"
+        else
+          "fetchurl";
+
+      
+      sourceConstructors = {
+        github = dependencyObject:
+          let
+            gitUrlInfos = lib.splitString "/" dependencyObject.resolved;
+          in
+          {
+            type = "github";
+            rev = lib.elemAt gitUrlInfos 6;
+            owner = lib.elemAt gitUrlInfos 3;
+            repo = lib.elemAt gitUrlInfos 4;
+            version = dependencyObject.version;
+          };
+
+        path = dependencyObject:
+          {
+            version = dependencyObject.version;     
+            path = lib.last (lib.splitString "@link:" dependencyObject.yarnName);
+            type = "path";
+          };
+
+        fetchurl = dependencyObject:
+          {
+            type = "fetchurl";
+            version = dependencyObject.version;  
+            hash =
+              if dependencyObject ? integrity then
+                dependencyObject.integrity
+              else
+                throw "Missing integrity for ${dependencyObject.yarnName}";
+            url = lib.head (lib.splitString "#" dependencyObject.resolved);
+          };
+      };
+
     };
       
 

@@ -13,15 +13,23 @@ let
 
   b = builtins;
 
-  overrideUtils = callPackageDream ./overrideUtils.nix {};
+  overrideUtils = callPackageDream ./override.nix {};
+
+  dreamLockUtils = callPackageDream ./dream-lock.nix {};
+
+  translatorUtils = callPackageDream ./translator.nix {};
 
 in
 
+dreamLockUtils
+//
 overrideUtils
+//
+translatorUtils
 //
 rec {
 
-  readDreamLock = callPackageDream ./readDreamLock.nix {};
+  
 
   readTextFile = file: lib.replaceStrings [ "\r\n" ] [ "\n" ] (b.readFile file);
 
