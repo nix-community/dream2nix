@@ -58,7 +58,10 @@
                 else
                   inputData."${depYarnKey}";
             in
-              "${depName}#${dependencyAttrs.version}"
+              {
+                name = depName;
+                version = dependencyAttrs.version;
+              }
           )
           (
             packageJSON.dependencies or {}

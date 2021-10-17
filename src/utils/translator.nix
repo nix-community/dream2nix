@@ -8,23 +8,23 @@ let
 
   simpleTranslate = translatorName:
     {
+      # values
       mainPackageName,
       mainPackageVersion,
       mainPackageDependencies,
       buildSystemName,
       buildSystemAttrs,
       inputData,
+
+      # functions
       serializePackages,
-      getOriginalID,
       getName,
       getVersion,
-      getDependencies,
       getSourceType,
       sourceConstructors,
-
-      mainPackageSource ? {
-        type = "unknown";
-      }
+      getOriginalID ? null,
+      getDependencies ? null,
+      mainPackageSource ? { type = "unknown"; },
     }:
     let
   
@@ -54,10 +54,11 @@ let
         {}
         serializedPackagesList;
       
-      dependencyGraph = 
+      dependencyGraph =
         {
           "${mainPackageName}#${mainPackageVersion}" =
-            mainPackageDependencies inputData;
+            lib.forEach (mainPackageDependencies inputData)
+              (dep: "${dep.name}#${dep.version}");
         }
         //
         lib.listToAttrs
@@ -79,13 +80,15 @@ let
       {
           inherit sources;
 
-          generic = {
-            inherit dependencyGraph;
-            buildSystem = buildSystemName;
-            mainPackage = "${mainPackageName}#${mainPackageVersion}";
-            sourcesCombinedHash = null;
-            translator = translatorName;
-          };
+          generic =
+            {
+              buildSystem = buildSystemName;
+              mainPackage = "${mainPackageName}#${mainPackageVersion}";
+              sourcesCombinedHash = null;
+              translator = translatorName;
+            }
+            //
+            (lib.optionalAttrs (getDependencies != null) { inherit dependencyGraph; });
 
           # build system specific attributes
           buildSystem = buildSystemAttrs;
