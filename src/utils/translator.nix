@@ -9,12 +9,12 @@ let
   simpleTranslate = translatorName:
     {
       # values
+      inputData,
       mainPackageName,
       mainPackageVersion,
       mainPackageDependencies,
       buildSystemName,
       buildSystemAttrs,
-      inputData,
 
       # functions
       serializePackages,
@@ -22,8 +22,8 @@ let
       getVersion,
       getSourceType,
       sourceConstructors,
-      getOriginalID ? null,
       getDependencies ? null,
+      getOriginalID ? null,
       mainPackageSource ? { type = "unknown"; },
     }:
     let
@@ -49,7 +49,11 @@ let
       sources = b.foldl'
         (result: pkgData: lib.recursiveUpdate result {
           "${getName pkgData}#${getVersion pkgData}" =
-            sourceConstructors."${getSourceType pkgData}" pkgData;
+            let
+              type = getSourceType pkgData;
+            in
+              (sourceConstructors."${type}" pkgData)
+              // { inherit type; };
         })
         {}
         serializedPackagesList;
@@ -57,7 +61,7 @@ let
       dependencyGraph =
         {
           "${mainPackageName}#${mainPackageVersion}" =
-            lib.forEach (mainPackageDependencies inputData)
+            lib.forEach mainPackageDependencies
               (dep: "${dep.name}#${dep.version}");
         }
         //

@@ -36,7 +36,7 @@
             throw "parser failed at: \n${lib.substring failureOffset 50 tryParse.value.str}";
     in
     
-    utils.simpleTranslate translatorName {
+    utils.simpleTranslate translatorName rec {
 
       inputData = parsedLock;
       mainPackageName = packageJSON.name;
@@ -47,7 +47,7 @@
         nodejsVersion = 14;
       };
 
-      mainPackageDependencies = inputData:
+      mainPackageDependencies =
         lib.mapAttrsToList
           (depName: depSemVer:
             let

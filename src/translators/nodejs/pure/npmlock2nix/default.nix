@@ -1,5 +1,6 @@
 {
   lib,
+  nodejs,
 
   externals,
   translatorName,
@@ -14,8 +15,9 @@
       inputFiles,
 
       dev,
+      nodejs,
       ...
-    }:
+    }@args:
     let
       packageLock =
         if inputDirectories != [] then
@@ -28,12 +30,12 @@
       parseGithubDependency = dependency:
         externals.npmlock2nix.parseGitHubRef dependency.version;
 
-      getVersion = dependency:
-        if dependency ? from && dependency ? version then
-          builtins.substring 0 8 (parseGithubDependency dependency).rev
-        else
-          dependency.version;
-
+      getVersion = dependencyObject:
+          if dependencyObject ? from && dependencyObject ? version then
+            builtins.substring 0 8 (parseGithubDependency dependencyObject).rev
+          else
+            dependencyObject.version;
+      
       pinVersions = dependencies: parentScopeDeps:
         lib.mapAttrs
           (pname: pdata:
@@ -45,9 +47,10 @@
                   if ! pdata ? requires then
                     []
                   else
-                    lib.forEach (lib.attrNames pdata.requires) (reqName:
-                      "${reqName}#${getVersion selfScopeDeps."${reqName}"}"
-                    );
+                    lib.forEach (lib.attrNames pdata.requires) (reqName: {
+                      name = reqName;
+                      version = getVersion selfScopeDeps."${reqName}";
+                    });
                 dependencies = pinVersions (pdata.dependencies or {}) selfScopeDeps;
               }
           )
@@ -55,97 +58,74 @@
       
       packageLockWithPinnedVersions = pinVersions parsed.dependencies parsed.dependencies;
 
-      # recursively collect dependencies
-      parseDependencies = dependencies:
-        lib.mapAttrsToList  # returns list of lists
-          (pname: pdata:
-            if ! dev && pdata.dev or false then
-              []
-            else
-              # handle github dependency
-              if pdata ? from && pdata ? version then
-                let
-                  githubData = parseGithubDependency pdata;
-                in
-                [ rec {
-                  name = "${pname}#${version}";
-                  version = builtins.substring 0 8 githubData.rev;
-                  owner = githubData.org;
-                  repo = githubData.repo;
-                  rev = githubData.rev;
-                  type = "github";
-                  depsExact = pdata.depsExact;
-                }]
-              # handle http(s) dependency
-              else
-                [rec {
-                  name = "${pname}#${version}";
-                  version = pdata.version;
-                  url = pdata.resolved;
-                  type = "fetchurl";
-                  hash = pdata.integrity;
-                  depsExact = pdata.depsExact;
-                }]
-            ++
-            (lib.optionals (pdata ? dependencies)
-              (lib.flatten (parseDependencies pdata.dependencies))
-            )
-          )
-          dependencies;
     in
 
-    # the dream lock
-    rec {
-      sources =
-        let
-          lockedSources = lib.listToAttrs (
-            map
-              (dep: lib.nameValuePair
-                dep.name
-                (
-                  if dep.type == "github" then
-                    { inherit (dep) type version owner repo rev; }
-                  else
-                    { inherit (dep) type version url hash; }
-                )
-              )
-              (lib.flatten (parseDependencies packageLockWithPinnedVersions))
-          );
-        in
-          # if only a package-lock.json is given, the main source is missing
-          lockedSources // {
-            "${parsed.name}" = {
-              type = "unknown";
-              version = parsed.version;
+      utils.simpleTranslate translatorName {
+        # values
+        inputData = packageLockWithPinnedVersions;
+        mainPackageName = parsed.name;
+        mainPackageVersion = parsed.version;
+        mainPackageDependencies =
+          lib.mapAttrsToList
+            (pname: pdata:
+              { name = pname; version = getVersion pdata; })
+            (lib.filterAttrs
+              (pname: pdata: ! (pdata.dev or false) || dev)
+              parsed.dependencies);
+        buildSystemName = "nodejs";
+        buildSystemAttrs = { nodejsVersion = args.nodejs; };
+
+        # functions
+        serializePackages = inputData:
+          let
+            serialize = inputData:
+              lib.mapAttrsToList  # returns list of lists
+                (pname: pdata:
+                  [ (pdata // { inherit pname; }) ]
+                  ++
+                  (lib.optionals (pdata ? dependencies)
+                    (lib.flatten (serialize pdata.dependencies))))
+                inputData;
+          in
+            lib.filter
+              (pdata:
+                dev || ! (pdata.dev or false))
+              (lib.flatten (serialize inputData));
+
+        getName = dependencyObject: dependencyObject.pname;
+
+        inherit getVersion;
+
+        getSourceType = dependencyObject:
+          if dependencyObject ? from && dependencyObject ? version then
+            "github"
+          else
+            "fetchurl";
+        
+        sourceConstructors = {
+          github = dependencyObject:
+            let
+              githubData = parseGithubDependency dependencyObject;
+            in
+              rec {
+                version = builtins.substring 0 8 githubData.rev;
+                owner = githubData.org;
+                repo = githubData.repo;
+                rev = githubData.rev;
+              };
+
+          fetchurl = dependencyObject:
+            rec {
+              version = dependencyObject.version;
+              url = dependencyObject.resolved;
+              hash = dependencyObject.integrity;
             };
-          };
+        };
 
-      generic = {
-        buildSystem = "nodejs";
-        producedBy = translatorName;
-        mainPackage = parsed.name;
-        dependencyGraph =
-          {
-            "${parsed.name}" =
-              lib.mapAttrsToList
-                (pname: pdata: "${pname}#${getVersion pdata}")
-                (lib.filterAttrs
-                  (pname: pdata: ! (pdata.dev or false) || dev)
-                  parsed.dependencies);
-          }
-          //
-          lib.listToAttrs 
-            (map
-              (dep: lib.nameValuePair dep.name dep.depsExact)
-              (lib.flatten (parseDependencies packageLockWithPinnedVersions))
-            );
-        sourcesCombinedHash = null;
+        getDependencies = dependencyObject: getDepByNameVer: getDepByOriginalID:
+          dependencyObject.depsExact;
       };
 
-      buildSystem = {
-        nodejsVersion = 14;
-      };
-    };
 
   compatiblePaths =
     {
@@ -165,6 +145,16 @@
     dev = {
       description = "include dependencies for development";
       type = "flag";
+    };
+
+    nodejs = {
+      description = "specify nodejs version";
+      default = lib.elemAt (lib.splitString "." nodejs.version) 0;
+      examples = [
+        "14"
+        "16"
+      ];
+      type = "argument";
     };
 
   };
