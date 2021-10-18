@@ -10,7 +10,6 @@
   utils,
   ...
 }:
-
 {
   githubNewestReleaseTag =
     {
@@ -60,5 +59,5 @@
         | python3 -c \
           'import re, sys; print(re.search(open("${reFile}").read(), sys.stdin.read()).group("ver"), end="")'
       '';
-  
+    
 }

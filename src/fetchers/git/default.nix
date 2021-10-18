@@ -19,9 +19,9 @@ in
 
   versionField = "rev";
 
-  outputs = { url, rev }@inp:
+  outputs = { url, rev, ... }@inp:
     if b.match "refs/(heads|tags)/.*" rev == null && builtins.match "[a-f0-9]*" rev == null then
-      throw ''rev must either be a sha1 hash or "refs/heads/branch-name" or "refs/tags/tag-name"''
+      throw ''rev must either be a sha1 revision or "refs/heads/branch-name" or "refs/tags/tag-name"''
     else
     let
 

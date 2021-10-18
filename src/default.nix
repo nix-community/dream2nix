@@ -50,7 +50,7 @@ let
   };
 
   # updater modules to find newest package versions
-  finders = callPackageDream ./finders {};
+  updaters = callPackageDream ./updaters {};
 
   # the translator modules and utils for all subsystems
   translators = callPackageDream ./translators {};
@@ -72,7 +72,7 @@ in
 
 rec {
 
-  inherit apps builders fetchers finders dream2nixWithExternals translators utils;
+  inherit apps builders dream2nixWithExternals fetchers translators updaters utils;
 
   # automatically find a suitable builder for a given generic lock
   findBuilder = dreamLock:

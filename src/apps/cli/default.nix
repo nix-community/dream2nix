@@ -23,7 +23,7 @@ in
   program = writeScript "cli" ''
     dream2nixSrc=${dream2nixWithExternals} \
     fetcherNames="${b.toString (lib.attrNames fetchers.fetchers)}" \
-      ${cliPython}/bin/python ${./cli.py} "$@"
+      ${cliPython}/bin/python ${./.}/cli.py "$@"
   '';
 
   templateDefaultNix =

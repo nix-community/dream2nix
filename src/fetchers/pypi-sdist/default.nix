@@ -15,6 +15,8 @@
 
   versionField = "version";
 
+  defaultUpdater = "pypiNewestReleaseVersion";
+
   outputs = { pname, version, extension ? "tar.gz", ... }@inp:
     let
       b = builtins;
