@@ -1,4 +1,5 @@
 {
+  bash,
   coreutils,
   lib,
   nix,
@@ -21,15 +22,15 @@ let
 
 in
 
-dreamLockUtils
-//
 overrideUtils
 //
 translatorUtils
 //
 rec {
 
-  
+  dreamLock = dreamLockUtils;
+
+  inherit (dreamLockUtils) readDreamLock;
 
   readTextFile = file: lib.replaceStrings [ "\r\n" ] [ "\n" ] (b.readFile file);
 
@@ -69,6 +70,8 @@ rec {
 
   # builder to create a shell script that has it's own PATH
   writePureShellScript = availablePrograms: script: writeScriptBin "run" ''
+    #!${bash}/bin/bash
+
     export PATH="${lib.makeBinPath availablePrograms}"
     tmpdir=$(${coreutils}/bin/mktemp -d)
     cd $tmpdir

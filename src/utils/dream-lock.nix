@@ -12,7 +12,7 @@ let
     }@args:
     let
       lock =
-        if b.isPath dreamLock then
+        if b.isPath dreamLock || b.isString dreamLock then
           b.fromJSON (b.readFile dreamLock)
         else
           dreamLock;
@@ -21,8 +21,11 @@ let
     in
       lock;
 
+  getMainPackageSource = dreamLock:
+    dreamLock.sources."${dreamLock.generic.mainPackage}";
+
+
 in
   {
-    inherit readDreamLock;
+    inherit getMainPackageSource readDreamLock;
   }
-

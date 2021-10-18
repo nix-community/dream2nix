@@ -19,6 +19,8 @@
 
   versionField = "rev";
 
+  defaultUpdater = "githubNewestReleaseTag";
+
   outputs = { owner, repo, rev, ... }@inp: 
     let
       b = builtins;
@@ -60,15 +62,17 @@
 
       fetched = hash:
         if hash == null then
-          if allowBuiltinFetchers then
+          b.trace "using fetchGit" 
+          (if allowBuiltinFetchers then
             builtins.fetchGit {
               inherit rev;
               allRefs = true;
               url = "https://github.com/${owner}/${repo}";
             }
           else
-            throw githubMissingHashErrorText (inp.pname or repo)
+            throw githubMissingHashErrorText (inp.pname or repo))
         else
+          b.trace "using fetchFromGithub"
           fetchFromGitHub {
             inherit owner repo rev hash;
           };

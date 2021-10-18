@@ -1,9 +1,9 @@
 {
-  callPackageDream,
   lib,
 
+  # dream2nix
+  callPackageDream,
   utils,
-  # config
   allowBuiltinFetchers,
   ...
 }:
@@ -24,6 +24,42 @@ rec {
   defaultFetcher = callPackageDream ./default-fetcher.nix { inherit fetchers fetchSource; };
   
   combinedFetcher = callPackageDream ./combined-fetcher.nix { inherit defaultFetcher; };
+
+  constructSource =
+    {
+      type,
+      ...
+    }@args:
+    let
+      fetcher = fetchers."${type}";
+      namesKeep = fetcher.inputs ++ [ "version" "type" "hash" ];
+      argsKeep = lib.filterAttrs (n: v: b.elem n namesKeep) args;
+      fetcherOutputs = fetcher.outputs args;
+    in
+      argsKeep
+      # if version was not provided, use the default version field
+      // (lib.optionalAttrs (! args ? version) {
+        version = args."${fetcher.versionField}";
+      })
+      # if the hash was not provided, calculate hash on the fly (impure)
+      // (lib.optionalAttrs (! args ? hash) {
+        hash = fetcherOutputs.calcHash "sha256";
+      });
+  
+  updateSource =
+    {
+      source,
+      newVersion,
+      ...
+    }:
+    let
+      fetcher = fetchers."${source.type}";
+      argsKeep = b.removeAttrs source [ "hash" ];
+    in
+    constructSource (argsKeep // {
+      version = newVersion;
+      "${fetcher.versionField}" = newVersion;
+    });
 
   fetchSource = { source, }:
     let
@@ -56,11 +92,10 @@ rec {
           fetcher = fetchers.fetchurl;
           fetcherOutputs = fetchers.http.outputs { url = shortcut; };
         in
-          {
+          constructSource {
             type = "fetchurl";
             hash = fetcherOutputs.calcHash "sha256";
             url = shortcut;
-            versionField = fetcher.versionField;
           };
 
       translateGitShortcut =
@@ -80,11 +115,10 @@ rec {
           args = params // { inherit url; };
           fetcherOutputs = fetcher.outputs (checkArgs "git" args);
         in
-          {
+          constructSource {
             type = "git";
             hash = fetcherOutputs.calcHash "sha256";
             inherit url;
-            versionField = fetcher.versionField;
           };
         
       translateRegularShortcut =
@@ -111,11 +145,10 @@ rec {
               Should be ${fetcherName}:${lib.concatStringsSep "/" fetcher.inputs}
             ''
           else
-            args // {
+            constructSource (args // {
               type = fetcherName;
               hash = fetcherOutputs.calcHash "sha256";
-              versionField = fetcher.versionField;
-            };
+            });
     in
       if lib.hasPrefix "git+" (lib.head (lib.splitString ":" shortcut)) then
         translateGitShortcut
@@ -123,4 +156,5 @@ rec {
         translateHttpUrl
       else
         translateRegularShortcut;
+    
 }

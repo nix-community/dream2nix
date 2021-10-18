@@ -148,7 +148,7 @@
     };
 
     nodejs = {
-      description = "specify nodejs version";
+      description = "nodejs version to use for building";
       default = lib.elemAt (lib.splitString "." nodejs.version) 0;
       examples = [
         "14"
