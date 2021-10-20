@@ -1,4 +1,5 @@
 {
+  fetchurl,
   python3,
 
   utils,
@@ -23,13 +24,31 @@
     in
     {
 
-      calcHash = algo: utils.hashPath algo (b.fetchurl {
-        url = "https://files.pythonhosted.org/packages/${builtins.substring 0 1 pname}/${pname}/${pname}-${version}.${extension}";
-      });
+      calcHash = algo: utils.hashPath algo (
+        let
+          firstChar = builtins.substring 0 1 pname;
+          result = b.fetchurl {
+            url =
+              "https://files.pythonhosted.org/packages/source/"
+              + "${firstChar}/${pname}/${pname}-${version}.${extension}";
+          };
+        in
+          result
+      
+      );
 
       fetched = hash:
-        python3.pkgs.fetchPypi {
-          inherit pname version extension hash;
-        };
+        let
+          firstChar = builtins.substring 0 1 pname;
+          result = (fetchurl {
+            url =
+              "https://files.pythonhosted.org/packages/source/"
+              + "${firstChar}/${pname}/${pname}-${version}.${extension}";
+            sha256 = hash;
+          }).overrideAttrs (old: {
+            outputHashMode = "recursive";
+          });
+        in
+          result;
     };
 }

@@ -102,7 +102,7 @@ class PackageCommand(Command):
       sourceSpec =\
         callNixFunction("fetchers.translateShortcut", shortcut=source)
       source =\
-        buildNixFunction("fetchers.fetchShortcut", shortcut=source)
+        buildNixFunction("fetchers.fetchShortcut", shortcut=source, extract=True)
     # handle source paths
     else:
       # check if source path exists
@@ -118,7 +118,7 @@ class PackageCommand(Command):
         sourceSpec =\
           sourceDreamLock['sources'][sourceDreamLock['generic']['mainPackage']]
         source = \
-          buildNixFunction("fetchers.fetchSource", source=sourceSpec)
+          buildNixFunction("fetchers.fetchSource", source=sourceSpec, extract=True)
 
     # select translator
     translatorsSorted = sorted(
@@ -216,10 +216,10 @@ class PackageCommand(Command):
             print(f"Please specify '{arg_name}': {arg['description']}")
             specified_extra_args[arg_name] = self.confirm(f"{arg['description']}:", False)
           else:
-            print(
-              f"Please specify '{arg_name}': {arg['description']}"
-              f"\nLeave emtpy for default ({arg['default']})")
+            print(f"Please specify '{arg_name}': {arg['description']}")
             print(f"Example values: " + ', '.join(arg['examples']))
+            if 'default' in arg:
+              print(f"\nLeave emtpy for default ({arg['default']})")
             specified_extra_args[arg_name] = self.ask(f"{arg_name}:", arg.get('default'))
 
     # arguments for calling the translator nix module
@@ -280,42 +280,43 @@ class PackageCommand(Command):
 
     # clean up dependency graph
     # remove empty entries
-    depGraph = lock['generic']['dependencyGraph']
     if 'dependencyGraph' in lock['generic']:
-      for pname, deps in depGraph.copy().items():
-        if not deps:
-          del depGraph[pname]
+      depGraph = lock['generic']['dependencyGraph']
+      if 'dependencyGraph' in lock['generic']:
+        for pname, deps in depGraph.copy().items():
+          if not deps:
+            del depGraph[pname]
 
-    # remove cyclic dependencies
-    edges = set()
-    for pname, deps in depGraph.items():
-      for dep in deps:
-        edges.add((pname, dep))
-    G = nx.DiGraph(sorted(list(edges)))
-    cycle_count = 0
-    removed_edges = []
-    for pname in list(depGraph.keys()):
-      try:
-        while True:
-          cycle = nx.find_cycle(G, pname)
-          cycle_count += 1
-          # remove_dependecy(indexed_pkgs, G, cycle[-1][0], cycle[-1][1])
-          node_from, node_to = cycle[-1][0], cycle[-1][1]
-          G.remove_edge(node_from, node_to)
-          depGraph[node_from].remove(node_to)
-          removed_edges.append((node_from, node_to))
-      except nx.NetworkXNoCycle:
-        continue
-    lock['generic']['dependenciesRemoved'] = {}
-    if removed_edges:
+      # remove cyclic dependencies
+      edges = set()
+      for pname, deps in depGraph.items():
+        for dep in deps:
+          edges.add((pname, dep))
+      G = nx.DiGraph(sorted(list(edges)))
+      cycle_count = 0
+      removed_edges = []
+      for pname in list(depGraph.keys()):
+        try:
+          while True:
+            cycle = nx.find_cycle(G, pname)
+            cycle_count += 1
+            # remove_dependecy(indexed_pkgs, G, cycle[-1][0], cycle[-1][1])
+            node_from, node_to = cycle[-1][0], cycle[-1][1]
+            G.remove_edge(node_from, node_to)
+            depGraph[node_from].remove(node_to)
+            removed_edges.append((node_from, node_to))
+        except nx.NetworkXNoCycle:
+          continue
       lock['generic']['dependenciesRemoved'] = {}
-      removed_cycles_text = 'Removed Cyclic dependencies:'
-      for node, removed_node in removed_edges:
-        removed_cycles_text += f"\n  {node} -> {removed_node}"
-        if node not in lock['generic']['dependenciesRemoved']:
-          lock['generic']['dependenciesRemoved'][node] = []
-        lock['generic']['dependenciesRemoved'][node].append(removed_node)
-      print(removed_cycles_text)
+      if removed_edges:
+        lock['generic']['dependenciesRemoved'] = {}
+        removed_cycles_text = 'Removed Cyclic dependencies:'
+        for node, removed_node in removed_edges:
+          removed_cycles_text += f"\n  {node} -> {removed_node}"
+          if node not in lock['generic']['dependenciesRemoved']:
+            lock['generic']['dependenciesRemoved'][node] = []
+          lock['generic']['dependenciesRemoved'][node].append(removed_node)
+        print(removed_cycles_text)
 
     # calculate combined hash if --combined was specified
     if combined:

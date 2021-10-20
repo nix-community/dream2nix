@@ -1,6 +1,7 @@
 {
   bash,
   coreutils,
+  fetchzip,
   lib,
   nix,
   runCommand,
@@ -13,10 +14,10 @@
 let
 
   b = builtins;
+  
+  dreamLockUtils = callPackageDream ./dream-lock.nix {};
 
   overrideUtils = callPackageDream ./override.nix {};
-
-  dreamLockUtils = callPackageDream ./dream-lock.nix {};
 
   translatorUtils = callPackageDream ./translator.nix {};
 
@@ -81,5 +82,26 @@ rec {
     cd
     ${coreutils}/bin/rm -rf $tmpdir
   '';
+
+  extractSource =
+    {
+      source,
+    }:
+    runCommand "${source.name}-extracted"
+      {
+        inherit source;
+      }
+      # fetchzip can extract tarballs as well
+      ''
+        if test -d $source; then
+          ln -s $source $out
+        else
+          ln -s \
+            ${(fetchzip { url="file:${source}"; }).overrideAttrs (old: {
+              outputHash = null;
+            })} \
+            $out
+        fi
+      '';
 
 }

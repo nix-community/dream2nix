@@ -46,7 +46,7 @@ class UpdateCommand(Command):
         exit(1)
 
     # find new version
-    version = self.option('version')
+    version = self.option('new-version')
     if not version:
       update_script = buildNixFunction(
         "updaters.makeUpdateScript",
@@ -55,7 +55,7 @@ class UpdateCommand(Command):
       )
       update_proc = sp.run([f"{update_script}/bin/run"], capture_output=True)
       version = update_proc.stdout.decode().strip()
-    print(f"\nUpdating to version {version}")
+    print(f"Updating to version {version}")
 
     cli_py = os.path.abspath(f"{__file__}/../../cli.py")
     # delete the hash

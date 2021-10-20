@@ -45,7 +45,8 @@ rec {
       // (lib.optionalAttrs (! args ? hash) {
         hash = fetcherOutputs.calcHash "sha256";
       });
-  
+
+  # update source spec to different version
   updateSource =
     {
       source,
@@ -58,19 +59,30 @@ rec {
     in
     constructSource (argsKeep // {
       version = newVersion;
+    } // {
       "${fetcher.versionField}" = newVersion;
     });
 
-  fetchSource = { source, }:
+  # fetch a source defined via a dream lock source spec
+  fetchSource = { source, extract ? false, }:
     let
       fetcher = fetchers."${source.type}";
       fetcherOutputs = fetcher.outputs source;
+      maybeArchive = fetcherOutputs.fetched (source.hash or null);
     in
-      fetcherOutputs.fetched (source.hash or null);
-  
-  fetchShortcut = { shortcut, }:
-    fetchSource { source = translateShortcut { inherit shortcut; }; };
+      if extract then
+        utils.extractSource { source = maybeArchive; }
+      else
+        maybeArchive;
 
+  # fetch a source define dby a shortcut
+  fetchShortcut = { shortcut, extract ? false, }:
+    fetchSource {
+      source = translateShortcut { inherit shortcut; };
+      inherit extract;
+    };
+
+  # translate shortcut to dream lock source spec
   translateShortcut = { shortcut, }:
     let
 

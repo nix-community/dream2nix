@@ -2,7 +2,9 @@ from glob import glob
 import base64
 import hashlib
 import json
+import os
 import sys
+import urllib.request
 
 
 def main():
@@ -25,7 +27,12 @@ def main():
     # example: charset_normalizer-2.0.4-py3-none-any.whl
     if file.endswith('.whl'):
       format = 'wheel'
-      pname, _, pyver, _, _ = file.split('-')
+      pname, version, _, _, _ = file.split('-')
+      with urllib.request.urlopen(f'https://pypi.org/pypi/{pname}/json') as f:
+        releasesForVersion = json.load(f)['releases'][version]
+      release = next(r for r in releasesForVersion if r['filename'] == file)
+      pyver = release['python_version']
+
     # example: requests-2.26.0.tar.gz
     else:
       format = 'sdist'
@@ -44,21 +51,18 @@ def main():
     )
 
   # create generic lock
+  # This translator is not aware of the exact dependency graph.
+  # This restricts us to use a single derivation builder later,
+  # which will install all packages at once
   dream_lock = dict(
     sources={},
     generic={
       "buildSystem": "python",
-      "mainPackage": None,
-
-      # This translator is not aware of the exact dependency graph.
-      # This restricts us to use a single derivation builder later,
-      # which will install all packages at once
-      "dependencyGraph": None,
+      "mainPackage": os.environ.get('MAIN'),
 
       "sourcesCombinedHash": None,
     },
     buildSystem={
-      "main": jsonInput['main'],
       "application": jsonInput['application'],
       "pythonAttr": f"python{sys.version_info.major}{sys.version_info.minor}",
       "sourceFormats":
