@@ -7,6 +7,9 @@
     # required for translator nodejs/pure/package-lock
     nix-parsec = { url = "github:nprindle/nix-parsec"; flake = false; };
 
+    # required for translator pip
+    mach-nix = { url = "mach-nix"; flake = false; };
+
     # required for builder nodejs/node2nix
     node2nix = { url = "github:svanderburg/node2nix"; flake = false; };
 
@@ -14,7 +17,7 @@
     npmlock2nix = { url = "github:nix-community/npmlock2nix"; flake = false; };
   };
 
-  outputs = { self, nix-parsec, nixpkgs, node2nix, npmlock2nix }:
+  outputs = { self, mach-nix, nix-parsec, nixpkgs, node2nix, npmlock2nix }:
     let
 
       lib = nixpkgs.lib;
@@ -26,7 +29,8 @@
       );
 
       externalSourcesFor = forAllSystems (system: pkgs: pkgs.runCommand "dream2nix-vendored" {} ''
-        mkdir -p $out/{npmlock2nix,node2nix,nix-parsec}
+        mkdir -p $out/{mach-nix-lib,npmlock2nix,node2nix,nix-parsec}
+        cp ${mach-nix}/{lib/extractor/{default.nix,distutils.patch,setuptools.patch},LICENSE} $out/mach-nix-lib/
         cp ${npmlock2nix}/{internal.nix,LICENSE} $out/npmlock2nix/
         cp ${node2nix}/{nix/node-env.nix,LICENSE} $out/node2nix/
         cp ${nix-parsec}/{parsec,lexer}.nix $out/nix-parsec/

@@ -16,7 +16,8 @@
                 "fetchurl",
                 "git",
                 "github",
-                "gitlab"
+                "gitlab",
+                "pypi-sdist"
               ]
             },
             "url": {
@@ -61,6 +62,17 @@
                   "owner": { "type": "string" },
                   "repo": { "type": "string" },
                   "rev": { "type": "string" }
+                }
+              }
+            },
+            {
+              "if": {
+                "properties": { "type": { "const": "pypi-sdist" } }
+              },
+              "then": {
+                "properties": {
+                  "pname": { "type": "string" },
+                  "version": { "type": "string" }
                 }
               }
             }

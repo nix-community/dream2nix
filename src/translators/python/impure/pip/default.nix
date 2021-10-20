@@ -1,5 +1,6 @@
 {
-  # dream2nix utils
+  # dream2nix
+  externalSources,
   utils,
 
   bash,
@@ -9,6 +10,21 @@
   writeScriptBin,
   ...
 }:
+
+let
+  b = builtins;
+
+  machNixExtractor = "${externalSources}/mach-nix-lib/default.nix";
+
+  setuptools_shim = ''
+    import sys, setuptools, tokenize, os; sys.argv[0] = 'setup.py'; __file__='setup.py';
+    f=getattr(tokenize, 'open', open)(__file__);
+    code=f.read().replace('\r\n', '\n');
+    f.close();
+    exec(compile(code, __file__, 'exec'))
+  '';
+
+in
 
 {
 
@@ -24,29 +40,57 @@
 
     # read the json input
     outputFile=$(${jq}/bin/jq '.outputFile' -c -r $jsonInput)
+    inputDirectory=$(${jq}/bin/jq '.inputDirectories | .[0]' -c -r $jsonInput)
     pythonAttr=$(${jq}/bin/jq '.pythonAttr' -c -r $jsonInput)
-    inputDirectories=$(${jq}/bin/jq '.inputDirectories | .[]' -c -r $jsonInput)
-    inputFiles=$(${jq}/bin/jq '.inputFiles | .[]' -c -r $jsonInput)
+    application=$(${jq}/bin/jq '.application' -c -r $jsonInput)
 
     # build python and pip executables
     tmpBuild=$(mktemp -d)
-    cd $tmpBuild
-    nix build --impure --expr "(import <nixpkgs> {}).$pythonAttr" -o python
-    nix build --impure --expr "(import <nixpkgs> {}).$pythonAttr.pkgs.pip" -o pip
-    cd -
+    nix build --show-trace --impure --expr \
+      "
+        (import ${machNixExtractor} {}).mkPy
+          (import <nixpkgs> {}).$pythonAttr
+      " \
+      -o $tmpBuild/python
+    nix build --impure --expr "(import <nixpkgs> {}).$pythonAttr.pkgs.pip" -o $tmpBuild/pip
+    python=$tmpBuild/python/bin/python
+    pip=$tmpBuild/pip/bin/pip
 
     # prepare temporary directory
     tmp=$(mktemp -d)
+
+    # extract python requirements from setup.py
+    cp -r $inputDirectory $tmpBuild/src
+    chmod -R +w $tmpBuild/src
+    cd $tmpBuild/src
+    chmod +x setup.py || true
+    echo "extracting dependencies"
+    out_file=$tmpBuild/python.json \
+        dump_setup_attrs=y \
+        PYTHONIOENCODING=utf8 \
+        LANG=C.utf8 \
+      $python -c "${setuptools_shim}" install &> $tmpBuild/python.log || true
+
+    # extract requirements from json result
+    $python -c "
+    import json
+    result = json.load(open('$tmpBuild/python.json'))
+    for key in ('install_requires', 'setup_requires'):
+      if key in result:
+        print('\n'.join(result[key]))
+    " > $tmpBuild/computed_requirements
 
     # download files according to requirements
     $tmpBuild/pip/bin/pip download \
       --no-cache \
       --dest $tmp \
       --progress-bar off \
-      -r ''${inputFiles/$'\n'/$' -r '}
+      -r $tmpBuild/computed_requirements
+      # -r ''${inputFiles/$'\n'/$' -r '}
 
     # generate the generic lock from the downloaded list of files
-    $tmpBuild/python/bin/python ${./generate-dream-lock.py} $tmp $jsonInput
+    MAIN=$(${jq}/bin/jq '.name' -c -r $tmpBuild/python.json) \
+      $tmpBuild/python/bin/python ${./generate-dream-lock.py} $tmp $jsonInput
 
     rm -rf $tmp $tmpBuild
   '';
@@ -75,14 +119,6 @@
         "python27"
         "python39"
         "python310"
-      ];
-      type = "argument";
-    };
-
-    main = {
-      description = "name of the main package";
-      examples = [
-        "some-package"
       ];
       type = "argument";
     };

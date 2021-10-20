@@ -193,12 +193,16 @@ rec {
       # if generic lock is a file, read and parse it
       dreamLock' = (parseLock dreamLock);
     in
-    builder ({
-      inherit packageOverrides;
-      dreamLock = dreamLock';
-      fetchedSources = (fetchSources {
-        inherit dreamLock fetcher sourceOverrides allowBuiltinFetchers;
-      }).fetchedSources;
-    } // builderArgs);
+    builder (
+      {
+        dreamLock = dreamLock';
+        fetchedSources = (fetchSources {
+          inherit dreamLock fetcher sourceOverrides allowBuiltinFetchers;
+        }).fetchedSources;
+      }
+      // builderArgs
+      // lib.optionalAttrs (packageOverrides != {}) {
+        inherit packageOverrides;
+      });
    
 }
