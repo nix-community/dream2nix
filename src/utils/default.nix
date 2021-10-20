@@ -87,21 +87,18 @@ rec {
     {
       source,
     }:
-    runCommand "${source.name}-extracted"
-      {
-        inherit source;
-      }
       # fetchzip can extract tarballs as well
-      ''
-        if test -d $source; then
-          ln -s $source $out
-        else
-          ln -s \
-            ${(fetchzip { url="file:${source}"; }).overrideAttrs (old: {
-              outputHash = null;
-            })} \
-            $out
-        fi
-      '';
+      (fetchzip { url="file:${source}"; }).overrideAttrs (old: {
+        name = "${source.name}-extracted";
+        outputHash = null;
+        postFetch =
+          ''
+            if test -d ${source}; then
+              ln -s ${source} $out
+              exit 0
+            fi
+          ''
+          + old.postFetch;
+      });
 
 }
