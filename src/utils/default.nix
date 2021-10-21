@@ -19,10 +19,14 @@ let
 
   overrideUtils = callPackageDream ./override.nix {};
 
+  parseUtils = callPackageDream ./parsing.nix {};
+
   translatorUtils = callPackageDream ./translator.nix {};
 
 in
 
+parseUtils
+//
 overrideUtils
 //
 translatorUtils
@@ -100,5 +104,6 @@ rec {
           ''
           + old.postFetch;
       });
+  
 
 }

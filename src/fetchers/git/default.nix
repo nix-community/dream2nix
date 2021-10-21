@@ -61,7 +61,7 @@ in
             throw "Cannot fetch git repo without integrity. Specify at least 'rev' or 'sha256'"
           else
             b.fetchGit (
-              { inherit url;} // refAndRev
+              { inherit url; allRefs = true; } // refAndRev
             )
         else
           fetchgit {

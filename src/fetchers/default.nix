@@ -28,6 +28,7 @@ rec {
   constructSource =
     {
       type,
+      reComputeHash ? false,
       ...
     }@args:
     let
@@ -42,7 +43,7 @@ rec {
         version = args."${fetcher.versionField}";
       })
       # if the hash was not provided, calculate hash on the fly (impure)
-      // (lib.optionalAttrs (! args ? hash) {
+      // (lib.optionalAttrs reComputeHash {
         hash = fetcherOutputs.calcHash "sha256";
       });
 
@@ -59,6 +60,7 @@ rec {
     in
     constructSource (argsKeep // {
       version = newVersion;
+      reComputeHash = true;
     } // {
       "${fetcher.versionField}" = newVersion;
     });

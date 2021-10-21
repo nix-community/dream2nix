@@ -1,5 +1,8 @@
 {
   lib,
+
+  # dream2nix
+  fetchers,
   ...
 }:
 let
@@ -51,9 +54,11 @@ let
           "${getName pkgData}#${getVersion pkgData}" =
             let
               type = getSourceType pkgData;
+              constructedArgs = 
+                (sourceConstructors."${type}" pkgData)
+                // { inherit type; };
             in
-              (sourceConstructors."${type}" pkgData)
-              // { inherit type; };
+              fetchers.constructSource constructedArgs;
         })
         {}
         serializedPackagesList;
