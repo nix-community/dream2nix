@@ -31,20 +31,24 @@ let
 
   node2nixDependencies =
     let
-      makeSource = name: {
-        name = lib.head (lib.splitString "#" name);
-        packageName = lib.head (lib.splitString "#" name);
-        version = dreamLock.sources."${name}".version;
-        src = fetchedSources."${name}";
-        dependencies =
-          lib.forEach
-            (lib.filter
-              (depName: ! builtins.elem depName dreamLock.generic.dependencyGraph."${mainPackageName}")
-              (dreamLock.generic.dependencyGraph."${name}" or []))
-            (dependency:
-              makeSource dependency
-            );
-      };
+      makeSource = name: 
+        let
+          packageName = lib.head (lib.splitString "#" name);
+        in
+          {
+            inherit packageName;
+            name = lib.strings.sanitizeDerivationName packageName;
+            version = dreamLock.sources."${name}".version;
+            src = fetchedSources."${name}";
+            dependencies =
+              lib.forEach
+                (lib.filter
+                  (depName: ! builtins.elem depName dreamLock.generic.dependencyGraph."${mainPackageName}")
+                  (dreamLock.generic.dependencyGraph."${name}" or []))
+                (dependency:
+                  makeSource dependency
+                );
+          };
     in
       lib.forEach
         dreamLock.generic.dependencyGraph."${mainPackageName}"
@@ -52,8 +56,8 @@ let
 
   callNode2Nix = funcName: args:
     node2nixEnv."${funcName}" rec {
-      name = lib.head (lib.splitString "#" mainPackageName);
-      packageName = name;
+      name = lib.strings.sanitizeDerivationName packageName;
+      packageName = lib.head (lib.splitString "#" mainPackageName);
       version = dreamLock.sources."${mainPackageName}".version;
       dependencies = node2nixDependencies;
       # buildInputs ? []

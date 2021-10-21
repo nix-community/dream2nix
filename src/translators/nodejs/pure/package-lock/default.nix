@@ -19,6 +19,9 @@
       ...
     }@args:
     let
+
+      b = builtins;
+
       packageLock =
         if inputDirectories != [] then
           "${lib.elemAt inputDirectories 0}/package-lock.json"
@@ -27,14 +30,19 @@
 
       parsed = externals.npmlock2nix.readLockfile packageLock;
 
-      parseGithubDependency = dependency:
-        externals.npmlock2nix.parseGitHubRef dependency.version;
+      identifyGitSource = dependencyObject:
+        # TODO: when integrity is there, and git url is github then use tarball instead
+        # ! (dependencyObject ? integrity) &&
+          utils.identifyGitUrl dependencyObject.version;
+
+      # parseGithubDependency = dependency:
+      #   externals.npmlock2nix.parseGitHubRef dependency.version;
 
       getVersion = dependencyObject:
-          if dependencyObject ? from && dependencyObject ? version then
-            builtins.substring 0 8 (parseGithubDependency dependencyObject).rev
-          else
-            dependencyObject.version;
+        if identifyGitSource dependencyObject then
+          builtins.substring 0 8 (utils.parseGitUrl dependencyObject.version).rev
+        else
+          dependencyObject.version;
       
       pinVersions = dependencies: parentScopeDeps:
         lib.mapAttrs
@@ -97,22 +105,15 @@
         inherit getVersion;
 
         getSourceType = dependencyObject:
-          if dependencyObject ? from && dependencyObject ? version then
-            "github"
+          if identifyGitSource dependencyObject then
+            "git"
           else
             "fetchurl";
         
         sourceConstructors = {
-          github = dependencyObject:
-            let
-              githubData = parseGithubDependency dependencyObject;
-            in
-              rec {
-                version = builtins.substring 0 8 githubData.rev;
-                owner = githubData.org;
-                repo = githubData.repo;
-                rev = githubData.rev;
-              };
+
+          git = dependencyObject:
+            utils.parseGitUrl dependencyObject.version;
 
           fetchurl = dependencyObject:
             rec {

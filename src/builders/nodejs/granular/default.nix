@@ -15,7 +15,7 @@
 {
   fetchedSources,
   dreamLock,
-  packageOverrides,
+  packageOverrides ? {},
 
   # custom opts:
   standalonePackageNames ? [],
