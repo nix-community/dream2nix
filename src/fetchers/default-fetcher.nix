@@ -9,7 +9,6 @@
 {
   # sources attrset from generic lock
   sources,
-  allowBuiltinFetchers,
   ...
 }:
 

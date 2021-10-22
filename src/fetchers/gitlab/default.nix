@@ -2,8 +2,6 @@
   fetchFromGitLab,
 
   utils,
-  # config
-  allowBuiltinFetchers,
   ...
 }:
 {

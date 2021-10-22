@@ -49,9 +49,7 @@ let
   builders = callPackageDream ./builders {};
 
   # fetcher implementations
-  fetchers = callPackageDream ./fetchers {
-    inherit (config) allowBuiltinFetchers;
-  };
+  fetchers = callPackageDream ./fetchers {};
 
   # updater modules to find newest package versions
   updaters = callPackageDream ./updaters {};
@@ -110,13 +108,11 @@ rec {
       dreamLock,
       fetcher ? findFetcher (parseLock dreamLock),
       sourceOverrides ? oldSources: {},
-      allowBuiltinFetchers ? true,
     }:
     let
       # if generic lock is a file, read and parse it
       dreamLock' = (parseLock dreamLock);
       fetched = fetcher {
-        inherit allowBuiltinFetchers;
         sources = dreamLock'.sources;
         sourcesCombinedHash = dreamLock'.generic.sourcesCombinedHash;
       };
@@ -191,7 +187,6 @@ rec {
       sourceOverrides ? oldSources: {},
       packageOverrides ? {},
       builderArgs ? {},
-      allowBuiltinFetchers ? true,
     }@args:
     let
       # if generic lock is a file, read and parse it
@@ -201,7 +196,7 @@ rec {
         {
           dreamLock = dreamLock';
           fetchedSources = (fetchSources {
-            inherit dreamLock fetcher sourceOverrides allowBuiltinFetchers;
+            inherit dreamLock fetcher sourceOverrides;
           }).fetchedSources;
         }
         // builderArgs

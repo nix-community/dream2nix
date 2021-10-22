@@ -3,8 +3,6 @@
   lib,
 
   utils,
-  # config
-  allowBuiltinFetchers,
   ...
 }:
 let

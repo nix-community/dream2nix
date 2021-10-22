@@ -4,15 +4,12 @@
   # dream2nix
   callPackageDream,
   utils,
-  allowBuiltinFetchers,
   ...
 }:
 
 let
   b = builtins;
-  callFetcher = file: args: callPackageDream file ({
-    inherit allowBuiltinFetchers;
-  } // args);
+  callFetcher = file: args: callPackageDream file args;
 in
 
 rec {

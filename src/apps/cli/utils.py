@@ -10,15 +10,9 @@ dream2nix_src = os.environ.get("dream2nixSrc")
 
 
 def checkLockJSON(lock):
-  try:
-    lock_schema_raw=open(dream2nix_src+"/specifications/dream-lock-schema.json").read()
-    lock_schema=json.loads(lock_schema_raw)
-  except Exception as e:
-    print(e)
-  try:
-    validate(lock, schema=lock_schema)
-  except Exception as e1:
-    print(e1)
+  lock_schema_raw=open(dream2nix_src+"/specifications/dream-lock-schema.json").read()
+  lock_schema=json.loads(lock_schema_raw)
+  validate(lock, schema=lock_schema)
 
 
 def callNixFunction(function_path, **kwargs):

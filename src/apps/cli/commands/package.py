@@ -35,7 +35,7 @@ class PackageCommand(Command):
       None,
       "store only one hash for all sources combined"
       " (smaller lock file but larger FOD)",
-      flag=False
+      flag=True
     ),
     option(
       "extra-arg",
@@ -264,7 +264,7 @@ class PackageCommand(Command):
       '--translator',
       f"{translator['subsystem']}.{translator['type']}.{translator['name']}",
     ] + (
-      ["--combined", combined] if combined else []
+      ["--combined"] if combined else []
     ) + [
       f"--extra-arg {n}={v}" for n, v in specified_extra_args.items()
     ])
