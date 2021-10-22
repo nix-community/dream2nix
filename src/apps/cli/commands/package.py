@@ -276,7 +276,6 @@ class PackageCommand(Command):
     if not mainSource:
       mainSource = dict(
         type="unknown",
-        version="unknown",
       )
     lock['sources'][mainPackageName] = {
       mainPackageVersion: mainSource

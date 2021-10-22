@@ -30,15 +30,11 @@ rec {
     }@args:
     let
       fetcher = fetchers."${type}";
-      namesKeep = fetcher.inputs ++ [ "version" "type" "hash" ];
+      namesKeep = fetcher.inputs ++ [ "type" "hash" ];
       argsKeep = lib.filterAttrs (n: v: b.elem n namesKeep) args;
       fetcherOutputs = fetcher.outputs args;
     in
       argsKeep
-      # if version was not provided, use the default version field
-      // (lib.optionalAttrs (! args ? version) {
-        version = args."${fetcher.versionField}";
-      })
       # if the hash was not provided, calculate hash on the fly (impure)
       // (lib.optionalAttrs reComputeHash {
         hash = fetcherOutputs.calcHash "sha256";
@@ -56,7 +52,6 @@ rec {
       argsKeep = b.removeAttrs source [ "hash" ];
     in
     constructSource (argsKeep // {
-      version = newVersion;
       reComputeHash = true;
     } // {
       "${fetcher.versionField}" = newVersion;

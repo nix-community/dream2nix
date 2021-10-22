@@ -38,9 +38,11 @@
                   "then": {
                     "properties": {
                       "url": { "type": "string" },
-                      "version": { "type": "string" }
+                      "hash": { "type": "string" },
+                      "type": { "type": "string" }
                     },
-                    "required": ["url", "version"]
+                    "required": ["type", "url"],
+                    "additionalProperties": false
                   }
                 },
                 {
@@ -51,9 +53,10 @@
                     "properties": {
                       "url": { "type": "string" },
                       "rev": { "type": "string" },
-                      "version": { "type": "string" }
+                      "type": { "type": "string" }
                     },
-                    "required": ["url", "rev", "version"]
+                    "required": ["type", "url", "rev"],
+                    "additionalProperties": false
                   }
                 },
                 {
@@ -65,9 +68,11 @@
                       "owner": { "type": "string" },
                       "repo": { "type": "string" },
                       "rev": { "type": "string" },
-                      "version": { "type": "string" }
+                      "hash": { "type": "string" },
+                      "type": { "type": "string" }
                     },
-                    "required": ["owner", "repo", "rev", "hash", "version"]
+                    "required": ["type", "owner", "repo", "rev"],
+                    "additionalProperties": false
                   }
                 },
                 {
@@ -77,9 +82,12 @@
                   "then": {
                     "properties": {
                       "pname": { "type": "string" },
-                      "version": { "type": "string" }
+                      "version": { "type": "string" },
+                      "hash": { "type": "string" },
+                      "type": { "type": "string" }
                     },
-                    "required": ["pname", "version"]
+                    "required": ["type", "pname"],
+                    "additionalProperties": false
                   }
                 }
               ]

@@ -111,6 +111,7 @@ def order_dict(d):
     for k, v in sorted(d.items())}
 
 def strip_hashes_from_lock(lock):
-  for source in lock['sources'].values():
-    if 'hash' in source:
-      del source['hash']
+  for name, versions in lock['sources'].items():
+    for source in versions.values():
+      if 'hash' in source:
+        del source['hash']
