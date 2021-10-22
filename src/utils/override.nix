@@ -8,45 +8,61 @@ let
 
   exampleOverrides = {
 
-
-    hello = {
-      condition = old: if old.version > 3.0.0 then true else false;
-      override = old: {
-        patches = [];
-      };
-    };
-
+    hello = [
+      {
+        description = "patch hello";
+        condition = pkg: if pkg.version > 3.0.0 then true else false;
+        overrideAttrs = old: {
+          patches = [];
+        };
+        override = old: {
+          withPython = false;
+        };
+      }
+    ];
   };
 
-  applyOverridesToPackageArgs = conditionalOverrides: oldArgs:
-    let
+  applyOverridesToPackage = conditionalOverrides: pkg: pname:
+    if ! conditionalOverrides ? "${pname}" then
+      pkg
+    else
+      
+      let
 
-      # if condition is unset, it will be assumed true
-      evalCondition = condAndOverride: oldArgs:
-        if condAndOverride ? condition then
-          condAndOverride.condition oldArgs
-        else
-          true;
+        # if condition is unset, it will be assumed true
+        evalCondition = condOverride: pkg:
+          if condOverride ? condition then
+            condOverride.condition pkg
+          else
+            true;
 
-      # filter the overrides by the package name and applying conditions
-      overridesToApply =
-        (lib.filterAttrs
-          (name: condAndOverride:
-              name == oldArgs.pname && condAndOverride.condition oldArgs)
-          conditionalOverrides);
-    in
+        # filter the overrides by the package name and conditions
+        overridesToApply =
+          (lib.filter
+            (condOverride: evalCondition condOverride pkg)
+            conditionalOverrides."${pname}");
 
-      # apply the overrides to the given args and return teh overridden args
-      lib.recursiveUpdate
+        # helper to apply one conditional override
+        # the condition is not evaluated anymore here
+        applyOneOverride = pkg: condOverride:
+          let
+            overrideFuncs =
+              lib.mapAttrsToList
+              (funcName: func: { inherit funcName func; })
+              (lib.filterAttrs (n: v: lib.hasPrefix "override" n) condOverride);
+          in
+            b.foldl'
+              (pkg: overrideFunc: pkg."${overrideFunc.funcName}" overrideFunc.func)
+              pkg
+              overrideFuncs;
+      in
+        # apply the overrides to the given pkg
         (lib.foldl
-          (old: condAndOverride: old // (condAndOverride.override old))
-          oldArgs
-          (lib.attrValues overridesToApply))
-        {
-          passthru.appliedConditionalOverrides = lib.attrNames overridesToApply;
-        };
+          (pkg: condOverride: applyOneOverride pkg condOverride)
+          pkg
+          overridesToApply);
 
 in
 {
-  inherit applyOverridesToPackageArgs;
+  inherit applyOverridesToPackage;
 }
