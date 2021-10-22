@@ -28,15 +28,12 @@
         else
           lib.elemAt inputFiles 0;
 
-      parsed = externals.npmlock2nix.readLockfile packageLock;
+      parsed = b.fromJSON (b.readFile packageLock);
 
       identifyGitSource = dependencyObject:
         # TODO: when integrity is there, and git url is github then use tarball instead
         # ! (dependencyObject ? integrity) &&
           utils.identifyGitUrl dependencyObject.version;
-
-      # parseGithubDependency = dependency:
-      #   externals.npmlock2nix.parseGitHubRef dependency.version;
 
       getVersion = dependencyObject:
         if identifyGitSource dependencyObject then

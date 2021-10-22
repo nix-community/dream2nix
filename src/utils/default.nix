@@ -106,5 +106,8 @@ rec {
           + old.postFetch;
       });
   
+  sanitizeDerivationName = name:
+    lib.replaceStrings [ "@" "/" ] [ "__at__" "__slash__" ] name;
+  
 
 }
