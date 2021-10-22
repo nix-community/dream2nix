@@ -3,7 +3,8 @@
     "buildSystem": "python",
     "translatedBy": "python.impure.pip",
     "translatorArgs": "",
-    "mainPackage": "requests",
+    "mainPackageName": "requests",
+    "mainPackageVersion": "1.2.3",
     "removedDependencies": true,
     "dependencyGraph": {
       "requests": [
@@ -21,17 +22,21 @@
   },
 
   "sources": {
-    "requests#1.2.3": {
-      "url": "https://download.pypi.org/requests/2.28.0",
-      "hash": "000000000000000000000000000000000000000",
-      "version": "1.2.3",
-      "type": "fetchurl"
+    "requests": {
+      "1.2.3": {
+        "url": "https://download.pypi.org/requests/2.28.0",
+        "hash": "000000000000000000000000000000000000000",
+        "version": "1.2.3",
+        "type": "fetchurl"
+      }
     },
-    "certifi#2.3.4": {
-      "url": "https://download.pypi.org/certifi/2.0",
-      "hash": "000000000000000000000000000000000000000",
-      "version": "2.3.4",
-      "type": "fetchurl"
+    "certifi": {
+      "2.3.4": {
+        "url": "https://download.pypi.org/certifi/2.0",
+        "hash": "000000000000000000000000000000000000000",
+        "version": "2.3.4",
+        "type": "fetchurl"
+      }
     }
   }
 }

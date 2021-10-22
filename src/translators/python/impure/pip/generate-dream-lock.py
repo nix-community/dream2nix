@@ -36,7 +36,7 @@ def main():
     # example: requests-2.26.0.tar.gz
     else:
       format = 'sdist'
-      pname, _, _ = file.rpartition('-')
+      pname, version, _ = file.rpartition('-')
       pyver = 'source'
 
     url = f"https://files.pythonhosted.org/packages/{pyver}/{pname[0]}/{pname}/{file}"
@@ -45,6 +45,7 @@ def main():
       sha256 = f"sha256-{base64.b64encode(hashlib.sha256(f.read()).digest()).decode()}"
 
     packages[pname] = dict(
+      version=version,
       url=url,
       sha256=sha256,
       format=format
@@ -58,7 +59,8 @@ def main():
     sources={},
     generic={
       "buildSystem": "python",
-      "mainPackage": os.environ.get('MAIN'),
+      "mainPackageName": os.environ.get('NAME'),
+      "mainPackageVersion": os.environ.get('VERSION'),
 
       "sourcesCombinedHash": None,
     },
@@ -72,7 +74,9 @@ def main():
 
   # populate sources of generic lock
   for pname, data in packages.items():
-    dream_lock['sources'][pname] = dict(
+    if pname not in dream_lock['sources']:
+      dream_lock['sources'][pname] = {}
+    dream_lock['sources'][pname][data['version']] = dict(
       url=data['url'],
       hash=data['sha256'],
       type='fetchurl',

@@ -163,7 +163,7 @@ rec {
       };
 
       dreamLock = lib.recursiveUpdate dreamLock' {
-        sources."${dreamLock'.generic.mainPackage}" = {
+        sources."${dreamLock'.generic.mainPackageName}"."${dreamLock'.generic.mainPackageVersion}" = {
           type = "path";
           path = source;
           version = "unknown";

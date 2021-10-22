@@ -89,7 +89,8 @@ in
       # -r ''${inputFiles/$'\n'/$' -r '}
 
     # generate the generic lock from the downloaded list of files
-    MAIN=$(${jq}/bin/jq '.name' -c -r $tmpBuild/python.json) \
+    NAME=$(${jq}/bin/jq '.name' -c -r $tmpBuild/python.json) \
+        VERSION=$(${jq}/bin/jq '.version' -c -r $tmpBuild/python.json) \
       $tmpBuild/python/bin/python ${./generate-dream-lock.py} $tmp $jsonInput
 
     rm -rf $tmp $tmpBuild

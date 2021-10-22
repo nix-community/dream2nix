@@ -115,8 +115,10 @@ class PackageCommand(Command):
         print(f"fetching source defined via existing dream.lock")
         with open(source) as f:
           sourceDreamLock = json.load(f)
+        sourceMainPackageName = sourceDreamLock['generic']['mainPackageName']
+        sourceMainPackageVersion = sourceDreamLock['generic']['mainPackageVersion']
         sourceSpec =\
-          sourceDreamLock['sources'][sourceDreamLock['generic']['mainPackage']]
+          sourceDreamLock['sources'][sourceMainPackageName][sourceMainPackageVersion]
         source = \
           buildNixFunction("fetchers.fetchSource", source=sourceSpec, extract=True)
 
@@ -268,15 +270,17 @@ class PackageCommand(Command):
     ])
 
     # add main package source
-    mainPackage = lock['generic']['mainPackage']
-    if mainPackage:
-      mainSource = sourceSpec.copy()
-      if not mainSource:
-        mainSource = dict(
-          type="unknown",
-          version="unknown",
-        )
-      lock['sources'][mainPackage] = mainSource
+    mainPackageName = lock['generic']['mainPackageName']
+    mainPackageVersion = lock['generic']['mainPackageVersion']
+    mainSource = sourceSpec.copy()
+    if not mainSource:
+      mainSource = dict(
+        type="unknown",
+        version="unknown",
+      )
+    lock['sources'][mainPackageName] = {
+      mainPackageVersion: mainSource
+    }
 
     # clean up dependency graph
     # remove empty entries

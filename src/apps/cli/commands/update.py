@@ -59,13 +59,15 @@ class UpdateCommand(Command):
 
     cli_py = os.path.abspath(f"{__file__}/../../cli.py")
     # delete the hash
-    mainPackageSource = lock['sources'][lock['generic']['mainPackage']]
+    mainpakcageName = lock['generic']['mainPackage']
+    mainpakcageVersion = lock['generic']['mainpackageVersion']
+    mainPackageSource = lock['sources'][mainPackageName][mainPackageVersion]
     updatedSourceSpec = callNixFunction(
       "fetchers.updateSource",
       source=mainPackageSource,
       newVersion=version,
     )
-    lock['sources'][lock['generic']['mainPackage']] = updatedSourceSpec
+    lock['sources'][mainpakcageName][mainPackageVersion] = updatedSourceSpec
     with tempfile.NamedTemporaryFile("w", suffix="dream.lock") as tmpDreamLock:
       json.dump(lock, tmpDreamLock, indent=2)
       tmpDreamLock.seek(0)  # flushes write cache

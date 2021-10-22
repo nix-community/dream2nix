@@ -17,9 +17,13 @@
   ...
 }@args:
 let
+  b = builtins;
+
   dreamLock = utils.readDreamLock { inherit (args) dreamLock; };
 
-  mainPackageName = dreamLock.generic.mainPackage;
+  mainPackageName = dreamLock.generic.mainPackageName;
+  mainPackageVersion = dreamLock.generic.mainPackageVersion;
+  mainPackageKey = "${mainPackageName}#${mainPackageVersion}";
 
   nodejsVersion = dreamLock.buildSystem.nodejsVersion;
 
@@ -33,17 +37,18 @@ let
     let
       makeSource = name: 
         let
-          packageName = lib.head (lib.splitString "#" name);
+          nameVer = lib.splitString "#" name;
+          packageName = lib.elemAt nameVer 0;
+          version = lib.elemAt nameVer 1;
         in
           {
-            inherit packageName;
+            inherit packageName version;
             name = lib.strings.sanitizeDerivationName packageName;
-            version = dreamLock.sources."${name}".version;
             src = fetchedSources."${name}";
             dependencies =
               lib.forEach
                 (lib.filter
-                  (depName: ! builtins.elem depName dreamLock.generic.dependencyGraph."${mainPackageName}")
+                  (depName: ! builtins.elem depName dreamLock.generic.dependencyGraph."${mainPackageKey}")
                   (dreamLock.generic.dependencyGraph."${name}" or []))
                 (dependency:
                   makeSource dependency
@@ -51,14 +56,14 @@ let
           };
     in
       lib.forEach
-        dreamLock.generic.dependencyGraph."${mainPackageName}"
+        dreamLock.generic.dependencyGraph."${mainPackageKey}"
         (dependency: makeSource dependency);
 
   callNode2Nix = funcName: args:
     node2nixEnv."${funcName}" rec {
       name = lib.strings.sanitizeDerivationName packageName;
-      packageName = lib.head (lib.splitString "#" mainPackageName);
-      version = dreamLock.sources."${mainPackageName}".version;
+      packageName = mainPackageName;
+      version = mainPackageVersion;
       dependencies = node2nixDependencies;
       # buildInputs ? []
       # npmFlags ? ""
@@ -71,7 +76,7 @@ let
       production = true;
       bypassCache = true;
       reconstructLock = true;
-      src = fetchedSources."${dreamLock.generic.mainPackage}";
+      src = fetchedSources."${mainPackageKey}";
     }
     // args;
 
