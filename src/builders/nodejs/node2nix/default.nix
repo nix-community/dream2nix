@@ -43,7 +43,7 @@ let
         in
           {
             inherit packageName version;
-            name = lib.strings.sanitizeDerivationName packageName;
+            name = utils.sanitizeDerivationName packageName;
             src = fetchedSources."${name}";
             dependencies =
               lib.forEach
@@ -61,7 +61,7 @@ let
 
   callNode2Nix = funcName: args:
     node2nixEnv."${funcName}" rec {
-      name = lib.strings.sanitizeDerivationName packageName;
+      name = utils.sanitizeDerivationName packageName;
       packageName = mainPackageName;
       version = mainPackageVersion;
       dependencies = node2nixDependencies;

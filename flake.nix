@@ -75,6 +75,7 @@
             export NIX_PATH=nixpkgs=${nixpkgs}
             export d2nExternalSources=${externalSourcesFor."${system}"}
             export dream2nixWithExternals=${dream2nixFor."${system}".dream2nixWithExternals}
+            export d2nExternalSources=$dream2nixWithExternals/external
           '';
         });
       };
