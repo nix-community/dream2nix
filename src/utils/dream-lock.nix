@@ -22,7 +22,9 @@ let
       lock;
 
   getMainPackageSource = dreamLock:
-    dreamLock.sources."${dreamLock.generic.mainPackage}";
+    dreamLock.sources
+      ."${dreamLock.generic.mainPackageName}"
+      ."${dreamLock.generic.mainPackageVersion}";
 
 
 in

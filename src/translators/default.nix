@@ -1,6 +1,8 @@
 {
   coreutils,
+  jq,
   lib,
+  nix,
   pkgs,
 
   callPackageDream,
@@ -40,27 +42,28 @@ let
 
   translatorTypes = [ "impure" "ifd" "pure" ];
 
-  # every translator must provide 'bin/translate'
-  translatorExec = translatorPkg: "${translatorPkg}/bin/translate";
-
   # adds a translateBin to a pure translator
   wrapPureTranslator = translatorAttrPath:
     let
-      bin = pkgs.writeScriptBin "translate" ''
-        #!${pkgs.bash}/bin/bash
+      bin = utils.writePureShellScript
+        [
+          coreutils
+          jq
+          nix
+        ]
+        ''
+          jsonInputFile=$(realpath $1)
+          outputFile=$(jq '.outputFile' -c -r $jsonInputFile)
 
-        jsonInputFile=$(${coreutils}/bin/realpath $1)
-        outputFile=$(${pkgs.jq}/bin/jq '.outputFile' -c -r $jsonInputFile)
-
-        nix eval --show-trace --impure --raw --expr "
-          builtins.toJSON (
-            (import ${dream2nixWithExternals} {}).translators.translators.${
-              lib.concatStringsSep "." translatorAttrPath
-            }.translate 
-              (builtins.fromJSON (builtins.readFile '''$1'''))
-          )
-        " | ${pkgs.jq}/bin/jq > $outputFile
-      '';
+          nix eval --show-trace --impure --raw --expr "
+            builtins.toJSON (
+              (import ${dream2nixWithExternals} {}).translators.translators.${
+                lib.concatStringsSep "." translatorAttrPath
+              }.translate 
+                (builtins.fromJSON (builtins.readFile '''$1'''))
+            )
+          " | jq > $outputFile
+        '';
     in
       bin.overrideAttrs (old: {
         name = "translator-${lib.concatStringsSep "-" translatorAttrPath}";

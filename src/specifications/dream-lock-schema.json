@@ -10,73 +10,89 @@
       "patternProperties": {
         "^.*$": {
           "type": "object",
-          "properties": {
-            "type": {
-              "enum": [
-                "fetchurl",
-                "git",
-                "github",
-                "gitlab",
-                "pypi-sdist"
+          "patternProperties": {
+            "^.*$": {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "enum": [
+                    "fetchurl",
+                    "git",
+                    "github",
+                    "gitlab",
+                    "pypi-sdist"
+                  ]
+                }
+              },
+              "allOf": [
+                {
+                  "if": {
+                    "properties": { "type": { "const": "unknown" } }
+                  },
+                  "then": { "properties": {} }
+                },
+                {
+                  "if": {
+                    "properties": { "type": { "const": "fetchurl" } }
+                  },
+                  "then": {
+                    "properties": {
+                      "url": { "type": "string" },
+                      "hash": { "type": "string" },
+                      "type": { "type": "string" }
+                    },
+                    "required": ["type", "url"],
+                    "additionalProperties": false
+                  }
+                },
+                {
+                  "if": {
+                    "properties": { "type": { "const": "git" } }
+                  },
+                  "then": {
+                    "properties": {
+                      "url": { "type": "string" },
+                      "rev": { "type": "string" },
+                      "type": { "type": "string" }
+                    },
+                    "required": ["type", "url", "rev"],
+                    "additionalProperties": false
+                  }
+                },
+                {
+                  "if": {
+                    "properties": { "type": { "pattern": "(github)|(gitlab)" } }
+                  },
+                  "then": {
+                    "properties": {
+                      "owner": { "type": "string" },
+                      "repo": { "type": "string" },
+                      "rev": { "type": "string" },
+                      "hash": { "type": "string" },
+                      "type": { "type": "string" }
+                    },
+                    "required": ["type", "owner", "repo", "rev"],
+                    "additionalProperties": false
+                  }
+                },
+                {
+                  "if": {
+                    "properties": { "type": { "const": "pypi-sdist" } }
+                  },
+                  "then": {
+                    "properties": {
+                      "pname": { "type": "string" },
+                      "version": { "type": "string" },
+                      "hash": { "type": "string" },
+                      "type": { "type": "string" }
+                    },
+                    "required": ["type", "pname"],
+                    "additionalProperties": false
+                  }
+                }
               ]
-            },
-            "url": {
-              "type": "string"
-            },
-            "hash": {
-              "type": "string"
             }
-          },
-          "allOf": [
-            {
-              "if": {
-                "properties": { "type": { "const": "unknown" } }
-              },
-              "then": { "properties": {} }
-            },
-            {
-              "if": {
-                "properties": { "type": { "const": "fetchurl" } }
-              },
-              "then": {
-                "properties": { "url": { "type": "string" } }
-              }
-            },
-            {
-              "if": {
-                "properties": { "type": { "const": "git" } }
-              },
-              "then": {
-                "properties": {
-                  "url": { "type": "string" },
-                  "rev": { "type": "string" }
-                }
-              }
-            },
-            {
-              "if": {
-                "properties": { "type": { "pattern": "(github)|(gitlab)" } }
-              },
-              "then": {
-                "properties": {
-                  "owner": { "type": "string" },
-                  "repo": { "type": "string" },
-                  "rev": { "type": "string" }
-                }
-              }
-            },
-            {
-              "if": {
-                "properties": { "type": { "const": "pypi-sdist" } }
-              },
-              "then": {
-                "properties": {
-                  "pname": { "type": "string" },
-                  "version": { "type": "string" }
-                }
-              }
-            }
-          ]
+          }
         }
       }
     },

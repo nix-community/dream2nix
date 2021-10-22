@@ -1,6 +1,9 @@
 {
   pkgs ? import <nixpkgs> {},
   lib ? pkgs.lib,
+  nix ? pkgs.writeScriptBin "nix" ''
+    ${pkgs.nixUnstable}/bin/nix --option experimental-features "nix-command flakes" "$@"
+  '',
   externalSources ?
     # if called via CLI, load externals via env
     if builtins ? getEnv && builtins.getEnv "d2nExternalSources" != "" then
@@ -25,6 +28,7 @@ let
     inherit dream2nixWithExternals;
     inherit translators;
     inherit utils;
+    inherit nix;
   });
 
   externals = {
@@ -45,9 +49,7 @@ let
   builders = callPackageDream ./builders {};
 
   # fetcher implementations
-  fetchers = callPackageDream ./fetchers {
-    inherit (config) allowBuiltinFetchers;
-  };
+  fetchers = callPackageDream ./fetchers {};
 
   # updater modules to find newest package versions
   updaters = callPackageDream ./updaters {};
@@ -106,13 +108,11 @@ rec {
       dreamLock,
       fetcher ? findFetcher (parseLock dreamLock),
       sourceOverrides ? oldSources: {},
-      allowBuiltinFetchers ? true,
     }:
     let
       # if generic lock is a file, read and parse it
       dreamLock' = (parseLock dreamLock);
       fetched = fetcher {
-        inherit allowBuiltinFetchers;
         sources = dreamLock'.sources;
         sourcesCombinedHash = dreamLock'.generic.sourcesCombinedHash;
       };
@@ -163,7 +163,7 @@ rec {
       };
 
       dreamLock = lib.recursiveUpdate dreamLock' {
-        sources."${dreamLock'.generic.mainPackage}" = {
+        sources."${dreamLock'.generic.mainPackageName}"."${dreamLock'.generic.mainPackageVersion}" = {
           type = "path";
           path = source;
           version = "unknown";
@@ -187,7 +187,6 @@ rec {
       sourceOverrides ? oldSources: {},
       packageOverrides ? {},
       builderArgs ? {},
-      allowBuiltinFetchers ? true,
     }@args:
     let
       # if generic lock is a file, read and parse it
@@ -197,7 +196,7 @@ rec {
         {
           dreamLock = dreamLock';
           fetchedSources = (fetchSources {
-            inherit dreamLock fetcher sourceOverrides allowBuiltinFetchers;
+            inherit dreamLock fetcher sourceOverrides;
           }).fetchedSources;
         }
         // builderArgs

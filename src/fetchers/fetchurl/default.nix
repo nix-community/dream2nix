@@ -2,8 +2,6 @@
   fetchurl,
 
   utils,
-  # config
-  allowBuiltinFetchers,
   ...
 }:
 {

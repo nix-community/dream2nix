@@ -3,8 +3,6 @@
   python3,
 
   utils,
-  # config
-  allowBuiltinFetchers,
   ...
 }:
 {

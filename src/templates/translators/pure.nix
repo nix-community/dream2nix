@@ -26,7 +26,8 @@
       generic = {
         buildSystem = "nodejs";
         producedBy = translatorName;
-        mainPackage = parsed.name;
+        mainPackageName = "some_name";
+        mainPackageVersion = "some_version";
         dependencyGraph = ;
         sourcesCombinedHash = null;
       };

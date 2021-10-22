@@ -114,7 +114,11 @@
       getSourceType = dependencyObject:
         if lib.hasInfix "@github:" dependencyObject.yarnName
             || lib.hasInfix "codeload.github.com/" dependencyObject.resolved then
-          "github"
+          if dependencyObject ? integrity then
+            b.trace "Warning: Using git despite integrity exists for ${getName dependencyObject}"
+              "git"
+          else
+            "git"
         else if lib.hasInfix "@link:" dependencyObject.yarnName then
           "path"
         else
@@ -122,23 +126,23 @@
 
       
       sourceConstructors = {
-        github = dependencyObject:
+        git = dependencyObject:
           let
             gitUrlInfos = lib.splitString "/" dependencyObject.resolved;
-          in
-          {
-            type = "github";
             rev = lib.elemAt gitUrlInfos 6;
             owner = lib.elemAt gitUrlInfos 3;
             repo = lib.elemAt gitUrlInfos 4;
             version = dependencyObject.version;
+          in
+          {
+            url = "https://github.com/${owner}/${repo}";
+            inherit rev version;
           };
 
         path = dependencyObject:
           {
             version = dependencyObject.version;     
             path = lib.last (lib.splitString "@link:" dependencyObject.yarnName);
-            type = "path";
           };
 
         fetchurl = dependencyObject:

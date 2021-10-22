@@ -76,6 +76,7 @@ rec {
   # builder to create a shell script that has it's own PATH
   writePureShellScript = availablePrograms: script: writeScriptBin "run" ''
     #!${bash}/bin/bash
+    set -Eeuo pipefail
 
     export PATH="${lib.makeBinPath availablePrograms}"
     tmpdir=$(${coreutils}/bin/mktemp -d)

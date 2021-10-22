@@ -48,7 +48,7 @@ In case of an `impure` translator:
 
 ```nix
 {
-  # A derivation which outputs an executable at `/bin/translate`.
+  # A derivation which outputs an executable at `/bin/run`.
   # The executable will be called by dream2nix for translation
   #
   # The first arg `$1` will be a json file containing the input parameters

@@ -33,18 +33,26 @@ in
       sourcePathRelative,
     }:
     let
-      mainPackage = dreamLock.generic.mainPackage;
+      mainPackageName = dreamLock.generic.mainPackageName;
+      mainPackageVersion = dreamLock.generic.mainPackageVersion;
     in
     ''
       {
-        dream2nix ? import ${dream2nixLocationRelative} {},
+        dream2nix ? import (
+          let
+            dream2nixWithExternals = (builtins.getEnv "dream2nixWithExternals");
+          in
+            if dream2nixWithExternals != "" then dream2nixWithExternals else
+              throw '''
+                This default.nix is for debugging purposes and can only be evaluated within the dream2nix devShell env.
+              ''') {},
       }:
 
       (dream2nix.riseAndShine {
         dreamLock = ./dream.lock;
-        ${lib.optionalString (dreamLock.sources."${mainPackage}".type == "unknown") ''
+        ${lib.optionalString (dreamLock.sources."${mainPackageName}"."${mainPackageVersion}".type == "unknown") ''
           sourceOverrides = oldSources: {
-              "${mainPackage}" = ./${sourcePathRelative};
+              "${mainPackageName}#${mainPackageVersion}" = ./${sourcePathRelative};
             };
         ''}
       }).package.overrideAttrs (old: {

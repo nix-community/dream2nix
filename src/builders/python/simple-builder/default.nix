@@ -20,7 +20,7 @@ let
     else
       python.pkgs.buildPythonPackage;
 
-  mainPackageName = dreamLock.generic.mainPackage;
+  mainPackageName = dreamLock.generic.mainPackageName;
 
   packageName =
     if mainPackageName == null then
