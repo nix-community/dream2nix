@@ -246,7 +246,7 @@ class PackageCommand(Command):
 
       # execute translator
       sp.run(
-        [f"{translator_path}/bin/translate", input_json_file.name]
+        [f"{translator_path}/bin/run", input_json_file.name]
       )
 
     # raise error if output wasn't produced

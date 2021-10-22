@@ -1,6 +1,9 @@
 {
   pkgs ? import <nixpkgs> {},
   lib ? pkgs.lib,
+  nix ? pkgs.writeScriptBin "nix" ''
+    ${pkgs.nixUnstable}/bin/nix --option experimental-features "nix-command flakes" "$@"
+  '',
   externalSources ?
     # if called via CLI, load externals via env
     if builtins ? getEnv && builtins.getEnv "d2nExternalSources" != "" then
@@ -25,6 +28,7 @@ let
     inherit dream2nixWithExternals;
     inherit translators;
     inherit utils;
+    inherit nix;
   });
 
   externals = {
