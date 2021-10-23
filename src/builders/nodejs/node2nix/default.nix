@@ -12,52 +12,55 @@
 }:
 
 {
-  fetchedSources,
-  dreamLock,
+  buildSystemAttrs,
+  dependenciesRemoved,
+  mainPackageName,
+  mainPackageVersion,
+  getDependencies,
+  getSource,
   ...
 }@args:
 let
   b = builtins;
 
-  dreamLock = utils.readDreamLock { inherit (args) dreamLock; };
+  getDependencies = name: version:
+    if dependenciesRemoved ? "${name}" && dependenciesRemoved."${name}" ? "${version}" then
+      dependenciesRemoved."${name}"."${version}" ++ (args.getDependencies name version)
+    else
+      args.getDependencies name version;
 
-  mainPackageName = dreamLock.generic.mainPackageName;
-  mainPackageVersion = dreamLock.generic.mainPackageVersion;
   mainPackageKey = "${mainPackageName}#${mainPackageVersion}";
 
-  nodejsVersion = dreamLock.buildSystem.nodejsVersion;
+  mainPackageDependencies = getDependencies mainPackageName mainPackageVersion;
+
+  nodejsVersion = buildSystemAttrs.nodejsVersion;
 
   nodejs =
     pkgs."nodejs-${builtins.toString nodejsVersion}_x"
     or (throw "Could not find nodejs version '${nodejsVersion}' in pkgs");
 
   node2nixEnv = node2nix nodejs;
-
+  
   node2nixDependencies =
     let
-      makeSource = name: 
-        let
-          nameVer = lib.splitString "#" name;
-          packageName = lib.elemAt nameVer 0;
-          version = lib.elemAt nameVer 1;
-        in
-          {
-            inherit packageName version;
-            name = utils.sanitizeDerivationName packageName;
-            src = fetchedSources."${name}";
-            dependencies =
-              lib.forEach
-                (lib.filter
-                  (depName: ! builtins.elem depName dreamLock.generic.dependencyGraph."${mainPackageKey}")
-                  (dreamLock.generic.dependencyGraph."${name}" or []))
-                (dependency:
-                  makeSource dependency
-                );
-          };
+      makeSource = packageName: version:
+        {
+          inherit packageName version;
+          name = utils.sanitizeDerivationName packageName;
+          src = getSource packageName version;
+          dependencies =
+            lib.forEach
+              (lib.filter
+                (dep: ! builtins.elem dep mainPackageDependencies)
+                (getDependencies packageName version))
+              (dep:
+                makeSource dep.name dep.version
+              );
+        };
     in
       lib.forEach
-        dreamLock.generic.dependencyGraph."${mainPackageKey}"
-        (dependency: makeSource dependency);
+        mainPackageDependencies
+        (dep: makeSource dep.name dep.version);
 
   callNode2Nix = funcName: args:
     node2nixEnv."${funcName}" rec {
@@ -76,7 +79,7 @@ let
       production = true;
       bypassCache = true;
       reconstructLock = true;
-      src = fetchedSources."${mainPackageKey}";
+      src = getSource mainPackageName mainPackageVersion;
     }
     // args;
 

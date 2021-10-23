@@ -39,8 +39,8 @@
     utils.simpleTranslate translatorName rec {
 
       inputData = parsedLock;
-      mainPackageName = packageJSON.name;
-      mainPackageVersion = packageJSON.version;
+      mainPackageName = packageJSON.name or "unknown";
+      mainPackageVersion = packageJSON.version or "unknown";
       buildSystemName = "nodejs";
 
       buildSystemAttrs = {
@@ -88,7 +88,7 @@
       getVersion = dependencyObject:
           dependencyObject.version;
 
-      getDependencies = dependencyObject: getDepByNameVer: getDepByOriginalID:
+      getDependencies = dependencyObject: getDepByNameVer: dependenciesByOriginalID:
         let
           dependencies =
             dependencyObject.dependencies or []
@@ -102,10 +102,19 @@
                   (name: value:
                     let
                       yarnName = "${name}@${value}";
-                      depObject = getDepByOriginalID yarnName; 
+                      depObject = dependenciesByOriginalID."${yarnName}"; 
                       version = depObject.version;
                     in
-                      { inherit name version; }
+                      if ! dependenciesByOriginalID ? ${yarnName} then
+                        let
+                          yarnNameSplit = lib.splitString "@" yarnName;
+                        in
+                          {
+                            name = b.elemAt yarnNameSplit 0;
+                            version = b.elemAt yarnNameSplit 1;
+                          }
+                      else
+                        { inherit name version; }
                   )
                   dependency
               )
@@ -113,7 +122,9 @@
 
       getSourceType = dependencyObject:
         if lib.hasInfix "@github:" dependencyObject.yarnName
-            || lib.hasInfix "codeload.github.com/" dependencyObject.resolved then
+            || 
+            (dependencyObject ? resolved
+              && lib.hasInfix "codeload.github.com/" dependencyObject.resolved  ) then
           if dependencyObject ? integrity then
             b.trace "Warning: Using git despite integrity exists for ${getName dependencyObject}"
               "git"
@@ -152,6 +163,11 @@
             hash =
               if dependencyObject ? integrity then
                 dependencyObject.integrity
+              else
+                let
+                  hash = lib.last (lib.splitString "#" dependencyObject.resolved);
+                in
+                  if lib.stringLength hash == 40 then hash
               else
                 throw "Missing integrity for ${dependencyObject.yarnName}";
             url = lib.head (lib.splitString "#" dependencyObject.resolved);

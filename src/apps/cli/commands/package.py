@@ -316,9 +316,12 @@ class PackageCommand(Command):
         removed_cycles_text = 'Removed Cyclic dependencies:'
         for node, removed_node in removed_edges:
           removed_cycles_text += f"\n  {node} -> {removed_node}"
-          if node not in lock['generic']['dependenciesRemoved']:
-            lock['generic']['dependenciesRemoved'][node] = []
-          lock['generic']['dependenciesRemoved'][node].append(removed_node)
+          n_name, n_ver = node.split('#')
+          if n_name not in lock['generic']['dependenciesRemoved']:
+            lock['generic']['dependenciesRemoved'][n_name] = {}
+          if n_ver not in lock['generic']['dependenciesRemoved'][n_name]:
+            lock['generic']['dependenciesRemoved'][n_name][n_ver] = []
+          lock['generic']['dependenciesRemoved'][n_name][n_ver].append(removed_node)
         print(removed_cycles_text)
 
     # calculate combined hash if --combined was specified

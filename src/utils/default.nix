@@ -94,7 +94,7 @@ rec {
     }:
       # fetchzip can extract tarballs as well
       (fetchzip { url="file:${source}"; }).overrideAttrs (old: {
-        name = "${source.name}-extracted";
+        name = "${(source.name or "")}extracted";
         outputHash = null;
         postFetch =
           ''

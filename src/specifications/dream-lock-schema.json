@@ -20,6 +20,7 @@
                     "git",
                     "github",
                     "gitlab",
+                    "path",
                     "pypi-sdist"
                   ]
                 }
@@ -72,6 +73,19 @@
                       "type": { "type": "string" }
                     },
                     "required": ["type", "owner", "repo", "rev"],
+                    "additionalProperties": false
+                  }
+                },
+                {
+                  "if": {
+                    "properties": { "type": { "const": "path" } }
+                  },
+                  "then": {
+                    "properties": {
+                      "path": { "type": "string" },
+                      "type": { "type": "string" }
+                    },
+                    "required": ["type", "path"],
                     "additionalProperties": false
                   }
                 },

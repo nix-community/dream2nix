@@ -14,59 +14,41 @@
 }:
 
 {
-  fetchedSources,
-  dreamLock,
+  # funcs
+  getDependencies,
+  getSource,
+  buildPackageWithOtherBuilder,
+
+  # attributes
+  buildSystemAttrs,
+  dependenciesRemoved,
+  mainPackageName,
+  mainPackageVersion,
+  packageVersions,
+  
+
+  # overrides
   packageOverrides ? {},
 
   # custom opts:
   standalonePackageNames ? [],
+  ...
 }@args:
 
 let
 
   b = builtins;
 
-  dreamLock = utils.readDreamLock { inherit (args) dreamLock; };
-
-  inherit (dreamLock.generic) mainPackageName mainPackageVersion;
-
-  dependencyGraph = dreamLock.generic.dependencyGraph;
-
-  standAlonePackages =
-    let
-      standaloneNames = standalonePackageNames ++ (lib.attrNames dreamLock.generic.dependenciesRemoved);
-      standaloneKeys =
-        lib.filter
-          (key: lib.any (sName: lib.hasPrefix sName key) standaloneNames)
-          (lib.attrNames dependencyGraph);
-    in
-      lib.genAttrs standaloneKeys
-        (key:
-          (builders.nodejs.node2nix (args // {
-            dreamLock =
-              let
-                nameVer = lib.splitString "#" key;
-                name = b.elemAt nameVer 0;
-                version = b.elemAt nameVer 1;
-              in
-                lib.recursiveUpdate dreamLock 
-                  {
-                    generic.mainPackagenName = name;
-                    generic.mainPackagenVersion = version;
-
-                    # re-introduce removed dependencies
-                    generic.dependencyGraph."${key}" =
-                      # b.trace "re-introduce removed ${b.toString dreamLock.generic.dependenciesRemoved."${key}" or []}"
-                      dreamLock.generic.dependencyGraph."${key}"
-                      ++ dreamLock.generic.dependenciesRemoved."${key}" or [];
-                  };
-          })).package
-        );
+  isCyclic = name: version:
+    b.elem name standalonePackageNames
+    ||
+      (dependenciesRemoved ? "${name}"
+      && dependenciesRemoved."${name}" ? "${version}");
 
   mainPackageKey =
     "${mainPackageName}#${mainPackageVersion}";
 
-  nodejsVersion = dreamLock.buildSystem.nodejsVersion;
+  nodejsVersion = buildSystemAttrs.nodejsVersion;
 
   nodejs =
     pkgs."nodejs-${builtins.toString nodejsVersion}_x"
@@ -78,20 +60,31 @@ let
   '';
 
   allPackages =
-    lib.genAttrs
-      (lib.attrNames fetchedSources)
-      (key:
-        let
-          split = lib.splitString "#" key;
-          name = b.elemAt split 0;
-          version = b.elemAt split 1;
-        in
-          makePackage name version);
+    lib.mapAttrs
+      (name: versions:
+        lib.genAttrs
+          versions
+          (version:
+            if isCyclic name version then
+              makeCombinedPackage name version
+            else
+              makePackage name version))
+      packageVersions;
+  
+  makeCombinedPackage = name: version:
+    # b.trace name
+    (buildPackageWithOtherBuilder
+      builders.nodejs.node2nix
+      name
+      version).package;
 
   makePackage = name: version:
     let
-      pkgKey = "${name}#${version}";
+
+      deps = getDependencies name version;
+
       pkg =
+        # b.trace (lib.attrNames allPackages)
         (stdenv.mkDerivation rec {
 
           packageName = name;
@@ -100,7 +93,7 @@ let
 
           inherit version;
 
-          src = fetchedSources."${pkgKey}";
+          src = getSource name version;
 
           buildInputs = [ nodejs nodejs.python ];
 
@@ -108,28 +101,17 @@ let
 
           inherit nodeSources;
 
-          dependencies_json = writeText "dependencies.json" 
+          dependencies_json = writeText "dependencies.json"
             (b.toJSON 
               (lib.listToAttrs
                 (b.map
-                  (pKey:
-                    let
-                      split = lib.splitString "#" pKey;
-                      pname = b.elemAt split 0;
-                      version = b.elemAt split 1;
-                    in
-                      lib.nameValuePair pname version)
-                  dreamLock.generic.dependencyGraph."${pkgKey}" or [])));
+                  (dep: lib.nameValuePair dep.name dep.version)
+                  deps)));
 
           nodeDeps =
             lib.forEach
-              (dependencyGraph."${pkgKey}" or [])
-              (depKey:
-                allPackages."${depKey}"
-              )
-            ++
-            lib.forEach (dreamLock.generic.dependenciesRemoved."${pkgKey}" or [])
-              (removedDep: standAlonePackages."${pkgKey}");
+              deps
+              (dep: allPackages."${dep.name}"."${dep.version}" );
 
           dontUnpack = true;
 
@@ -196,7 +178,7 @@ let
 
             cd "$nodeModules/${packageName}"
 
-            # fix package.json malformed dependency versions
+            # fix malformed dependency versions in package.json
             python ${./fix-package-lock.py} $dependencies_json package.json
 
             export HOME=$TMPDIR
@@ -232,11 +214,9 @@ let
           '';
         });
     in
-      standAlonePackages."${name}#${version}"
-      or
       (utils.applyOverridesToPackage packageOverrides pkg name);
 
-  package = makePackage mainPackageName mainPackageVersion;
+  package = allPackages."${mainPackageName}"."${mainPackageVersion}";
 
 in
 {
