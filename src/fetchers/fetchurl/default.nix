@@ -1,4 +1,5 @@
 {
+  lib,
   fetchurl,
 
   utils,
@@ -21,9 +22,15 @@
       });
 
       fetched = hash:
-        fetchurl {
-          inherit url hash;
-        };
+        if lib.stringLength hash == 40 then
+          fetchurl {
+            inherit url;
+            sha1 = hash;
+          }
+        else
+          fetchurl {
+            inherit url hash;
+          };
 
     };
 }

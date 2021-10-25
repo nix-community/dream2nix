@@ -120,7 +120,7 @@
             };
         };
 
-        getDependencies = dependencyObject: getDepByNameVer: getDepByOriginalID:
+        getDependencies = dependencyObject: getDepByNameVer: dependenciesByOriginalID:
           dependencyObject.depsExact;
       };
 

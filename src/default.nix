@@ -94,48 +94,39 @@ rec {
       else
         fetchers.defaultFetcher;
 
-
-  # automatically parse dream.lock if passed as file
-  parseLock = lock:
-    if builtins.isPath lock || builtins.isString lock then
-      builtins.fromJSON (builtins.readFile lock)
-    else
-      lock;
-
   # fetch only sources and do not build
   fetchSources =
     {
       dreamLock,
-      fetcher ? findFetcher (parseLock dreamLock),
-      sourceOverrides ? oldSources: {},
-    }:
+      fetcher ? null,
+      extract ? false,
+    }@args:
     let
       # if generic lock is a file, read and parse it
-      dreamLock' = (parseLock dreamLock);
+      dreamLock' = (utils.readDreamLock { inherit dreamLock; }).lock;
+
+      fetcher =
+        if args.fetcher == null then
+          findFetcher dreamLock'
+        else
+          args.fetcher;
+
       fetched = fetcher {
         sources = dreamLock'.sources;
         sourcesCombinedHash = dreamLock'.generic.sourcesCombinedHash;
       };
-      sourcesToReplace = sourceOverrides fetched.fetchedSources;
-      sourcesOverridden = lib.mapAttrs (pname: source:
-        sourcesToReplace."${pname}" or source
-      ) fetched.fetchedSources;
-      sourcesEnsuredOverridden = lib.mapAttrs (pname: source:
-        if source == "unknown" then throw ''
-          Source '${pname}' is unknown. Please override using:
-          dream2nix.buildPackage {
-            ...
-            sourceOverrides = oldSources: {
-              "${pname}" = ...;
-            };
-            ...
-          };
-        ''
-        else source
-      ) sourcesOverridden;
+
+      fetchedSources = fetched.fetchedSources;
+
     in
       fetched // {
-        fetchedSources = sourcesEnsuredOverridden;
+        fetchedSources =
+          if extract then
+            lib.mapAttrs
+              (key: source: utils.extractSource { inherit source; })
+              fetchedSources
+          else
+            fetchedSources;
       };
 
   
@@ -178,31 +169,103 @@ rec {
       } // argsForRise)).package;
 
 
+  # build a dream lock via a specific builder
+  callBuilder =
+    {
+      builder,
+      builderArgs,
+      fetchedSources,
+      dreamLock,
+      dreamLockInterface,
+      sourceOverrides,
+    }@args:
+      let
+
+        fetchedSources =
+          args.fetchedSources // (sourceOverrides args.fetchedSources);
+
+      in
+        builder {
+
+          inherit dreamLock;
+
+          inherit (dreamLockInterface)
+            buildSystemAttrs
+            dependenciesRemoved
+            getDependencies
+            mainPackageName
+            mainPackageVersion
+            packageVersions
+          ;
+
+          getSource = utils.dreamLock.getSource fetchedSources;
+
+          buildPackageWithOtherBuilder = builder: name: version:
+            let
+              subDreamLockLoaded =
+                utils.readDreamLock {
+                  dreamLock =
+                    utils.dreamLock.getSubDreamLock dreamLock name version;
+                };
+
+              filteredFetchedSources =
+                utils.dreamLock.filterFetchedSources
+                    args.fetchedSources subDreamLockLoaded.lock;
+
+              newFetchedSources =
+                filteredFetchedSources // (sourceOverrides filteredFetchedSources);
+
+            in
+              callBuilder rec {
+                inherit builder builderArgs sourceOverrides;
+                dreamLock =
+                  subDreamLockLoaded.lock;
+                dreamLockInterface = subDreamLockLoaded.interface;
+                fetchedSources = newFetchedSources;
+              };
+        };
+
+
   # build package defined by dream.lock
   riseAndShine = 
     {
       dreamLock,
-      builder ? findBuilder (parseLock dreamLock),
-      fetcher ? findFetcher (parseLock dreamLock),
+      builder ? null,
+      fetcher ? null,
       sourceOverrides ? oldSources: {},
       packageOverrides ? {},
       builderArgs ? {},
     }@args:
     let
       # if generic lock is a file, read and parse it
-      dreamLock' = (parseLock dreamLock);
+      dreamLockLoaded = utils.readDreamLock { inherit (args) dreamLock; };
+      dreamLock = dreamLockLoaded.lock;
+      dreamLockInterface = dreamLockLoaded.interface;
 
-      builderOutputs = builder (
-        {
-          dreamLock = dreamLock';
-          fetchedSources = (fetchSources {
-            inherit dreamLock fetcher sourceOverrides;
-          }).fetchedSources;
-        }
-        // builderArgs
-        // lib.optionalAttrs (packageOverrides != {}) {
+      builder' =
+        if builder == null then
+          findBuilder dreamLock
+        else
+          builder;
+
+      fetcher' =
+        if fetcher == null then
+          findFetcher dreamLock
+        else
+          fetcher;
+
+      fetchedSources = (fetchSources {
+        inherit dreamLock;
+        fetcher = fetcher';
+      }).fetchedSources;
+
+      builderOutputs = callBuilder {
+        inherit dreamLock dreamLockInterface fetchedSources sourceOverrides;
+        builder = builder';
+        builderArgs = args.builderArgs // {
           inherit packageOverrides;
-        });
+        };
+      };
     in
       builderOutputs;
    

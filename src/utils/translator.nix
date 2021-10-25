@@ -42,7 +42,7 @@ let
         {}
         serializedPackagesList;
 
-      allDependenciesByOriginalID = b.foldl'
+      dependenciesByOriginalID = b.foldl'
         (result: pkgData: lib.recursiveUpdate result {
           "${getOriginalID pkgData}" = pkgData;
         })
@@ -79,10 +79,7 @@ let
               "${getName pkgData}#${getVersion pkgData}"
               (b.map
                 (depNameVer: "${depNameVer.name}#${depNameVer.version}")
-                (getDependencies pkgData getDepByNameVer getDepByOriginalID))));
-      
-      getDepByOriginalID = id:
-        allDependenciesByOriginalID."${id}";
+                (getDependencies pkgData getDepByNameVer dependenciesByOriginalID))));
       
       getDepByNameVer = name: version:
         allDependencies."${name}"."${version}";

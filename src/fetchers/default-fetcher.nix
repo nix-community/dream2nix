@@ -12,8 +12,10 @@
   ...
 }:
 
-{
-  # attrset: pname -> path of downloaded source
+let
+
+  b = builtins;
+
   fetchedSources =
     lib.listToAttrs
       (lib.flatten
@@ -32,6 +34,10 @@
               )
               versions
           )
-          sources))
-  ;
+          sources));
+
+in
+{
+  # attrset: pname -> path of downloaded source
+  inherit fetchedSources;
 }

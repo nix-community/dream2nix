@@ -23,7 +23,7 @@ let
       dreamLock,
     }:
     let
-      lock = utils.readDreamLock { inherit dreamLock; };
+      lock = (utils.readDreamLock { inherit dreamLock; }).lock;
       source = lockUtils.getMainPackageSource lock;
     in
       lock.updater
@@ -36,7 +36,7 @@ let
       updater ? getUpdaterName { inherit dreamLock; },
     }:
     let
-      lock = utils.readDreamLock { inherit dreamLock; };
+      lock = (utils.readDreamLock { inherit dreamLock; }).lock;
       source = lockUtils.getMainPackageSource lock;
       updater' = updaters."${updater}";
     in
