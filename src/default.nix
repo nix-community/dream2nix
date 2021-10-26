@@ -226,6 +226,7 @@ rec {
             buildSystemAttrs
             dependenciesRemoved
             getDependencies
+            getCyclicDependencies
             mainPackageName
             mainPackageVersion
             packageVersions

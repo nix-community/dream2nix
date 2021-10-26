@@ -16,6 +16,7 @@
   dependenciesRemoved,
   mainPackageName,
   mainPackageVersion,
+  getCyclicDependencies,
   getDependencies,
   getSource,
   packageVersions,
@@ -28,11 +29,7 @@ let
   b = builtins;
 
   getDependencies = name: version:
-    (
-    if dependenciesRemoved ? "${name}" && dependenciesRemoved."${name}" ? "${version}" then
-      dependenciesRemoved."${name}"."${version}" ++ (args.getDependencies name version)
-    else
-      args.getDependencies name version);
+    (args.getDependencies name version) ++ (args.getCyclicDependencies name version);
 
   mainPackageKey = "${mainPackageName}#${mainPackageVersion}";
 
