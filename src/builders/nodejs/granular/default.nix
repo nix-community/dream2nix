@@ -72,11 +72,19 @@ let
       packageVersions;
   
   makeCombinedPackage = name: version:
-    # b.trace name
-    (buildPackageWithOtherBuilder
-      builders.nodejs.node2nix
-      name
-      version).package;
+    let
+      built =
+        buildPackageWithOtherBuilder {
+          inherit name version;
+          builder = builders.nodejs.node2nix;
+          inject =
+            lib.optionalAttrs (dependenciesRemoved ? "${name}"."${version}") {
+              "${name}"."${version}" =
+                dependenciesRemoved."${name}"."${version}";
+            };
+        };
+    in
+      built.package;
 
   makePackage = name: version:
     let
@@ -176,12 +184,17 @@ let
               fi
             done
 
+            export NODE_PATH="$NODE_PATH:$nodeModules/${packageName}/node_modules"
             cd "$nodeModules/${packageName}"
 
-            # fix malformed dependency versions in package.json
-            python ${./fix-package-lock.py} $dependencies_json package.json
-
             export HOME=$TMPDIR
+
+            # delete package-lock.json as it can lead to conflicts
+            rm -f package-lock.json
+
+            # fix malformed dependency versions in package.json
+            cp package.json package.json.bak
+            python ${./fix-package-lock.py} $dependencies_json package.json
 
             flags=("--offline" "--production" "--nodedir=$nodeSources")
             if [ -n "$ignoreScripts" ]; then

@@ -112,6 +112,8 @@ rec {
           args.fetcher;
 
       fetched = fetcher {
+        mainPackageName = dreamLock.generic.mainPackageName;
+        mainPackageVersion = dreamLock.generic.mainPackageVersion;
         sources = dreamLock'.sources;
         sourcesCombinedHash = dreamLock'.generic.sourcesCombinedHash;
       };
@@ -176,18 +178,49 @@ rec {
       builderArgs,
       fetchedSources,
       dreamLock,
-      dreamLockInterface,
+      inject,
       sourceOverrides,
     }@args:
       let
 
+        # inject dependencies
+        dreamLock = utils.dreamLock.injectDependencies args.dreamLock inject;
+
+        dreamLockInterface = (utils.readDreamLock { inherit dreamLock; }).interface;
+
+        changedSources = sourceOverrides args.fetchedSources;
+
         fetchedSources =
-          args.fetchedSources // (sourceOverrides args.fetchedSources);
+          args.fetchedSources // changedSources;
+
+        buildPackageWithOtherBuilder =
+          {
+            builder,
+            name,
+            version,
+            inject,
+          }@args2:
+          let
+            subDreamLockLoaded =
+              utils.readDreamLock {
+                dreamLock =
+                  utils.dreamLock.getSubDreamLock dreamLock name version;
+              };
+
+          in
+            callBuilder {
+              inherit builder builderArgs inject sourceOverrides;
+              dreamLock =
+                subDreamLockLoaded.lock;
+              inherit fetchedSources;
+            };
 
       in
-        builder {
+        builder ( builderArgs // {
 
-          inherit dreamLock;
+          inherit
+            buildPackageWithOtherBuilder
+          ;
 
           inherit (dreamLockInterface)
             buildSystemAttrs
@@ -200,30 +233,7 @@ rec {
 
           getSource = utils.dreamLock.getSource fetchedSources;
 
-          buildPackageWithOtherBuilder = builder: name: version:
-            let
-              subDreamLockLoaded =
-                utils.readDreamLock {
-                  dreamLock =
-                    utils.dreamLock.getSubDreamLock dreamLock name version;
-                };
-
-              filteredFetchedSources =
-                utils.dreamLock.filterFetchedSources
-                    args.fetchedSources subDreamLockLoaded.lock;
-
-              newFetchedSources =
-                filteredFetchedSources // (sourceOverrides filteredFetchedSources);
-
-            in
-              callBuilder rec {
-                inherit builder builderArgs sourceOverrides;
-                dreamLock =
-                  subDreamLockLoaded.lock;
-                dreamLockInterface = subDreamLockLoaded.interface;
-                fetchedSources = newFetchedSources;
-              };
-        };
+        });
 
 
   # build package defined by dream.lock
@@ -232,6 +242,7 @@ rec {
       dreamLock,
       builder ? null,
       fetcher ? null,
+      inject ? {},
       sourceOverrides ? oldSources: {},
       packageOverrides ? {},
       builderArgs ? {},
@@ -260,9 +271,14 @@ rec {
       }).fetchedSources;
 
       builderOutputs = callBuilder {
-        inherit dreamLock dreamLockInterface fetchedSources sourceOverrides;
+        inherit
+          dreamLock
+          fetchedSources
+          inject
+          sourceOverrides
+        ;
         builder = builder';
-        builderArgs = args.builderArgs // {
+        builderArgs = (args.builderArgs or {}) // {
           inherit packageOverrides;
         };
       };

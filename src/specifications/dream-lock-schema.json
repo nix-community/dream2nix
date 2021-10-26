@@ -21,17 +21,12 @@
                     "github",
                     "gitlab",
                     "path",
-                    "pypi-sdist"
+                    "pypi-sdist",
+                    "unknown"
                   ]
                 }
               },
               "allOf": [
-                {
-                  "if": {
-                    "properties": { "type": { "const": "unknown" } }
-                  },
-                  "then": { "properties": {} }
-                },
                 {
                   "if": {
                     "properties": { "type": { "const": "fetchurl" } }
@@ -101,6 +96,18 @@
                       "type": { "type": "string" }
                     },
                     "required": ["type", "pname"],
+                    "additionalProperties": false
+                  }
+                },
+                {
+                  "if": {
+                    "properties": { "type": { "const": "unknown" } }
+                  },
+                  "then": {
+                    "properties": {
+                      "type": { "type": "string" }
+                    },
+                    "required": ["type"],
                     "additionalProperties": false
                   }
                 }

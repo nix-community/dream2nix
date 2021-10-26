@@ -1,5 +1,8 @@
 {
   lib,
+
+  # dream2nix
+  utils,
   ...
 }:
 let
@@ -25,9 +28,23 @@ let
       dependencyGraph = lock.generic.dependencyGraph;
 
       packageVersions =
-        lib.mapAttrs
-          (pname: versions: lib.attrNames versions)
-          sources;
+        let
+          allDependencyKeys =
+            lib.attrNames
+              (lib.genAttrs
+                (lib.flatten
+                  ((lib.attrValues dependencyGraph) ++ (lib.attrNames dependencyGraph)))
+                (x: null));
+        in
+          lib.foldl'
+            (packageVersions: dep:
+              packageVersions // {
+                "${dep.name}" = (packageVersions."${dep.name}" or []) ++ [
+                  dep.version
+                ];
+              })
+            {}
+            (b.map (utils.keyToNameVersion) allDependencyKeys);
 
       dependenciesRemoved =
         lib.mapAttrs
@@ -35,13 +52,7 @@ let
             lib.mapAttrs
               (version: removedKeys:
                 lib.forEach removedKeys
-                  (rKey:
-                    let
-                      split = lib.splitString "#" rKey;
-                      name = b.elemAt split 0;
-                      version = b.elemAt split 1;
-                    in
-                      { inherit name version; }))
+                  (rKey: utils.keyToNameVersion rKey))
               versions)
           lock.generic.dependenciesRemoved;
 
@@ -56,18 +67,16 @@ let
         lib.mapAttrs
           (key: deps:
             lib.forEach deps
-              (dep:
-                let
-                  split = lib.splitString "#" dep;
-                  name = b.elemAt split 0;
-                  version = b.elemAt split 1;
-                in
-                  { inherit name version; }))
+              (dep: utils.keyToNameVersion dep))
           dependencyGraph;
 
       getDependencies = pname: version:
         if dependenciesAttrs ? "${pname}#${version}" then
-          dependenciesAttrs."${pname}#${version}"
+          # filter out cyclicDependencies
+          lib.filter
+            (dep: ! b.elem dep (dependenciesRemoved."${pname}"."${version}" or []))
+            dependenciesAttrs."${pname}#${version}"
+        # assume no deps if package not found in dependencyGraph
         else
           [];
 
@@ -120,79 +129,50 @@ let
     getSubDreamLock = dreamLock: name: version:
       let
         lock = (readDreamLock { inherit dreamLock; }).lock;
-
-        allDependneciesOf = key:
-          let
-            next = lock.generic.dependencyGraph."${key}" or [];
-          in
-            next
-            ++
-            lib.flatten (b.map allDependneciesOf next);
-
-        # use set for efficient lookups
-        allDependenciesOfMainPackage =
-          lib.genAttrs (allDependneciesOf "${name}#${version}") (x: null);
-
-        newSources =
-          lib.filterAttrs
-            (p_name: versions: versions != {})
-            (lib.mapAttrs
-              (p_name: versions:
-                lib.filterAttrs
-                  (p_version: source:
-                    allDependenciesOfMainPackage ? "${p_name}#${p_version}"
-                    || (name == p_name && version == p_version))
-                  versions)
-              lock.sources);
-        
-        newDependencyGraph =
-          lib.filterAttrs
-            (key: deps:
-              let
-                split = lib.splitString "#" key;
-                p_name = b.elemAt split 0;
-                p_version = b.elemAt split 1;
-              in
-                allDependenciesOfMainPackage ? "${key}"
-                ||
-                (name == p_name && version == p_version))
-            lock.generic.dependencyGraph;
       
       in
         lock // {
           generic = lock.generic // {
             mainPackageName = name;
             mainPackageVersion = version;
-            dependencyGraph = newDependencyGraph;
           };
-          sources = newSources;
         };
 
-    filterFetchedSources = fetchedSources: dreamLock:
+    injectDependencies = dreamLock: inject:
+      if inject == {} then dreamLock else
       let
-        lockInterface = (readDreamLock { inherit dreamLock; }).interface;
-        
-        allDependencyKeys =
-          lib.flatten
-            (lib.mapAttrsToList
-              (name: versions: lib.forEach versions
-                (v: "${name}#${v}"))
-              lockInterface.packageVersions);
+        lock = (readDreamLock { inherit dreamLock; }).lock;
 
-        allDependencyKeysSet = lib.genAttrs allDependencyKeys (x: null);
+        oldDependencyGraph = lock.generic.dependencyGraph;
+        
+        newDependencyGraph =
+          lib.mapAttrs
+            (key: deps:
+              let
+                nameVer = utils.keyToNameVersion key;
+              in
+                deps
+                ++
+                (if inject ? "${nameVer.name}"."${nameVer.version}" then
+                  (b.map
+                    utils.nameVersionToKey
+                    inject."${nameVer.name}"."${nameVer.version}")
+                else
+                  []))
+            oldDependencyGraph;
 
       in
-        lib.filterAttrs
-          (key: source: allDependencyKeysSet ? "${key}")
-          fetchedSources;
-        
+        lib.recursiveUpdate lock {
+          generic.dependencyGraph = newDependencyGraph;
+        };
+
 in
   {
     inherit
       getMainPackageSource
-      filterFetchedSources
       getSource
       getSubDreamLock
       readDreamLock
+      injectDependencies
     ;
   }

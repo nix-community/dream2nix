@@ -14,6 +14,7 @@
       inputFiles,
 
       # extraArgs
+      name,
       dev,
       optional,
       peer,
@@ -39,8 +40,14 @@
     utils.simpleTranslate translatorName rec {
 
       inputData = parsedLock;
-      mainPackageName = packageJSON.name or "unknown";
+
+      mainPackageName =
+        packageJSON.name or
+          (if name != null then name else
+            throw "Could not identify package name. Please specify extra argument 'name'");
+
       mainPackageVersion = packageJSON.version or "unknown";
+
       buildSystemName = "nodejs";
 
       buildSystemAttrs = {
@@ -99,19 +106,20 @@
             (dependency: 
               builtins.head (
                 lib.mapAttrsToList
-                  (name: value:
+                  (name: versionSpec:
                     let
-                      yarnName = "${name}@${value}";
+                      yarnName = "${name}@${versionSpec}";
                       depObject = dependenciesByOriginalID."${yarnName}"; 
                       version = depObject.version;
                     in
                       if ! dependenciesByOriginalID ? ${yarnName} then
+                        # handle missing lock file entry
                         let
-                          yarnNameSplit = lib.splitString "@" yarnName;
+                          versionMatch = b.match ''.*\^([[:digit:]|\.]+)'' versionSpec;
                         in
                           {
-                            name = b.elemAt yarnNameSplit 0;
-                            version = b.elemAt yarnNameSplit 1;
+                            inherit name;
+                            version = b.elemAt versionMatch 0;
                           }
                       else
                         { inherit name version; }
@@ -174,6 +182,13 @@
           };
       };
 
+      # TODO: implement createMissingSource
+      # createMissingSource = name: version:
+      #   let
+      #     pname = lib.last (lib.splitString "/" name);
+      #   in
+
+
     };
       
 
@@ -200,6 +215,15 @@
   #   - boolean flag (type = "flag")
   # String arguments contain a default value and examples. Flags do not.
   specialArgs = {
+
+    name = {
+      description = "The name of hte main package";
+      examples = [
+        "react"
+        "@babel/code-frame"
+      ];
+      type = "argument";
+    };
 
     dev = {
       description = "Whether to include development dependencies";

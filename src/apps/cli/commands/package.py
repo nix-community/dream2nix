@@ -306,7 +306,6 @@ class PackageCommand(Command):
             # remove_dependecy(indexed_pkgs, G, cycle[-1][0], cycle[-1][1])
             node_from, node_to = cycle[-1][0], cycle[-1][1]
             G.remove_edge(node_from, node_to)
-            depGraph[node_from].remove(node_to)
             removed_edges.append((node_from, node_to))
         except nx.NetworkXNoCycle:
           continue

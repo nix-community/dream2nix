@@ -8,6 +8,8 @@
 }:
 {
   # sources attrset from generic lock
+  mainPackageName,
+  mainPackageVersion,
   sources,
   ...
 }:
@@ -28,6 +30,8 @@ let
                   "${pname}#${version}"
                   (if source.type == "unknown" then
                     "unknown"
+                  else if source.type == "path" then
+                    "${fetchedSources."${mainPackageName}#${mainPackageVersion}"}/${source.path}"
                   else if fetchers.fetchers ? "${source.type}" then
                     fetchSource { inherit source; }
                   else throw "unsupported source type '${source.type}'")
