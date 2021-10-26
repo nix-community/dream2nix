@@ -79,6 +79,9 @@ let
         # assume no deps if package not found in dependencyGraph
         else
           [];
+      
+      getCyclicDependencies = pname: version:
+        dependenciesRemoved."${pname}"."${version}" or [];
 
     in
       {
@@ -93,6 +96,7 @@ let
           inherit
             buildSystemAttrs
             dependenciesRemoved
+            getCyclicDependencies
             getDependencies
             packageVersions
           ;
