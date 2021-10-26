@@ -105,7 +105,7 @@ let
 
           buildInputs = [ nodejs nodejs.python ];
 
-          ignoreScripts = false;
+          ignoreScripts = true;
 
           inherit nodeSources;
 
@@ -194,7 +194,7 @@ let
 
             # fix malformed dependency versions in package.json
             cp package.json package.json.bak
-            python ${./fix-package-lock.py} $dependencies_json package.json
+            python ${./fix-package-json.py} $dependencies_json package.json
 
             flags=("--offline" "--production" "--nodedir=$nodeSources")
             if [ -n "$ignoreScripts" ]; then

@@ -45,18 +45,19 @@
         lib.mapAttrs
           (pname: pdata:
             let
-              selfScopeDeps = parentScopeDeps // (pdata.dependencies or {});
+              selfScopeDeps = parentScopeDeps // dependencies;
+              requires = pdata.requires or {};
+              dependencies = pdata.dependencies or {};
             in
               pdata // {
                 depsExact =
-                  if ! pdata ? requires then
-                    []
-                  else
-                    lib.forEach (lib.attrNames pdata.requires) (reqName: {
+                  lib.forEach
+                    (lib.attrNames requires)
+                    (reqName: {
                       name = reqName;
                       version = getVersion selfScopeDeps."${reqName}";
                     });
-                dependencies = pinVersions (pdata.dependencies or {}) selfScopeDeps;
+                dependencies = pinVersions dependencies selfScopeDeps;
               }
           )
           dependencies;
