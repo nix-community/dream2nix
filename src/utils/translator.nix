@@ -25,6 +25,7 @@ let
       getVersion,
       getSourceType,
       sourceConstructors,
+      createMissingSource ? (name: version: { type = "unknown"; }),
       getDependencies ? null,
       getOriginalID ? null,
       mainPackageSource ? { type = "unknown"; },
@@ -81,12 +82,52 @@ let
                 (depNameVer: "${depNameVer.name}#${depNameVer.version}")
                 (getDependencies pkgData getDepByNameVer dependenciesByOriginalID))));
       
+      allDependencyKeys =
+        lib.attrNames
+          (lib.genAttrs
+            (b.foldl'
+              (a: b: a ++ b)
+              []
+              (lib.attrValues dependencyGraph))
+            (x: null));
+      
+      missingDependencies =
+        lib.flatten
+          (lib.forEach allDependencyKeys
+            (depKey:
+              let
+                split = lib.splitString "#" depKey;
+                name = b.elemAt split 0;
+                version = b.elemAt split 1;
+              in
+                if sources ? "${name}" && sources."${name}" ? "${version}" then
+                  []
+                else
+                  { inherit name version; }));
+
+      generatedSources =
+        if missingDependencies == [] then
+          {}
+        else
+          lib.listToAttrs
+            (b.map
+              (dep: lib.nameValuePair
+                "${dep.name}"
+                {
+                  "${dep.version}" =
+                    createMissingSource dep.name dep.version;
+                })
+              missingDependencies);
+
+      allSources =
+        lib.recursiveUpdate sources generatedSources;
+      
       getDepByNameVer = name: version:
         allDependencies."${name}"."${version}";
 
     in
       {
-          inherit sources;
+          sources = allSources;
 
           generic =
             {

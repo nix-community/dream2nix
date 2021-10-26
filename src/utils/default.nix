@@ -108,6 +108,16 @@ rec {
   
   sanitizeDerivationName = name:
     lib.replaceStrings [ "@" "/" ] [ "__at__" "__slash__" ] name;
-  
+
+  keyToNameVersion = key:
+    let
+      split = lib.splitString "#" key;
+      name = b.elemAt split 0;
+      version = b.elemAt split 1;
+    in
+      { inherit name version; };
+
+  nameVersionToKey = nameVersion:
+    "${nameVersion.name}#${nameVersion.version}";
 
 }

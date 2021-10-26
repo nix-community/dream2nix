@@ -76,6 +76,8 @@
             export d2nExternalSources=${externalSourcesFor."${system}"}
             export dream2nixWithExternals=${dream2nixFor."${system}".dream2nixWithExternals}
             export d2nExternalSources=$dream2nixWithExternals/external
+
+            echo "\nManually execute 'export dream2nixWithExternals={path to your dream2nix checkout}'"
           '';
         });
       };

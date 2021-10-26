@@ -9,13 +9,23 @@ with open(sys.argv[2]) as f:
   package_json = json.load(f)
 
 changed = False
+
+# delete devDependencies
+if 'devDependencies' in package_json:
+  print(
+    f"Removing devDependencies from package.json",
+    file=sys.stderr
+  )
+  changed = True
+  del package_json['devDependencies']
+
 if 'dependencies' in package_json:
   for pname, version in package_json['dependencies'].items():
     if actual_deps[pname] != package_json['dependencies'][pname]:
       package_json['dependencies'][pname] = actual_deps[pname]
       changed = True
       print(
-        f"WARNING: replacing malformed version '{version}' for dependency '{pname}' in package.json",
+        f"Replacing loose version '{version}' with '{actual_deps[pname]}' for dependency '{pname}' in package.json",
         file=sys.stderr
       )
 

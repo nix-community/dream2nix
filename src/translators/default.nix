@@ -14,6 +14,8 @@
 }: 
 let
 
+  b = builtins;
+
   lib = pkgs.lib;
 
   callTranslator = subsystem: type: name: file: args: 
@@ -111,7 +113,7 @@ let
         if def.type == "flag" then
           false
         else
-          def.default
+          def.default or null
       )
       specialArgsDef;
 

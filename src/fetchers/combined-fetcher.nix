@@ -35,9 +35,13 @@ let
                 passthru.originalArgs = args;
               })).originalArgs
 
+            # handle path sources
+            else if lib.isString fetched then
+              "ignore"
+
             # handle unknown sources
             else if fetched == "unknown" then
-              "unknown"
+              "ignore"
 
             # error out on unknown source types
             else
@@ -48,7 +52,7 @@ let
           )
           defaultFetched;
     in
-      lib.filterAttrs (pname: fetcherArgs: fetcherArgs != "unknown") FODArgsAll';
+      lib.filterAttrs (pname: fetcherArgs: fetcherArgs != "ignore") FODArgsAll';
 
   # convert arbitrary types to string, like nix does with derivation arguments
   toString = x:
