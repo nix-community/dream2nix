@@ -109,6 +109,8 @@ let
 
           inherit nodeSources;
 
+          dontNpmInstall = false;
+
           dependencies_json = writeText "dependencies.json"
             (b.toJSON 
               (lib.listToAttrs
@@ -194,14 +196,25 @@ let
 
             # fix malformed dependency versions in package.json
             cp package.json package.json.bak
-            python ${./fix-package-json.py} $dependencies_json package.json
+            python ${./fix-package-json.py} $dependencies_json package.json \
+            || \
+            # exit code 3 -> the package is incompatible to the current platform
+            if [ "$?" == "3" ]; then
+              rm -r $out/*
+              echo "Not compatible with system $system" > $out/error
+              exit 0
+            else
+              exit 1
+            fi
 
             flags=("--offline" "--production" "--nodedir=$nodeSources")
             if [ -n "$ignoreScripts" ]; then
               flags+=("--ignore-scripts")
             fi
 
-            npm "''${flags[@]}" install
+            if [ -z "$dontNpmInstall" ]; then
+              npm "''${flags[@]}" install
+            fi
 
             # Create symlink to the deployed executable folder, if applicable
               if [ -d "$nodeModules/.bin" ]

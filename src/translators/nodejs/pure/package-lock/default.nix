@@ -37,7 +37,7 @@
 
       getVersion = dependencyObject:
         if identifyGitSource dependencyObject then
-          builtins.substring 0 8 (utils.parseGitUrl dependencyObject.version).rev
+          "0.0.0-rc.${b.substring 0 8 (utils.parseGitUrl dependencyObject.version).rev}"
         else
           dependencyObject.version;
       

@@ -97,7 +97,8 @@ class PackageCommand(Command):
     # check if source is valid fetcher spec
     sourceSpec = {}
     # handle source shortcuts
-    if source.partition(':')[0].split('+')[0] in os.environ.get("fetcherNames", None).split():
+    if source.partition(':')[0].split('+')[0] in os.environ.get("fetcherNames", None).split()\
+        or source.startswith('http'):
       print(f"fetching source for '{source}'")
       sourceSpec =\
         callNixFunction("fetchers.translateShortcut", shortcut=source)

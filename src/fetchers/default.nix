@@ -96,7 +96,7 @@ rec {
       translateHttpUrl = 
         let
           fetcher = fetchers.fetchurl;
-          fetcherOutputs = fetchers.http.outputs { url = shortcut; };
+          fetcherOutputs = fetchers.fetchurl.outputs { url = shortcut; };
         in
           constructSource {
             type = "fetchurl";
