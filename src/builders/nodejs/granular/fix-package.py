@@ -3,10 +3,9 @@ import os
 import sys
 
 
-with open(sys.argv[1]) as f:
-  actual_deps = json.load(f)
+actual_deps = json.loads(os.environ.get('dependencies_json'))
 
-with open(sys.argv[2]) as f:
+with open('package.json') as f:
   package_json = json.load(f)
 
 changed = False
@@ -65,5 +64,5 @@ if 'dependencies' in package_json:
 
 # write changes to package.json
 if changed:
-  with open(sys.argv[2], 'w') as f:
+  with open('package.json', 'w') as f:
     json.dump(package_json, f, indent=2)

@@ -99,7 +99,7 @@ let
         
           pname = utils.sanitizeDerivationName name;
 
-          inherit version;
+          inherit nodeSources version;
 
           src = getSource name version;
 
@@ -107,23 +107,22 @@ let
 
           ignoreScripts = true;
 
-          inherit nodeSources;
+          dontUnpack = true;
 
           dontNpmInstall = false;
 
-          dependencies_json = writeText "dependencies.json"
-            (b.toJSON 
-              (lib.listToAttrs
-                (b.map
-                  (dep: lib.nameValuePair dep.name dep.version)
-                  deps)));
+          fixPackage = "${./fix-package.py}";
+
+          dependencies_json = b.toJSON 
+            (lib.listToAttrs
+              (b.map
+                (dep: lib.nameValuePair dep.name dep.version)
+                deps));
 
           nodeDeps =
             lib.forEach
               deps
               (dep: allPackages."${dep.name}"."${dep.version}" );
-
-          dontUnpack = true;
 
           installPhase = ''
             runHook preInstall
@@ -134,13 +133,13 @@ let
 
             cd $TMPDIR
 
-            unpackFile ${src}
+            unpackFile $src
 
             # Make the base dir in which the target dependency resides first
-            mkdir -p "$(dirname "$nodeModules/${packageName}")"
+            mkdir -p "$(dirname "$nodeModules/$packageName")"
 
             # install source
-            if [ -f "${src}" ]
+            if [ -f "$src" ]
             then
                 # Figure out what directory has been unpacked
                 packageDir="$(find . -maxdepth 1 -type d | tail -1)"
@@ -150,22 +149,22 @@ let
                 chmod -R u+w "$packageDir"
 
                 # Move the extracted tarball into the output folder
-                mv "$packageDir" "$nodeModules/${packageName}"
-            elif [ -d "${src}" ]
+                mv "$packageDir" "$nodeModules/$packageName"
+            elif [ -d "$src" ]
             then
-                strippedName="$(stripHash ${src})"
+                strippedName="$(stripHash $src)"
 
                 # Restore write permissions
                 chmod -R u+w "$strippedName"
 
                 # Move the extracted directory into the output folder
-                mv "$strippedName" "$nodeModules/${packageName}"
+                mv "$strippedName" "$nodeModules/$packageName"
             fi
 
             # repair 'link:' -> 'file:'
-            mv $nodeModules/${packageName}/package.json $nodeModules/${packageName}/package.json.old
-            cat $nodeModules/${packageName}/package.json.old | sed 's!link:!file\:!g' > $nodeModules/${packageName}/package.json
-            rm $nodeModules/${packageName}/package.json.old
+            mv $nodeModules/$packageName/package.json $nodeModules/$packageName/package.json.old
+            cat $nodeModules/$packageName/package.json.old | sed 's!link:!file\:!g' > $nodeModules/$packageName/package.json
+            rm $nodeModules/$packageName/package.json.old
 
             # symlink dependency packages into node_modules
             for dep in $nodeDeps; do
@@ -173,30 +172,31 @@ let
                 for module in $(ls $dep/lib/node_modules); do
                   if [[ $module == @* ]]; then
                     for submodule in $(ls $dep/lib/node_modules/$module); do
-                      mkdir -p $nodeModules/${packageName}/node_modules/$module
-                      echo "ln -s $dep/lib/node_modules/$module/$submodule $nodeModules/${packageName}/node_modules/$module/$submodule"
-                      ln -s $dep/lib/node_modules/$module/$submodule $nodeModules/${packageName}/node_modules/$module/$submodule
+                      mkdir -p $nodeModules/$packageName/node_modules/$module
+                      echo "ln -s $dep/lib/node_modules/$module/$submodule $nodeModules/$packageName/node_modules/$module/$submodule"
+                      ln -s $dep/lib/node_modules/$module/$submodule $nodeModules/$packageName/node_modules/$module/$submodule
                     done
                   else
-                    mkdir -p $nodeModules/${packageName}/node_modules/
-                    echo "ln -s $dep/lib/node_modules/$module $nodeModules/${packageName}/node_modules/$module"
-                    ln -s $dep/lib/node_modules/$module $nodeModules/${packageName}/node_modules/$module
+                    mkdir -p $nodeModules/$packageName/node_modules/
+                    echo "ln -s $dep/lib/node_modules/$module $nodeModules/$packageName/node_modules/$module"
+                    ln -s $dep/lib/node_modules/$module $nodeModules/$packageName/node_modules/$module
                   fi
                 done
               fi
             done
 
-            export NODE_PATH="$NODE_PATH:$nodeModules/${packageName}/node_modules"
-            cd "$nodeModules/${packageName}"
+            export NODE_PATH="$NODE_PATH:$nodeModules/$packageName/node_modules"
+
+            cd "$nodeModules/$packageName"
 
             export HOME=$TMPDIR
 
             # delete package-lock.json as it can lead to conflicts
             rm -f package-lock.json
 
-            # fix malformed dependency versions in package.json
+            # pin dependency versions in package.json
             cp package.json package.json.bak
-            python ${./fix-package-json.py} $dependencies_json package.json \
+            python $fixPackage \
             || \
             # exit code 3 -> the package is incompatible to the current platform
             if [ "$?" == "3" ]; then
@@ -207,6 +207,7 @@ let
               exit 1
             fi
 
+            # set flags for npm install
             flags=("--offline" "--production" "--nodedir=$nodeSources")
             if [ -n "$ignoreScripts" ]; then
               flags+=("--ignore-scripts")
@@ -217,24 +218,24 @@ let
             fi
 
             # Create symlink to the deployed executable folder, if applicable
-              if [ -d "$nodeModules/.bin" ]
-              then
-                ln -s $nodeModules/.bin $out/bin
-              fi
+            if [ -d "$nodeModules/.bin" ]
+            then
+              ln -s $nodeModules/.bin $out/bin
+            fi
 
-              # Create symlinks to the deployed manual page folders, if applicable
-              if [ -d "$nodeModules/${packageName}/man" ]
-              then
-                  mkdir -p $out/share
-                  for dir in "$nodeModules/${packageName}/man/"*
-                  do
-                      mkdir -p $out/share/man/$(basename "$dir")
-                      for page in "$dir"/*
-                      do
-                          ln -s $page $out/share/man/$(basename "$dir")
-                      done
-                  done
-              fi
+            # Create symlinks to the deployed manual page folders, if applicable
+            if [ -d "$nodeModules/$packageName/man" ]
+            then
+                mkdir -p $out/share
+                for dir in "$nodeModules/$packageName/man/"*
+                do
+                    mkdir -p $out/share/man/$(basename "$dir")
+                    for page in "$dir"/*
+                    do
+                        ln -s $page $out/share/man/$(basename "$dir")
+                    done
+                done
+            fi
 
             runHook postInstall
           '';
