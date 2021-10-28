@@ -52,7 +52,19 @@ let
               (lib.filterAttrs (n: v: lib.hasPrefix "override" n) condOverride);
           in
             b.foldl'
-              (pkg: overrideFunc: pkg."${overrideFunc.funcName}" overrideFunc.func)
+              (pkg: overrideFunc:
+                pkg."${overrideFunc.funcName}"
+                (old:
+                  let
+                    updateAttrsFuncs = overrideFunc.func old;
+                  in
+                    lib.mapAttrs
+                      (attrName: maybeFunction:
+                        if b.isFunction maybeFunction then
+                          maybeFunction old."${attrName}"
+                        else
+                          maybeFunction)
+                      updateAttrsFuncs))
               pkg
               overrideFuncs;
       in

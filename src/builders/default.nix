@@ -13,7 +13,7 @@
 
   nodejs =  rec {
 
-    default = node2nix;
+    default = granular;
 
     node2nix = callPackageDream ./nodejs/node2nix {};
 
