@@ -1,3 +1,8 @@
+# this is the system specific api for dream2nix
+# it requires passing one specifi pkgs
+# If the intention is to generate output for several systems,
+# use ./lib.nix instead
+
 {
   pkgs ? import <nixpkgs> {},
   lib ? pkgs.lib,
@@ -32,7 +37,6 @@ let
   });
 
   externals = {
-    npmlock2nix = pkgs.callPackage "${externalSources}/npmlock2nix/internal.nix" {};
     node2nix = nodejs: pkgs.callPackage "${externalSources}/node2nix/node-env.nix" { inherit nodejs; };
     nix-parsec = rec {
       lexer = import "${externalSources}/nix-parsec/lexer.nix" { inherit parsec; };
@@ -132,11 +136,22 @@ rec {
       };
 
   
-  justBuild =
+  makeDreamLockForSource =
     {
       source,
     }@args:
     let
+
+      sourceSpec =
+        if b.isString args.source && ! lib.isStorePath args.source then
+          fetchers.translateShortcut { shortcut = args.source; }
+        else
+          {
+            type = "path";
+            path = args.source;
+          };
+
+      source = fetchers.fetchSource { source = sourceSpec; };
 
       translatorsForSource = translators.translatorsForInput {
         inputFiles = [];
@@ -158,17 +173,12 @@ rec {
       dreamLock = lib.recursiveUpdate dreamLock' {
         sources."${dreamLock'.generic.mainPackageName}"."${dreamLock'.generic.mainPackageVersion}" = {
           type = "path";
-          path = source;
-          version = "unknown";
+          path = "${source}";
         };
       };
 
-      argsForRise = b.removeAttrs args [ "source" ];
-
     in
-      (riseAndShine ({
-        inherit dreamLock;
-      } // argsForRise)).package;
+      dreamLock;
 
 
   # build a dream lock via a specific builder
@@ -237,20 +247,36 @@ rec {
         });
 
 
-  # build package defined by dream.lock
+  # produce outputs for a dream.lock or a source
   riseAndShine = 
     {
-      dreamLock,
+      dreamLock ? null,
       builder ? null,
       fetcher ? null,
       inject ? {},
+      source ? null,
       sourceOverrides ? oldSources: {},
       packageOverrides ? {},
       builderArgs ? {},
     }@args:
+
+    # ensure either dreamLock or source is used
+    if source != null && dreamLock != null then
+      throw "Define either 'dreamLock' or 'source', not both"
+    else if source == null && dreamLock == null then
+      throw "Define either 'dreamLock' or 'source'"
+    else
+
     let
-      # if generic lock is a file, read and parse it
-      dreamLockLoaded = utils.readDreamLock { inherit (args) dreamLock; };
+
+      dreamLock' =
+        if source != null then
+          makeDreamLockForSource { inherit source; }
+        else
+          args.dreamLock;
+
+      # parse dreamLock
+      dreamLockLoaded = utils.readDreamLock { dreamLock = dreamLock'; };
       dreamLock = dreamLockLoaded.lock;
       dreamLockInterface = dreamLockLoaded.interface;
 

@@ -60,7 +60,9 @@ let
     mv node-* $out
   '';
 
-  allPackages =
+  defaultPackage = packages."${mainPackageName}"."${mainPackageVersion}";
+
+  packages =
     lib.mapAttrs
       (name: versions:
         lib.genAttrs
@@ -95,7 +97,7 @@ let
       nodeDeps =
         lib.forEach
           deps
-          (dep: allPackages."${dep.name}"."${dep.version}" );
+          (dep: packages."${dep.name}"."${dep.version}" );
 
       dependenciesJson = b.toJSON 
         (lib.listToAttrs
@@ -264,11 +266,8 @@ let
     in
       (utils.applyOverridesToPackage packageOverrides pkg name);
 
-  package = allPackages."${mainPackageName}"."${mainPackageVersion}";
 
 in
 {
-
-  inherit package allPackages;
-    
+  inherit defaultPackage packages;
 }
