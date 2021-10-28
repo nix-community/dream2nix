@@ -91,19 +91,31 @@ let
 
       deps = getDependencies name version;
 
+      nodeDeps =
+        lib.forEach
+          deps
+          (dep: allPackages."${dep.name}"."${dep.version}" );
+
+      dependenciesJson = b.toJSON 
+        (lib.listToAttrs
+          (b.map
+            (dep: lib.nameValuePair dep.name dep.version)
+            deps));
+
       pkg =
-        # b.trace (lib.attrNames allPackages)
-        (stdenv.mkDerivation rec {
+        stdenv.mkDerivation rec {
 
           packageName = name;
         
           pname = utils.sanitizeDerivationName name;
 
-          inherit nodeSources version;
+          inherit dependenciesJson nodeDeps nodeSources version;
 
           src = getSource name version;
 
           buildInputs = [ nodejs nodejs.python ];
+
+          passAsFile = [ "dependenciesJson" "nodeDeps" ];
 
           ignoreScripts = true;
 
@@ -111,18 +123,15 @@ let
 
           dontNpmInstall = false;
 
+          installScript = null;
+
           fixPackage = "${./fix-package.py}";
 
-          dependencies_json = b.toJSON 
-            (lib.listToAttrs
-              (b.map
-                (dep: lib.nameValuePair dep.name dep.version)
-                deps));
+          dontStrip = true;
+          
 
-          nodeDeps =
-            lib.forEach
-              deps
-              (dep: allPackages."${dep.name}"."${dep.version}" );
+          # not using the default unpackPhase,
+          # as it fails setting the permissions sometimes
 
           installPhase = ''
             runHook preInstall
@@ -167,7 +176,7 @@ let
             rm $nodeModules/$packageName/package.json.old
 
             # symlink dependency packages into node_modules
-            for dep in $nodeDeps; do
+            for dep in $(cat $nodeDepsPath); do
               if [ -e $dep/lib/node_modules ]; then
                 for module in $(ls $dep/lib/node_modules); do
                   if [[ $module == @* ]]; then
@@ -208,12 +217,20 @@ let
             fi
 
             # set flags for npm install
-            flags=("--offline" "--production" "--nodedir=$nodeSources")
+            flags=("--offline" "--production" "--nodedir=$nodeSources" "--no-package-lock")
             if [ -n "$ignoreScripts" ]; then
               flags+=("--ignore-scripts")
             fi
 
-            if [ -z "$dontNpmInstall" ]; then
+
+            # execute installation command
+            if [ -n "$installScript" ]; then
+              if [ -f "$installScript" ]; then
+                exec $installScript
+              else
+                echo "$installScript" | bash
+              fi
+            elif [ -z "$dontNpmInstall" ]; then
               npm "''${flags[@]}" install
             fi
 
@@ -239,7 +256,7 @@ let
 
             runHook postInstall
           '';
-        });
+        };
     in
       (utils.applyOverridesToPackage packageOverrides pkg name);
 

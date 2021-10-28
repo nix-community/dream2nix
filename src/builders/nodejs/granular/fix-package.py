@@ -3,7 +3,8 @@ import os
 import sys
 
 
-actual_deps = json.loads(os.environ.get('dependencies_json'))
+with open(os.environ.get('dependenciesJsonPath')) as f:
+  actual_deps = json.load(f)
 
 with open('package.json') as f:
   package_json = json.load(f)
