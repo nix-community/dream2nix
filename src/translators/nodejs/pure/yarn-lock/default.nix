@@ -217,7 +217,7 @@
   specialArgs = {
 
     name = {
-      description = "The name of hte main package";
+      description = "The name of the main package";
       examples = [
         "react"
         "@babel/code-frame"
