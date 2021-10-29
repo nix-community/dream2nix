@@ -112,16 +112,16 @@ let
     // args);
 
 in
-{
+rec {
 
-  package =
+  packages."${mainPackageName}"."${mainPackageVersion}" = defaultPackage;
+
+  defaultPackage =
     let
       pkg = callNode2Nix "buildNodePackage" {};
     in
       utils.applyOverridesToPackage packageOverrides pkg mainPackageName;
 
-  shell = callNode2Nix "buildNodeShell" {};
-
-  # inherit allSources;
+  devShell = callNode2Nix "buildNodeShell" {};
     
 }

@@ -31,7 +31,7 @@ let
     else
       mainPackageName;
 
-  package = buildFunc {
+  defaultPackage = buildFunc {
     name = packageName;
     format = "";
     buildInputs = pkgs.pythonManylinuxPackages.manylinux1;
@@ -60,5 +60,5 @@ let
 };
 
 in {
-  inherit package;
+  inherit defaultPackage;
 }

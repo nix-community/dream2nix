@@ -16,7 +16,9 @@ let
     let
 
       lock =
-        if b.isPath dreamLock || b.isString dreamLock then
+        if b.isPath dreamLock
+            || b.isString dreamLock
+            || lib.isDerivation dreamLock then
           b.fromJSON (b.readFile dreamLock)
         else
           dreamLock;
@@ -54,7 +56,7 @@ let
                 lib.forEach removedKeys
                   (rKey: utils.keyToNameVersion rKey))
               versions)
-          lock.generic.dependenciesRemoved;
+          lock.generic.dependenciesRemoved or {};
 
       # Format:
       # {

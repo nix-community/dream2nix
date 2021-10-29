@@ -55,7 +55,7 @@ in
               "${mainPackageName}#${mainPackageVersion}" = ./${sourcePathRelative};
             };
         ''}
-      }).package.overrideAttrs (old: {
+      }).defaultPackage.overrideAttrs (old: {
 
       })
   '';

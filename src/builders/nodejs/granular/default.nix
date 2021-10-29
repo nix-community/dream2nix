@@ -1,4 +1,5 @@
 {
+  jq,
   lib,
   pkgs,
   runCommand,
@@ -59,7 +60,9 @@ let
     mv node-* $out
   '';
 
-  allPackages =
+  defaultPackage = packages."${mainPackageName}"."${mainPackageVersion}";
+
+  packages =
     lib.mapAttrs
       (name: versions:
         lib.genAttrs
@@ -94,7 +97,7 @@ let
       nodeDeps =
         lib.forEach
           deps
-          (dep: allPackages."${dep.name}"."${dep.version}" );
+          (dep: packages."${dep.name}"."${dep.version}" );
 
       dependenciesJson = b.toJSON 
         (lib.listToAttrs
@@ -113,13 +116,15 @@ let
 
           src = getSource name version;
 
-          buildInputs = [ nodejs nodejs.python ];
+          buildInputs = [ jq nodejs nodejs.python ];
 
           passAsFile = [ "dependenciesJson" "nodeDeps" ];
 
           ignoreScripts = true;
 
           dontUnpack = true;
+          dontConfigure = true;
+          dontBuild = true;
 
           dontNpmInstall = false;
 
@@ -177,6 +182,11 @@ let
 
             # symlink dependency packages into node_modules
             for dep in $(cat $nodeDepsPath); do
+              # add bin to PATH
+              if [ -d "$dep/bin" ]; then
+                export PATH="$PATH:$dep/bin"
+              fi
+
               if [ -e $dep/lib/node_modules ]; then
                 for module in $(ls $dep/lib/node_modules); do
                   if [[ $module == @* ]]; then
@@ -216,13 +226,6 @@ let
               exit 1
             fi
 
-            # set flags for npm install
-            flags=("--offline" "--production" "--nodedir=$nodeSources" "--no-package-lock")
-            if [ -n "$ignoreScripts" ]; then
-              flags+=("--ignore-scripts")
-            fi
-
-
             # execute installation command
             if [ -n "$installScript" ]; then
               if [ -f "$installScript" ]; then
@@ -231,12 +234,15 @@ let
                 echo "$installScript" | bash
               fi
             elif [ -z "$dontNpmInstall" ]; then
-              npm "''${flags[@]}" install
+              if [ "$(jq '.scripts.postinstall' ./package.json)" != "null" ]; then
+                npm --production --offline --nodedir=$nodeSources run postinstall
+              fi
             fi
 
             # Create symlink to the deployed executable folder, if applicable
             if [ -d "$nodeModules/.bin" ]
             then
+              chmod +x $nodeModules/.bin/*
               ln -s $nodeModules/.bin $out/bin
             fi
 
@@ -260,11 +266,8 @@ let
     in
       (utils.applyOverridesToPackage packageOverrides pkg name);
 
-  package = allPackages."${mainPackageName}"."${mainPackageVersion}";
 
 in
 {
-
-  inherit package allPackages;
-    
+  inherit defaultPackage packages;
 }
