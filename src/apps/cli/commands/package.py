@@ -9,7 +9,7 @@ import networkx as nx
 from cleo import Command, option
 
 from utils import dream2nix_src, checkLockJSON, callNixFunction, buildNixFunction, buildNixAttribute, \
-  list_translators_for_source, order_dict, strip_hashes_from_lock
+  list_translators_for_source, sort_dict, strip_hashes_from_lock
 
 
 class PackageCommand(Command):
@@ -164,7 +164,7 @@ class PackageCommand(Command):
         exit(1)
 
     # raise error if any specified extra arg is unknown
-    unknown_extra_args = set(specified_extra_args.keys()) - set(translator['specialArgs'].keys())
+    unknown_extra_args = set(specified_extra_args.keys()) - set(translator['extraArgs'].keys())
     if unknown_extra_args:
       print(
         f"Invalid extra args for translator '{translator['name']}': "
@@ -176,7 +176,7 @@ class PackageCommand(Command):
 
     # transform flags to bool
     for argName, argVal in specified_extra_args.copy().items():
-      if translator['specialArgs'][argName]['type'] == 'flag':
+      if translator['extraArgs'][argName]['type'] == 'flag':
         if argVal.lower() in ('yes', 'y', 'true'):
           specified_extra_args[argName] = True
         elif argVal.lower() in ('no', 'n', 'false'):
@@ -188,18 +188,18 @@ class PackageCommand(Command):
           )
 
     specified_extra_args =\
-      {k: (bool(v) if translator['specialArgs'][k]['type'] == 'flag' else v ) \
+      {k: (bool(v) if translator['extraArgs'][k]['type'] == 'flag' else v ) \
           for k, v in specified_extra_args.items()}
 
     # on non-interactive session, assume defaults for unspecified extra args
     if not self.io.is_interactive():
       specified_extra_args.update(
         {n: (True if v['type'] == 'flag' else v['default']) \
-          for n, v in translator['specialArgs'].items() \
+          for n, v in translator['extraArgs'].items() \
           if n not in specified_extra_args and 'default' in v}
       )
     unspecified_extra_args = \
-      {n: v for n, v in translator['specialArgs'].items() \
+      {n: v for n, v in translator['extraArgs'].items() \
         if n not in specified_extra_args}
     # raise error if any extra arg unspecified in non-interactive session
     if unspecified_extra_args:
@@ -357,9 +357,9 @@ class PackageCommand(Command):
       lock['generic']['sourcesCombinedHash'] = hash
 
     # re-write dream.lock
-    checkLockJSON(order_dict(lock))
+    checkLockJSON(sort_dict(lock))
     with open(outputDreamLock, 'w') as f:
-      json.dump(order_dict(lock), f, indent=2)
+      json.dump(sort_dict(lock), f, indent=2)
 
     # create default.nix
     template = callNixFunction(

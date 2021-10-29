@@ -106,8 +106,8 @@ def list_translators_for_source(sourcePath):
   return list(sorted(translatorsList, key=lambda t: t['compatible']))
 
 
-def order_dict(d):
-  return {k: order_dict(v) if isinstance(v, dict) else v
+def sort_dict(d):
+  return {k: sort_dict(v) if isinstance(v, dict) else v
     for k, v in sorted(d.items())}
 
 def strip_hashes_from_lock(lock):

@@ -35,7 +35,7 @@ let
         inherit subsystem type name;
         translate = args:
           translator.translate
-            ((getSpecialArgsDefaults translator.specialArgs or {}) // args);
+            ((getextraArgsDefaults translator.extraArgs or {}) // args);
       };
       
 
@@ -98,7 +98,7 @@ let
       (t: {
         inherit (t)
           name
-          specialArgs
+          extraArgs
           subsystem
           type
         ;
@@ -106,7 +106,7 @@ let
       });
 
   # pupulates a translators special args with defaults
-  getSpecialArgsDefaults = specialArgsDef:
+  getextraArgsDefaults = extraArgsDef:
     lib.mapAttrs
       (name: def:
         if def.type == "flag" then
@@ -114,7 +114,7 @@ let
         else
           def.default or null
       )
-      specialArgsDef;
+      extraArgsDef;
 
 in
 {

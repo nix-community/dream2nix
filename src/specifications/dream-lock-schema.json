@@ -16,7 +16,7 @@
               "properties": {
                 "type": {
                   "enum": [
-                    "fetchurl",
+                    "http",
                     "git",
                     "github",
                     "gitlab",
@@ -29,7 +29,7 @@
               "allOf": [
                 {
                   "if": {
-                    "properties": { "type": { "const": "fetchurl" } }
+                    "properties": { "type": { "const": "http" } }
                   },
                   "then": {
                     "properties": {

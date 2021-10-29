@@ -1,5 +1,5 @@
 {
-  fetchurl,
+  http,
   python3,
 
   utils,
@@ -25,7 +25,7 @@
       calcHash = algo: utils.hashPath algo (
         let
           firstChar = builtins.substring 0 1 pname;
-          result = b.fetchurl {
+          result = b.http {
             url =
               "https://files.pythonhosted.org/packages/source/"
               + "${firstChar}/${pname}/${pname}-${version}.${extension}";
@@ -38,7 +38,7 @@
       fetched = hash:
         let
           firstChar = builtins.substring 0 1 pname;
-          result = (fetchurl {
+          result = (http {
             url =
               "https://files.pythonhosted.org/packages/source/"
               + "${firstChar}/${pname}/${pname}-${version}.${extension}";

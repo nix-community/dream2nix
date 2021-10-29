@@ -31,7 +31,7 @@ in
 {
 
   # the input format is specified in /specifications/translator-call-example.json
-  # this script receives a json file including the input paths and specialArgs
+  # this script receives a json file including the input paths and extraArgs
   translateBin = utils.writePureShellScript
     [
       bash
@@ -115,7 +115,7 @@ in
     };
 
   # define special args and provide defaults
-  specialArgs = {
+  extraArgs = {
     
     # the python attribute
     pythonAttr = {

@@ -40,7 +40,7 @@ In case of a `pure` or `IFD` translator:
 
   # optionally specify additional arguments that the user can provide to the
   # translator to customize its behavior
-  specialArgs = ...;
+  extraArgs = ...;
 }
 ```
 
@@ -53,7 +53,7 @@ In case of an `impure` translator:
   #
   # The first arg `$1` will be a json file containing the input parameters
   # like defined in /specifications/translator-call-example.json and the
-  # additional arguments required according to specialArgs
+  # additional arguments required according to extraArgs
   #
   # The program is expected to create a file at the location specified
   # by the input parameter `outFile`.
@@ -66,7 +66,7 @@ In case of an `impure` translator:
 
   # optionally specify additional arguments that the user can provide to the
   # translator to customize its behavior
-  specialArgs = ...;
+  extraArgs = ...;
 }
 ```
 
