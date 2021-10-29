@@ -222,7 +222,7 @@ class PackageCommand(Command):
             print(f"Please specify '{arg_name}': {arg['description']}")
             print(f"Example values: " + ', '.join(arg['examples']))
             if 'default' in arg:
-              print(f"\nLeave emtpy for default ({arg['default']})")
+              print(f"\nLeave empty for default ({arg['default']})")
             specified_extra_args[arg_name] = self.ask(f"{arg_name}:", arg.get('default'))
 
     # arguments for calling the translator nix module
@@ -329,7 +329,7 @@ class PackageCommand(Command):
 
       print("Building FOD of combined sources to retrieve output hash")
 
-      # remove hashes from lock file and init sourcesCombinedHash with emtpy string
+      # remove hashes from lock file and init sourcesCombinedHash with empty string
       strip_hashes_from_lock(lock)
       lock['generic']['sourcesCombinedHash'] = ""
       with open(outputDreamLock, 'w') as f:
