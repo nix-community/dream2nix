@@ -16,7 +16,7 @@
 let
   b = builtins;
 
-  machNixExtractor = "${externalSources}/mach-nix-lib/default.nix";
+  machNixExtractor = "${externalSources.mach-nix}/lib/default.nix";
 
   setuptools_shim = ''
     import sys, setuptools, tokenize, os; sys.argv[0] = 'setup.py'; __file__='setup.py';

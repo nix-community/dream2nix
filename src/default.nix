@@ -9,10 +9,17 @@
   nix ? pkgs.writeScriptBin "nix" ''
     ${pkgs.nixUnstable}/bin/nix --option experimental-features "nix-command flakes" "$@"
   '',
+
   externalSources ?
+    lib.genAttrs
+    (lib.attrNames (builtins.readDir externalDir))
+    (inputName: "${externalDir}/${inputName}"),
+
+  # required for non-flake mode
+  externalDir ?
     # if called via CLI, load externals via env
-    if builtins ? getEnv && builtins.getEnv "d2nExternalSources" != "" then
-      builtins.getEnv "d2nExternalSources"
+    if builtins ? getEnv && builtins.getEnv "d2nExternalDir" != "" then
+      builtins.getEnv "d2nExternalDir"
     # load from default dircetory
     else
       ./external,
@@ -37,10 +44,10 @@ let
   });
 
   externals = {
-    node2nix = nodejs: pkgs.callPackage "${externalSources}/node2nix/node-env.nix" { inherit nodejs; };
+    node2nix = nodejs: pkgs.callPackage "${externalSources.node2nix}/nix/node-env.nix" { inherit nodejs; };
     nix-parsec = rec {
-      lexer = import "${externalSources}/nix-parsec/lexer.nix" { inherit parsec; };
-      parsec = import "${externalSources}/nix-parsec/parsec.nix";
+      lexer = import "${externalSources.nix-parsec}/lexer.nix" { inherit parsec; };
+      parsec = import "${externalSources.nix-parsec}/parsec.nix";
     };
   };
 
@@ -70,8 +77,8 @@ let
         cp -r ${./.} $out
         chmod +w $out
         mkdir $out/external
-        ls -lah ${externalSources}
-        cp -r ${externalSources}/* $out/external/
+        ls -lah ${externalDir}
+        cp -r ${externalDir}/* $out/external/
       '';
 
 in
@@ -234,7 +241,7 @@ rec {
 
           inherit (dreamLockInterface)
             buildSystemAttrs
-            dependenciesRemoved
+            cyclicDependencies
             getDependencies
             getCyclicDependencies
             mainPackageName

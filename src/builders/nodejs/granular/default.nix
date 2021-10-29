@@ -22,7 +22,7 @@
 
   # attributes
   buildSystemAttrs,
-  dependenciesRemoved,
+  cyclicDependencies,
   mainPackageName,
   mainPackageVersion,
   packageVersions,
@@ -43,8 +43,8 @@ let
   isCyclic = name: version:
     b.elem name standalonePackageNames
     ||
-      (dependenciesRemoved ? "${name}"
-      && dependenciesRemoved."${name}" ? "${version}");
+      (cyclicDependencies ? "${name}"
+      && cyclicDependencies."${name}" ? "${version}");
 
   mainPackageKey =
     "${mainPackageName}#${mainPackageVersion}";
@@ -81,9 +81,9 @@ let
           inherit name version;
           builder = builders.nodejs.node2nix;
           inject =
-            lib.optionalAttrs (dependenciesRemoved ? "${name}"."${version}") {
+            lib.optionalAttrs (cyclicDependencies ? "${name}"."${version}") {
               "${name}"."${version}" =
-                dependenciesRemoved."${name}"."${version}";
+                cyclicDependencies."${name}"."${version}";
             };
         };
     in

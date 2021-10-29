@@ -2,8 +2,6 @@
   pkgs,
 
   callPackageDream,
-  externalSources,
-  dream2nixWithExternals,
   translators,
   ...
 }:

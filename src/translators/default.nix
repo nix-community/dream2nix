@@ -6,7 +6,6 @@
   pkgs,
 
   callPackageDream,
-  externalSources,
   externals,
   dream2nixWithExternals,
   utils,
