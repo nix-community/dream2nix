@@ -12,8 +12,8 @@
 
   externalSources ?
     lib.genAttrs
-    (lib.attrNames (builtins.readDir externalDir))
-    (inputName: "${externalDir}/${inputName}"),
+      (lib.attrNames (builtins.readDir externalDir))
+      (inputName: "${externalDir}/${inputName}"),
 
   # required for non-flake mode
   externalDir ?

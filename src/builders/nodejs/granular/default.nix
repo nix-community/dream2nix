@@ -87,7 +87,7 @@ let
             };
         };
     in
-      built.package;
+      built.defaultPackage;
 
   makePackage = name: version:
     let
