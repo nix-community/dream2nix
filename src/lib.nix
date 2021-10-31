@@ -6,8 +6,9 @@
   nixpkgsSrc ? <nixpkgs>,
   lib ? (import nixpkgsSrc {}).lib,
 
-  # (if called impurely ./default.nix will handle externals)
+  # (if called impurely ./default.nix will handle externals and overrides)
   externalSources ? null,
+  overridesDir ? null,
 }:
 
 let
@@ -83,6 +84,9 @@ in
               ({ inherit pkgs; }
               // (lib.optionalAttrs (externalSources != null) {
                 inherit externalSources;
+              })
+              // (lib.optionalAttrs (overridesDir != null) {
+                inherit overridesDir;
               })))
           allPkgs;
 

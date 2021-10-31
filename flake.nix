@@ -75,12 +75,12 @@
           (lib.attrNames externalPaths)
           (inputName: inp."${inputName}");
 
+      overridesDir = "${./overrides}";
+
       # system specific dream2nix api
       dream2nixFor = forAllSystems (system: pkgs: import ./src rec {
         externalDir = externalDirFor."${system}";
-        inherit externalSources;
-        inherit pkgs;
-        inherit lib;
+        inherit externalSources lib overridesDir pkgs;
       });
 
     in
@@ -97,7 +97,7 @@
         # Similar to drem2nixFor but will require 'system(s)' or 'pkgs' as an argument.
         # Produces flake-like output schema.
         lib.dream2nix = import ./src/lib.nix {
-          inherit makeExternalDir lib;
+          inherit makeExternalDir overridesDir lib;
           nixpkgsSrc = "${nixpkgs}";
         };
 
@@ -129,7 +129,7 @@
             export NIX_PATH=nixpkgs=${nixpkgs}
             export d2nExternalDir=${externalDirFor."${system}"}
             export dream2nixWithExternals=${dream2nixFor."${system}".dream2nixWithExternals}
-            export d2nExternalDir=$dream2nixWithExternals/external
+            export d2nOverridesDir=${./overrides}
 
             echo "\nManually execute 'export dream2nixWithExternals={path to your dream2nix checkout}'"
           '';
