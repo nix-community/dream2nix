@@ -48,7 +48,7 @@ let
             {}
             (b.map (utils.keyToNameVersion) allDependencyKeys);
 
-      dependenciesRemoved =
+      cyclicDependencies =
         lib.mapAttrs
           (name: versions:
             lib.mapAttrs
@@ -56,7 +56,7 @@ let
                 lib.forEach removedKeys
                   (rKey: utils.keyToNameVersion rKey))
               versions)
-          lock.generic.dependenciesRemoved or {};
+          lock.generic.cyclicDependencies or {};
 
       # Format:
       # {
@@ -76,14 +76,14 @@ let
         if dependenciesAttrs ? "${pname}#${version}" then
           # filter out cyclicDependencies
           lib.filter
-            (dep: ! b.elem dep (dependenciesRemoved."${pname}"."${version}" or []))
+            (dep: ! b.elem dep (cyclicDependencies."${pname}"."${version}" or []))
             dependenciesAttrs."${pname}#${version}"
         # assume no deps if package not found in dependencyGraph
         else
           [];
       
       getCyclicDependencies = pname: version:
-        dependenciesRemoved."${pname}"."${version}" or [];
+        cyclicDependencies."${pname}"."${version}" or [];
 
     in
       {
@@ -97,7 +97,7 @@ let
 
           inherit
             buildSystemAttrs
-            dependenciesRemoved
+            cyclicDependencies
             getCyclicDependencies
             getDependencies
             packageVersions

@@ -95,11 +95,11 @@ rec {
 
       translateHttpUrl = 
         let
-          fetcher = fetchers.fetchurl;
-          fetcherOutputs = fetchers.fetchurl.outputs { url = shortcut; };
+          fetcher = fetchers.http;
+          fetcherOutputs = fetchers.http.outputs { url = shortcut; };
         in
           constructSource {
-            type = "fetchurl";
+            type = "http";
             hash = fetcherOutputs.calcHash "sha256";
             url = shortcut;
           };

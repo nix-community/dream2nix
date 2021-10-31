@@ -27,7 +27,7 @@
         "url": "https://download.pypi.org/requests/2.28.0",
         "hash": "000000000000000000000000000000000000000",
         "version": "1.2.3",
-        "type": "fetchurl"
+        "type": "http"
       }
     },
     "certifi": {
@@ -35,7 +35,7 @@
         "url": "https://download.pypi.org/certifi/2.0",
         "hash": "000000000000000000000000000000000000000",
         "version": "2.3.4",
-        "type": "fetchurl"
+        "type": "http"
       }
     }
   }

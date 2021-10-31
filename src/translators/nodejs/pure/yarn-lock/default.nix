@@ -141,7 +141,7 @@
         else if lib.hasInfix "@link:" dependencyObject.yarnName then
           "path"
         else
-          "fetchurl";
+          "http";
 
       
       sourceConstructors = {
@@ -164,9 +164,9 @@
             path = lib.last (lib.splitString "@link:" dependencyObject.yarnName);
           };
 
-        fetchurl = dependencyObject:
+        http = dependencyObject:
           {
-            type = "fetchurl";
+            type = "http";
             version = dependencyObject.version;  
             hash =
               if dependencyObject ? integrity then
@@ -214,7 +214,7 @@
   #   - string argument (type = "argument")
   #   - boolean flag (type = "flag")
   # String arguments contain a default value and examples. Flags do not.
-  specialArgs = {
+  extraArgs = {
 
     name = {
       description = "The name of the main package";

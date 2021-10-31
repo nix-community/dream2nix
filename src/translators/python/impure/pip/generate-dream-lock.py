@@ -79,7 +79,7 @@ def main():
     dream_lock['sources'][pname][data['version']] = dict(
       url=data['url'],
       hash=data['sha256'],
-      type='fetchurl',
+      type='http',
     )
 
   # dump generic lock to stdout (json)

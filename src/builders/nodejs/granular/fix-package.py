@@ -29,7 +29,9 @@ if 'os' in package_json:
 version = os.environ.get("version")
 if package_json['version'] != version:
   print(
-    "WARNING: Replacing version in package.json: "
+    "WARNING: The version of this package defined by its package.json "
+    "doesn't match the version expected by dream2nix."
+    "\n  -> Replacing version in package.json: "
     f"{package_json['version']} -> {version}",
     file=sys.stderr
   )
@@ -40,7 +42,7 @@ if package_json['version'] != version:
 # We rely on dream.lock having the correct dependencies specified
 if 'devDependencies' in package_json:
   print(
-    f"Removing devDependencies from package.json",
+    f"package.json: removed all devDependencies",
     file=sys.stderr
   )
   changed = True
@@ -50,7 +52,7 @@ if 'devDependencies' in package_json:
 # We rely on dream.lock instead
 if 'peerDependencies' in package_json:
   print(
-    f"Removing peerDependencies from package.json",
+    f"package.json: removed all peerDependencies",
     file=sys.stderr
   )
   changed = True
@@ -65,8 +67,8 @@ if 'dependencies' in package_json:
       package_json['dependencies'][pname] = actual_deps[pname]
       changed = True
       print(
-        f"Replacing loose version '{version}' with '{actual_deps[pname]}'"
-        f" for dependency '{pname}' in package.json",
+        f"package.json: Pinning version '{version}' to '{actual_deps[pname]}'"
+        f" for dependency '{pname}'",
         file=sys.stderr
       )
 

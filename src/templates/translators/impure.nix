@@ -13,7 +13,7 @@
 {
 
   # the input format is specified in /specifications/translator-call-example.json
-  # this script receives a json file including the input paths and specialArgs
+  # this script receives a json file including the input paths and extraArgs
   translateBin = writeScriptBin "translate" ''
     #!${bash}/bin/bash
 
@@ -59,7 +59,7 @@
   #   - string argument (type = "argument")
   #   - boolean flag (type = "flag")
   # String arguments contain a default value and examples. Flags do not.
-  specialArgs = {
+  extraArgs = {
 
     # Example: boolean option
     # Flags always default to 'false' if not specified by the user

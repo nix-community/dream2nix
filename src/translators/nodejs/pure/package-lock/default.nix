@@ -106,14 +106,14 @@
           if identifyGitSource dependencyObject then
             "git"
           else
-            "fetchurl";
+            "http";
         
         sourceConstructors = {
 
           git = dependencyObject:
             utils.parseGitUrl dependencyObject.version;
 
-          fetchurl = dependencyObject:
+          http = dependencyObject:
             rec {
               version = dependencyObject.version;
               url = dependencyObject.resolved;
@@ -139,7 +139,7 @@
       inputFiles = [];
     };
 
-  specialArgs = {
+  extraArgs = {
 
     dev = {
       description = "include dependencies for development";

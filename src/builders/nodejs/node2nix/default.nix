@@ -13,7 +13,7 @@
 
 {
   buildSystemAttrs,
-  dependenciesRemoved,
+  cyclicDependencies,
   mainPackageName,
   mainPackageVersion,
   getCyclicDependencies,

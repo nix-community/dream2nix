@@ -6,8 +6,9 @@
   nixpkgsSrc ? <nixpkgs>,
   lib ? (import nixpkgsSrc {}).lib,
 
-  # dream2nix
-  makeExternalSources,
+  # (if called impurely ./default.nix will handle externals and overrides)
+  externalSources ? null,
+  overridesDir ? null,
 }:
 
 let
@@ -79,10 +80,14 @@ in
       dream2nixFor =
         lib.mapAttrs
           (system: pkgs:
-            import ./default.nix {
-              inherit pkgs;
-              externalSources = makeExternalSources pkgs;
-            })
+            import ./default.nix
+              ({ inherit pkgs; }
+              // (lib.optionalAttrs (externalSources != null) {
+                inherit externalSources;
+              })
+              // (lib.optionalAttrs (overridesDir != null) {
+                inherit overridesDir;
+              })))
           allPkgs;
 
       allBuilderOutputs =

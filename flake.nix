@@ -14,7 +14,7 @@
     node2nix = { url = "github:svanderburg/node2nix"; flake = false; };
   };
 
-  outputs = { self, mach-nix, nix-parsec, nixpkgs, node2nix, }:
+  outputs = { self, mach-nix, nix-parsec, nixpkgs, node2nix, }@inp:
     let
 
       b = builtins;
@@ -28,40 +28,76 @@
       );
 
       # To use dream2nix in non-flake + non-IFD enabled repos, the source code of dream2nix
-      # must be installed into that repo (using nix run dream2nix#install).
-      # The problem is, we also need to install all of dream2nix' dependecies as well.
-      # Therefore 'externalSourcesFor' contains all relevant files of external projects we depend on.
-      makeExternalSources = pkgs: pkgs.runCommand "dream2nix-external" {} ''
-        mkdir -p $out/{mach-nix-lib,node2nix,nix-parsec}
-        cp ${mach-nix}/{lib/extractor/{default.nix,distutils.patch,setuptools.patch},LICENSE} $out/mach-nix-lib/
-        cp ${node2nix}/{nix/node-env.nix,LICENSE} $out/node2nix/
-        cp ${nix-parsec}/{parsec,lexer}.nix $out/nix-parsec/
-      '';
+      # must be installed into these repos (using nix run dream2nix#install).
+      # The problem is, all of dream2nix' dependecies need to be installed as well.
+      # Therefore 'externalPaths' contains all relevant files of external projects
+      # which dream2nix depends on. Exactly these files will be installed.
+      externalPaths = {
+        mach-nix = [
+          "lib/extractor/default.nix"
+          "lib/extractor/distutils.patch"
+          "lib/extractor/setuptools.patch"
+          "LICENSE"
+        ];
+        node2nix = [
+          "nix/node-env.nix"
+          "LICENSE"
+        ];
+        nix-parsec = [
+          "parsec.nix"
+          "lexer.nix"
+        ];
+      };
 
-      externalSourcesFor = forAllSystems (system: makeExternalSources);
+      # create a directory containing the files listed in externalPaths
+      makeExternalDir = pkgs: pkgs.runCommand "dream2nix-external" {}
+        (lib.concatStringsSep "\n"
+          (lib.mapAttrsToList
+            (inputName: paths:
+              lib.concatStringsSep "\n"
+                (lib.forEach
+                  paths
+                  (path: ''
+                    mkdir -p $out/${inputName}/$(dirname ${path})
+                    cp ${inp."${inputName}"}/${path} $out/${inputName}/${path}
+                  '')))
+            externalPaths));
+
+      externalDirFor = forAllSystems (system: makeExternalDir);
+
+      # An interface to access files of external projects.
+      # This implementation aceeses the flake inputs directly,
+      # but if dream2nix is used without flakes, it defaults
+      # to another implementation of that function which
+      # uses the installed external paths instead (see default.nix)
+      externalSources =
+        lib.genAttrs
+          (lib.attrNames externalPaths)
+          (inputName: inp."${inputName}");
+
+      overridesDir = "${./overrides}";
 
       # system specific dream2nix api
       dream2nixFor = forAllSystems (system: pkgs: import ./src rec {
-        externalSources = externalSourcesFor."${system}";
-        inherit pkgs;
-        inherit lib;
+        externalDir = externalDirFor."${system}";
+        inherit externalSources lib overridesDir pkgs;
       });
 
     in
       {
         # overlay with flakes enabled nix
         # (all of dream2nix cli dependends on nix ^2.4)
-        overlay = new: old: {
-          nix = old.writeScriptBin "nix" ''
-            ${new.nixUnstable}/bin/nix --option experimental-features "nix-command flakes" "$@"
+        overlay = final: prev: {
+          nix = prev.writeScriptBin "nix" ''
+            ${final.nixUnstable}/bin/nix --option experimental-features "nix-command flakes" "$@"
           '';
         };
 
         # System independent dream2nix api.
         # Similar to drem2nixFor but will require 'system(s)' or 'pkgs' as an argument.
         # Produces flake-like output schema.
-        lib.dream2nix = import ./src/lib.nix {
-          inherit makeExternalSources lib;
+        lib = import ./src/lib.nix {
+          inherit externalSources overridesDir lib;
           nixpkgsSrc = "${nixpkgs}";
         };
 
@@ -91,12 +127,17 @@
 
           shellHook = ''
             export NIX_PATH=nixpkgs=${nixpkgs}
-            export d2nExternalSources=${externalSourcesFor."${system}"}
+            export d2nExternalDir=${externalDirFor."${system}"}
             export dream2nixWithExternals=${dream2nixFor."${system}".dream2nixWithExternals}
-            export d2nExternalSources=$dream2nixWithExternals/external
+            export d2nOverridesDir=${./overrides}
 
             echo "\nManually execute 'export dream2nixWithExternals={path to your dream2nix checkout}'"
           '';
+        });
+
+        checks = forAllSystems (system: pkgs: import ./checks.nix {
+          inherit lib pkgs;
+          dream2nix = dream2nixFor."${system}";
         });
       };
 }

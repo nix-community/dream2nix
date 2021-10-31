@@ -67,7 +67,7 @@
   #   - string argument (type = "argument")
   #   - boolean flag (type = "flag")
   # String arguments contain a default value and examples. Flags do not.
-  specialArgs = {
+  extraArgs = {
 
     # Example: boolean option
     # Flags always default to 'false' if not specified by the user

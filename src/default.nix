@@ -1,29 +1,47 @@
-# this is the system specific api for dream2nix
-# it requires passing one specifi pkgs
+# This is the system specific api for dream2nix.
+# It requires passing one specific pkgs.
 # If the intention is to generate output for several systems,
-# use ./lib.nix instead
+# use ./lib.nix instead.
 
 {
   pkgs ? import <nixpkgs> {},
   lib ? pkgs.lib,
+
+  # the dream2nix cli depends on some nix 2.4 features
   nix ? pkgs.writeScriptBin "nix" ''
     ${pkgs.nixUnstable}/bin/nix --option experimental-features "nix-command flakes" "$@"
   '',
+
+  # dependencies of dream2nix
   externalSources ?
+    lib.genAttrs
+      (lib.attrNames (builtins.readDir externalDir))
+      (inputName: "${externalDir}/${inputName}"),
+
+  # required for non-flake mode
+  externalDir ?
     # if called via CLI, load externals via env
-    if builtins ? getEnv && builtins.getEnv "d2nExternalSources" != "" then
-      builtins.getEnv "d2nExternalSources"
-    # load from default dircetory
+    if builtins ? getEnv && builtins.getEnv "d2nExternalDir" != "" then
+      builtins.getEnv "d2nExternalDir"
+    # load from default directory
     else
       ./external,
+
+  # dream2nix overrides
+  overridesDir ?
+     # if called via CLI, load externals via env
+    if builtins ? getEnv && builtins.getEnv "d2nOverridesDir" != "" then
+      builtins.getEnv "d2nOverridesDir"
+    # load from default directory
+    else
+      ./overrides,
 }:
 
 let
 
   b = builtins;
 
-  utils = callPackageDream ./utils {};
-
+  # like pkgs.callPackage, but includes all the dream2nix modules
   callPackageDream = f: args: pkgs.callPackage f (args // {
     inherit builders;
     inherit callPackageDream;
@@ -36,13 +54,8 @@ let
     inherit nix;
   });
 
-  externals = {
-    node2nix = nodejs: pkgs.callPackage "${externalSources}/node2nix/node-env.nix" { inherit nodejs; };
-    nix-parsec = rec {
-      lexer = import "${externalSources}/nix-parsec/lexer.nix" { inherit parsec; };
-      parsec = import "${externalSources}/nix-parsec/parsec.nix";
-    };
-  };
+
+  utils = callPackageDream ./utils {};
 
   config = builtins.fromJSON (builtins.readFile ./config.json);
 
@@ -61,6 +74,20 @@ let
   # the translator modules and utils for all subsystems
   translators = callPackageDream ./translators {};
 
+  externals = {
+    node2nix = nodejs: pkgs.callPackage "${externalSources.node2nix}/nix/node-env.nix" { inherit nodejs; };
+    nix-parsec = rec {
+      lexer = import "${externalSources.nix-parsec}/lexer.nix" { inherit parsec; };
+      parsec = import "${externalSources.nix-parsec}/parsec.nix";
+    };
+  };
+
+  dreamOverrides = lib.genAttrs (utils.dirNames overridesDir) (name:
+    import (overridesDir + "/${name}") {
+      inherit lib pkgs;
+    }
+  );
+
   # the location of the dream2nix framework for self references (update scripts, etc.)
   dream2nixWithExternals =
     if b.pathExists (./. + "/external") then
@@ -70,15 +97,9 @@ let
         cp -r ${./.} $out
         chmod +w $out
         mkdir $out/external
-        ls -lah ${externalSources}
-        cp -r ${externalSources}/* $out/external/
+        ls -lah ${externalDir}
+        cp -r ${externalDir}/* $out/external/
       '';
-
-in
-
-rec {
-
-  inherit apps builders dream2nixWithExternals fetchers translators updaters utils;
 
   # automatically find a suitable builder for a given generic lock
   findBuilder = dreamLock:
@@ -234,7 +255,7 @@ rec {
 
           inherit (dreamLockInterface)
             buildSystemAttrs
-            dependenciesRemoved
+            cyclicDependencies
             getDependencies
             getCyclicDependencies
             mainPackageName
@@ -306,10 +327,50 @@ rec {
         ;
         builder = builder';
         builderArgs = (args.builderArgs or {}) // {
-          inherit packageOverrides;
+          packageOverrides =
+            args.packageOverrides or {}
+            // dreamOverrides."${dreamLock.generic.buildSystem}" or {};
         };
       };
+
+      # Makes the packages tree compatible with flakes schema.
+      # For each package the attr `{pname}` will link to the latest release.
+      # Other package versions will be inside: `{pname}.versions`
+      formattedBuilderOutputs = builderOutputs // {
+        packages =
+          let
+            allPackages = builderOutputs.packages or {};
+
+            latestPackages =
+              lib.mapAttrs'
+                (pname: releases:
+                  let
+                    latest =
+                      releases."${utils.latestVersion (b.attrNames releases)}";
+                  in
+                    (lib.nameValuePair
+                      "${pname}"
+                      (latest // {
+                        versions = releases;
+                      })))
+                allPackages;
+          in
+            latestPackages;
+      };
     in
-      builderOutputs;
+      formattedBuilderOutputs;
    
+in
+{
+  inherit
+    apps
+    builders
+    dream2nixWithExternals
+    fetchers
+    fetchSources
+    riseAndShine
+    translators
+    updaters
+    utils
+  ;
 }

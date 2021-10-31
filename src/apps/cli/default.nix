@@ -1,7 +1,6 @@
 {
   # from dream2nix
   dream2nixWithExternals,
-  externalSources,
   fetchers,
   translators,
 

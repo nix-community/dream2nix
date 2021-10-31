@@ -1,0 +1,12 @@
+diff --git a/bin/webpack.js b/bin/webpack.js
+--- a/bin/webpack.js
++++ b/bin/webpack.js
+@@ -87,7 +87,7 @@ const cli = {
+ 	url: "https://github.com/webpack/webpack-cli"
+ };
+ 
+-if (!cli.installed) {
++if (false) {
+ 	const path = require("path");
+ 	const fs = require("graceful-fs");
+ 	const readLine = require("readline");

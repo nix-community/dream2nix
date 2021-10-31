@@ -120,4 +120,42 @@ rec {
   nameVersionToKey = nameVersion:
     "${nameVersion.name}#${nameVersion.version}";
 
+  # determines if version v1 is greater than version v2
+  versionGreater = v1: v2:
+    versionGreaterList
+      (lib.splitString "." v1)
+      (lib.splitString "." v2);
+
+  # internal helper for 'versionGreater'
+  versionGreaterList = v1: v2:
+    let
+      head1 = b.head v1;
+      head2 = b.head v2;
+      n1 =
+        if builtins.match ''[[:digit:]]*'' head1 != null then
+          lib.toInt head1
+        else
+          0;
+      n2 = if builtins.match ''[[:digit:]]*'' head2 != null then
+          lib.toInt head2
+        else
+          0;
+    in
+      if n1 > n2 then
+        true
+      else
+        # end recursion condition
+        if b.length v1 == 1 || b.length v1 == 1 then
+          false
+        else
+          # continue recursion
+          versionGreaterList (b.tail v1) (b.tail v2);
+
+  # picks the latest version from a list of version strings
+  latestVersion = versions:
+    b.head
+      (lib.sort
+        (v1: v2: versionGreater v1 v2)
+        versions);
+
 }
