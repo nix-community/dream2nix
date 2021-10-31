@@ -1,7 +1,6 @@
 diff --git a/packages/webpack-cli/bin/cli.js b/packages/webpack-cli/bin/cli.js
-index d62a6258..9d5683c7 100755
---- a/packages/webpack-cli/bin/cli.js
-+++ b/packages/webpack-cli/bin/cli.js
+--- a/bin/cli.js
++++ b/bin/cli.js
 @@ -21,7 +21,7 @@ if (!process.env.WEBPACK_CLI_SKIP_IMPORT_LOCAL) {
  
  process.title = "webpack";

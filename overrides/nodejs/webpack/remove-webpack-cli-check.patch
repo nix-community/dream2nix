@@ -1,5 +1,4 @@
 diff --git a/bin/webpack.js b/bin/webpack.js
-index fead38bf4..0bd13d3eb 100755
 --- a/bin/webpack.js
 +++ b/bin/webpack.js
 @@ -87,7 +87,7 @@ const cli = {

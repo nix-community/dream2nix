@@ -49,9 +49,9 @@ in
     remove-webpack-cli-check = {
       _condition = pkg: pkg.version == "5.41.1";
       ignoreScripts = false;
-      installScript = ''
-        patch ./bin/webpack.js < ${./webpack/remove-webpack-cli-check.patch}
-      '';
+      patches = [
+        ./webpack/remove-webpack-cli-check.patch
+      ];
     };
   };
 
@@ -59,9 +59,9 @@ in
     remove-webpack-check = {
       _condition = pkg: pkg.version == "4.7.2";
       ignoreScripts = false;
-      installScript = ''
-        patch ./bin/cli.js < ${./webpack-cli/remove-webpack-check.patch}
-      '';
+      patches = [
+        ./webpack-cli/remove-webpack-check.patch
+      ];
     };
   };
 
