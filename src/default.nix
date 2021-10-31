@@ -332,8 +332,33 @@ let
             // dreamOverrides."${dreamLock.generic.buildSystem}" or {};
         };
       };
+
+      # Makes the packages tree compatible with flakes schema.
+      # For each package the attr `{pname}` will link to the latest release.
+      # Other package versions will be inside: `{pname}.versions`
+      formattedBuilderOutputs = builderOutputs // {
+        packages =
+          let
+            allPackages = builderOutputs.packages or {};
+
+            latestPackages =
+              lib.mapAttrs'
+                (pname: releases:
+                  let
+                    latest =
+                      releases."${utils.latestVersion (b.attrNames releases)}";
+                  in
+                    (lib.nameValuePair
+                      "${pname}"
+                      (latest // {
+                        versions = releases;
+                      })))
+                allPackages;
+          in
+            latestPackages;
+      };
     in
-      builderOutputs;
+      formattedBuilderOutputs;
    
 in
 {
