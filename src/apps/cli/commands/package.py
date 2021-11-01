@@ -38,7 +38,7 @@ class PackageCommand(Command):
       flag=True
     ),
     option(
-      "extra-arg",
+      "arg",
       None,
       "extra arguments for selected translator",
       flag=False,
@@ -56,7 +56,7 @@ class PackageCommand(Command):
     specified_extra_args = {
       arg[0]: arg[1] for arg in map(
         lambda e: e.split('='),
-        self.option("extra-arg"),
+        self.option("arg"),
       )
     }
 
@@ -267,7 +267,7 @@ class PackageCommand(Command):
     ] + (
       ["--combined"] if combined else []
     ) + [
-      f"--extra-arg {n}={v}" for n, v in specified_extra_args.items()
+      f"--arg {n}={v}" for n, v in specified_extra_args.items()
     ])
 
     # add main package source
