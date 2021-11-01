@@ -160,6 +160,7 @@ let
   makeDreamLockForSource =
     {
       source,
+      translatorArgs ? {},
     }@args:
     let
 
@@ -186,10 +187,11 @@ let
           if trans != [] then lib.elemAt trans 0 else
             throw "Could not find a suitable translator for input";
 
-      dreamLock' = translators.translators."${t.subsystem}"."${t.type}"."${t.name}".translate {
-        inputFiles = [];
-        inputDirectories = [ source ];
-      };
+      dreamLock' = translators.translators."${t.subsystem}"."${t.type}"."${t.name}".translate
+        (translatorArgs // {
+          inputFiles = [];
+          inputDirectories = [ source ];
+        });
 
       dreamLock = lib.recursiveUpdate dreamLock' {
         sources."${dreamLock'.generic.mainPackageName}"."${dreamLock'.generic.mainPackageVersion}" = {
@@ -279,6 +281,7 @@ let
       sourceOverrides ? oldSources: {},
       packageOverrides ? {},
       builderArgs ? {},
+      translatorArgs ? {},
     }@args:
 
     # ensure either dreamLock or source is used
@@ -292,7 +295,7 @@ let
 
       dreamLock' =
         if source != null then
-          makeDreamLockForSource { inherit source; }
+          makeDreamLockForSource { inherit source translatorArgs; }
         else
           args.dreamLock;
 
