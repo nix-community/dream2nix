@@ -20,6 +20,7 @@
                     "git",
                     "github",
                     "gitlab",
+                    "npm",
                     "path",
                     "pypi-sdist",
                     "unknown"
@@ -68,6 +69,21 @@
                       "type": { "type": "string" }
                     },
                     "required": ["type", "owner", "repo", "rev"],
+                    "additionalProperties": false
+                  }
+                },
+                {
+                  "if": {
+                    "properties": { "type": { "const": "npm" } }
+                  },
+                  "then": {
+                    "properties": {
+                      "pname": { "type": "string" },
+                      "version": { "type": "string" },
+                      "hash": { "type": "string" },
+                      "type": { "type": "string" }
+                    },
+                    "required": ["type", "pname"],
                     "additionalProperties": false
                   }
                 },

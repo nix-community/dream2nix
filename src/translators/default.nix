@@ -58,10 +58,17 @@ let
 
           nix eval --show-trace --impure --raw --expr "
             builtins.toJSON (
-              (import ${dream2nixWithExternals} {}).translators.translators.${
-                lib.concatStringsSep "." translatorAttrPath
-              }.translate 
-                (builtins.fromJSON (builtins.readFile '''$1'''))
+              let
+                dreamLock = 
+                  (import ${dream2nixWithExternals} {}).translators.translators.${
+                    lib.concatStringsSep "." translatorAttrPath
+                  }.translate 
+                    (builtins.fromJSON (builtins.readFile '''$1'''));
+              in
+                # don't use nix to detect cycles, this will be more efficient in python
+                dreamLock // {
+                  generic = builtins.removeAttrs dreamLock.generic [ \"cyclicDependencies\" ];
+                }
             )
           " | jq > $outputFile
         '';

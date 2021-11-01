@@ -15,7 +15,7 @@
 
       # extraArgs
       name,
-      dev,
+      noDev,
       optional,
       peer,
       ...
@@ -23,6 +23,7 @@
 
     let
       b = builtins;
+      dev = ! noDev;
       yarnLock = utils.readTextFile "${lib.elemAt inputDirectories 0}/yarn.lock";
       packageJSON = b.fromJSON (b.readFile "${lib.elemAt inputDirectories 0}/package.json");
       parser = import ../yarn-lock/parser.nix { inherit lib; inherit (externals) nix-parsec;};
@@ -225,8 +226,8 @@
       type = "argument";
     };
 
-    dev = {
-      description = "Whether to include development dependencies";
+    noDev = {
+      description = "Whether to exclude development dependencies";
       type = "flag";
     };
 

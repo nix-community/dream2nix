@@ -47,15 +47,13 @@ in
               ''') {},
       }:
 
-      (dream2nix.riseAndShine {
+      dream2nix.riseAndShine {
         dreamLock = ./dream.lock;
         ${lib.optionalString (dreamLock.sources."${mainPackageName}"."${mainPackageVersion}".type == "unknown") ''
           sourceOverrides = oldSources: {
               "${mainPackageName}#${mainPackageVersion}" = ./${sourcePathRelative};
             };
         ''}
-      }).defaultPackage.overrideAttrs (old: {
-
-      })
+      }
   '';
 }

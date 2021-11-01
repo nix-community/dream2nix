@@ -14,13 +14,15 @@
       inputDirectories,
       inputFiles,
 
-      dev,
+      noDev,
       nodejs,
       ...
     }@args:
     let
 
       b = builtins;
+
+      dev = ! noDev;
 
       packageLock =
         if inputDirectories != [] then
@@ -29,6 +31,8 @@
           lib.elemAt inputFiles 0;
 
       parsed = b.fromJSON (b.readFile packageLock);
+
+      parsedDependencies = parsed.dependencies or {};
 
       identifyGitSource = dependencyObject:
         # TODO: when integrity is there, and git url is github then use tarball instead
@@ -62,7 +66,7 @@
           )
           dependencies;
       
-      packageLockWithPinnedVersions = pinVersions parsed.dependencies parsed.dependencies;
+      packageLockWithPinnedVersions = pinVersions parsedDependencies parsedDependencies;
 
     in
 
@@ -77,7 +81,7 @@
               { name = pname; version = getVersion pdata; })
             (lib.filterAttrs
               (pname: pdata: ! (pdata.dev or false) || dev)
-              parsed.dependencies);
+              parsedDependencies);
         buildSystemName = "nodejs";
         buildSystemAttrs = { nodejsVersion = args.nodejs; };
 
@@ -141,8 +145,8 @@
 
   extraArgs = {
 
-    dev = {
-      description = "include dependencies for development";
+    noDev = {
+      description = "Whether to exclude development dependencies";
       type = "flag";
     };
 
