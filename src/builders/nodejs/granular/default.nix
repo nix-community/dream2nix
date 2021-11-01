@@ -227,6 +227,7 @@ let
           # - adds executables of direct node dependencies to PATH
           # - adds the current node module to NODE_PATH
           # - sets HOME=$TMPDIR, as this is required by some npm scripts
+          # TODO: don't install dev dependencies. Load into NODE_PATH instead
           d2nInstallDependenciesPhase = ''
             # symlink dependency packages into node_modules
             for dep in $(cat $nodeDepsPath); do

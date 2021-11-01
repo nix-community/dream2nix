@@ -14,13 +14,15 @@
       inputDirectories,
       inputFiles,
 
-      dev,
+      noDev,
       nodejs,
       ...
     }@args:
     let
 
       b = builtins;
+
+      dev = ! noDev;
 
       packageLock =
         if inputDirectories != [] then
@@ -141,8 +143,8 @@
 
   extraArgs = {
 
-    dev = {
-      description = "include dependencies for development";
+    noDev = {
+      description = "Whether to exclude development dependencies";
       type = "flag";
     };
 
