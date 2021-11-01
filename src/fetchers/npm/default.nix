@@ -1,5 +1,6 @@
 {
   fetchurl,
+  lib,
   python3,
 
   utils,
@@ -14,16 +15,14 @@
 
   versionField = "version";
 
-  defaultUpdater = "pypiNewestReleaseVersion";
+  # defaultUpdater = "";
 
-  outputs = { pname, version, extension ? "tar.gz", ... }@inp:
+  outputs = { pname, version, ... }@inp:
     let
       b = builtins;
 
-      firstChar = builtins.substring 0 1 pname;
-      url =
-        "https://files.pythonhosted.org/packages/source/"
-        + "${firstChar}/${pname}/${pname}-${version}.${extension}";
+      submodule = lib.last (lib.splitString "/" pname);
+      url = "https://registry.npmjs.org/${pname}/-/${submodule}-${version}.tgz";
     in
     {
 
