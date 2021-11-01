@@ -23,6 +23,9 @@ let
         else
           dreamLock;
 
+      mainPackageName = lock.generic.mainPackageName;
+      mainPackageVersion = lock.generic.mainPackageVersion;
+
       buildSystemAttrs = lock.buildSystem;
 
       sources = lock.sources;
@@ -35,7 +38,9 @@ let
             lib.attrNames
               (lib.genAttrs
                 (lib.flatten
-                  ((lib.attrValues dependencyGraph) ++ (lib.attrNames dependencyGraph)))
+                  ((lib.attrValues dependencyGraph)
+                      ++ (lib.attrNames dependencyGraph)
+                      ++ [ "${mainPackageName}#${mainPackageVersion}" ]))
                 (x: null));
         in
           lib.foldl'
@@ -90,12 +95,9 @@ let
         inherit lock;
         interface = rec {
 
-          inherit (lock.generic)
+          inherit
             mainPackageName
             mainPackageVersion
-          ;
-
-          inherit
             buildSystemAttrs
             cyclicDependencies
             getCyclicDependencies

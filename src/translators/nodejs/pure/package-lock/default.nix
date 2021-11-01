@@ -32,6 +32,8 @@
 
       parsed = b.fromJSON (b.readFile packageLock);
 
+      parsedDependencies = parsed.dependencies or {};
+
       identifyGitSource = dependencyObject:
         # TODO: when integrity is there, and git url is github then use tarball instead
         # ! (dependencyObject ? integrity) &&
@@ -64,7 +66,7 @@
           )
           dependencies;
       
-      packageLockWithPinnedVersions = pinVersions parsed.dependencies parsed.dependencies;
+      packageLockWithPinnedVersions = pinVersions parsedDependencies parsedDependencies;
 
     in
 
@@ -79,7 +81,7 @@
               { name = pname; version = getVersion pdata; })
             (lib.filterAttrs
               (pname: pdata: ! (pdata.dev or false) || dev)
-              parsed.dependencies);
+              parsedDependencies);
         buildSystemName = "nodejs";
         buildSystemAttrs = { nodejsVersion = args.nodejs; };
 
