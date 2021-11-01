@@ -3,6 +3,7 @@
 
   # dream2nix
   fetchers,
+  utils,
   ...
 }:
 let
@@ -125,13 +126,70 @@ let
       getDepByNameVer = name: version:
         allDependencies."${name}"."${version}";
 
+      cyclicDependencies =
+        let
+          findCycles = node: prevNodes: cycles:
+            let
+              children = dependencyGraph."${node}";
+              cyclicChildren = lib.filter (child: prevNodes ? "${child}") children;
+              nonCyclicChildren = lib.filter (child: ! prevNodes ? "${child}") children;
+              cycles' =
+                cycles
+                ++
+                (b.map (child: { from = node; to = child; }) cyclicChildren);
+              prevNodes' = prevNodes // { "${node}" = null; };
+            in
+              if nonCyclicChildren == [] then
+                cycles'
+              else
+                lib.flatten
+                  (b.map
+                    (child: findCycles child prevNodes' cycles')
+                    nonCyclicChildren);
+
+          cyclesList = findCycles "${mainPackageName}#${mainPackageVersion}" {} [];
+        in
+          b.foldl'
+            (cycles: cycle:
+              let
+                fromNameVersion = utils.keyToNameVersion cycle.from;
+                fromName = fromNameVersion.name;
+                fromVersion = fromNameVersion.version;
+                toNameVersion = utils.keyToNameVersion cycle.to;
+                toName = toNameVersion.name;
+                toVersion = toNameVersion.version;
+                reverse = (cycles."${toName}"."${toVersion}" or []);
+              in
+                # if reverse edge already in cycles, do nothing
+                if b.elem cycle.from reverse then
+                  cycles
+                else
+                  lib.recursiveUpdate
+                    cycles
+                    {
+                      "${fromName}"."${fromVersion}" =
+                        let
+                          existing = cycles."${fromName}"."${fromVersion}" or [];
+                        in
+                          if b.elem cycle.to existing then
+                            existing
+                          else
+                            existing ++ [ cycle.to ];
+                    })
+            {}
+            cyclesList;
+
     in
       {
           sources = allSources;
 
           generic =
             {
-              inherit mainPackageName mainPackageVersion;
+              inherit
+                cyclicDependencies
+                mainPackageName
+                mainPackageVersion
+              ;
               buildSystem = buildSystemName;
               sourcesCombinedHash = null;
               translator = translatorName;
