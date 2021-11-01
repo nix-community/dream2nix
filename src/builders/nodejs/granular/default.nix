@@ -140,10 +140,16 @@ let
 
           # costs performance and doesn't seem beneficial in most scenarios
           dontStrip = true;
-          
-          # The default unpackPhase seemed to fail on setting permissions
-          # for some packages.
-          # TODO: debug nixpkgs unpackPhase and upstream improvement.
+
+          # TODO: upstream fix to nixpkgs
+          # example which requires this:
+          #   https://registry.npmjs.org/react-window-infinite-loader/-/react-window-infinite-loader-1.0.7.tgz
+          unpackCmd =
+            if lib.hasSuffix ".tgz" src then
+              "tar --delay-directory-restore -xf $src"
+            else
+              null;
+
           unpackPhase = ''
             runHook preUnpack
 
@@ -153,8 +159,8 @@ let
 
             unpackFile $src
 
-            # Make the base dir in which the target dependency resides first
-            mkdir -p "$(dirname "$nodeModules/$packageName")"
+            # Make the base dir in which the target dependency resides in first
+            mkdir -p "$(dirname "$sourceRoot")"
 
             # install source
             if [ -f "$src" ]
@@ -252,7 +258,7 @@ let
           '';
 
           # Run the install command which defaults to 'npm run postinstall'.
-          # Set alternative install command by overriding 'installScript'.
+          # Allows using custom install command by overriding 'installScript'.
           installPhase = ''
             runHook preInstall
 
