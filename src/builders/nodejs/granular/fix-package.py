@@ -5,10 +5,12 @@ import sys
 
 
 with open(os.environ.get('dependenciesJsonPath')) as f:
-  actual_deps = json.load(f)
+  available_deps = json.load(f)
 
 with open('package.json') as f:
   package_json = json.load(f)
+
+out = os.environ.get('out')
 
 changed = False
 
@@ -38,43 +40,26 @@ if package_json['version'] != version:
   changed = True
   package_json['version'] = version
 
-# delete devDependencies
-# We rely on dream.lock having the correct dependencies specified
-if 'devDependencies' in package_json:
-  print(
-    f"package.json: removed all devDependencies",
-    file=sys.stderr
-  )
-  changed = True
-  del package_json['devDependencies']
-
-# delete peerDependencies
-# We rely on dream.lock instead
-if 'peerDependencies' in package_json:
-  print(
-    f"package.json: removed all peerDependencies",
-    file=sys.stderr
-  )
-  changed = True
-  del package_json['peerDependencies']
 
 # pinpoint exact versions
 # This is mostly needed to replace git references with exact versions,
 # as NPM install will otherwise re-fetch these
 if 'dependencies' in package_json:
   for pname, version in package_json['dependencies'].items():
-    if actual_deps[pname] != package_json['dependencies'][pname]:
-      package_json['dependencies'][pname] = actual_deps[pname]
+    if 'bundledDependencies' in package_json\
+        and pname in package_json['bundledDependencies']:
+      continue
+    if available_deps[pname] != package_json['dependencies'][pname]:
+      package_json['dependencies'][pname] = available_deps[pname]
       changed = True
       print(
-        f"package.json: Pinning version '{version}' to '{actual_deps[pname]}'"
+        f"package.json: Pinning version '{version}' to '{available_deps[pname]}'"
         f" for dependency '{pname}'",
         file=sys.stderr
       )
 
 # create symlinks for executables (bin entries from package.json)
 if 'bin' in package_json:
-  out = os.environ.get('out')
   bin = package_json['bin']
 
   if isinstance(bin, str):
@@ -98,7 +83,6 @@ if 'bin' in package_json:
       pathlib.Path(sourceDir).mkdir(parents=True, exist_ok=True)
       dest = os.path.relpath(relpath, sourceDir)
       os.symlink(dest, source)
-
 
 # write changes to package.json
 if changed:

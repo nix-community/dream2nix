@@ -248,8 +248,7 @@ let
               inherit fetchedSources;
             };
 
-      in
-        builder ( builderArgs // {
+        outputs = builder ( builderArgs // {
 
           inherit
             buildPackageWithOtherBuilder
@@ -268,6 +267,9 @@ let
           getSource = utils.dreamLock.getSource fetchedSources;
 
         });
+
+      in
+        outputs;
 
 
   # produce outputs for a dream.lock or a source
@@ -331,8 +333,9 @@ let
         builder = builder';
         builderArgs = (args.builderArgs or {}) // {
           packageOverrides =
-            args.packageOverrides or {}
-            // dreamOverrides."${dreamLock.generic.buildSystem}" or {};
+            lib.recursiveUpdate
+              (dreamOverrides."${dreamLock.generic.buildSystem}" or {})
+              (args.packageOverrides or {});
         };
       };
 

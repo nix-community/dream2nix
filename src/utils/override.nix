@@ -36,9 +36,9 @@ let
     '';
 
   applyOverridesToPackage = conditionalOverrides: pkg: pname:
-    if ! conditionalOverrides ? "${pname}" then
-      pkg
-    else
+    # if ! conditionalOverrides ? "${pname}" then
+    #   pkg
+    # else
       
       let
 
@@ -52,7 +52,20 @@ let
         # filter the overrides by the package name and conditions
         overridesToApply =
           let
-            overridesForPackage = conditionalOverrides."${pname}";
+            regexOverrides =
+              lib.filterAttrs
+                (name: data:
+                  lib.hasPrefix "^" name
+                  &&
+                  b.match name pname != null)
+                conditionalOverrides;
+
+            overridesForPackage =
+              b.foldl'
+                (overrides: new: overrides // new)
+                conditionalOverrides."${pname}" or {}
+                (lib.attrValues regexOverrides);
+
             overridesListForPackage =
               lib.mapAttrsToList
                 (_name: data: data // { inherit _name; })

@@ -278,9 +278,12 @@ class PackageCommand(Command):
       mainSource = dict(
         type="unknown",
       )
-    lock['sources'][mainPackageName] = {
-      mainPackageVersion: mainSource
-    }
+    if mainPackageName not in lock['sources']:
+      lock['sources'][mainPackageName] = {
+        mainPackageVersion: mainSource
+      }
+    else:
+      lock['sources'][mainPackageName][mainPackageVersion] = mainSource
 
     # clean up dependency graph
     # remove empty entries

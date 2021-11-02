@@ -116,7 +116,8 @@ let
     let
       key = "${pname}#${version}";
     in
-      if fetchedSources ? "${key}" then
+      if fetchedSources ? "${key}"
+          && fetchedSources."${key}" != "unknown" then
         fetchedSources."${key}"
       else
         throw ''
@@ -152,22 +153,17 @@ let
         lock = (readDreamLock { inherit dreamLock; }).lock;
 
         oldDependencyGraph = lock.generic.dependencyGraph;
-        
+
         newDependencyGraph =
           lib.mapAttrs
             (key: deps:
               let
-                nameVer = utils.keyToNameVersion key;
+                oldDeps = oldDependencyGraph."${key}" or [];
               in
-                deps
+                (oldDeps
                 ++
-                (if inject ? "${nameVer.name}"."${nameVer.version}" then
-                  (b.map
-                    utils.nameVersionToKey
-                    inject."${nameVer.name}"."${nameVer.version}")
-                else
-                  []))
-            oldDependencyGraph;
+                lib.filter (dep: ! b.elem dep oldDeps) deps))
+            (oldDependencyGraph // inject);
 
       in
         lib.recursiveUpdate lock {
