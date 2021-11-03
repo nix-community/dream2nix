@@ -17,7 +17,7 @@ class ContributeCommand(Command):
 
     options = [
         option("module", None, "Which kind of module to contribute", flag=False),
-        option("buildsystem", None, "which kind of buildsystem", flag=False),
+        option("subsystem", None, "which kind of subsystem", flag=False),
         option("type", None, "pure or impure translator", flag=False),
         option("name", None, "name of the new module", flag=False),
         option(
@@ -49,22 +49,22 @@ class ContributeCommand(Command):
         module = f"{module}s"
         module_dir = dream2nix_src + f"/{module}/"
 
-        buildsystem = self.option('buildsystem')
-        known_buildsystems = list(dir for dir in os.listdir(module_dir) if os.path.isdir(module_dir + dir))
-        if not buildsystem:
-            buildsystem = self.choice(
-                'Select buildsystem',
-                known_buildsystems
+        subsystem = self.option('subsystem')
+        known_subsystems = list(dir for dir in os.listdir(module_dir) if os.path.isdir(module_dir + dir))
+        if not subsystem:
+            subsystem = self.choice(
+                'Select subsystem',
+                known_subsystems
                 +
                 [
                     " -> add new"
                 ],
                 0
             )
-            if buildsystem == " -> add new":
-                buildsystem = self.ask('Please enter the name of a new buildsystem:')
-                if buildsystem in known_buildsystems:
-                    raise Exception(f"buildsystem {buildsystem} already exists")
+            if subsystem == " -> add new":
+                subsystem = self.ask('Please enter the name of a new subsystem:')
+                if subsystem in known_subsystems:
+                    raise Exception(f"subsystem {subsystem} already exists")
 
         
         if module == 'translators':
@@ -81,12 +81,12 @@ class ContributeCommand(Command):
             name = self.ask('Specify name of new module:')
         
         for path in (
-                module_dir + f"{buildsystem}",
-                module_dir + f"{buildsystem}/{type}",
-                module_dir + f"{buildsystem}/{type}/{name}"):
+                module_dir + f"{subsystem}",
+                module_dir + f"{subsystem}/{type}",
+                module_dir + f"{subsystem}/{type}/{name}"):
             if not os.path.isdir(path):
                 os.mkdir(path)
-        target_file = module_dir + f"{buildsystem}/{type}/{name}/default.nix"
+        target_file = module_dir + f"{subsystem}/{type}/{name}/default.nix"
         with open(dream2nix_src + f"/templates/{module}/{type}.nix") as template:
             with open(target_file, 'w') as new_file:
                 new_file.write(template.read())

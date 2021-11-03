@@ -59,8 +59,8 @@ class UpdateCommand(Command):
 
     cli_py = os.path.abspath(f"{__file__}/../../cli.py")
     # delete the hash
-    mainPackageName = lock['generic']['mainPackageName']
-    mainPackageVersion = lock['generic']['mainPackageVersion']
+    mainPackageName = lock['_generic']['mainPackageName']
+    mainPackageVersion = lock['_generic']['mainPackageVersion']
     mainPackageSource = lock['sources'][mainPackageName][mainPackageVersion]
     updatedSourceSpec = callNixFunction(
       "fetchers.updateSource",
@@ -76,5 +76,5 @@ class UpdateCommand(Command):
           sys.executable, f"{cli_py}", "package", "--force", "--source", tmpDreamLock.name,
           "--output", os.path.abspath(os.path.dirname(dreamLockFile))
         ]
-        + lock['generic']['translatorParams'].split()
+        + lock['_generic']['translatorParams'].split()
       )

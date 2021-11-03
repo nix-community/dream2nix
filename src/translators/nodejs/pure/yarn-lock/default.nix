@@ -58,9 +58,9 @@
 
       mainPackageVersion = packageJSON.version or "unknown";
 
-      buildSystemName = "nodejs";
+      subsystemName = "nodejs";
 
-      buildSystemAttrs = {
+      subsystemAttrs = {
         nodejsVersion = 14;
       };
 

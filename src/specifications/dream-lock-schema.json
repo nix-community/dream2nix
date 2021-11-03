@@ -4,7 +4,6 @@
   "type": "object",
   "properties": {
 
-
     "sources": {
       "type": "object",
       "patternProperties": {
@@ -134,28 +133,27 @@
       }
     },
 
-
-    "generic": {
+    "_generic": {
       "type": "object",
       "properties": {
-        "buildSystem": { "type": "string" },
-        "producedBy": { "type": "string" },
-        "dependencyGraph": {
-          "type": "object",
-          "properties": {
-            "^.*$": {
-              "type": "array",
-              "items": { "type": "string" }
-            }
-          }
-        }
+        "_subsystem": { "type": "string" },
+        "producedBy": { "type": "string" }
       } 
     },
 
-
-    "buildSystem": {
+    "_subsystem": {
       "description": "build system specifics",
       "type": "object"
+    },
+    
+    "dependencies": {
+      "type": "object",
+      "properties": {
+        "^.*$": {
+          "type": "array",
+          "items": { "type": "string" }
+        }
+      }
     }
   }
 }

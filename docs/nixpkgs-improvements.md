@@ -76,7 +76,7 @@
 
 #### Solution
 
-- dream2nix provides good interfaces for customizability which are unified as much as possible independently from the underlying buildsystems.
+- dream2nix provides good interfaces for customizability which are unified as much as possible independently from the underlying subsystems.
 
 ### Inefficient/Slow Innovation
 
@@ -88,5 +88,5 @@
 
 #### Solution
 
-- Since dream2nix centrally handles many core elements of packaging like different strategies for fetching and building, it is much easier to fix problems at large scale and apply new innovations to all underlysing buildsystems at once.
+- Since dream2nix centrally handles many core elements of packaging like different strategies for fetching and building, it is much easier to fix problems at large scale and apply new innovations to all underlysing subsystems at once.
 - Experimenting with and adding support for new nix features will be easier as the framework offers better abstractions than existing 2nix converters and allows adding/modifying strategies more easily.

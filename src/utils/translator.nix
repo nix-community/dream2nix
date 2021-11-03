@@ -17,8 +17,8 @@ let
       mainPackageName,
       mainPackageVersion,
       mainPackageDependencies,
-      buildSystemName,
-      buildSystemAttrs,
+      subsystemName,
+      subsystemAttrs,
 
       # functions
       serializePackages,
@@ -66,45 +66,46 @@ let
         })
         {}
         serializedPackagesList;
-      
+
       dependencyGraph =
-        {
-          "${mainPackageName}#${mainPackageVersion}" =
-            lib.forEach mainPackageDependencies
-              (dep: "${dep.name}#${dep.version}");
-        }
-        //
-        lib.listToAttrs
-          (lib.forEach
-            serializedPackagesList
-            (pkgData: lib.nameValuePair
-              "${getName pkgData}#${getVersion pkgData}"
-              (b.map
-                (depNameVer: "${depNameVer.name}#${depNameVer.version}")
-                (getDependencies pkgData getDepByNameVer dependenciesByOriginalID))));
-      
+        let
+          depGraph = 
+            (lib.mapAttrs
+              (name: versions:
+                lib.mapAttrs
+                  (version: pkgData:
+                    getDependencies
+                      pkgData
+                      getDepByNameVer
+                      dependenciesByOriginalID)
+                  versions)
+              allDependencies);
+        in
+          depGraph // {
+            "${mainPackageName}" = depGraph."${mainPackageName}" or {} // {
+              "${mainPackageVersion}" = mainPackageDependencies;
+            };
+          };
+
       allDependencyKeys =
-        lib.attrNames
-          (lib.genAttrs
-            (b.foldl'
-              (a: b: a ++ b)
-              []
-              (lib.attrValues dependencyGraph))
-            (x: null));
+        let
+          depsWithDuplicates = 
+            lib.flatten
+              (lib.flatten
+                (lib.mapAttrsToList
+                  (name: versions: lib.attrValues versions)
+                  dependencyGraph));
+        in
+          lib.unique depsWithDuplicates;
       
       missingDependencies =
         lib.flatten
           (lib.forEach allDependencyKeys
-            (depKey:
-              let
-                split = lib.splitString "#" depKey;
-                name = b.elemAt split 0;
-                version = b.elemAt split 1;
-              in
-                if sources ? "${name}" && sources."${name}" ? "${version}" then
-                  []
-                else
-                  { inherit name version; }));
+            (dep:
+              if sources ? "${dep.name}"."${dep.version}" then
+                []
+              else
+                dep));
 
       generatedSources =
         if missingDependencies == [] then
@@ -127,17 +128,33 @@ let
         allDependencies."${name}"."${version}";
 
       cyclicDependencies =
+        # TODO: inefficient! Implement some kind of early cutoff
         let
           findCycles = node: prevNodes: cycles:
             let
-              children = dependencyGraph."${node}";
-              cyclicChildren = lib.filter (child: prevNodes ? "${child}") children;
-              nonCyclicChildren = lib.filter (child: ! prevNodes ? "${child}") children;
+
+              children = dependencyGraph."${node.name}"."${node.version}";
+
+              cyclicChildren =
+                lib.filter
+                  (child: prevNodes ? "${child.name}#${child.version}")
+                  children;
+
+              nonCyclicChildren =
+                lib.filter
+                  (child: ! prevNodes ? "${child.name}#${child.version}")
+                  children;
+
               cycles' =
                 cycles
                 ++
                 (b.map (child: { from = node; to = child; }) cyclicChildren);
-              prevNodes' = prevNodes // { "${node}" = null; };
+
+              # use set for efficient lookups
+              prevNodes' =
+                prevNodes
+                // { "${node.name}#${node.version}" = null; };
+
             in
               if nonCyclicChildren == [] then
                 cycles'
@@ -147,59 +164,65 @@ let
                     (child: findCycles child prevNodes' cycles')
                     nonCyclicChildren);
 
-          cyclesList = findCycles "${mainPackageName}#${mainPackageVersion}" {} [];
+          cyclesList =
+            findCycles
+              (utils.nameVersionPair mainPackageName mainPackageVersion)
+              {}
+              [];
         in
           b.foldl'
             (cycles: cycle:
+              (
               let
-                fromNameVersion = utils.keyToNameVersion cycle.from;
-                fromName = fromNameVersion.name;
-                fromVersion = fromNameVersion.version;
-                toNameVersion = utils.keyToNameVersion cycle.to;
-                toName = toNameVersion.name;
-                toVersion = toNameVersion.version;
-                reverse = (cycles."${toName}"."${toVersion}" or []);
+                existing =
+                  cycles."${cycle.from.name}"."${cycle.from.version}"
+                  or [];
+
+                reverse =
+                  cycles."${cycle.to.name}"."${cycle.to.version}"
+                  or [];
+
               in
-                # if reverse edge already in cycles, do nothing
-                if b.elem cycle.from reverse then
+                # if edge or reverse edge already in cycles, do nothing
+                if b.elem cycle.from reverse
+                    || b.elem cycle.to existing then
                   cycles
                 else
                   lib.recursiveUpdate
                     cycles
                     {
-                      "${fromName}"."${fromVersion}" =
-                        let
-                          existing = cycles."${fromName}"."${fromVersion}" or [];
-                        in
-                          if b.elem cycle.to existing then
-                            existing
-                          else
-                            existing ++ [ cycle.to ];
-                    })
+                      "${cycle.from.name}"."${cycle.from.version}" =
+                        existing ++ [ cycle.to ];
+                    }))
             {}
             cyclesList;
 
     in
       {
-          sources = allSources;
+        decompressed = true;
 
-          generic =
-            {
-              inherit
-                cyclicDependencies
-                mainPackageName
-                mainPackageVersion
-              ;
-              buildSystem = buildSystemName;
-              sourcesCombinedHash = null;
-              translator = translatorName;
-            }
-            //
-            (lib.optionalAttrs (getDependencies != null) { inherit dependencyGraph; });
+        _generic =
+          {
+            inherit
+              mainPackageName
+              mainPackageVersion
+            ;
+            subsystem = subsystemName;
+            sourcesCombinedHash = null;
+            translator = translatorName;
+          };
+        
+        # build system specific attributes
+        _subsystem = subsystemAttrs;
 
-          # build system specific attributes
-          buildSystem = buildSystemAttrs;
-      };
+        inherit cyclicDependencies;
+
+        sources = allSources;
+      }
+      //
+      (lib.optionalAttrs
+        (getDependencies != null)
+        { dependencies = dependencyGraph; });
 
 in
   {

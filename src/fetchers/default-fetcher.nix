@@ -7,7 +7,7 @@
   ...
 }:
 {
-  # sources attrset from generic lock
+  # sources attrset from dream lock
   mainPackageName,
   mainPackageVersion,
   sources,

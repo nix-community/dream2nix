@@ -135,26 +135,26 @@ Potery uses `pyproject.toml` and `poetry.lock` to lock dependencies
       },
 
       // generic metadata (not specific to python)
-      "generic": {
+      "_generic": {
 
         // this indicates which builder must be used
-        "buildSystem": "python",
+        "subsystem": "python",
 
         // translator which generated this file
         // (not relevant for building)
         "producedBy": "translator-poetry-1",
 
         // dependency graph of the packages
-        "dependencyGraph": {
+        "dependencies": {
           "requests": [
             "certifi"
           ]
         }
       },
 
-      // all fields inside 'buildSystem' are specific to
-      // the selected buildSystem (python)
-      "buildSystem": {
+      // all fields inside 'subsystem' are specific to
+      // the selected subsystem (python)
+      "_subsystem": {
 
         // tell the python builder how the inputs must be handled
         "sourceFormats": {
@@ -168,8 +168,8 @@ Potery uses `pyproject.toml` and `poetry.lock` to lock dependencies
   - be dumped to a .json file and committed to a repo
   - passed directly to the fetching/building layer
 - the fetcher will only read the sources section and translate it to standard fetcher calls.
-- the building layer will read the "buildSystem" attribute and select the python builder for building.
-- the python builder will read all information from "buildSystem" and translate the data to a final derivation.
+- the building layer will read the "subsystem" attribute and select the python builder for building.
+- the python builder will read all information from "subsystem" and translate the data to a final derivation.
 
 Notes on IFD, FOD and code generation:  
 - No matter which type of tanslator is used, it is always possible to export the generic lock to a file, which can later be evaluated without using IFD or FOD, similar to current nix code generators, just with a standardized format.

@@ -82,8 +82,8 @@
             (lib.filterAttrs
               (pname: pdata: ! (pdata.dev or false) || dev)
               parsedDependencies);
-        buildSystemName = "nodejs";
-        buildSystemAttrs = { nodejsVersion = args.nodejs; };
+        subsystemName = "nodejs";
+        subsystemAttrs = { nodejsVersion = args.nodejs; };
 
         # functions
         serializePackages = inputData:

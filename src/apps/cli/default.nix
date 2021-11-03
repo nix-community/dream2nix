@@ -32,8 +32,8 @@ in
       sourcePathRelative,
     }:
     let
-      mainPackageName = dreamLock.generic.mainPackageName;
-      mainPackageVersion = dreamLock.generic.mainPackageVersion;
+      mainPackageName = dreamLock._generic.mainPackageName;
+      mainPackageVersion = dreamLock._generic.mainPackageVersion;
     in
     ''
       {

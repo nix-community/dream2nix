@@ -21,8 +21,8 @@
   buildPackageWithOtherBuilder,
 
   # attributes
-  buildSystemAttrs,
-  cyclicDependencies,
+  subsystemAttrs,
+  getCyclicDependencies,
   mainPackageName,
   mainPackageVersion,
   packageVersions,
@@ -43,12 +43,12 @@ let
   # tells if a dependency introduces a cycle
   #   -> needs to be built in a combined derivation
   isCyclic = name: version:
-    cyclicDependencies ? "${name}"."${version}";
+    (getCyclicDependencies name version) != [];
 
   mainPackageKey =
     "${mainPackageName}#${mainPackageVersion}";
 
-  nodejsVersion = buildSystemAttrs.nodejsVersion;
+  nodejsVersion = subsystemAttrs.nodejsVersion;
 
   nodejs =
     pkgs."nodejs-${builtins.toString nodejsVersion}_x"
@@ -80,11 +80,7 @@ let
         buildPackageWithOtherBuilder {
           inherit name version;
           builder = builders.nodejs.node2nix;
-          inject =
-            lib.optionalAttrs (cyclicDependencies ? "${name}"."${version}") {
-              "${name}"."${version}" =
-                cyclicDependencies."${name}"."${version}";
-            };
+          inject = {};
         };
     in
       built.defaultPackage;

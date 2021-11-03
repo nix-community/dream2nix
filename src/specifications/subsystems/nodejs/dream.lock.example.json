@@ -1,5 +1,5 @@
 {
-  "buildSystem": {
+  "_subsystem": {
     "nodejsVersion": 14
   }
 }
