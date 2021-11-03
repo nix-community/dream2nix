@@ -25,9 +25,13 @@
       b = builtins;
       dev = ! noDev;
       optional = ! noOptional;
-      yarnLock = utils.readTextFile "${lib.elemAt inputDirectories 0}/yarn.lock";
-      packageJSON = b.fromJSON (b.readFile "${lib.elemAt inputDirectories 0}/package.json");
-      parser = import ../yarn-lock/parser.nix { inherit lib; inherit (externals) nix-parsec;};
+  
+      sourceDir = lib.elemAt inputDirectories 0;
+      yarnLock = utils.readTextFile "${sourceDir}/yarn.lock";
+      packageJSON = b.fromJSON (b.readFile "${sourceDir}/package.json");
+      parser = import ../yarn-lock/parser.nix
+        { inherit lib; inherit (externals) nix-parsec;};
+
       tryParse = parser.parseLock yarnLock;
       parsedLock =
         if tryParse.type == "success" then
@@ -36,7 +40,10 @@
           let
             failureOffset = tryParse.value.offset;
           in
-            throw "parser failed at: \n${lib.substring failureOffset 50 tryParse.value.str}";
+            throw ''
+              parser failed at:
+              ${lib.substring failureOffset 50 tryParse.value.str}
+            '';
     in
     
     utils.simpleTranslate translatorName rec {
@@ -46,7 +53,10 @@
       mainPackageName =
         packageJSON.name or
           (if name != null then name else
-            throw "Could not identify package name. Please specify extra argument 'name'");
+            throw (
+              "Could not identify package name. "
+              + "Please specify extra argument 'name'"
+            ));
 
       mainPackageVersion = packageJSON.version or "unknown";
 
@@ -89,10 +99,13 @@
         dependencyObject.yarnName;
 
       getName = dependencyObject:
-        let
-          version = lib.last (lib.splitString "@" dependencyObject.yarnName);
-        in
-          lib.removeSuffix "@${version}" dependencyObject.yarnName;
+        if lib.hasInfix "@git+" dependencyObject.yarnName then
+          lib.head (lib.splitString "@git+" dependencyObject.yarnName)
+        else
+          let
+            version = lib.last (lib.splitString "@" dependencyObject.yarnName);
+          in
+            lib.removeSuffix "@${version}" dependencyObject.yarnName;
 
       getVersion = dependencyObject:
           dependencyObject.version;
@@ -117,7 +130,8 @@
                       if ! dependenciesByOriginalID ? ${yarnName} then
                         # handle missing lock file entry
                         let
-                          versionMatch = b.match ''.*\^([[:digit:]|\.]+)'' versionSpec;
+                          versionMatch =
+                            b.match ''.*\^([[:digit:]|\.]+)'' versionSpec;
                         in
                           {
                             inherit name;
@@ -132,15 +146,21 @@
 
       getSourceType = dependencyObject:
         if lib.hasInfix "@github:" dependencyObject.yarnName
-            || 
-            (dependencyObject ? resolved
-              && lib.hasInfix "codeload.github.com/" dependencyObject.resolved  ) then
+            || (dependencyObject ? resolved
+                && lib.hasInfix
+                  "codeload.github.com/"
+                  dependencyObject.resolved)
+            || (lib.hasInfix "@git+" dependencyObject.yarnName) then
           if dependencyObject ? integrity then
-            b.trace "Warning: Using git despite integrity exists for ${getName dependencyObject}"
+            b.trace (
+              "Warning: Using git despite integrity exists for"
+              + "${getName dependencyObject}"
+            )
               "git"
           else
             "git"
-        else if lib.hasInfix "@link:" dependencyObject.yarnName then
+        else if lib.hasInfix "@link:" dependencyObject.yarnName
+            || lib.hasInfix "@file:" dependencyObject.yarnName then
           "path"
         else
           "http";
@@ -148,23 +168,38 @@
       
       sourceConstructors = {
         git = dependencyObject:
-          let
-            gitUrlInfos = lib.splitString "/" dependencyObject.resolved;
-            rev = lib.elemAt gitUrlInfos 6;
-            owner = lib.elemAt gitUrlInfos 3;
-            repo = lib.elemAt gitUrlInfos 4;
-            version = dependencyObject.version;
-          in
-          {
-            url = "https://github.com/${owner}/${repo}";
-            inherit rev version;
-          };
+          if utils.identifyGitUrl dependencyObject.resolved then
+            (utils.parseGitUrl dependencyObject.resolved) // {
+              version = dependencyObject.version;
+            }
+          else
+            let
+              githubUrlInfos = lib.splitString "/" dependencyObject.resolved;
+              owner = lib.elemAt githubUrlInfos 3;
+              repo = lib.elemAt githubUrlInfos 4;
+              rev = lib.elemAt githubUrlInfos 6;
+              version = dependencyObject.version;
+            in
+            {
+              url = "https://github.com/${owner}/${repo}";
+              inherit rev version;
+            };
 
         path = dependencyObject:
-          {
-            version = dependencyObject.version;     
-            path = lib.last (lib.splitString "@link:" dependencyObject.yarnName);
-          };
+          if lib.hasInfix "@link:" dependencyObject.yarnName then
+            {
+              version = dependencyObject.version;     
+              path =
+                lib.last (lib.splitString "@link:" dependencyObject.yarnName);
+            }
+          else if lib.hasInfix "@file:" dependencyObject.yarnName then
+            {
+              version = dependencyObject.version;     
+              path =
+              lib.last (lib.splitString "@file:" dependencyObject.yarnName);
+            }
+          else
+            throw "unknown path format ${b.toJSON dependencyObject}";
 
         http = dependencyObject:
           {
@@ -175,7 +210,8 @@
                 dependencyObject.integrity
               else
                 let
-                  hash = lib.last (lib.splitString "#" dependencyObject.resolved);
+                  hash =
+                    lib.last (lib.splitString "#" dependencyObject.resolved);
                 in
                   if lib.stringLength hash == 40 then hash
               else

@@ -113,6 +113,11 @@ let
         
           pname = utils.sanitizeDerivationName name;
 
+          # only run build on the main package
+          runBuild =
+            packageName == mainPackageName
+                && version == mainPackageVersion;
+
           inherit dependenciesJson nodeDeps nodeSources version;
 
           src = getSource name version;
@@ -270,6 +275,8 @@ let
               else
                 echo "$installScript" | bash
               fi
+            elif [ -n "$runBuild" ] && [ "$(jq '.scripts.build' ./package.json)" != "null" ]; then
+              npm run build
             elif [ "$(jq '.scripts.postinstall' ./package.json)" != "null" ]; then
               npm --production --offline --nodedir=$nodeSources run postinstall
             fi
