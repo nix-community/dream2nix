@@ -16,7 +16,6 @@
       # extraArgs
       name,
       noDev,
-      noOptional,
       peer,
       ...
     }:
@@ -24,7 +23,6 @@
     let
       b = builtins;
       dev = ! noDev;
-      optional = ! noOptional;
   
       sourceDir = lib.elemAt inputDirectories 0;
       yarnLock = utils.readTextFile "${sourceDir}/yarn.lock";
@@ -52,7 +50,7 @@
 
       mainPackageName =
         packageJSON.name or
-          (if name != null then name else
+          (if name != "{automatic}" then name else
             throw (
               "Could not identify package name. "
               + "Please specify extra argument 'name'"
@@ -114,7 +112,7 @@
         let
           dependencies =
             dependencyObject.dependencies or []
-            ++ (lib.optionals optional (dependencyObject.optionalDependencies or []));
+            ++ dependencyObject.optionalDependencies or [];
         in
           lib.forEach
             dependencies
@@ -213,9 +211,10 @@
                   hash =
                     lib.last (lib.splitString "#" dependencyObject.resolved);
                 in
-                  if lib.stringLength hash == 40 then hash
-              else
-                throw "Missing integrity for ${dependencyObject.yarnName}";
+                  if lib.stringLength hash == 40 then
+                    hash
+                  else
+                    throw "Missing integrity for ${dependencyObject.yarnName}";
             url = lib.head (lib.splitString "#" dependencyObject.resolved);
           };
       };
@@ -260,16 +259,12 @@
         "react"
         "@babel/code-frame"
       ];
+      default = "{automatic}";
       type = "argument";
     };
 
     noDev = {
       description = "Exclude development dependencies";
-      type = "flag";
-    };
-
-    noOptional = {
-      description = "Exclude optional dependencies";
       type = "flag";
     };
 

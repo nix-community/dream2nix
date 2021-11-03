@@ -210,7 +210,7 @@ class PackageCommand(Command):
           file=sys.stderr
         )
         exit(1)
-      # interactively retrieve unswers for unspecified extra arguments
+      # interactively retrieve answers for unspecified extra arguments
       else:
         print(f"\nThe translator '{translator['name']}' requires additional options")
         for arg_name, arg in unspecified_extra_args.items():
@@ -222,8 +222,11 @@ class PackageCommand(Command):
             print(f"Please specify '{arg_name}': {arg['description']}")
             print(f"Example values: " + ', '.join(arg['examples']))
             if 'default' in arg:
-              print(f"\nLeave empty for default ({arg['default']})")
-            specified_extra_args[arg_name] = self.ask(f"{arg_name}:", arg.get('default'))
+              print(f"Leave empty for default ({arg['default']})")
+            while True:
+              specified_extra_args[arg_name] = self.ask(f"{arg_name}:", arg.get('default'))
+              if specified_extra_args[arg_name]:
+                break
 
     # arguments for calling the translator nix module
     translator_input = dict(
