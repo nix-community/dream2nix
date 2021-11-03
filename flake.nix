@@ -96,10 +96,21 @@
         # System independent dream2nix api.
         # Similar to drem2nixFor but will require 'system(s)' or 'pkgs' as an argument.
         # Produces flake-like output schema.
-        lib = import ./src/lib.nix {
+        lib = (import ./src/lib.nix {
           inherit externalSources overridesDir lib;
           nixpkgsSrc = "${nixpkgs}";
-        };
+        })
+        # system specific dream2nix library
+        // (forAllSystems (system: pkgs:
+          import ./src {
+            inherit
+              externalSources
+              lib
+              overridesDir
+              pkgs
+            ;
+          }
+        ));
 
         # the dream2nix cli to be used with 'nix run dream2nix'
         defaultApp = forAllSystems (system: pkgs: self.apps."${system}".cli);

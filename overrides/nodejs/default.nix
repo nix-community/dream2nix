@@ -8,6 +8,43 @@ let
 in
 
 {
+  degit = {
+    run-build = {
+      installScript = ''
+        npm run build
+        cp help.md ./dist
+      '';
+    };
+  };
+
+  esbuild = {
+    "add-binary-0.12.17" = {
+      _condition = pkg: pkg.version == "0.12.17";
+      ESBUILD_BINARY_PATH =
+        let
+          esbuild = pkgs.buildGoModule rec {
+            pname = "esbuild";
+            version = "0.12.17";
+
+            src = pkgs.fetchFromGitHub {
+              owner = "evanw";
+              repo = "esbuild";
+              rev = "v${version}";
+              sha256 = "sha256-wZOBjNOgGmwIQNCrhzwGPmI/fW/yZiDqq8l4oSDTvZs=";
+            };
+
+            vendorSha256 = "sha256-2ABWPqhK2Cf4ipQH7XvRrd+ZscJhYPc3SV2cGT0apdg=";
+          };
+        in
+          "${esbuild}/bin/esbuild";
+    };
+  };
+
+  geckodriver = {
+    add-binary = {
+      GECKODRIVER_FILEPATH = "${pkgs.geckodriver}/bin/geckodriver";
+    };
+  };
 
   gifsicle = {
     add-binary = {
@@ -72,4 +109,5 @@ in
       '';
     };
   };
+
 }

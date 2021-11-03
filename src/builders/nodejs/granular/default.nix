@@ -113,6 +113,11 @@ let
         
           pname = utils.sanitizeDerivationName name;
 
+          # only run build on the main package
+          runBuild =
+            packageName == mainPackageName
+                && version == mainPackageVersion;
+
           inherit dependenciesJson nodeDeps nodeSources version;
 
           src = getSource name version;
@@ -241,12 +246,12 @@ let
                   if [[ $module == @* ]]; then
                     for submodule in $(ls $dep/lib/node_modules/$module); do
                       mkdir -p $nodeModules/$packageName/node_modules/$module
-                      echo -e "creating link: $dep/lib/node_modules/$module/$submodule\n  -> $nodeModules/$packageName/node_modules/$module/$submodule"
+                      echo "installing: $module/$submodule"
                       ln -s $dep/lib/node_modules/$module/$submodule $nodeModules/$packageName/node_modules/$module/$submodule
                     done
                   else
                     mkdir -p $nodeModules/$packageName/node_modules/
-                    echo -e "creating link: $dep/lib/node_modules/$module\n  -> $nodeModules/$packageName/node_modules/$module"
+                    echo "installing: $module"
                     ln -s $dep/lib/node_modules/$module $nodeModules/$packageName/node_modules/$module
                   fi
                 done
@@ -270,6 +275,8 @@ let
               else
                 echo "$installScript" | bash
               fi
+            elif [ -n "$runBuild" ] && [ "$(jq '.scripts.build' ./package.json)" != "null" ]; then
+              npm run build
             elif [ "$(jq '.scripts.postinstall' ./package.json)" != "null" ]; then
               npm --production --offline --nodedir=$nodeSources run postinstall
             fi
@@ -279,14 +286,15 @@ let
 
           # Symlinks executables and manual pages to correct directories
           d2nPostInstallPhase = ''
-            # Create symlink to the deployed executable folder, if applicable
+            
+            echo "Symlinking exectuables to /bin"
             if [ -d "$nodeModules/.bin" ]
             then
               chmod +x $nodeModules/.bin/*
               ln -s $nodeModules/.bin $out/bin
             fi
 
-            # Create symlinks to the deployed manual page folders, if applicable
+            echo "Symlinking manual pages"
             if [ -d "$nodeModules/$packageName/man" ]
             then
               mkdir -p $out/share

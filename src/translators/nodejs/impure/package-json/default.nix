@@ -49,10 +49,6 @@
       inputFiles,
     }@args:
     {
-      # TODO: insert regex here that matches valid input file names
-      # examples:
-      #   - ''.*requirements.*\.txt''
-      #   - ''.*package-lock\.json''
       inputDirectories = lib.filter 
         (utils.containsMatchingFile [ ''.*package.json'' ])
         args.inputDirectories;
@@ -60,31 +56,5 @@
       inputFiles = [];
     };
 
-
-  # If the translator requires additional arguments, specify them here.
-  # There are only two types of arguments:
-  #   - string argument (type = "argument")
-  #   - boolean flag (type = "flag")
-  # String arguments contain a default value and examples. Flags do not.
-  extraArgs = {
-
-    # # Example: boolean option
-    # # Flags always default to 'false' if not specified by the user
-    # dev-dependenices = {
-    #   description = "Include dev dependencies";
-    #   type = "flag";
-    # };
-
-    # # Example: string option
-    # the-answer = {
-    #   default = "42";
-    #   description = "The Answer to the Ultimate Question of Life";
-    #   examples = [
-    #     "0"
-    #     "1234"
-    #   ];
-    #   type = "argument";
-    # };
-
-  };
+  extraArgs = {};
 }

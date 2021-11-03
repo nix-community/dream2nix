@@ -91,10 +91,21 @@
             serialize = inputData:
               lib.mapAttrsToList  # returns list of lists
                 (pname: pdata:
-                  [ (pdata // { inherit pname; }) ]
+                  [ (pdata // {
+                      inherit pname;
+                      depsExact =
+                        lib.filter
+                          (req:
+                            (! (pdata.dependencies."${req.name}".bundled or false)))
+                          pdata.depsExact or {};
+                    }) ]
                   ++
                   (lib.optionals (pdata ? dependencies)
-                    (lib.flatten (serialize pdata.dependencies))))
+                    (lib.flatten
+                      (serialize
+                        (lib.filterAttrs
+                          (pname: data: ! data.bundled or false)
+                          pdata.dependencies)))))
                 inputData;
           in
             lib.filter
@@ -146,7 +157,7 @@
   extraArgs = {
 
     noDev = {
-      description = "Whether to exclude development dependencies";
+      description = "Exclude development dependencies";
       type = "flag";
     };
 
