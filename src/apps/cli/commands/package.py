@@ -45,7 +45,7 @@ class PackageCommand(Command):
       multiple=True
     ),
     option("force", None, "override existing files", flag=True),
-    option("default-nix", None, "create default.nix", flag=True),
+    option("no-default-nix", None, "create default.nix", flag=True),
   ]
 
   def handle(self):
@@ -67,14 +67,21 @@ class PackageCommand(Command):
     if not os.path.isdir(output):
       os.mkdir(output)
     filesToCreate = ['dream-lock.json']
-    if self.option('default-nix'):
-      filesToCreate.append('default.nix')
+
+    existingFiles = set(os.listdir(output))
+    if not self.option('no-default-nix') \
+        and not 'default.nix' in existingFiles:
+      if self.confirm(
+          'Create a default.nix for debugging purposes',
+          default=True):
+        filesToCreate.append('default.nix')
+
     if self.option('force'):
       for f in filesToCreate:
         if os.path.isfile(f):
           os.remove(f)
     else:
-      existingFiles = set(os.listdir(output))
+      
       if any(f in existingFiles for f in filesToCreate):
         print(
           f"output directory {output} already contains a 'default.nix' "
@@ -384,7 +391,7 @@ class PackageCommand(Command):
       sourcePathRelative = os.path.relpath(source, os.path.dirname(outputDefaultNix))
     )
     # with open(f"{dream2nix_src}/apps/cli2/templateDefault.nix") as template:
-    if self.option('default-nix'):
+    if not self.option('no-default-nix'):
       with open(outputDefaultNix, 'w') as defaultNix:
         defaultNix.write(template)
         print(f"Created {output}/default.nix")
