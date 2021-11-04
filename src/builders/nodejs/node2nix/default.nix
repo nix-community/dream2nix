@@ -12,8 +12,7 @@
 }:
 
 {
-  buildSystemAttrs,
-  cyclicDependencies,
+  subsystemAttrs,
   mainPackageName,
   mainPackageVersion,
   getCyclicDependencies,
@@ -28,14 +27,15 @@
 let
   b = builtins;
 
-  getDependencies = name: version:
-    (args.getDependencies name version) ++ (args.getCyclicDependencies name version);
+  getAllDependencies = name: version:
+    (args.getDependencies name version)
+    ++ (args.getCyclicDependencies name version);
 
   mainPackageKey = "${mainPackageName}#${mainPackageVersion}";
 
-  mainPackageDependencies = getDependencies mainPackageName mainPackageVersion;
+  mainPackageDependencies = getAllDependencies mainPackageName mainPackageVersion;
 
-  nodejsVersion = buildSystemAttrs.nodejsVersion;
+  nodejsVersion = subsystemAttrs.nodejsVersion;
 
   nodejs =
     pkgs."nodejs-${builtins.toString nodejsVersion}_x"
@@ -43,45 +43,24 @@ let
 
   node2nixEnv = node2nix nodejs;
 
-  # allSources =
-  #   lib.mapAttrs
-  #     (packageName: versions:
-  #       lib.genAttrs versions
-  #         (version: {
-  #           inherit packageName version;
-  #           name = utils.sanitizeDerivationName packageName;
-  #           src = getSource packageName version;
-  #           dependencies =
-  #             # b.trace "current package: ${packageName}#${version}"
-  #             lib.forEach
-  #               (lib.filter
-  #                 (dep: (! builtins.elem dep mainPackageDependencies))
-  #                 (getDependencies packageName version))
-  #               (dep:
-  #                 # b.trace "accessing allSources.${dep.name}.${dep.version}"
-  #                 b.trace "${dep.name}#${dep.version}"
-  #                 allSources."${dep.name}"."${dep.version}"
-  #               );
-  #         }))
-  #     packageVersions;
-
   makeSource = packageName: version: prevDeps:
+    let
+      depsFiltered =
+        (lib.filter
+          (dep:
+            ! b.elem dep prevDeps)
+          (getAllDependencies packageName version));
+      parentDeps =
+        prevDeps ++ depsFiltered;
+    in
     rec {
       inherit packageName version;
       name = utils.sanitizeDerivationName packageName;
       src = getSource packageName version;
       dependencies =
-        let
-          parentDeps = prevDeps ++ depsFiltered;
-          depsFiltered =
-            (lib.filter
-            (dep:
-              ! b.elem dep prevDeps)
-            (getDependencies packageName version));
-        in
-          lib.forEach
-            depsFiltered
-            (dep: makeSource dep.name dep.version parentDeps);
+        lib.forEach
+          depsFiltered
+          (dep: makeSource dep.name dep.version parentDeps);
     };
   
   node2nixDependencies =
@@ -96,14 +75,6 @@ let
       packageName = mainPackageName;
       version = mainPackageVersion;
       dependencies = node2nixDependencies;
-      # buildInputs ? []
-      # npmFlags ? ""
-      # dontNpmInstall ? false
-      # preRebuild ? ""
-      # dontStrip ? true
-      # unpackPhase ? "true"
-      # buildPhase ? "true"
-      # meta ? {}
       production = true;
       bypassCache = true;
       reconstructLock = true;

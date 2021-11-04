@@ -51,20 +51,20 @@ def main():
       format=format
     )
 
-  # create generic lock
+  # create dream lock
   # This translator is not aware of the exact dependency graph.
   # This restricts us to use a single derivation builder later,
   # which will install all packages at once
   dream_lock = dict(
     sources={},
-    generic={
-      "buildSystem": "python",
+    _generic={
+      "subsystem": "python",
       "mainPackageName": os.environ.get('NAME'),
       "mainPackageVersion": os.environ.get('VERSION'),
 
       "sourcesCombinedHash": None,
     },
-    buildSystem={
+    _subsystem={
       "application": jsonInput['application'],
       "pythonAttr": f"python{sys.version_info.major}{sys.version_info.minor}",
       "sourceFormats":
@@ -72,7 +72,7 @@ def main():
     }
   )
 
-  # populate sources of generic lock
+  # populate sources of dream lock
   for pname, data in packages.items():
     if pname not in dream_lock['sources']:
       dream_lock['sources'][pname] = {}
@@ -82,7 +82,7 @@ def main():
       type='http',
     )
 
-  # dump generic lock to stdout (json)
+  # dump dream lock to $ouputFile
   print(jsonInput['outputFile'])
   with open(jsonInput['outputFile'], 'w') as lock:
     json.dump(dream_lock, lock, indent=2)

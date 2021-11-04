@@ -32,8 +32,8 @@ in
       sourcePathRelative,
     }:
     let
-      mainPackageName = dreamLock.generic.mainPackageName;
-      mainPackageVersion = dreamLock.generic.mainPackageVersion;
+      mainPackageName = dreamLock._generic.mainPackageName;
+      mainPackageVersion = dreamLock._generic.mainPackageVersion;
     in
     ''
       {
@@ -48,7 +48,7 @@ in
       }:
 
       dream2nix.riseAndShine {
-        dreamLock = ./dream.lock;
+        dreamLock = ./dream-lock.json;
         ${lib.optionalString (dreamLock.sources."${mainPackageName}"."${mainPackageVersion}".type == "unknown") ''
           sourceOverrides = oldSources: {
               "${mainPackageName}#${mainPackageVersion}" = ./${sourcePathRelative};

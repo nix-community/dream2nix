@@ -39,6 +39,8 @@ rec {
 
   readTextFile = file: lib.replaceStrings [ "\r\n" ] [ "\n" ] (b.readFile file);
 
+  traceJ = toTrace: eval: b.trace (b.toJSON toTrace) eval;
+
   isFile = path: (builtins.readDir (b.dirOf path))."${b.baseNameOf path}" ==  "regular";
 
   isDir = path: (builtins.readDir (b.dirOf  path))."${b.baseNameOf path}" ==  "directory";
@@ -109,16 +111,8 @@ rec {
   sanitizeDerivationName = name:
     lib.replaceStrings [ "@" "/" ] [ "__at__" "__slash__" ] name;
 
-  keyToNameVersion = key:
-    let
-      split = lib.splitString "#" key;
-      name = b.elemAt split 0;
-      version = b.elemAt split 1;
-    in
-      { inherit name version; };
-
-  nameVersionToKey = nameVersion:
-    "${nameVersion.name}#${nameVersion.version}";
+  nameVersionPair = name: version:
+    { inherit name version; };
 
   # determines if version v1 is greater than version v2
   versionGreater = v1: v2:

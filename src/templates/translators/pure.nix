@@ -21,23 +21,27 @@
     in
     # TODO: produce dream lock like in /specifications/dream-lock-example.json
     rec {
-      sources = ;
 
-      generic = {
-        buildSystem = "nodejs";
+      _generic = {
+        subsystem = "nodejs";
         producedBy = translatorName;
         mainPackageName = "some_name";
         mainPackageVersion = "some_version";
-        dependencyGraph = ;
         sourcesCombinedHash = null;
       };
 
       # build system specific attributes
-      buildSystem = {
+      _subsystem = {
 
         # example
         nodejsVersion = 14;
       };
+      
+      dependencies = {};
+
+      cyclicDependencies = {};
+
+      sources = ;
     };
 
 

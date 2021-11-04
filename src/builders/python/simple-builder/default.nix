@@ -12,19 +12,19 @@
 }:
 
 let
-  python = pkgs."${dreamLock.buildSystem.pythonAttr}";
+  python = pkgs."${dreamLock._subsystem.pythonAttr}";
 
   buildFunc =
-    if dreamLock.buildSystem.application then
+    if dreamLock._subsystem.application then
       python.pkgs.buildPythonApplication
     else
       python.pkgs.buildPythonPackage;
 
-  mainPackageName = dreamLock.generic.mainPackageName;
+  mainPackageName = dreamLock._generic.mainPackageName;
 
   packageName =
     if mainPackageName == null then
-      if dreamLock.buildSystem.application then
+      if dreamLock._subsystem.application then
         "application"
       else
         "environment"

@@ -15,7 +15,7 @@ let
     }@args:
     let
 
-      lock =
+      lockMaybeCompressed =
         if b.isPath dreamLock
             || b.isString dreamLock
             || lib.isDerivation dreamLock then
@@ -23,69 +23,32 @@ let
         else
           dreamLock;
 
-      mainPackageName = lock.generic.mainPackageName;
-      mainPackageVersion = lock.generic.mainPackageVersion;
+      lock =
+        if lockMaybeCompressed.decompressed or false then
+          lockMaybeCompressed
+        else
+          decompressDreamLock lockMaybeCompressed;
 
-      buildSystemAttrs = lock.buildSystem;
+      mainPackageName = lock._generic.mainPackageName;
+      mainPackageVersion = lock._generic.mainPackageVersion;
+
+      subsystemAttrs = lock._subsystem;
 
       sources = lock.sources;
 
-      dependencyGraph = lock.generic.dependencyGraph;
+      dependencyGraph = lock.dependencies;
 
       packageVersions =
-        let
-          allDependencyKeys =
-            lib.attrNames
-              (lib.genAttrs
-                (lib.flatten
-                  ((lib.attrValues dependencyGraph)
-                      ++ (lib.attrNames dependencyGraph)
-                      ++ [ "${mainPackageName}#${mainPackageVersion}" ]))
-                (x: null));
-        in
-          lib.foldl'
-            (packageVersions: dep:
-              packageVersions // {
-                "${dep.name}" = (packageVersions."${dep.name}" or []) ++ [
-                  dep.version
-                ];
-              })
-            {}
-            (b.map (utils.keyToNameVersion) allDependencyKeys);
-
-      cyclicDependencies =
         lib.mapAttrs
-          (name: versions:
-            lib.mapAttrs
-              (version: removedKeys:
-                lib.forEach removedKeys
-                  (rKey: utils.keyToNameVersion rKey))
-              versions)
-          lock.generic.cyclicDependencies or {};
-
-      # Format:
-      # {
-      #   "{name}#{version}": [
-      #     { name=...; version=...; }
-      #     { name=...; version=...; }
-      #   ]
-      # }
-      dependenciesAttrs =
-        lib.mapAttrs
-          (key: deps:
-            lib.forEach deps
-              (dep: utils.keyToNameVersion dep))
+          (name: versions: lib.attrNames versions)
           dependencyGraph;
 
+      cyclicDependencies = lock.cyclicDependencies;
+
       getDependencies = pname: version:
-        if dependenciesAttrs ? "${pname}#${version}" then
-          # filter out cyclicDependencies
-          lib.filter
-            (dep: ! b.elem dep (cyclicDependencies."${pname}"."${version}" or []))
-            dependenciesAttrs."${pname}#${version}"
-        # assume no deps if package not found in dependencyGraph
-        else
-          [];
+        b.filter
+          (dep: ! b.elem dep cyclicDependencies."${pname}"."${version}" or [])
+          dependencyGraph."${pname}"."${version}" or [];
       
       getCyclicDependencies = pname: version:
         cyclicDependencies."${pname}"."${version}" or [];
@@ -98,8 +61,7 @@ let
           inherit
             mainPackageName
             mainPackageVersion
-            buildSystemAttrs
-            cyclicDependencies
+            subsystemAttrs
             getCyclicDependencies
             getDependencies
             packageVersions
@@ -109,8 +71,8 @@ let
 
   getMainPackageSource = dreamLock:
     dreamLock.sources
-      ."${dreamLock.generic.mainPackageName}"
-      ."${dreamLock.generic.mainPackageVersion}";
+      ."${dreamLock._generic.mainPackageName}"
+      ."${dreamLock._generic.mainPackageVersion}";
 
   getSource = fetchedSources: pname: version:
     let
@@ -141,7 +103,7 @@ let
       
       in
         lock // {
-          generic = lock.generic // {
+          _generic = lock._generic // {
             mainPackageName = name;
             mainPackageVersion = version;
           };
@@ -152,31 +114,123 @@ let
       let
         lock = (readDreamLock { inherit dreamLock; }).lock;
 
-        oldDependencyGraph = lock.generic.dependencyGraph;
+        oldDependencyGraph = lock.dependencies;
 
         newDependencyGraph =
-          lib.mapAttrs
-            (key: deps:
-              let
-                oldDeps = oldDependencyGraph."${key}" or [];
-              in
-                (oldDeps
-                ++
-                lib.filter (dep: ! b.elem dep oldDeps) deps))
-            (oldDependencyGraph // inject);
+          lib.zipAttrsWith
+            (name: versions:
+              lib.zipAttrsWith
+                (version: deps: lib.flatten deps)
+                versions)
+            [
+              oldDependencyGraph
+              inject
+            ];
 
       in
         lib.recursiveUpdate lock {
-          generic.dependencyGraph = newDependencyGraph;
+          dependencies = newDependencyGraph;
         };
+
+    decompressDependencyGraph = compGraph:
+      lib.mapAttrs
+        (name: versions:
+          lib.mapAttrs
+            (version: deps:
+              map
+                (dep: {
+                  name = b.elemAt dep 0;
+                  version = b.elemAt dep 1;
+                })
+                deps)
+            versions)
+          compGraph;
+
+    compressDependencyGraph = decompGraph:
+      lib.mapAttrs
+        (name: versions:
+          lib.mapAttrs
+            (version: deps: map ( dep: [ dep.name dep.version ]) deps)
+            versions)
+        decompGraph;
+
+    decompressDreamLock = comp:
+      let
+        dependencyGraphDecomp =
+          decompressDependencyGraph (comp.dependencies or {});
+
+        cyclicDependencies =
+          decompressDependencyGraph (comp.cyclicDependencies or {});
+
+        emptyDependencyGraph =
+          lib.mapAttrs
+            (name: versions:
+              lib.mapAttrs
+                (version: source: [])
+                versions)
+            comp.sources;
+
+        dependencyGraph =
+          lib.recursiveUpdate
+            emptyDependencyGraph
+            dependencyGraphDecomp;
+
+      in
+        comp // {
+          decompressed = true;
+          cyclicDependencies = cyclicDependencies;
+          dependencies = dependencyGraph;
+        };
+
+    compressDreamLock = uncomp:
+      let
+        dependencyGraphComp =
+          compressDependencyGraph
+            uncomp.dependencies;
+
+        cyclicDependencies =
+          compressDependencyGraph
+            uncomp.cyclicDependencies;
+
+        dependencyGraph =
+          lib.filterAttrs
+            (name: versions: versions != {})
+            (lib.mapAttrs
+              (name: versions:
+                lib.filterAttrs
+                  (version: deps: deps != [])
+                  versions)
+              dependencyGraphComp);
+      in
+      (b.removeAttrs uncomp [ "decompressed" ]) // {
+        inherit cyclicDependencies;
+        dependencies = dependencyGraph;
+      };
+
+    toJSON = dreamLock:
+      let
+        lock =
+          if dreamLock.decompressed or false then
+            compressDreamLock dreamLock
+          else
+            dreamLock;
+
+        json = b.toJSON lock;
+
+      in
+        json;
 
 in
   {
     inherit
+      compressDreamLock
+      decompressDreamLock
+      decompressDependencyGraph
       getMainPackageSource
       getSource
       getSubDreamLock
       readDreamLock
       injectDependencies
+      toJSON
     ;
   }

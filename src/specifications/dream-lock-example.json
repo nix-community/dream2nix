@@ -1,24 +1,28 @@
 {
-  "generic": {
-    "buildSystem": "python",
+  "_generic": {
+    "_subsystem": "python",
     "translatedBy": "python.impure.pip",
     "translatorArgs": "",
     "mainPackageName": "requests",
-    "mainPackageVersion": "1.2.3",
-    "removedDependencies": true,
-    "dependencyGraph": {
-      "requests": [
-        "certifi"
-      ]
-    }
+    "mainPackageVersion": "1.2.3"
   },
-
-  "buildSystem": {
+  
+  "_subsystem": {
     "pythonAttr": "python38",
     "sourceFormats": {
       "requests": "sdist",
       "certifi": "wheel"
     }
+  },
+  
+  "cyclicDependencies": {
+    
+  },
+  
+  "dependencies": {
+    "requests": [
+      "certifi"
+    ]
   },
 
   "sources": {

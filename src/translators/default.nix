@@ -39,7 +39,7 @@ let
       };
       
 
-  buildSystems = utils.dirNames ./.;
+  subsystems = utils.dirNames ./.;
 
   translatorTypes = [ "impure" "ifd" "pure" ];
 
@@ -57,19 +57,19 @@ let
           outputFile=$(jq '.outputFile' -c -r $jsonInputFile)
 
           nix eval --show-trace --impure --raw --expr "
-            builtins.toJSON (
               let
+                dream2nix = import ${dream2nixWithExternals} {};
                 dreamLock = 
-                  (import ${dream2nixWithExternals} {}).translators.translators.${
+                  dream2nix.translators.translators.${
                     lib.concatStringsSep "." translatorAttrPath
                   }.translate 
                     (builtins.fromJSON (builtins.readFile '''$1'''));
               in
-                # don't use nix to detect cycles, this will be more efficient in python
-                dreamLock // {
-                  generic = builtins.removeAttrs dreamLock.generic [ \"cyclicDependencies\" ];
-                }
-            )
+                dream2nix.utils.dreamLock.toJSON
+                  # don't use nix to detect cycles, this will be more efficient in python
+                  (dreamLock // {
+                    _generic = builtins.removeAttrs dreamLock._generic [ \"cyclicDependencies\" ];
+                  })
           " | jq > $outputFile
         '';
     in

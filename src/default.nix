@@ -101,20 +101,20 @@ let
         cp -r ${externalDir}/* $out/external/
       '';
 
-  # automatically find a suitable builder for a given generic lock
+  # automatically find a suitable builder for a given dream lock
   findBuilder = dreamLock:
     let
-      buildSystem = dreamLock.generic.buildSystem;
+      subsystem = dreamLock._generic.subsystem;
     in
-      if ! builders ? "${buildSystem}" then
-        throw "Could not find any builder for subsystem '${buildSystem}'"
+      if ! builders ? "${subsystem}" then
+        throw "Could not find any builder for subsystem '${subsystem}'"
       else
-        builders."${buildSystem}".default;
+        builders."${subsystem}".default;
 
 
   # detect if granular or combined fetching must be used
   findFetcher = dreamLock:
-      if null != dreamLock.generic.sourcesCombinedHash then
+      if null != dreamLock._generic.sourcesCombinedHash then
         fetchers.combinedFetcher
       else
         fetchers.defaultFetcher;
@@ -127,7 +127,7 @@ let
       extract ? false,
     }@args:
     let
-      # if generic lock is a file, read and parse it
+      # if dream lock is a file, read and parse it
       dreamLock' = (utils.readDreamLock { inherit dreamLock; }).lock;
 
       fetcher =
@@ -137,10 +137,10 @@ let
           args.fetcher;
 
       fetched = fetcher {
-        mainPackageName = dreamLock.generic.mainPackageName;
-        mainPackageVersion = dreamLock.generic.mainPackageVersion;
+        mainPackageName = dreamLock._generic.mainPackageName;
+        mainPackageVersion = dreamLock._generic.mainPackageVersion;
         sources = dreamLock'.sources;
-        sourcesCombinedHash = dreamLock'.generic.sourcesCombinedHash;
+        sourcesCombinedHash = dreamLock'._generic.sourcesCombinedHash;
       };
 
       fetchedSources = fetched.fetchedSources;
@@ -194,7 +194,7 @@ let
         });
 
       dreamLock = lib.recursiveUpdate dreamLock' {
-        sources."${dreamLock'.generic.mainPackageName}"."${dreamLock'.generic.mainPackageVersion}" = {
+        sources."${dreamLock'._generic.mainPackageName}"."${dreamLock'._generic.mainPackageVersion}" = {
           type = "path";
           path = "${source}";
         };
@@ -231,8 +231,8 @@ let
             builder,
             name,
             version,
-            inject,
-          }@args2:
+            inject ? {},
+          }:
           let
             subDreamLockLoaded =
               utils.readDreamLock {
@@ -255,8 +255,7 @@ let
           ;
 
           inherit (dreamLockInterface)
-            buildSystemAttrs
-            cyclicDependencies
+            subsystemAttrs
             getDependencies
             getCyclicDependencies
             mainPackageName
@@ -272,7 +271,7 @@ let
         outputs;
 
 
-  # produce outputs for a dream.lock or a source
+  # produce outputs for a dream-lock or a source
   riseAndShine = 
     {
       dreamLock ? null,
@@ -327,16 +326,17 @@ let
         inherit
           dreamLock
           fetchedSources
-          inject
           sourceOverrides
         ;
         builder = builder';
         builderArgs = (args.builderArgs or {}) // {
           packageOverrides =
             lib.recursiveUpdate
-              (dreamOverrides."${dreamLock.generic.buildSystem}" or {})
+              (dreamOverrides."${dreamLock._generic.subsystem}" or {})
               (args.packageOverrides or {});
         };
+        inject =
+          utils.dreamLock.decompressDependencyGraph args.inject or {};
       };
 
       # Makes the packages tree compatible with flakes schema.
