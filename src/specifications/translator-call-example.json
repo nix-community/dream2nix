@@ -9,6 +9,6 @@
   ],
 
   "outputFile": [
-    "./a/b/c/dream.lock"
+    "./a/b/c/dream-lock.json"
   ]
 }

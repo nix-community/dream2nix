@@ -271,7 +271,7 @@ let
         outputs;
 
 
-  # produce outputs for a dream.lock or a source
+  # produce outputs for a dream-lock or a source
   riseAndShine = 
     {
       dreamLock ? null,

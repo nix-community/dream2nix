@@ -48,7 +48,7 @@ in
       }:
 
       dream2nix.riseAndShine {
-        dreamLock = ./dream.lock;
+        dreamLock = ./dream-lock.json;
         ${lib.optionalString (dreamLock.sources."${mainPackageName}"."${mainPackageVersion}".type == "unknown") ''
           sourceOverrides = oldSources: {
               "${mainPackageName}#${mainPackageVersion}" = ./${sourcePathRelative};

@@ -17,7 +17,7 @@ class UpdateCommand(Command):
   name = "update"
 
   options = [
-    option("dream-lock", None, "dream.lock file or its parent directory", flag=False, value_required=True),
+    option("dream-lock", None, "dream-lock.json file or its parent directory", flag=False, value_required=True),
     option("updater", None, "name of the updater module to use", flag=False),
     option("new-version", None, "new package version", flag=False),
   ]
@@ -27,8 +27,8 @@ class UpdateCommand(Command):
       self.line(f"\n{self.description}\n")
 
     dreamLockFile = os.path.abspath(self.option("dream-lock"))
-    if not dreamLockFile.endswith('dream.lock'):
-      dreamLockFile = os.path.abspath(dreamLockFile + "/dream.lock")
+    if not dreamLockFile.endswith('dream-lock.json'):
+      dreamLockFile = os.path.abspath(dreamLockFile + "/dream-lock.json")
 
     # parse dream lock
     with open(dreamLockFile) as f:
@@ -68,7 +68,7 @@ class UpdateCommand(Command):
       newVersion=version,
     )
     lock['sources'][mainPackageName][mainPackageVersion] = updatedSourceSpec
-    with tempfile.NamedTemporaryFile("w", suffix="dream.lock") as tmpDreamLock:
+    with tempfile.NamedTemporaryFile("w", suffix="dream-lock.json") as tmpDreamLock:
       json.dump(lock, tmpDreamLock, indent=2)
       tmpDreamLock.seek(0)  # flushes write cache
       sp.run(

@@ -29,7 +29,7 @@ class PackageCommand(Command):
       multiple=False
     ),
     option("translator", None, "which translator to use", flag=False),
-    option("output", None, "output file/directory for the dream.lock", flag=False),
+    option("output", None, "output file/directory for the dream-lock.json", flag=False),
     option(
       "combined",
       None,
@@ -66,7 +66,7 @@ class PackageCommand(Command):
       output = './.'
     if not os.path.isdir(output):
       os.mkdir(output)
-    filesToCreate = ['dream.lock']
+    filesToCreate = ['dream-lock.json']
     if self.option('default-nix'):
       filesToCreate.append('default.nix')
     if self.option('force'):
@@ -78,12 +78,12 @@ class PackageCommand(Command):
       if any(f in existingFiles for f in filesToCreate):
         print(
           f"output directory {output} already contains a 'default.nix' "
-          "or 'dream.lock'. Delete first, or user '--force'.",
+          "or 'dream-lock.json'. Delete first, or user '--force'.",
           file=sys.stderr,
         )
         exit(1)
     output = os.path.realpath(output)
-    outputDreamLock = f"{output}/dream.lock"
+    outputDreamLock = f"{output}/dream-lock.json"
     outputDefaultNix = f"{output}/default.nix"
 
     # verify source
@@ -111,9 +111,9 @@ class PackageCommand(Command):
         print(f"Input source '{source}' does not exist", file=sys.stdout)
         exit(1)
       source = os.path.realpath(source)
-      # handle source from dream.lock
-      if source.endswith('dream.lock'):
-        print(f"fetching source defined via existing dream.lock")
+      # handle source from dream-lock.json
+      if source.endswith('dream-lock.json'):
+        print(f"fetching source defined via existing dream-lock.json")
         with open(source) as f:
           sourceDreamLock = json.load(f)
         sourceMainPackageName = sourceDreamLock['_generic']['mainPackageName']
@@ -255,7 +255,7 @@ class PackageCommand(Command):
 
     # raise error if output wasn't produced
     if not os.path.isfile(outputDreamLock):
-      raise Exception(f"Translator failed to create dream.lock")
+      raise Exception(f"Translator failed to create dream-lock.json")
 
     # read produced lock file
     with open(outputDreamLock) as f:
@@ -366,13 +366,13 @@ class PackageCommand(Command):
       # store the hash in the lock
       lock['_generic']['sourcesCombinedHash'] = hash
 
-    # re-write dream.lock
+    # re-write dream-lock.json
     checkLockJSON(lock)
     lockStr = json.dumps(lock, indent=2, sort_keys = True)
     lockStr = lockStr\
-      .replace("[\n            ", "[ ")\
-      .replace("\"\n          ]", "\" ]")\
-      .replace(",\n            ", ", ")
+      .replace("[\n          ", "[ ")\
+      .replace("\"\n        ]", "\" ]")\
+      .replace(",\n          ", ", ")
     with open(outputDreamLock, 'w') as f:
       f.write(lockStr)
 
@@ -389,4 +389,4 @@ class PackageCommand(Command):
         defaultNix.write(template)
         print(f"Created {output}/default.nix")
 
-    print(f"Created {output}/dream.lock")
+    print(f"Created {output}/dream-lock.json")
