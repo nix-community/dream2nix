@@ -120,7 +120,7 @@ let
           lib.zipAttrsWith
             (name: versions:
               lib.zipAttrsWith
-                (version: deps: lib.flatten deps)
+                (version: deps: lib.unique (lib.flatten deps))
                 versions)
             [
               oldDependencyGraph
