@@ -254,6 +254,8 @@ let
               fi
             done
 
+            python ${./symlink-deps.py}
+
             export NODE_PATH="$NODE_PATH:$nodeModules/$packageName/node_modules"
 
             export HOME=$TMPDIR

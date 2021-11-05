@@ -152,4 +152,8 @@ rec {
         (v1: v2: versionGreater v1 v2)
         versions);
 
+  # like nixpkgs recursiveUpdateUntil, but the depth of the 
+  recursiveUpdateUntilDepth = depth: lhs: rhs:
+    lib.recursiveUpdateUntil (path: l: r: (b.length path) > depth) lhs rhs;
+
 }

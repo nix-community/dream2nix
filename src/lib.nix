@@ -8,8 +8,17 @@
 
   # (if called impurely ./default.nix will handle externals and overrides)
   externalSources ? null,
-  overridesDir ? null,
-}:
+
+  # dream2nix overrides
+  overridesDirs ?
+     # if called via CLI, load externals via env
+    if builtins ? getEnv && builtins.getEnv "d2nOverridesDirs" != "" then
+      lib.splitString ":" (builtins.getEnv "d2nOverridesDirs")
+    # load from default directory
+    else
+      [ ./overrides ],
+
+}@args:
 
 let
 
@@ -62,9 +71,54 @@ let
         devShell."${system}" = outputs.devShell;
       });
 
-in
+  init =
+    {
+      pkgs ? null,
+      systems ? [],
+      overridesDirs ? [],
+    }@argsInit:
+    let
 
-{
+      overridesDirs' = args.overridesDirs ++ argsInit.overridesDirs or [];
+
+      allPkgs = makeNixpkgs pkgs systems;
+
+      dream2nixFor =
+        lib.mapAttrs
+          (system: pkgs:
+            import ./default.nix
+              (
+                {
+                  inherit pkgs;
+                  overridesDirs = overridesDirs';
+                }
+                // (lib.optionalAttrs (externalSources != null) {
+                  inherit externalSources;
+                })
+              ))
+          allPkgs;
+    in
+      {
+        riseAndShine = riseAndShineArgs:
+          let
+            allBuilderOutputs =
+              lib.mapAttrs
+                (system: pkgs:
+                  dream2nixFor."${system}".riseAndShine riseAndShineArgs)
+                allPkgs;
+
+            flakifiedOutputs =
+              lib.mapAttrsToList
+                (system: outputs: flakifyBuilderOutputs system outputs)
+                allBuilderOutputs;
+
+          in
+            b.foldl'
+              (allOutputs: output: lib.recursiveUpdate allOutputs output)
+              {}
+              flakifiedOutputs;
+      };
+
   riseAndShine = 
     {
       pkgs ? null,
@@ -85,8 +139,8 @@ in
               // (lib.optionalAttrs (externalSources != null) {
                 inherit externalSources;
               })
-              // (lib.optionalAttrs (overridesDir != null) {
-                inherit overridesDir;
+              // (lib.optionalAttrs (overridesDirs != null) {
+                inherit overridesDirs;
               })))
           allPkgs;
 
@@ -106,4 +160,8 @@ in
         (allOutputs: output: lib.recursiveUpdate allOutputs output)
         {}
         flakifiedOutputs;
+
+in
+{
+  inherit init riseAndShine;
 }

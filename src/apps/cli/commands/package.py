@@ -391,7 +391,7 @@ class PackageCommand(Command):
       sourcePathRelative = os.path.relpath(source, os.path.dirname(outputDefaultNix))
     )
     # with open(f"{dream2nix_src}/apps/cli2/templateDefault.nix") as template:
-    if not self.option('no-default-nix'):
+    if 'default.nix' in filesToCreate:
       with open(outputDefaultNix, 'w') as defaultNix:
         defaultNix.write(template)
         print(f"Created {output}/default.nix")

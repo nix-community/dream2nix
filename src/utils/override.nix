@@ -1,10 +1,27 @@
 {
   lib,
+
+  # dream2nix
+  utils,
   ...
 }:
 let
 
   b = builtins;
+
+  loadOverridesDirs = overridesDirs: pkgs:
+    let
+      loadOverrides = dir:
+        lib.genAttrs (utils.dirNames dir) (name:
+          import (dir + "/${name}") {
+            inherit lib pkgs;
+          });
+    in
+      b.foldl'
+        (loaded: nextDir:
+          utils.recursiveUpdateUntilDepth 3 loaded (loadOverrides nextDir))
+        {}
+        overridesDirs;
 
   throwErrorUnclearAttributeOverride = pname: overrideName: attrName:
     throw ''
@@ -44,10 +61,10 @@ let
 
         # if condition is unset, it will be assumed true
         evalCondition = condOverride: pkg:
-          if condOverride ? _condition then
-            condOverride._condition pkg
-          else
-            true;
+            if condOverride ? _condition then
+              condOverride._condition pkg
+            else
+              true;
 
         # filter the overrides by the package name and conditions
         overridesToApply =
@@ -151,5 +168,5 @@ let
 
 in
 {
-  inherit applyOverridesToPackage;
+  inherit applyOverridesToPackage loadOverridesDirs;
 }

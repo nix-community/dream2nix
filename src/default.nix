@@ -28,13 +28,13 @@
       ./external,
 
   # dream2nix overrides
-  overridesDir ?
+  overridesDirs ?
      # if called via CLI, load externals via env
-    if builtins ? getEnv && builtins.getEnv "d2nOverridesDir" != "" then
-      builtins.getEnv "d2nOverridesDir"
+    if builtins ? getEnv && builtins.getEnv "d2nOverridesDirs" != "" then
+      lib.splitString ":" (builtins.getEnv "d2nOverridesDirs")
     # load from default directory
     else
-      ./overrides,
+      [ ./overrides ],
 }:
 
 let
@@ -75,18 +75,20 @@ let
   translators = callPackageDream ./translators {};
 
   externals = {
-    node2nix = nodejs: pkgs.callPackage "${externalSources.node2nix}/nix/node-env.nix" { inherit nodejs; };
+    node2nix = nodejs:
+      pkgs.callPackage "${externalSources.node2nix}/nix/node-env.nix" {
+        inherit nodejs;
+      };
     nix-parsec = rec {
-      lexer = import "${externalSources.nix-parsec}/lexer.nix" { inherit parsec; };
+      lexer = import "${externalSources.nix-parsec}/lexer.nix" {
+        inherit parsec;
+      };
       parsec = import "${externalSources.nix-parsec}/parsec.nix";
     };
   };
 
-  dreamOverrides = lib.genAttrs (utils.dirNames overridesDir) (name:
-    import (overridesDir + "/${name}") {
-      inherit lib pkgs;
-    }
-  );
+  dreamOverrides =
+    utils.loadOverridesDirs overridesDirs pkgs;
 
   # the location of the dream2nix framework for self references (update scripts, etc.)
   dream2nixWithExternals =

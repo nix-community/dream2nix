@@ -6,7 +6,10 @@
   ...
 }:
 rec {
-  apps = { inherit cli contribute install; };
+  apps = {
+    inherit cli contribute install;
+    dream2nix = cli;
+  };
 
   # the unified translator cli
   cli = callPackageDream (import ./cli) {};
