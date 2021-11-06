@@ -15,6 +15,8 @@ let
         lib.genAttrs (utils.dirNames dir) (name:
           import (dir + "/${name}") {
             inherit lib pkgs;
+            satisfiesSemver = constraint: pkg:
+              utils.satisfiesSemver pkg.version constraint;
           });
     in
       b.foldl'
@@ -69,13 +71,14 @@ let
         # filter the overrides by the package name and conditions
         overridesToApply =
           let
-            regexOverrides =
-              lib.filterAttrs
-                (name: data:
-                  lib.hasPrefix "^" name
-                  &&
-                  b.match name pname != null)
-                conditionalOverrides;
+            # TODO: figure out if regex names will be useful
+            regexOverrides = {};
+              # lib.filterAttrs
+              #   (name: data:
+              #     lib.hasPrefix "^" name
+              #     &&
+              #     b.match name pname != null)
+              #   conditionalOverrides;
 
             overridesForPackage =
               b.foldl'
@@ -103,6 +106,19 @@ let
         # the condition is not evaluated anymore here
         applyOneOverride = pkg: condOverride:
           let
+            base_derivation =
+              if condOverride ? _replace then
+                if lib.isFunction condOverride._replace then
+                  condOverride._replace pkg
+                else if lib.isDerivation condOverride._replace then
+                  condOverride._replace
+                else
+                  throw
+                    ("override attr ${pname}.${condOverride._name}._replace"
+                    + " must either be a derivation or a function")
+              else
+                pkg;
+
             overrideFuncs =
               lib.mapAttrsToList
                 (funcName: func: { inherit funcName func; })
@@ -115,7 +131,7 @@ let
                     (funcName: func: lib.attrNames (lib.functionArgs func))
                     (lib.filterAttrs
                       (funcName: func: lib.hasPrefix "override" funcName)
-                      pkg);
+                      base_derivation);
 
                 getOverrideFuncNameForAttrName = attrName:
                   let
@@ -157,7 +173,7 @@ let
                       (attrName: functionOrValue:
                         applySingleAttributeOverride old."${attrName}" functionOrValue)
                       updateAttrsFuncs))
-              pkg
+              base_derivation
               (overrideFuncs ++ singleArgOverrideFuncs);
       in
         # apply the overrides to the given pkg

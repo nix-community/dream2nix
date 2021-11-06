@@ -12,9 +12,19 @@
 
     # required for builder nodejs/node2nix
     node2nix = { url = "github:svanderburg/node2nix"; flake = false; };
+
+    # required for utils.satisfiesSemver
+    poetry2nix = { url = "github:nix-community/poetry2nix/1.21.0"; flake = false; };
   };
 
-  outputs = { self, mach-nix, nix-parsec, nixpkgs, node2nix, }@inp:
+  outputs = {
+    self,
+    mach-nix,
+    nix-parsec,
+    nixpkgs,
+    node2nix,
+    poetry2nix,
+  }@inp:
     let
 
       b = builtins;
@@ -46,6 +56,11 @@
         nix-parsec = [
           "parsec.nix"
           "lexer.nix"
+          "LICENSE"
+        ];
+        poetry2nix = [
+          "semver.nix"
+          "LICENSE"
         ];
       };
 

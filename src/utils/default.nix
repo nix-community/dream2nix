@@ -9,6 +9,7 @@
 
   # dream2nix inputs
   callPackageDream,
+  externalSources,
   ...
 }:
 let
@@ -22,6 +23,16 @@ let
   parseUtils = callPackageDream ./parsing.nix {};
 
   translatorUtils = callPackageDream ./translator.nix {};
+
+  poetry2nixSemver = import "${externalSources.poetry2nix}/semver.nix" {
+    inherit lib;
+    # copied from poetry2nix
+    ireplace = idx: value: list: (
+      lib.genList
+        (i: if i == idx then value else (b.elemAt list i))
+        (b.length list)
+    );
+  };
 
 in
 
@@ -151,6 +162,8 @@ rec {
       (lib.sort
         (v1: v2: versionGreater v1 v2)
         versions);
+
+  satisfiesSemver = poetry2nixSemver.satisfiesSemver;
 
   # like nixpkgs recursiveUpdateUntil, but the depth of the 
   recursiveUpdateUntilDepth = depth: lhs: rhs:
