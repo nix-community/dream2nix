@@ -6,23 +6,25 @@
   nixpkgsSrc ? <nixpkgs>,
   lib ? (import nixpkgsSrc {}).lib,
 
-  # (if called impurely ./default.nix will handle externals and overrides)
-  externalSources ? null,
+  # default to empty dream2nix config
+  config ? {},
 
-  # dream2nix overrides
-  overridesDirs ?
-     # if called via CLI, load externals via env
-    if builtins ? getEnv && builtins.getEnv "d2nOverridesDirs" != "" then
-      lib.splitString ":" (builtins.getEnv "d2nOverridesDirs")
-    # load from default directory
-    else
-      [ ./overrides ],
+  externalSources,
+
+  externalPaths,
 
 }@args:
 
 let
 
   b = builtins;
+
+  config = (import ./utils/config.nix).loadConfig args.config or {};
+
+  dream2nixForSystem = system: pkgs:
+    import ./default.nix
+      { inherit config externalPaths externalSources pkgs; };
+
 
   # TODO: design output schema for cross compiled packages
   makePkgsKey = pkgs:
@@ -75,28 +77,18 @@ let
     {
       pkgs ? null,
       systems ? [],
-      overridesDirs ? [],
+      config ? {},
     }@argsInit:
     let
 
-      overridesDirs' = args.overridesDirs ++ argsInit.overridesDirs or [];
+      overridesDirs' = config.overridesDirs;
 
       allPkgs = makeNixpkgs pkgs systems;
 
-      dream2nixFor =
-        lib.mapAttrs
-          (system: pkgs:
-            import ./default.nix
-              (
-                {
-                  inherit pkgs;
-                  overridesDirs = overridesDirs';
-                }
-                // (lib.optionalAttrs (externalSources != null) {
-                  inherit externalSources;
-                })
-              ))
-          allPkgs;
+      forAllSystems = f:
+        lib.mapAttrs f allPkgs;
+
+      dream2nixFor = forAllSystems dream2nixForSystem;
     in
       {
         riseAndShine = riseAndShineArgs:
@@ -117,6 +109,17 @@ let
               (allOutputs: output: lib.recursiveUpdate allOutputs output)
               {}
               flakifiedOutputs;
+
+        apps =
+          forAllSystems
+            (system: pkgs:
+              dream2nixFor."${system}".apps.flakeApps);
+              
+        defaultApp =
+          forAllSystems
+            (system: pkgs:
+              dream2nixFor."${system}".apps.flakeApps.dream2nix);
+        
       };
 
   riseAndShine = 
@@ -132,17 +135,7 @@ let
       allPkgs = makeNixpkgs pkgs systems;
 
       dream2nixFor =
-        lib.mapAttrs
-          (system: pkgs:
-            import ./default.nix
-              ({ inherit pkgs; }
-              // (lib.optionalAttrs (externalSources != null) {
-                inherit externalSources;
-              })
-              // (lib.optionalAttrs (overridesDirs != null) {
-                inherit overridesDirs;
-              })))
-          allPkgs;
+        lib.mapAttrs dream2nixForSystem allPkgs;
 
       allBuilderOutputs =
         lib.mapAttrs

@@ -12,39 +12,51 @@
     ${pkgs.nixUnstable}/bin/nix --option experimental-features "nix-command flakes" "$@"
   '',
 
+  # default to empty dream2nix config
+  config ?
+    # if called via CLI, load cnfig via env
+    if builtins ? getEnv && builtins.getEnv "d2nConfigFile" != "" then
+      builtins.toPath (builtins.getEnv "d2nConfigFile")
+    # load from default directory
+    else
+      {},
+
   # dependencies of dream2nix
   externalSources ?
     lib.genAttrs
       (lib.attrNames (builtins.readDir externalDir))
       (inputName: "${externalDir}/${inputName}"),
 
+  # will be defined if called via flake
+  externalPaths ? null,
+
   # required for non-flake mode
   externalDir ?
+    # if flake is used, construct external dir from flake inputs
+    if externalPaths != null then
+      (import ./utils/external-dir.nix {
+        inherit externalPaths externalSources pkgs;
+      })
     # if called via CLI, load externals via env
-    if builtins ? getEnv && builtins.getEnv "d2nExternalDir" != "" then
+    else if builtins ? getEnv && builtins.getEnv "d2nExternalDir" != "" then
       builtins.getEnv "d2nExternalDir"
     # load from default directory
     else
       ./external,
 
-  # dream2nix overrides
-  overridesDirs ?
-     # if called via CLI, load externals via env
-    if builtins ? getEnv && builtins.getEnv "d2nOverridesDirs" != "" then
-      lib.splitString ":" (builtins.getEnv "d2nOverridesDirs")
-    # load from default directory
-    else
-      [ ./overrides ],
-}:
+}@args:
 
 let
 
   b = builtins;
 
+  config = (import ./utils/config.nix).loadConfig args.config or {};
+
   # like pkgs.callPackage, but includes all the dream2nix modules
   callPackageDream = f: args: pkgs.callPackage f (args // {
     inherit builders;
     inherit callPackageDream;
+    inherit config;
     inherit externals;
     inherit externalSources;
     inherit fetchers;
@@ -56,8 +68,6 @@ let
 
 
   utils = callPackageDream ./utils {};
-
-  config = builtins.fromJSON (builtins.readFile ./config.json);
 
   # apps for CLI and installation
   apps = callPackageDream ./apps {};
@@ -88,7 +98,7 @@ let
   };
 
   dreamOverrides =
-    utils.loadOverridesDirs overridesDirs pkgs;
+    utils.loadOverridesDirs config.overridesDirs pkgs;
 
   # the location of the dream2nix framework for self references (update scripts, etc.)
   dream2nixWithExternals =

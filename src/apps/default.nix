@@ -1,15 +1,29 @@
 {
+  lib,
   pkgs,
 
   callPackageDream,
   translators,
   ...
 }:
+
+let
+  b = builtins;
+in
+
 rec {
   apps = {
     inherit cli contribute install;
     dream2nix = cli;
   };
+
+  flakeApps =
+    lib.mapAttrs (appName: app:
+      {
+        type = "app";
+        program = b.toString app.program;
+      }
+    ) apps;
 
   # the unified translator cli
   cli = callPackageDream (import ./cli) {};
