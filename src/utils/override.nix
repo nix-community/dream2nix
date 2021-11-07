@@ -1,10 +1,29 @@
 {
   lib,
+
+  # dream2nix
+  utils,
   ...
 }:
 let
 
   b = builtins;
+
+  loadOverridesDirs = overridesDirs: pkgs:
+    let
+      loadOverrides = dir:
+        lib.genAttrs (utils.dirNames dir) (name:
+          import (dir + "/${name}") {
+            inherit lib pkgs;
+            satisfiesSemver = constraint: pkg:
+              utils.satisfiesSemver pkg.version constraint;
+          });
+    in
+      b.foldl'
+        (loaded: nextDir:
+          utils.recursiveUpdateUntilDepth 3 loaded (loadOverrides nextDir))
+        {}
+        overridesDirs;
 
   throwErrorUnclearAttributeOverride = pname: overrideName: attrName:
     throw ''
@@ -44,21 +63,22 @@ let
 
         # if condition is unset, it will be assumed true
         evalCondition = condOverride: pkg:
-          if condOverride ? _condition then
-            condOverride._condition pkg
-          else
-            true;
+            if condOverride ? _condition then
+              condOverride._condition pkg
+            else
+              true;
 
         # filter the overrides by the package name and conditions
         overridesToApply =
           let
-            regexOverrides =
-              lib.filterAttrs
-                (name: data:
-                  lib.hasPrefix "^" name
-                  &&
-                  b.match name pname != null)
-                conditionalOverrides;
+            # TODO: figure out if regex names will be useful
+            regexOverrides = {};
+              # lib.filterAttrs
+              #   (name: data:
+              #     lib.hasPrefix "^" name
+              #     &&
+              #     b.match name pname != null)
+              #   conditionalOverrides;
 
             overridesForPackage =
               b.foldl'
@@ -86,6 +106,19 @@ let
         # the condition is not evaluated anymore here
         applyOneOverride = pkg: condOverride:
           let
+            base_derivation =
+              if condOverride ? _replace then
+                if lib.isFunction condOverride._replace then
+                  condOverride._replace pkg
+                else if lib.isDerivation condOverride._replace then
+                  condOverride._replace
+                else
+                  throw
+                    ("override attr ${pname}.${condOverride._name}._replace"
+                    + " must either be a derivation or a function")
+              else
+                pkg;
+
             overrideFuncs =
               lib.mapAttrsToList
                 (funcName: func: { inherit funcName func; })
@@ -98,7 +131,7 @@ let
                     (funcName: func: lib.attrNames (lib.functionArgs func))
                     (lib.filterAttrs
                       (funcName: func: lib.hasPrefix "override" funcName)
-                      pkg);
+                      base_derivation);
 
                 getOverrideFuncNameForAttrName = attrName:
                   let
@@ -140,7 +173,7 @@ let
                       (attrName: functionOrValue:
                         applySingleAttributeOverride old."${attrName}" functionOrValue)
                       updateAttrsFuncs))
-              pkg
+              base_derivation
               (overrideFuncs ++ singleArgOverrideFuncs);
       in
         # apply the overrides to the given pkg
@@ -151,5 +184,5 @@ let
 
 in
 {
-  inherit applyOverridesToPackage;
+  inherit applyOverridesToPackage loadOverridesDirs;
 }

@@ -18,11 +18,11 @@
     "nix-parsec": {
       "flake": false,
       "locked": {
-        "lastModified": 1614150306,
-        "narHash": "sha256-h5fZgIhwvekg5WTNDdrV5EJ4zxXvlSqITmPVuz/OM+w=",
+        "lastModified": 1635533376,
+        "narHash": "sha256-/HrG0UPGnI5VdkhrNrpDiM2+nhdL6lD/bqyGtYv0QDE=",
         "owner": "nprindle",
         "repo": "nix-parsec",
-        "rev": "a28e73fce98227cc46edfdbb8518697c0982e034",
+        "rev": "1bf25dd9c5de1257a1c67de3c81c96d05e8beb5e",
         "type": "github"
       },
       "original": {
@@ -62,12 +62,30 @@
         "type": "github"
       }
     },
+    "poetry2nix": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1632969109,
+        "narHash": "sha256-jPDclkkiAy5m2gGLBlKgH+lQtbF7tL4XxBrbSzw+Ioc=",
+        "owner": "nix-community",
+        "repo": "poetry2nix",
+        "rev": "aee8f04296c39d88155e05d25cfc59dfdd41cc77",
+        "type": "github"
+      },
+      "original": {
+        "owner": "nix-community",
+        "ref": "1.21.0",
+        "repo": "poetry2nix",
+        "type": "github"
+      }
+    },
     "root": {
       "inputs": {
         "mach-nix": "mach-nix",
         "nix-parsec": "nix-parsec",
         "nixpkgs": "nixpkgs",
-        "node2nix": "node2nix"
+        "node2nix": "node2nix",
+        "poetry2nix": "poetry2nix"
       }
     }
   },

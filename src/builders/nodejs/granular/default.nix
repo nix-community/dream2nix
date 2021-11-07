@@ -123,17 +123,11 @@ let
           # prevents running into ulimits
           passAsFile = [ "dependenciesJson" "nodeDeps" ];
 
-          preBuildPhases = [ "d2nPatchPhase" "d2nInstallDependenciesPhase" ];
-
-          preFixupPhases = [ "d2nPostInstallPhase" ];
-
-          # not used by default but can be enabled if needed
-          dontConfigure = true;
-          dontBuild = true;
+          preConfigurePhases = [ "d2nPatchPhase" ];
 
           # can be overridden to define alternative install command
           # (defaults to 'npm run postinstall')
-          installScript = null;
+          buildScript = null;
 
           # python script to modify some metadata to support installation
           # (see comments below on d2nPatchPhase)
@@ -192,9 +186,8 @@ let
           # The python script wich is executed in this phase:
           #   - ensures that the package is compatible to the current system
           #   - ensures the main version in package.json matches the expected
-          #   - deletes "devDependencies" and "peerDependencies" from package.json
-          #     (might block npm install in case npm install is used)
           #   - pins dependency versions in package.json
+          #     (some npm commands might otherwise trigger networking)
           #   - creates symlinks for executables declared in package.json
           # Apart from that:
           #   - Any usage of 'link:' in package.json is replaced with 'file:'
@@ -209,7 +202,7 @@ let
             cat $nodeModules/$packageName/package.json.old | sed 's!link:!file\:!g' > $nodeModules/$packageName/package.json
             rm $nodeModules/$packageName/package.json.old
 
-            # run python script (see commend above):
+            # run python script (see comment above):
             cp package.json package.json.bak
             python $fixPackage \
             || \
@@ -225,11 +218,14 @@ let
           '';
 
           # - links all direct node dependencies into the node_modules directory
-          # - adds executables of direct node dependencies to PATH
+          # - adds executables of direct node module dependencies to PATH
           # - adds the current node module to NODE_PATH
           # - sets HOME=$TMPDIR, as this is required by some npm scripts
           # TODO: don't install dev dependencies. Load into NODE_PATH instead
-          d2nInstallDependenciesPhase = ''
+          # TODO: move all linking to python script, as `ln` calls perform badly
+          configurePhase = ''
+            runHook preConfigure
+
             # symlink dependency packages into node_modules
             for dep in $(cat $nodeDepsPath); do
               # add bin to PATH
@@ -254,34 +250,41 @@ let
               fi
             done
 
+            # symlink sub dependencies as well as this imitates npm better
+            python ${./symlink-deps.py}
+
+            # add dependencies to NODE_PATH
             export NODE_PATH="$NODE_PATH:$nodeModules/$packageName/node_modules"
 
             export HOME=$TMPDIR
+
+            runHook postConfigure
           '';
 
-          # Run the install command which defaults to 'npm run postinstall'.
-          # Allows using custom install command by overriding 'installScript'.
-          installPhase = ''
-            runHook preInstall
+          # Runs the install command which defaults to 'npm run postinstall'.
+          # Allows using custom install command by overriding 'buildScript'.
+          buildPhase = ''
+            runHook preBuild
 
             # execute install command
-            if [ -n "$installScript" ]; then
-              if [ -f "$installScript" ]; then
-                exec $installScript
+            if [ -n "$buildScript" ]; then
+              if [ -f "$buildScript" ]; then
+                exec $buildScript
               else
-                echo "$installScript" | bash
+                echo "$buildScript" | bash
               fi
+            # by default, only for top level packages, `npm run build` is executed
             elif [ -n "$runBuild" ] && [ "$(jq '.scripts.build' ./package.json)" != "null" ]; then
               npm run build
             elif [ "$(jq '.scripts.postinstall' ./package.json)" != "null" ]; then
               npm --production --offline --nodedir=$nodeSources run postinstall
             fi
 
-            runHook postInstall
+            runHook postBuild
           '';
 
           # Symlinks executables and manual pages to correct directories
-          d2nPostInstallPhase = ''
+          installPhase = ''
             
             echo "Symlinking exectuables to /bin"
             if [ -d "$nodeModules/.bin" ]

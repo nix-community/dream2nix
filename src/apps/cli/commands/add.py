@@ -6,30 +6,35 @@ import sys
 import tempfile
 
 import networkx as nx
-from cleo import Command, option
+from cleo import Command, argument, option
 
-from utils import dream2nix_src, checkLockJSON, callNixFunction, buildNixFunction, buildNixAttribute, \
+from utils import config, dream2nix_src, checkLockJSON, callNixFunction, buildNixFunction, buildNixAttribute, \
   list_translators_for_source, strip_hashes_from_lock
 
 
-class PackageCommand(Command):
+class AddCommand(Command):
 
   description = (
-    "Package a software project using nix"
+    f"Add a package to {config['repoName']}"
   )
 
-  name = "package"
+  name = "add"
+
+  arguments = [
+    argument(
+      "source",
+      "source of the package, can be a path, tarball URL, or flake-style spec")
+  ]
 
   options = [
-    option(
-      "source",
-      None,
-      "source of the package, can be a path or flake-like spec",
-      flag=False,
-      multiple=False
-    ),
     option("translator", None, "which translator to use", flag=False),
-    option("output", None, "output file/directory for the dream-lock.json", flag=False),
+    option("target", None, "target file/directory for the dream-lock.json", flag=False),
+    option(
+      "--packages-root",
+      None,
+      "Put package under a new directory inside packages-root",
+      flag=False
+    ),
     option(
       "combined",
       None,
@@ -45,7 +50,7 @@ class PackageCommand(Command):
       multiple=True
     ),
     option("force", None, "override existing files", flag=True),
-    option("default-nix", None, "create default.nix", flag=True),
+    option("no-default-nix", None, "create default.nix", flag=True),
   ]
 
   def handle(self):
@@ -60,40 +65,32 @@ class PackageCommand(Command):
       )
     }
 
-    # ensure output directory
-    output = self.option("output")
-    if not output:
-      output = './.'
-    if not os.path.isdir(output):
-      os.mkdir(output)
-    filesToCreate = ['dream-lock.json']
-    if self.option('default-nix'):
-      filesToCreate.append('default.nix')
-    if self.option('force'):
-      for f in filesToCreate:
-        if os.path.isfile(f):
-          os.remove(f)
+    # ensure packages-root
+    if self.option("packages-root"):
+      packages_root = self.option("packages-root")
+    elif config['packagesDir']:
+      packages_root = config['packagesDir']
     else:
-      existingFiles = set(os.listdir(output))
-      if any(f in existingFiles for f in filesToCreate):
-        print(
-          f"output directory {output} already contains a 'default.nix' "
-          "or 'dream-lock.json'. Delete first, or user '--force'.",
-          file=sys.stderr,
-        )
-        exit(1)
-    output = os.path.realpath(output)
-    outputDreamLock = f"{output}/dream-lock.json"
-    outputDefaultNix = f"{output}/default.nix"
+      packages_root = './.'
+    if not os.path.isdir(packages_root):
+      print(
+        f"Packages direcotry {packages_root} does not exist. Please create.",
+        file = sys.stderr,
+      )
 
     # verify source
-    source = self.option("source")
-    if not source:
+    source = self.argument("source")
+    if not source and not config['packagesDir']:
       source = os.path.realpath('./.')
       print(
         f"Source not specified. Defaulting to current directory: {source}",
         file=sys.stderr,
       )
+    # else:
+    #   print(
+    #     f"Source not specified. Defaulting to current directory: {source}",
+    #     file=sys.stderr,
+    #   )
     # check if source is valid fetcher spec
     sourceSpec = {}
     # handle source shortcuts
@@ -228,38 +225,102 @@ class PackageCommand(Command):
               if specified_extra_args[arg_name]:
                 break
 
-    # arguments for calling the translator nix module
-    translator_input = dict(
-      inputFiles=[],
-      inputDirectories=[source],
-      outputFile=outputDreamLock,
-    )
-    translator_input.update(specified_extra_args)
-
     # build the translator bin
     t = translator
     translator_path = buildNixAttribute(
       f"translators.translators.{t['subsystem']}.{t['type']}.{t['name']}.translateBin"
     )
 
-    # dump translator arguments to json file and execute translator
-    print("\nTranslating upstream metadata")
-    with tempfile.NamedTemporaryFile("w") as input_json_file:
-      json.dump(translator_input, input_json_file, indent=2)
-      input_json_file.seek(0) # flushes write cache
+    # direct outputs of translator to temporary file
+    with tempfile.NamedTemporaryFile("r") as output_temp_file:
 
-      # execute translator
-      sp.run(
-        [f"{translator_path}/bin/run", input_json_file.name]
+      # arguments for calling the translator nix module
+      translator_input = dict(
+        inputFiles=[],
+        inputDirectories=[source],
+        outputFile=output_temp_file.name,
       )
+      translator_input.update(specified_extra_args)
 
-    # raise error if output wasn't produced
-    if not os.path.isfile(outputDreamLock):
-      raise Exception(f"Translator failed to create dream-lock.json")
+      # dump translator arguments to json file and execute translator
+      print("\nTranslating project metadata")
+      with tempfile.NamedTemporaryFile("w") as input_json_file:
+        json.dump(translator_input, input_json_file, indent=2)
+        input_json_file.seek(0) # flushes write cache
 
-    # read produced lock file
-    with open(outputDreamLock) as f:
-      lock = json.load(f)
+        # execute translator
+        sp.run(
+          [f"{translator_path}/bin/run", input_json_file.name]
+        )
+
+      # raise error if output wasn't produced
+      if not output_temp_file.read():
+        raise Exception(f"Translator failed to create dream-lock.json")
+
+      # read produced lock file
+      with open(output_temp_file.name) as f:
+        lock = json.load(f)
+
+
+    # get package name and version from lock
+    mainPackageName = lock['_generic']['mainPackageName']
+    mainPackageVersion = lock['_generic']['mainPackageVersion']
+
+    # calculate output directory
+    mainPackageDirName = mainPackageName.strip('@').replace('/', '-')
+
+    # verify / change main package dir name
+    def update_name(mainPackageDirName):
+      print(f"Current package attribute name is: {mainPackageDirName}")
+      new_name = self.ask(
+        "Specify new attribute name or leave empty to keep current:"
+      )
+      if new_name:
+        return new_name
+      return mainPackageDirName
+
+    mainPackageDirName = update_name(mainPackageDirName)
+
+    if self.option('target'):
+      if self.option('target').startswith('/'):
+        output = self.option('target')
+      else:
+        output = f"{packages_root}/{self.option('target')}"
+    else:
+      output = f"{packages_root}/{mainPackageDirName}"
+
+    # collect files to create
+    filesToCreate = ['dream-lock.json']
+    if not os.path.isdir(output):
+      os.mkdir(output)
+    existingFiles = set(os.listdir(output))
+    if not self.option('no-default-nix')\
+        and not 'default.nix' in existingFiles\
+        and not config['packagesDir']:
+      if self.confirm(
+          'Create a default.nix for debugging purposes',
+          default=True):
+        filesToCreate.append('default.nix')
+
+    # overwrite existing files only if --force is set
+    if self.option('force'):
+      for f in filesToCreate:
+        if os.path.isfile(f):
+          os.remove(f)
+    # raise error if any file exists already
+    else:
+      if any(f in existingFiles for f in filesToCreate):
+        print(
+          f"output directory {output} already contains a 'default.nix' "
+          "or 'dream-lock.json'. Resolve via one of these:\n"
+          "  - use --force to overwrite files\n"
+          "  - use --target to specify another target dir",
+          file=sys.stderr,
+        )
+        exit(1)
+    output = os.path.realpath(output)
+    outputDreamLock = f"{output}/dream-lock.json"
+    outputDefaultNix = f"{output}/default.nix"
 
     # write translator information to lock file
     combined = self.option('combined')
@@ -274,8 +335,6 @@ class PackageCommand(Command):
     ])
 
     # add main package source
-    mainPackageName = lock['_generic']['mainPackageName']
-    mainPackageVersion = lock['_generic']['mainPackageVersion']
     mainSource = sourceSpec.copy()
     if not mainSource:
       mainSource = dict(
@@ -384,7 +443,7 @@ class PackageCommand(Command):
       sourcePathRelative = os.path.relpath(source, os.path.dirname(outputDefaultNix))
     )
     # with open(f"{dream2nix_src}/apps/cli2/templateDefault.nix") as template:
-    if self.option('default-nix'):
+    if 'default.nix' in filesToCreate:
       with open(outputDefaultNix, 'w') as defaultNix:
         defaultNix.write(template)
         print(f"Created {output}/default.nix")

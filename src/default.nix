@@ -9,8 +9,18 @@
 
   # the dream2nix cli depends on some nix 2.4 features
   nix ? pkgs.writeScriptBin "nix" ''
+    #!${pkgs.bash}/bin/bash
     ${pkgs.nixUnstable}/bin/nix --option experimental-features "nix-command flakes" "$@"
   '',
+
+  # default to empty dream2nix config
+  config ?
+    # if called via CLI, load cnfig via env
+    if builtins ? getEnv && builtins.getEnv "d2nConfigFile" != "" then
+      builtins.toPath (builtins.getEnv "d2nConfigFile")
+    # load from default directory
+    else
+      {},
 
   # dependencies of dream2nix
   externalSources ?
@@ -18,33 +28,39 @@
       (lib.attrNames (builtins.readDir externalDir))
       (inputName: "${externalDir}/${inputName}"),
 
+  # will be defined if called via flake
+  externalPaths ? null,
+
   # required for non-flake mode
   externalDir ?
+    # if flake is used, construct external dir from flake inputs
+    if externalPaths != null then
+      (import ./utils/external-dir.nix {
+        inherit externalPaths externalSources pkgs;
+      })
     # if called via CLI, load externals via env
-    if builtins ? getEnv && builtins.getEnv "d2nExternalDir" != "" then
+    else if builtins ? getEnv && builtins.getEnv "d2nExternalDir" != "" then
       builtins.getEnv "d2nExternalDir"
     # load from default directory
     else
       ./external,
 
-  # dream2nix overrides
-  overridesDir ?
-     # if called via CLI, load externals via env
-    if builtins ? getEnv && builtins.getEnv "d2nOverridesDir" != "" then
-      builtins.getEnv "d2nOverridesDir"
-    # load from default directory
-    else
-      ./overrides,
-}:
+}@args:
 
 let
 
   b = builtins;
 
+  config = (import ./utils/config.nix).loadConfig args.config or {};
+
+  configFile = pkgs.writeText "dream2nix-config.json" (b.toJSON config);
+
   # like pkgs.callPackage, but includes all the dream2nix modules
   callPackageDream = f: args: pkgs.callPackage f (args // {
     inherit builders;
     inherit callPackageDream;
+    inherit config;
+    inherit configFile;
     inherit externals;
     inherit externalSources;
     inherit fetchers;
@@ -56,8 +72,6 @@ let
 
 
   utils = callPackageDream ./utils {};
-
-  config = builtins.fromJSON (builtins.readFile ./config.json);
 
   # apps for CLI and installation
   apps = callPackageDream ./apps {};
@@ -75,18 +89,20 @@ let
   translators = callPackageDream ./translators {};
 
   externals = {
-    node2nix = nodejs: pkgs.callPackage "${externalSources.node2nix}/nix/node-env.nix" { inherit nodejs; };
+    node2nix = nodejs:
+      pkgs.callPackage "${externalSources.node2nix}/nix/node-env.nix" {
+        inherit nodejs;
+      };
     nix-parsec = rec {
-      lexer = import "${externalSources.nix-parsec}/lexer.nix" { inherit parsec; };
+      lexer = import "${externalSources.nix-parsec}/lexer.nix" {
+        inherit parsec;
+      };
       parsec = import "${externalSources.nix-parsec}/parsec.nix";
     };
   };
 
-  dreamOverrides = lib.genAttrs (utils.dirNames overridesDir) (name:
-    import (overridesDir + "/${name}") {
-      inherit lib pkgs;
-    }
-  );
+  dreamOverrides =
+    utils.loadOverridesDirs config.overridesDirs pkgs;
 
   # the location of the dream2nix framework for self references (update scripts, etc.)
   dream2nixWithExternals =

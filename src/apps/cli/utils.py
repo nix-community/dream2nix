@@ -8,6 +8,25 @@ from jsonschema import validate
 
 dream2nix_src = os.environ.get("dream2nixSrc")
 
+def find_repo_root():
+  proc = sp.run(
+    ['git', 'rev-parse', '--show-toplevel'],
+    capture_output=True,
+  )
+  if proc.returncode:
+    print(proc.stderr.decode(), file=sys.stderr)
+    print(
+      f"\nProbably not inside git repo {config['repoName']}\n"
+      f"Please clone the repo first.",
+      file=sys.stderr
+    )
+    exit(1)
+  return proc.stdout.decode().strip()
+
+with open(os.environ.get("dream2nixConfig")) as f:
+  config = json.load(f)
+  if config['repoName'] and config ['packagesDir']:
+    config['packagesDir'] = f"{find_repo_root()}/{config['packagesDir']}"
 
 def checkLockJSON(lock):
   lock_schema_raw=open(dream2nix_src+"/specifications/dream-lock-schema.json").read()
