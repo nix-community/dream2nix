@@ -143,25 +143,37 @@
             );
 
       getSourceType = dependencyObject:
-        if lib.hasInfix "@github:" dependencyObject.yarnName
-            || (dependencyObject ? resolved
-                && lib.hasInfix
-                  "codeload.github.com/"
-                  dependencyObject.resolved)
-            || (lib.hasInfix "@git+" dependencyObject.yarnName) then
-          if dependencyObject ? integrity then
-            b.trace (
-              "Warning: Using git despite integrity exists for"
-              + "${getName dependencyObject}"
-            )
+        let
+          dObj = dependencyObject;
+        in
+          if
+            lib.hasInfix "@github:" dObj.yarnName
+
+              || dObj ? resolved
+                  && lib.hasInfix "codeload.github.com/" dObj.resolved
+
+              || lib.hasInfix "@git+" dObj.yarnName
+              
+              # example:
+              # "jest-image-snapshot@https://github.com/machard/jest-image-snapshot#machard-patch-1":
+              #   version "4.2.0"
+              #   resolved "https://github.com/machard/jest-image-snapshot#d087e8683859dba2964b5866a4d1eb02ba64e7b9"
+              || (lib.hasInfix "@https://github.com" dObj.yarnName
+                  && lib.hasPrefix "https://github.com" dObj.resolved) then
+
+            if dObj ? integrity then
+              b.trace (
+                "Warning: Using git despite integrity exists for"
+                + "${getName dObj}"
+              )
+                "git"
+            else
               "git"
+          else if lib.hasInfix "@link:" dObj.yarnName
+              || lib.hasInfix "@file:" dObj.yarnName then
+            "path"
           else
-            "git"
-        else if lib.hasInfix "@link:" dependencyObject.yarnName
-            || lib.hasInfix "@file:" dependencyObject.yarnName then
-          "path"
-        else
-          "http";
+            "http";
 
       
       sourceConstructors = {
@@ -175,13 +187,30 @@
               githubUrlInfos = lib.splitString "/" dependencyObject.resolved;
               owner = lib.elemAt githubUrlInfos 3;
               repo = lib.elemAt githubUrlInfos 4;
-              rev = lib.elemAt githubUrlInfos 6;
-              version = dependencyObject.version;
             in
-            {
-              url = "https://github.com/${owner}/${repo}";
-              inherit rev version;
-            };
+              if b.length githubUrlInfos == 7 then
+                let
+                  rev = lib.elemAt githubUrlInfos 6;
+                  version = dependencyObject.version;
+                in
+                  {
+                    url = "https://github.com/${owner}/${repo}";
+                    inherit rev version;
+                  }
+              else if b.length githubUrlInfos == 5 then
+                let
+                  urlAndRev = lib.splitString "#" dependencyObject.resolved;
+                in
+                  {
+                    url = lib.head urlAndRev;
+                    rev = lib.last urlAndRev;
+                  }
+              else
+                throw (
+                  "Unable to parse git dependency for: "
+                  + "${getName dependencyObject}#${getVersion dependencyObject}"
+                );
+
 
         path = dependencyObject:
           if lib.hasInfix "@link:" dependencyObject.yarnName then
