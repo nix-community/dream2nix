@@ -1,4 +1,4 @@
-The override system plays an important role when packaging software with drem2nix. Overrides are the only way to express package specific logic in dream2nix. This serves the purpose of strictly separating:
+The override system plays an important role when packaging software with dream2nix. Overrides are the only way to express package specific logic in dream2nix. This serves the purpose of strictly separating:
 ```
   - generic logic     (builders)
   - specific logic    (overrides)
