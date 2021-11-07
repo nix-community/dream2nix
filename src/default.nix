@@ -9,6 +9,7 @@
 
   # the dream2nix cli depends on some nix 2.4 features
   nix ? pkgs.writeScriptBin "nix" ''
+    #!${pkgs.bash}/bin/bash
     ${pkgs.nixUnstable}/bin/nix --option experimental-features "nix-command flakes" "$@"
   '',
 
@@ -52,11 +53,14 @@ let
 
   config = (import ./utils/config.nix).loadConfig args.config or {};
 
+  configFile = pkgs.writeText "dream2nix-config.json" (b.toJSON config);
+
   # like pkgs.callPackage, but includes all the dream2nix modules
   callPackageDream = f: args: pkgs.callPackage f (args // {
     inherit builders;
     inherit callPackageDream;
     inherit config;
+    inherit configFile;
     inherit externals;
     inherit externalSources;
     inherit fetchers;

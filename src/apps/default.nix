@@ -2,6 +2,7 @@
   lib,
   pkgs,
 
+  # dream2nix
   callPackageDream,
   translators,
   ...
@@ -25,12 +26,12 @@ rec {
       }
     ) apps;
 
-  # the unified translator cli
+  # the dream2nix cli
   cli = callPackageDream (import ./cli) {};
 
   # the contribute cli
   contribute = callPackageDream (import ./contribute) {};
 
-  # install the framework to a specified location by copying the code
+  # instrall the framework to a specified location by copying the code
   install = callPackageDream (import ./install) {};
 }

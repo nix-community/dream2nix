@@ -1,10 +1,10 @@
 from cleo import Application
 
-from commands.package import PackageCommand
+from commands.add import AddCommand
 from commands.update import UpdateCommand
 
-application = Application("package")
-application.add(PackageCommand())
+application = Application("dream2nix")
+application.add(AddCommand())
 application.add(UpdateCommand())
 
 if __name__ == '__main__':

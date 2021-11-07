@@ -6,9 +6,6 @@
   nixpkgsSrc ? <nixpkgs>,
   lib ? (import nixpkgsSrc {}).lib,
 
-  # default to empty dream2nix config
-  config ? {},
-
   externalSources,
 
   externalPaths,
@@ -19,9 +16,7 @@ let
 
   b = builtins;
 
-  config = (import ./utils/config.nix).loadConfig args.config or {};
-
-  dream2nixForSystem = system: pkgs:
+  dream2nixForSystem = config: system: pkgs:
     import ./default.nix
       { inherit config externalPaths externalSources pkgs; };
 
@@ -81,6 +76,8 @@ let
     }@argsInit:
     let
 
+      config = (import ./utils/config.nix).loadConfig argsInit.config or {};
+
       overridesDirs' = config.overridesDirs;
 
       allPkgs = makeNixpkgs pkgs systems;
@@ -88,7 +85,7 @@ let
       forAllSystems = f:
         lib.mapAttrs f allPkgs;
 
-      dream2nixFor = forAllSystems dream2nixForSystem;
+      dream2nixFor = forAllSystems (dream2nixForSystem config);
     in
       {
         riseAndShine = riseAndShineArgs:
@@ -135,7 +132,7 @@ let
       allPkgs = makeNixpkgs pkgs systems;
 
       dream2nixFor =
-        lib.mapAttrs dream2nixForSystem allPkgs;
+        lib.mapAttrs (dream2nixForSystem {}) allPkgs;
 
       allBuilderOutputs =
         lib.mapAttrs

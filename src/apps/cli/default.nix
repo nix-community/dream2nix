@@ -1,13 +1,16 @@
 {
   # from dream2nix
+  configFile,
   dream2nixWithExternals,
   fetchers,
+  nix,
   translators,
+  utils,
 
   # from nixpkgs
+  gitMinimal,
   lib,
   python3,
-  writeScript,
   ...
 }:
 
@@ -19,11 +22,25 @@ let
 
 in
 {
-  program = writeScript "cli" ''
-    dream2nixSrc=${dream2nixWithExternals} \
-    fetcherNames="${b.toString (lib.attrNames fetchers.fetchers)}" \
-      ${cliPython}/bin/python ${./.}/cli.py "$@"
-  '';
+  program = 
+    let
+      script = utils.writePureShellScript
+        [
+          gitMinimal
+          nix
+        ]
+        ''
+          # escape the temp dir created by writePureShellScript
+          cd - > /dev/null
+
+          # run the cli
+          dream2nixConfig=${configFile} \
+          dream2nixSrc=${dream2nixWithExternals} \
+          fetcherNames="${b.toString (lib.attrNames fetchers.fetchers)}" \
+            ${cliPython}/bin/python ${./.}/cli.py "$@"
+        '';
+    in
+      "${script}/bin/run";
 
   templateDefaultNix =
     {

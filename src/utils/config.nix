@@ -23,9 +23,11 @@ let
       defaults =  {
         overridesDirs = [];
         packagesDir = null;
+        repoName = "this repo";
       };
     in
       defaults // config;
+
 in
 {
   inherit loadConfig;
