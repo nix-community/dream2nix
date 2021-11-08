@@ -15,23 +15,31 @@
 }:
 
 {
-  # funcs
-  getDependencies,
-  getSource,
-  buildPackageWithOtherBuilder,
+  # Funcs
 
-  # attributes
-  subsystemAttrs,
-  getCyclicDependencies,
-  mainPackageName,
-  mainPackageVersion,
+  # AttrSet -> Bool) -> AttrSet -> [x]
+  getCyclicDependencies,        # name: version: -> [ {name=; version=; } ]
+  getDependencies,              # name: version: -> [ {name=; version=; } ]
+  getSource,                    # name: version: -> store-path
+  buildPackageWithOtherBuilder, # { builder, name, version }: -> drv
+
+  # Attributes
+  subsystemAttrs,       # attrset
+  mainPackageName,      # string
+  mainPackageVersion,   # string
+
+  # attrset of pname -> versions,
+  # where versions is a list of version strings
   packageVersions,
-  
 
-  # overrides
+  # Overrides
+  # Those must be applied by the builder to each individual derivation
+  # using `utils.applyOverridesToPackage`
   packageOverrides ? {},
 
-  # custom opts:
+  # Custom Options: (parametrize builder behavior)
+  # These can be passed by the user via `builderArgs`.
+  # All options must provide default
   standalonePackageNames ? [],
   ...
 }@args:
@@ -44,9 +52,6 @@ let
   #   -> needs to be built in a combined derivation
   isCyclic = name: version:
     (getCyclicDependencies name version) != [];
-
-  mainPackageKey =
-    "${mainPackageName}#${mainPackageVersion}";
 
   nodejsVersion = subsystemAttrs.nodejsVersion;
 
