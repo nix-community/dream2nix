@@ -63,13 +63,13 @@
 
     # Example: boolean option
     # Flags always default to 'false' if not specified by the user
-    dev-dependenices = {
-      description = "Include dev dependencies";
+    noDev = {
+      description = "Exclude dev dependencies";
       type = "flag";
     };
 
     # Example: string option
-    the-answer = {
+    theAnswer = {
       default = "42";
       description = "The Answer to the Ultimate Question of Life";
       examples = [
