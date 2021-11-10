@@ -49,6 +49,12 @@ if 'dependencies' in package_json:
     if 'bundledDependencies' in package_json\
         and pname in package_json['bundledDependencies']:
       continue
+    if pname not in available_deps:
+      print(
+        f"WARNING: Dependency {pname} wanted but not available. Ignoring.",
+        file=sys.stderr
+      )
+      continue
     if available_deps[pname] != package_json['dependencies'][pname]:
       package_json['dependencies'][pname] = available_deps[pname]
       changed = True

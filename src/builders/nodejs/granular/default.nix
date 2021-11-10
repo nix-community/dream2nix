@@ -48,11 +48,6 @@ let
 
   b = builtins;
 
-  # tells if a dependency introduces a cycle
-  #   -> needs to be built in a combined derivation
-  isCyclic = name: version:
-    (getCyclicDependencies name version) != [];
-
   nodejsVersion = subsystemAttrs.nodejsVersion;
 
   nodejs =
@@ -72,23 +67,8 @@ let
         lib.genAttrs
           versions
           (version:
-            if isCyclic name version
-                || b.elem name standalonePackageNames then
-              makeCombinedPackage name version
-            else
               makePackage name version))
       packageVersions;
-  
-  makeCombinedPackage = name: version:
-    let
-      built =
-        buildPackageWithOtherBuilder {
-          inherit name version;
-          builder = builders.nodejs.node2nix;
-          inject = {};
-        };
-    in
-      built.defaultPackage;
 
   # Generates a derivation for a specific package name + version
   makePackage = name: version:
