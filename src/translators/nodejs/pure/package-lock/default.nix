@@ -14,6 +14,7 @@
       inputDirectories,
       inputFiles,
 
+      name,
       noDev,
       nodejs,
       ...
@@ -73,8 +74,17 @@
       utils.simpleTranslate translatorName {
         # values
         inputData = packageLockWithPinnedVersions;
-        mainPackageName = parsed.name;
-        mainPackageVersion = parsed.version;
+
+        mainPackageName =
+          parsed.name or
+          (if name != "{automatic}" then name else
+            throw (
+              "Could not identify package name. "
+              + "Please specify extra argument 'name'"
+            ));
+
+        mainPackageVersion = parsed.version or "unknown";
+
         mainPackageDependencies =
           lib.mapAttrsToList
             (pname: pdata:
@@ -82,7 +92,9 @@
             (lib.filterAttrs
               (pname: pdata: ! (pdata.dev or false) || dev)
               parsedDependencies);
+              
         subsystemName = "nodejs";
+
         subsystemAttrs = { nodejsVersion = args.nodejs; };
 
         # functions
@@ -155,6 +167,16 @@
     };
 
   extraArgs = {
+
+    name = {
+      description = "The name of the main package";
+      examples = [
+        "react"
+        "@babel/code-frame"
+      ];
+      default = "{automatic}";
+      type = "argument";
+    };
 
     noDev = {
       description = "Exclude development dependencies";
