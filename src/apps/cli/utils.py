@@ -25,10 +25,10 @@ def find_repo_root():
 
 with open(os.environ.get("dream2nixConfig")) as f:
   config = json.load(f)
-  config.["isRepo"] = False
+  config["isRepo"] = False
   if config['repoName'] and config ['packagesDir']:
     config['packagesDir'] = f"{find_repo_root()}/{config['packagesDir']}"
-    config.["isRepo"] = True
+    config["isRepo"] = True
 
 def checkLockJSON(lock):
   lock_schema_raw=open(dream2nix_src+"/specifications/dream-lock-schema.json").read()

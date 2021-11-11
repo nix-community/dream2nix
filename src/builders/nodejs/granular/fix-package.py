@@ -65,7 +65,7 @@ if 'dependencies' in package_json:
       )
 
 # create symlinks for executables (bin entries from package.json)
-if 'bin' in package_json:
+if 'bin' in package_json and package_json['bin']:
   bin = package_json['bin']
 
   if isinstance(bin, str):
