@@ -137,6 +137,19 @@ let
 
             export sourceRoot="$nodeModules/$packageName"
 
+            # sometimes tarballs do not end with .tar.??
+            unpackFallback(){
+              local fn="$1"
+
+              if [[ "$fn" == *tarball ]]; then
+                tar xf "$fn"
+              else
+                return 1
+              fi
+            }
+
+            unpackCmdHooks+=(unpackFallback)
+
             unpackFile $src
 
             # Make the base dir in which the target dependency resides in first

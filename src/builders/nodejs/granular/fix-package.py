@@ -27,9 +27,11 @@ if 'os' in package_json:
 
 # replace version
 # If it is a github dependency referred by revision,
-# we can not rely on the version inside the package.json
+# we can not rely on the version inside the package.json.
+# In case of an 'unknown' version coming from the dream lock,
+# do not  override the version from package.json
 version = os.environ.get("version")
-if package_json['version'] != version:
+if version not in ["unknown", package_json['version']]:
   print(
     "WARNING: The version of this package defined by its package.json "
     "doesn't match the version expected by dream2nix."
