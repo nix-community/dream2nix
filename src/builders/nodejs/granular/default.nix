@@ -140,12 +140,7 @@ let
             # sometimes tarballs do not end with .tar.??
             unpackFallback(){
               local fn="$1"
-
-              if [[ "$fn" == *tarball ]]; then
-                tar xf "$fn"
-              else
-                return 1
-              fi
+              tar xf "$fn"
             }
 
             unpackCmdHooks+=(unpackFallback)

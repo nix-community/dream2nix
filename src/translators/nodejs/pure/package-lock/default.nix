@@ -83,9 +83,15 @@
       
       packageLockWithPinnedVersions = pinVersions parsedDependencies parsedDependencies;
 
+      createMissingSource = name: version:
+        {
+          type = "http";
+          url = "https://registry.npmjs.org/${name}/-/${name}-${version}.tgz";
+        };
+
     in
 
-      utils.simpleTranslate translatorName {
+      utils.simpleTranslate translatorName rec {
         # values
         inputData = packageLockWithPinnedVersions;
 
@@ -161,6 +167,13 @@
               rec {
                 version = getVersion dependencyObject;
                 url = dependencyObject.version;
+                hash = dependencyObject.integrity;
+              }
+            else if dependencyObject.resolved == false then
+              (createMissingSource
+                (getName dependencyObject)
+                (getVersion dependencyObject))
+              // {
                 hash = dependencyObject.integrity;
               }
             else
