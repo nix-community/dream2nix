@@ -32,10 +32,11 @@
   # where versions is a list of version strings
   packageVersions,
 
-  # Overrides
-  # Those must be applied by the builder to each individual derivation
-  # using `utils.applyOverridesToPackage`
-  packageOverrides ? {},
+  # function which applies overrides to a package
+  # It must be applied by the builder to each individual derivation
+  # Example:
+  #   produceDerivation name (mkDerivation {...})
+  produceDerivation,
 
   # Custom Options: (parametrize builder behavior)
   # These can be passed by the user via `builderArgs`.
@@ -70,6 +71,10 @@ let
               makePackage name version))
       packageVersions;
 
+  outputs = {
+    inherit defaultPackage packages;
+  };
+
   # Generates a derivation for a specific package name + version
   makePackage = name: version:
     let
@@ -88,7 +93,7 @@ let
             deps));
 
       pkg =
-        stdenv.mkDerivation rec {
+        produceDerivation name (stdenv.mkDerivation rec {
 
           packageName = name;
         
@@ -300,13 +305,16 @@ let
               done
             fi
           '';
-        };
+        });
     in
+      pkg;
       # apply packageOverrides to current derivation
-      (utils.applyOverridesToPackage packageOverrides pkg name);
-
+      # (utils.applyOverridesToPackage {
+      #   inherit outputs pkg;
+      #   conditionalOverrides = packageOverrides;
+      #   pname = name;
+      # });
 
 in
-{
-  inherit defaultPackage packages;
-}
+outputs
+

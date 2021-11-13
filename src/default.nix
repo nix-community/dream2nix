@@ -229,6 +229,7 @@ let
       dreamLock,
       inject,
       sourceOverrides,
+      packageOverrides,
     }@args:
       let
 
@@ -241,6 +242,14 @@ let
 
         fetchedSources =
           args.fetchedSources // changedSources;
+
+        produceDerivation = name: pkg:
+          utils.applyOverridesToPackage {
+            inherit pkg;
+            packages = formattedOutputs.packages;
+            pname = name;
+            conditionalOverrides = packageOverrides;
+          };
 
         buildPackageWithOtherBuilder =
           {
@@ -258,16 +267,24 @@ let
 
           in
             callBuilder {
-              inherit builder builderArgs inject sourceOverrides;
+              inherit
+                builder
+                builderArgs
+                fetchedSources
+                inject
+                sourceOverrides
+                packageOverrides
+              ;
+
               dreamLock =
                 subDreamLockLoaded.lock;
-              inherit fetchedSources;
             };
 
         outputs = builder ( builderArgs // {
 
           inherit
             buildPackageWithOtherBuilder
+            produceDerivation
           ;
 
           inherit (dreamLockInterface)
@@ -283,8 +300,33 @@ let
 
         });
 
+        # Makes the packages tree compatible with flakes schema.
+        # For each package the attr `{pname}` will link to the latest release.
+        # Other package versions will be inside: `{pname}.versions`
+        formattedOutputs = outputs // {
+          packages =
+            let
+              allPackages = outputs.packages or {};
+
+              latestPackages =
+                lib.mapAttrs'
+                  (pname: releases:
+                    let
+                      latest =
+                        releases."${utils.latestVersion (b.attrNames releases)}";
+                    in
+                      (lib.nameValuePair
+                        "${pname}"
+                        (latest // {
+                          versions = releases;
+                        })))
+                  allPackages;
+            in
+              latestPackages;
+        };
+
       in
-        outputs;
+        formattedOutputs;
 
 
   # produce outputs for a dream-lock or a source
@@ -339,48 +381,28 @@ let
       }).fetchedSources;
 
       builderOutputs = callBuilder {
+
         inherit
           dreamLock
           fetchedSources
           sourceOverrides
         ;
+
         builder = builder';
-        builderArgs = (args.builderArgs or {}) // {
-          packageOverrides =
-            lib.recursiveUpdate
-              (dreamOverrides."${dreamLock._generic.subsystem}" or {})
-              (args.packageOverrides or {});
-        };
+
+        inherit builderArgs;
+
+        packageOverrides =
+          lib.recursiveUpdate
+            (dreamOverrides."${dreamLock._generic.subsystem}" or {})
+            (args.packageOverrides or {});
+
         inject =
           utils.dreamLock.decompressDependencyGraph args.inject or {};
       };
 
-      # Makes the packages tree compatible with flakes schema.
-      # For each package the attr `{pname}` will link to the latest release.
-      # Other package versions will be inside: `{pname}.versions`
-      formattedBuilderOutputs = builderOutputs // {
-        packages =
-          let
-            allPackages = builderOutputs.packages or {};
-
-            latestPackages =
-              lib.mapAttrs'
-                (pname: releases:
-                  let
-                    latest =
-                      releases."${utils.latestVersion (b.attrNames releases)}";
-                  in
-                    (lib.nameValuePair
-                      "${pname}"
-                      (latest // {
-                        versions = releases;
-                      })))
-                allPackages;
-          in
-            latestPackages;
-      };
     in
-      formattedBuilderOutputs;
+      builderOutputs;
    
 in
 {
