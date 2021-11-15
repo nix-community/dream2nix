@@ -267,9 +267,9 @@ let
             # execute install command
             if [ -n "$buildScript" ]; then
               if [ -f "$buildScript" ]; then
-                exec $buildScript
+                $buildScript
               else
-                echo "$buildScript" | bash
+                eval "$buildScript"
               fi
             # by default, only for top level packages, `npm run build` is executed
             elif [ -n "$runBuild" ] && [ "$(jq '.scripts.build' ./package.json)" != "null" ]; then
@@ -308,12 +308,6 @@ let
         });
     in
       pkg;
-      # apply packageOverrides to current derivation
-      # (utils.applyOverridesToPackage {
-      #   inherit outputs pkg;
-      #   conditionalOverrides = packageOverrides;
-      #   pname = name;
-      # });
 
 in
 outputs

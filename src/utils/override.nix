@@ -159,7 +159,7 @@ let
                     if b.length applicableFuncs == 0 then
                       "overrideAttrs"
                     else if b.length applicableFuncs > 1 then
-                      throwErrorUnclearAttributeOverride Hpname condOverride._name attrName
+                      throwErrorUnclearAttributeOverride pname condOverride._name attrName
                     else
                       b.elemAt applicableFuncs 0;
 
