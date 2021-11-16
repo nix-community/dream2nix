@@ -28,10 +28,11 @@
   # where versions is a list of version strings
   packageVersions,
 
-  # Overrides
-  # Those must be applied by the builder to each individual derivation
-  # using `utils.applyOverridesToPackage`
-  packageOverrides ? {},
+  # function which applies overrides to a package
+  # It must be applied by the builder to each individual derivation
+  # Example:
+  #   produceDerivation name (mkDerivation {...})
+  produceDerivation,
 
   # Custom Options: (parametrize builder behavior)
   # These can be passed by the user via `builderArgs`.

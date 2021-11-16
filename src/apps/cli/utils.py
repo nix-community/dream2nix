@@ -33,7 +33,16 @@ with open(os.environ.get("dream2nixConfig")) as f:
 def checkLockJSON(lock):
   lock_schema_raw=open(dream2nix_src+"/specifications/dream-lock-schema.json").read()
   lock_schema=json.loads(lock_schema_raw)
-  validate(lock, schema=lock_schema)
+  try:
+    validate(lock, schema=lock_schema)
+  except:
+    print(
+      "Error in lock. Dumping for debugging at ./dream-lock.json.fail",
+      file=sys.stderr,
+    )
+    with open("./dream-lock.json.fail", 'w') as f:
+      json.dump(lock, f, indent=2)
+    raise
 
 
 def callNixFunction(function_path, **kwargs):

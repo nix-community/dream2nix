@@ -32,10 +32,11 @@
   # where versions is a list of version strings
   packageVersions,
 
-  # Overrides
-  # Those must be applied by the builder to each individual derivation
-  # using `utils.applyOverridesToPackage`
-  packageOverrides ? {},
+  # function which applies overrides to a package
+  # It must be applied by the builder to each individual derivation
+  # Example:
+  #   produceDerivation name (mkDerivation {...})
+  produceDerivation,
 
   # Custom Options: (parametrize builder behavior)
   # These can be passed by the user via `builderArgs`.
@@ -70,6 +71,10 @@ let
               makePackage name version))
       packageVersions;
 
+  outputs = {
+    inherit defaultPackage packages;
+  };
+
   # Generates a derivation for a specific package name + version
   makePackage = name: version:
     let
@@ -88,7 +93,7 @@ let
             deps));
 
       pkg =
-        stdenv.mkDerivation rec {
+        produceDerivation name (stdenv.mkDerivation rec {
 
           packageName = name;
         
@@ -136,6 +141,14 @@ let
             nodeModules=$out/lib/node_modules
 
             export sourceRoot="$nodeModules/$packageName"
+
+            # sometimes tarballs do not end with .tar.??
+            unpackFallback(){
+              local fn="$1"
+              tar xf "$fn"
+            }
+
+            unpackCmdHooks+=(unpackFallback)
 
             unpackFile $src
 
@@ -254,9 +267,9 @@ let
             # execute install command
             if [ -n "$buildScript" ]; then
               if [ -f "$buildScript" ]; then
-                exec $buildScript
+                $buildScript
               else
-                echo "$buildScript" | bash
+                eval "$buildScript"
               fi
             # by default, only for top level packages, `npm run build` is executed
             elif [ -n "$runBuild" ] && [ "$(jq '.scripts.build' ./package.json)" != "null" ]; then
@@ -292,13 +305,10 @@ let
               done
             fi
           '';
-        };
+        });
     in
-      # apply packageOverrides to current derivation
-      (utils.applyOverridesToPackage packageOverrides pkg name);
-
+      pkg;
 
 in
-{
-  inherit defaultPackage packages;
-}
+outputs
+

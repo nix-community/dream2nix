@@ -451,4 +451,4 @@ class AddCommand(Command):
     print(f"Created {output}/dream-lock.json")
 
     if config['isRepo']:
-      sp.run(f"git add -N {output}".split())
+      sp.run(["git", "add", "-N", output])

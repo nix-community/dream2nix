@@ -25,9 +25,11 @@
 
       dev = ! noDev;
 
+      inputDir = lib.elemAt inputDirectories 0;
+
       packageLock =
         if inputDirectories != [] then
-          "${lib.elemAt inputDirectories 0}/package-lock.json"
+          "${inputDir}/package-lock.json"
         else
           lib.elemAt inputFiles 0;
 
@@ -43,8 +45,20 @@
       getVersion = dependencyObject:
         if identifyGitSource dependencyObject then
           "0.0.0-rc.${b.substring 0 8 (utils.parseGitUrl dependencyObject.version).rev}"
+        else if lib.hasPrefix "file:" dependencyObject.version then
+          let
+            path = getPath dependencyObject;
+          in
+            (b.fromJSON
+              (b.readFile "${inputDir}/${path}/package.json")
+            ).version
+        else if lib.hasPrefix "https://" dependencyObject.version then
+          "unknown"
         else
           dependencyObject.version;
+
+      getPath = dependencyObject:
+        lib.removePrefix "file:" dependencyObject.version;
       
       pinVersions = dependencies: parentScopeDeps:
         lib.mapAttrs
@@ -69,9 +83,15 @@
       
       packageLockWithPinnedVersions = pinVersions parsedDependencies parsedDependencies;
 
+      createMissingSource = name: version:
+        {
+          type = "http";
+          url = "https://registry.npmjs.org/${name}/-/${name}-${version}.tgz";
+        };
+
     in
 
-      utils.simpleTranslate translatorName {
+      utils.simpleTranslate translatorName rec {
         # values
         inputData = packageLockWithPinnedVersions;
 
@@ -132,6 +152,8 @@
         getSourceType = dependencyObject:
           if identifyGitSource dependencyObject then
             "git"
+          else if lib.hasPrefix "file:" dependencyObject.version then
+            "path"
           else
             "http";
         
@@ -141,10 +163,30 @@
             utils.parseGitUrl dependencyObject.version;
 
           http = dependencyObject:
+            if lib.hasPrefix "https://" dependencyObject.version then
+              rec {
+                version = getVersion dependencyObject;
+                url = dependencyObject.version;
+                hash = dependencyObject.integrity;
+              }
+            else if dependencyObject.resolved == false then
+              (createMissingSource
+                (getName dependencyObject)
+                (getVersion dependencyObject))
+              // {
+                hash = dependencyObject.integrity;
+              }
+            else
+              rec {
+                version = getVersion dependencyObject;
+                url = dependencyObject.resolved;
+                hash = dependencyObject.integrity;
+              };
+
+          path = dependencyObject:
             rec {
-              version = dependencyObject.version;
-              url = dependencyObject.resolved;
-              hash = dependencyObject.integrity;
+              version = getVersion dependencyObject;
+              path = getPath dependencyObject;
             };
         };
 
