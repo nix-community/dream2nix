@@ -121,11 +121,12 @@ rec {
           args = params // { inherit url; };
           fetcherOutputs = fetcher.outputs (checkArgs "git" args);
         in
-          constructSource {
-            type = "git";
-            hash = fetcherOutputs.calcHash "sha256";
-            inherit url;
-          };
+          constructSource 
+            (params // {
+              type = "git";
+              hash = fetcherOutputs.calcHash "sha256";
+              inherit url;
+            });
         
       translateRegularShortcut =
         let
