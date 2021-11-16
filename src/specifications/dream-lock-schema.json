@@ -49,6 +49,7 @@
                     "properties": {
                       "url": { "type": "string" },
                       "rev": { "type": "string" },
+                      "hash": { "type": "string" },
                       "type": { "type": "string" }
                     },
                     "required": ["type", "url", "rev"],

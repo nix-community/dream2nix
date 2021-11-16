@@ -49,23 +49,33 @@ in
     in
     {
 
-      calcHash = algo: utils.hashPath algo (b.fetchGit
-        ({ inherit url; } // refAndRev)
-      );
+      calcHash = algo: utils.hashPath algo
+        (b.fetchGit
+          (refAndRev // {
+            inherit url;
+            allRefs = true;
+            submodules = true;
+          }));
 
+      # git can either be verified via revision or hash.
+      # In case revision is used for verification, `hash` will be null.
       fetched = hash:
         if hash == null then
           if rev == null then
             throw "Cannot fetch git repo without integrity. Specify at least 'rev' or 'sha256'"
           else
-            b.fetchGit (
-              { inherit url; allRefs = true; } // refAndRev
-            )
+            b.fetchGit
+              (refAndRev // {
+                inherit url;
+                allRefs = true;
+                submodules = true;
+              })
         else
-          fetchgit {
-            inherit url;
-            rev = if rev != null then rev else ref;
-            sha256 = hash;
-          };
+          fetchgit
+            (refAndRev // {
+              inherit url;
+              fetchSubmodules = true;
+              sha256 = hash;
+            });
     };
 }
