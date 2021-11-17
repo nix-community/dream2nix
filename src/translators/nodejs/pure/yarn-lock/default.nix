@@ -2,6 +2,7 @@
   lib,
 
   externals,
+  nodejs,
   translatorName,
   utils,
   ...
@@ -16,14 +17,15 @@
       # extraArgs
       name,
       noDev,
+      nodejs,
       peer,
       ...
-    }:
+    }@args:
 
     let
       b = builtins;
       dev = ! noDev;
-  
+
       sourceDir = lib.elemAt inputDirectories 0;
       yarnLock = utils.readTextFile "${sourceDir}/yarn.lock";
       packageJSON = b.fromJSON (b.readFile "${sourceDir}/package.json");
@@ -43,7 +45,7 @@
               ${lib.substring failureOffset 50 tryParse.value.str}
             '';
     in
-    
+
     utils.simpleTranslate translatorName rec {
 
       inputData = parsedLock;
@@ -60,9 +62,7 @@
 
       subsystemName = "nodejs";
 
-      subsystemAttrs = {
-        nodejsVersion = 14;
-      };
+      subsystemAttrs = { nodejsVersion = args.nodejs; };
 
       mainPackageDependencies =
         lib.mapAttrsToList
@@ -116,13 +116,13 @@
         in
           lib.forEach
             dependencies
-            (dependency: 
+            (dependency:
               builtins.head (
                 lib.mapAttrsToList
                   (name: versionSpec:
                     let
                       yarnName = "${name}@${versionSpec}";
-                      depObject = dependenciesByOriginalID."${yarnName}"; 
+                      depObject = dependenciesByOriginalID."${yarnName}";
                       version = depObject.version;
                     in
                       if ! dependenciesByOriginalID ? ${yarnName} then
@@ -153,7 +153,7 @@
                   && lib.hasInfix "codeload.github.com/" dObj.resolved
 
               || lib.hasInfix "@git+" dObj.yarnName
-              
+
               # example:
               # "jest-image-snapshot@https://github.com/machard/jest-image-snapshot#machard-patch-1":
               #   version "4.2.0"
@@ -175,7 +175,7 @@
           else
             "http";
 
-      
+
       sourceConstructors = {
         git = dependencyObject:
           if utils.identifyGitUrl dependencyObject.resolved then
@@ -215,13 +215,13 @@
         path = dependencyObject:
           if lib.hasInfix "@link:" dependencyObject.yarnName then
             {
-              version = dependencyObject.version;     
+              version = dependencyObject.version;
               path =
                 lib.last (lib.splitString "@link:" dependencyObject.yarnName);
             }
           else if lib.hasInfix "@file:" dependencyObject.yarnName then
             {
-              version = dependencyObject.version;     
+              version = dependencyObject.version;
               path =
               lib.last (lib.splitString "@file:" dependencyObject.yarnName);
             }
@@ -231,7 +231,7 @@
         http = dependencyObject:
           {
             type = "http";
-            version = dependencyObject.version;  
+            version = dependencyObject.version;
             hash =
               if dependencyObject ? integrity then
                 dependencyObject.integrity
@@ -256,7 +256,7 @@
 
 
     };
-      
+
 
   # From a given list of paths, this function returns all paths which can be processed by this translator.
   # This allows the framework to detect if the translator is compatible with the given inputs
@@ -267,7 +267,7 @@
       inputFiles,
     }@args:
     {
-      inputDirectories = lib.filter 
+      inputDirectories = lib.filter
         (utils.containsMatchingFile [ ''.*yarn\.lock'' ''.*package.json'' ])
         args.inputDirectories;
 
@@ -295,6 +295,16 @@
     noDev = {
       description = "Exclude development dependencies";
       type = "flag";
+    };
+
+    nodejs = {
+      description = "nodejs version to use for building";
+      default = lib.elemAt (lib.splitString "." nodejs.version) 0;
+      examples = [
+        "14"
+        "16"
+      ];
+      type = "argument";
     };
 
     peer = {

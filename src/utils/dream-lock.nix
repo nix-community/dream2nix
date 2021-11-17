@@ -9,7 +9,7 @@ let
 
   b = builtins;
 
-  readDreamLock = 
+  readDreamLock =
     {
       dreamLock,
     }@args:
@@ -49,7 +49,7 @@ let
         b.filter
           (dep: ! b.elem dep cyclicDependencies."${pname}"."${version}" or [])
           dependencyGraph."${pname}"."${version}" or [];
-      
+
       getCyclicDependencies = pname: version:
         cyclicDependencies."${pname}"."${version}" or [];
 
@@ -100,7 +100,7 @@ let
     getSubDreamLock = dreamLock: name: version:
       let
         lock = (readDreamLock { inherit dreamLock; }).lock;
-      
+
       in
         lock // {
           _generic = lock._generic // {

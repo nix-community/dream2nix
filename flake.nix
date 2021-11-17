@@ -3,7 +3,10 @@
 
   inputs = {
     nixpkgs.url = "nixpkgs/nixos-unstable";
-    
+
+    # required for builder go/gomod2nix
+    gomod2nix = { url = "github:tweag/gomod2nix"; flake = false; };
+
     # required for translator nodejs/pure/package-lock
     nix-parsec = { url = "github:nprindle/nix-parsec"; flake = false; };
 
@@ -19,6 +22,7 @@
 
   outputs = {
     self,
+    gomod2nix,
     mach-nix,
     nix-parsec,
     nixpkgs,
@@ -127,7 +131,14 @@
 
         # all apps including cli, install, etc.
         apps = forAllSystems (system: pkgs:
-          dream2nixFor."${system}".apps.flakeApps
+          dream2nixFor."${system}".apps.flakeApps // {
+            tests-impure = {
+              type = "app";
+              program =
+                b.toString
+                  (dream2nixFor."${system}".callPackageDream ./tests/impure {});
+            };
+          }
         );
 
         # a dev shell for working on dream2nix
@@ -151,7 +162,7 @@
           '';
         });
 
-        checks = forAllSystems (system: pkgs: import ./checks.nix {
+        checks = forAllSystems (system: pkgs: import ./tests/pure {
           inherit lib pkgs;
           dream2nix = dream2nixFor."${system}";
         });
