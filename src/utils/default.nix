@@ -5,7 +5,7 @@
   lib,
   nix,
   runCommand,
-  writeScriptBin,
+  writeScript,
 
   # dream2nix inputs
   callPackageDream,
@@ -15,7 +15,7 @@
 let
 
   b = builtins;
-  
+
   dreamLockUtils = callPackageDream ./dream-lock.nix {};
 
   overrideUtils = callPackageDream ./override.nix {};
@@ -58,6 +58,8 @@ rec {
 
   listFiles = path: lib.attrNames (lib.filterAttrs (n: v: v == "regular") (builtins.readDir path));
 
+  listDirs = path: lib.attrNames (lib.filterAttrs (n: v: v == "directory") (builtins.readDir path));
+
   # directory names of a given directory
   dirNames = dir: lib.attrNames (lib.filterAttrs (name: type: type == "directory") (builtins.readDir dir));
 
@@ -87,7 +89,7 @@ rec {
       b.readFile hashFile;
 
   # builder to create a shell script that has it's own PATH
-  writePureShellScript = availablePrograms: script: writeScriptBin "run" ''
+  writePureShellScript = availablePrograms: script: writeScript "script.sh" ''
     #!${bash}/bin/bash
     set -Eeuo pipefail
 
@@ -118,7 +120,7 @@ rec {
           ''
           + old.postFetch;
       });
-  
+
   sanitizeDerivationName = name:
     lib.replaceStrings [ "@" "/" ] [ "__at__" "__slash__" ] name;
 
@@ -165,7 +167,7 @@ rec {
 
   satisfiesSemver = poetry2nixSemver.satisfiesSemver;
 
-  # like nixpkgs recursiveUpdateUntil, but the depth of the 
+  # like nixpkgs recursiveUpdateUntil, but the depth of the
   recursiveUpdateUntilDepth = depth: lhs: rhs:
     lib.recursiveUpdateUntil (path: l: r: (b.length path) > depth) lhs rhs;
 

@@ -57,6 +57,7 @@ let
 
   # like pkgs.callPackage, but includes all the dream2nix modules
   callPackageDream = f: args: pkgs.callPackage f (args // {
+    inherit apps;
     inherit builders;
     inherit callPackageDream;
     inherit config;
@@ -172,7 +173,7 @@ let
             fetchedSources;
       };
 
-  
+
   makeDreamLockForSource =
     {
       source,
@@ -330,7 +331,7 @@ let
 
 
   # produce outputs for a dream-lock or a source
-  riseAndShine = 
+  riseAndShine =
     {
       dreamLock ? null,
       builder ? null,
@@ -403,12 +404,13 @@ let
 
     in
       builderOutputs;
-   
+
 in
 {
   inherit
     apps
     builders
+    callPackageDream
     dream2nixWithExternals
     fetchers
     fetchSources
