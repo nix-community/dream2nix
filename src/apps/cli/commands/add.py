@@ -39,10 +39,10 @@ class AddCommand(Command):
       flag=False
     ),
     option(
-      "combined",
+      "aggregate",
       None,
-      "store only one hash for all sources combined"
-      " (smaller lock file but larger FOD)",
+      "store only one aggregated hash for all sources"
+      " (smaller lock file but larger FOD, worse caching)",
       flag=True
     ),
     option(
@@ -92,8 +92,8 @@ class AddCommand(Command):
     if 'dependencies' in lock['_generic']:
       self.postprocess_dep_graph(lock)
 
-    # calculate combined hash if --combined was specified
-    if self.option('combined'):
+    # calculate aggregated hash if --aggregate was specified
+    if self.option('aggregate'):
       self.aggregate_hashes(lock, outputDreamLock)
 
     # validate dream lock format
@@ -169,26 +169,29 @@ class AddCommand(Command):
     return lockStr
 
   def aggregate_hashes(self, lock, outputDreamLock):
-    print("Building FOD of combined sources to retrieve output hash")
+    print("Building FOD of aggregates sources to retrieve output hash")
     # remove hashes from lock file and init sourcesCombinedHash with empty string
     strip_hashes_from_lock(lock)
     lock['_generic']['sourcesCombinedHash'] = ""
     with open(outputDreamLock, 'w') as f:
       json.dump(lock, f, indent=2)
-    # compute FOD hash of combined sources
+    # compute FOD hash of aggregated sources
     proc = sp.run(
       [
-        "nix", "build", "--impure", "-L", "--expr",
+        "nix", "build", "--impure", "-L", "--show-trace", "--expr",
         f"(import {dream2nix_src} {{}}).fetchSources {{ dreamLock = {outputDreamLock}; }}"
       ],
       capture_output=True,
     )
     # read the output hash from the failed build log
-    match = re.search(r"FOD_PATH=(.*=)", proc.stderr.decode())
+    match = re.search(r"FOD_HASH=(.*=)", proc.stderr.decode())
     if not match:
       print(proc.stderr.decode())
       print(proc.stdout.decode())
-      raise Exception("Could not find FOD hash in FOD log")
+      print(
+        "Error: Could not find FOD hash in FOD log",
+        file=sys.stderr,
+      )
     hash = match.groups()[0]
     print(f"Computed FOD hash: {hash}")
     # store the hash in the lock
@@ -258,7 +261,7 @@ class AddCommand(Command):
         '--translator',
         f"{translator['subsystem']}.{translator['type']}.{translator['name']}",
       ] + (
-        ["--combined"] if self.option('combined') else []
+        ["--aggregate"] if self.option('aggregate') else []
       ) + [
         f"--arg {n}={v}" for n, v in specified_extra_args.items()
       ])

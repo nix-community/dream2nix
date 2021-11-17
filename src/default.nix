@@ -148,7 +148,7 @@ let
       dreamLock' = (utils.readDreamLock { inherit dreamLock; }).lock;
 
       fetcher =
-        if args.fetcher == null then
+        if args.fetcher or null == null then
           findFetcher dreamLock'
         else
           args.fetcher;
@@ -239,10 +239,10 @@ let
 
         dreamLockInterface = (utils.readDreamLock { inherit dreamLock; }).interface;
 
-        changedSources = sourceOverrides args.fetchedSources;
-
         fetchedSources =
-          args.fetchedSources // changedSources;
+          lib.recursiveUpdate
+            args.fetchedSources
+            (sourceOverrides args.fetchedSources);
 
         produceDerivation = name: pkg:
           utils.applyOverridesToPackage {

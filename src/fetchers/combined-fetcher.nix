@@ -2,60 +2,95 @@
 # to one large FOD. Non-FOD sources like derivations and store paths are
 # not touched
 {
-  defaultFetcher,
-
   bash,
+  async,
   coreutils,
   lib,
   nix,
   stdenv,
   writeScript,
+
+  # dream2nix
+  defaultFetcher,
+  utils,
   ...
 }:
 {
   # sources attrset from dream lock
   sources,
   sourcesCombinedHash,
-}:
+  ...
+}@args:
 let
 
+  b = builtins;
+
   # resolve to individual fetcher calls
-  defaultFetched = (defaultFetcher { inherit sources; }).fetchedSources;
+  defaultFetched = (defaultFetcher args).fetchedSources;
 
   # extract the arguments from the individual fetcher calls
   FODArgsAll =
     let
       FODArgsAll' =
         lib.mapAttrs
-          (pname: fetched:
+          (name: versions:
+            lib.mapAttrs
+              (version: fetched:
+                # handle FOD sources
+                if lib.all
+                    (attr: fetched ? "${attr}")
+                    [ "outputHash" "outputHashAlgo" "outputHashMode" ] then
 
-            # handle FOD sources
-            if lib.all (attr: fetched ? "${attr}") [ "outputHash" "outputHashAlgo" "outputHashMode" ] then
-              (fetched.overrideAttrs (args: {
-                passthru.originalArgs = args;
-              })).originalArgs
+                  (fetched.overrideAttrs (args: {
+                    passthru.originalArgs = args;
+                  })).originalArgs // {
+                    outPath =
+                      let
+                        sanitizedName = utils.sanitizeDerivationName name;
+                      in
+                        "${sanitizedName}/${version}/${fetched.name}";
+                  }
 
-            # handle path sources
-            else if lib.isString fetched then
-              "ignore"
+                # handle path sources
+                else if lib.isString fetched then
+                  "ignore"
 
-            # handle unknown sources
-            else if fetched == "unknown" then
-              "ignore"
+                # handle store path sources
+                else if lib.isStorePath fetched then
+                  "ignore"
 
-            # error out on unknown source types
-            else
-              throw ''
-                Error while generating FOD fetcher for combined sources.
-                Cannot classify source of '${pname}'.
-              ''
+                # handle unknown sources
+                else if fetched == "unknown" then
+                  "ignore"
+
+                # error out on unknown source types
+                else
+                  throw ''
+                    Error while generating FOD fetcher for combined sources.
+                    Cannot classify source of ${name}#${version}.
+                  '')
+              versions
           )
           defaultFetched;
     in
-      lib.filterAttrs (pname: fetcherArgs: fetcherArgs != "ignore") FODArgsAll';
+      lib.filterAttrs
+        (name: versions: versions != {})
+        (lib.mapAttrs
+          (name: versions:
+            lib.filterAttrs
+              (version: fetcherArgs: fetcherArgs != "ignore")
+              versions)
+          FODArgsAll');
+
+    FODArgsAllList =
+      lib.flatten
+        (lib.mapAttrsToList
+          (name: versions:
+            b.attrValues versions)
+          FODArgsAll);
 
   # convert arbitrary types to string, like nix does with derivation arguments
-  toString = x:
+  toString' = x:
     if lib.isBool x then
       if x then
         "1"
@@ -69,15 +104,26 @@ let
       builtins.toJSON x;
 
   # generate script to fetch single item
-  fetchItem = pname: fetcherArgs: ''
+  fetchItem = fetcherArgs: ''
 
     # export arguments for builder
     ${lib.concatStringsSep "\n" (lib.mapAttrsToList (argName: argVal: ''
-      export ${argName}=${toString argVal}
+      export ${argName}=${toString' argVal}
     '') fetcherArgs)}
 
     # run builder
     bash ${fetcherArgs.builder}
+  '';
+
+  mkScriptItem = fetcherArgs: ''
+    OUT_ORIG=$out
+    export out=$OUT_ORIG/${fetcherArgs.outPath}
+    mkdir -p $(dirname $out)
+    workdir=$(mktemp -d)
+    pushd $workdir
+    ${fetchItem fetcherArgs}
+    popd
+    rm -r $workdir
   '';
 
   # builder which wraps several other FOD builders
@@ -89,28 +135,30 @@ let
 
     mkdir $out
 
-    ${lib.concatStringsSep "\n" (lib.mapAttrsToList (pname: fetcherArgs:
-      ''
-        OUT_ORIG=$out
-        export out=$OUT_ORIG/${fetcherArgs.name}
-        mkdir workdir
-        pushd workdir
-        ${fetchItem pname fetcherArgs}
-        popd
-        rm -r workdir
-        export out=$OUT_ORIG
-      '') FODArgsAll )}
+    S="/$TMP/async_socket"
+    async=${async}/bin/async
+    $async -s="$S" server --start -j40
 
-    echo "FOD_PATH=$(${nix}/bin/nix hash-path $out)"
+    ${lib.concatStringsSep "\n"
+      (b.map
+        (fetcherArgs: ''
+          $async -s="$S" cmd -- bash -c '${mkScriptItem fetcherArgs}'
+        '')
+        FODArgsAllList)}
+
+    $async -s="$S" wait
+
+    echo "FOD_HASH=$(${nix}/bin/nix hash-path $out)"
   '';
 
-  FODAllSources = 
+  FODAllSources =
     let
-      nativeBuildInputs' = lib.foldl (a: b: a ++ b) [] (
-        lib.mapAttrsToList
-          (pname: fetcherArgs: (fetcherArgs.nativeBuildInputs or []))
-          FODArgsAll
-      );
+      nativeBuildInputs' =
+        lib.unique
+          (lib.foldl (a: b: a ++ b) []
+            (b.map
+              (fetcherArgs: (fetcherArgs.nativeBuildInputs or []))
+              FODArgsAllList));
     in
       stdenv.mkDerivation rec {
         name = "sources-combined";
@@ -127,12 +175,16 @@ in
 
 {
   FOD = FODAllSources;
+
   fetchedSources =
-    # attrset: pname -> path of downloaded source
-    lib.genAttrs (lib.attrNames sources) (pname:
-      if FODArgsAll ? "${pname}" then
-        "${FODAllSources}/${FODArgsAll."${pname}".name}"
-      else
-        defaultFetched."${pname}"
-    );
+    lib.mapAttrs
+      (name: versions:
+        lib.mapAttrs
+          (version: source:
+            if FODArgsAll ? "${name}"."${version}" then
+                "${FODAllSources}/${FODArgsAll."${name}"."${version}".outPath}"
+            else
+              defaultFetched."${name}"."${version}")
+          versions)
+      sources;
 }
