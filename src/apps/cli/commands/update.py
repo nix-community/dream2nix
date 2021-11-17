@@ -66,7 +66,7 @@ class UpdateCommand(Command):
         dreamLock=dreamLockFile,
         updater=updater,
       )
-      update_proc = sp.run([f"{update_script}/bin/run"], capture_output=True)
+      update_proc = sp.run([f"{update_script}"], capture_output=True)
       version = update_proc.stdout.decode().strip()
     print(f"Updating from version {old_version} to {version}")
 

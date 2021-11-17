@@ -12,7 +12,7 @@
 
 {
 
-  # A derivation which outputs an executable at `/bin/run`.
+  # A derivation which outputs a single executable at `$out`.
   # The executable will be called by dream2nix for translation
   # The input format is specified in /specifications/translator-call-example.json.
   # The first arg `$1` will be a json file containing the input parameters
@@ -57,10 +57,10 @@
       # examples:
       #   - ''.*requirements.*\.txt''
       #   - ''.*package-lock\.json''
-      inputDirectories = lib.filter 
+      inputDirectories = lib.filter
         (utils.containsMatchingFile [ ''TODO: regex1'' ''TODO: regex2'' ])
         args.inputDirectories;
-      
+
       inputFiles = [];
     };
 

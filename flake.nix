@@ -131,7 +131,14 @@
 
         # all apps including cli, install, etc.
         apps = forAllSystems (system: pkgs:
-          dream2nixFor."${system}".apps.flakeApps
+          dream2nixFor."${system}".apps.flakeApps // {
+            tests-impure = {
+              type = "app";
+              program =
+                b.toString
+                  (dream2nixFor."${system}".callPackageDream ./tests/impure {});
+            };
+          }
         );
 
         # a dev shell for working on dream2nix
@@ -155,7 +162,7 @@
           '';
         });
 
-        checks = forAllSystems (system: pkgs: import ./checks.nix {
+        checks = forAllSystems (system: pkgs: import ./tests/pure {
           inherit lib pkgs;
           dream2nix = dream2nixFor."${system}";
         });

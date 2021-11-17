@@ -35,8 +35,8 @@
       cat package-lock.json
 
       jq ".inputDirectories[0] = \"$(pwd)\"" -c -r $jsonInput > ./newJsonInput
-      
-      ${translators.translators.nodejs.pure.package-lock.translateBin}/bin/run $(realpath ./newJsonInput)
+
+      ${translators.translators.nodejs.pure.package-lock.translateBin} $(realpath ./newJsonInput)
     '';
 
 
@@ -49,10 +49,10 @@
       inputFiles,
     }@args:
     {
-      inputDirectories = lib.filter 
+      inputDirectories = lib.filter
         (utils.containsMatchingFile [ ''.*package.json'' ])
         args.inputDirectories;
-      
+
       inputFiles = [];
     };
 

@@ -23,14 +23,17 @@ class AddCommand(Command):
   arguments = [
     argument(
       "source",
-      "source of the package, can be a path, tarball URL, or flake-style spec")
+      "Sources of the packages. Can be a paths, tarball URLs, or flake-style specs",
+      # multiple=True
+    )
   ]
 
   options = [
     option("translator", None, "which translator to use", flag=False),
     option("target", None, "target file/directory for the dream-lock.json", flag=False),
+    option("attribute-name", None, "attribute name for new new pakcage", flag=False),
     option(
-      "--packages-root",
+      "packages-root",
       None,
       "Put package under a new directory inside packages-root",
       flag=False
@@ -63,17 +66,9 @@ class AddCommand(Command):
     # ensure packages-root
     packages_root = self.find_packages_root()
 
-    # get source path and spec
-    source, sourceSpec = self.parse_source()
 
-    # select translator
-    translator = self.select_translator(source)
-
-    # raise error if any specified extra arg is unknown
-    specified_extra_args = self.declare_extra_args(specified_extra_args, translator)
-
-    # do the translation and produce dream lock
-    lock = self.run_translate(source, specified_extra_args, translator)
+    lock, sourceSpec, specified_extra_args, translator =\
+      self.translate_from_source(specified_extra_args, self.argument("source"))
 
     # get package name and version from lock
     mainPackageName = lock['_generic']['mainPackageName']
@@ -114,11 +109,22 @@ class AddCommand(Command):
 
     # create default.nix
     if 'default.nix' in filesToCreate:
-      self.create_default_nix(lock, output, outputDefaultNix, source)
+      self.create_default_nix(lock, output, outputDefaultNix, sources[0])
 
     # add new package to git
     if config['isRepo']:
       sp.run(["git", "add", "-N", output])
+
+  def translate_from_source(self, specified_extra_args, source):
+    # get source path and spec
+    source, sourceSpec = self.parse_source(source)
+    # select translator
+    translator = self.select_translator(source)
+    # raise error if any specified extra arg is unknown
+    specified_extra_args = self.declare_extra_args(specified_extra_args, translator)
+    # do the translation and produce dream lock
+    lock = self.run_translate(source, specified_extra_args, translator)
+    return lock, sourceSpec, specified_extra_args, translator
 
   def parse_extra_args(self):
     specified_extra_args = {
@@ -297,20 +303,20 @@ class AddCommand(Command):
     return filesToCreate, output
 
   def define_attribute_name(self, mainPackageName):
-    mainPackageDirName = mainPackageName.strip('@').replace('/', '-')
+    attributeName = self.option('attribute-name')
+    if attributeName:
+      return attributeName
+
+    attributeName = mainPackageName.strip('@').replace('/', '-')
 
     # verify / change main package dir name
-    def update_name(mainPackageDirName):
-      print(f"Current package attribute name is: {mainPackageDirName}")
-      new_name = self.ask(
-        "Specify new attribute name or leave empty to keep current:"
-      )
-      if new_name:
-        return new_name
-      return mainPackageDirName
-
-    mainPackageDirName = update_name(mainPackageDirName)
-    return mainPackageDirName
+    print(f"Current package attribute name is: {attributeName}")
+    new_name = self.ask(
+      "Specify new attribute name or leave empty to keep current:"
+    )
+    if new_name:
+      attributeName = newName
+    return attributeName
 
   def run_translate(self, source, specified_extra_args, translator):
     # build the translator bin
@@ -336,7 +342,7 @@ class AddCommand(Command):
 
         # execute translator
         sp.run(
-          [f"{translator_path}/bin/run", input_json_file.name]
+          [f"{translator_path}", input_json_file.name]
         )
 
       # raise error if output wasn't produced
@@ -452,9 +458,8 @@ class AddCommand(Command):
         exit(1)
     return translator
 
-  def parse_source(self):
+  def parse_source(self, source):
     # verify source
-    source = self.argument("source")
     if not source and not config['packagesDir']:
       source = os.path.realpath('./.')
       print(

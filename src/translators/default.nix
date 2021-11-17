@@ -10,14 +10,14 @@
   dream2nixWithExternals,
   utils,
   ...
-}: 
+}:
 let
 
   b = builtins;
 
   lib = pkgs.lib;
 
-  callTranslator = subsystem: type: name: file: args: 
+  callTranslator = subsystem: type: name: file: args:
     let
       translator = callPackageDream file (args // {
         inherit externals;
@@ -37,7 +37,7 @@ let
           translator.translate
             ((getextraArgsDefaults translator.extraArgs or {}) // args);
       };
-      
+
 
   subsystems = utils.dirNames ./.;
 
@@ -59,10 +59,10 @@ let
           nix eval --show-trace --impure --raw --expr "
               let
                 dream2nix = import ${dream2nixWithExternals} {};
-                dreamLock = 
+                dreamLock =
                   dream2nix.translators.translators.${
                     lib.concatStringsSep "." translatorAttrPath
-                  }.translate 
+                  }.translate
                     (builtins.fromJSON (builtins.readFile '''$1'''));
               in
                 dream2nix.utils.dreamLock.toJSON
@@ -95,22 +95,61 @@ let
   # flat list of all translators
   translatorsList = lib.collect (v: v ? translateBin) translators;
 
-  # json file exposing all existing translators to CLI including their special args
+  # returns the list of translators including their special args
+  # and adds a flag `compatible` to each translator indicating
+  # if the translator is compatible to all given paths
   translatorsForInput =
     {
       inputDirectories,
       inputFiles,
     }@args:
     lib.forEach translatorsList
-      (t: {
+      (t: rec {
         inherit (t)
           name
           extraArgs
           subsystem
           type
         ;
-        compatible = t.compatiblePaths args == args;
+        compatiblePaths = t.compatiblePaths args;
+        compatible = compatiblePaths == args;
       });
+
+  # also includes subdirectories of the given paths up to a certain depth
+  # to check for translator compatibility
+  translatorsForInputRecursive =
+    {
+      inputDirectories,
+      inputFiles,
+      depth ? 2,
+    }:
+    let
+      listDirsRec = dir: depth:
+        let
+          subDirs = (utils.listDirs dir);
+        in
+          if depth == 0 then
+            subDirs
+          else
+            subDirs
+            ++
+            (lib.flatten
+              (map
+                (subDir: listDirsRec subDir (depth -1))
+                subDirs));
+
+      dirsToCheck =
+        lib.flatten
+          (map
+            (inputDir: listDirsRec inputDir depth)
+            inputDirectories);
+
+    in
+      translatorsForInput {
+        inputDirectories = dirsToCheck;
+        inherit inputFiles;
+      };
+
 
   # pupulates a translators special args with defaults
   getextraArgsDefaults = extraArgsDef:
