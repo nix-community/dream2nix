@@ -6,12 +6,17 @@ let
   recurseIntoAll = b.mapAttrs (name: val: pkgs.recurseIntoAttrs val);
 
 in
+# {
+#   inherit flake;
+# }
+
+# // (recurseIntoAll {
+
+#   checks = flake.checks.x86_64-linux;
+
+# })
+
+# hercules ci's nix version cannot fetch submodules and crashes
 {
-  inherit flake;
+  inherit (pkgs) hello;
 }
-
-// (recurseIntoAll {
-
-  checks = flake.checks.x86_64-linux;
-
-})
