@@ -4,6 +4,7 @@
   fetchzip,
   lib,
   nix,
+  pkgs,
   runCommand,
   writeScript,
 
@@ -94,6 +95,8 @@ rec {
     set -Eeuo pipefail
 
     export PATH="${lib.makeBinPath availablePrograms}"
+    export NIX_PATH=nixpkgs=${pkgs.path}
+
     tmpdir=$(${coreutils}/bin/mktemp -d)
     cd $tmpdir
 
