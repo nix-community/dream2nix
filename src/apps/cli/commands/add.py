@@ -170,9 +170,9 @@ class AddCommand(Command):
 
   def aggregate_hashes(self, lock, outputDreamLock):
     print("Building FOD of aggregates sources to retrieve output hash")
-    # remove hashes from lock file and init sourcesCombinedHash with empty string
+    # remove hashes from lock file and init sourcesAggregatedHash with empty string
     strip_hashes_from_lock(lock)
-    lock['_generic']['sourcesCombinedHash'] = ""
+    lock['_generic']['sourcesAggregatedHash'] = ""
     with open(outputDreamLock, 'w') as f:
       json.dump(lock, f, indent=2)
     # compute FOD hash of aggregated sources
@@ -195,7 +195,7 @@ class AddCommand(Command):
     hash = match.groups()[0]
     print(f"Computed FOD hash: {hash}")
     # store the hash in the lock
-    lock['_generic']['sourcesCombinedHash'] = hash
+    lock['_generic']['sourcesAggregatedHash'] = hash
 
   def postprocess_dep_graph(self, lock):
     depGraph = lock['_generic']['dependencies']

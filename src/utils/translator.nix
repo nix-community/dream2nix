@@ -32,7 +32,7 @@ let
       mainPackageSource ? { type = "unknown"; },
     }:
     let
-  
+
       serializedPackagesList = serializePackages inputData;
 
       allDependencies = b.foldl'
@@ -57,7 +57,7 @@ let
             "${getVersion pkgData}" =
               let
                 type = getSourceType pkgData;
-                constructedArgs = 
+                constructedArgs =
                   (sourceConstructors."${type}" pkgData)
                   // { inherit type; };
               in
@@ -69,7 +69,7 @@ let
 
       dependencyGraph =
         let
-          depGraph = 
+          depGraph =
             (lib.mapAttrs
               (name: versions:
                 lib.mapAttrs
@@ -89,7 +89,7 @@ let
 
       allDependencyKeys =
         let
-          depsWithDuplicates = 
+          depsWithDuplicates =
             lib.flatten
               (lib.flatten
                 (lib.mapAttrsToList
@@ -97,7 +97,7 @@ let
                   dependencyGraph));
         in
           lib.unique depsWithDuplicates;
-      
+
       missingDependencies =
         lib.flatten
           (lib.forEach allDependencyKeys
@@ -123,7 +123,7 @@ let
 
       allSources =
         lib.recursiveUpdate sources generatedSources;
-      
+
       getDepByNameVer = name: version:
         allDependencies."${name}"."${version}";
 
@@ -208,10 +208,10 @@ let
               mainPackageVersion
             ;
             subsystem = subsystemName;
-            sourcesCombinedHash = null;
+            sourcesAggregatedHash = null;
             translator = translatorName;
           };
-        
+
         # build system specific attributes
         _subsystem = subsystemAttrs;
 

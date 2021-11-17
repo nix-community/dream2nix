@@ -18,7 +18,7 @@
 {
   # sources attrset from dream lock
   sources,
-  sourcesCombinedHash,
+  sourcesAggregatedHash,
   ...
 }@args:
 let
@@ -168,7 +168,7 @@ let
         ];
         outputHashAlgo = "sha256";
         outputHashMode = "recursive";
-        outputHash = sourcesCombinedHash;
+        outputHash = sourcesAggregatedHash;
       };
 
 in

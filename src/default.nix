@@ -131,7 +131,7 @@ let
 
   # detect if granular or combined fetching must be used
   findFetcher = dreamLock:
-      if null != dreamLock._generic.sourcesCombinedHash then
+      if null != dreamLock._generic.sourcesAggregatedHash then
         fetchers.combinedFetcher
       else
         fetchers.defaultFetcher;
@@ -157,7 +157,7 @@ let
         mainPackageName = dreamLock._generic.mainPackageName;
         mainPackageVersion = dreamLock._generic.mainPackageVersion;
         sources = dreamLock'.sources;
-        sourcesCombinedHash = dreamLock'._generic.sourcesCombinedHash;
+        sourcesAggregatedHash = dreamLock'._generic.sourcesAggregatedHash;
       };
 
       fetchedSources = fetched.fetchedSources;
