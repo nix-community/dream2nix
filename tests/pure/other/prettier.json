@@ -1,0 +1,30 @@
+{
+  "_generic": {
+    "mainPackageName": "prettier",
+    "mainPackageVersion": "2.4.1",
+    "sourcesAggregatedHash": "sha256-AR5QtVJE15NCLJpjWdg6UxhIEwFGsCAne5TI3DcOMeI=",
+    "subsystem": "nodejs",
+    "translatedBy": "nodejs.pure.yarn-lock",
+    "translator": "yarn-lock",
+    "translatorParams": ""
+  },
+  "_subsystem": {
+    "nodejsVersion": "14"
+  },
+  "cyclicDependencies": {},
+  "dependencies": {
+    "prettier": {
+      "2.4.1": []
+    }
+  },
+  "sources": {
+    "prettier": {
+      "2.4.1": {
+        "owner": "prettier",
+        "repo": "prettier",
+        "rev": "2.4.1",
+        "type": "github"
+      }
+    }
+  }
+}

@@ -61,6 +61,8 @@ rec {
 
   listDirs = path: lib.attrNames (lib.filterAttrs (n: v: v == "directory") (builtins.readDir path));
 
+  toDrv = path: runCommand "some-drv" {} "cp -r ${path} $out";
+
   # directory names of a given directory
   dirNames = dir: lib.attrNames (lib.filterAttrs (name: type: type == "directory") (builtins.readDir dir));
 
