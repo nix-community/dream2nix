@@ -22,6 +22,5 @@ utils.writePureShellScript
     --attribute-name mattermost-webapp \
     --arg name="{automatic}" \
     --arg noDev=false \
-    --arg nodejs=14 \
-    --arg peer=false
+    --arg nodejs=14
 ''
