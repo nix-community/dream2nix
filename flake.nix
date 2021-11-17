@@ -4,6 +4,9 @@
   inputs = {
     nixpkgs.url = "nixpkgs/nixos-unstable";
 
+    # required for builder go/gomod2nix
+    gomod2nix = { url = "github:tweag/gomod2nix"; flake = false; };
+
     # required for translator nodejs/pure/package-lock
     nix-parsec = { url = "github:nprindle/nix-parsec"; flake = false; };
 
@@ -19,6 +22,7 @@
 
   outputs = {
     self,
+    gomod2nix,
     mach-nix,
     nix-parsec,
     nixpkgs,
