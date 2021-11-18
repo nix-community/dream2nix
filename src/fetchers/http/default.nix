@@ -17,7 +17,7 @@
     in
     {
 
-      calcHash = algo: utils.hashPath algo (b.fetchurl {
+      calcHash = algo: utils.hashFile algo (b.fetchurl {
         inherit url;
       });
 

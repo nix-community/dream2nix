@@ -67,6 +67,7 @@ class AddCommand(Command):
     packages_root = self.find_packages_root()
 
 
+    source = self.argument("source")
     lock, sourceSpec, specified_extra_args, translator =\
       self.translate_from_source(specified_extra_args, self.argument("source"))
 
@@ -109,7 +110,7 @@ class AddCommand(Command):
 
     # create default.nix
     if 'default.nix' in filesToCreate:
-      self.create_default_nix(lock, output, outputDefaultNix, sources[0])
+      self.create_default_nix(lock, output, outputDefaultNix, source)
 
     # add new package to git
     if config['isRepo']:

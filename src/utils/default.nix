@@ -6,6 +6,7 @@
   nix,
   pkgs,
   runCommand,
+  stdenv,
   writeScript,
 
   # dream2nix inputs
@@ -82,11 +83,20 @@ rec {
     else
       func args;
 
-  # hash the contents of a path via `nix hash-path`
+  # hash the contents of a path via `nix hash path`
   hashPath = algo: path:
     let
+      hashPath = runCommand "hash-${algo}" {} ''
+        ${nix}/bin/nix hash path ${path} | tr --delete '\n' > $out
+      '';
+    in
+      b.readFile hashPath;
+
+  # hash a file via `nix hash file`
+  hashFile = algo: path:
+    let
       hashFile = runCommand "hash-${algo}" {} ''
-        ${nix}/bin/nix hash-path ${path} | tr --delete '\n' > $out
+        ${nix}/bin/nix hash file ${path} | tr --delete '\n' > $out
       '';
     in
       b.readFile hashFile;
@@ -112,19 +122,23 @@ rec {
     {
       source,
     }:
-      # fetchzip can extract tarballs as well
-      (fetchzip { url="file:${source}"; }).overrideAttrs (old: {
-        name = "${(source.name or "")}extracted";
-        outputHash = null;
-        postFetch =
-          ''
-            if test -d ${source}; then
-              ln -s ${source} $out
-              exit 0
-            fi
-          ''
-          + old.postFetch;
-      });
+    stdenv.mkDerivation {
+      name = "${(source.name or "")}-extracted";
+      src = source;
+      phases = [ "unpackPhase" ];
+      preUnpack = ''
+        echo "source: $src"
+        unpackFallback(){
+          local fn="$1"
+          tar xf "$fn"
+        }
+        unpackCmdHooks+=(unpackFallback)
+      '';
+      postUnpack = ''
+        mv $sourceRoot $out
+        exit
+      '';
+    };
 
   sanitizeDerivationName = name:
     lib.replaceStrings [ "@" "/" ] [ "__at__" "__slash__" ] name;
