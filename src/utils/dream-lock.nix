@@ -75,26 +75,23 @@ let
       ."${dreamLock._generic.mainPackageVersion}";
 
   getSource = fetchedSources: pname: version:
-    let
-      key = "${pname}#${version}";
-    in
-      if fetchedSources ? "${key}"
-          && fetchedSources."${key}" != "unknown" then
-        fetchedSources."${key}"
-      else
-        throw ''
-          The source for ${key} is not defined.
-          This can be fixed via an override. Example:
-          ```
-            dream2nix.riseAndShine {
-              ...
-              sourceOverrides = oldSources: {
-                "${key}" = builtins.fetchurl { ... };
-              };
-              ...
-            }
-          ```
-        '';
+    if fetchedSources ? "${pname}"."${version}"
+        && fetchedSources."${pname}"."${version}" != "unknown" then
+      fetchedSources."${pname}"."${version}"
+    else
+      throw ''
+        The source for ${pname}#${version} is not defined.
+        This can be fixed via an override. Example:
+        ```
+          dream2nix.riseAndShine {
+            ...
+            sourceOverrides = oldSources: {
+              "${pname}"."${version}" = builtins.fetchurl { ... };
+            };
+            ...
+          }
+        ```
+      '';
 
     # generate standalone dreamLock for a depenndency of an existing dreamLock
     getSubDreamLock = dreamLock: name: version:

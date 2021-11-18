@@ -11,19 +11,19 @@
     "url"
   ];
 
-  outputs = { url, ... }@inp: 
+  outputs = { url, ... }@inp:
     let
       b = builtins;
     in
     {
 
-      calcHash = algo: utils.hashPath algo (b.fetchurl {
+      calcHash = algo: utils.hashFile algo (b.fetchurl {
         inherit url;
       });
 
       fetched = hash:
-        let drv = 
-          if lib.stringLength hash == 40 then
+        let drv =
+          if hash != null && lib.stringLength hash == 40 then
             fetchurl {
               inherit url;
               sha1 = hash;

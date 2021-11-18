@@ -62,7 +62,7 @@ def main():
       "mainPackageName": os.environ.get('NAME'),
       "mainPackageVersion": os.environ.get('VERSION'),
 
-      "sourcesCombinedHash": None,
+      "sourcesAggregatedHash": None,
     },
     _subsystem={
       "application": jsonInput['application'],

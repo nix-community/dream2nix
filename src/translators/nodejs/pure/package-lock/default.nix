@@ -43,23 +43,30 @@
           utils.identifyGitUrl dependencyObject.version;
 
       getVersion = dependencyObject:
-        if identifyGitSource dependencyObject then
-          "0.0.0-rc.${b.substring 0 8 (utils.parseGitUrl dependencyObject.version).rev}"
-        else if lib.hasPrefix "file:" dependencyObject.version then
-          let
-            path = getPath dependencyObject;
-          in
-            (b.fromJSON
-              (b.readFile "${inputDir}/${path}/package.json")
-            ).version
-        else if lib.hasPrefix "https://" dependencyObject.version then
-          "unknown"
-        else
-          dependencyObject.version;
+        let
+          # example: "version": "npm:@tailwindcss/postcss7-compat@2.2.4",
+          npmMatch = b.match ''^npm:.*@(.*)$'' dependencyObject.version;
+
+        in
+          if npmMatch != null then
+            b.elemAt npmMatch 0
+          else if identifyGitSource dependencyObject then
+            "0.0.0-rc.${b.substring 0 8 (utils.parseGitUrl dependencyObject.version).rev}"
+          else if lib.hasPrefix "file:" dependencyObject.version then
+            let
+              path = getPath dependencyObject;
+            in
+              (b.fromJSON
+                (b.readFile "${inputDir}/${path}/package.json")
+              ).version
+          else if lib.hasPrefix "https://" dependencyObject.version then
+            "unknown"
+          else
+            dependencyObject.version;
 
       getPath = dependencyObject:
         lib.removePrefix "file:" dependencyObject.version;
-      
+
       pinVersions = dependencies: parentScopeDeps:
         lib.mapAttrs
           (pname: pdata:
@@ -80,7 +87,7 @@
               }
           )
           dependencies;
-      
+
       packageLockWithPinnedVersions = pinVersions parsedDependencies parsedDependencies;
 
       createMissingSource = name: version:
@@ -112,7 +119,7 @@
             (lib.filterAttrs
               (pname: pdata: ! (pdata.dev or false) || dev)
               parsedDependencies);
-              
+
         subsystemName = "nodejs";
 
         subsystemAttrs = { nodejsVersion = args.nodejs; };
@@ -156,7 +163,7 @@
             "path"
           else
             "http";
-        
+
         sourceConstructors = {
 
           git = dependencyObject:
@@ -201,7 +208,7 @@
       inputFiles,
     }@args:
     {
-      inputDirectories = lib.filter 
+      inputDirectories = lib.filter
         (utils.containsMatchingFile [ ''.*package-lock\.json'' ''.*package.json'' ])
         args.inputDirectories;
 

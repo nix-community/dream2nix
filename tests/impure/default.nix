@@ -1,4 +1,6 @@
 {
+  async,
+  coreutils,
   lib,
 
   # dream2nix
@@ -22,11 +24,20 @@ let
       allTestFiles;
 
   executeAll = utils.writePureShellScript
-    []
+    [
+      async
+      coreutils
+    ]
     ''
+      S=$(mktemp)
+      async -s=$S server --start -j4
+
       for test in ${toString allTests}; do
-        $test
+        async -s=$S cmd -- $test
       done
+
+      async -s=$S wait
+      rm $S
     '';
 
 
