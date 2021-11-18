@@ -97,38 +97,46 @@ let
       else
         ""
     else if lib.isList x then
-      builtins.toString (lib.forEach x (y: toString y))
+      ''"${lib.concatStringsSep " " (lib.forEach x (y: toString' y))}"''
     else if x == null then
       ""
     else
-      builtins.toJSON x;
+      b.toJSON x;
 
-  # generate script to fetch single item
-  fetchItem = fetcherArgs: ''
+  # set up nix build env for signle item
+  setupEnvForItem = fetcherArgs: ''
 
     # export arguments for builder
     ${lib.concatStringsSep "\n" (lib.mapAttrsToList (argName: argVal: ''
-      export ${argName}=${toString' argVal}
+      export ${argName}=${
+        lib.replaceStrings [ "$" ''\n'' ] [ ''\$'' "\n" ] (toString' argVal)}
     '') fetcherArgs)}
 
     # run builder
     bash ${fetcherArgs.builder}
   '';
 
-  mkScriptItem = fetcherArgs: ''
+  mkScriptForItem = fetcherArgs: ''
+    # configure $out
     OUT_ORIG=$out
     export out=$OUT_ORIG/${fetcherArgs.outPath}
     mkdir -p $(dirname $out)
+
+    # set up TMP and TMPDIR
     workdir=$(mktemp -d)
+    TMP=$workdir/TMP
+    TMPDIR=$TMP
+    mkdir -p $TMP
+
+    # do the work
     pushd $workdir
-    ${fetchItem fetcherArgs}
+    ${setupEnvForItem fetcherArgs}
     popd
     rm -r $workdir
   '';
 
   # builder which wraps several other FOD builders
   # and executes these after each other inside a single build
-  # TODO: for some reason PATH is unset and we don't have access to the stdenv tools
   builder = writeScript "multi-source-fetcher" ''
     #!${bash}/bin/bash
     export PATH=${coreutils}/bin:${bash}/bin
@@ -142,13 +150,13 @@ let
     ${lib.concatStringsSep "\n"
       (b.map
         (fetcherArgs: ''
-          $async -s="$S" cmd -- bash -c '${mkScriptItem fetcherArgs}'
+          $async -s="$S" cmd -- bash -c '${mkScriptForItem fetcherArgs}'
         '')
         FODArgsAllList)}
 
     $async -s="$S" wait
 
-    echo "FOD_HASH=$(${nix}/bin/nix hash-path $out)"
+    echo "FOD_HASH=$(${nix}/bin/nix hash path $out)"
   '';
 
   FODAllSources =

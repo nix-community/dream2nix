@@ -11,7 +11,7 @@ let
   fetchAggrgatedGithub =
     dream2nix.utils.toDrv
       (dream2nix.fetchSources {
-        dreamLock = ./prettier.json;
+        dreamLock = ./prettier-github-aggregated.json;
       }).fetchedSources.prettier."2.4.1";
 
 in
