@@ -132,12 +132,14 @@
         # all apps including cli, install, etc.
         apps = forAllSystems (system: pkgs:
           dream2nixFor."${system}".apps.flakeApps // {
-            tests-impure = {
-              type = "app";
-              program =
-                b.toString
-                  (dream2nixFor."${system}".callPackageDream ./tests/impure {});
-            };
+            tests-impure.type = "app";
+            tests-impure.program = b.toString
+              (dream2nixFor."${system}".callPackageDream ./tests/impure {});
+            tests-unit.type = "app";
+            tests-unit.program = b.toString
+              (dream2nixFor."${system}".callPackageDream ./tests/unit {
+                inherit self;
+              });
           }
         );
 

@@ -8,8 +8,8 @@ import tempfile
 import networkx as nx
 from cleo import Command, argument, option
 
-from utils import config, dream2nix_src, checkLockJSON, callNixFunction, buildNixFunction, buildNixAttribute, \
-  list_translators_for_source, strip_hashes_from_lock
+from utils import config, dream2nix_src, checkLockJSON, list_translators_for_source, strip_hashes_from_lock
+from nix_ffi import callNixFunction, buildNixFunction, buildNixAttribute
 
 
 class AddCommand(Command):
