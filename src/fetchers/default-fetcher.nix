@@ -31,7 +31,7 @@ let
                 source.path
               # assume path relative to main package source
               else
-                "${fetchedSources."${mainPackageName}#${mainPackageVersion}"}/${source.path}"
+                "${fetchedSources."${mainPackageName}"."${mainPackageVersion}"}/${source.path}"
             else if fetchers.fetchers ? "${source.type}" then
               fetchSource { inherit source; }
             else throw "unsupported source type '${source.type}'")

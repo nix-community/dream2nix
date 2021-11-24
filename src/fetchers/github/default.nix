@@ -19,7 +19,7 @@
 
   defaultUpdater = "githubNewestReleaseTag";
 
-  outputs = { owner, repo, rev, ... }@inp: 
+  outputs = { owner, repo, rev, }@inp:
     let
       b = builtins;
     in

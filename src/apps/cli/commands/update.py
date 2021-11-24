@@ -6,7 +6,8 @@ import tempfile
 
 from cleo import Command, argument, option
 
-from utils import config, buildNixFunction, callNixFunction
+from utils import config
+from nix_ffi import callNixFunction, buildNixFunction
 
 
 class UpdateCommand(Command):

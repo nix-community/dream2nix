@@ -75,13 +75,33 @@ rec {
       (pattern: lib.any (file: b.match pattern file != null) (listFiles dir))
       patterns;
 
-  # allow a function to receive its input from an environment variable
-  # whenever an empty set is passed
-  makeCallableViaEnv = func: args:
-    if args == {} then
-      func (builtins.fromJSON (builtins.readFile (builtins.getEnv "FUNC_ARGS")))
-    else
-      func args;
+  # Calls any function with an attrset arugment, even if that function
+  # doesn't accept an attrset argument, in which case the arguments are
+  # recursively applied as parameters.
+  # For this to work, the function parameters defined by the called function
+  # must always be ordered alphabetically.
+  callWithAttrArgs = func: args:
+    let
+      applyParamsRec = func: params:
+        if b.length params == 1 then
+          func (b.head params)
+        else
+          applyParamsRec
+            (func (b.head params))
+            (b.tail params);
+
+    in
+      if lib.functionArgs func == {} then
+        applyParamsRec func (b.attrValues args)
+      else
+        func args;
+
+  # call a function using arguments defined by the env var FUNC_ARGS
+  callViaEnv = func:
+    let
+      funcArgs = b.fromJSON (b.readFile (b.getEnv "FUNC_ARGS"));
+    in
+      callWithAttrArgs func funcArgs;
 
   # hash the contents of a path via `nix hash path`
   hashPath = algo: path:
@@ -121,21 +141,28 @@ rec {
   extractSource =
     {
       source,
+      dir ? "",
     }:
     stdenv.mkDerivation {
       name = "${(source.name or "")}-extracted";
       src = source;
+      inherit dir;
       phases = [ "unpackPhase" ];
-      preUnpack = ''
-        echo "source: $src"
-        unpackFallback(){
-          local fn="$1"
-          tar xf "$fn"
-        }
-        unpackCmdHooks+=(unpackFallback)
-      '';
+      dontInstall = true;
+      dontFixup = true;
+      unpackCmd =
+        if lib.hasSuffix ".tgz" source.name then
+          ''
+            tar --delay-directory-restore -xf $src
+
+            # set executable flag only on directories
+            chmod -R +X .
+          ''
+        else
+          null;
       postUnpack = ''
-        mv $sourceRoot $out
+        echo postUnpack
+        mv "$sourceRoot/$dir" $out
         exit
       '';
     };
@@ -147,42 +174,12 @@ rec {
     { inherit name version; };
 
   # determines if version v1 is greater than version v2
-  versionGreater = v1: v2:
-    versionGreaterList
-      (lib.splitString "." v1)
-      (lib.splitString "." v2);
-
-  # internal helper for 'versionGreater'
-  versionGreaterList = v1: v2:
-    let
-      head1 = b.head v1;
-      head2 = b.head v2;
-      n1 =
-        if builtins.match ''[[:digit:]]*'' head1 != null then
-          lib.toInt head1
-        else
-          0;
-      n2 = if builtins.match ''[[:digit:]]*'' head2 != null then
-          lib.toInt head2
-        else
-          0;
-    in
-      if n1 > n2 then
-        true
-      else
-        # end recursion condition
-        if b.length v1 == 1 || b.length v1 == 1 then
-          false
-        else
-          # continue recursion
-          versionGreaterList (b.tail v1) (b.tail v2);
+  versionGreater = v1: v2: b.compareVersions v1 v2 == 1;
 
   # picks the latest version from a list of version strings
   latestVersion = versions:
     b.head
-      (lib.sort
-        (v1: v2: versionGreater v1 v2)
-        versions);
+      (lib.sort versionGreater versions);
 
   satisfiesSemver = poetry2nixSemver.satisfiesSemver;
 

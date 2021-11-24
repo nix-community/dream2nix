@@ -35,7 +35,8 @@
                     "properties": {
                       "url": { "type": "string" },
                       "hash": { "type": "string" },
-                      "type": { "type": "string" }
+                      "type": { "type": "string" },
+                      "dir": { "type": "string" }
                     },
                     "required": ["type", "url"],
                     "additionalProperties": false
@@ -50,7 +51,8 @@
                       "url": { "type": "string" },
                       "rev": { "type": "string" },
                       "hash": { "type": "string" },
-                      "type": { "type": "string" }
+                      "type": { "type": "string" },
+                      "dir": { "type": "string" }
                     },
                     "required": ["type", "url", "rev"],
                     "additionalProperties": false
@@ -66,7 +68,8 @@
                       "repo": { "type": "string" },
                       "rev": { "type": "string" },
                       "hash": { "type": "string" },
-                      "type": { "type": "string" }
+                      "type": { "type": "string" },
+                      "dir": { "type": "string" }
                     },
                     "required": ["type", "owner", "repo", "rev"],
                     "additionalProperties": false
@@ -81,7 +84,8 @@
                       "pname": { "type": "string" },
                       "version": { "type": "string" },
                       "hash": { "type": "string" },
-                      "type": { "type": "string" }
+                      "type": { "type": "string" },
+                      "dir": { "type": "string" }
                     },
                     "required": ["type", "pname"],
                     "additionalProperties": false
@@ -94,7 +98,8 @@
                   "then": {
                     "properties": {
                       "path": { "type": "string" },
-                      "type": { "type": "string" }
+                      "type": { "type": "string" },
+                      "dir": { "type": "string" }
                     },
                     "required": ["type", "path"],
                     "additionalProperties": false
@@ -109,7 +114,8 @@
                       "pname": { "type": "string" },
                       "version": { "type": "string" },
                       "hash": { "type": "string" },
-                      "type": { "type": "string" }
+                      "type": { "type": "string" },
+                      "dir": { "type": "string" }
                     },
                     "required": ["type", "pname"],
                     "additionalProperties": false
@@ -139,14 +145,14 @@
       "properties": {
         "_subsystem": { "type": "string" },
         "producedBy": { "type": "string" }
-      } 
+      }
     },
 
     "_subsystem": {
       "description": "build system specifics",
       "type": "object"
     },
-    
+
     "dependencies": {
       "type": "object",
       "properties": {
