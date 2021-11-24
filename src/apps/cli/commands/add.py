@@ -319,7 +319,7 @@ class AddCommand(Command):
       "Specify new attribute name or leave empty to keep current:"
     )
     if new_name:
-      attributeName = newName
+      attributeName = new_name
     return attributeName
 
   def run_translate(self, source, specified_extra_args, translator):
