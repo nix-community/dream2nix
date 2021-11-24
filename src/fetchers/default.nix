@@ -19,7 +19,7 @@ rec {
   );
 
   defaultFetcher = callPackageDream ./default-fetcher.nix { inherit fetchers fetchSource; };
-  
+
   combinedFetcher = callPackageDream ./combined-fetcher.nix { inherit defaultFetcher; };
 
   constructSource =
@@ -30,8 +30,7 @@ rec {
     }@args:
     let
       fetcher = fetchers."${type}";
-      namesKeep = fetcher.inputs ++ [ "type" "hash" ];
-      argsKeep = lib.filterAttrs (n: v: b.elem n namesKeep) args;
+      argsKeep = b.removeAttrs args [ "reComputeHash" "version" ];
       fetcherOutputs = fetcher.outputs args;
     in
       argsKeep
@@ -61,24 +60,82 @@ rec {
   fetchSource = { source, extract ? false, }:
     let
       fetcher = fetchers."${source.type}";
-      fetcherOutputs = fetcher.outputs source;
+      fetcherArgs = b.removeAttrs source [ "dir" "hash" "type" ];
+      fetcherOutputs = fetcher.outputs fetcherArgs;
       maybeArchive = fetcherOutputs.fetched (source.hash or null);
     in
-      if extract then
-        utils.extractSource { source = maybeArchive; }
+      if source ? dir then
+        "${maybeArchive}/${source.dir}"
       else
         maybeArchive;
 
-  # fetch a source define dby a shortcut
+  # fetch a source defined by a shortcut
   fetchShortcut = { shortcut, extract ? false, }:
     fetchSource {
       source = translateShortcut { inherit shortcut; };
       inherit extract;
     };
 
-  # translate shortcut to dream lock source spec
-  translateShortcut = { shortcut, }:
+  parseShortcut = shortcut:
     let
+      # in: "git+https://foo.com/bar?kwarg1=lol&kwarg2=hello"
+      # out: [ "git+" "git" "https" "//" "foo.com/bar" "?kwarg1=lol&kwarg2=hello" "kwarg1=lol&kwarg2=hello" ]
+      split =
+        b.match
+          ''(([[:alnum:]]+)\+)?([[:alnum:]]+):(//)?([^\?]*)(\?(.*))?''
+          shortcut;
+
+      parsed = {
+        proto1 = b.elemAt split 1;
+        proto2 = b.elemAt split 2;
+        path = b.elemAt split 4;
+        allArgs = b.elemAt split 6;
+        kwargs = b.removeAttrs kwargs_ [ "dir" ];
+        dir = kwargs_.dir or null;
+      };
+
+      kwargs_ =
+        if parsed.allArgs == null then
+          {}
+        else
+          lib.listToAttrs
+            (map
+              (kwarg:
+                let
+                  split = lib.splitString "=" kwarg;
+                in
+                  lib.nameValuePair
+                    (b.elemAt split 0)
+                    (b.elemAt split 1))
+              (lib.splitString "&" parsed.allArgs));
+
+    in
+      if split == null then
+        throw "Unable to parse shortcut: ${shortcut}"
+      else
+        parsed;
+
+  renderUrlArgs = kwargs:
+    let
+      asStr =
+        (lib.concatStringsSep
+          "&"
+          (lib.mapAttrsToList
+            (name: val: "${name}=${val}")
+            kwargs));
+
+    in
+      if asStr == "" then
+        ""
+      else
+        "?" + asStr;
+
+
+  # translate shortcut to dream lock source spec
+  translateShortcut = { shortcut, computeHash ? true, }:
+    let
+
+      parsed = parseShortcut shortcut;
 
       checkArgs = fetcherName: args:
         let
@@ -93,58 +150,83 @@ rec {
           else
             args;
 
-      translateHttpUrl = 
+      translateHttpUrl =
         let
           fetcher = fetchers.http;
-          fetcherOutputs = fetchers.http.outputs { url = shortcut; };
-        in
-          constructSource {
-            type = "http";
-            hash = fetcherOutputs.calcHash "sha256";
-            url = shortcut;
+
+          urlArgsFinal = renderUrlArgs parsed.kwargs;
+
+          url = with parsed; "${proto2}://${path}${urlArgsFinal}";
+
+          fetcherOutputs = fetchers.http.outputs {
+            inherit url;
           };
 
-      translateGitShortcut =
-        let
-          urlAndParams = lib.elemAt (lib.splitString "+" shortcut) 1;
-          splitUrlParams = lib.splitString "?" urlAndParams;
-          url = lib.head splitUrlParams;
-          params = lib.listToAttrs (lib.forEach (lib.tail splitUrlParams) (keyVal:
-            let
-              split = lib.splitString "=" keyVal;
-              name = lib.elemAt split 0;
-              value = lib.elemAt split 1;
-            in
-              lib.nameValuePair name value
-          ));
-          fetcher = fetchers.git;
-          args = params // { inherit url; };
-          fetcherOutputs = fetcher.outputs (checkArgs "git" args);
         in
-          constructSource 
-            (params // {
-              type = "git";
-              hash = fetcherOutputs.calcHash "sha256";
+          constructSource
+            {
               inherit url;
+              type = "http";
+            }
+            // (lib.optionalAttrs (parsed.dir != null) {
+              dir = parsed.dir;
+            })
+            // (lib.optionalAttrs computeHash {
+              hash = fetcherOutputs.calcHash "sha256";
             });
-        
+
+      translateProtoShortcut =
+        let
+
+          kwargsUrl = b.removeAttrs parsed.kwargs fetcher.inputs;
+
+          urlArgs = renderUrlArgs kwargsUrl;
+
+          url = with parsed; "${proto2}://${path}${urlArgs}";
+
+          fetcherName = parsed.proto1;
+
+          fetcher = fetchers."${fetcherName}";
+
+          args = parsed.kwargs // { inherit url; };
+
+          fetcherOutputs = fetcher.outputs (checkArgs fetcherName args);
+
+        in
+          constructSource
+            (parsed.kwargs // {
+              type = fetcherName;
+              inherit url;
+            }
+            // (lib.optionalAttrs (parsed.dir != null) {
+              dir = parsed.dir;
+            })
+            // (lib.optionalAttrs computeHash {
+              hash = fetcherOutputs.calcHash "sha256";
+            }));
+
       translateRegularShortcut =
         let
-          splitNameParams = lib.splitString ":" (lib.removeSuffix "/" shortcut);
-          fetcherName = lib.elemAt splitNameParams 0;
-          paramsStr = lib.elemAt splitNameParams 1;
-          params = lib.splitString "/" paramsStr;
-          
+          fetcherName = parsed.proto2;
+
+          path = lib.removeSuffix "/" parsed.path;
+
+          params = lib.splitString "/" path;
+
           fetcher = fetchers."${fetcherName}";
-          args = lib.listToAttrs 
-            (lib.forEach
-              (lib.range 0 ((lib.length fetcher.inputs) - 1))
-              (idx:
-                lib.nameValuePair
-                  (lib.elemAt fetcher.inputs idx)
-                  (lib.elemAt params idx)
-              ));
-          fetcherOutputs = fetcher.outputs args;
+
+          args =
+            lib.listToAttrs
+              (lib.forEach
+                (lib.range 0 ((lib.length fetcher.inputs) - 1))
+                (idx:
+                  lib.nameValuePair
+                    (lib.elemAt fetcher.inputs idx)
+                    (lib.elemAt params idx)
+                ));
+
+          fetcherOutputs = fetcher.outputs (args // parsed.kwargs);
+
         in
           if b.length params != b.length fetcher.inputs then
             throw ''
@@ -152,16 +234,23 @@ rec {
               Should be ${fetcherName}:${lib.concatStringsSep "/" fetcher.inputs}
             ''
           else
-            constructSource (args // {
+            constructSource (args // parsed.kwargs // {
               type = fetcherName;
+            }
+            // (lib.optionalAttrs (parsed.dir != null) {
+              dir = parsed.dir;
+            })
+            // (lib.optionalAttrs computeHash {
               hash = fetcherOutputs.calcHash "sha256";
-            });
+            }));
+
     in
-      if lib.hasPrefix "git+" (lib.head (lib.splitString ":" shortcut)) then
-        translateGitShortcut
-      else if lib.hasPrefix "http://" shortcut || lib.hasPrefix  "https://" shortcut then
+      if parsed.proto1 != null then
+        translateProtoShortcut
+      else if lib.hasPrefix "http://" shortcut
+          || lib.hasPrefix  "https://" shortcut then
         translateHttpUrl
       else
         translateRegularShortcut;
-    
+
 }

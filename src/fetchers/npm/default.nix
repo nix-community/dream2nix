@@ -17,7 +17,7 @@
 
   # defaultUpdater = "";
 
-  outputs = { pname, version, ... }@inp:
+  outputs = { pname, version, }@inp:
     let
       b = builtins;
 

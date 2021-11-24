@@ -474,12 +474,17 @@ class AddCommand(Command):
     sourceSpec = {}
     # handle source shortcuts
     if source.partition(':')[0].split('+')[0] in os.environ.get("fetcherNames", None).split() \
-            or source.startswith('http'):
+        or source.startswith('http'):
       print(f"fetching source for '{source}'")
       sourceSpec = \
         callNixFunction("fetchers.translateShortcut", shortcut=source)
+      subdir = ""
+      if 'dir' in sourceSpec:
+        subdir = '/' + sourceSpec['dir']
+        del sourceSpec['dir']
       source = \
-        buildNixFunction("fetchers.fetchShortcut", shortcut=source, extract=True)
+        buildNixFunction("fetchers.fetchSource", source=sourceSpec, extract=True)
+      source += subdir
     # handle source paths
     else:
       # check if source path exists

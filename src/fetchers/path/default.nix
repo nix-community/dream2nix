@@ -8,7 +8,7 @@
     "path"
   ];
 
-  outputs = { path, ... }@inp: 
+  outputs = { path, }@inp:
     let
       b = builtins;
     in

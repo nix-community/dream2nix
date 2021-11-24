@@ -19,5 +19,5 @@ in
     ]
     ''
       export dream2nixSrc=${dream2nixWithExternals}
-      ${python3.pkgs.pytest}/bin/pytest ${self}/tests/unit
+      ${python3.pkgs.pytest}/bin/pytest ${self}/tests/unit "$@"
     ''

@@ -141,21 +141,28 @@ rec {
   extractSource =
     {
       source,
+      dir ? "",
     }:
     stdenv.mkDerivation {
       name = "${(source.name or "")}-extracted";
       src = source;
+      inherit dir;
       phases = [ "unpackPhase" ];
-      preUnpack = ''
-        echo "source: $src"
-        unpackFallback(){
-          local fn="$1"
-          tar xf "$fn"
-        }
-        unpackCmdHooks+=(unpackFallback)
-      '';
+      dontInstall = true;
+      dontFixup = true;
+      unpackCmd =
+        if lib.hasSuffix ".tgz" source.name then
+          ''
+            tar --delay-directory-restore -xf $src
+
+            # set executable flag only on directories
+            chmod -R +X .
+          ''
+        else
+          null;
       postUnpack = ''
-        mv $sourceRoot $out
+        echo postUnpack
+        mv "$sourceRoot/$dir" $out
         exit
       '';
     };

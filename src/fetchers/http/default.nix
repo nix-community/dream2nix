@@ -11,7 +11,7 @@
     "url"
   ];
 
-  outputs = { url, ... }@inp:
+  outputs = { url, }@inp:
     let
       b = builtins;
     in
@@ -22,19 +22,30 @@
       });
 
       fetched = hash:
-        let drv =
-          if hash != null && lib.stringLength hash == 40 then
-            fetchurl {
-              inherit url;
-              sha1 = hash;
-            }
-          else
-            fetchurl {
-              inherit url hash;
+        let
+          drv =
+            if hash != null && lib.stringLength hash == 40 then
+              fetchurl {
+                inherit url;
+                sha1 = hash;
+              }
+            else
+              fetchurl {
+                inherit url hash;
+              };
+
+          drvSanitized =
+            drv.overrideAttrs (old: {
+              name = lib.strings.sanitizeDerivationName old.name;
+            });
+
+          extracted =
+            utils.extractSource {
+              source = drvSanitized;
             };
-        in drv.overrideAttrs (old: {
-          name = lib.strings.sanitizeDerivationName old.name;
-        });
+
+        in
+          extracted;
 
     };
 }

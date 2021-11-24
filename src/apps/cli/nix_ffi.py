@@ -54,7 +54,7 @@ def buildNixFunction(function_path, **kwargs):
           let
             d2n = (import {dream2nix_src} {{}});
           in
-            (d2n.utils.callVieEnv d2n.{function_path})
+            (d2n.utils.callViaEnv d2n.{function_path})
         ''',
       ],
       capture_output=True,
