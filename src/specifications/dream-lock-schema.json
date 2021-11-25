@@ -22,6 +22,7 @@
                     "npm",
                     "path",
                     "pypi-sdist",
+                    "crates-io",
                     "unknown"
                   ]
                 }
@@ -118,6 +119,20 @@
                       "dir": { "type": "string" }
                     },
                     "required": ["type", "pname"],
+                    "additionalProperties": false
+                  }
+                },
+                {
+                  "if": {
+                    "properties": { "type": { "const": "crates-io" } }
+                  },
+                  "then": {
+                    "properties": {
+                      "pname": { "type": "string" },
+                      "version": { "type": "string" },
+                      "hash": { "type": "string" },
+                    },
+                    "required": ["pname", "version", "hash"],
                     "additionalProperties": false
                   }
                 },
