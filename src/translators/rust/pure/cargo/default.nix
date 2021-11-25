@@ -21,11 +21,8 @@
     let
       l = lib // builtins;
       
-      # TODO: recurse thru all filtered directories and flatten all files
-      allFiles = throw "TODO";
-      
       # Find all Cargo.toml files and parse them
-      cargoTomlPaths = l.filter (path: l.baseNameOf path == "Cargo.toml") allFiles;
+      cargoTomlPaths = l.filter (path: l.baseNameOf path == "Cargo.toml") inputFiles;
       cargoTomls = l.map (path: { inherit path; value = l.fromTOML (l.readFile path); }) cargoTomlPaths;
   
       # Find the Cargo.toml matching the package name
@@ -78,40 +75,75 @@
         # FUNCTIONS
 
         # return a list of package objects of arbitrary structure
-        serializePackages = inputData: throw "TODO";
+        serializePackages = inputData: inputData;
 
         # return the name for a package object
-        getName = dependencyObject: throw "TODO";
+        getName = dependencyObject: dependencyObject.name;
 
         # return the version for a package object
-        getVersion = dependencyObject: throw "TODO";
+        getVersion = dependencyObject: dependencyObject.version;
 
         # get dependencies of a dependency object
         getDependencies = dependencyObject: getDepByNameVer: dependenciesByOriginalID:
-          dependencyObject.depsExact;
+          let
+            # This parses a "package-name version" entry in the "dependencies"
+            # field of a dependency in Cargo.lock
+            makeDepNameVersion = entry:
+              let
+                parsed = l.splitString " " entry;
+                name = l.first parsed;
+                maybeVersion = if l.length parsed > 1 then l.last parsed else null;
+              in
+              {
+                inherit name;
+                version =
+                  # If there is no version, search through the lockfile to
+                  # find the dependency's version
+                  if maybeVersion != null
+                  then maybeVersion
+                  else (l.findFirst (dep: dep.name == name) parsedDeps).version
+                ;
+              };
+          in
+          l.map makeDepNameVersion dependencyObject.dependencies;
 
-        # return the soruce type of a package object
+        # return the source type of a package object
         getSourceType = dependencyObject:
-          # example
-          if utils.identifyGitUrl dependencyObject.resolved then
+          if l.hasPrefix "git+" dependencyObject.source then
             "git"
+          else if l.hasPrefix "registry+" dependencyObject.source then
+            if dependencyObject.source == "registry+https://github.com/rust-lang/crates.io-index"
+            then "crates-io"
+            else throw "registries other than crates.io are not supported yet"
           else
-            "http";
+            throw "unknown or unsupported source type: ${dependencyObject.source}";
 
         # An attrset of constructor functions.
         # Given a dependency object and a source type, construct the 
         # source definition containing url, hash, etc.
         sourceConstructors = {
           git = dependencyObject:
+            let
+              source = dependencyObject.source;
+
+              extractRevision = source: l.last (l.splitString "#" source);
+              extractRepoUrl = source:
+                let
+                  splitted = l.head (l.splitString "?" source);
+                  split = l.substring 4 (l.stringLength splitted) splitted;
+                in l.head (l.splitString "#" split);
+            in
             {
-              url = throw "TODO";
-              rev = throw "TODO";
-              ref = throw "TODO";
+              url = extractRepoUrl source;
+              rev = extractRevision source;
             };
             
-          crates-io = dependencyObject: throw "TODO";
+          crates-io = dependencyObject:
+            {
+              inherit (dependencyObject) name version;
+              hash = dependencyObject.checksum;
+            };
         };
-
       };
 
 
@@ -128,6 +160,7 @@
         (utils.containsMatchingFile [ ''.*Cargo\.lock'' ])
         args.inputDirectories;
       
+      # TODO: filter for Cargo.toml files here
       inputFiles = [ ];
     };
 
