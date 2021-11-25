@@ -35,6 +35,24 @@
       # Parse Cargo.lock and extract dependencies
       parsedLock = l.fromTOML (l.readFile "${inputDir}/Cargo.lock");
       parsedDeps = parsedLock.package;
+      # This parses a "package-name version" entry in the "dependencies"
+      # field of a dependency in Cargo.lock
+      makeDepNameVersion = entry:
+        let
+          parsed = l.splitString " " entry;
+          name = l.first parsed;
+          maybeVersion = if l.length parsed > 1 then l.last parsed else null;
+        in
+        {
+          inherit name;
+          version =
+            # If there is no version, search through the lockfile to
+            # find the dependency's version
+            if maybeVersion != null
+            then maybeVersion
+            else (l.findFirst (dep: dep.name == name) parsedDeps).version
+          ;
+        };
       
       package = rec {
         toml = packageToml.value;
@@ -58,9 +76,8 @@
         mainPackageVersion = package.version;
 
         mainPackageDependencies =
-          lib.mapAttrsToList
-            (a) # some function
-            parsedDependencies;
+          let mainPackage = l.findFirst (dep: dep.name == package.name) parsedDeps; in
+          l.map makeDepNameVersion mainPackage.dependencies;
 
         # the name of the subsystem
         subsystemName = "rust";
@@ -85,26 +102,6 @@
 
         # get dependencies of a dependency object
         getDependencies = dependencyObject: getDepByNameVer: dependenciesByOriginalID:
-          let
-            # This parses a "package-name version" entry in the "dependencies"
-            # field of a dependency in Cargo.lock
-            makeDepNameVersion = entry:
-              let
-                parsed = l.splitString " " entry;
-                name = l.first parsed;
-                maybeVersion = if l.length parsed > 1 then l.last parsed else null;
-              in
-              {
-                inherit name;
-                version =
-                  # If there is no version, search through the lockfile to
-                  # find the dependency's version
-                  if maybeVersion != null
-                  then maybeVersion
-                  else (l.findFirst (dep: dep.name == name) parsedDeps).version
-                ;
-              };
-          in
           l.map makeDepNameVersion dependencyObject.dependencies;
 
         # return the source type of a package object
