@@ -137,7 +137,8 @@
             
           crates-io = dependencyObject:
             {
-              inherit (dependencyObject) name version;
+              pname = dependencyObject.name;
+              version = dependencyObject.version;
               hash = dependencyObject.checksum;
             };
         };
