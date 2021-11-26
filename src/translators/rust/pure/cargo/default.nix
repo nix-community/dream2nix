@@ -21,14 +21,24 @@
     let
       l = lib // builtins;
       
+      recurseFiles = path:
+        if utils.isDirectory path
+        then l.flatten (
+               l.mapAttrsToList
+               (n: v: if v == "directory" then recurseFiles n else n)
+               (l.readDir path)
+             )
+        else [ path ];
+
       # Find all Cargo.toml files and parse them
-      cargoTomlPaths = l.filter (path: l.baseNameOf path == "Cargo.toml") inputFiles;
+      allFiles = l.flatten (l.map recurseFiles inputDirectories);
+      cargoTomlPaths = l.filter (path: l.baseNameOf path == "Cargo.toml") allFiles;
       cargoTomls = l.map (path: { inherit path; value = l.fromTOML (l.readFile path); }) cargoTomlPaths;
-  
+
       # Find the Cargo.toml matching the package name
       checkForPackageName = cargoToml: (cargoToml.value.package.name or null) == packageName;
       packageToml = l.findFirst checkForPackageName (throw "no Cargo.toml found with the package name passed") cargoTomls;
-  
+
       # Find the input directory that will contain the Cargo.lock and include our package's Cargo.toml file
       inputDir = l.findFirst (path: l.hasPrefix path packageToml.path) inputDirectories;
 
@@ -106,9 +116,10 @@
 
         # return the source type of a package object
         getSourceType = dependencyObject:
-          if l.hasPrefix "git+" dependencyObject.source then
+          let checkType = type: l.hasPrefix "${type}+" dependencyObject.source; in
+          if checkType "git" then
             "git"
-          else if l.hasPrefix "registry+" dependencyObject.source then
+          else if checkType "registry" then
             if dependencyObject.source == "registry+https://github.com/rust-lang/crates.io-index"
             then "crates-io"
             else throw "registries other than crates.io are not supported yet"
