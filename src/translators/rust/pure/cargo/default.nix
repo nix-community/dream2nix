@@ -22,13 +22,11 @@
       l = lib // builtins;
       
       recurseFiles = path:
-        if utils.isDirectory path
-        then l.flatten (
-               l.mapAttrsToList
-               (n: v: if v == "directory" then recurseFiles n else n)
-               (l.readDir path)
-             )
-        else [ path ];
+        l.flatten (
+          l.mapAttrsToList
+          (n: v: if v == "directory" then recurseFiles "${path}/${n}" else "${path}/${n}")
+          (l.readDir path)
+        );
 
       # Find all Cargo.toml files and parse them
       allFiles = l.flatten (l.map recurseFiles inputDirectories);
@@ -40,7 +38,11 @@
       packageToml = l.findFirst checkForPackageName (throw "no Cargo.toml found with the package name passed") cargoTomls;
 
       # Find the input directory that will contain the Cargo.lock and include our package's Cargo.toml file
-      inputDir = l.findFirst (path: l.hasPrefix path packageToml.path) inputDirectories;
+      inputDir =
+        l.findFirst
+        (path: l.hasPrefix path packageToml.path)
+        (throw "no input directory found for package")
+        inputDirectories;
 
       # Parse Cargo.lock and extract dependencies
       parsedLock = l.fromTOML (l.readFile "${inputDir}/Cargo.lock");
@@ -50,7 +52,7 @@
       makeDepNameVersion = entry:
         let
           parsed = l.splitString " " entry;
-          name = l.first parsed;
+          name = l.head parsed;
           maybeVersion = if l.length parsed > 1 then l.last parsed else null;
         in
         {
@@ -60,8 +62,12 @@
             # find the dependency's version
             if maybeVersion != null
             then maybeVersion
-            else (l.findFirst (dep: dep.name == name) parsedDeps).version
-          ;
+            else (
+                   l.findFirst
+                   (dep: dep.name == name)
+                   (throw "no dependency found with name ${name} in Cargo.lock")
+                   parsedDeps
+                 ).version;
         };
       
       package = rec {
@@ -86,8 +92,14 @@
         mainPackageVersion = package.version;
 
         mainPackageDependencies =
-          let mainPackage = l.findFirst (dep: dep.name == package.name) parsedDeps; in
-          l.map makeDepNameVersion mainPackage.dependencies;
+          let
+            mainPackage =
+              l.findFirst
+              (dep: dep.name == package.name)
+              (throw "could not find main package in Cargo.lock")
+              parsedDeps;
+          in
+          l.map makeDepNameVersion (mainPackage.dependencies or [ ]);
 
         # the name of the subsystem
         subsystemName = "rust";
@@ -112,12 +124,14 @@
 
         # get dependencies of a dependency object
         getDependencies = dependencyObject: getDepByNameVer: dependenciesByOriginalID:
-          l.map makeDepNameVersion dependencyObject.dependencies;
+          l.map makeDepNameVersion (dependencyObject.dependencies or [ ]);
 
         # return the source type of a package object
         getSourceType = dependencyObject:
           let checkType = type: l.hasPrefix "${type}+" dependencyObject.source; in
-          if checkType "git" then
+          if !(l.hasAttr "source" dependencyObject)
+          then "path"
+          else if checkType "git" then
             "git"
           else if checkType "registry" then
             if dependencyObject.source == "registry+https://github.com/rust-lang/crates.io-index"
@@ -130,6 +144,20 @@
         # Given a dependency object and a source type, construct the 
         # source definition containing url, hash, etc.
         sourceConstructors = {
+          path = dependencyObject:
+            let
+              findCratePath = name:
+                l.dirOf (
+                  l.findFirst
+                  (toml: toml.value.package.name == name)
+                  (throw "could not find crate ${name}")
+                  cargoTomls
+                ).path;
+            in
+            {
+              path = findCratePath dependencyObject.name;
+            };
+
           git = dependencyObject:
             let
               source = dependencyObject.source;
@@ -184,6 +212,7 @@
   extraArgs = {
     packageName = {
       description = "name of the package you want to build";
+      examples = ["rand"];
       type = "argument";
     };
   };
