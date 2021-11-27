@@ -13,9 +13,6 @@
       inputDirectories,
       inputFiles,
 
-      # arguments specified by user
-      # TODO: if packageName is not specified, try to find package to build automatically
-      packageName,
       ...
     }@args:
     let
@@ -33,9 +30,21 @@
       cargoTomlPaths = l.filter (path: l.baseNameOf path == "Cargo.toml") allFiles;
       cargoTomls = l.map (path: { inherit path; value = l.fromTOML (l.readFile path); }) cargoTomlPaths;
 
+      packageName =
+        if args.packageName == "{automatic}"
+        then
+          # TODO: write better heuristic for choosing a package
+          let
+            pkg = l.findFirst
+              (toml: l.hasAttrByPath [ "package" "name" ] toml.value)
+              (throw "no Cargo.toml with a package definition was found")
+              cargoTomls;
+          in pkg.value.package.name
+        else args.packageName;
+
       # Find the Cargo.toml matching the package name
       checkForPackageName = cargoToml: (cargoToml.value.package.name or null) == packageName;
-      packageToml = l.findFirst checkForPackageName (throw "no Cargo.toml found with the package name passed") cargoTomls;
+      packageToml = l.findFirst checkForPackageName (throw "no Cargo.toml found with the package name passed: ${packageName}") cargoTomls;
 
       # Find the input directory that will contain the Cargo.lock and include our package's Cargo.toml file
       inputDir =
@@ -212,6 +221,7 @@
   extraArgs = {
     packageName = {
       description = "name of the package you want to build";
+      default = "{automatic}";
       examples = ["rand"];
       type = "argument";
     };
