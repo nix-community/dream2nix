@@ -130,9 +130,10 @@
                     "properties": {
                       "pname": { "type": "string" },
                       "version": { "type": "string" },
-                      "hash": { "type": "string" }
+                      "hash": { "type": "string" },
+                      "type": { "type": "string" }
                     },
-                    "required": ["pname", "version", "hash"],
+                    "required": ["type", "pname", "version", "hash"],
                     "additionalProperties": false
                   }
                 },
