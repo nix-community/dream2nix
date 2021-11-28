@@ -59,7 +59,7 @@ let
       inherit pname version src;
 
       postUnpack = ''
-        ln -s ${vendorPackageDependencies mainPackageName mainPackageVersion} ./${src.name}/nix-vendor
+        ln -s ${vendorPackageDependencies pname version} ./${src.name}/nix-vendor
       '';
 
       cargoVendorDir = "nix-vendor";
