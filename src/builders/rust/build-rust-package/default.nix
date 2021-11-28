@@ -64,11 +64,9 @@ let
 
       cargoVendorDir = "nix-vendor";
     };
-
-  mainPkg = buildPackage mainPackageName mainPackageVersion;
 in
 rec {
-  packages."${mainPackageName}"."${mainPackageVersion}" = mainPkg;
+  packages."${mainPackageName}"."${mainPackageVersion}" = defaultPackage;
 
-  defaultPackage = mainPkg;
+  defaultPackage = buildPackage mainPackageName mainPackageVersion;
 }
