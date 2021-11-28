@@ -33,12 +33,26 @@
       packageName =
         if args.packageName == "{automatic}"
         then
-          # TODO: write better heuristic for choosing a package
           let
-            pkg = l.findFirst
+            # Filter cargo-tomls to for files that actually contain packages
+            pkgs =
+              l.filter
               (toml: l.hasAttrByPath [ "package" "name" ] toml.value)
-              (throw "no Cargo.toml with a package definition was found")
               cargoTomls;
+
+            # Small function to check if a given package path has a package
+            # that has binaries
+            hasBinaries = path:
+              l.pathExists "${path}/src/main.rs"
+                || l.pathExists "${path}/src/bin";
+
+            # Try to find a package with a binary
+            pkg =
+              l.findFirst
+              (toml: hasBinaries (l.dirOf toml.path))
+              (l.elementAt 0 pkgs)
+              pkgs;
+
           in pkg.value.package.name
         else args.packageName;
 
