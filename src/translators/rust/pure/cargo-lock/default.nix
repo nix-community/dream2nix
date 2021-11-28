@@ -30,16 +30,16 @@
       cargoTomlPaths = l.filter (path: l.baseNameOf path == "Cargo.toml") allFiles;
       cargoTomls = l.map (path: { inherit path; value = l.fromTOML (l.readFile path); }) cargoTomlPaths;
 
+      # Filter cargo-tomls to for files that actually contain packages
+      cargoPackages =
+        l.filter
+        (toml: l.hasAttrByPath [ "package" "name" ] toml.value)
+        cargoTomls;
+
       packageName =
         if args.packageName == "{automatic}"
         then
           let
-            # Filter cargo-tomls to for files that actually contain packages
-            pkgs =
-              l.filter
-              (toml: l.hasAttrByPath [ "package" "name" ] toml.value)
-              cargoTomls;
-
             # Small function to check if a given package path has a package
             # that has binaries
             hasBinaries = toml:
@@ -51,8 +51,8 @@
             pkg =
               l.findFirst
               hasBinaries
-              (l.warn "couldn't find a package with a binary to use as mainPackage" (l.elemAt pkgs 0))
-              pkgs;
+              (l.warn "couldn't find a package with a binary to use as mainPackage" (l.elemAt cargoPackages 0))
+              cargoPackages;
 
           in pkg.value.package.name
         else args.packageName;
@@ -131,9 +131,9 @@
         # Extract subsystem specific attributes.
         # The structure of this should be defined in:
         #   ./src/specifications/{subsystem}
-        #
-        # TODO: do we pass features to enable / cargo profile to use here?
-        subsystemAttrs = { };
+        subsystemAttrs = {
+          packages = l.map (toml: { inherit (toml.value.package) name version; }) cargoPackages;
+        };
 
         # FUNCTIONS
 

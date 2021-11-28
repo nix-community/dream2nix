@@ -66,7 +66,15 @@ let
     };
 in
 rec {
-  packages."${mainPackageName}"."${mainPackageVersion}" = defaultPackage;
+  packages =
+    l.listToAttrs (
+      l.map ({ name, version }: {
+        inherit name;
+        value = {
+          ${version} = buildPackage name version;
+        };
+      }) subsystemAttrs.packages
+    );
 
-  defaultPackage = buildPackage mainPackageName mainPackageVersion;
+  defaultPackage = packages."${mainPackageName}"."${mainPackageVersion}";
 }

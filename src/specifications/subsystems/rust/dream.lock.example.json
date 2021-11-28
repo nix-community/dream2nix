@@ -1,0 +1,7 @@
+{
+  "_subsystem": {
+    "packages": [
+      { "name": "ripgrep", "version": "13.0.0" }
+    ]
+  }
+}
