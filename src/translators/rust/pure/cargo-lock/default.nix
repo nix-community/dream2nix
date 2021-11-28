@@ -206,9 +206,7 @@
         (utils.containsMatchingFile [ ''.*Cargo\.lock'' ])
         args.inputDirectories;
       
-      inputFiles = lib.filter
-        (file: lib.hasSuffix "Cargo.toml" file)
-        args.inputFiles;
+      inputFiles = [ ];
     };
 
 
