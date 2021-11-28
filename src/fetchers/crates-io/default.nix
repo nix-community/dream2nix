@@ -37,8 +37,8 @@
         runCommand "unpack-${pname}-${version}" {}
           ''
             mkdir -p $out
-            tar -xzf ${fetched} -C $out
-            echo '{"package":"${hash}","files":{}}' > $out/${pname}-${version}/.cargo-checksum.json
+            tar --strip-components 1 -xzf ${fetched} -C $out
+            echo '{"package":"${hash}","files":{}}' > $out/.cargo-checksum.json
           '';
     };
 }
