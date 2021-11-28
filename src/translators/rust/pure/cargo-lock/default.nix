@@ -50,7 +50,7 @@
             pkg =
               l.findFirst
               (toml: hasBinaries (l.dirOf toml.path))
-              (l.elementAt 0 pkgs)
+              (l.elemAt pkgs 0)
               pkgs;
 
           in pkg.value.package.name
