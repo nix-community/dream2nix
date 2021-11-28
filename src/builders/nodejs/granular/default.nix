@@ -86,7 +86,7 @@ let
           deps
           (dep: packages."${dep.name}"."${dep.version}" );
 
-      dependenciesJson = b.toJSON 
+      dependenciesJson = b.toJSON
         (lib.listToAttrs
           (b.map
             (dep: lib.nameValuePair dep.name dep.version)
@@ -96,8 +96,10 @@ let
         produceDerivation name (stdenv.mkDerivation rec {
 
           packageName = name;
-        
+
           pname = utils.sanitizeDerivationName name;
+
+          installMethod = "symlink";
 
           # only run build on the main package
           runBuild =
@@ -177,7 +179,7 @@ let
                 # Move the extracted directory into the output folder
                 mv "$strippedName" "$sourceRoot"
             fi
-            
+
             runHook postUnpack
           '';
 
@@ -194,7 +196,7 @@ let
           d2nPatchPhase = ''
             # delete package-lock.json as it can lead to conflicts
             rm -f package-lock.json
-   
+
             # repair 'link:' -> 'file:'
             mv $nodeModules/$packageName/package.json $nodeModules/$packageName/package.json.old
             cat $nodeModules/$packageName/package.json.old | sed 's!link:!file\:!g' > $nodeModules/$packageName/package.json
@@ -237,12 +239,12 @@ let
                     for submodule in $(ls $dep/lib/node_modules/$module); do
                       mkdir -p $nodeModules/$packageName/node_modules/$module
                       echo "installing: $module/$submodule"
-                      ln -s $dep/lib/node_modules/$module/$submodule $nodeModules/$packageName/node_modules/$module/$submodule
+                      ln -s $(realpath $dep/lib/node_modules/$module/$submodule) $nodeModules/$packageName/node_modules/$module/$submodule
                     done
                   else
                     mkdir -p $nodeModules/$packageName/node_modules/
                     echo "installing: $module"
-                    ln -s $dep/lib/node_modules/$module $nodeModules/$packageName/node_modules/$module
+                    ln -s $(realpath $dep/lib/node_modules/$module) $nodeModules/$packageName/node_modules/$module
                   fi
                 done
               fi
@@ -250,6 +252,24 @@ let
 
             # symlink sub dependencies as well as this imitates npm better
             python ${./symlink-deps.py}
+
+            # resolve symlinks to copies
+            if [ "$installMethod" == "copy" ]; then
+              echo "transforming symlinked dependencies to copies..."
+              chmod +wx .
+              for f in $(find . -type l); do
+                if [ -f $f ]; then
+                  continue
+                fi
+                chmod +wx $(dirname "$f")
+                mv "$f" "$f.bak"
+                mkdir "$f"
+                if [ -n "$(ls -A "$f.bak/")" ]; then
+                  cp -r "$f.bak"/* "$f/"
+                fi
+                rm "$f.bak"
+              done
+            fi
 
             # add dependencies to NODE_PATH
             export NODE_PATH="$NODE_PATH:$nodeModules/$packageName/node_modules"
@@ -283,7 +303,7 @@ let
 
           # Symlinks executables and manual pages to correct directories
           installPhase = ''
-            
+
             echo "Symlinking exectuables to /bin"
             if [ -d "$nodeModules/.bin" ]
             then

@@ -31,7 +31,7 @@ def getDependencies(root, depth):
     else:
       cur_dir = f"{root}/{d}"
       currentDeps.append(cur_dir)
-  
+
   if depth == 0:
     return currentDeps
   else:
@@ -62,8 +62,8 @@ for dep in deps:
   pathlib.Path(os.path.dirname(path)).mkdir(parents=True, exist_ok=True)
 
   # symlink dependency
-  os.symlink(dep, path)
+  os.symlink(os.path.realpath(dep), path)
 
-  
 
-  
+
+
