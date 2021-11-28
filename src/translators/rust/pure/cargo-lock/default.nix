@@ -42,15 +42,16 @@
 
             # Small function to check if a given package path has a package
             # that has binaries
-            hasBinaries = path:
-              l.pathExists "${path}/src/main.rs"
-                || l.pathExists "${path}/src/bin";
+            hasBinaries = toml:
+              l.hasAttr "bin" toml.value
+                || l.pathExists "${l.dirOf toml.path}/src/main.rs"
+                || l.pathExists "${l.dirOf toml.path}/src/bin";
 
             # Try to find a package with a binary
             pkg =
               l.findFirst
-              (toml: hasBinaries (l.dirOf toml.path))
-              (l.elemAt pkgs 0)
+              hasBinaries
+              (l.warn "couldn't find a package with a binary to use as mainPackage" (l.elemAt pkgs 0))
               pkgs;
 
           in pkg.value.package.name
