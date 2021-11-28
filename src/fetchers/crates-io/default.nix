@@ -1,6 +1,7 @@
 {
   lib,
   fetchurl,
+  runCommand,
 
   utils,
   ...
@@ -10,12 +11,11 @@
   inputs = [
     "pname"
     "version"
-    "hash"
   ];
 
   versionField = "version";
 
-  outputs = { pname, version, hash, ... }@inp:
+  outputs = { pname, version, ... }@inp:
     let
       b = builtins;
       # See https://github.com/rust-lang/crates.io-index/blob/master/config.json#L2
@@ -27,10 +27,18 @@
       });
 
       fetched = hash:
-        fetchurl {
-          inherit url;
-          sha256 = hash;
-          name = "download-${pname}-${version}";
-        };
+        let
+          fetched = fetchurl {
+            inherit url;
+            sha256 = hash;
+            name = "download-${pname}-${version}";
+          };
+        in
+        runCommand "unpack-${pname}-${version}" {}
+          ''
+            mkdir -p $out
+            tar -xzf ${fetched} -C $out
+            echo '{"package":"${hash}","files":{}}' > $out/${pname}-${version}/.cargo-checksum.json
+          '';
     };
 }
