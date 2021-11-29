@@ -20,4 +20,9 @@
     granular = callPackageDream ./nodejs/granular { inherit builders; };
   };
   
+  rust = rec {
+    default = buildRustPackage;
+
+    buildRustPackage = callPackageDream ./rust/build-rust-package {};
+  };
 }
