@@ -42,7 +42,7 @@ rec {
           '' false
           else true
         ) args;
-      argsKeep = overrideWarning [ "name" "version" ] args;
+      argsKeep = overrideWarning [ "pname" "version" ] args;
       fetcherOutputs = fetcher.outputs (argsKeep // dependencyInfo);
     in
       argsKeep
