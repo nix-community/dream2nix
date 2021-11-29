@@ -11,7 +11,7 @@
     "url"
   ];
 
-  outputs = { url, }@inp:
+  outputs = { url, ... }@inp:
     let
       b = builtins;
     in

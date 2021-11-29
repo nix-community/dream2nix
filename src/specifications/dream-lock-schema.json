@@ -133,7 +133,7 @@
                       "hash": { "type": "string" },
                       "type": { "type": "string" }
                     },
-                    "required": ["type", "pname", "version"],
+                    "required": ["type", "pname"],
                     "additionalProperties": false
                   }
                 },
