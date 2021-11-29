@@ -82,13 +82,11 @@
                   },
                   "then": {
                     "properties": {
-                      "pname": { "type": "string" },
-                      "version": { "type": "string" },
                       "hash": { "type": "string" },
                       "type": { "type": "string" },
                       "dir": { "type": "string" }
                     },
-                    "required": ["type", "pname"],
+                    "required": ["type"],
                     "additionalProperties": false
                   }
                 },
@@ -112,13 +110,11 @@
                   },
                   "then": {
                     "properties": {
-                      "pname": { "type": "string" },
-                      "version": { "type": "string" },
                       "hash": { "type": "string" },
                       "type": { "type": "string" },
                       "dir": { "type": "string" }
                     },
-                    "required": ["type", "pname"],
+                    "required": ["type"],
                     "additionalProperties": false
                   }
                 },
@@ -128,12 +124,10 @@
                   },
                   "then": {
                     "properties": {
-                      "pname": { "type": "string" },
-                      "version": { "type": "string" },
                       "hash": { "type": "string" },
                       "type": { "type": "string" }
                     },
-                    "required": ["type", "pname"],
+                    "required": ["type"],
                     "additionalProperties": false
                   }
                 },

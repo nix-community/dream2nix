@@ -8,10 +8,7 @@
 }:
 {
 
-  inputs = [
-    "pname"
-    "version"
-  ];
+  inputs = [ "pname" "version" ];
 
   versionField = "version";
 

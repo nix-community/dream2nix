@@ -25,15 +25,25 @@ rec {
   constructSource =
     {
       type,
-      sourceVersion ? null,
+      dependencyInfo ? { },
       reComputeHash ? false,
       ...
-    }@args:
+    }@argsUnfiltered:
     let
+      args = b.removeAttrs argsUnfiltered [ "reComputeHash" "dependencyInfo" ];
       fetcher = fetchers."${type}";
-      argsKeep = b.removeAttrs args [ "reComputeHash" "version" ];
-      versionAttrset = lib.optionalAttrs (sourceVersion != null) { version = sourceVersion; };
-      fetcherOutputs = fetcher.outputs (args // versionAttrset);
+      overrideWarning = fields: args:
+        lib.filterAttrs (name: _:
+          if lib.any (field: name == field) fields
+          then lib.warn ''
+          you are trying to pass a "${name}" key from your source
+          constructor, this will be overrided with a value passed
+          by dream2nix.
+          '' false
+          else true
+        ) args;
+      argsKeep = overrideWarning [ "name" "version" ] args;
+      fetcherOutputs = fetcher.outputs (argsKeep // dependencyInfo);
     in
       argsKeep
       # if the hash was not provided, calculate hash on the fly (impure)
@@ -61,12 +71,11 @@ rec {
     });
 
   # fetch a source defined via a dream lock source spec
-  fetchSource = { source, sourceVersion ? null, extract ? false, }:
+  fetchSource = { source, dependencyInfo ? { }, extract ? false, }:
     let
       fetcher = fetchers."${source.type}";
       fetcherArgs = b.removeAttrs source [ "dir" "hash" "type" ];
-      versionAttrset = lib.optionalAttrs (sourceVersion != null) { version = sourceVersion; };
-      fetcherOutputs = fetcher.outputs (fetcherArgs // versionAttrset);
+      fetcherOutputs = fetcher.outputs (fetcherArgs // dependencyInfo);
       maybeArchive = fetcherOutputs.fetched (source.hash or null);
     in
       if source ? dir then

@@ -7,14 +7,10 @@
   ...
 }:
 {
-
-  inputs = [
-    "pname"
-    "version"
-  ];
-
+  inputs = [ "pname" "version" ];
+  
   versionField = "version";
-
+  
   # defaultUpdater = "";
 
   outputs = { pname, version, }@inp:

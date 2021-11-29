@@ -33,7 +33,13 @@ let
               else
                 "${fetchedSources."${mainPackageName}"."${mainPackageVersion}"}/${source.path}"
             else if fetchers.fetchers ? "${source.type}" then
-              fetchSource { inherit source; sourceVersion = version; }
+              fetchSource {
+                inherit source;
+                dependencyInfo = {
+                  pname = name;
+                  inherit version;
+                };
+              }
             else throw "unsupported source type '${source.type}'")
           versions)
       sources;

@@ -52,22 +52,28 @@ let
         serializedPackagesList;
 
       sources = b.foldl'
-        (result: pkgData: lib.recursiveUpdate result {
-          "${getName pkgData}" =
-            let pkgVersion = getVersion pkgData; in {
-              "${pkgVersion}" =
-                let
-                  type = getSourceType pkgData;
-                  constructedArgs =
-                    (sourceConstructors."${type}" pkgData)
-                    // {
-                      inherit type;
-                      version = pkgVersion;
-                   };
-                in
-                  fetchers.constructSource constructedArgs;
-            };
-        })
+        (result: pkgData:
+        let
+          pkgName = getName pkgData;
+          pkgVersion = getVersion pkgData;
+        in lib.recursiveUpdate result {
+            "${pkgName}" = {
+                "${pkgVersion}" =
+                  let
+                    type = getSourceType pkgData;
+                    constructedArgs =
+                      (sourceConstructors."${type}" pkgData)
+                      // {
+                        inherit type;
+                        dependencyInfo = {
+                          pname = pkgName;
+                          version = pkgVersion;
+                        };
+                     };
+                  in
+                    fetchers.constructSource constructedArgs;
+              };
+           })
         {}
         serializedPackagesList;
 
