@@ -200,8 +200,6 @@
             
           crates-io = dependencyObject:
             {
-              pname = dependencyObject.name;
-              version = dependencyObject.version;
               hash = dependencyObject.checksum;
             };
         };

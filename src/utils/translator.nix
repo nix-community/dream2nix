@@ -10,6 +10,17 @@ let
 
   b = builtins;
 
+  overrideWarning = fields: args:
+    lib.filterAttrs (name: _:
+      if lib.any (field: name == field) fields
+      then lib.warn ''
+      you are trying to pass a "${name}" key from your source
+      constructor, this will be overrided with a value passed
+      by dream2nix.
+      '' false
+      else true
+    ) args;
+
   simpleTranslate = translatorName:
     {
       # values
@@ -52,22 +63,26 @@ let
         serializedPackagesList;
 
       sources = b.foldl'
-        (result: pkgData: lib.recursiveUpdate result {
-          "${getName pkgData}" =
-            let pkgVersion = getVersion pkgData; in {
-              "${pkgVersion}" =
-                let
-                  type = getSourceType pkgData;
-                  constructedArgs =
-                    (sourceConstructors."${type}" pkgData)
-                    // {
+        (result: pkgData:
+        let
+          pkgName = getName pkgData;
+          pkgVersion = getVersion pkgData;
+        in lib.recursiveUpdate result {
+            "${pkgName}" = {
+                "${pkgVersion}" =
+                  let
+                    type = getSourceType pkgData;
+                    constructedArgs = sourceConstructors."${type}" pkgData;
+                    constructedArgsKeep =
+                      overrideWarning [ "pname" "version" ] constructedArgs;
+                  in
+                    fetchers.constructSource (constructedArgsKeep // {
                       inherit type;
+                      pname = pkgName;
                       version = pkgVersion;
-                   };
-                in
-                  fetchers.constructSource constructedArgs;
-            };
-        })
+                    });
+              };
+           })
         {}
         serializedPackagesList;
 

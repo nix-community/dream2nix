@@ -25,17 +25,15 @@ rec {
   constructSource =
     {
       type,
-      sourceVersion ? null,
       reComputeHash ? false,
       ...
     }@args:
     let
       fetcher = fetchers."${type}";
-      argsKeep = b.removeAttrs args [ "reComputeHash" "version" ];
-      versionAttrset = lib.optionalAttrs (sourceVersion != null) { version = sourceVersion; };
-      fetcherOutputs = fetcher.outputs (args // versionAttrset);
+      argsKeep = b.removeAttrs args [ "reComputeHash" ];
+      fetcherOutputs = fetcher.outputs argsKeep;
     in
-      argsKeep
+      (b.removeAttrs argsKeep [ "pname" "version" ])
       # if the hash was not provided, calculate hash on the fly (impure)
       // (lib.optionalAttrs reComputeHash {
         hash = fetcherOutputs.calcHash "sha256";
@@ -45,7 +43,6 @@ rec {
   updateSource =
     {
       source,
-      sourceVersion,
       newVersion,
       ...
     }:
@@ -55,18 +52,16 @@ rec {
     in
     constructSource (argsKeep // {
       reComputeHash = true;
-      version = sourceVersion;
     } // {
       "${fetcher.versionField}" = newVersion;
     });
 
   # fetch a source defined via a dream lock source spec
-  fetchSource = { source, sourceVersion ? null, extract ? false, }:
+  fetchSource = { source, extract ? false }:
     let
       fetcher = fetchers."${source.type}";
       fetcherArgs = b.removeAttrs source [ "dir" "hash" "type" ];
-      versionAttrset = lib.optionalAttrs (sourceVersion != null) { version = sourceVersion; };
-      fetcherOutputs = fetcher.outputs (fetcherArgs // versionAttrset);
+      fetcherOutputs = fetcher.outputs fetcherArgs;
       maybeArchive = fetcherOutputs.fetched (source.hash or null);
     in
       if source ? dir then
