@@ -34,8 +34,7 @@ let
                 "${fetchedSources."${mainPackageName}"."${mainPackageVersion}"}/${source.path}"
             else if fetchers.fetchers ? "${source.type}" then
               fetchSource {
-                inherit source;
-                dependencyInfo = {
+                source = source // {
                   pname = name;
                   inherit version;
                 };
