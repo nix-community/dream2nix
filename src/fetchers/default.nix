@@ -33,7 +33,7 @@ rec {
       argsKeep = b.removeAttrs args [ "reComputeHash" ];
       fetcherOutputs = fetcher.outputs argsKeep;
     in
-      (b.removeAttrs argsKeep [ "pname" "version" ])
+      argsKeep
       # if the hash was not provided, calculate hash on the fly (impure)
       // (lib.optionalAttrs reComputeHash {
         hash = fetcherOutputs.calcHash "sha256";
@@ -82,7 +82,7 @@ rec {
       # out: [ "git+" "git" "https" "//" "foo.com/bar" "?kwarg1=lol&kwarg2=hello" "kwarg1=lol&kwarg2=hello" ]
       split =
         b.match
-          ''(([[:alnum:]]+)\+)?([[:alnum:]]+):(//)?([^\?]*)(\?(.*))?''
+          ''(([[:alnum:]]+)\+)?([[:alnum:]-]+):(//)?([^\?]*)(\?(.*))?''
           shortcut;
 
       parsed = {

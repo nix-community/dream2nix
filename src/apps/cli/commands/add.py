@@ -247,6 +247,9 @@ class AddCommand(Command):
       mainSource = dict(
         type="unknown",
       )
+    else:
+      del mainSource['pname']
+      del mainSource['version']
     if mainPackageName not in lock['sources']:
       lock['sources'][mainPackageName] = {
         mainPackageVersion: mainSource

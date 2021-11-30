@@ -72,15 +72,21 @@ let
                 "${pkgVersion}" =
                   let
                     type = getSourceType pkgData;
+
                     constructedArgs = sourceConstructors."${type}" pkgData;
+
                     constructedArgsKeep =
                       overrideWarning [ "pname" "version" ] constructedArgs;
+
+                    constructedSource =
+                      fetchers.constructSource (constructedArgsKeep // {
+                        inherit type;
+                        pname = pkgName;
+                        version = pkgVersion;
+                      });
+
                   in
-                    fetchers.constructSource (constructedArgsKeep // {
-                      inherit type;
-                      pname = pkgName;
-                      version = pkgVersion;
-                    });
+                    b.removeAttrs constructedSource [ "pname" "version" ];
               };
            })
         {}
