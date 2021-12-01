@@ -1,0 +1,14 @@
+diff --git a/lib/ResolverFactory.js b/lib/ResolverFactory.js
+index 2649915..93dbc96 100644
+--- a/lib/ResolverFactory.js
++++ b/lib/ResolverFactory.js
+@@ -73,8 +73,7 @@ exports.createResolver = function(options) {
+ 	let alias = options.alias || [];
+ 
+ 	// Resolve symlinks to their symlinked location
+-	const symlinks =
+-		typeof options.symlinks !== "undefined" ? options.symlinks : true;
++	const symlinks = false;
+ 
+ 	// Resolve to a context instead of a file
+ 	const resolveToContext = options.resolveToContext || false;
