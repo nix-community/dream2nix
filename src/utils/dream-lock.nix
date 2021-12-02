@@ -9,16 +9,34 @@ let
 
   b = builtins;
 
+  subDreamLockNames = dreamLockFile:
+    let
+      dir = b.dirOf dreamLockFile;
+
+      directories = utils.listDirs dir;
+
+      dreamLockDirs =
+        lib.filter
+          (d: b.pathExists ("${dir}/${d}/dream-lock.json"))
+          directories;
+
+    in
+      dreamLockDirs;
+
+
   readDreamLock =
     {
       dreamLock,
     }@args:
     let
 
-      lockMaybeCompressed =
-        if b.isPath dreamLock
+      isFile =
+        b.isPath dreamLock
             || b.isString dreamLock
-            || lib.isDerivation dreamLock then
+            || lib.isDerivation dreamLock;
+
+      lockMaybeCompressed =
+        if isFile then
           b.fromJSON (b.readFile dreamLock)
         else
           dreamLock;
@@ -28,6 +46,20 @@ let
           lockMaybeCompressed
         else
           decompressDreamLock lockMaybeCompressed;
+
+      subDreamLocks =
+        if ! isFile then
+          {}
+        else
+          let
+            dir = b.dirOf dreamLock;
+          in
+            lib.genAttrs
+              (subDreamLockNames dreamLock)
+              (d:
+                readDreamLock
+                  { dreamLock = "${dir}/${d}/dream-lock.json"; });
+
 
       mainPackageName = lock._generic.mainPackageName;
       mainPackageVersion = lock._generic.mainPackageVersion;
@@ -56,7 +88,7 @@ let
     in
       {
         inherit lock;
-        interface = rec {
+        interface = {
 
           inherit
             mainPackageName
@@ -65,6 +97,7 @@ let
             getCyclicDependencies
             getDependencies
             packageVersions
+            subDreamLocks
           ;
         };
       };

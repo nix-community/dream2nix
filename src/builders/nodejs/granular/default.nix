@@ -254,21 +254,28 @@ let
             python ${./symlink-deps.py}
 
             # resolve symlinks to copies
-            if [ "$installMethod" == "copy" ]; then
-              echo "transforming symlinked dependencies to copies..."
-              chmod +wx .
-              for f in $(find . -type l); do
+            symlinksToCopies() {
+              local dir="$1"
+
+              echo "transforming symlinks to copies..."
+              for f in $(find -L "$dir" -xtype l); do
                 if [ -f $f ]; then
                   continue
                 fi
+                echo "copying $f"
                 chmod +wx $(dirname "$f")
                 mv "$f" "$f.bak"
                 mkdir "$f"
                 if [ -n "$(ls -A "$f.bak/")" ]; then
                   cp -r "$f.bak"/* "$f/"
+                  chmod -R +w $f
                 fi
                 rm "$f.bak"
               done
+            }
+
+            if [ "$installMethod" == "copy" ]; then
+              symlinksToCopies .
             fi
 
             # add dependencies to NODE_PATH
@@ -294,8 +301,13 @@ let
             # by default, only for top level packages, `npm run build` is executed
             elif [ -n "$runBuild" ] && [ "$(jq '.scripts.build' ./package.json)" != "null" ]; then
               npm run build
-            elif [ "$(jq '.scripts.postinstall' ./package.json)" != "null" ]; then
-              npm --production --offline --nodedir=$nodeSources run postinstall
+            else
+              if [ "$(jq '.scripts.install' ./package.json)" != "null" ]; then
+                npm --production --offline --nodedir=$nodeSources run install
+              fi
+              if [ "$(jq '.scripts.postinstall' ./package.json)" != "null" ]; then
+                npm --production --offline --nodedir=$nodeSources run postinstall
+              fi
             fi
 
             runHook postBuild

@@ -103,7 +103,16 @@ let
   };
 
   dreamOverrides =
-    utils.loadOverridesDirs config.overridesDirs pkgs;
+    let
+      overridesDirs =
+        config.overridesDirs
+        ++
+        (lib.optionals (b ? getEnv && b.getEnv "d2nOverridesDir" != "") [
+          (b.getEnv "d2nOverridesDir")
+        ]);
+
+    in
+      utils.loadOverridesDirs overridesDirs pkgs;
 
   # the location of the dream2nix framework for self references (update scripts, etc.)
   dream2nixWithExternals =
@@ -231,6 +240,7 @@ let
       inject,
       sourceOverrides,
       packageOverrides,
+      allOutputs,
     }@args:
       let
 
@@ -247,7 +257,7 @@ let
         produceDerivation = name: pkg:
           utils.applyOverridesToPackage {
             inherit pkg;
-            packages = formattedOutputs.packages;
+            outputs = allOutputs;
             pname = name;
             conditionalOverrides = packageOverrides;
           };
@@ -279,6 +289,8 @@ let
 
               dreamLock =
                 subDreamLockLoaded.lock;
+
+              outputs = allOutputs;
             };
 
         outputs = builder ( builderArgs // {
@@ -333,36 +345,37 @@ let
   # produce outputs for a dream-lock or a source
   riseAndShine =
     {
-      dreamLock ? null,
+      source,  # source tree or dream-lock
       builder ? null,
       fetcher ? null,
       inject ? {},
-      source ? null,
       sourceOverrides ? oldSources: {},
       packageOverrides ? {},
       builderArgs ? {},
       translatorArgs ? {},
     }@args:
 
-    # ensure either dreamLock or source is used
-    if source != null && dreamLock != null then
-      throw "Define either 'dreamLock' or 'source', not both"
-    else if source == null && dreamLock == null then
-      throw "Define either 'dreamLock' or 'source'"
-    else
-
     let
 
       dreamLock' =
-        if source != null then
-          makeDreamLockForSource { inherit source translatorArgs; }
+        if lib.isAttrs args.source
+            || lib.hasSuffix "dream-lock.json" source then
+          args.source
         else
-          args.dreamLock;
+          makeDreamLockForSource { inherit source translatorArgs; };
 
       # parse dreamLock
       dreamLockLoaded = utils.readDreamLock { dreamLock = dreamLock'; };
       dreamLock = dreamLockLoaded.lock;
       dreamLockInterface = dreamLockLoaded.interface;
+
+      # rise and shine sub packages
+      builderOutputsSub =
+        b.mapAttrs
+          (dirName: dreamLock:
+            riseAndShine
+              (args // {source = dreamLock.lock; }))
+          dreamLockInterface.subDreamLocks;
 
       builder' =
         if builder == null then
@@ -386,6 +399,7 @@ let
         inherit
           dreamLock
           fetchedSources
+          allOutputs
           sourceOverrides
         ;
 
@@ -402,8 +416,20 @@ let
           utils.dreamLock.decompressDependencyGraph args.inject or {};
       };
 
+      allOutputs =
+        { subPackages = builderOutputsSub; }
+        //
+        # merge with sub package outputs
+        b.foldl'
+          (old: new: old // {
+            packages = new.packages or {} // old.packages;
+          })
+          builderOutputs
+          (b.attrValues builderOutputsSub);
+
     in
-      builderOutputs;
+      allOutputs;
+
 
 in
 {

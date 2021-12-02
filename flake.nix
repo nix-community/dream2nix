@@ -158,9 +158,23 @@
             export NIX_PATH=nixpkgs=${nixpkgs}
             export d2nExternalDir=${externalDirFor."${system}"}
             export dream2nixWithExternals=${dream2nixFor."${system}".dream2nixWithExternals}
-            export d2nOverridesDirs=${./overrides}
 
-            echo -e "\nManually execute 'export dream2nixWithExternals={path to your dream2nix checkout}'"
+            if [ -e ./overrides ]; then
+              export d2nOverridesDir=$(realpath ./overrides)
+            else
+              export d2nOverridesDir=${./overrides}
+              echo -e "\nManually execute 'export d2nOverridesDir={path to your dream2nix overrides dir}'"
+            fi
+
+            if [ -e ../dream2nix ]; then
+              export dream2nixWithExternals=$(realpath ./src)
+            else
+              export dream2nixWithExternals=${./src}
+              echo -e "\nManually execute 'export dream2nixWithExternals={path to your dream2nix checkout}'"
+            fi
+
+
+
           '';
         });
 

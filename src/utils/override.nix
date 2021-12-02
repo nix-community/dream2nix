@@ -70,7 +70,7 @@ let
       conditionalOverrides,
       pkg,
       pname,
-      packages,
+      outputs,
     }:
       let
 
@@ -113,7 +113,13 @@ let
         # apply single attribute override
         applySingleAttributeOverride = oldVal: functionOrValue:
           if b.isFunction functionOrValue then
-            functionOrValue oldVal
+            if lib.functionArgs functionOrValue == {} then
+              functionOrValue oldVal
+            else
+              functionOrValue {
+                old = oldVal;
+                inherit outputs;
+              }
           else
             functionOrValue;
 
@@ -167,7 +173,7 @@ let
                   lib.filterAttrs
                     (n: v: ! lib.hasPrefix "override" n && ! lib.hasPrefix "_" n)
                     condOverride;
-              
+
               in
                 lib.mapAttrsToList
                     (attrName: funcOrValue: {
