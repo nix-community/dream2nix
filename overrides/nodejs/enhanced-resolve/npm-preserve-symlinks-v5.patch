@@ -1,0 +1,13 @@
+diff --git a/lib/ResolverFactory.js b/lib/ResolverFactory.js
+index 21ac9b0..49bca68 100644
+--- a/lib/ResolverFactory.js
++++ b/lib/ResolverFactory.js
+@@ -208,7 +208,7 @@ function createOptions(options) {
+ 			options.unsafeCache && typeof options.unsafeCache !== "object"
+ 				? {}
+ 				: options.unsafeCache || false,
+-		symlinks: typeof options.symlinks !== "undefined" ? options.symlinks : true,
++		symlinks: false,
+ 		resolver: options.resolver,
+ 		modules: mergeFilteredToArray(
+ 			Array.isArray(options.modules)

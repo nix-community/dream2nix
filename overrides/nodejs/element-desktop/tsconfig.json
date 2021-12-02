@@ -1,0 +1,22 @@
+{
+  "compilerOptions": {
+    "resolveJsonModule": true,
+    "esModuleInterop": true,
+    "module": "commonjs",
+    "moduleResolution": "node",
+    "target": "es2016",
+    "noImplicitAny": false,
+    "sourceMap": false,
+    "outDir": "./lib",
+    "rootDir": "./src",
+    "declaration": true,
+    "lib": [
+      "es2019",
+      "dom"
+    ],
+    "preserveSymlinks": true
+  },
+  "include": [
+    "./src/**/*.ts"
+  ]
+}
