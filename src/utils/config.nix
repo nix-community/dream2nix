@@ -15,7 +15,7 @@ let
       input
     else
       throw "input for loadAttrs must be json file or string or attrs";
-  
+
   # load dream2nix config extending with defaults
   loadConfig = configInput:
     let

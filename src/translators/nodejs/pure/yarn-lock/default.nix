@@ -191,11 +191,10 @@
               if b.length githubUrlInfos == 7 then
                 let
                   rev = lib.elemAt githubUrlInfos 6;
-                  version = dependencyObject.version;
                 in
                   {
                     url = "https://github.com/${owner}/${repo}";
-                    inherit rev version;
+                    inherit rev;
                   }
               else if b.length githubUrlInfos == 5 then
                 let
@@ -215,13 +214,11 @@
         path = dependencyObject:
           if lib.hasInfix "@link:" dependencyObject.yarnName then
             {
-              version = dependencyObject.version;
               path =
                 lib.last (lib.splitString "@link:" dependencyObject.yarnName);
             }
           else if lib.hasInfix "@file:" dependencyObject.yarnName then
             {
-              version = dependencyObject.version;
               path =
               lib.last (lib.splitString "@file:" dependencyObject.yarnName);
             }
@@ -231,7 +228,6 @@
         http = dependencyObject:
           {
             type = "http";
-            version = dependencyObject.version;
             hash =
               if dependencyObject ? integrity then
                 dependencyObject.integrity

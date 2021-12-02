@@ -185,14 +185,12 @@
               }
             else
               rec {
-                version = getVersion dependencyObject;
                 url = dependencyObject.resolved;
                 hash = dependencyObject.integrity;
               };
 
           path = dependencyObject:
             rec {
-              version = getVersion dependencyObject;
               path = getPath dependencyObject;
             };
         };

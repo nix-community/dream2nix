@@ -24,7 +24,7 @@ class AddCommand(Command):
     argument(
       "source",
       "Sources of the packages. Can be a paths, tarball URLs, or flake-style specs",
-      # multiple=True
+      multiple=True
     )
   ]
 
@@ -57,29 +57,40 @@ class AddCommand(Command):
   ]
 
   def handle(self):
+    sources = self.argument("source")
+
+    # ensure packages-root
+    package_root = self.find_package_root()
+
+    main_package_dir_name = self.handle_one(package_root, sources[0])
+
+    sub_package_root = f"{package_root}/{main_package_dir_name}"
+
+    for source in sources[1:]:
+      self.handle_one(sub_package_root, source)
+
+
+
+  def handle_one(self, package_root, source):
+
     if self.io.is_interactive():
       self.line(f"\n{self.description}\n")
 
     # parse extra args
     specified_extra_args = self.parse_extra_args()
 
-    # ensure packages-root
-    packages_root = self.find_packages_root()
-
-
-    source = self.argument("source")
     lock, sourceSpec, specified_extra_args, translator =\
-      self.translate_from_source(specified_extra_args, self.argument("source"))
+      self.translate_from_source(specified_extra_args, source)
 
     # get package name and version from lock
     mainPackageName = lock['_generic']['mainPackageName']
     mainPackageVersion = lock['_generic']['mainPackageVersion']
 
     # calculate output directory and attribute name
-    mainPackageDirName = self.define_attribute_name(mainPackageName)
+    main_package_dir_name = self.define_attribute_name(mainPackageName)
 
     # calculate output files
-    filesToCreate, output = self.calc_outputs(mainPackageDirName, packages_root)
+    filesToCreate, output = self.calc_outputs(main_package_dir_name, package_root)
     outputDreamLock = f"{output}/dream-lock.json"
     outputDefaultNix = f"{output}/default.nix"
 
@@ -116,6 +127,8 @@ class AddCommand(Command):
     if config['isRepo']:
       sp.run(["git", "add", "-N", output])
 
+    return main_package_dir_name
+
   def translate_from_source(self, specified_extra_args, source):
     # get source path and spec
     source, sourceSpec = self.parse_source(source)
@@ -147,7 +160,7 @@ class AddCommand(Command):
       defaultNix.write(template)
       print(f"Created {output}/default.nix")
 
-  def find_packages_root(self):
+  def find_package_root(self):
     if self.option("packages-root"):
       packages_root = self.option("packages-root")
     elif config['packagesDir']:
@@ -248,8 +261,9 @@ class AddCommand(Command):
         type="unknown",
       )
     else:
-      del mainSource['pname']
-      del mainSource['version']
+      for key in ['pname', 'version']:
+        if key in mainSource:
+          del mainSource[key]
     if mainPackageName not in lock['sources']:
       lock['sources'][mainPackageName] = {
         mainPackageVersion: mainSource
@@ -270,14 +284,14 @@ class AddCommand(Command):
         f"--arg {n}={v}" for n, v in specified_extra_args.items()
       ])
 
-  def calc_outputs(self, mainPackageDirName, packages_root):
+  def calc_outputs(self, main_package_dir_name, packages_root):
     if self.option('target'):
       if self.option('target').startswith('/'):
         output = self.option('target')
       else:
         output = f"{packages_root}/{self.option('target')}"
     else:
-      output = f"{packages_root}/{mainPackageDirName}"
+      output = f"{packages_root}/{main_package_dir_name}"
     # collect files to create
     filesToCreate = ['dream-lock.json']
     if not os.path.isdir(output):
