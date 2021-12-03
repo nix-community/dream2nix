@@ -175,7 +175,7 @@
                   l.findFirst
                   (toml: toml.value.package.name == name)
                   (throw "could not find crate ${name}")
-                  cargoTomls
+                  cargoPackages
                 ).path;
             in
             {
