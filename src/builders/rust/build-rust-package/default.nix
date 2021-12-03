@@ -12,6 +12,7 @@
   getCyclicDependencies,
   getDependencies,
   getSource,
+  produceDerivation,
 
   ...
 }@args:
@@ -55,7 +56,7 @@ let
 
   buildPackage = pname: version:
     let src = getSource pname version; in
-    pkgs.rustPlatform.buildRustPackage {
+    produceDerivation pname (pkgs.rustPlatform.buildRustPackage {
       inherit pname version src;
 
       postUnpack = ''
@@ -63,7 +64,7 @@ let
       '';
 
       cargoVendorDir = "nix-vendor";
-    };
+    });
 in
 rec {
   packages =
