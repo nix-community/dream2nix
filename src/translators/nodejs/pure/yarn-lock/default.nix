@@ -51,12 +51,13 @@
       inputData = parsedLock;
 
       mainPackageName =
-        packageJSON.name or
-          (if name != "{automatic}" then name else
-            throw (
-              "Could not identify package name. "
-              + "Please specify extra argument 'name'"
-            ));
+        if name != "{automatic}" then
+          name
+        else
+          parsed.name or (throw (
+            "Could not identify package name. "
+            + "Please specify extra argument 'name'"
+          ));
 
       mainPackageVersion = packageJSON.version or "unknown";
 

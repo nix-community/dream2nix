@@ -103,9 +103,10 @@
         inputData = packageLockWithPinnedVersions;
 
         mainPackageName =
-          parsed.name or
-          (if name != "{automatic}" then name else
-            throw (
+          if name != "{automatic}" then
+            name
+          else
+            parsed.name or (throw (
               "Could not identify package name. "
               + "Please specify extra argument 'name'"
             ));
