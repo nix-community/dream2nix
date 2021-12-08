@@ -9,7 +9,6 @@
   # dream2nix inputs
   builders,
   externals,
-  node2nix ? externals.node2nix,
   utils,
   ...
 }:
@@ -42,6 +41,8 @@
   # These can be passed by the user via `builderArgs`.
   # All options must provide default
   standalonePackageNames ? [],
+
+  nodejs ? null,
   ...
 }@args:
 
@@ -52,8 +53,11 @@ let
   nodejsVersion = subsystemAttrs.nodejsVersion;
 
   nodejs =
-    pkgs."nodejs-${builtins.toString nodejsVersion}_x"
-    or (throw "Could not find nodejs version '${nodejsVersion}' in pkgs");
+    if args ? nodejs then
+      args.nodejs
+    else
+      pkgs."nodejs-${builtins.toString nodejsVersion}_x"
+      or (throw "Could not find nodejs version '${nodejsVersion}' in pkgs");
 
   nodeSources = runCommand "node-sources" {} ''
     tar --no-same-owner --no-same-permissions -xf ${nodejs.src}
