@@ -6,8 +6,8 @@
   nixpkgsSrc ? <nixpkgs>,
   lib ? (import nixpkgsSrc {}).lib,
 
+  overridesDirs,
   externalSources,
-
   externalPaths,
 
 }@args:
@@ -39,7 +39,7 @@ let
     # fail if pkgs and systems are both defined
     else if pkgsList != null && systems != [] then
       throw "Define either `systems` or `pkgs`, not both"
-    
+
     # only pkgs is specified
     else if pkgsList != null then
       if b.isList pkgsList then
@@ -48,13 +48,13 @@ let
           pkgsList
       else
         { "${makePkgsKey pkgsList}" = pkgsList; }
-    
+
     # only systems is specified
     else
       lib.genAttrs systems
         (system: import nixpkgsSrc { inherit system; });
 
-    
+
     flakifyBuilderOutputs = system: outputs:
       (lib.optionalAttrs (outputs ? "defaultPackage") {
         defaultPackage."${system}" = outputs.defaultPackage;
@@ -76,9 +76,11 @@ let
     }@argsInit:
     let
 
-      config = (import ./utils/config.nix).loadConfig argsInit.config or {};
+      config' = (import ./utils/config.nix).loadConfig argsInit.config or {};
 
-      overridesDirs' = config.overridesDirs;
+      config = config' // {
+        overridesDirs = args.overridesDirs ++ config'.overridesDirs;
+      };
 
       allPkgs = makeNixpkgs pkgs systems;
 
@@ -111,15 +113,15 @@ let
           forAllSystems
             (system: pkgs:
               dream2nixFor."${system}".apps.flakeApps);
-              
+
         defaultApp =
           forAllSystems
             (system: pkgs:
               dream2nixFor."${system}".apps.flakeApps.dream2nix);
-        
+
       };
 
-  riseAndShine = 
+  riseAndShine =
     {
       pkgs ? null,
       systems ? [],
@@ -144,7 +146,7 @@ let
         lib.mapAttrsToList
           (system: outputs: flakifyBuilderOutputs system outputs)
           allBuilderOutputs;
-      
+
     in
       b.foldl'
         (allOutputs: output: lib.recursiveUpdate allOutputs output)
