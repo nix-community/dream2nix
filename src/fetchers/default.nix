@@ -31,7 +31,9 @@ rec {
     let
       fetcher = fetchers."${type}";
       argsKeep = b.removeAttrs args [ "reComputeHash" ];
-      fetcherOutputs = fetcher.outputs argsKeep;
+      fetcherOutputs =
+        fetcher.outputs
+        (b.removeAttrs argsKeep [ "dir" "hash" "type" ]);
     in
       argsKeep
       # if the hash was not provided, calculate hash on the fly (impure)
@@ -46,14 +48,10 @@ rec {
       newVersion,
       ...
     }:
-    let
-      fetcher = fetchers."${source.type}";
-      argsKeep = b.removeAttrs source [ "hash" ];
-    in
-    constructSource (argsKeep // {
+    constructSource (source // {
       reComputeHash = true;
     } // {
-      "${fetcher.versionField}" = newVersion;
+      "${fetchers."${source.type}".versionField}" = newVersion;
     });
 
   # fetch a source defined via a dream lock source spec

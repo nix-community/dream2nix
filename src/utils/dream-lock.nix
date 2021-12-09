@@ -105,7 +105,11 @@ let
   getMainPackageSource = dreamLock:
     dreamLock.sources
       ."${dreamLock._generic.mainPackageName}"
-      ."${dreamLock._generic.mainPackageVersion}";
+      ."${dreamLock._generic.mainPackageVersion}"
+    // {
+      pname = dreamLock._generic.mainPackageName;
+      version = dreamLock._generic.mainPackageVersion;
+    };
 
   getSource = fetchedSources: pname: version:
     if fetchedSources ? "${pname}"."${version}"

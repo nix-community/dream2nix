@@ -33,14 +33,19 @@ class UpdateCommand(Command):
     if self.io.is_interactive():
       self.line(f"\n{self.description}\n")
 
+    # handle if package name given
     if config['packagesDir'] and '/' not in self.argument("name"):
       dreamLockFile =\
         os.path.abspath(
           f"{config['packagesDir']}/{self.argument('name')}/dream-lock.json")
+      attribute_name = self.argument('name')
+
+    # handle if path to dream-lock.json given
     else:
       dreamLockFile = os.path.abspath(self.argument("name"))
       if not dreamLockFile.endswith('dream-lock.json'):
         dreamLockFile = os.path.abspath(dreamLockFile + "/dream-lock.json")
+      attribute_name = dreamLockFile.split('/')[-2]
 
     # parse dream lock
     with open(dreamLockFile) as f:
@@ -76,6 +81,10 @@ class UpdateCommand(Command):
     mainPackageName = lock['_generic']['mainPackageName']
     mainPackageVersion = lock['_generic']['mainPackageVersion']
     mainPackageSource = lock['sources'][mainPackageName][mainPackageVersion]
+    mainPackageSource.update(dict(
+      pname = mainPackageName,
+      version = mainPackageVersion,
+    ))
     updatedSourceSpec = callNixFunction(
       "fetchers.updateSource",
       source=mainPackageSource,
@@ -88,7 +97,8 @@ class UpdateCommand(Command):
       sp.run(
         [
           sys.executable, f"{cli_py}", "add", tmpDreamLock.name, "--force",
-          "--target", os.path.abspath(os.path.dirname(dreamLockFile))
+          "--target", os.path.abspath(os.path.dirname(dreamLockFile)),
+          "--attribute-name", attribute_name
         ]
         + lock['_generic']['translatorParams'].split()
       )

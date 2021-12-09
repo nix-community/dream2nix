@@ -16,6 +16,8 @@ rec {
 
   versionField = "version";
 
+  defaultUpdater = "npmNewestReleaseVersion";
+
   # becuase some node packages contain submodules like `@hhhtj/draw.io`
   # the amount of arguments can vary and a custom parser is needed
   parseParams = params:
