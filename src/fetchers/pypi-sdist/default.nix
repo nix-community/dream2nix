@@ -29,11 +29,17 @@
       );
 
       fetched = hash:
-        (fetchurl {
-          inherit url;
-          sha256 = hash;
-        }).overrideAttrs (old: {
-          outputHashMode = "recursive";
-        });
+        let
+          source =
+            (fetchurl {
+              inherit url;
+              sha256 = hash;
+            }).overrideAttrs (old: {
+              outputHashMode = "recursive";
+            });
+        in
+          utils.extractSource {
+            inherit source;
+          };
     };
 }

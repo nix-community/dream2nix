@@ -30,6 +30,7 @@
 
       cp -r $inputDirectory/* ./
       chmod -R +w ./
+      rm -rf package-lock.json
       cat ./package.json
       npm install --package-lock-only
       cat package-lock.json

@@ -160,6 +160,15 @@ rec {
           ''
         else
           null;
+      # sometimes tarballs do not end with .tar.??
+      preUnpack = ''
+        unpackFallback(){
+          local fn="$1"
+          tar xf "$fn"
+        }
+
+        unpackCmdHooks+=(unpackFallback)
+      '';
       postUnpack = ''
         echo postUnpack
         mv "$sourceRoot/$dir" $out

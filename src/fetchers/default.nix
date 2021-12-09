@@ -216,33 +216,37 @@ rec {
           fetcher = fetchers."${fetcherName}";
 
           args =
-            lib.listToAttrs
-              (lib.forEach
-                (lib.range 0 ((lib.length fetcher.inputs) - 1))
-                (idx:
-                  lib.nameValuePair
-                    (lib.elemAt fetcher.inputs idx)
-                    (lib.elemAt params idx)
-                ));
+            if fetcher ? parseParams then
+              fetcher.parseParams params
+
+            else if b.length params != b.length fetcher.inputs then
+              throw ''
+                Wrong number of arguments provided in shortcut for fetcher '${fetcherName}'
+                Should be ${fetcherName}:${lib.concatStringsSep "/" fetcher.inputs}
+              ''
+
+            else
+              lib.listToAttrs
+                (lib.forEach
+                  (lib.range 0 ((lib.length fetcher.inputs) - 1))
+                  (idx:
+                    lib.nameValuePair
+                      (lib.elemAt fetcher.inputs idx)
+                      (lib.elemAt params idx)
+                  ));
 
           fetcherOutputs = fetcher.outputs (args // parsed.kwargs);
 
         in
-          if b.length params != b.length fetcher.inputs then
-            throw ''
-              Wrong number of arguments provided in shortcut for fetcher '${fetcherName}'
-              Should be ${fetcherName}:${lib.concatStringsSep "/" fetcher.inputs}
-            ''
-          else
-            constructSource (args // parsed.kwargs // {
-              type = fetcherName;
-            }
-            // (lib.optionalAttrs (parsed.dir != null) {
-              dir = parsed.dir;
-            })
-            // (lib.optionalAttrs computeHash {
-              hash = fetcherOutputs.calcHash "sha256";
-            }));
+          constructSource (args // parsed.kwargs // {
+            type = fetcherName;
+          }
+          // (lib.optionalAttrs (parsed.dir != null) {
+            dir = parsed.dir;
+          })
+          // (lib.optionalAttrs computeHash {
+            hash = fetcherOutputs.calcHash "sha256";
+          }));
 
     in
       if parsed.proto1 != null then
