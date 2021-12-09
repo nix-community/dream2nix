@@ -18,7 +18,12 @@
   # the input format is specified in /specifications/translator-call-example.json
   # this script receives a json file including the input paths and specialArgs
   translateBin = utils.writePureShellScript
-    [ bash coreutils jq nodePackages.npm ]
+    [
+      bash
+      coreutils
+      jq
+      nodePackages.npm
+    ]
     ''
       # accroding to the spec, the translator reads the input from a json file
       jsonInput=$1
@@ -32,7 +37,16 @@
       chmod -R +w ./
       rm -rf package-lock.json
       cat ./package.json
-      npm install --package-lock-only
+
+      if [ "$(jq '.noDev' -c -r $jsonInput)" == "true" ]; then
+        echo "excluding dev dependencies"
+        jq '.devDependencies = {}' ./package.json > package.json.mod
+        mv package.json.mod package.json
+        npm install --package-lock-only --production
+      else
+        npm install --package-lock-only
+      fi
+
       cat package-lock.json
 
       jq ".inputDirectories[0] = \"$(pwd)\"" -c -r $jsonInput > ./newJsonInput
@@ -57,5 +71,5 @@
       inputFiles = [];
     };
 
-  extraArgs = {};
+  extraArgs = translators.translators.nodejs.pure.package-lock.extraArgs;
 }
