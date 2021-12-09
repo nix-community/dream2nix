@@ -356,7 +356,11 @@ in
   };
 
   ledger-live-desktop = {
+
     build = {
+
+      installMethod = "copy";
+
       postPatch = ''
         substituteInPlace ./tools/main.js --replace \
           "git rev-parse --short HEAD" \
@@ -436,6 +440,17 @@ in
     };
   };
 
+  node-hid = {
+
+    build = {
+
+      nativeBuildInputs = [
+        pkgs.pkg-config
+        pkgs.libusb
+      ];
+    };
+  };
+
   optipng-bin = {
     add-binary = {
       buildScript = ''
@@ -465,6 +480,18 @@ in
     };
   };
 
+  sodium-native = {
+
+    build = {
+
+      nativeBuildInputs = [
+        pkgs.autoconf
+        pkgs.automake
+        pkgs.libtool
+      ];
+    };
+  };
+
   # TODO: confirm this is actually working
   typescript = {
     preserve-symlinks = {
@@ -472,6 +499,16 @@ in
         find -name '*.js' -exec \
           ${ensureFileModified} {} sed -i "s/options.preserveSymlinks/true/g; s/compilerOptions.preserveSymlinks/true/g" {} \;
       '';
+    };
+  };
+
+  usb-detection = {
+
+    build = {
+
+      nativeBuildInputs = [
+        pkgs.libudev
+      ];
     };
   };
 
@@ -528,6 +565,52 @@ in
         tsc -p ./
       '';
     };
+  };
+
+  "@ledgerhq/ledger-core" = {
+
+    build =
+      let
+        ledger-core-version = "4.2.0";
+
+        ledger-core = pkgs.stdenv.mkDerivation {
+          pname = "ledger-core";
+          version = ledger-core-version;
+          src = pkgs.fetchFromGitHub {
+            owner = "LedgerHQ";
+            repo = "lib-ledger-core";
+            rev = ledger-core-version;
+            fetchSubmodules = true;
+            sha256 = "sha256-6nfeHxWyKRm5dCYamaDtx53SqqPK+GJ8kqI37XdEtuI=";
+          };
+          nativeBuildInputs = with pkgs; [
+            cmake
+          ];
+        };
+
+        secp256k1-src = pkgs.fetchzip {
+          url = "https://github.com/chfast/secp256k1/archive/ac8ccf29b8c6b2b793bc734661ce43d1f952977a.tar.gz";
+          hash = "sha256-7i61CGd+xFvPQkyN7CI7eEoTtko0S77eY+DXEbd3BE8=";
+        };
+
+      in
+        {
+          buildInputs = [
+            ledger-core
+          ];
+
+          # TODO: patch core/lib/cmake/ProjectSecp256k1.cmake
+          #       to use this secp256k1 instead of downloading from github
+          postPatch = ''
+            cp -r ${secp256k1-src} ./secp256k1
+          '';
+
+          preBuild = ''
+            # npm --nodedir=$nodeSources run install
+            npm --nodedir=$nodeSources run gypconfig
+            npm --nodedir=$nodeSources run gypinstall
+          '';
+        };
   };
 
   "@mattermost/webapp" = {
