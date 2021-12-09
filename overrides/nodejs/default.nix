@@ -144,13 +144,42 @@ in
           hashes;
 
       getElectronFor = version:
-        nixpkgsElectrons."${version}"
-        or (throw ''
-          Electron binary hashes are missing for required version ${version}
-          Please add the hashes in the override below the origin of this error.
-          To get the hashes, execute:
-          ${pkgs.path}/pkgs/development/tools/electron/print-hashes.sh ${version}
-        '');
+        let
+          semVerSpec = "~${version}";
+
+          filteredElectrons =
+            lib.filterAttrs
+              (electronVer: _: satisfiesSemver semVerSpec {
+                version = electronVer;
+              })
+              nixpkgsElectrons;
+
+          electrons = l.attrValues filteredElectrons;
+
+        in
+          if l.length electrons == 0 then
+            throw ''
+              Electron binary hashes are missing for required version ${version}
+              Please add the hashes in the override below the origin of this error.
+              To get the hashes, execute:
+              ${./.}/electron/print-hashes.sh ${version}
+            ''
+          else if l.length electrons > 1 then
+            let
+              versionsSorted =
+                l.sort
+                  (v1: v2: l.compareVersions v1 v2 == 1)
+                  (l.attrNames filteredElectrons);
+
+              versionsToRemove = l.tail versionsSorted;
+            in
+              throw ''
+                Multiple electron minor releases found.
+                Please delete the hashes for versions ${l.toString versionsToRemove}
+                in the override below the origin of this error.
+              ''
+          else
+            l.head electrons;
 
       # TODO: generate more of these via the script in nixpkgs,
       #       once we feel confident about this approach
@@ -189,23 +218,14 @@ in
           aarch64-darwin = "d4f0f73e0a5a723ef7f3f1e6ca3743b6267eef385cf79aa63a2fb3f698a7931d";
           headers = "07095b5rylilbmyd0syamm6fc4pngazldj5jgm7blgirdi8yzzd2";
         };
-        "12.2.2" = {
-          x86_64-linux = "a8e88c67f375e41f3a6f8b8a8c3a1e41b8c0a46f1b731e05de21208caa005fb2";
-          x86_64-darwin = "8a33d2bed668e30a6d64856e01d2aa3b1f1d9efe4eb0e808e916694d32d5e8f2";
-          i686-linux = "5f0bdc9581237f2f87b5d34e232d711617bd8bf5ff5d7ebd66480779c13fba0a";
-          armv7l-linux = "aeee4acf40afa0397c10a4c76bc61ed2967433bab5c6f11de181fa33d0b168ff";
-          aarch64-linux = "593a3fef97a7fed8e93b64d659af9c736dff445eedcbfd037f7d226a88d58862";
-          aarch64-darwin = "256daa25a8375c565b32c3c2f0e12fbac8d5039a13a9edbb3673a863149b750a";
-          headers = "1fvqkw08pync38ixi5cq4f8a108k2ajxpm1w2f8sn2hjph9kpbsd";
-        };
-        "13.1.9" = {
-          x86_64-linux = "60c7c74a5dd00ebba6d6b5081a4b83d94ac97ec5e53488b8b8a1b9aabe17fefc";
-          x86_64-darwin = "b897bdc42d9d1d0a49fc513c769603bff6e111389e2a626eb628257bc705f634";
-          i686-linux = "081f08ce7ff0e1e8fb226a322b855f951d120aa522773f17dd8e5a87969b001f";
-          armv7l-linux = "c6b6b538d4764104372539c511921ddecbf522ded1fea856cbc3d9a303a86206";
-          aarch64-linux = "9166dd3e703aa8c9f75dfee91fb250b9a08a32d8181991c1143a1da5aa1a9f20";
-          aarch64-darwin = "a1600c0321a0906761fdf88ab9f30d1c53b53803ca33bcae20a6ef7a6761cac1";
-          headers = "1k9x9hgwl23sd5zsdrdlcjp4ap40g282a1dxs1jyxrwq1dzgmsl3";
+        "12.2.3" = {
+          armv7l-linux = "4de83c34987ac7b3b2d0c8c84f27f9a34d9ea2764ae1e54fb609a95064e7e71a";
+          aarch64-linux = "d29d234c09ba810d89ed1fba9e405b6975916ea208d001348379f89b50d1835c";
+          x86_64-linux = "deae6d0941762147716b8298476080d961df2a32d0f6f57b244cbe3a2553cd24";
+          i686-linux = "11b4f159cd3b89d916cc05b5231c2cde53f0c6fb5be8e881824fde00daa5e8c2";
+          x86_64-darwin = "5af34f1198ce9fd17e9fa581f57a8ad2c9333187fb617fe943f30b8cde9e6231";
+          aarch64-darwin = "0db2c021a047a4cd5b28eea16490e16bc82592e3f8a4b96fbdc72a292ce13f50";
+          headers = "1idam1xirxqxqg4g7n33kdx2skk0r351m00g59a8yx9z82g06ah9";
         };
         "13.2.3" = {
           x86_64-linux = "495b0c96427c63f6f4d08c5b58d6379f9ee3c6c81148fbbe8a7a6a872127df6d";
@@ -258,7 +278,7 @@ in
 
     {
 
-      add-binary-v14 = {
+      add-binary = {
 
         overrideAttrs = old: {
           postPatch = ''
