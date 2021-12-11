@@ -96,7 +96,9 @@ class UpdateCommand(Command):
       tmpDreamLock.seek(0)  # flushes write cache
       sp.run(
         [
-          sys.executable, f"{cli_py}", "add", tmpDreamLock.name, "--force",
+          sys.executable, f"{cli_py}", "add", tmpDreamLock.name,
+          "--force",
+          "--no-default-nix",
           "--target", os.path.abspath(os.path.dirname(dreamLockFile)),
           "--attribute-name", attribute_name
         ]

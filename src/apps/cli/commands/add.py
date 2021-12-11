@@ -1,9 +1,11 @@
 import json
 import os
 import re
+import shutil
 import subprocess as sp
 import sys
 import tempfile
+from glob import glob
 
 import networkx as nx
 from cleo import Command, argument, option
@@ -62,19 +64,23 @@ class AddCommand(Command):
     # ensure packages-root
     package_root = self.find_package_root()
 
-    main_package_dir_name = self.handle_one(package_root, sources[0])
+    # process main package
+    print(f"\n\nProcessing main package: {sources[0]}")
+    main_package_dir_name = self.handle_one(package_root, sources[0], [])
+    existing_names = [ main_package_dir_name ]
 
+    # process subpackages
     sub_package_root = f"{package_root}/{main_package_dir_name}"
+    for subdir in glob(f"{sub_package_root}/*/"):
+      shutil.rmtree(subdir)
+    for idx, source in enumerate(sources[1:]):
+      print(f"\n\nProcessing subpackage {idx+1}: {source}")
+      attr_name = self.handle_one(sub_package_root, source, existing_names)
+      existing_names.append(attr_name)
 
-    for source in sources[1:]:
-      self.handle_one(sub_package_root, source)
 
 
-
-  def handle_one(self, package_root, source):
-
-    if self.io.is_interactive():
-      self.line(f"\n{self.description}\n")
+  def handle_one(self, package_root, source, existing_names):
 
     # parse extra args
     specified_extra_args = self.parse_extra_args()
@@ -87,7 +93,10 @@ class AddCommand(Command):
     mainPackageVersion = lock['_generic']['mainPackageVersion']
 
     # calculate output directory and attribute name
-    main_package_dir_name = self.define_attribute_name(mainPackageName)
+    main_package_dir_name = self.define_attribute_name(
+      mainPackageName,
+      existing_names,
+    )
 
     # calculate output files
     filesToCreate, output = self.calc_outputs(main_package_dir_name, package_root)
@@ -323,12 +332,17 @@ class AddCommand(Command):
     output = os.path.realpath(output)
     return filesToCreate, output
 
-  def define_attribute_name(self, mainPackageName):
-    attributeName = self.option('attribute-name')
-    if attributeName:
-      return attributeName
+  def define_attribute_name(self, mainPackageName, existing_names):
+    # only respect --atttribute-name option for main package
+    if not existing_names:
+      attributeName = self.option('attribute-name')
+      if attributeName:
+        return attributeName
 
     attributeName = mainPackageName.strip('@').replace('/', '-')
+
+    if attributeName in existing_names:
+      attributeName = attributeName + '-subpackage'
 
     # verify / change main package dir name
     print(f"Current package attribute name is: {attributeName}")
