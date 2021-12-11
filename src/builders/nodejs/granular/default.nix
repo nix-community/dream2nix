@@ -1,7 +1,9 @@
 {
   jq,
   lib,
+  makeWrapper,
   pkgs,
+  python3,
   runCommand,
   stdenv,
   writeText,
@@ -79,6 +81,55 @@ let
     inherit defaultPackage packages;
   };
 
+  # only gets executed if package has electron dependency
+  electron-rebuild = electron: ''
+    # prepare node headers for electron
+    ver="v${electron.version}"
+    mkdir $TMP/$ver
+    cp ${electron.headers} $TMP/$ver/node-$ver-headers.tar.gz
+
+    # calc checksums
+    cd $TMP/$ver
+    sha256sum ./* > SHASUMS256.txt
+    cd -
+
+    # serve headers via http
+    python -m http.server 45034 --directory $TMP &
+
+    # copy electron distribution
+    cp -r ./node_modules/electron/dist $TMP/dist
+    chmod -R +w $TMP/dist
+    # mv $TMP/dist/electron $TMP/dist/electron-wrapper
+    # mv $TMP/dist/.electron-wrapped $TMP/dist/electron
+
+    # configure electron toolchain
+    ${pkgs.jq}/bin/jq ".build.electronDist = \"$TMP/dist\"" package.json \
+        | ${pkgs.moreutils}/bin/sponge package.json
+
+    ${pkgs.jq}/bin/jq ".build.linux.target = \"dir\"" package.json \
+        | ${pkgs.moreutils}/bin/sponge package.json
+
+    ${pkgs.jq}/bin/jq ".build.npmRebuild = false" package.json \
+        | ${pkgs.moreutils}/bin/sponge package.json
+
+    # execute electron-rebuild if available
+    export headers=http://localhost:45034/
+    if command -v electron-rebuild &> /dev/null; then
+      pushd $electronAppDir
+
+      electron-rebuild -d $headers
+      popd
+    fi
+  '';
+
+  electron-wrap = electron: ''
+    mkdir -p $out/bin
+    makeWrapper \
+      ${electron}/bin/electron \
+      $out/bin/$(basename "$packageName") \
+      --add-flags "$(realpath $electronAppDir)"
+  '';
+
   # Generates a derivation for a specific package name + version
   makePackage = name: version:
     let
@@ -96,8 +147,31 @@ let
             (dep: lib.nameValuePair dep.name dep.version)
             deps));
 
+      electronPackage =
+        let
+          electronDep =
+            lib.findFirst
+              (dep: dep.name == "electron")
+              null
+              deps;
+
+        in
+          if electronDep == null then
+            null
+          else
+            let
+              electronVersionMajor =
+                if electronDep == null then
+                  null
+                else
+                  lib.versions.major electronDep.version;
+            in
+              pkgs."electron_${electronVersionMajor}";
+
       pkg =
         produceDerivation name (stdenv.mkDerivation rec {
+
+          inherit dependenciesJson nodeDeps nodeSources version;
 
           packageName = name;
 
@@ -105,16 +179,18 @@ let
 
           installMethod = "symlink";
 
+          electronAppDir = ".";
+
           # only run build on the main package
           runBuild =
             packageName == mainPackageName
                 && version == mainPackageVersion;
 
-          inherit dependenciesJson nodeDeps nodeSources version;
-
           src = getSource name version;
 
-          buildInputs = [ jq nodejs nodejs.python ];
+          nativeBuildInputs = [ makeWrapper ];
+
+          buildInputs = [ jq nodejs python3 ];
 
           # prevents running into ulimits
           passAsFile = [ "dependenciesJson" "nodeDeps" ];
@@ -295,6 +371,10 @@ let
           buildPhase = ''
             runHook preBuild
 
+            # execute electron-rebuild
+            ${lib.optionalString (electronPackage != null)
+              (electron-rebuild electronPackage)}
+
             # execute install command
             if [ -n "$buildScript" ]; then
               if [ -f "$buildScript" ]; then
@@ -340,6 +420,10 @@ let
                 done
               done
             fi
+
+            # wrap electron app
+            ${lib.optionalString (electronPackage != null)
+              (electron-wrap electronPackage)}
           '';
         });
     in
