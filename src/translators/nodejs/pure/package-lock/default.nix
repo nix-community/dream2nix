@@ -98,7 +98,17 @@
 
     in
 
-      utils.simpleTranslate translatorName rec {
+      utils.simpleTranslate
+        ({
+          getDepByNameVer,
+          dependenciesByOriginalID,
+          ...
+        }:
+
+        rec {
+
+        inherit translatorName;
+
         # values
         inputData = packageLockWithPinnedVersions;
 
@@ -196,9 +206,9 @@
             };
         };
 
-        getDependencies = dependencyObject: getDepByNameVer: dependenciesByOriginalID:
+        getDependencies = dependencyObject:
           dependencyObject.depsExact;
-      };
+      });
 
 
   compatiblePaths =

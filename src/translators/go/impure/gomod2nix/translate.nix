@@ -10,57 +10,67 @@ let
     lib.mapAttrsToList
       (goName: depAttrs: depAttrs // { inherit goName; })
       parsed;
-  translated = dream2nix.utils.simpleTranslate "gomod2nix" rec {
+  translated =
+    dream2nix.utils.simpleTranslate
+      ({
+        getDepByNameVer,
+        dependenciesByOriginalID,
+        ...
+      }:
 
-    inputData = parsed;
+      rec {
 
-    mainPackageName =
-      let
-        firstLine = (b.elemAt (lib.splitString "\n" (b.readFile "${cwd}/go.mod")) 0);
-      in
-        lib.last (lib.splitString "/" (b.elemAt (lib.splitString " " firstLine) 1));
+        translatorName = "gomod2nix";
 
-    mainPackageVersion = "unknown";
+        inputData = parsed;
 
-    subsystemName = "go";
+        mainPackageName =
+          let
+            firstLine = (b.elemAt (lib.splitString "\n" (b.readFile "${cwd}/go.mod")) 0);
+          in
+            lib.last (lib.splitString "/" (b.elemAt (lib.splitString " " firstLine) 1));
 
-    subsystemAttrs = { };
+        mainPackageVersion = "unknown";
 
-    inherit serializePackages;
+        subsystemName = "go";
 
-    mainPackageDependencies =
-      lib.forEach
-        (serializePackages parsed)
-        (dep: {
-            name = getName dep;
-            version = getVersion dep;
-        });
+        subsystemAttrs = { };
 
-    getOriginalID = dependencyObject:
-      null;
+        inherit serializePackages;
 
-    getName = dependencyObject:
-      dependencyObject.goName;
+        mainPackageDependencies =
+          lib.forEach
+            (serializePackages parsed)
+            (dep: {
+                name = getName dep;
+                version = getVersion dep;
+            });
 
-    getVersion = dependencyObject:
-      lib.removePrefix "v" dependencyObject.sumVersion;
+        getOriginalID = dependencyObject:
+          null;
 
-    getDependencies = dependencyObject: getDepByNameVer: dependenciesByOriginalID:
-      [];
+        getName = dependencyObject:
+          dependencyObject.goName;
 
-    getSourceType = dependencyObject: "git";
+        getVersion = dependencyObject:
+          lib.removePrefix "v" dependencyObject.sumVersion;
 
-    sourceConstructors = {
-      git = dependencyObject:
-        {
-          type = "git";
-          version = getVersion dependencyObject;
-          hash = dependencyObject.fetch.sha256;
-          url = dependencyObject.fetch.url;
-          rev = dependencyObject.fetch.rev;
+        getDependencies = dependencyObject:
+          [];
+
+        getSourceType = dependencyObject: "git";
+
+        sourceConstructors = {
+          git = dependencyObject:
+            {
+              type = "git";
+              version = getVersion dependencyObject;
+              hash = dependencyObject.fetch.sha256;
+              url = dependencyObject.fetch.url;
+              rev = dependencyObject.fetch.rev;
+            };
         };
-    };
 
-  };
+      });
 in
   dream2nix.utils.dreamLock.toJSON translated

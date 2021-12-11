@@ -17,7 +17,7 @@
     }@args:
     let
       l = lib // builtins;
-      
+
       recurseFiles = path:
         l.flatten (
           l.mapAttrsToList
@@ -93,117 +93,126 @@
                    parsedDeps
                  ).version;
         };
-      
+
       package = rec {
         toml = packageToml.value;
         tomlPath = packageToml.path;
-    
+
         name = toml.package.name;
         version = toml.package.version or (l.warn "no version found in Cargo.toml for ${name}, defaulting to unknown" "unknown");
       };
     in
 
-      utils.simpleTranslate translatorName {
-        # VALUES
-        
-        # The raw input data as an attribute set.
-        # This will then be processed by `serializePackages` (see below) and
-        # transformed into a flat list.
-        inputData = parsedDeps;
-    
-        mainPackageName = package.name;
+      utils.simpleTranslate
+        ({
+          getDepByNameVer,
+          dependenciesByOriginalID,
+          ...
+        }:
 
-        mainPackageVersion = package.version;
+        rec {
+          # VALUES
 
-        mainPackageDependencies =
-          let
-            mainPackage =
-              l.findFirst
-              (dep: dep.name == package.name)
-              (throw "could not find main package in Cargo.lock")
-              parsedDeps;
-          in
-          l.map makeDepNameVersion (mainPackage.dependencies or [ ]);
+          inherit translatorName;
 
-        # the name of the subsystem
-        subsystemName = "rust";
+          # The raw input data as an attribute set.
+          # This will then be processed by `serializePackages` (see below) and
+          # transformed into a flat list.
+          inputData = parsedDeps;
 
-        # Extract subsystem specific attributes.
-        # The structure of this should be defined in:
-        #   ./src/specifications/{subsystem}
-        subsystemAttrs = {
-          packages = l.map (toml: { inherit (toml.value.package) name version; }) cargoPackages;
-        };
+          mainPackageName = package.name;
 
-        # FUNCTIONS
+          mainPackageVersion = package.version;
 
-        # return a list of package objects of arbitrary structure
-        serializePackages = inputData: inputData;
-
-        # return the name for a package object
-        getName = dependencyObject: dependencyObject.name;
-
-        # return the version for a package object
-        getVersion = dependencyObject: dependencyObject.version;
-
-        # get dependencies of a dependency object
-        getDependencies = dependencyObject: getDepByNameVer: dependenciesByOriginalID:
-          l.map makeDepNameVersion (dependencyObject.dependencies or [ ]);
-
-        # return the source type of a package object
-        getSourceType = dependencyObject:
-          let checkType = type: l.hasPrefix "${type}+" dependencyObject.source; in
-          if !(l.hasAttr "source" dependencyObject)
-          then "path"
-          else if checkType "git" then
-            "git"
-          else if checkType "registry" then
-            if dependencyObject.source == "registry+https://github.com/rust-lang/crates.io-index"
-            then "crates-io"
-            else throw "registries other than crates.io are not supported yet"
-          else
-            throw "unknown or unsupported source type: ${dependencyObject.source}";
-
-        # An attrset of constructor functions.
-        # Given a dependency object and a source type, construct the 
-        # source definition containing url, hash, etc.
-        sourceConstructors = {
-          path = dependencyObject:
+          mainPackageDependencies =
             let
-              findCratePath = name:
-                l.dirOf (
-                  l.findFirst
-                  (toml: toml.value.package.name == name)
-                  (throw "could not find crate ${name}")
-                  cargoTomls
-                ).path;
+              mainPackage =
+                l.findFirst
+                (dep: dep.name == package.name)
+                (throw "could not find main package in Cargo.lock")
+                parsedDeps;
             in
-            {
-              path = findCratePath dependencyObject.name;
-            };
+            l.map makeDepNameVersion (mainPackage.dependencies or [ ]);
 
-          git = dependencyObject:
-            let
-              source = dependencyObject.source;
+          # the name of the subsystem
+          subsystemName = "rust";
 
-              extractRevision = source: l.last (l.splitString "#" source);
-              extractRepoUrl = source:
-                let
-                  splitted = l.head (l.splitString "?" source);
-                  split = l.substring 4 (l.stringLength splitted) splitted;
-                in l.head (l.splitString "#" split);
-            in
-            {
-              url = extractRepoUrl source;
-              rev = extractRevision source;
-            };
-            
-          crates-io = dependencyObject:
-            {
-              hash = dependencyObject.checksum;
-            };
-        };
-      };
+          # Extract subsystem specific attributes.
+          # The structure of this should be defined in:
+          #   ./src/specifications/{subsystem}
+          subsystemAttrs = {
+            packages = l.map (toml: { inherit (toml.value.package) name version; }) cargoPackages;
+          };
+
+          # FUNCTIONS
+
+          # return a list of package objects of arbitrary structure
+          serializePackages = inputData: inputData;
+
+          # return the name for a package object
+          getName = dependencyObject: dependencyObject.name;
+
+          # return the version for a package object
+          getVersion = dependencyObject: dependencyObject.version;
+
+          # get dependencies of a dependency object
+          getDependencies = dependencyObject:
+            l.map makeDepNameVersion (dependencyObject.dependencies or [ ]);
+
+          # return the source type of a package object
+          getSourceType = dependencyObject:
+            let checkType = type: l.hasPrefix "${type}+" dependencyObject.source; in
+            if !(l.hasAttr "source" dependencyObject)
+            then "path"
+            else if checkType "git" then
+              "git"
+            else if checkType "registry" then
+              if dependencyObject.source == "registry+https://github.com/rust-lang/crates.io-index"
+              then "crates-io"
+              else throw "registries other than crates.io are not supported yet"
+            else
+              throw "unknown or unsupported source type: ${dependencyObject.source}";
+
+          # An attrset of constructor functions.
+          # Given a dependency object and a source type, construct the
+          # source definition containing url, hash, etc.
+          sourceConstructors = {
+            path = dependencyObject:
+              let
+                findCratePath = name:
+                  l.dirOf (
+                    l.findFirst
+                    (toml: toml.value.package.name == name)
+                    (throw "could not find crate ${name}")
+                    cargoTomls
+                  ).path;
+              in
+              {
+                path = findCratePath dependencyObject.name;
+              };
+
+            git = dependencyObject:
+              let
+                source = dependencyObject.source;
+
+                extractRevision = source: l.last (l.splitString "#" source);
+                extractRepoUrl = source:
+                  let
+                    splitted = l.head (l.splitString "?" source);
+                    split = l.substring 4 (l.stringLength splitted) splitted;
+                  in l.head (l.splitString "#" split);
+              in
+              {
+                url = extractRepoUrl source;
+                rev = extractRevision source;
+              };
+
+            crates-io = dependencyObject:
+              {
+                hash = dependencyObject.checksum;
+              };
+          };
+        });
 
 
   # From a given list of paths, this function returns all paths which can be processed by this translator.
@@ -215,10 +224,10 @@
       inputFiles,
     }@args:
     {
-      inputDirectories = lib.filter 
+      inputDirectories = lib.filter
         (utils.containsMatchingFile [ ''.*Cargo\.lock'' ])
         args.inputDirectories;
-      
+
       inputFiles = [ ];
     };
 

@@ -25,96 +25,106 @@
 
       # parse the json / toml etc.
       parsed = ;
-  
+
     in
 
-      utils.simpleTranslate translatorName {
-        
+      utils.simpleTranslate
+        ({
+          getDepByNameVer,
+          dependenciesByOriginalID,
+          ...
+        }:
 
-        # VALUES
-        
-        # The raw input data as an attribute set.
-        # This will then be processed by `serializePackages` (see below) and
-        # transformed into a flat list.
-        inputData = ;
-
-        mainPackageName = ;
-
-        mainPackageVersion = ;
-
-        mainPackageDependencies =
-          lib.mapAttrsToList
-            () # some function
-            parsedDependencies;
-
-        # the name of the subsystem
-        subsystemName = "nodejs";
-
-        # Extract subsystem specific attributes.
-        # The structure of this should be defined in:
-        #   ./src/specifications/{subsystem}
-        subsystemAttrs = { nodejsVersion = args.nodejs; };
+        rec {
 
 
-        # FUNCTIONS
+          # VALUES
 
-        # return a list of package objects of arbitrary structure
-        serializePackages = inputData: ;
+          # name of the translator
+          translatorName = ;
 
-        # return the name for a package object
-        getName = dependencyObject: ;
+          # The raw input data as an attribute set.
+          # This will then be processed by `serializePackages` (see below) and
+          # transformed into a flat list.
+          inputData = ;
 
-        # return the version for a package object
-        getVersion = dependencyObject: ;
+          mainPackageName = ;
 
-        # get dependencies of a dependency object
-        getDependencies = dependencyObject: getDepByNameVer: dependenciesByOriginalID:
-          dependencyObject.depsExact;
+          mainPackageVersion = ;
 
-        # return the soruce type of a package object
-        getSourceType = dependencyObject:
-          # example
-          if utils.identifyGitUrl dependencyObject.resolved then
-            "git"
-          else
-            "http";
+          mainPackageDependencies =
+            lib.mapAttrsToList
+              () # some function
+              parsedDependencies;
 
-        # An attrset of constructor functions.
-        # Given a dependency object and a source type, construct the 
-        # source definition containing url, hash, etc.
-        sourceConstructors = {
+          # the name of the subsystem
+          subsystemName = "nodejs";
 
-          git = dependencyObject:
-            {
-              url = ;
-              rev = ;
-            };
+          # Extract subsystem specific attributes.
+          # The structure of this should be defined in:
+          #   ./src/specifications/{subsystem}
+          subsystemAttrs = { nodejsVersion = args.nodejs; };
 
-          github = dependencyObject:
-            {
-              owner = ;
-              repo = ;
-              rev = ;
-              hash = ;
-            };
-          
-          gitlab = dependencyObject:
-            {
-              owner = ;
-              repo = ;
-              rev = ;
-              hash = ;
-            };
 
-          http = dependencyObject:
-            {
-              version = ;
-              url = ;
-              hash = ;
-            };
-        };
+          # FUNCTIONS
 
-      };
+          # return a list of package objects of arbitrary structure
+          serializePackages = inputData: ;
+
+          # return the name for a package object
+          getName = dependencyObject: ;
+
+          # return the version for a package object
+          getVersion = dependencyObject: ;
+
+          # get dependencies of a dependency object
+          getDependencies = dependencyObject:
+            dependencyObject.depsExact;
+
+          # return the soruce type of a package object
+          getSourceType = dependencyObject:
+            # example
+            if utils.identifyGitUrl dependencyObject.resolved then
+              "git"
+            else
+              "http";
+
+          # An attrset of constructor functions.
+          # Given a dependency object and a source type, construct the
+          # source definition containing url, hash, etc.
+          sourceConstructors = {
+
+            git = dependencyObject:
+              {
+                url = ;
+                rev = ;
+              };
+
+            github = dependencyObject:
+              {
+                owner = ;
+                repo = ;
+                rev = ;
+                hash = ;
+              };
+
+            gitlab = dependencyObject:
+              {
+                owner = ;
+                repo = ;
+                rev = ;
+                hash = ;
+              };
+
+            http = dependencyObject:
+              {
+                version = ;
+                url = ;
+                hash = ;
+              };
+          };
+
+        });
 
 
   # From a given list of paths, this function returns all paths which can be processed by this translator.
@@ -130,10 +140,10 @@
       # examples:
       #   - ''.*requirements.*\.txt''
       #   - ''.*package-lock\.json''
-      inputDirectories = lib.filter 
+      inputDirectories = lib.filter
         (utils.containsMatchingFile [ ''TODO: regex1'' ''TODO: regex2'' ])
         args.inputDirectories;
-      
+
       inputFiles = [];
     };
 
