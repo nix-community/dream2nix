@@ -115,7 +115,7 @@
 
           inherit translatorName;
 
-          # The raw input data as an attribute set.
+        # The raw input data as an attribute set.
           # This will then be processed by `serializePackages` (see below) and
           # transformed into a flat list.
           inputData = parsedDeps;
@@ -184,7 +184,7 @@
                     l.findFirst
                     (toml: toml.value.package.name == name)
                     (throw "could not find crate ${name}")
-                    cargoTomls
+                    cargoPackages
                   ).path;
               in
               {
