@@ -52,6 +52,8 @@ let
         (source: "ln -s ${source.path} $out/${source.name}")
         sources
        }
+
+      ls -l $out
     '';
 
   buildPackage = pname: version:
@@ -60,10 +62,10 @@ let
       inherit pname version src;
 
       postUnpack = ''
-        ln -s ${vendorPackageDependencies pname version} ./${src.name}/nix-vendor
+        ln -s ${vendorPackageDependencies pname version} ./nix-vendor
       '';
 
-      cargoVendorDir = "nix-vendor";
+      cargoVendorDir = "../nix-vendor";
     });
 in
 rec {
