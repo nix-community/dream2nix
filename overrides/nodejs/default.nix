@@ -116,12 +116,20 @@ in
 
     build = {
 
-      nativeBuildInputs = [
-        pkgs.rsync
-      ];
+      electronAppDir = "src";
 
-      buildScript = ''
-        npm run build-linux
+      preBuild = { outputs, ... }: ''
+        # link dependencies of subpackage
+        ln -s \
+          ${outputs.subPackages.edex-ui-subpackage.packages.edex-ui-subpackage}/lib/node_modules/edex-ui-subpackage/node_modules \
+          ./src/node_modules
+
+        # transform symlinked subpackage 'node-pty' to copies,
+        # in order to allow re-building
+        mv src/node_modules src/node_modules.bac
+        mkdir src/node_modules
+        cp -r src/node_modules.bac/* src/node_modules/
+        symlinksToCopies ./src/node_modules/node-pty
       '';
     };
   };
@@ -131,7 +139,7 @@ in
 
       mkElectron =
         pkgs.callPackage
-          "${pkgs.path}/pkgs/development/tools/electron/generic.nix"
+          ./electron/generic.nix
           {};
 
       nixpkgsElectrons =
@@ -139,7 +147,6 @@ in
           (version: hashes:
             (mkElectron version hashes).overrideAttrs (old: {
               dontStrip = true;
-              fixupPhase = old.postFixup;
             }))
           hashes;
 
@@ -227,6 +234,15 @@ in
           aarch64-darwin = "0db2c021a047a4cd5b28eea16490e16bc82592e3f8a4b96fbdc72a292ce13f50";
           headers = "1idam1xirxqxqg4g7n33kdx2skk0r351m00g59a8yx9z82g06ah9";
         };
+        "13.0.0" = {
+          armv7l-linux = "51ddcd8c92da5dd84a6bab8304a0df6114153a884f7f185ebfc65843caa30e76";
+          aarch64-linux = "5b36e5bcb36cf1b90c38b346d3eae970a2aa41cb585df493bb90d86dc2e88b0a";
+          x86_64-linux = "ff89df221293f7253e2a29eb3028014549286179e3d91402e4911b2d086377bb";
+          i686-linux = "6fd7eca44302762a97c205b1a08a4178247bea89354ce84c747e09ebeb9f245b";
+          x86_64-darwin = "f3b9e45a442f82f06da8dd6cbdccd8031a191f3ba73e2886572f6472160d1f2d";
+          aarch64-darwin = "9c26405efd126d4e076fa8068e9003463be62b449182632babd5445f633712b6";
+          headers = "0glv92hhzg5f0fycrgv2g2b1avcw4jcrmpxxz4rpn91gd1v4n4fn";
+        };
         "13.2.3" = {
           x86_64-linux = "495b0c96427c63f6f4d08c5b58d6379f9ee3c6c81148fbbe8a7a6a872127df6d";
           x86_64-darwin = "c02f116484a5e1495d9f7451638bc0d3dea8fa2fde2e4c9c88a17cff98192ddc";
@@ -287,6 +303,11 @@ in
             echo -n $version > ./dist/version
             echo -n "electron" > ./path.txt
           '';
+
+          postFixup = ''
+            mkdir -p $out/lib
+            ln -s $(realpath ./dist) $out/lib/electron
+          '';
         };
       };
     };
@@ -294,17 +315,50 @@ in
   # TODO: fix electron-builder call or find alternative
   element-desktop = {
     build = {
-      postPatch = ''
-        ls tsconfig.json
-        cp ${./element-desktop/tsconfig.json} ./tsconfig.json
-      '';
-      buildScript = ''
+
+      # TODO: build rust extensions to enable searching encrypted messages
+      # TODO: create lower case symlinks for all i18n strings
+      buildScript = { outputs, ... }: ''
         npm run build:ts
+        npm run i18n
         npm run build:res
-        # electron-builder
+
+        # build rust extensions
+        # npm run hak
+
+        ln -s ${outputs.subPackages.element-web.packages.element-web}/lib/node_modules/element-web/webapp ./webapp
+
+        # ln -s ./lib/i18n/strings/en{-US,}.json
+        ln -s \
+          $(realpath ./lib/i18n/strings/en_US.json) \
+          $(realpath ./lib/i18n/strings/en-us.json)
       '';
-      nativeBuildInputs = [pkgs.breakpointHook];
-      b = "${pkgs.busybox}/bin/busybox";
+
+      # buildInputs = old: old ++ [
+      #   pkgs.rustc
+      # ];
+    };
+  };
+
+  element-web = {
+
+    build = {
+      installMethod  = "copy";
+
+      # TODO: file upstream issue because of non-reproducible jitsi api file
+      buildScript = ''
+        # install jitsi api
+        mkdir webapp
+        cp ${./element-web/external_api.min.js} webapp/external_api.min.js
+
+        # set version variables
+        export DIST_VERSION=$version
+        export VERSION=$version
+
+        npm run reskindex
+        npm run build:res
+        npm run build:bundle
+      '';
     };
   };
 
@@ -419,7 +473,7 @@ in
         cp -r ./node_modules/electron/dist $TMP/dist
         chmod -R +w $TMP/dist
 
-        # required if electron-buidler is used
+        # required if electron-builder is used
         # mv $TMP/dist/electron $TMP/dist/electron-wrapper
         # mv $TMP/dist/.electron-wrapped $TMP/dist/electron
 
@@ -488,6 +542,12 @@ in
         ln -s ${pkgs.pngquant}/bin/pngquant ./vendor/pngquant
         npm run postinstall
       '';
+    };
+  };
+
+  quill = {
+    disable-build = {
+      runBuild = false;
     };
   };
 
@@ -671,6 +731,15 @@ in
             "moduleDirectories: ['node_modules']," \
             "moduleDirectories: ['node_modules'].concat(process.env.NODE_PATH.split( /[;:]/ )),"
         done
+      '';
+    };
+  };
+
+  "@sentry/cli" = {
+    add-binary = {
+      buildScript = ''
+        ln -s ${pkgs.sentry-cli}/bin $out/bin
+        exit
       '';
     };
   };

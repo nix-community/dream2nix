@@ -54,6 +54,10 @@ let
 
   nodejsVersion = subsystemAttrs.nodejsVersion;
 
+  isMainPackage = name: version:
+    name == mainPackageName
+    && version == mainPackageVersion;
+
   nodejs =
     if args ? nodejs then
       args.nodejs
@@ -81,12 +85,25 @@ let
     inherit defaultPackage packages;
   };
 
-  # only gets executed if package has electron dependency
-  electron-rebuild = electron: ''
+  # This is only executed for electron based packages.
+  # Electron ships its own version of node, requiring a rebuild of native
+  # extensions.
+  # Theoretically this requires headers for the exact electron version in use,
+  # but we use the headers from nixpkgs' electron instead which might have a
+  # different minor version.
+  # Alternatively the headers can be specified via `electronHeaders`.
+  # Also a custom electron version can be specified via `electronPackage`
+  electron-rebuild = ''
     # prepare node headers for electron
-    ver="v${electron.version}"
+    if [ -n "$electronPackage" ]; then
+      export electronDist="$electronPackage/lib/electron"
+    else
+      export electronDist="$nodeModules/$packageName/node_modules/electron/dist"
+    fi
+    local ver
+    ver="v$(cat $electronDist/version | tr -d '\n')"
     mkdir $TMP/$ver
-    cp ${electron.headers} $TMP/$ver/node-$ver-headers.tar.gz
+    cp $electronHeaders $TMP/$ver/node-$ver-headers.tar.gz
 
     # calc checksums
     cd $TMP/$ver
@@ -97,13 +114,11 @@ let
     python -m http.server 45034 --directory $TMP &
 
     # copy electron distribution
-    cp -r ./node_modules/electron/dist $TMP/dist
-    chmod -R +w $TMP/dist
-    # mv $TMP/dist/electron $TMP/dist/electron-wrapper
-    # mv $TMP/dist/.electron-wrapped $TMP/dist/electron
+    cp -r $electronDist $TMP/electron
+    chmod -R +w $TMP/electron
 
     # configure electron toolchain
-    ${pkgs.jq}/bin/jq ".build.electronDist = \"$TMP/dist\"" package.json \
+    ${pkgs.jq}/bin/jq ".build.electronDist = \"$TMP/electron\"" package.json \
         | ${pkgs.moreutils}/bin/sponge package.json
 
     ${pkgs.jq}/bin/jq ".build.linux.target = \"dir\"" package.json \
@@ -122,10 +137,12 @@ let
     fi
   '';
 
-  electron-wrap = electron: ''
+  # Only executed for electron based packages.
+  # Creates an executable script under /bin starting the electron app
+  electron-wrap = ''
     mkdir -p $out/bin
     makeWrapper \
-      ${electron}/bin/electron \
+      $electronDist/electron \
       $out/bin/$(basename "$packageName") \
       --add-flags "$(realpath $electronAppDir)"
   '';
@@ -147,31 +164,35 @@ let
             (dep: lib.nameValuePair dep.name dep.version)
             deps));
 
-      electronPackage =
-        let
-          electronDep =
-            lib.findFirst
-              (dep: dep.name == "electron")
-              null
-              deps;
-
-        in
-          if electronDep == null then
+      electronDep =
+        if ! isMainPackage name version then
+          null
+        else
+          lib.findFirst
+            (dep: dep.name == "electron")
             null
-          else
-            let
-              electronVersionMajor =
-                if electronDep == null then
-                  null
-                else
-                  lib.versions.major electronDep.version;
-            in
-              pkgs."electron_${electronVersionMajor}";
+            deps;
+
+      electronVersionMajor =
+        lib.versions.major electronDep.version;
+
+      electronHeaders =
+        if electronDep == null then
+          null
+        else
+          pkgs."electron_${electronVersionMajor}".headers;
+
 
       pkg =
         produceDerivation name (stdenv.mkDerivation rec {
 
-          inherit dependenciesJson nodeDeps nodeSources version;
+          inherit
+            dependenciesJson
+            electronHeaders
+            nodeDeps
+            nodeSources
+            version
+          ;
 
           packageName = name;
 
@@ -182,9 +203,7 @@ let
           electronAppDir = ".";
 
           # only run build on the main package
-          runBuild =
-            packageName == mainPackageName
-                && version == mainPackageVersion;
+          runBuild = isMainPackage name version;
 
           src = getSource name version;
 
@@ -195,7 +214,7 @@ let
           # prevents running into ulimits
           passAsFile = [ "dependenciesJson" "nodeDeps" ];
 
-          preConfigurePhases = [ "d2nPatchPhase" ];
+          preConfigurePhases = [ "d2nLoadFuncsPhase" "d2nPatchPhase" ];
 
           # can be overridden to define alternative install command
           # (defaults to 'npm run postinstall')
@@ -205,8 +224,35 @@ let
           # (see comments below on d2nPatchPhase)
           fixPackage = "${./fix-package.py}";
 
+          # script to install (symlink or copy) dependencies.
+          installDeps = "${./install-deps.py}";
+
           # costs performance and doesn't seem beneficial in most scenarios
           dontStrip = true;
+
+          # declare some useful shell functions
+          d2nLoadFuncsPhase = ''
+            # function to resolve symlinks to copies
+            symlinksToCopies() {
+              local dir="$1"
+
+              echo "transforming symlinks to copies..."
+              for f in $(find -L "$dir" -xtype l); do
+                if [ -f $f ]; then
+                  continue
+                fi
+                echo "copying $f"
+                chmod +wx $(dirname "$f")
+                mv "$f" "$f.bak"
+                mkdir "$f"
+                if [ -n "$(ls -A "$f.bak/")" ]; then
+                  cp -r "$f.bak"/* "$f/"
+                  chmod -R +w $f
+                fi
+                rm "$f.bak"
+              done
+            }
+          '';
 
           # TODO: upstream fix to nixpkgs
           # example which requires this:
@@ -295,68 +341,27 @@ let
             else
               exit 1
             fi
+
+            # configure typescript
+            if [ -f tsconfig.json ]; then
+              ${pkgs.jq}/bin/jq ".compilerOptions.preserveSymlinks = true" tsconfig.json \
+                  | ${pkgs.moreutils}/bin/sponge tsconfig.json
+            fi
           '';
 
-          # - links all direct node dependencies into the node_modules directory
+          # - installs dependencies into the node_modules directory
           # - adds executables of direct node module dependencies to PATH
           # - adds the current node module to NODE_PATH
           # - sets HOME=$TMPDIR, as this is required by some npm scripts
           # TODO: don't install dev dependencies. Load into NODE_PATH instead
-          # TODO: move all linking to python script, as `ln` calls perform badly
           configurePhase = ''
             runHook preConfigure
 
-            # symlink dependency packages into node_modules
-            for dep in $(cat $nodeDepsPath); do
-              # add bin to PATH
-              if [ -d "$dep/bin" ]; then
-                export PATH="$PATH:$dep/bin"
-              fi
-
-              if [ -e $dep/lib/node_modules ]; then
-                for module in $(ls $dep/lib/node_modules); do
-                  if [[ $module == @* ]]; then
-                    for submodule in $(ls $dep/lib/node_modules/$module); do
-                      mkdir -p $nodeModules/$packageName/node_modules/$module
-                      echo "installing: $module/$submodule"
-                      ln -s $(realpath $dep/lib/node_modules/$module/$submodule) $nodeModules/$packageName/node_modules/$module/$submodule
-                    done
-                  else
-                    mkdir -p $nodeModules/$packageName/node_modules/
-                    echo "installing: $module"
-                    ln -s $(realpath $dep/lib/node_modules/$module) $nodeModules/$packageName/node_modules/$module
-                  fi
-                done
-              fi
-            done
-
             # symlink sub dependencies as well as this imitates npm better
-            python ${./symlink-deps.py}
+            python $installDeps
 
-            # resolve symlinks to copies
-            symlinksToCopies() {
-              local dir="$1"
-
-              echo "transforming symlinks to copies..."
-              for f in $(find -L "$dir" -xtype l); do
-                if [ -f $f ]; then
-                  continue
-                fi
-                echo "copying $f"
-                chmod +wx $(dirname "$f")
-                mv "$f" "$f.bak"
-                mkdir "$f"
-                if [ -n "$(ls -A "$f.bak/")" ]; then
-                  cp -r "$f.bak"/* "$f/"
-                  chmod -R +w $f
-                fi
-                rm "$f.bak"
-              done
-            }
-
-            if [ "$installMethod" == "copy" ]; then
-              symlinksToCopies .
-            fi
+            # add bin path entries collected by python script
+            export PATH="$PATH:$(cat $TMP/ADD_BIN_PATH)"
 
             # add dependencies to NODE_PATH
             export NODE_PATH="$NODE_PATH:$nodeModules/$packageName/node_modules"
@@ -372,8 +377,9 @@ let
             runHook preBuild
 
             # execute electron-rebuild
-            ${lib.optionalString (electronPackage != null)
-              (electron-rebuild electronPackage)}
+            if [ -n "$electronHeaders" ]; then
+              ${electron-rebuild}
+            fi
 
             # execute install command
             if [ -n "$buildScript" ]; then
@@ -422,8 +428,10 @@ let
             fi
 
             # wrap electron app
-            ${lib.optionalString (electronPackage != null)
-              (electron-wrap electronPackage)}
+            # execute electron-rebuild
+            if [ -n "$electronHeaders" ]; then
+              ${electron-wrap}
+            fi
           '';
         });
     in
