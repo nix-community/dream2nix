@@ -24,17 +24,19 @@
           (n: v: if v == "directory" then recurseFiles "${path}/${n}" else "${path}/${n}")
           (l.readDir path)
         );
+      getAllFiles = dirs: l.flatten (l.map recurseFiles dirs);
+
+      getCargoTomlPaths = l.filter (path: l.baseNameOf path == "Cargo.toml");
+      getCargoTomls = l.map (path: { inherit path; value = l.fromTOML (l.readFile path); });
+      getCargoPackages = l.filter (toml: l.hasAttrByPath [ "package" "name" ] toml.value);
 
       # Find all Cargo.toml files and parse them
-      allFiles = l.flatten (l.map recurseFiles inputDirectories);
-      cargoTomlPaths = l.filter (path: l.baseNameOf path == "Cargo.toml") allFiles;
-      cargoTomls = l.map (path: { inherit path; value = l.fromTOML (l.readFile path); }) cargoTomlPaths;
+      allFiles = getAllFiles inputDirectories;
+      cargoTomlPaths = getCargoTomlPaths allFiles;
+      cargoTomls = getCargoTomls cargoTomlPaths;
 
       # Filter cargo-tomls to for files that actually contain packages
-      cargoPackages =
-        l.filter
-        (toml: l.hasAttrByPath [ "package" "name" ] toml.value)
-        cargoTomls;
+      cargoPackages = getCargoPackages cargoTomls;
 
       packageName =
         if args.packageName == "{automatic}"
