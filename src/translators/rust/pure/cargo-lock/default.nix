@@ -103,6 +103,33 @@
         name = toml.package.name;
         version = toml.package.version or (l.warn "no version found in Cargo.toml for ${name}, defaulting to unknown" "unknown");
       };
+      
+      # Parses a git source, taken straight from nixpkgs.
+      parseGitSource = src:
+        let
+          parts = builtins.match ''git\+([^?]+)(\?(rev|tag|branch)=(.*))?#(.*)'' src;
+          type = builtins.elemAt parts 2; # rev, tag or branch
+          value = builtins.elemAt parts 3;
+        in
+          if parts == null then null
+          else {
+            url = builtins.elemAt parts 0;
+            sha = builtins.elemAt parts 4;
+          } // lib.optionalAttrs (type != null) { inherit type value; };
+
+      # Extracts a source type from a dependency.
+      getSourceTypeFrom = dependencyObject:
+        let checkType = type: l.hasPrefix "${type}+" dependencyObject.source; in
+        if !(l.hasAttr "source" dependencyObject)
+        then "path"
+        else if checkType "git" then
+          "git"
+        else if checkType "registry" then
+          if dependencyObject.source == "registry+https://github.com/rust-lang/crates.io-index"
+          then "crates-io"
+          else throw "registries other than crates.io are not supported yet"
+        else
+          throw "unknown or unsupported source type: ${dependencyObject.source}";
     in
 
       utils.simpleTranslate
@@ -142,8 +169,10 @@
           # Extract subsystem specific attributes.
           # The structure of this should be defined in:
           #   ./src/specifications/{subsystem}
-          subsystemAttrs = {
+          subsystemAttrs = rec {
             packages = l.map (toml: { inherit (toml.value.package) name version; }) cargoPackages;
+            gitDeps = l.filter (dep: (getSourceTypeFrom dep) == "git") parsedDeps;
+            gitSources = l.unique (l.map (dep: parseGitSource dep.source) gitDeps);
           };
 
           # FUNCTIONS
@@ -162,18 +191,7 @@
             l.map makeDepNameVersion (dependencyObject.dependencies or [ ]);
 
           # return the source type of a package object
-          getSourceType = dependencyObject:
-            let checkType = type: l.hasPrefix "${type}+" dependencyObject.source; in
-            if !(l.hasAttr "source" dependencyObject)
-            then "path"
-            else if checkType "git" then
-              "git"
-            else if checkType "registry" then
-              if dependencyObject.source == "registry+https://github.com/rust-lang/crates.io-index"
-              then "crates-io"
-              else throw "registries other than crates.io are not supported yet"
-            else
-              throw "unknown or unsupported source type: ${dependencyObject.source}";
+          getSourceType = getSourceTypeFrom;
 
           # An attrset of constructor functions.
           # Given a dependency object and a source type, construct the
@@ -195,18 +213,11 @@
 
             git = dependencyObject:
               let
-                source = dependencyObject.source;
-
-                extractRevision = source: l.last (l.splitString "#" source);
-                extractRepoUrl = source:
-                  let
-                    splitted = l.head (l.splitString "?" source);
-                    split = l.substring 4 (l.stringLength splitted) splitted;
-                  in l.head (l.splitString "#" split);
+                parsed = parseGitSource dependencyObject.source;
               in
               {
-                url = extractRepoUrl source;
-                rev = extractRevision source;
+                url = parsed.url;
+                rev = parsed.sha;
               };
 
             crates-io = dependencyObject:

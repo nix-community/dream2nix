@@ -29,6 +29,12 @@ let
     l.unique (l.flatten (
       direct ++ (l.map (dep: getAllTransitiveDependencies dep.name dep.version) direct)
     ));
+  
+  getGitDep = pname: version:
+    l.findSingle
+    (dep: dep.name == pname && dep.version == version)
+    null
+    subsystemAttrs.gitDeps;
 
   # TODO: this is shared between the translator and this builder
   # we should dedup this somehow (maybe put in a common library for Rust subsystem?)
@@ -65,8 +71,13 @@ let
           # workspace with complex crate hierarchies. This can locate the crate
           # accurately using Cargo.toml files.
           srcPath = getSource dep.name dep.version;
-          cargoPackages = l.pipe [ srcPath ] [ getAllFiles getCargoTomlPaths getCargoTomls getCargoPackages ];
-          path = findCratePath cargoPackages dep.name;
+          gitDep = getGitDep dep.name dep.version;
+          path =
+            if gitDep != null
+            then let 
+              cargoPackages = l.pipe [ srcPath ] [ getAllFiles getCargoTomlPaths getCargoTomls getCargoPackages ];
+            in findCratePath cargoPackages dep.name
+            else srcPath;
         in {
           name = "${dep.name}-${dep.version}";
           inherit path;
@@ -84,17 +95,43 @@ let
 
       ls -l $out
     '';
+  
+  # Generates a shell script that writes git vendor entries to .cargo/config.
+  writeGitVendorEntries = pname: version:
+    let
+      deps = getAllTransitiveDependencies pname version;
+      makeEntry = source:
+        ''
+        [source."${source.url}"]
+        replace-with = "vendored-sources"
+        git = "${source.url}"
+        ${lib.optionalString (source ? type) "${source.type} = \"${source.value}\""}
+        '';
+      entries = l.map makeEntry subsystemAttrs.gitSources;
+    in ''
+      cat >> ../.cargo/config <<EOF
+      ${l.concatStringsSep "\n" entries}
+      EOF
+    '';
 
   buildPackage = pname: version:
-    let src = getSource pname version; in
+    let
+      src = getSource pname version;
+      vendorDir = vendorPackageDependencies pname version;
+      writeGitVendorEntriesScript = writeGitVendorEntries pname version;
+    in
     produceDerivation pname (pkgs.rustPlatform.buildRustPackage {
       inherit pname version src;
 
       postUnpack = ''
-        ln -s ${vendorPackageDependencies pname version} ./nix-vendor
+        ln -s ${vendorDir} ./nix-vendor
       '';
 
       cargoVendorDir = "../nix-vendor";
+      
+      preBuild = ''
+        ${writeGitVendorEntriesScript}
+      '';
     });
 in
 rec {
