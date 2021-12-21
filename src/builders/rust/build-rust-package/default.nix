@@ -31,7 +31,7 @@ let
     ));
   
   getGitDep = pname: version:
-    l.findSingle
+    l.findFirst
     (dep: dep.name == pname && dep.version == version)
     null
     subsystemAttrs.gitDeps;
@@ -56,56 +56,56 @@ let
       cargoPackages
     ).path;
   
-  # TODO: implement a user option that will make the vendoring
-  # copy sources instead of symlinking them. This can be useful
-  # for some Rust packages that modify their own dependencies
-  # via their build hooks.
   vendorPackageDependencies = pname: version:
     let
       deps = getAllTransitiveDependencies pname version;
 
       makeSource = dep:
         let
-          # These locate the actual path of the crate in the source...
-          # This is important because git dependencies may or may not be in a
-          # workspace with complex crate hierarchies. This can locate the crate
-          # accurately using Cargo.toml files.
           srcPath = getSource dep.name dep.version;
-          gitDep = getGitDep dep.name dep.version;
+          isGit = (getGitDep dep.name dep.version) != null;
           path =
-            if gitDep != null
-            then let 
+            if isGit
+            then let
+              # These locate the actual path of the crate in the source...
+              # This is important because git dependencies may or may not be in a
+              # workspace with complex crate hierarchies. This can locate the crate
+              # accurately using Cargo.toml files.
               cargoPackages = l.pipe [ srcPath ] [ getAllFiles getCargoTomlPaths getCargoTomls getCargoPackages ];
             in findCratePath cargoPackages dep.name
             else srcPath;
         in {
+          inherit path isGit;
           name = "${dep.name}-${dep.version}";
-          inherit path;
         };
       sources = l.map makeSource deps;
+
+      makeScript = source:
+        ''
+          cp -prvd "${source.path}" $out/${source.name}
+          chmod u+w $out/${source.name}
+          ${l.optionalString source.isGit "printf '{\"files\":{},\"package\":null}' > \"$out/${source.name}/.cargo-checksum.json\""}
+        '';
     in
     pkgs.runCommand "vendor-${pname}-${version}" {} ''
       mkdir -p $out
 
       ${
         l.concatMapStringsSep "\n"
-        (source: "ln -s ${source.path} $out/${source.name}")
+        makeScript
         sources
        }
-
-      ls -l $out
     '';
   
   # Generates a shell script that writes git vendor entries to .cargo/config.
   writeGitVendorEntries = pname: version:
     let
-      deps = getAllTransitiveDependencies pname version;
       makeEntry = source:
         ''
         [source."${source.url}"]
         replace-with = "vendored-sources"
         git = "${source.url}"
-        ${lib.optionalString (source ? type) "${source.type} = \"${source.value}\""}
+        ${l.optionalString (source ? type) "${source.type} = \"${source.value}\""}
         '';
       entries = l.map makeEntry subsystemAttrs.gitSources;
     in ''
