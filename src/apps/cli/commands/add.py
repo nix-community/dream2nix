@@ -48,6 +48,12 @@ class AddCommand(Command):
       flag=True
     ),
     option(
+      "sub-dirs",
+      None,
+      "whether to scan sub-directories for sub-projects",
+      flag=True
+    ),
+    option(
       "arg",
       None,
       "extra arguments for selected translator",
@@ -64,29 +70,115 @@ class AddCommand(Command):
     # ensure packages-root
     package_root = self.find_package_root()
 
-    # process main package
-    print(f"\n\nProcessing main package: {sources[0]}")
-    main_package_dir_name = self.handle_one(package_root, sources[0], [])
-    existing_names = [ main_package_dir_name ]
-
-    # process subpackages
-    sub_package_root = f"{package_root}/{main_package_dir_name}"
-    for subdir in glob(f"{sub_package_root}/*/"):
-      shutil.rmtree(subdir)
-    for idx, source in enumerate(sources[1:]):
-      print(f"\n\nProcessing subpackage {idx+1}: {source}")
-      attr_name = self.handle_one(sub_package_root, source, existing_names)
-      existing_names.append(attr_name)
-
-
-
-  def handle_one(self, package_root, source, existing_names):
-
     # parse extra args
     specified_extra_args = self.parse_extra_args()
 
-    lock, sourceSpec, specified_extra_args, translator =\
-      self.translate_from_source(specified_extra_args, source)
+    # get source path and spec
+    sourcePath, sourceSpec = self.parse_source(sources[0])
+
+    # process main package
+    print(f"\n\nProcessing main package: {sources[0]}")
+    main_package_dir_name, existing_names = self.handle_one_recursive(
+      [],
+      package_root,
+      sourcePath,
+      sourceSpec,
+      specified_extra_args,
+      recursive=self.option('sub-dirs'),
+    )
+
+    # process subpackages
+    for idx, source in enumerate(sources[1:]):
+      print(f"\n\nProcessing subpackage {idx+1}: {source}")
+      # get source path and spec
+      sourcePath, sourceSpec = self.parse_source(source)
+      attr_name = self.handle_one_recursive(
+        existing_names,
+        sub_package_root,
+        sourcePath,
+        sourceSpec,
+        specified_extra_args,
+        recursive=self.option('sub-dirs'),
+      )
+      existing_names.append(attr_name)
+
+
+  # handle one source and scan subdirectories for more projects
+  def handle_one_recursive(
+      self,
+      existing_names,
+      package_root,
+      sourcePath,
+      sourceSpec,
+      specified_extra_args,
+      recursive=False,
+  ):
+
+    # list all translators for source and sub directories
+    translators_dict = list_translators_for_source(sourcePath)
+    for path, translators in translators_dict.copy().items():
+      if all (t['compatible'] == False for t in translators):
+        del translators_dict[path]
+
+    # handle main source
+    main_package_dir_name = self.handle_one(
+      existing_names,
+      package_root,
+      sourcePath,
+      sourceSpec,
+      specified_extra_args,
+      translators=translators_dict[sourcePath],
+    )
+    del translators_dict[sourcePath]
+
+    existing_names += [main_package_dir_name]
+
+    # clean sub-package outputs
+    sub_package_root = f"{package_root}/{main_package_dir_name}"
+    for subdir in glob(f"{sub_package_root}/*/"):
+      shutil.rmtree(subdir)
+
+    # handle each path without recursing further
+    if recursive:
+      print(json.dumps(translators_dict, indent=2))
+      for sourcePathSub, translators in translators_dict.items():
+        sourceSpecSub = sourceSpec.copy()
+        if 'dir' in sourceSpecSub:
+          sourceSpecSub['dir'] += os.path.relpath(sourcePathSub, sourcePath)
+        else:
+          sourceSpecSub['dir'] = os.path.relpath(sourcePathSub, sourcePath)
+
+        print(f"\n\nProcessing package from sub-dir {sourceSpecSub['dir']}")
+
+        package_root_sub = \
+          f"{package_root}/{main_package_dir_name}/{sourceSpecSub['dir'].rpartition('/')[0]}"
+
+        new_name = self.handle_one(
+          existing_names,
+          package_root_sub,
+          sourcePathSub,
+          sourceSpecSub,
+          specified_extra_args,
+          translators,
+        )
+
+        existing_names += [new_name]
+
+    return main_package_dir_name, existing_names
+
+
+  def handle_one(
+      self,
+      existing_names,
+      package_root,
+      sourcePath,
+      sourceSpec,
+      specified_extra_args,
+      translators,
+  ):
+
+    lock, specified_extra_args, translator =\
+      self.translate_from_source(specified_extra_args, sourcePath, translators)
 
     # get package name and version from lock
     mainPackageName = lock['_generic']['mainPackageName']
@@ -99,7 +191,8 @@ class AddCommand(Command):
     )
 
     # calculate output files
-    filesToCreate, output = self.calc_outputs(main_package_dir_name, package_root)
+    filesToCreate, output =\
+      self.calc_outputs(main_package_dir_name, package_root)
     outputDreamLock = f"{output}/dream-lock.json"
     outputDefaultNix = f"{output}/default.nix"
 
@@ -130,7 +223,7 @@ class AddCommand(Command):
 
     # create default.nix
     if 'default.nix' in filesToCreate:
-      self.create_default_nix(lock, output, outputDefaultNix, source)
+      self.create_default_nix(lock, output, outputDefaultNix, sourcePath)
 
     # add new package to git
     if config['isRepo']:
@@ -138,16 +231,14 @@ class AddCommand(Command):
 
     return main_package_dir_name
 
-  def translate_from_source(self, specified_extra_args, source):
-    # get source path and spec
-    source, sourceSpec = self.parse_source(source)
+  def translate_from_source(self, specified_extra_args, sourcePath, translators):
     # select translator
-    translator = self.select_translator(source)
-    # raise error if any specified extra arg is unknown
+    translator = self.select_translator(translators)
+    # raise error if any specified extra arg is un-known
     specified_extra_args = self.declare_extra_args(specified_extra_args, translator)
     # do the translation and produce dream lock
-    lock = self.run_translate(source, specified_extra_args, translator)
-    return lock, sourceSpec, specified_extra_args, translator
+    lock = self.run_translate(sourcePath, specified_extra_args, translator)
+    return lock, specified_extra_args, translator
 
   def parse_extra_args(self):
     specified_extra_args = {
@@ -158,12 +249,12 @@ class AddCommand(Command):
     }
     return specified_extra_args
 
-  def create_default_nix(self, lock, output, outputDefaultNix, source):
+  def create_default_nix(self, lock, output, outputDefaultNix, sourcePath):
     template = callNixFunction(
       'apps.apps.cli.templateDefaultNix',
       dream2nixLocationRelative=os.path.relpath(dream2nix_src, output),
       dreamLock=lock,
-      sourcePathRelative=os.path.relpath(source, os.path.dirname(outputDefaultNix))
+      sourcePathRelative=os.path.relpath(sourcePath, os.path.dirname(outputDefaultNix))
     )
     with open(outputDefaultNix, 'w') as defaultNix:
       defaultNix.write(template)
@@ -353,7 +444,7 @@ class AddCommand(Command):
       attributeName = new_name
     return attributeName
 
-  def run_translate(self, source, specified_extra_args, translator):
+  def run_translate(self, sourcePath, specified_extra_args, translator):
     # build the translator bin
     t = translator
     translator_path = buildNixAttribute(
@@ -364,7 +455,7 @@ class AddCommand(Command):
       # arguments for calling the translator nix module
       translator_input = dict(
         inputFiles=[],
-        inputDirectories=[source],
+        inputDirectories=[sourcePath],
         outputFile=output_temp_file.name,
       )
       translator_input.update(specified_extra_args)
@@ -402,6 +493,8 @@ class AddCommand(Command):
     # transform flags to bool
     for argName, argVal in specified_extra_args.copy().items():
       if translator['extraArgs'][argName]['type'] == 'flag':
+        if isinstance(argVal, bool):
+          continue
         if argVal.lower() in ('yes', 'y', 'true'):
           specified_extra_args[argName] = True
         elif argVal.lower() in ('no', 'n', 'false'):
@@ -452,16 +545,16 @@ class AddCommand(Command):
                 break
     return specified_extra_args
 
-  def select_translator(self, source):
+  def select_translator(self, translators):
     translatorsSorted = sorted(
-      list_translators_for_source(source),
+      translators,
       key=lambda t: (
         not t['compatible'],
         ['pure', 'ifd', 'impure'].index(t['type'])
       )
     )
-    translator = self.option("translator")
-    if not translator:
+    option_translator = self.option("translator")
+    if not option_translator:
       chosen = self.choice(
         'Select translator',
         list(map(
@@ -470,13 +563,12 @@ class AddCommand(Command):
         )),
         0
       )
-      translator = chosen
       translator = list(filter(
-        lambda t: [t['subsystem'], t['type'], t['name']] == translator.split('  (')[0].split('.'),
+        lambda t: [t['subsystem'], t['type'], t['name']] == chosen.split('  (')[0].split('.'),
         translatorsSorted,
       ))[0]
     else:
-      translator = translator.split('.')
+      translator = option_translator.split('.')
       try:
         if len(translator) == 3:
           translator = list(filter(
@@ -494,17 +586,17 @@ class AddCommand(Command):
     return translator
 
   def parse_source(self, source):
+    sourceSpec = {}
     # verify source
     if not source and not config['packagesDir']:
-      source = os.path.realpath('./.')
+      sourcePath = os.path.realpath('./.')
       print(
         f"Source not specified. Defaulting to current directory: {source}",
         file=sys.stderr,
       )
     # check if source is a valid fetcher spec
-    sourceSpec = {}
     # handle source shortcuts
-    if source.partition(':')[0].split('+')[0] in os.environ.get("fetcherNames", None).split() \
+    elif source.partition(':')[0].split('+')[0] in os.environ.get("fetcherNames", None).split() \
         or source.startswith('http'):
       print(f"fetching source for '{source}'")
       sourceSpec = \
@@ -513,25 +605,25 @@ class AddCommand(Command):
       if 'dir' in sourceSpec:
         subdir = '/' + sourceSpec['dir']
         del sourceSpec['dir']
-      source = \
+      sourcePath = \
         buildNixFunction("fetchers.fetchSource", source=sourceSpec, extract=True)
-      source += subdir
+      sourcePath += subdir
     # handle source paths
     else:
       # check if source path exists
       if not os.path.exists(source):
         print(f"Input source '{source}' does not exist", file=sys.stdout)
         exit(1)
-      source = os.path.realpath(source)
+      sourcePath = os.path.realpath(source)
       # handle source from dream-lock.json
-      if source.endswith('dream-lock.json'):
+      if sourcePath.endswith('dream-lock.json'):
         print(f"fetching source defined via existing dream-lock.json")
-        with open(source) as f:
+        with open(sourcePath) as f:
           sourceDreamLock = json.load(f)
         sourceMainPackageName = sourceDreamLock['_generic']['mainPackageName']
         sourceMainPackageVersion = sourceDreamLock['_generic']['mainPackageVersion']
         sourceSpec = \
           sourceDreamLock['sources'][sourceMainPackageName][sourceMainPackageVersion]
-        source = \
+        sourcePath = \
           buildNixFunction("fetchers.fetchSource", source=sourceSpec, extract=True)
-    return source, sourceSpec
+    return sourcePath, sourceSpec
