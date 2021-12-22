@@ -93,6 +93,8 @@
             (
               packageJSON.dependencies or {}
               //
+              packageJSON.optionalDependencies or {}
+              //
               (lib.optionalAttrs dev (packageJSON.devDependencies or {}))
               //
               (lib.optionalAttrs peer (packageJSON.peerDependencies or {}))
@@ -115,9 +117,13 @@
             lib.head (lib.splitString "@https://" dependencyObject.yarnName)
           else
             let
-              version = lib.last (lib.splitString "@" dependencyObject.yarnName);
+              split = lib.splitString "@" dependencyObject.yarnName;
+              version = lib.last split;
             in
-              lib.removeSuffix "@${version}" dependencyObject.yarnName;
+              if lib.hasPrefix "@" dependencyObject.yarnName then
+                lib.removeSuffix "@${version}" dependencyObject.yarnName
+              else
+                lib.head split;
 
         getVersion = dependencyObject:
           dependencyObject.version;
@@ -234,7 +240,7 @@
             else if lib.hasInfix "@file:" dependencyObject.yarnName then
               {
                 path =
-                lib.last (lib.splitString "@file:" dependencyObject.yarnName);
+                  lib.last (lib.splitString "@file:" dependencyObject.yarnName);
               }
             else
               throw "unknown path format ${b.toJSON dependencyObject}";

@@ -13,7 +13,7 @@ let
   # include this into an override to enable cntr debugging
   # (linux only)
   cntr = {
-    nativeBuildInputs = [pkgs.breakpointHook];
+    nativeBuildInputs = old: old ++ [ pkgs.breakpointHook ];
     b = "${pkgs.busybox}/bin/busybox";
   };
 
@@ -59,6 +59,14 @@ in
     };
   };
 
+  cpu-features = {
+    add-inputs = {
+      nativeBuildInputs = old: old ++ [
+        pkgs.cmake
+      ];
+    };
+  };
+
   css-loader = {
 
     disable-source-map-v4-v5 = {
@@ -86,10 +94,6 @@ in
   "draw.io" = {
 
     build = {
-
-      nativeBuildInputs = [
-        pkgs.makeWrapper
-      ];
 
       buildScript = ''
         mkdir $out/bin
@@ -385,6 +389,14 @@ in
     };
   };
 
+  fontmanager-redux = {
+    add-inputs = {
+      nativeBuildInputs = old: old ++ [
+        pkgs.fontconfig
+      ];
+    };
+  };
+
   geckodriver = {
     add-binary = {
       GECKODRIVER_FILEPATH = "${pkgs.geckodriver}/bin/geckodriver";
@@ -429,6 +441,15 @@ in
     };
   };
 
+  keytar = {
+    add-pkg-config = {
+      nativeBuildInputs = old: old ++ [
+        pkgs.libsecret
+        pkgs.pkg-config
+      ];
+    };
+  };
+
   ledger-live-desktop = {
 
     build = {
@@ -446,10 +467,6 @@ in
   mattermost-desktop = {
 
     build = {
-
-      nativeBuildInputs = [
-        pkgs.makeWrapper
-      ];
 
       postPatch = ''
         substituteInPlace webpack.config.base.js --replace \
@@ -518,10 +535,22 @@ in
 
     build = {
 
-      nativeBuildInputs = [
+      nativeBuildInputs = old: old ++ [
         pkgs.pkg-config
         pkgs.libusb
       ];
+    };
+  };
+
+  npm = {
+    dont-install-deps = {
+      installDeps = "";
+    };
+  };
+
+  npx = {
+    dont-install-deps = {
+      installDeps = "";
     };
   };
 
@@ -564,11 +593,91 @@ in
 
     build = {
 
-      nativeBuildInputs = [
+      nativeBuildInputs = old: old ++ [
         pkgs.autoconf
         pkgs.automake
         pkgs.libtool
       ];
+    };
+  };
+
+  tabby = {
+    inherit cntr;
+    fix-build = {
+
+      electronAppDir = "./app";
+
+      nativeBuildInputs = old: old ++ [
+        pkgs.fontconfig
+        pkgs.libsecret
+        pkgs.pkg-config
+      ];
+
+      postPatch = { outputs, ... }:  ''
+        substituteInPlace ./scripts/vars.js --replace \
+          "exports.version = childProcess.execSync('git describe --tags', { encoding:'utf-8' })" \
+          "exports.version = '$version'"
+
+        ${pkgs.jq}/bin/jq ".typeAcquisition = {}" tsconfig.json \
+            | ${pkgs.moreutils}/bin/sponge tsconfig.json
+
+        substituteInPlace app/webpack.main.config.js --replace \
+          "configFile: path.resolve(__dirname, 'tsconfig.main.json')," \
+          "configFile: path.resolve(__dirname, 'tsconfig.main.json'), allowTsInNodeModules: true,"
+
+        substituteInPlace app/webpack.config.js --replace \
+          "configFile: path.resolve(__dirname, 'tsconfig.json')," \
+          "configFile: path.resolve(__dirname, 'tsconfig.json'), allowTsInNodeModules: true,"
+
+        substituteInPlace web/webpack.config.js --replace \
+          "configFile: path.resolve(__dirname, 'tsconfig.json')," \
+          "configFile: path.resolve(__dirname, 'tsconfig.json'), allowTsInNodeModules: true,"
+
+        otherModules=${pkgs.writeText "other-modules.json" (l.toJSON
+          (l.mapAttrs
+            (pname: subOutputs:
+            let
+              pkg = subOutputs.packages."${pname}".overrideAttrs (old: {
+                buildScript = "true";
+                installMethod = "copy";
+              });
+            in
+              "${pkg}/lib/node_modules/${pname}/node_modules")
+            outputs.subPackages))}
+
+        symlinksToCopies() {
+          local dir="$1"
+
+          echo "transforming symlinks to copies..."
+          for f in $(find -L "$dir" -xtype l); do
+            if [ -f $f ]; then
+              continue
+            fi
+            echo "copying $f"
+            chmod +wx $(dirname "$f")
+            mv "$f" "$f.bak"
+            mkdir "$f"
+            if [ -n "$(ls -A "$f.bak/")" ]; then
+              cp -r "$f.bak"/* "$f/"
+              chmod -R +w $f
+            fi
+            rm "$f.bak"
+          done
+        }
+
+        for dir in $(ls -d */); do
+          if [ -f $dir/package.json ]; then
+            echo "installing sub-package $dir"
+            name=$(${pkgs.jq}/bin/jq -r '.name' $dir/package.json)
+            node_modules=$(${pkgs.jq}/bin/jq -r ".\"$name\"" $otherModules)
+            if [ "$node_modules" == "null" ]; then
+              node_modules=$(${pkgs.jq}/bin/jq -r ".\"''${dir%/}\"" $otherModules)
+            fi
+            cp -r $node_modules $dir/node_modules
+            chmod -R +w $dir
+          fi
+        done
+      '';
     };
   };
 
@@ -586,7 +695,7 @@ in
 
     build = {
 
-      nativeBuildInputs = [
+      nativeBuildInputs = old: old ++ [
         pkgs.libudev
       ];
     };
@@ -615,21 +724,12 @@ in
     };
   };
 
-  webpack-cli = {
-    remove-webpack-check = {
-      _condition = satisfiesSemver "^4.0.0";
-      patches = [
-        ./webpack-cli/remove-webpack-check.patch
-      ];
-    };
-  };
-
   # TODO: Maybe should replace binaries with the ones from nixpkgs
   "7zip-bin" = {
 
     patch-binaries = {
 
-      nativeBuildInputs = [
+      nativeBuildInputs = old: old ++ [
         pkgs.autoPatchelfHook
       ];
 
@@ -663,8 +763,8 @@ in
             fetchSubmodules = true;
             sha256 = "sha256-6nfeHxWyKRm5dCYamaDtx53SqqPK+GJ8kqI37XdEtuI=";
           };
-          nativeBuildInputs = with pkgs; [
-            cmake
+          nativeBuildInputs = old: old ++ [
+            pkgs.cmake
           ];
         };
 

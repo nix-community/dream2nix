@@ -11,7 +11,6 @@ pname = os.environ.get('packageName')
 version = os.environ.get('version')
 root = f"{os.path.abspath('.')}/node_modules"
 package_json_cache = {}
-satisfaction_cache = {}
 
 
 with open(os.environ.get("nodeDepsPath")) as f:
@@ -19,6 +18,8 @@ with open(os.environ.get("nodeDepsPath")) as f:
 
 def get_package_json(path):
   if path not in package_json_cache:
+    if not os.path.isfile(f"{path}/package.json"):
+      return None
     with open(f"{path}/package.json") as f:
       package_json_cache[path] = json.load(f)
   return package_json_cache[path]
@@ -48,7 +49,10 @@ def install_direct_dependencies():
         else:
           print(f"installing: {module}")
           origin = os.path.realpath(f"{dep}/lib/node_modules/{module}")
-          os.symlink(origin, f"{root}/{module}")
+          if not os.path.isdir(f"{root}/{module}"):
+            os.symlink(origin, f"{root}/{module}")
+          else:
+            print(f"already exists: {root}/{module}")
 
   return add_to_bin_path
 
@@ -102,9 +106,6 @@ def symlink_sub_dependencies():
 
 # checks if dependency is already installed in the current or parent dir.
 def dependency_satisfied(root, pname, version):
-  if (root, pname, version) in satisfaction_cache:
-    return satisfaction_cache[(root, pname, version)]
-
   if root == "/nix/store":
     return False
 
@@ -113,14 +114,10 @@ def dependency_satisfied(root, pname, version):
   if os.path.isdir(f"{root}/{pname}"):
     package_json_file = f"{root}/{pname}/package.json"
     if os.path.isfile(package_json_file):
-      if version == get_package_json(f"{root}/{pname}")['version']:
-        satisfaction_cache[(root, pname, version)] = True
+      if version == get_package_json(f"{root}/{pname}").get('version'):
         return True
 
-  satisfaction_cache[(root, pname, version)] =\
-    dependency_satisfied(parent, pname, version)
-
-  return satisfaction_cache[(root, pname, version)]
+  return dependency_satisfied(parent, pname, version)
 
 
 # transforms symlinked dependencies into real copies
@@ -132,7 +129,6 @@ def symlinks_to_copies(root):
     if not os.path.islink(dep) or os.path.isfile(dep):
       continue
 
-    version = get_package_json(dep)['version']
     d1, d2 = dep.split('/')[-2:]
     if d1[0] == '@':
       pname = f"{d1}/{d2}"
@@ -140,9 +136,12 @@ def symlinks_to_copies(root):
     else:
       pname = d2
 
-    if dependency_satisfied(os.path.dirname(root), pname, version):
-      os.remove(dep)
-      continue
+    package_json = get_package_json(dep)
+    if package_json is not None:
+      version = get_package_json(dep)['version']
+      if dependency_satisfied(os.path.dirname(root), pname, version):
+        os.remove(dep)
+        continue
 
     print(f"copying {dep}")
     os.rename(dep, f"{dep}.bac")

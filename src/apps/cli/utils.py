@@ -46,13 +46,17 @@ def checkLockJSON(lock):
     raise
 
 
+# Returns a mapping from (sub-)directories to translators.
+# Translators are sorted by compatibility
 def list_translators_for_source(sourcePath):
-  translatorsList = callNixFunction(
-    "translators.translatorsForInput",
+  translators_dict = callNixFunction(
+    "translators.translatorsForInputRecursive",
     inputDirectories=[sourcePath],
-    inputFiles=[],
   )
-  return list(sorted(translatorsList, key=lambda t: t['compatible']))
+  for path, translators_list in translators_dict.copy().items():
+    translators_dict[path] = \
+      list(sorted(translators_list, key=lambda t: t['compatible']))
+  return translators_dict
 
 
 def strip_hashes_from_lock(lock):

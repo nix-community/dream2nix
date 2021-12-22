@@ -61,7 +61,8 @@ let
           getVersion,
           getSourceType,
           sourceConstructors,
-          createMissingSource ? (name: version: { type = "unknown"; }),
+          createMissingSource ?
+            (name: version: throw "Cannot find source for ${name}:${version}"),
           getDependencies ? null,
           getOriginalID ? null,
           mainPackageSource ? { type = "unknown"; },

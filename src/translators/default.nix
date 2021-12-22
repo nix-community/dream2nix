@@ -120,13 +120,15 @@ let
   translatorsForInputRecursive =
     {
       inputDirectories,
-      inputFiles,
       depth ? 2,
     }:
     let
       listDirsRec = dir: depth:
         let
-          subDirs = (utils.listDirs dir);
+          subDirs =
+            b.map
+              (subdir: "${dir}/${subdir}")
+              (utils.listDirs dir);
         in
           if depth == 0 then
             subDirs
@@ -139,16 +141,22 @@ let
                 subDirs));
 
       dirsToCheck =
-        lib.flatten
+        inputDirectories
+        ++
+        (lib.flatten
           (map
             (inputDir: listDirsRec inputDir depth)
-            inputDirectories);
+            inputDirectories));
 
     in
-      translatorsForInput {
-        inputDirectories = dirsToCheck;
-        inherit inputFiles;
-      };
+      lib.genAttrs
+        dirsToCheck
+        (dir:
+          translatorsForInput {
+            inputDirectories = [ dir ];
+            inputFiles = [];
+          }
+        );
 
 
   # pupulates a translators special args with defaults
@@ -164,5 +172,9 @@ let
 
 in
 {
-  inherit translators translatorsForInput;
+  inherit
+    translators
+    translatorsForInput
+    translatorsForInputRecursive
+  ;
 }
