@@ -363,7 +363,9 @@ let
             python $installDeps
 
             # add bin path entries collected by python script
-            export PATH="$PATH:$(cat $TMP/ADD_BIN_PATH)"
+            if [ -e $TMP/ADD_BIN_PATH ]; then
+              export PATH="$PATH:$(cat $TMP/ADD_BIN_PATH)"
+            fi
 
             # add dependencies to NODE_PATH
             export NODE_PATH="$NODE_PATH:$nodeModules/$packageName/node_modules"
@@ -407,6 +409,7 @@ let
 
           # Symlinks executables and manual pages to correct directories
           installPhase = ''
+            runHook preInstall
 
             echo "Symlinking exectuables to /bin"
             if [ -d "$nodeModules/.bin" ]
@@ -434,6 +437,8 @@ let
             if [ -n "$electronHeaders" ]; then
               ${electron-wrap}
             fi
+
+            runHook postInstall
           '';
         });
     in

@@ -31,12 +31,12 @@ if 'os' in package_json:
 # In case of an 'unknown' version coming from the dream lock,
 # do not  override the version from package.json
 version = os.environ.get("version")
-if version not in ["unknown", package_json['version']]:
+if version not in ["unknown", package_json.get('version')]:
   print(
     "WARNING: The version of this package defined by its package.json "
     "doesn't match the version expected by dream2nix."
     "\n  -> Replacing version in package.json: "
-    f"{package_json['version']} -> {version}",
+    f"{package_json.get('version')} -> {version}",
     file=sys.stderr
   )
   changed = True
@@ -78,7 +78,7 @@ if 'bin' in package_json and package_json['bin']:
     sourceDir = os.path.dirname(source)
     # create parent dir
     pathlib.Path(sourceDir).mkdir(parents=True, exist_ok=True)
-    
+
     dest = os.path.relpath(bin, sourceDir)
     print(f"dest: {dest}; source: {source}")
     os.symlink(dest, source)

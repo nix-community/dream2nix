@@ -64,7 +64,6 @@ let
           git = dependencyObject:
             {
               type = "git";
-              version = getVersion dependencyObject;
               hash = dependencyObject.fetch.sha256;
               url = dependencyObject.fetch.url;
               rev = dependencyObject.fetch.rev;
