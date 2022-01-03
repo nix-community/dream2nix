@@ -763,7 +763,7 @@ in
             fetchSubmodules = true;
             sha256 = "sha256-6nfeHxWyKRm5dCYamaDtx53SqqPK+GJ8kqI37XdEtuI=";
           };
-          nativeBuildInputs = old: old ++ [
+          nativeBuildInputs = [
             pkgs.cmake
           ];
         };
