@@ -25,6 +25,7 @@ headers="$(nix-prefetch-url "https://atom.io/download/electron/v${VERSION}/node-
 
 # Entry similar to the following goes in default.nix:
 
+echo "Add the following lines to dream2nix/overrides/nodejs/default.nix:\n"
 echo "  \"${VERSION}\" = {"
 
 for S in "${!SYSTEMS[@]}"; do
