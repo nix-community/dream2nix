@@ -844,4 +844,14 @@ in
     };
   };
 
+  "strapi" = {
+    build = {
+      buildScript = ''
+        yarn(){
+          npm "$@"
+        }
+      '';
+    };
+  };
+
 }
