@@ -31,53 +31,51 @@ let
       direct ++ (l.map (dep: getAllTransitiveDependencies dep.name dep.version) direct)
     ));
 
-  # TODO: this is shared between the translator and this builder
-  # we should dedup this somehow (maybe put in a common library for Rust subsystem?)
-  recurseFiles = path:
-    l.flatten (
-      l.mapAttrsToList
-      (n: v: if v == "directory" then recurseFiles "${path}/${n}" else "${path}/${n}")
-      (l.readDir path)
-    );
-  getAllFiles = dirs: l.flatten (l.map recurseFiles dirs);
-  getCargoTomlPaths = l.filter (path: l.baseNameOf path == "Cargo.toml");
-  getCargoTomls = l.map (path: { inherit path; value = l.fromTOML (l.readFile path); });
-  getCargoPackages = l.filter (toml: l.hasAttrByPath [ "package" "name" ] toml.value);
-  findCratePath = cargoPackages: name:
-    l.dirOf (
-      l.findFirst
-      (toml: toml.value.package.name == name)
-      (throw "could not find crate ${name}")
-      cargoPackages
-    ).path;
-  
   vendorPackageDependencies = pname: version:
     let
       deps = getAllTransitiveDependencies pname version;
 
       makeSource = dep:
         let
-          srcPath = getSource dep.name dep.version;
+          path = getSource dep.name dep.version;
           isGit = (getSourceSpec dep.name dep.version).type == "git";
-          path =
-            if isGit
-            then let
-              # These locate the actual path of the crate in the source...
-              # This is important because git dependencies may or may not be in a
-              # workspace with complex crate hierarchies. This can locate the crate
-              # accurately using Cargo.toml files.
-              cargoPackages = l.pipe [ srcPath ] [ getAllFiles getCargoTomlPaths getCargoTomls getCargoPackages ];
-            in findCratePath cargoPackages dep.name
-            else srcPath;
         in {
-          inherit path isGit;
+          inherit path isGit dep;
           name = "${dep.name}-${dep.version}";
         };
       sources = l.map makeSource deps;
 
+      findCrateSource = source:
+        let
+          inherit (pkgs) cargo jq;
+          pkg = source.dep;
+        in ''
+          # If the target package is in a workspace, or if it's the top-level
+          # crate, we should find the crate path using `cargo metadata`.
+          crateCargoTOML=$(${cargo}/bin/cargo metadata --format-version 1 --no-deps --manifest-path $tree/Cargo.toml | \
+            ${jq}/bin/jq -r '.packages[] | select(.name == "${pkg.name}") | .manifest_path')
+          # If the repository is not a workspace the package might be in a subdirectory.
+          if [[ -z $crateCargoTOML ]]; then
+            for manifest in $(find $tree -name "Cargo.toml"); do
+              echo Looking at $manifest
+              crateCargoTOML=$(${cargo}/bin/cargo metadata --format-version 1 --no-deps --manifest-path "$manifest" | ${jq}/bin/jq -r '.packages[] | select(.name == "${pkg.name}") | .manifest_path' || :)
+              if [[ ! -z $crateCargoTOML ]]; then
+                break
+              fi
+            done
+            if [[ -z $crateCargoTOML ]]; then
+              >&2 echo "Cannot find path for crate '${pkg.name}-${pkg.version}' in the tree in: $tree"
+              exit 1
+            fi
+          fi
+          echo Found crate ${pkg.name} at $crateCargoTOML
+          tree="$(dirname $crateCargoTOML)"
+        '';
       makeScript = source:
         ''
-          cp -prvd "${source.path}" $out/${source.name}
+          tree="${source.path}"
+          ${l.optionalString source.isGit (findCrateSource source)}
+          cp -prvd "$tree" $out/${source.name}
           chmod u+w $out/${source.name}
           ${l.optionalString source.isGit "printf '{\"files\":{},\"package\":null}' > \"$out/${source.name}/.cargo-checksum.json\""}
         '';
