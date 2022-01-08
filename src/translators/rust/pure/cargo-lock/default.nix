@@ -201,12 +201,12 @@
             path = dependencyObject:
               let
                 findCratePath = name:
-                  l.dirOf (
+                  l.baseNameOf (l.dirOf (
                     l.findFirst
                     (toml: toml.value.package.name == name)
                     (throw "could not find crate ${name}")
                     cargoPackages
-                  ).path;
+                  ).path);
               in
               {
                 path = findCratePath dependencyObject.name;
