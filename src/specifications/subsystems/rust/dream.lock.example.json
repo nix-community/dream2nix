@@ -3,10 +3,6 @@
     "packages": [
       { "name": "ripgrep", "version": "13.0.0" }
     ],
-    "gitDeps": [
-      { "name": "rand", "version": "0.8.4" },
-      { "name": "rand", "version": "0.7.3" }
-    ],
     "gitSources": [
       {
         "url": "https://github.com/rust-random/rand.git",

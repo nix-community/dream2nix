@@ -171,7 +171,6 @@
           #   ./src/specifications/{subsystem}
           subsystemAttrs = rec {
             packages = l.map (toml: { inherit (toml.value.package) name version; }) cargoPackages;
-            gitDeps = l.filter (dep: (getSourceTypeFrom dep) == "git") parsedDeps;
             gitSources = l.unique (l.map (dep: parseGitSource dep.source) gitDeps);
           };
 

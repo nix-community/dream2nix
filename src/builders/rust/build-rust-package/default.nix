@@ -30,12 +30,6 @@ let
     l.unique (l.flatten (
       direct ++ (l.map (dep: getAllTransitiveDependencies dep.name dep.version) direct)
     ));
-  
-  getGitDep = pname: version:
-    l.findFirst
-    (dep: dep.name == pname && dep.version == version)
-    null
-    subsystemAttrs.gitDeps;
 
   # TODO: this is shared between the translator and this builder
   # we should dedup this somehow (maybe put in a common library for Rust subsystem?)
@@ -64,7 +58,7 @@ let
       makeSource = dep:
         let
           srcPath = getSource dep.name dep.version;
-          isGit = (getGitDep dep.name dep.version) != null;
+          isGit = (getSourceSpec dep.name dep.version).type == "git";
           path =
             if isGit
             then let
@@ -99,7 +93,7 @@ let
     '';
   
   # Generates a shell script that writes git vendor entries to .cargo/config.
-  writeGitVendorEntries = pname: version:
+  writeGitVendorEntries =
     let
       makeEntry = source:
         ''
@@ -119,7 +113,6 @@ let
     let
       src = getSource pname version;
       vendorDir = vendorPackageDependencies pname version;
-      writeGitVendorEntriesScript = writeGitVendorEntries pname version;
     in
     produceDerivation pname (pkgs.rustPlatform.buildRustPackage {
       inherit pname version src;
@@ -131,7 +124,7 @@ let
       cargoVendorDir = "../nix-vendor";
       
       preBuild = ''
-        ${writeGitVendorEntriesScript}
+        ${writeGitVendorEntries}
       '';
     });
 in
