@@ -12,6 +12,7 @@
   getCyclicDependencies,
   getDependencies,
   getSource,
+  getSourceSpec,
   produceDerivation,
 
   ...

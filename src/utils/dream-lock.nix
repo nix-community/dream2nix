@@ -77,6 +77,9 @@ let
 
       cyclicDependencies = lock.cyclicDependencies;
 
+      getSourceSpec = pname: version:
+        sources."${pname}"."${version}" or {};
+      
       getDependencies = pname: version:
         b.filter
           (dep: ! b.elem dep cyclicDependencies."${pname}"."${version}" or [])
@@ -96,6 +99,7 @@ let
             subsystemAttrs
             getCyclicDependencies
             getDependencies
+            getSourceSpec
             packageVersions
             subDreamLocks
           ;
