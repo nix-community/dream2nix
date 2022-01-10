@@ -36,7 +36,7 @@ rec {
 
   singleDependency = bind (skipThen (string "    ") (alt quotedString unquotedString)) (parsed_dependency:
     skipThen (string " ") (
-      bind quotedString (parsed_version:
+      bind (alt quotedString unquotedString) (parsed_version:
         pure { "${parsed_dependency}" = parsed_version; }
       )
     )
