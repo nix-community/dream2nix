@@ -24,7 +24,7 @@ rec {
   unquotedString = takeWhile1 charOutsideQuotes;
   newLine = string "\n";
 
-  quotedString = between (string "\"") (string "\"") (takeWhile1 charInsideQuotes);
+  quotedString = between (string "\"") (string "\"") (takeWhile charInsideQuotes);
 
   version = skipThen (string "  version ") (thenSkip quotedString newLine);
   resolved = skipThen (string "  resolved ") (thenSkip quotedString newLine);
