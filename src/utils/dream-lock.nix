@@ -78,7 +78,9 @@ let
       cyclicDependencies = lock.cyclicDependencies;
 
       getSourceSpec = pname: version:
-        sources."${pname}"."${version}" or {};
+        sources."${pname}"."${version}" or (
+          throw "The source spec for ${pname}#${version} is not defined in lockfile."
+        );
       
       getDependencies = pname: version:
         b.filter
