@@ -2,6 +2,20 @@
   "_subsystem": {
     "packages": [
       { "name": "ripgrep", "version": "13.0.0" }
+    ],
+    "gitSources": [
+      {
+        "url": "https://github.com/rust-random/rand.git",
+        "sha": "19404d68764ed08513131f82157e2ccad69dcf83",
+        "type": "branch",
+        "value": "master"
+      },
+      {
+        "url": "https://github.com/rust-random/rand.git",
+        "sha": "074cb6a997f91db653f8a53c755ddc07495ab429",
+        "type": "tag",
+        "value": "0.7.3"
+      }
     ]
   }
 }

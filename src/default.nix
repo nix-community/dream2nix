@@ -302,6 +302,7 @@ let
 
           inherit (dreamLockInterface)
             subsystemAttrs
+            getSourceSpec
             getDependencies
             getCyclicDependencies
             mainPackageName

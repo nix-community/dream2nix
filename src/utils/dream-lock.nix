@@ -77,6 +77,11 @@ let
 
       cyclicDependencies = lock.cyclicDependencies;
 
+      getSourceSpec = pname: version:
+        sources."${pname}"."${version}" or (
+          throw "The source spec for ${pname}#${version} is not defined in lockfile."
+        );
+      
       getDependencies = pname: version:
         b.filter
           (dep: ! b.elem dep cyclicDependencies."${pname}"."${version}" or [])
@@ -96,6 +101,7 @@ let
             subsystemAttrs
             getCyclicDependencies
             getDependencies
+            getSourceSpec
             packageVersions
             subDreamLocks
           ;
