@@ -172,5 +172,5 @@ Potery uses `pyproject.toml` and `poetry.lock` to lock dependencies
 - the python builder will read all information from "subsystem" and translate the data to a final derivation.
 
 Notes on IFD, FOD and code generation:  
-- No matter which type of tanslator is used, it is always possible to export the generic lock to a file, which can later be evaluated without using IFD or FOD, similar to current nix code generators, just with a standardized format.
+- No matter which type of translator is used, it is always possible to export the generic lock to a file, which can later be evaluated without using IFD or FOD, similar to current nix code generators, just with a standardized format.
 - If the translator supports IFD or is written in pure nix, it is optional to the user to skip exporting the generic lock and instead evaluate everything on the fly.
