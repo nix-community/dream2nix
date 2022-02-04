@@ -31,6 +31,7 @@
       # read the json input
       outputFile=$(jq '.outputFile' -c -r $jsonInput)
       inputDirectory=$(jq '.inputDirectories | .[0]' -c -r $jsonInput)
+      npmArgs=$(jq '.npmArgs' -c -r $jsonInput)
       # inputFiles=$(jq '.inputFiles | .[]' -c -r $jsonInput)
 
       cp -r $inputDirectory/* ./
@@ -42,9 +43,9 @@
         echo "excluding dev dependencies"
         jq '.devDependencies = {}' ./package.json > package.json.mod
         mv package.json.mod package.json
-        npm install --package-lock-only --production
+        npm install --package-lock-only --production $npmArgs
       else
-        npm install --package-lock-only
+        npm install --package-lock-only $npmArgs
       fi
 
       cat package-lock.json
@@ -71,5 +72,14 @@
       inputFiles = [];
     };
 
-  extraArgs = translators.translators.nodejs.pure.package-lock.extraArgs;
+  extraArgs = translators.translators.nodejs.pure.package-lock.extraArgs // {
+    npmArgs = {
+      description = "Additional arguments for npm";
+      type = "argument";
+      default = "";
+      examples = [
+        "--force"
+      ];
+    };
+  };
 }
