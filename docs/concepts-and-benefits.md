@@ -7,7 +7,7 @@ The following phases which are generic to basically all existing 2nix solutions:
 
 ... should be separated from each other with well defined interfaces.
 
-This will allow for free compsition of different approaches for these phases.
+This will allow for free composition of different approaches for these phases.
 The user should be able to freely choose between:
   - input metadata formats (eg. lock file formats)
   - metadata fetching/translation strategies: IFD vs. in-tree
