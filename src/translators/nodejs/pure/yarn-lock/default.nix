@@ -30,21 +30,10 @@
       sourceDir = source;
       yarnLock = utils.readTextFile "${sourceDir}/yarn.lock";
       packageJSON = b.fromJSON (b.readFile "${sourceDir}/package.json");
-      parser = import ../yarn-lock/parser.nix
-        { inherit lib; inherit (externals) nix-parsec;};
+      parser = import ./parser.nix
+        { inherit lib; };
 
-      tryParse = parser.parseLock yarnLock;
-      parsedLock =
-        if tryParse.type == "success" then
-          lib.foldAttrs (n: a: n // a) {} tryParse.value
-        else
-          let
-            failureOffset = tryParse.value.offset;
-          in
-            throw ''
-              parser failed at:
-              ${lib.substring failureOffset 50 tryParse.value.str}
-            '';
+      parsedLock = parser.parse yarnLock;
     in
 
     utils.simpleTranslate
@@ -132,9 +121,16 @@
         getDependencies = dependencyObject:
           let
             dependencies =
-              dependencyObject.dependencies or []
-              ++ dependencyObject.optionalDependencies or [];
+              let
+                deps =
+                  dependencyObject.dependencies or {}
+                  // dependencyObject.optionalDependencies or {};
+              in
+                lib.mapAttrsToList
+                  (name: version: { "${name}" = version; })
+                  deps;
           in
+            # utils.traceJ dependencies
             lib.forEach
               dependencies
               (dependency:
@@ -150,6 +146,8 @@
                           # handle missing lock file entry
                           let
                             versionMatch =
+                              # b.trace name
+                              # b.trace versionSpec
                               b.match ''.*\^([[:digit:]|\.]+)'' versionSpec;
                           in
                             {
