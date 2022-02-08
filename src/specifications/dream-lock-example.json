@@ -1,12 +1,13 @@
 {
   "_generic": {
-    "_subsystem": "python",
-    "translatedBy": "python.impure.pip",
+    "subsystem": "python",
+    "defaultPackage": "requests",
     "translatorArgs": "",
-    "mainPackageName": "requests",
-    "mainPackageVersion": "1.2.3"
+    "packages": {
+      "requests": "1.2.3"
+    }
   },
-  
+
   "_subsystem": {
     "pythonAttr": "python38",
     "sourceFormats": {
@@ -14,11 +15,11 @@
       "certifi": "wheel"
     }
   },
-  
+
   "cyclicDependencies": {
-    
+
   },
-  
+
   "dependencies": {
     "requests": [
       "certifi"

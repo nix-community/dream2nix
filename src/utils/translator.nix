@@ -243,7 +243,6 @@ let
                 ;
                 subsystem = subsystemName;
                 sourcesAggregatedHash = null;
-                translator = translatorName;
               };
 
             # build system specific attributes

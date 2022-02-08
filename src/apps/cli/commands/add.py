@@ -373,7 +373,6 @@ class AddCommand(Command):
 
   def extend_with_translator_info(self, lock, specified_extra_args, translator):
     t = translator
-    lock['_generic']['translatedBy'] = f"{t['subsystem']}.{t['type']}.{t['name']}"
     lock['_generic']['translatorParams'] = " ".join(
       [
         '--translator',
