@@ -22,7 +22,8 @@ utils.writePureShellScript
     --attribute-name eslint \
     --arg name="{automatic}" \
     --arg noDev=true \
-    --arg nodejs=14
+    --arg nodejs=14 \
+    --arg npmArgs=
 
   ${cli} update eslint --to-version 8.4.1
 ''
