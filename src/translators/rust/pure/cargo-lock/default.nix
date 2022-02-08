@@ -103,7 +103,7 @@
         name = toml.package.name;
         version = toml.package.version or (l.warn "no version found in Cargo.toml for ${name}, defaulting to unknown" "unknown");
       };
-      
+
       # Parses a git source, taken straight from nixpkgs.
       parseGitSource = src:
         let
@@ -149,9 +149,9 @@
           # transformed into a flat list.
           inputData = parsedDeps;
 
-          mainPackageName = package.name;
+          defaultPackage = package.name;
 
-          mainPackageVersion = package.version;
+          packages."${defaultPackage}" = package.version;
 
           mainPackageDependencies =
             let

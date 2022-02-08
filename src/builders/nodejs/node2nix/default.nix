@@ -13,8 +13,8 @@
 
 {
   subsystemAttrs,
-  mainPackageName,
-  mainPackageVersion,
+  defaultPackageName,
+  defaultPackageVersion,
   getCyclicDependencies,
   getDependencies,
   getSource,
@@ -31,9 +31,9 @@ let
     (args.getDependencies name version)
     ++ (args.getCyclicDependencies name version);
 
-  mainPackageKey = "${mainPackageName}#${mainPackageVersion}";
+  mainPackageKey = "${defaultPackageName}#${defaultPackageVersion}";
 
-  mainPackageDependencies = getAllDependencies mainPackageName mainPackageVersion;
+  mainPackageDependencies = getAllDependencies defaultPackageName defaultPackageVersion;
 
   nodejsVersion = subsystemAttrs.nodejsVersion;
 
@@ -62,7 +62,7 @@ let
           depsFiltered
           (dep: makeSource dep.name dep.version parentDeps);
     };
-  
+
   node2nixDependencies =
     lib.forEach
       mainPackageDependencies
@@ -72,27 +72,27 @@ let
   callNode2Nix = funcName: args:
     node2nixEnv."${funcName}" (rec {
       name = utils.sanitizeDerivationName packageName;
-      packageName = mainPackageName;
-      version = mainPackageVersion;
+      packageName = defaultPackageName;
+      version = defaultPackageVersion;
       dependencies = node2nixDependencies;
       production = true;
       bypassCache = true;
       reconstructLock = true;
-      src = getSource mainPackageName mainPackageVersion;
+      src = getSource defaultPackageName defaultPackageVersion;
     }
     // args);
 
 in
 rec {
 
-  packages."${mainPackageName}"."${mainPackageVersion}" = defaultPackage;
+  packages."${defaultPackageName}"."${defaultPackageVersion}" = defaultPackage;
 
   defaultPackage =
     let
       pkg = callNode2Nix "buildNodePackage" {};
     in
-      utils.applyOverridesToPackage packageOverrides pkg mainPackageName;
+      utils.applyOverridesToPackage packageOverrides pkg defaultPackageName;
 
   devShell = callNode2Nix "buildNodeShell" {};
-    
+
 }

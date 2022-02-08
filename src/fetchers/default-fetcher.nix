@@ -8,8 +8,8 @@
 }:
 {
   # sources attrset from dream lock
-  mainPackageName,
-  mainPackageVersion,
+  defaultPackage,
+  defaultPackageVersion,
   sources,
   ...
 }:
@@ -31,7 +31,7 @@ let
                 source.path
               # assume path relative to main package source
               else
-                "${fetchedSources."${mainPackageName}"."${mainPackageVersion}"}/${source.path}"
+                "${fetchedSources."${defaultPackage}"."${defaultPackageVersion}"}/${source.path}"
             else if fetchers.fetchers ? "${source.type}" then
               fetchSource {
                 source = source // {

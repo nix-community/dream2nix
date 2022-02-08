@@ -20,16 +20,16 @@ let
     else
       python.pkgs.buildPythonPackage;
 
-  mainPackageName = dreamLock._generic.mainPackageName;
+  defaultPackage = dreamLock._generic.defaultPackage;
 
   packageName =
-    if mainPackageName == null then
+    if defaultPackage == null then
       if dreamLock._subsystem.application then
         "application"
       else
         "environment"
     else
-      mainPackageName;
+      defaultPackage;
 
   defaultPackage = buildFunc {
     name = packageName;
@@ -37,7 +37,7 @@ let
     buildInputs = pkgs.pythonManylinuxPackages.manylinux1;
     nativeBuildInputs = [ pkgs.autoPatchelfHook python.pkgs.wheelUnpackHook ];
     unpackPhase = ''
-      mkdir dist 
+      mkdir dist
       for file in ${builtins.toString (lib.attrValues fetchedSources)}; do
         # pick right most element of path
         fname=''${file##*/}

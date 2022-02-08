@@ -154,7 +154,7 @@
       "type": "object",
       "properties": {
         "defaultPackage": { "type": ["string", "null"] },
-        "packages": { "type": "array" },
+        "packages": { "type": "object" },
         "sourcesAggregatedHash":  { "type": ["string", "null"] },
         "subsystem": { "type": "string" },
         "translatorParams":  { "type": ["string", "null"] }
