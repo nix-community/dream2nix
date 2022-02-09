@@ -359,7 +359,8 @@ let
     let
 
       dreamLock' =
-        if lib.isAttrs args.source
+        # in case of a dream-lock.json file or dream-lock attributes
+        if ( lib.isAttrs args.source && args.source ? _generic && args.source ? _subsytem )
             || lib.hasSuffix "dream-lock.json" source then
           args.source
         else

@@ -31,20 +31,16 @@ There are different ways how dream2nix can be invoked (CLI, flake, In-tree, IFD)
 ```nix
 {
   inputs.dream2nix.url = "github:nix-community/dream2nix";
-  outputs = { self, nixpkgs, dream2nix }@inputs:
+  outputs = { self, dream2nix }@inputs:
     let
-      # change according to your system
-      system = "x86_64-linux";
       dream2nix = inputs.dream2nix.lib.init {
-        pkgs = nixpkgs.legacyPackages."${system}";
+        # either just specify systems
+        systems = [ "x86_64-linux" ];
+        # ...or alternatively specify your own nixpkgs
+        # pkgs = ...;
       };
-    in {
-      packages = (dream2nix.riseAndShine {
-        source = builtins.path {
-          name = "source";
-          path = self;
-        };
-      }).packages;
+    in dream2nix.riseAndShine {
+      source = ./.;
     };
 }
 ```
