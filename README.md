@@ -7,7 +7,7 @@
 For an example of dream2nix being used in practice, see [dreampkgs](https://github.com/DavHau/dreampkgs).
 
 ---
-dream2nix is a generic framework for 2nix converters (converting from other build systems to nix).  
+dream2nix is a generic framework for 2nix converters (converting from other build systems to nix).
 It focuses on the following aspects:
 
 - Modularity
@@ -25,6 +25,34 @@ It focuses on the following aspects:
 The goal of this project is to create a standardized, generic, modular framework for 2nix solutions, aiming for better flexibility, maintainability and usability.
 
 The intention is to integrate many existing 2nix converters into this framework, thereby improving many of the previously named aspects and providing a unified UI for all 2nix solutions.
+
+### Test the experimental version of dream2nix
+There are different ways how dream2nix can be invoked (CLI, flake, In-tree, IFD). A simple way to try out dream2nix is to check out the repository of the software to package and drop this flake.nix inside it:
+```nix
+{
+  inputs.dream2nix.url = "github:nix-community/dream2nix";
+  outputs = { self, nixpkgs, dream2nix }@inputs:
+    let
+      # change according to your system
+      system = "x86_64-linux";
+      dream2nix = inputs.dream2nix.lib.init {
+        pkgs = nixpkgs.legacyPackages."${system}";
+      };
+    in {
+      packages = (dream2nix.riseAndShine {
+        source = builtins.path {
+          name = "source";
+          path = self;
+        };
+      }).packages;
+    };
+}
+```
+After adding the flake.nix, execute the following commands to list the packages which can be built:
+```shell
+git add ./flake.nix
+nix flake show
+```
 
 ### Watch the recent presentation
 [![dream2nix - A generic framework for 2nix tools](https://gist.githubusercontent.com/DavHau/755fed3774e89c0b9b8953a0a25309fa/raw/3c8b2c56f5fca3bf5c343ffc179136eef39d4d6a/dream2nix-youtube-talk.png)](https://www.youtube.com/watch?v=jqCfHMvCsfQ)
