@@ -13,6 +13,7 @@
   getDependencies,
   getSource,
   getSourceSpec,
+  packages,
   produceDerivation,
 
   ...
@@ -128,14 +129,9 @@ let
 in
 rec {
   packages =
-    l.listToAttrs (
-      l.map ({ name, version }: {
-        inherit name;
-        value = {
-          ${version} = buildPackage name version;
-        };
-      }) subsystemAttrs.packages
-    );
+    l.mapAttrs
+      (name: version: buildPackage name version)
+      args.packages;
 
-  defaultPackage = packages."${defaultPackageName}"."${defaultPackageVersion}";
+  defaultPackage = packages."${defaultPackageName}";
 }

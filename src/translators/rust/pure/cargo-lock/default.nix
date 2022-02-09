@@ -18,25 +18,35 @@
     let
       l = lib // builtins;
 
+      inputDir = l.elemAt inputDirectories 0;
+
       recurseFiles = path:
         l.flatten (
           l.mapAttrsToList
-          (n: v: if v == "directory" then recurseFiles "${path}/${n}" else "${path}/${n}")
+          (n: v:
+            if v == "directory" then
+              recurseFiles "${path}/${n}"
+            else
+              "${path}/${n}")
           (l.readDir path)
         );
-      getAllFiles = dirs: l.flatten (l.map recurseFiles dirs);
-
-      getCargoTomlPaths = l.filter (path: l.baseNameOf path == "Cargo.toml");
-      getCargoTomls = l.map (path: { inherit path; value = l.fromTOML (l.readFile path); });
-      getCargoPackages = l.filter (toml: l.hasAttrByPath [ "package" "name" ] toml.value);
 
       # Find all Cargo.toml files and parse them
-      allFiles = getAllFiles inputDirectories;
-      cargoTomlPaths = getCargoTomlPaths allFiles;
-      cargoTomls = getCargoTomls cargoTomlPaths;
+      allFiles = l.flatten (l.map recurseFiles inputDirectories);
+      cargoTomlPaths = l.filter (path: l.baseNameOf path == "Cargo.toml") allFiles;
+      cargoTomls =
+        l.map
+          (path: {
+            inherit path;
+            value = l.fromTOML (l.readFile path);
+          })
+          cargoTomlPaths;
 
       # Filter cargo-tomls to for files that actually contain packages
-      cargoPackages = getCargoPackages cargoTomls;
+      cargoPackages =
+        l.filter
+          (toml: l.hasAttrByPath [ "package" "name" ] toml.value)
+          cargoTomls;
 
       packageName =
         if args.packageName == "{automatic}"
@@ -62,13 +72,6 @@
       # Find the Cargo.toml matching the package name
       checkForPackageName = cargoToml: (cargoToml.value.package.name or null) == packageName;
       packageToml = l.findFirst checkForPackageName (throw "no Cargo.toml found with the package name passed: ${packageName}") cargoTomls;
-
-      # Find the input directory that will contain the Cargo.lock and include our package's Cargo.toml file
-      inputDir =
-        l.findFirst
-        (path: l.hasPrefix path packageToml.path)
-        (throw "no input directory found for package")
-        inputDirectories;
 
       # Parse Cargo.lock and extract dependencies
       parsedLock = l.fromTOML (l.readFile "${inputDir}/Cargo.lock");
@@ -151,7 +154,16 @@
 
           defaultPackage = package.name;
 
-          packages."${defaultPackage}" = package.version;
+          packages =
+            (l.listToAttrs
+              (l.map
+                (toml:
+                  l.nameValuePair
+                    toml.value.package.name
+                    toml.value.package.version)
+                cargoPackages))
+            //
+            { "${defaultPackage}" = package.version; };
 
           mainPackageDependencies =
             let
@@ -170,7 +182,6 @@
           # The structure of this should be defined in:
           #   ./src/specifications/{subsystem}
           subsystemAttrs = rec {
-            packages = l.map (toml: { inherit (toml.value.package) name version; }) cargoPackages;
             gitSources = let
               gitDeps = l.filter (dep: (getSourceTypeFrom dep) == "git") parsedDeps;
             in l.unique (l.map (dep: parseGitSource dep.source) gitDeps);
@@ -200,16 +211,17 @@
           sourceConstructors = {
             path = dependencyObject:
               let
-                findCratePath = name:
-                  l.baseNameOf (l.dirOf (
-                    l.findFirst
-                    (toml: toml.value.package.name == name)
-                    (throw "could not find crate ${name}")
+                toml =
+                  (l.findFirst
+                    (toml: toml.value.package.name == dependencyObject.name)
+                    (throw "could not find crate ${dependencyObject.name}")
                     cargoPackages
-                  ).path);
+                  );
+                relDir = lib.removePrefix "${inputDir}/" (l.dirOf toml.path);
               in
               {
-                path = findCratePath dependencyObject.name;
+                path =
+                  relDir;
               };
 
             git = dependencyObject:
