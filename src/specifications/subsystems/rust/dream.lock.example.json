@@ -1,8 +1,5 @@
 {
   "_subsystem": {
-    "packages": [
-      { "name": "ripgrep", "version": "13.0.0" }
-    ],
     "gitSources": [
       {
         "url": "https://github.com/rust-random/rand.git",
