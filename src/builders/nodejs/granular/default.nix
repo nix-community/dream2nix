@@ -26,8 +26,8 @@
 
   # Attributes
   subsystemAttrs,       # attrset
-  mainPackageName,      # string
-  mainPackageVersion,   # string
+  defaultPackageName,      # string
+  defaultPackageVersion,   # string
 
   # attrset of pname -> versions,
   # where versions is a list of version strings
@@ -55,8 +55,8 @@ let
   nodejsVersion = subsystemAttrs.nodejsVersion;
 
   isMainPackage = name: version:
-    name == mainPackageName
-    && version == mainPackageVersion;
+    name == defaultPackageName
+    && version == defaultPackageVersion;
 
   nodejs =
     if args ? nodejs then
@@ -70,7 +70,7 @@ let
     mv node-* $out
   '';
 
-  defaultPackage = packages."${mainPackageName}"."${mainPackageVersion}";
+  defaultPackage = packages."${defaultPackageName}"."${defaultPackageVersion}";
 
   packages =
     lib.mapAttrs

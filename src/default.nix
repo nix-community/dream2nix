@@ -162,9 +162,9 @@ let
         else
           args.fetcher;
 
-      fetched = fetcher {
-        mainPackageName = dreamLock._generic.mainPackageName;
-        mainPackageVersion = dreamLock._generic.mainPackageVersion;
+      fetched = fetcher rec {
+        defaultPackage = dreamLock._generic.defaultPackage;
+        defaultPackageVersion = dreamLock._generic.packages."${defaultPackage}";
         sources = dreamLock'.sources;
         sourcesAggregatedHash = dreamLock'._generic.sourcesAggregatedHash;
       };
@@ -219,12 +219,17 @@ let
           inputDirectories = [ source ];
         });
 
-      dreamLock = lib.recursiveUpdate dreamLock' {
-        sources."${dreamLock'._generic.mainPackageName}"."${dreamLock'._generic.mainPackageVersion}" = {
-          type = "path";
-          path = "${source}";
-        };
-      };
+      dreamLock =
+        let
+          defaultPackage = dreamLock'._generic.defaultPackage;
+          defaultPackageVersion = dreamLock'._generic.packages."${defaultPackage}";
+        in
+          lib.recursiveUpdate dreamLock' {
+            sources."${defaultPackage}"."${defaultPackageVersion}" = {
+              type = "path";
+              path = "${source}";
+            };
+          };
 
     in
       dreamLock;
@@ -305,8 +310,9 @@ let
             getSourceSpec
             getDependencies
             getCyclicDependencies
-            mainPackageName
-            mainPackageVersion
+            defaultPackageName
+            defaultPackageVersion
+            packages
             packageVersions
           ;
 

@@ -64,7 +64,8 @@ class UpdateCommand(Command):
     print(f"updater module is: {updater}")
 
     # find new version
-    old_version = lock['_generic']['mainPackageVersion']
+    oldPackage = lock['_generic']['defaultPackage']
+    old_version = lock['_generic']['packages'][oldPackage]
     version = self.option('to-version')
     if not version:
       update_script = buildNixFunction(
@@ -78,19 +79,19 @@ class UpdateCommand(Command):
 
     cli_py = os.path.abspath(f"{__file__}/../../cli.py")
     # delete the hash
-    mainPackageName = lock['_generic']['mainPackageName']
-    mainPackageVersion = lock['_generic']['mainPackageVersion']
-    mainPackageSource = lock['sources'][mainPackageName][mainPackageVersion]
+    defaultPackage = lock['_generic']['defaultPackage']
+    defaultPackageVersion = lock['_generic']['packages'][defaultPackage]
+    mainPackageSource = lock['sources'][defaultPackage][defaultPackageVersion]
     mainPackageSource.update(dict(
-      pname = mainPackageName,
-      version = mainPackageVersion,
+      pname = defaultPackage,
+      version = defaultPackageVersion,
     ))
     updatedSourceSpec = callNixFunction(
       "fetchers.updateSource",
       source=mainPackageSource,
       newVersion=version,
     )
-    lock['sources'][mainPackageName][mainPackageVersion] = updatedSourceSpec
+    lock['sources'][defaultPackage][defaultPackageVersion] = updatedSourceSpec
     with tempfile.NamedTemporaryFile("w", suffix="dream-lock.json") as tmpDreamLock:
       json.dump(lock, tmpDreamLock, indent=2)
       tmpDreamLock.seek(0)  # flushes write cache

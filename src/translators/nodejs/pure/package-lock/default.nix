@@ -112,7 +112,7 @@
         # values
         inputData = packageLockWithPinnedVersions;
 
-        mainPackageName =
+        defaultPackage =
           if name != "{automatic}" then
             name
           else
@@ -121,7 +121,7 @@
               + "Please specify extra argument 'name'"
             ));
 
-        mainPackageVersion = parsed.version or "unknown";
+        packages."${defaultPackage}" = parsed.version or "unknown";
 
         mainPackageDependencies =
           lib.mapAttrsToList

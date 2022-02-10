@@ -24,13 +24,13 @@ let
 
         inputData = parsed;
 
-        mainPackageName =
+        defaultPackage =
           let
             firstLine = (b.elemAt (lib.splitString "\n" (b.readFile "${cwd}/go.mod")) 0);
           in
             lib.last (lib.splitString "/" (b.elemAt (lib.splitString " " firstLine) 1));
 
-        mainPackageVersion = "unknown";
+        packages."${defaultPackage}" = "unknown";
 
         subsystemName = "go";
 

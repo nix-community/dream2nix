@@ -48,9 +48,9 @@
           # transformed into a flat list.
           inputData = ;
 
-          mainPackageName = ;
+          defaultPackageName = ;
 
-          mainPackageVersion = ;
+          defaultPackageVersion = ;
 
           mainPackageDependencies =
             lib.mapAttrsToList

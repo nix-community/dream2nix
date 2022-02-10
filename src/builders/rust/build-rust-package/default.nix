@@ -7,12 +7,13 @@
 
 {
   subsystemAttrs,
-  mainPackageName,
-  mainPackageVersion,
+  defaultPackageName,
+  defaultPackageVersion,
   getCyclicDependencies,
   getDependencies,
   getSource,
   getSourceSpec,
+  packages,
   produceDerivation,
 
   ...
@@ -89,7 +90,7 @@ let
         sources
        }
     '';
-  
+
   # Generates a shell script that writes git vendor entries to .cargo/config.
   writeGitVendorEntries =
     let
@@ -120,7 +121,7 @@ let
       '';
 
       cargoVendorDir = "../nix-vendor";
-      
+
       preBuild = ''
         ${writeGitVendorEntries}
       '';
@@ -128,14 +129,9 @@ let
 in
 rec {
   packages =
-    l.listToAttrs (
-      l.map ({ name, version }: {
-        inherit name;
-        value = {
-          ${version} = buildPackage name version;
-        };
-      }) subsystemAttrs.packages
-    );
+    l.mapAttrs
+      (name: version: buildPackage name version)
+      args.packages;
 
-  defaultPackage = packages."${mainPackageName}"."${mainPackageVersion}";
+  defaultPackage = packages."${defaultPackageName}";
 }

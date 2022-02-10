@@ -48,9 +48,9 @@ let
         {
           # values
           inputData,
-          mainPackageName,
-          mainPackageVersion,
+          defaultPackage,
           mainPackageDependencies,
+          packages,
           subsystemName,
           subsystemAttrs,
           translatorName,
@@ -119,8 +119,8 @@ let
                   allDependencies);
             in
               depGraph // {
-                "${mainPackageName}" = depGraph."${mainPackageName}" or {} // {
-                  "${mainPackageVersion}" = mainPackageDependencies;
+                "${defaultPackage}" = depGraph."${defaultPackage}" or {} // {
+                  "${packages."${defaultPackage}"}" = mainPackageDependencies;
                 };
               };
 
@@ -200,7 +200,7 @@ let
 
               cyclesList =
                 findCycles
-                  (utils.nameVersionPair mainPackageName mainPackageVersion)
+                  (utils.nameVersionPair defaultPackage packages."${defaultPackage}")
                   {}
                   [];
             in
@@ -238,12 +238,11 @@ let
             _generic =
               {
                 inherit
-                  mainPackageName
-                  mainPackageVersion
+                  defaultPackage
+                  packages
                 ;
                 subsystem = subsystemName;
                 sourcesAggregatedHash = null;
-                translator = translatorName;
               };
 
             # build system specific attributes

@@ -153,9 +153,13 @@
     "_generic": {
       "type": "object",
       "properties": {
-        "_subsystem": { "type": "string" },
-        "producedBy": { "type": "string" }
-      }
+        "defaultPackage": { "type": ["string", "null"] },
+        "packages": { "type": "object" },
+        "sourcesAggregatedHash":  { "type": ["string", "null"] },
+        "subsystem": { "type": "string" },
+        "translatorParams":  { "type": ["string", "null"] }
+      },
+      "additionalProperties": false
     },
 
     "_subsystem": {

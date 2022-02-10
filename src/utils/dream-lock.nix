@@ -60,9 +60,10 @@ let
                 readDreamLock
                   { dreamLock = "${dir}/${d}/dream-lock.json"; });
 
+      packages = lock._generic.packages;
 
-      mainPackageName = lock._generic.mainPackageName;
-      mainPackageVersion = lock._generic.mainPackageVersion;
+      defaultPackageName = lock._generic.defaultPackage;
+      defaultPackageVersion = packages."${defaultPackageName}";
 
       subsystemAttrs = lock._subsystem;
 
@@ -81,7 +82,7 @@ let
         sources."${pname}"."${version}" or (
           throw "The source spec for ${pname}#${version} is not defined in lockfile."
         );
-      
+
       getDependencies = pname: version:
         b.filter
           (dep: ! b.elem dep cyclicDependencies."${pname}"."${version}" or [])
@@ -96,12 +97,13 @@ let
         interface = {
 
           inherit
-            mainPackageName
-            mainPackageVersion
+            defaultPackageName
+            defaultPackageVersion
             subsystemAttrs
             getCyclicDependencies
             getDependencies
             getSourceSpec
+            packages
             packageVersions
             subDreamLocks
           ;
@@ -110,11 +112,11 @@ let
 
   getMainPackageSource = dreamLock:
     dreamLock.sources
-      ."${dreamLock._generic.mainPackageName}"
-      ."${dreamLock._generic.mainPackageVersion}"
-    // {
-      pname = dreamLock._generic.mainPackageName;
-      version = dreamLock._generic.mainPackageVersion;
+      ."${dreamLock._generic.defaultPackage}"
+      ."${dreamLock._generic.packages."${dreamLock._generic.defaultPackage}"}"
+    // rec {
+      pname = dreamLock._generic.defaultPackage;
+      version = dreamLock._generic.packages."${pname}" ;
     };
 
   getSource = fetchedSources: pname: version:
@@ -144,8 +146,10 @@ let
       in
         lock // {
           _generic = lock._generic // {
-            mainPackageName = name;
-            mainPackageVersion = version;
+            defaultPackage = name;
+            packages = lock._generic.packages // {
+              "${name}" = version;
+            };
           };
         };
 

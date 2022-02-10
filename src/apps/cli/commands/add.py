@@ -181,12 +181,12 @@ class AddCommand(Command):
       self.translate_from_source(specified_extra_args, sourcePath, translators)
 
     # get package name and version from lock
-    mainPackageName = lock['_generic']['mainPackageName']
-    mainPackageVersion = lock['_generic']['mainPackageVersion']
+    defaultPackage = lock['_generic']['defaultPackage']
+    defaultPackageVersion = lock['_generic']['packages'][defaultPackage]
 
     # calculate output directory and attribute name
     main_package_dir_name = self.define_attribute_name(
-      mainPackageName,
+      defaultPackage,
       existing_names,
     )
 
@@ -200,7 +200,7 @@ class AddCommand(Command):
     self.extend_with_translator_info(lock, specified_extra_args, translator)
 
     # add main package source
-    self.add_main_source(lock, mainPackageName, mainPackageVersion, sourceSpec)
+    self.add_main_source(lock, defaultPackage, defaultPackageVersion, sourceSpec)
 
     # clean up dependency graph
     if 'dependencies' in lock['_generic']:
@@ -354,7 +354,7 @@ class AddCommand(Command):
         lock['cyclicDependencies'][n_name][n_ver].append(removed)
       print(cycles_text)
 
-  def add_main_source(self, lock, mainPackageName, mainPackageVersion, sourceSpec):
+  def add_main_source(self, lock, defaultPackage, defaultPackageVersion, sourceSpec):
     mainSource = sourceSpec.copy()
     if not mainSource:
       mainSource = dict(
@@ -364,16 +364,15 @@ class AddCommand(Command):
       for key in ['pname', 'version']:
         if key in mainSource:
           del mainSource[key]
-    if mainPackageName not in lock['sources']:
-      lock['sources'][mainPackageName] = {
-        mainPackageVersion: mainSource
+    if defaultPackage not in lock['sources']:
+      lock['sources'][defaultPackage] = {
+        defaultPackageVersion: mainSource
       }
     else:
-      lock['sources'][mainPackageName][mainPackageVersion] = mainSource
+      lock['sources'][defaultPackage][defaultPackageVersion] = mainSource
 
   def extend_with_translator_info(self, lock, specified_extra_args, translator):
     t = translator
-    lock['_generic']['translatedBy'] = f"{t['subsystem']}.{t['type']}.{t['name']}"
     lock['_generic']['translatorParams'] = " ".join(
       [
         '--translator',
@@ -423,14 +422,14 @@ class AddCommand(Command):
     output = os.path.realpath(output)
     return filesToCreate, output
 
-  def define_attribute_name(self, mainPackageName, existing_names):
+  def define_attribute_name(self, defaultPackage, existing_names):
     # only respect --atttribute-name option for main package
     if not existing_names:
       attributeName = self.option('attribute-name')
       if attributeName:
         return attributeName
 
-    attributeName = mainPackageName.strip('@').replace('/', '-')
+    attributeName = defaultPackage.strip('@').replace('/', '-')
 
     if attributeName in existing_names:
       attributeName = attributeName + '-subpackage'
@@ -620,10 +619,10 @@ class AddCommand(Command):
         print(f"fetching source defined via existing dream-lock.json")
         with open(sourcePath) as f:
           sourceDreamLock = json.load(f)
-        sourceMainPackageName = sourceDreamLock['_generic']['mainPackageName']
-        sourceMainPackageVersion = sourceDreamLock['_generic']['mainPackageVersion']
+        sourceDefaultPackage = sourceDreamLock['_generic']['defaultPackage']
+        sourceDefaultPackageVersion = sourceDreamLock['_generic']['packages'][sourceDefaultPackage]
         sourceSpec = \
-          sourceDreamLock['sources'][sourceMainPackageName][sourceMainPackageVersion]
+          sourceDreamLock['sources'][sourceDefaultPackage][sourceDefaultPackageVersion]
         sourcePath = \
           buildNixFunction("fetchers.fetchSource", source=sourceSpec, extract=True)
     return sourcePath, sourceSpec

@@ -59,9 +59,10 @@ def main():
     sources={},
     _generic={
       "subsystem": "python",
-      "mainPackageName": os.environ.get('NAME'),
-      "mainPackageVersion": os.environ.get('VERSION'),
-
+      "defaultPackage": os.environ.get('NAME'),
+      "packages": {
+        os.environ.get('NAME'): os.environ.get('VERSION'),
+      },
       "sourcesAggregatedHash": None,
     },
     _subsystem={

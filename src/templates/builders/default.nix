@@ -21,8 +21,8 @@
 
   # Attributes
   subsystemAttrs,       # attrset
-  mainPackageName,      # string
-  mainPackageVersion,   # string
+  defaultPackageName,      # string
+  defaultPackageVersion,   # string
 
   # attrset of pname -> versions,
   # where versions is a list of version strings
@@ -46,7 +46,7 @@ let
   b = builtins;
 
   # the main package
-  defaultPackage = packages."${mainPackageName}"."${mainPackageVersion}";
+  defaultPackage = packages."${defaultPackageName}"."${defaultPackageVersion}";
 
   # manage pakcages in attrset to prevent duplicated evaluation
   packages =
@@ -72,9 +72,9 @@ let
             map
               (dep: packages."${dep.name}"."${dep.version}")
               (getDependencies name version);
-          
+
           # Implement build phases
-          
+
         };
     in
       # apply packageOverrides to current derivation

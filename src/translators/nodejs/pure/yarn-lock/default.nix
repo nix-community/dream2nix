@@ -59,7 +59,7 @@
 
         inputData = parsedLock;
 
-        mainPackageName =
+        defaultPackage =
           if name != "{automatic}" then
             name
           else
@@ -68,7 +68,7 @@
               + "Please specify extra argument 'name'"
             ));
 
-        mainPackageVersion = packageJSON.version or "unknown";
+        packages."${defaultPackage}" = packageJSON.version or "unknown";
 
         subsystemName = "nodejs";
 
