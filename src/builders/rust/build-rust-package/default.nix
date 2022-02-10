@@ -130,8 +130,9 @@ in
 rec {
   packages =
     l.mapAttrs
-      (name: version: buildPackage name version)
+      (name: version:
+        { "${version}" = buildPackage name version; })
       args.packages;
 
-  defaultPackage = packages."${defaultPackageName}";
+  defaultPackage = packages."${defaultPackageName}"."${defaultPackageVersion}";
 }
