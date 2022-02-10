@@ -39,9 +39,9 @@ let
       makeSource = dep:
         let
           path = getSource dep.name dep.version;
-          isGit = (getSourceSpec dep.name dep.version).type == "git";
+          spec = getSourceSpec dep.name dep.version;
         in {
-          inherit path isGit dep;
+          inherit path spec dep;
           name = "${dep.name}-${dep.version}";
         };
       sources = l.map makeSource deps;
@@ -73,12 +73,16 @@ let
           tree="$(dirname $crateCargoTOML)"
         '';
       makeScript = source:
+        let
+          isGit = source.spec.type == "git";
+          isPath = source.spec.type == "path";
+        in
         ''
           tree="${source.path}"
-          ${l.optionalString source.isGit (findCrateSource source)}
+          ${l.optionalString isGit (findCrateSource source)}
           cp -prvd "$tree" $out/${source.name}
           chmod u+w $out/${source.name}
-          ${l.optionalString source.isGit "printf '{\"files\":{},\"package\":null}' > \"$out/${source.name}/.cargo-checksum.json\""}
+          ${l.optionalString (isGit || isPath) "printf '{\"files\":{},\"package\":null}' > \"$out/${source.name}/.cargo-checksum.json\""}
         '';
     in
     pkgs.runCommand "vendor-${pname}-${version}" {} ''
