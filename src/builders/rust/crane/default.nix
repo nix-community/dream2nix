@@ -31,17 +31,15 @@ let
 
   buildPackage = pname: version:
     let
-      override = produceDerivation pname;
-
       src = getSource pname version;
       vendorDir = vendorPackageDependencies pname version;
 
-      deps = override (crane.buildDepsOnly {
+      deps = produceDerivation "${pname}-deps" (crane.buildDepsOnly {
         inherit pname version src;
         cargoVendorDir = vendorDir;
       });
     in
-    override (crane.cargoBuild {
+    produceDerivation pname (crane.cargoBuild {
       inherit pname version src;
       cargoVendorDir = vendorDir;
       cargoArtifacts = deps;
