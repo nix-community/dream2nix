@@ -38,6 +38,8 @@ let
       deps = produceDerivation "${pname}-deps" (crane.buildDepsOnly {
         inherit pname version;
         src =
+          # This is needed because path dependencies will not contain a Cargo.lock
+          # which are common when building from a git source that is a workspace
           if (lib.isAttrs source && source ? _generic && source ? _subsytem )
               || lib.hasSuffix "dream-lock.json" source then
             src
