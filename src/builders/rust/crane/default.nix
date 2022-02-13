@@ -16,6 +16,7 @@
   getSourceSpec,
   packages,
   produceDerivation,
+  source,
 
   ...
 }@args:
@@ -35,7 +36,13 @@ let
       vendorDir = vendorPackageDependencies pname version;
 
       deps = produceDerivation "${pname}-deps" (crane.buildDepsOnly {
-        inherit pname version src;
+        inherit pname version;
+        src =
+          if (lib.isAttrs source && source ? _generic && source ? _subsytem )
+              || lib.hasSuffix "dream-lock.json" source then
+            src
+          else
+            source;
         cargoVendorDir = vendorDir;
       });
     in
