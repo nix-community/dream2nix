@@ -98,6 +98,66 @@ let
       pkgs.callPackage "${externalSources.node2nix}/nix/node-env.nix" {
         inherit nodejs;
       };
+    crane =
+      let
+        nix-std = import "${externalSources.nix-std}/default.nix";
+        importLibFile = name: import "${externalSources.crane}/lib/${name}.nix";
+        makeHook = name:
+          pkgs.makeSetupHook
+            ({ inherit name; } // (
+              lib.optionalAttrs (
+                name == "inheritCargoArtifactsHook"
+                || name == "installCargoArtifactsHook"
+              ) {
+                substitutions = {
+                  zstd = "${pkgs.pkgsBuildBuild.zstd}/bin/zstd";
+                };
+              }
+            ))
+            "${externalSources.crane}/pkgs/${name}.sh";
+
+        hooks =
+          lib.genAttrs [
+            "configureCargoCommonVarsHook"
+            "configureCargoVendoredDepsHook"
+            "inheritCargoArtifactsHook"
+            "installCargoArtifactsHook"
+            "remapSourcePathPrefixHook"
+          ] makeHook;
+      in rec {
+        # These aren't used by dream2nix
+        crateNameFromCargoToml = null;
+        vendorCargoDeps = null;
+
+        writeTOML = importLibFile "writeTOML" {
+          inherit (pkgs) writeText;
+          inherit (nix-std.serde) toTOML;
+        };
+        cleanCargoToml = importLibFile "cleanCargoToml" {
+          inherit (builtins) fromTOML;
+        };
+        findCargoFiles = importLibFile "findCargoFiles" {
+          inherit (pkgs) lib;
+        };
+        mkDummySrc = importLibFile "mkDummySrc" {
+          inherit (pkgs) writeTOML writeText runCommandLocal lib;
+          inherit cleanCargoToml findCargoFiles;
+        };
+
+        mkCargoDerivation = importLibFile "mkCargoDerivation" ({
+          inherit (pkgs) cargo stdenv lib;
+        } // hooks);
+        buildDepsOnly = importLibFile "buildDepsOnly" {
+          inherit
+            mkCargoDerivation crateNameFromCargoToml
+            vendorCargoDeps mkDummySrc;
+        };
+        cargoBuild = importLibFile "cargoBuild" {
+          inherit
+            mkCargoDerivation buildDepsOnly
+            crateNameFromCargoToml vendorCargoDeps;
+        };
+      };
   };
 
   dreamOverrides =

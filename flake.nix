@@ -15,6 +15,10 @@
 
     # required for utils.satisfiesSemver
     poetry2nix = { url = "github:nix-community/poetry2nix/1.21.0"; flake = false; };
+
+    # required for builder rust/crane
+    crane = { url = "github:ipetkov/crane"; flake = false; };
+    nix-std = { url = "github:chessai/nix-std"; flake = false; };
   };
 
   outputs = {
@@ -24,6 +28,8 @@
     nixpkgs,
     node2nix,
     poetry2nix,
+    crane,
+    nix-std,
   }@inp:
     let
 
@@ -59,6 +65,42 @@
         poetry2nix = [
           "semver.nix"
           "LICENSE"
+        ];
+        crane = [
+          "lib/buildDepsOnly.nix"
+          "lib/cargoBuild.nix"
+          "lib/mkCargoDerivation.nix"
+          "lib/mkDummySrc.nix"
+          "lib/writeTOML.nix"
+          "lib/cleanCargoToml.nix"
+          "pkgs/configureCargoCommonVarsHook.sh"
+          "pkgs/configureCargoVendoredDepsHook.sh"
+          "pkgs/inheritCargoArtifactsHook.sh"
+          "pkgs/installCargoArtifactsHook.sh"
+          "pkgs/remapSourcePathPrefixHook.sh"
+          "LICENSE"
+        ];
+        nix-std = [
+          "applicative.nix"
+          "bool.nix"
+          "default.nix"
+          "fixpoints.nix"
+          "function.nix"
+          "functor.nix"
+          "list.nix"
+          "monad.nix"
+          "monoid.nix"
+          "nonempty.nix"
+          "nullable.nix"
+          "num.nix"
+          "optional.nix"
+          "regex.nix"
+          "semigroup.nix"
+          "serde.nix"
+          "set.nix"
+          "string.nix"
+          "types.nix"
+          "version.nix"
         ];
       };
 

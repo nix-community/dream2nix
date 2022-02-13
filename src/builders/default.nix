@@ -21,8 +21,10 @@
   };
   
   rust = rec {
-    default = buildRustPackage;
+    default = crane;
 
     buildRustPackage = callPackageDream ./rust/build-rust-package {};
+
+    crane = callPackageDream ./rust/crane {};
   };
 }
