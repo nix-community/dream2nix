@@ -1,5 +1,21 @@
 {
   "nodes": {
+    "crane": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1644785799,
+        "narHash": "sha256-VpAJO1L0XeBvtCuNGK4IDKp6ENHIpTrlaZT7yfBCvwo=",
+        "owner": "ipetkov",
+        "repo": "crane",
+        "rev": "fc7a94f841347c88f2cb44217b2a3faa93e2a0b2",
+        "type": "github"
+      },
+      "original": {
+        "owner": "ipetkov",
+        "repo": "crane",
+        "type": "github"
+      }
+    },
     "gomod2nix": {
       "flake": false,
       "locked": {
@@ -81,6 +97,7 @@
     },
     "root": {
       "inputs": {
+        "crane": "crane",
         "gomod2nix": "gomod2nix",
         "mach-nix": "mach-nix",
         "nixpkgs": "nixpkgs",
