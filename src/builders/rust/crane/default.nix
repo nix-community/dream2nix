@@ -24,8 +24,9 @@
 let
   l = lib // builtins;
 
-  vendorPackageDependencies = import ../vendor.nix {
-    inherit lib pkgs getSource getSourceSpec getDependencies getCyclicDependencies;
+  vendoring = import ../vendor.nix {
+    inherit lib pkgs getSource getSourceSpec
+    getDependencies getCyclicDependencies subsystemAttrs;
   };
 
   crane = externals.crane;
@@ -33,7 +34,7 @@ let
   buildPackage = pname: version:
     let
       src = getSource pname version;
-      vendorDir = vendorPackageDependencies pname version;
+      vendorDir = vendoring.vendorPackageDependencies pname version;
 
       deps = produceDerivation "${pname}-deps" (crane.buildDepsOnly {
         inherit pname version;
@@ -46,6 +47,9 @@ let
           else
             source;
         cargoVendorDir = vendorDir;
+        preBuild = ''
+          ${vendoring.writeGitVendorEntries}
+        '';
       });
     in
     produceDerivation pname (crane.cargoBuild {
