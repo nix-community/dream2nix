@@ -56,6 +56,9 @@ let
       inherit pname version src;
       cargoVendorDir = vendorDir;
       cargoArtifacts = deps;
+      preBuild = ''
+        ${vendoring.writeGitVendorEntries "nix-sources"}
+      '';
     });
 in
 rec {
