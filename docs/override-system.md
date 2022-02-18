@@ -15,7 +15,7 @@ Each subsytem in dream2nix like `nodejs` or `python` manages its overrides in a 
 
 dream2nix supports packaging different versions of the same package within one repository. Therefore conditions are used to make overrides apply only to certain package versions.
 
-Currently a collection of overrides is maintained at https://github.com/DavHau/dreampkgs
+Currently a collection of overrides is maintained at [dream2nix/overrides](https://github.com/nix-community/dream2nix/tree/main/overrides)
 
 Example for nodejs overrides:
 ```nix
