@@ -102,7 +102,7 @@ let
       let
         importLibFile = name: import "${externalSources.crane}/lib/${name}.nix";
 
-        makeHook = name: attrs:
+        makeHook = attrs: name:
           pkgs.makeSetupHook
             ({ inherit name; } // attrs)
             "${externalSources.crane}/pkgs/${name}.sh";
