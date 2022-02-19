@@ -67,6 +67,7 @@
         crane = [
           "lib/buildDepsOnly.nix"
           "lib/cargoBuild.nix"
+          "lib/buildPackage.nix"
           "lib/mkCargoDerivation.nix"
           "lib/mkDummySrc.nix"
           "lib/writeTOML.nix"

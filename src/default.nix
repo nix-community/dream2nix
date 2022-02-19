@@ -112,6 +112,15 @@ let
                   zstd = "${pkgs.pkgsBuildBuild.zstd}/bin/zstd";
                 };
               }
+            ) // (
+              lib.optionalAttrs (
+                name == "installFromCargoBuildLogHook"
+              ) {
+                substitutions = {
+                  cargo = "${pkgs.pkgsBuildBuild.cargo}/bin/cargo";
+                  jq = "${pkgs.pkgsBuildBuild.jq}/bin/jq";
+                };
+              }
             ))
             "${externalSources.crane}/pkgs/${name}.sh";
 
@@ -121,6 +130,7 @@ let
             "configureCargoVendoredDepsHook"
             "inheritCargoArtifactsHook"
             "installCargoArtifactsHook"
+            "installFromCargoBuildLogHook"
             "remapSourcePathPrefixHook"
           ] makeHook;
       in rec {
@@ -155,6 +165,11 @@ let
           inherit
             mkCargoDerivation buildDepsOnly
             crateNameFromCargoToml vendorCargoDeps;
+        };
+        buildPackage = importLibFile "buildPackage" {
+          inherit (pkgs) lib;
+          inherit (hooks) installFromCargoBuildLogHook;
+          inherit cargoBuild;
         };
       };
   };

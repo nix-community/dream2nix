@@ -55,7 +55,7 @@ let
             source;
       });
     in
-    produceDerivation pname (crane.cargoBuild {
+    produceDerivation pname (crane.buildPackage {
       inherit pname version src cargoVendorDir preBuild;
       cargoArtifacts = deps;
     });
