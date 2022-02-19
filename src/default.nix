@@ -100,7 +100,6 @@ let
       };
     crane =
       let
-        nix-std = import "${externalSources.nix-std}/default.nix";
         importLibFile = name: import "${externalSources.crane}/lib/${name}.nix";
         makeHook = name:
           pkgs.makeSetupHook
@@ -131,7 +130,7 @@ let
 
         writeTOML = importLibFile "writeTOML" {
           inherit (pkgs) writeText;
-          inherit (nix-std.serde) toTOML;
+          inherit (utils) toTOML;
         };
         cleanCargoToml = importLibFile "cleanCargoToml" {
           inherit (builtins) fromTOML;

@@ -65,6 +65,8 @@ rec {
 
   toDrv = path: runCommand "some-drv" {} "cp -r ${path} $out";
 
+  toTOML = import ./toTOML.nix { inherit lib; };
+
   # hash the contents of a path via `nix hash path`
   hashPath = algo: path:
     let

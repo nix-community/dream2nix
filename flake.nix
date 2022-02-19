@@ -18,7 +18,6 @@
 
     # required for builder rust/crane
     crane = { url = "github:ipetkov/crane"; flake = false; };
-    nix-std = { url = "github:chessai/nix-std"; flake = false; };
   };
 
   outputs = {
@@ -29,7 +28,6 @@
     node2nix,
     poetry2nix,
     crane,
-    nix-std,
   }@inp:
     let
 
@@ -79,28 +77,6 @@
           "pkgs/installCargoArtifactsHook.sh"
           "pkgs/remapSourcePathPrefixHook.sh"
           "LICENSE"
-        ];
-        nix-std = [
-          "applicative.nix"
-          "bool.nix"
-          "default.nix"
-          "fixpoints.nix"
-          "function.nix"
-          "functor.nix"
-          "list.nix"
-          "monad.nix"
-          "monoid.nix"
-          "nonempty.nix"
-          "nullable.nix"
-          "num.nix"
-          "optional.nix"
-          "regex.nix"
-          "semigroup.nix"
-          "serde.nix"
-          "set.nix"
-          "string.nix"
-          "types.nix"
-          "version.nix"
         ];
       };
 
