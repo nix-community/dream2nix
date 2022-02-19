@@ -101,38 +101,34 @@ let
     crane =
       let
         importLibFile = name: import "${externalSources.crane}/lib/${name}.nix";
-        makeHook = name:
-          pkgs.makeSetupHook
-            ({ inherit name; } // (
-              lib.optionalAttrs (
-                name == "inheritCargoArtifactsHook"
-                || name == "installCargoArtifactsHook"
-              ) {
-                substitutions = {
-                  zstd = "${pkgs.pkgsBuildBuild.zstd}/bin/zstd";
-                };
-              }
-            ) // (
-              lib.optionalAttrs (
-                name == "installFromCargoBuildLogHook"
-              ) {
-                substitutions = {
-                  cargo = "${pkgs.pkgsBuildBuild.cargo}/bin/cargo";
-                  jq = "${pkgs.pkgsBuildBuild.jq}/bin/jq";
-                };
-              }
-            ))
-            "${externalSources.crane}/pkgs/${name}.sh";
 
-        hooks =
-          lib.genAttrs [
+        makeHook = name: attrs:
+          pkgs.makeSetupHook
+            ({ inherit name; } // attrs)
+            "${externalSources.crane}/pkgs/${name}.sh";
+        genHooks = names: attrs: lib.genAttrs names (makeHook attrs);
+
+        otherHooks =
+          genHooks [
             "configureCargoCommonVarsHook"
             "configureCargoVendoredDepsHook"
+            "remapSourcePathPrefixHook"
+          ] { };
+        installHooks =
+          genHooks [
             "inheritCargoArtifactsHook"
             "installCargoArtifactsHook"
-            "installFromCargoBuildLogHook"
-            "remapSourcePathPrefixHook"
-          ] makeHook;
+          ] {
+            substitutions = {
+              zstd = "${pkgs.pkgsBuildBuild.zstd}/bin/zstd";
+            };
+          };
+        installLogHook = genHooks ["installFromCargoBuildLogHook"] {
+          substitutions = {
+            cargo = "${pkgs.pkgsBuildBuild.cargo}/bin/cargo";
+            jq = "${pkgs.pkgsBuildBuild.jq}/bin/jq";
+          };
+        };
       in rec {
         # These aren't used by dream2nix
         crateNameFromCargoToml = null;
@@ -155,7 +151,7 @@ let
 
         mkCargoDerivation = importLibFile "mkCargoDerivation" ({
           inherit (pkgs) cargo stdenv lib;
-        } // hooks);
+        } // installHooks // otherHooks);
         buildDepsOnly = importLibFile "buildDepsOnly" {
           inherit
             mkCargoDerivation crateNameFromCargoToml
@@ -168,7 +164,7 @@ let
         };
         buildPackage = importLibFile "buildPackage" {
           inherit (pkgs) lib;
-          inherit (hooks) installFromCargoBuildLogHook;
+          inherit (installLogHook) installFromCargoBuildLogHook;
           inherit cargoBuild;
         };
       };
