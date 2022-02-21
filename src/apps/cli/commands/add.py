@@ -540,7 +540,7 @@ class AddCommand(Command):
               print(f"Leave empty for default ({arg['default']})")
             while True:
               specified_extra_args[arg_name] = self.ask(f"{arg_name}:", arg.get('default'))
-              if specified_extra_args[arg_name]:
+              if specified_extra_args[arg_name] or not arg.get('default'):
                 break
     return specified_extra_args
 
