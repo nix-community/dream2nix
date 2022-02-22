@@ -1,5 +1,6 @@
 import json
 import os
+import pathlib
 import re
 import shutil
 import subprocess as sp
@@ -393,16 +394,13 @@ class AddCommand(Command):
       output = f"{packages_root}/{main_package_dir_name}"
     # collect files to create
     filesToCreate = ['dream-lock.json']
-    if not os.path.isdir(output):
-      os.mkdir(output)
+    # create output dir
+    pathlib.Path(output).mkdir(parents=True, exist_ok=True)
     existingFiles = set(os.listdir(output))
     if not self.option('no-default-nix') \
-            and not 'default.nix' in existingFiles \
-            and not config['packagesDir']:
-      if self.confirm(
-              'Create a default.nix for debugging purposes',
-              default=True):
-        filesToCreate.append('default.nix')
+        and not 'default.nix' in existingFiles \
+        and not config['packagesDir']:
+      filesToCreate.append('default.nix')
     # overwrite existing files only if --force is set
     if self.option('force'):
       for f in filesToCreate:
@@ -423,7 +421,7 @@ class AddCommand(Command):
     return filesToCreate, output
 
   def define_attribute_name(self, defaultPackage, existing_names):
-    # only respect --atttribute-name option for main package
+    # only respect --attribute-name option for main package
     if not existing_names:
       attributeName = self.option('attribute-name')
       if attributeName:
@@ -435,12 +433,9 @@ class AddCommand(Command):
       attributeName = attributeName + '-subpackage'
 
     # verify / change main package dir name
-    print(f"Current package attribute name is: {attributeName}")
-    new_name = self.ask(
-      "Specify new attribute name or leave empty to keep current:"
-    )
-    if new_name:
-      attributeName = new_name
+    print(
+      f"Current package attribute name is: {attributeName}"
+      " (use --attribute-name to override)")
     return attributeName
 
   def run_translate(self, sourcePath, specified_extra_args, translator):
@@ -506,42 +501,13 @@ class AddCommand(Command):
     specified_extra_args = \
       {k: (bool(v) if translator['extraArgs'][k]['type'] == 'flag' else v) \
        for k, v in specified_extra_args.items()}
-    # on non-interactive session, assume defaults for unspecified extra args
-    if not self.io.is_interactive():
-      specified_extra_args.update(
-        {n: (True if v['type'] == 'flag' else v['default']) \
-         for n, v in translator['extraArgs'].items() \
-         if n not in specified_extra_args and 'default' in v}
-      )
-    unspecified_extra_args = \
-      {n: v for n, v in translator['extraArgs'].items() \
-       if n not in specified_extra_args}
-    # raise error if any extra arg unspecified in non-interactive session
-    if unspecified_extra_args:
-      if not self.io.is_interactive():
-        print(
-          f"Please specify the following extra arguments required by translator '{translator['name']}' :\n" \
-          ', '.join(unspecified_extra_args.keys()),
-          file=sys.stderr
-        )
-        exit(1)
-      # interactively retrieve answers for unspecified extra arguments
-      else:
-        print(f"\nThe translator '{translator['name']}' requires additional options")
-        for arg_name, arg in unspecified_extra_args.items():
-          print('')
-          if arg['type'] == 'flag':
-            print(f"Please specify '{arg_name}'")
-            specified_extra_args[arg_name] = self.confirm(f"{arg['description']}:", False)
-          else:
-            print(f"Please specify '{arg_name}': {arg['description']}")
-            print(f"Example values: " + ', '.join(arg['examples']))
-            if 'default' in arg:
-              print(f"Leave empty for default ({arg['default']})")
-            while True:
-              specified_extra_args[arg_name] = self.ask(f"{arg_name}:", arg.get('default'))
-              if specified_extra_args[arg_name]:
-                break
+
+    # assume defaults for unspecified extra args
+    specified_extra_args.update(
+      {n: (True if v['type'] == 'flag' else v['default']) \
+        for n, v in translator['extraArgs'].items() \
+        if n not in specified_extra_args}
+    )
     return specified_extra_args
 
   def select_translator(self, translators):

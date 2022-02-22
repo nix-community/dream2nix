@@ -211,6 +211,8 @@ rec {
       []
       ''
         ${apps.cli.program} add ${source} \
+          --force \
+          --no-default-nix \
           --translator ${translator} \
           --packages-root $WORKDIR/${packagesDir} \
           ${lib.concatStringsSep " \\\n"
