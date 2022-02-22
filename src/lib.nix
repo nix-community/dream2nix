@@ -84,30 +84,17 @@ let
 
       allPkgs = makeNixpkgs pkgs systems;
 
-      forAllSystems = f:
-        lib.mapAttrs f allPkgs;
+      forAllSystems = f: lib.mapAttrs f allPkgs;
 
       dream2nixFor = forAllSystems (dream2nixForSystem config);
     in
       {
-        riseAndShine = riseAndShineArgs:
-          let
-            allBuilderOutputs =
-              lib.mapAttrs
-                (system: pkgs:
-                  dream2nixFor."${system}".riseAndShine riseAndShineArgs)
-                allPkgs;
 
-            flakifiedOutputs =
-              lib.mapAttrsToList
-                (system: outputs: flakifyBuilderOutputs system outputs)
-                allBuilderOutputs;
-
-          in
-            b.foldl'
-              (allOutputs: output: lib.recursiveUpdate allOutputs output)
-              {}
-              flakifiedOutputs;
+        riseAndShine = rArgs: riseAndShineFunc
+          (
+            { inherit config pkgs systems; }
+            // rArgs
+          );
 
         apps =
           forAllSystems
@@ -121,15 +108,20 @@ let
 
       };
 
-  riseAndShine =
+  riseAndShineFunc =
     {
       pkgs ? null,
+      source,
       systems ? [],
+      translator ? null,
+      translatorArgs ? {},
       ...
     }@args:
     let
 
-      argsForward = b.removeAttrs args [ "pkgs" "systems" ];
+      config = args.config or ((import ./utils/config.nix).loadConfig {});
+
+      argsForward = b.removeAttrs args [ "config" "pkgs" "systems" ];
 
       allPkgs = makeNixpkgs pkgs systems;
 
@@ -139,21 +131,64 @@ let
       allBuilderOutputs =
         lib.mapAttrs
           (system: pkgs:
-            dream2nixFor."${system}".riseAndShine argsForward)
+            let
+              dream2nix = dream2nixFor."${system}";
+
+              translatorFound = dream2nix.translators.findOneTranslator {
+                inherit source;
+                translatorName = args.translator or null;
+              };
+
+              result = translator:
+                dream2nix.riseAndShine (argsForward // {
+                  # TODO: this triggers the translator finding routine a second time
+                  translator = translatorFound.name;
+                });
+            in
+              if b.elem translatorFound.type [ "pure" "ifd" ] then
+                result translatorFound
+              else
+                b.trace ''
+                  Some information is missing to build this project reproducibly.
+                  Please execute nix run .#resolve to resolve impurities.
+                ''
+                {})
+
           allPkgs;
 
-      flakifiedOutputs =
+      flakifiedOutputsList =
         lib.mapAttrsToList
           (system: outputs: flakifyBuilderOutputs system outputs)
           allBuilderOutputs;
 
+      flakeOutputs =
+        b.foldl'
+          (allOutputs: output: lib.recursiveUpdate allOutputs output)
+          {}
+          flakifiedOutputsList;
+
+      forAllSystems = f: b.mapAttrs f allPkgs;
+
     in
-      b.foldl'
-        (allOutputs: output: lib.recursiveUpdate allOutputs output)
-        {}
-        flakifiedOutputs;
+      lib.recursiveUpdate
+        flakeOutputs
+        {
+          apps = forAllSystems (system: pkgs: {
+            resolve.type = "app";
+            resolve.program =
+              let
+                utils = (dream2nixFor."${system}".utils);
+              in
+                b.toString
+                  (utils.makePackageLockScript {
+                    inherit source translator translatorArgs;
+                    packagesDir = config.packagesDir;
+                  });
+          });
+        };
 
 in
 {
-  inherit init riseAndShine;
+  inherit init;
+  riseAndShine = riseAndShineFunc;
 }

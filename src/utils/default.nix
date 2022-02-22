@@ -10,6 +10,7 @@
   writeScript,
 
   # dream2nix inputs
+  apps,
   callPackageDream,
   externalSources,
   ...
@@ -128,6 +129,7 @@ rec {
 
     export PATH="${lib.makeBinPath availablePrograms}"
     export NIX_PATH=nixpkgs=${pkgs.path}
+    export WORKDIR="$PWD"
 
     tmpdir=$(${coreutils}/bin/mktemp -d)
     cd $tmpdir
@@ -192,8 +194,28 @@ rec {
 
   satisfiesSemver = poetry2nixSemver.satisfiesSemver;
 
-  # like nixpkgs recursiveUpdateUntil, but the depth of the
+  # like nixpkgs recursiveUpdateUntil, but with the depth as a stop condition
   recursiveUpdateUntilDepth = depth: lhs: rhs:
     lib.recursiveUpdateUntil (path: l: r: (b.length path) > depth) lhs rhs;
 
+
+  # a script that produces and dumps the dream-lock json for a given source
+  makePackageLockScript =
+    {
+      packagesDir,
+      source,
+      translator,
+      translatorArgs,
+    }:
+    writePureShellScript
+      []
+      ''
+        ${apps.cli.program} add ${source} \
+          --translator ${translator} \
+          --packages-root $WORKDIR/${packagesDir} \
+          ${lib.concatStringsSep " \\\n"
+            (lib.mapAttrsToList
+              (key: val: "--arg ${key}=${val}")
+              translatorArgs)}
+      '';
 }

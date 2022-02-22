@@ -186,6 +186,7 @@ let
   makeDreamLockForSource =
     {
       source,
+      translator ? null,
       translatorArgs ? {},
     }@args:
     let
@@ -201,17 +202,23 @@ let
 
       source = fetchers.fetchSource { source = sourceSpec; };
 
-      translatorsForSource = translators.translatorsForInput {
-        inputFiles = [];
-        inputDirectories = [ source ];
-      };
-
       t =
         let
-          trans = b.filter (t: t.compatible && b.elem t.type [ "pure" "ifd" ]) translatorsForSource;
+          translator = translators.findOneTranslator {
+            inherit source;
+            translatorName = args.translator or null;
+          };
+
         in
-          if trans != [] then lib.elemAt trans 0 else
-            throw "Could not find a suitable translator for input";
+          if b.elem translator.type [ "pure" "ifd" ] then
+            translator
+          else
+            throw ''
+              All comaptible translators are impure and therefore require
+              pre-processing the input before evaluation.
+              Use the CLI to add this package:
+                nix run .# -- add ...
+            '';
 
       dreamLock' = translators.translators."${t.subsystem}"."${t.type}"."${t.name}".translate
         (translatorArgs // {
@@ -359,6 +366,7 @@ let
       sourceOverrides ? oldSources: {},
       packageOverrides ? {},
       builderArgs ? {},
+      translator ? null,
       translatorArgs ? {},
     }@args:
 
@@ -369,8 +377,9 @@ let
         if ( lib.isAttrs args.source && args.source ? _generic && args.source ? _subsytem )
             || lib.hasSuffix "dream-lock.json" source then
           args.source
+        # input is a source tree -> generate the dream-lock
         else
-          makeDreamLockForSource { inherit source translatorArgs; };
+          makeDreamLockForSource { inherit source translator translatorArgs; };
 
       # parse dreamLock
       dreamLockLoaded = utils.readDreamLock { dreamLock = dreamLock'; };

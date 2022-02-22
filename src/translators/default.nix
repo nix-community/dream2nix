@@ -92,8 +92,23 @@ let
     )
   );
 
-  # flat list of all translators
-  translatorsList = lib.collect (v: v ? translateBin) translators;
+  # flat list of all translators sorted by priority (pure translators first)
+  translatorsList =
+    let
+      list = lib.collect (v: v ? translateBin) translators;
+      prio = translator:
+        if translator.type == "pure" then
+          0
+        else if translator.type == "ifd" then
+          1
+        else if translator.type == "impure" then
+          2
+        else
+          3;
+    in
+      b.sort
+        (a: b: (prio a) < (prio b))
+        list;
 
   # returns the list of translators including their special args
   # and adds a flag `compatible` to each translator indicating
@@ -170,9 +185,50 @@ let
       )
       extraArgsDef;
 
+
+  # return one compatible translator or throw error
+  findOneTranslator =
+    {
+      source,
+      translatorName ? null,
+    }@args:
+    let
+      translatorsForSource = translatorsForInput {
+        inputFiles = [];
+        inputDirectories = [ source ];
+      };
+
+      nameFilter =
+        if translatorName != null then
+          (translator: translator.name == translatorName)
+        else
+          (translator: true);
+
+      compatibleTranslators =
+        let
+          result =
+            b.filter
+              (t: t.compatible)
+              translatorsForSource;
+        in
+          if result == [] then
+            throw "Could not find a compatible translator for input"
+          else
+            result;
+
+      translator =
+        lib.findFirst
+          nameFilter
+          (throw ''Specified translator ${translatorName} not found or incompatible'')
+          compatibleTranslators;
+
+    in
+      translator;
+
 in
 {
   inherit
+    findOneTranslator
     translators
     translatorsForInput
     translatorsForInputRecursive
