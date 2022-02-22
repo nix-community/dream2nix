@@ -63,6 +63,7 @@ class AddCommand(Command):
     ),
     option("force", None, "override existing files", flag=True),
     option("no-default-nix", None, "create default.nix", flag=True),
+    option("invalidation-hash", None, "invalidation hash to attach", flag=False),
   ]
 
   def handle(self):
@@ -383,6 +384,7 @@ class AddCommand(Command):
       ) + [
         f"--arg {n}={v}" for n, v in specified_extra_args.items()
       ])
+    lock['_generic']['invalidationHash'] = self.option('invalidation-hash')
 
   def calc_outputs(self, main_package_dir_name, packages_root):
     if self.option('target'):
@@ -504,7 +506,7 @@ class AddCommand(Command):
 
     # assume defaults for unspecified extra args
     specified_extra_args.update(
-      {n: (True if v['type'] == 'flag' else v['default']) \
+      {n: (False if v['type'] == 'flag' else v['default']) \
         for n, v in translator['extraArgs'].items() \
         if n not in specified_extra_args}
     )

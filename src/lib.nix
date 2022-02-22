@@ -110,6 +110,7 @@ let
 
   riseAndShineFunc =
     {
+      pname,
       pkgs ? null,
       source,
       systems ? [],
@@ -121,12 +122,12 @@ let
 
       config = args.config or ((import ./utils/config.nix).loadConfig {});
 
-      argsForward = b.removeAttrs args [ "config" "pkgs" "systems" ];
+      argsForward = b.removeAttrs args [ "config" "pname" "pkgs" "systems" ];
 
       allPkgs = makeNixpkgs pkgs systems;
 
       dream2nixFor =
-        lib.mapAttrs (dream2nixForSystem {}) allPkgs;
+        lib.mapAttrs (dream2nixForSystem config) allPkgs;
 
       allBuilderOutputs =
         lib.mapAttrs
@@ -139,18 +140,65 @@ let
                 translatorName = args.translator or null;
               };
 
-              result = translator:
-                dream2nix.riseAndShine (argsForward // {
+              invalidationHash = dream2nix.utils.calcInvalidationHash {
+                inherit source translatorArgs;
+                translator = translatorFound.name;
+              };
+
+              dreamLockJsonPath = with config;
+                "${projectRoot}/${packagesDir}/${pname}/dream-lock.json";
+
+              dreamLock = dream2nix.utils.readDreamLock {
+                dreamLock = dreamLockJsonPath;
+              };
+
+              dreamLockExistsAndValid =
+                b.pathExists dreamLockJsonPath
+                && dreamLock.lock._generic.invalidationHash or "" == invalidationHash;
+
+              result = translator: args:
+                dream2nix.riseAndShine (argsForward // args // {
                   # TODO: this triggers the translator finding routine a second time
                   translator = translatorFound.name;
                 });
             in
-              if b.elem translatorFound.type [ "pure" "ifd" ] then
-                result translatorFound
-              else
+
+              if dreamLockExistsAndValid then
+                # we need to override the source here as it is coming from
+                # a flake input
+                let
+                  defaultPackage = dreamLock.lock._generic.defaultPackage;
+                  defaultPackageVersion =
+                    dreamLock.lock._generic.packages."${defaultPackage}";
+                in
+                  result translatorFound {
+                    source = dreamLockJsonPath;
+                    sourceOverrides = oldSources: {
+                      "${defaultPackage}"."${defaultPackageVersion}" =
+                        args.source;
+                    };
+                  }
+
+              else if b.elem translatorFound.type [ "pure" "ifd" ] then
+                # warn the user about potentially slow on-the-fly evaluation
                 b.trace ''
-                  Some information is missing to build this project reproducibly.
-                  Please execute nix run .#resolve to resolve impurities.
+                  ${"\n"}
+                  The dream-lock.json for input '${pname}' doesn't exist or is outdated.
+                  ...Falling back to on-the-fly evaluation (possibly slow).
+                  To speed up future evalutations run once:
+                    nix run .#resolve
+                ''
+                result translatorFound {}
+
+              else
+                # print error because impure translation is required first.
+                # continue the evaluation anyways, as otherwise we won't have
+                # the `resolve` app
+                b.trace ''
+                  ${"\n"}
+                  ERROR:
+                    Some information is missing to build this project reproducibly.
+                    Please execute nix run .#resolve to resolve all impurities.
                 ''
                 {})
 
@@ -178,11 +226,20 @@ let
             resolve.program =
               let
                 utils = (dream2nixFor."${system}".utils);
+
+                # TODO: Too many calls to findOneTranslator.
+                #   -> make findOneTranslator system independent
+                translatorFound =
+                  dream2nixFor."${system}".translators.findOneTranslator {
+                    inherit source;
+                    translatorName = args.translator or null;
+                  };
               in
                 b.toString
                   (utils.makePackageLockScript {
-                    inherit source translator translatorArgs;
+                    inherit source translatorArgs;
                     packagesDir = config.packagesDir;
+                    translator = translatorFound.name;
                   });
           });
         };

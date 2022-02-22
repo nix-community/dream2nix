@@ -15,9 +15,9 @@
 
   # default to empty dream2nix config
   config ?
-    # if called via CLI, load cnfig via env
-    if builtins ? getEnv && builtins.getEnv "d2nConfigFile" != "" then
-      builtins.toPath (builtins.getEnv "d2nConfigFile")
+    # if called via CLI, load config via env
+    if builtins ? getEnv && builtins.getEnv "dream2nixConfig" != "" then
+      builtins.toPath (builtins.getEnv "dream2nixConfig")
     # load from default directory
     else
       {},
