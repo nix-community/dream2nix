@@ -23,7 +23,7 @@ let
       defaults =  {
         overridesDirs = [];
         packagesDir = "./packages";
-        projectRoot = throw "projectRoot not specified in dream2nix config";
+        projectRoot = "./.";
         repoName = null;
       };
     in
