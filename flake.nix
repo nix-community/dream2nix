@@ -1,5 +1,5 @@
 {
-  description = "dream2nix: A generic framework for 2nix tools";
+  description = "A framework for 2nix tools";
 
   inputs = {
     nixpkgs.url = "nixpkgs/nixos-unstable";
@@ -76,7 +76,7 @@
       });
 
       # An interface to access files of external projects.
-      # This implementation aceeses the flake inputs directly,
+      # This implementation accesses the flake inputs directly,
       # but if dream2nix is used without flakes, it defaults
       # to another implementation of that function which
       # uses the installed external paths instead (see default.nix)
@@ -117,9 +117,9 @@
         // (forAllSystems (system: pkgs:
           import ./src {
             inherit
+              externalPaths
               externalSources
               lib
-              overridesDirs
               pkgs
             ;
           }
