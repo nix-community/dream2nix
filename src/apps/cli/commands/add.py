@@ -269,11 +269,6 @@ class AddCommand(Command):
       packages_root = config['packagesDir']
     else:
       packages_root = './.'
-    if not os.path.isdir(packages_root):
-      print(
-        f"Packages direcotry {packages_root} does not exist. Please create.",
-        file=sys.stderr,
-      )
     return packages_root
 
   def format_lock_str(self, lock):

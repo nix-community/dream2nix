@@ -209,7 +209,7 @@ rec {
       ${source}
       ${translator}
       ${b.toString
-        (lib.mapAttrsToList (k: v: "${k}=${v}") translatorArgs)}
+        (lib.mapAttrsToList (k: v: "${k}=${b.toString v}") translatorArgs)}
     '';
 
   # a script that produces and dumps the dream-lock json for a given source
@@ -234,7 +234,7 @@ rec {
           --packages-root $WORKDIR/${packagesDir} \
           ${lib.concatStringsSep " \\\n"
             (lib.mapAttrsToList
-              (key: val: "--arg ${key}=${val}")
+              (key: val: "--arg ${key}=${b.toString val}")
               translatorArgs)}
       '';
 }
