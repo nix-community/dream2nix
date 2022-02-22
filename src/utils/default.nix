@@ -10,6 +10,7 @@
   writeScript,
 
   # dream2nix inputs
+  apps,
   callPackageDream,
   externalSources,
   ...
@@ -128,6 +129,7 @@ rec {
 
     export PATH="${lib.makeBinPath availablePrograms}"
     export NIX_PATH=nixpkgs=${pkgs.path}
+    export WORKDIR="$PWD"
 
     tmpdir=$(${coreutils}/bin/mktemp -d)
     cd $tmpdir
@@ -192,8 +194,47 @@ rec {
 
   satisfiesSemver = poetry2nixSemver.satisfiesSemver;
 
-  # like nixpkgs recursiveUpdateUntil, but the depth of the
+  # like nixpkgs recursiveUpdateUntil, but with the depth as a stop condition
   recursiveUpdateUntilDepth = depth: lhs: rhs:
     lib.recursiveUpdateUntil (path: l: r: (b.length path) > depth) lhs rhs;
 
+  # calculate an invalidation hash for given source translation inputs
+  calcInvalidationHash =
+    {
+      source,
+      translator,
+      translatorArgs,
+    }:
+    b.hashString "sha256" ''
+      ${source}
+      ${translator}
+      ${b.toString
+        (lib.mapAttrsToList (k: v: "${k}=${b.toString v}") translatorArgs)}
+    '';
+
+  # a script that produces and dumps the dream-lock json for a given source
+  makePackageLockScript =
+    {
+      packagesDir,
+      source,
+      translator,
+      translatorArgs,
+    }:
+    writePureShellScript
+      []
+      ''
+        cd $WORKDIR
+        ${apps.cli.program} add ${source} \
+          --force \
+          --no-default-nix \
+          --translator ${translator} \
+          --invalidation-hash ${calcInvalidationHash {
+            inherit source translator translatorArgs;
+          }} \
+          --packages-root $WORKDIR/${packagesDir} \
+          ${lib.concatStringsSep " \\\n"
+            (lib.mapAttrsToList
+              (key: val: "--arg ${key}=${b.toString val}")
+              translatorArgs)}
+      '';
 }

@@ -15,9 +15,9 @@
 
   # default to empty dream2nix config
   config ?
-    # if called via CLI, load cnfig via env
-    if builtins ? getEnv && builtins.getEnv "d2nConfigFile" != "" then
-      builtins.toPath (builtins.getEnv "d2nConfigFile")
+    # if called via CLI, load config via env
+    if builtins ? getEnv && builtins.getEnv "dream2nixConfig" != "" then
+      builtins.toPath (builtins.getEnv "dream2nixConfig")
     # load from default directory
     else
       {},
@@ -186,6 +186,7 @@ let
   makeDreamLockForSource =
     {
       source,
+      translator ? null,
       translatorArgs ? {},
     }@args:
     let
@@ -201,17 +202,23 @@ let
 
       source = fetchers.fetchSource { source = sourceSpec; };
 
-      translatorsForSource = translators.translatorsForInput {
-        inputFiles = [];
-        inputDirectories = [ source ];
-      };
-
       t =
         let
-          trans = b.filter (t: t.compatible && b.elem t.type [ "pure" "ifd" ]) translatorsForSource;
+          translator = translators.findOneTranslator {
+            inherit source;
+            translatorName = args.translator or null;
+          };
+
         in
-          if trans != [] then lib.elemAt trans 0 else
-            throw "Could not find a suitable translator for input";
+          if b.elem translator.type [ "pure" "ifd" ] then
+            translator
+          else
+            throw ''
+              All comaptible translators are impure and therefore require
+              pre-processing the input before evaluation.
+              Use the CLI to add this package:
+                nix run .# -- add ...
+            '';
 
       dreamLock' = translators.translators."${t.subsystem}"."${t.type}"."${t.name}".translate
         (translatorArgs // {
@@ -349,8 +356,12 @@ let
         formattedOutputs;
 
 
+  riseAndShine = throw ''
+    Use makeOutputs instead of riseAndShine.
+  '';
+
   # produce outputs for a dream-lock or a source
-  riseAndShine =
+  makeOutputs =
     {
       source,  # source tree or dream-lock
       builder ? null,
@@ -359,6 +370,7 @@ let
       sourceOverrides ? oldSources: {},
       packageOverrides ? {},
       builderArgs ? {},
+      translator ? null,
       translatorArgs ? {},
     }@args:
 
@@ -369,8 +381,9 @@ let
         if ( lib.isAttrs args.source && args.source ? _generic && args.source ? _subsytem )
             || lib.hasSuffix "dream-lock.json" source then
           args.source
+        # input is a source tree -> generate the dream-lock
         else
-          makeDreamLockForSource { inherit source translatorArgs; };
+          makeDreamLockForSource { inherit source translator translatorArgs; };
 
       # parse dreamLock
       dreamLockLoaded = utils.readDreamLock { dreamLock = dreamLock'; };
@@ -381,7 +394,7 @@ let
       builderOutputsSub =
         b.mapAttrs
           (dirName: dreamLock:
-            riseAndShine
+            makeOutputs
               (args // {source = dreamLock.lock; }))
           dreamLockInterface.subDreamLocks;
 
@@ -448,6 +461,7 @@ in
     dream2nixWithExternals
     fetchers
     fetchSources
+    makeOutputs
     riseAndShine
     translators
     updaters

@@ -154,6 +154,7 @@
       "type": "object",
       "properties": {
         "defaultPackage": { "type": ["string", "null"] },
+        "invalidationHash": { "type": ["string", "null"] },
         "packages": { "type": "object" },
         "sourcesAggregatedHash":  { "type": ["string", "null"] },
         "subsystem": { "type": "string" },

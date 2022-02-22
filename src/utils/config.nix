@@ -22,8 +22,9 @@ let
       config = loadAttrs configInput;
       defaults =  {
         overridesDirs = [];
-        packagesDir = null;
-        repoName = "this repo";
+        packagesDir = "./packages";
+        projectRoot = "./.";
+        repoName = null;
       };
     in
       defaults // config;
