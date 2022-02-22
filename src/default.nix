@@ -356,8 +356,12 @@ let
         formattedOutputs;
 
 
+  riseAndShine = throw ''
+    Use makeOutputs instead of riseAndShine.
+  '';
+
   # produce outputs for a dream-lock or a source
-  riseAndShine =
+  makeOutputs =
     {
       source,  # source tree or dream-lock
       builder ? null,
@@ -390,7 +394,7 @@ let
       builderOutputsSub =
         b.mapAttrs
           (dirName: dreamLock:
-            riseAndShine
+            makeOutputs
               (args // {source = dreamLock.lock; }))
           dreamLockInterface.subDreamLocks;
 
@@ -457,6 +461,7 @@ in
     dream2nixWithExternals
     fetchers
     fetchSources
+    makeOutputs
     riseAndShine
     translators
     updaters

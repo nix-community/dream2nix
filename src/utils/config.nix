@@ -22,7 +22,7 @@ let
       config = loadAttrs configInput;
       defaults =  {
         overridesDirs = [];
-        packagesDir = null;
+        packagesDir = "./packages";
         projectRoot = throw "projectRoot not specified in dream2nix config";
         repoName = null;
       };

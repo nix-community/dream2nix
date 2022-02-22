@@ -34,12 +34,11 @@ There are different ways how dream2nix can be invoked (CLI, flake, In-tree, IFD)
   outputs = { self, dream2nix }@inputs:
     let
       dream2nix = inputs.dream2nix.lib.init {
-        # either just specify systems
+        # modify according to your supported systems
         systems = [ "x86_64-linux" ];
-        # ...or alternatively specify your own nixpkgs
-        # pkgs = ...;
+        config.projectRoot = ./. ;
       };
-    in dream2nix.riseAndShine {
+    in dream2nix.makeFlakeOutputs {
       source = ./.;
     };
 }

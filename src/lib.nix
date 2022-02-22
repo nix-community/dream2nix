@@ -90,10 +90,12 @@ let
     in
       {
 
-        riseAndShine = rArgs: riseAndShineFunc
+        riseAndShine = throw "Use makeFlakeOutputs instead of riseAndShine.";
+
+        makeFlakeOutputs = mArgs: makeFlakeOutputsFunc
           (
             { inherit config pkgs systems; }
-            // rArgs
+            // mArgs
           );
 
         apps =
@@ -108,7 +110,7 @@ let
 
       };
 
-  riseAndShineFunc =
+  makeFlakeOutputsFunc =
     {
       pname,
       pkgs ? null,
@@ -157,7 +159,7 @@ let
                 && dreamLock.lock._generic.invalidationHash or "" == invalidationHash;
 
               result = translator: args:
-                dream2nix.riseAndShine (argsForward // args // {
+                dream2nix.makeOutputs (argsForward // args // {
                   # TODO: this triggers the translator finding routine a second time
                   translator = translatorFound.name;
                 });
@@ -247,5 +249,6 @@ let
 in
 {
   inherit init;
-  riseAndShine = riseAndShineFunc;
+  riseAndShine = throw "Use makeFlakeOutputs instead of riseAndShine.";
+  makeFlakeOutpus = makeFlakeOutputsFunc;
 }

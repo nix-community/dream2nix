@@ -128,7 +128,7 @@ let
         The source for ${pname}#${version} is not defined.
         This can be fixed via an override. Example:
         ```
-          dream2nix.riseAndShine {
+          dream2nix.make[Flake]Outputs {
             ...
             sourceOverrides = oldSources: {
               "${pname}"."${version}" = builtins.fetchurl { ... };

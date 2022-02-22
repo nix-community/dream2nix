@@ -14,7 +14,7 @@ let
       cmds,
     }:
     let
-      outputs = dream2nix.riseAndShine {
+      outputs = dream2nix.makeOutputs {
         inherit source;
       };
       commandsToRun = cmds outputs;
