@@ -1,128 +1,116 @@
 {
   lib,
-
   # dream2nix
   utils,
   ...
-}:
-let
-
+}: let
   b = builtins;
 
-  subDreamLockNames = dreamLockFile:
-    let
-      dir = b.dirOf dreamLockFile;
+  subDreamLockNames = dreamLockFile: let
+    dir = b.dirOf dreamLockFile;
 
-      directories = utils.listDirs dir;
+    directories = utils.listDirs dir;
 
-      dreamLockDirs =
-        lib.filter
-          (d: b.pathExists ("${dir}/${d}/dream-lock.json"))
-          directories;
+    dreamLockDirs =
+      lib.filter
+      (d: b.pathExists ("${dir}/${d}/dream-lock.json"))
+      directories;
+  in
+    dreamLockDirs;
 
-    in
-      dreamLockDirs;
+  readDreamLock = {dreamLock} @ args: let
+    isFile =
+      b.isPath dreamLock
+      || b.isString dreamLock
+      || lib.isDerivation dreamLock;
 
+    lockMaybeCompressed =
+      if isFile
+      then b.fromJSON (b.readFile dreamLock)
+      else dreamLock;
 
-  readDreamLock =
-    {
-      dreamLock,
-    }@args:
-    let
+    lock =
+      if lockMaybeCompressed.decompressed or false
+      then lockMaybeCompressed
+      else decompressDreamLock lockMaybeCompressed;
 
-      isFile =
-        b.isPath dreamLock
-            || b.isString dreamLock
-            || lib.isDerivation dreamLock;
+    subDreamLocks =
+      if !isFile
+      then {}
+      else
+        let
+          dir = b.dirOf dreamLock;
+        in
+          lib.genAttrs
+          (subDreamLockNames dreamLock)
+          (d:
+            readDreamLock
+            {dreamLock = "${dir}/${d}/dream-lock.json";});
 
-      lockMaybeCompressed =
-        if isFile then
-          b.fromJSON (b.readFile dreamLock)
-        else
-          dreamLock;
+    packages = lock._generic.packages;
 
-      lock =
-        if lockMaybeCompressed.decompressed or false then
-          lockMaybeCompressed
-        else
-          decompressDreamLock lockMaybeCompressed;
+    defaultPackageName = lock._generic.defaultPackage;
+    defaultPackageVersion = packages."${defaultPackageName}";
 
-      subDreamLocks =
-        if ! isFile then
-          {}
-        else
-          let
-            dir = b.dirOf dreamLock;
-          in
-            lib.genAttrs
-              (subDreamLockNames dreamLock)
-              (d:
-                readDreamLock
-                  { dreamLock = "${dir}/${d}/dream-lock.json"; });
+    subsystemAttrs = lock._subsystem;
 
-      packages = lock._generic.packages;
+    sources = lock.sources;
 
-      defaultPackageName = lock._generic.defaultPackage;
-      defaultPackageVersion = packages."${defaultPackageName}";
+    dependencyGraph = lock.dependencies;
 
-      subsystemAttrs = lock._subsystem;
+    packageVersions =
+      lib.mapAttrs
+      (name: versions: lib.attrNames versions)
+      dependencyGraph;
 
-      sources = lock.sources;
+    cyclicDependencies = lock.cyclicDependencies;
 
-      dependencyGraph = lock.dependencies;
+    getSourceSpec = pname: version:
+      sources."${pname}"."${version}"
+      or (
+        throw "The source spec for ${pname}#${version} is not defined in lockfile."
+      );
 
-      packageVersions =
-        lib.mapAttrs
-          (name: versions: lib.attrNames versions)
-          dependencyGraph;
+    getDependencies = pname: version:
+      b.filter
+      (dep: !b.elem dep cyclicDependencies."${pname}"."${version}" or [])
+      dependencyGraph."${pname}"."${version}" or [];
 
-      cyclicDependencies = lock.cyclicDependencies;
-
-      getSourceSpec = pname: version:
-        sources."${pname}"."${version}" or (
-          throw "The source spec for ${pname}#${version} is not defined in lockfile."
-        );
-
-      getDependencies = pname: version:
-        b.filter
-          (dep: ! b.elem dep cyclicDependencies."${pname}"."${version}" or [])
-          dependencyGraph."${pname}"."${version}" or [];
-
-      getCyclicDependencies = pname: version:
-        cyclicDependencies."${pname}"."${version}" or [];
-
-    in
-      {
-        inherit lock;
-        interface = {
-
-          inherit
-            defaultPackageName
-            defaultPackageVersion
-            subsystemAttrs
-            getCyclicDependencies
-            getDependencies
-            getSourceSpec
-            packages
-            packageVersions
-            subDreamLocks
-          ;
-        };
-      };
+    getCyclicDependencies = pname: version:
+      cyclicDependencies."${pname}"."${version}" or [];
+  in {
+    inherit lock;
+    interface = {
+      inherit
+        defaultPackageName
+        defaultPackageVersion
+        subsystemAttrs
+        getCyclicDependencies
+        getDependencies
+        getSourceSpec
+        packages
+        packageVersions
+        subDreamLocks
+        ;
+    };
+  };
 
   getMainPackageSource = dreamLock:
-    dreamLock.sources
-      ."${dreamLock._generic.defaultPackage}"
-      ."${dreamLock._generic.packages."${dreamLock._generic.defaultPackage}"}"
+    dreamLock
+    .sources
+    ."${dreamLock._generic.defaultPackage}"
+    ."${dreamLock._generic.packages."${dreamLock._generic.defaultPackage}"}"
     // rec {
       pname = dreamLock._generic.defaultPackage;
-      version = dreamLock._generic.packages."${pname}" ;
+      version = dreamLock._generic.packages."${pname}";
     };
 
   getSource = fetchedSources: pname: version:
-    if fetchedSources ? "${pname}"."${version}"
-        && fetchedSources."${pname}"."${version}" != "unknown" then
-      fetchedSources."${pname}"."${version}"
+    if
+      fetchedSources
+      ? "${pname}"."${version}"
+      && fetchedSources."${pname}"."${version}" != "unknown"
+    then fetchedSources."${pname}"."${version}"
     else
       throw ''
         The source for ${pname}#${version} is not defined.
@@ -138,143 +126,141 @@ let
         ```
       '';
 
-    # generate standalone dreamLock for a depenndency of an existing dreamLock
-    getSubDreamLock = dreamLock: name: version:
-      let
-        lock = (readDreamLock { inherit dreamLock; }).lock;
-
-      in
-        lock // {
-          _generic = lock._generic // {
-            defaultPackage = name;
-            packages = lock._generic.packages // {
+  # generate standalone dreamLock for a depenndency of an existing dreamLock
+  getSubDreamLock = dreamLock: name: version: let
+    lock = (readDreamLock {inherit dreamLock;}).lock;
+  in
+    lock
+    // {
+      _generic =
+        lock._generic
+        // {
+          defaultPackage = name;
+          packages =
+            lock._generic.packages
+            // {
               "${name}" = version;
             };
-          };
         };
+    };
 
-    injectDependencies = dreamLock: inject:
-      if inject == {} then dreamLock else
+  injectDependencies = dreamLock: inject:
+    if inject == {}
+    then dreamLock
+    else
       let
-        lock = (readDreamLock { inherit dreamLock; }).lock;
+        lock = (readDreamLock {inherit dreamLock;}).lock;
 
         oldDependencyGraph = lock.dependencies;
 
         newDependencyGraph =
           lib.zipAttrsWith
-            (name: versions:
-              lib.zipAttrsWith
-                (version: deps: lib.unique (lib.flatten deps))
-                versions)
-            [
-              oldDependencyGraph
-              inject
-            ];
-
+          (name: versions:
+            lib.zipAttrsWith
+            (version: deps: lib.unique (lib.flatten deps))
+            versions)
+          [
+            oldDependencyGraph
+            inject
+          ];
       in
         lib.recursiveUpdate lock {
           dependencies = newDependencyGraph;
         };
 
-    decompressDependencyGraph = compGraph:
+  decompressDependencyGraph = compGraph:
+    lib.mapAttrs
+    (name: versions:
       lib.mapAttrs
-        (name: versions:
-          lib.mapAttrs
-            (version: deps:
-              map
-                (dep: {
-                  name = b.elemAt dep 0;
-                  version = b.elemAt dep 1;
-                })
-                deps)
-            versions)
-          compGraph;
+      (version: deps:
+        map
+        (dep: {
+          name = b.elemAt dep 0;
+          version = b.elemAt dep 1;
+        })
+        deps)
+      versions)
+    compGraph;
 
-    compressDependencyGraph = decompGraph:
+  compressDependencyGraph = decompGraph:
+    lib.mapAttrs
+    (name: versions:
       lib.mapAttrs
-        (name: versions:
-          lib.mapAttrs
-            (version: deps: map ( dep: [ dep.name dep.version ]) deps)
-            versions)
-        decompGraph;
+      (version: deps: map (dep: [dep.name dep.version]) deps)
+      versions)
+    decompGraph;
 
-    decompressDreamLock = comp:
-      let
-        dependencyGraphDecomp =
-          decompressDependencyGraph (comp.dependencies or {});
+  decompressDreamLock = comp: let
+    dependencyGraphDecomp =
+      decompressDependencyGraph (comp.dependencies or {});
 
-        cyclicDependencies =
-          decompressDependencyGraph (comp.cyclicDependencies or {});
+    cyclicDependencies =
+      decompressDependencyGraph (comp.cyclicDependencies or {});
 
-        emptyDependencyGraph =
-          lib.mapAttrs
-            (name: versions:
-              lib.mapAttrs
-                (version: source: [])
-                versions)
-            comp.sources;
+    emptyDependencyGraph =
+      lib.mapAttrs
+      (name: versions:
+        lib.mapAttrs
+        (version: source: [])
+        versions)
+      comp.sources;
 
-        dependencyGraph =
-          lib.recursiveUpdate
-            emptyDependencyGraph
-            dependencyGraphDecomp;
+    dependencyGraph =
+      lib.recursiveUpdate
+      emptyDependencyGraph
+      dependencyGraphDecomp;
+  in
+    comp
+    // {
+      decompressed = true;
+      cyclicDependencies = cyclicDependencies;
+      dependencies = dependencyGraph;
+    };
 
-      in
-        comp // {
-          decompressed = true;
-          cyclicDependencies = cyclicDependencies;
-          dependencies = dependencyGraph;
-        };
+  compressDreamLock = uncomp: let
+    dependencyGraphComp =
+      compressDependencyGraph
+      uncomp.dependencies;
 
-    compressDreamLock = uncomp:
-      let
-        dependencyGraphComp =
-          compressDependencyGraph
-            uncomp.dependencies;
+    cyclicDependencies =
+      compressDependencyGraph
+      uncomp.cyclicDependencies;
 
-        cyclicDependencies =
-          compressDependencyGraph
-            uncomp.cyclicDependencies;
+    dependencyGraph =
+      lib.filterAttrs
+      (name: versions: versions != {})
+      (lib.mapAttrs
+      (name: versions:
+        lib.filterAttrs
+        (version: deps: deps != [])
+        versions)
+      dependencyGraphComp);
+  in
+    (b.removeAttrs uncomp ["decompressed"])
+    // {
+      inherit cyclicDependencies;
+      dependencies = dependencyGraph;
+    };
 
-        dependencyGraph =
-          lib.filterAttrs
-            (name: versions: versions != {})
-            (lib.mapAttrs
-              (name: versions:
-                lib.filterAttrs
-                  (version: deps: deps != [])
-                  versions)
-              dependencyGraphComp);
-      in
-      (b.removeAttrs uncomp [ "decompressed" ]) // {
-        inherit cyclicDependencies;
-        dependencies = dependencyGraph;
-      };
+  toJSON = dreamLock: let
+    lock =
+      if dreamLock.decompressed or false
+      then compressDreamLock dreamLock
+      else dreamLock;
 
-    toJSON = dreamLock:
-      let
-        lock =
-          if dreamLock.decompressed or false then
-            compressDreamLock dreamLock
-          else
-            dreamLock;
-
-        json = b.toJSON lock;
-
-      in
-        json;
-
-in
-  {
-    inherit
-      compressDreamLock
-      decompressDreamLock
-      decompressDependencyGraph
-      getMainPackageSource
-      getSource
-      getSubDreamLock
-      readDreamLock
-      injectDependencies
-      toJSON
+    json = b.toJSON lock;
+  in
+    json;
+in {
+  inherit
+    compressDreamLock
+    decompressDreamLock
+    decompressDependencyGraph
+    getMainPackageSource
+    getSource
+    getSubDreamLock
+    readDreamLock
+    injectDependencies
+    toJSON
     ;
-  }
+}

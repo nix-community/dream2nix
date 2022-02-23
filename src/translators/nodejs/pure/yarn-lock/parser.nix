@@ -4,17 +4,17 @@
 #
 # nix-repl> parseLock ./yarn.lock
 # { type = "success"; value = ...; }
-
-{ lib, nix-parsec }:
-
-with nix-parsec.parsec;
-
-rec {
+{
+  lib,
+  nix-parsec,
+}:
+with nix-parsec.parsec; rec {
   inherit (nix-parsec) parsec;
 
   # Skip spaces and line comments and newlines
-  skipEmptyLinesAndComments = 
-    skipMany (alt
+  skipEmptyLinesAndComments =
+    skipMany (
+      alt
       (skipWhile1 (c: c == " " || c == "\t" || c == "\n"))
       (skipThen (string "#") (skipWhile (x: x != "\n")))
     );
@@ -34,12 +34,14 @@ rec {
   dependencies = skipThen (string "  dependencies:\n") dependencyList;
   optionalDependencies = skipThen (string "  optionalDependencies:\n") dependencyList;
 
-  singleDependency = bind (skipThen (string "    ") (alt quotedString unquotedString)) (parsed_dependency:
-    skipThen (string " ") (
-      bind (alt quotedString unquotedString) (parsed_version:
-        pure { "${parsed_dependency}" = parsed_version; }
+  singleDependency = bind (skipThen (string "    ") (alt quotedString unquotedString)) (
+    parsed_dependency:
+      skipThen (string " ") (
+        bind (alt quotedString unquotedString) (
+          parsed_version:
+            pure {"${parsed_dependency}" = parsed_version;}
+        )
       )
-    )
   );
 
   dependencyNames = thenSkip (sepBy (alt quotedString unquotedString) (string ", ")) (string ":\n");
@@ -48,18 +50,23 @@ rec {
     bind (optional resolved) (parsedResolved:
       bind (optional integrity) (parsedIntegrity:
         bind (optional dependencies) (parsedDependencies:
-          bind (optional optionalDependencies) (parsedOptionalDependencies:
-            pure (
-              { version = parsedVersion; }
-              //
-              (if parsedResolved == [ ] then { } else { resolved = builtins.head parsedResolved; })
-              //
-              (if parsedIntegrity == [ ] then { } else { integrity = builtins.head parsedIntegrity; })
-              //
-              (if parsedDependencies == [ ] then { } else { dependencies = builtins.head parsedDependencies; })
-              //
-              (if parsedOptionalDependencies == [ ] then { } else { optionalDependencies = builtins.head parsedOptionalDependencies; })
-            )
+          bind (optional optionalDependencies) (
+            parsedOptionalDependencies:
+              pure (
+                {version = parsedVersion;}
+                // (if parsedResolved == []
+                then {}
+                else {resolved = builtins.head parsedResolved;})
+                // (if parsedIntegrity == []
+                then {}
+                else {integrity = builtins.head parsedIntegrity;})
+                // (if parsedDependencies == []
+                then {}
+                else {dependencies = builtins.head parsedDependencies;})
+                // (if parsedOptionalDependencies == []
+                then {}
+                else {optionalDependencies = builtins.head parsedOptionalDependencies;})
+              )
           )))));
 
   namesToAttrsList = namesList: dependencyAttrs: map (dependencyName: lib.nameValuePair dependencyName dependencyAttrs) namesList;
@@ -67,11 +74,10 @@ rec {
   group =
     bind dependencyNames (namesList:
       fmap (parsedAttrs: builtins.listToAttrs (namesToAttrsList namesList parsedAttrs))
-        dependencyAttrs);
+      dependencyAttrs);
 
-  configFile =
-    (skipThen skipEmptyLinesAndComments
-      (thenSkip (sepBy group newLine) eof));
+  configFile = (skipThen skipEmptyLinesAndComments
+  (thenSkip (sepBy group newLine) eof));
 
   parseLock = text: nix-parsec.parsec.runParser configFile text;
 }

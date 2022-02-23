@@ -1,11 +1,8 @@
 {
   lib,
   pkgs,
-
   ...
-}:
-
-{
+}: {
   subsystemAttrs,
   defaultPackageName,
   defaultPackageVersion,
@@ -15,23 +12,26 @@
   getSourceSpec,
   packages,
   produceDerivation,
-
   ...
-}@args:
-
-let
+} @ args: let
   l = lib // builtins;
 
   vendoring = import ../vendor.nix {
-    inherit lib pkgs getSource getSourceSpec
-    getDependencies getCyclicDependencies subsystemAttrs;
+    inherit
+      lib
+      pkgs
+      getSource
+      getSourceSpec
+      getDependencies
+      getCyclicDependencies
+      subsystemAttrs
+      ;
   };
 
-  buildPackage = pname: version:
-    let
-      src = getSource pname version;
-      vendorDir = vendoring.vendorPackageDependencies pname version;
-    in
+  buildPackage = pname: version: let
+    src = getSource pname version;
+    vendorDir = vendoring.vendorPackageDependencies pname version;
+  in
     produceDerivation pname (pkgs.rustPlatform.buildRustPackage {
       inherit pname version src;
 
@@ -45,13 +45,11 @@ let
         ${vendoring.writeGitVendorEntries "vendored-sources"}
       '';
     });
-in
-rec {
+in rec {
   packages =
     l.mapAttrs
-      (name: version:
-        { "${version}" = buildPackage name version; })
-      args.packages;
+    (name: version: {"${version}" = buildPackage name version;})
+    args.packages;
 
   defaultPackage = packages."${defaultPackageName}"."${defaultPackageVersion}";
 }

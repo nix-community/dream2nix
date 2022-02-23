@@ -1,30 +1,26 @@
 {
   lib,
   pkgs,
-
   # dream2nix
   callPackageDream,
   translators,
   ...
-}:
-
-let
+}: let
   b = builtins;
-in
-
-rec {
+in rec {
   apps = {
     inherit cli contribute install;
     dream2nix = cli;
   };
 
   flakeApps =
-    lib.mapAttrs (appName: app:
-      {
+    lib.mapAttrs (
+      appName: app: {
         type = "app";
         program = b.toString app.program;
       }
-    ) apps;
+    )
+    apps;
 
   # the dream2nix cli
   cli = callPackageDream (import ./cli) {};
