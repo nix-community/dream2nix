@@ -27,7 +27,8 @@ The goal of this project is to create a standardized, generic, modular framework
 The intention is to integrate many existing 2nix converters into this framework, thereby improving many of the previously named aspects and providing a unified UX for all 2nix solutions.
 
 ### Test the experimental version of dream2nix
-There are different ways how dream2nix can be invoked (CLI, flake, In-tree, IFD). A simple way to try out dream2nix is to check out the repository of the software to package and drop this flake.nix inside it:
+There are different ways how dream2nix can be invoked (CLI, flake, In-tree, IFD).
+A simple way to use dream2nix is to drop the following `flake.nix` inside the repository of the project intended to be packaged:
 ```nix
 {
   inputs.dream2nix.url = "github:nix-community/dream2nix";
