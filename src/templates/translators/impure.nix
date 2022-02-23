@@ -48,6 +48,16 @@
       '';
 
 
+  # This function should return the projects name.
+  # The computational complexity of this should be kept as lightweight
+  # as possible, as this migth be executed on a large amount of inputs at once.
+  projectName =
+    {
+      source,
+    }:
+    null;
+
+
   # This allows the framework to detect if the translator is compatible with the given input
   # to automatically select the right translator.
   compatible =
