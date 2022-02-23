@@ -151,6 +151,7 @@ let
       dreamLock,
       fetcher ? null,
       extract ? false,
+      sourceOverrides ? oldSources: {},
     }@args:
     let
       # if dream lock is a file, read and parse it
@@ -163,6 +164,7 @@ let
           args.fetcher;
 
       fetched = fetcher rec {
+        inherit sourceOverrides;
         defaultPackage = dreamLock._generic.defaultPackage;
         defaultPackageVersion = dreamLock._generic.packages."${defaultPackage}";
         sources = dreamLock'.sources;
@@ -260,11 +262,6 @@ let
         dreamLock = utils.dreamLock.injectDependencies args.dreamLock inject;
 
         dreamLockInterface = (utils.readDreamLock { inherit dreamLock; }).interface;
-
-        fetchedSources =
-          lib.recursiveUpdate
-            args.fetchedSources
-            (sourceOverrides args.fetchedSources);
 
         produceDerivation = name: pkg:
           utils.applyOverridesToPackage {
@@ -411,7 +408,7 @@ let
           fetcher;
 
       fetchedSources = (fetchSources {
-        inherit dreamLock;
+        inherit dreamLock sourceOverrides;
         fetcher = fetcher';
       }).fetchedSources;
 

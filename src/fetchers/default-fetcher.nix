@@ -10,6 +10,7 @@
   # sources attrset from dream lock
   defaultPackage,
   defaultPackageVersion,
+  sourceOverrides,
   sources,
   ...
 }:
@@ -31,7 +32,7 @@ let
                 source.path
               # assume path relative to main package source
               else
-                "${fetchedSources."${defaultPackage}"."${defaultPackageVersion}"}/${source.path}"
+                "${overriddenSources."${defaultPackage}"."${defaultPackageVersion}"}/${source.path}"
             else if fetchers.fetchers ? "${source.type}" then
               fetchSource {
                 source = source // {
@@ -43,8 +44,13 @@ let
           versions)
       sources;
 
+  overriddenSources =
+    lib.recursiveUpdate
+      fetchedSources
+      (sourceOverrides fetchedSources);
+
 in
 {
   # attrset: pname -> path of downloaded source
-  inherit fetchedSources;
+  fetchedSources = overriddenSources;
 }
