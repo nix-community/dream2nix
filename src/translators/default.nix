@@ -1,5 +1,6 @@
 {
   coreutils,
+  dlib,
   jq,
   lib,
   nix,
@@ -19,24 +20,42 @@ let
 
   callTranslator = subsystem: type: name: file: args:
     let
-      translator = callPackageDream file (args // {
-        inherit externals;
-        translatorName = name;
-      });
-      translatorWithBin =
-        # if the translator is a pure nix translator,
-        # generate a translatorBin for CLI compatibility
-        if translator ? translateBin then translator
-        else translator // {
-          translateBin = wrapPureTranslator [ subsystem type name ];
-        };
-    in
-      translatorWithBin // {
-        inherit subsystem type name;
-        translate = args:
-          translator.translate
-            ((getextraArgsDefaults translator.extraArgs or {}) // args);
+      translatorModule = import file {
+        inherit dlib lib;
       };
+
+      translator =
+        translatorModule
+
+        # for pure translators
+        #   - import the `translate` function
+        #   - generate `translateBin`
+        // (lib.optionalAttrs (translatorModule ? translate) {
+          translate = callPackageDream translatorModule.translate (args // {
+            translatorName = name;
+          });
+          translateBin = wrapPureTranslator [ subsystem type name ];
+        })
+
+        # for impure translators:
+        #   - import the `translateBin` function
+        // (lib.optionalAttrs (translatorModule ? translateBin) {
+          translateBin = callPackageDream translatorModule.translateBin
+            (args // {
+              translatorName = name;
+            });
+        });
+
+        # supply calls to translate with default arguments
+        translatorWithDefaults = translator // {
+          inherit subsystem type name;
+          translate = args:
+            translator.translate
+              ((getextraArgsDefaults translator.extraArgs or {}) // args);
+        };
+
+    in
+      translatorWithDefaults;
 
 
   subsystems = utils.dirNames ./.;

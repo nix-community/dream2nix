@@ -1,15 +1,17 @@
 {
+  dlib,
   lib,
-
-  externals,
-  nodejs,
-  translatorName,
-  utils,
-  ...
 }:
 
 {
   translate =
+    {
+      externals,
+      nodejs,
+      translatorName,
+      utils,
+      ...
+    }:
     {
       inputDirectories,
       inputFiles,
@@ -284,7 +286,7 @@
     }@args:
     {
       inputDirectories = lib.filter
-        (utils.containsMatchingFile [ ''.*yarn\.lock'' ''.*package.json'' ])
+        (dlib.containsMatchingFile [ ''.*yarn\.lock'' ''.*package.json'' ])
         args.inputDirectories;
 
       inputFiles = [];
@@ -315,7 +317,7 @@
 
     nodejs = {
       description = "nodejs version to use for building";
-      default = lib.elemAt (lib.splitString "." nodejs.version) 0;
+      default = "14";
       examples = [
         "14"
         "16"

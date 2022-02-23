@@ -1,15 +1,19 @@
 {
+  dlib,
   lib,
-  nodejs,
-
-  externals,
-  translatorName,
-  utils,
-  ...
 }:
+
+let
+  b = builtins;
+in
 
 {
   translate =
+    {
+      translatorName,
+      utils,
+      ...
+    }:
     {
       inputDirectories,
       inputFiles,
@@ -218,7 +222,7 @@
     }@args:
     {
       inputDirectories = lib.filter
-        (utils.containsMatchingFile [ ''.*package-lock\.json'' ''.*package.json'' ])
+        (dlib.containsMatchingFile [ ''.*package-lock\.json'' ''.*package.json'' ])
         args.inputDirectories;
 
       inputFiles = [];
@@ -241,9 +245,11 @@
       type = "flag";
     };
 
+    # TODO: this should either be removed or only used to select
+    # the nodejs version for translating, not for building.
     nodejs = {
       description = "nodejs version to use for building";
-      default = lib.elemAt (lib.splitString "." nodejs.version) 0;
+      default = "14";
       examples = [
         "14"
         "16"

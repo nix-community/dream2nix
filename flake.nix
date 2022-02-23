@@ -35,6 +35,9 @@
 
       lib = nixpkgs.lib;
 
+      # dream2nix lib (system independent utils)
+      dlib = import ./src/lib { inherit lib; };
+
       supportedSystems = [ "x86_64-linux" "x86_64-darwin" "aarch64-darwin" ];
 
       forAllSystems = f: lib.genAttrs supportedSystems (system:
@@ -90,7 +93,7 @@
       # system specific dream2nix api
       dream2nixFor = forAllSystems (system: pkgs: import ./src rec {
         externalDir = externalDirFor."${system}";
-        inherit externalSources lib pkgs;
+        inherit dlib externalPaths externalSources lib pkgs;
         config = {
           inherit overridesDirs;
         };
@@ -114,16 +117,7 @@
           nixpkgsSrc = "${nixpkgs}";
         })
         # system specific dream2nix library
-        // (forAllSystems (system: pkgs:
-          import ./src {
-            inherit
-              externalPaths
-              externalSources
-              lib
-              pkgs
-            ;
-          }
-        ));
+        // (forAllSystems (system: pkgs: dream2nixFor."${system}"));
 
         # the dream2nix cli to be used with 'nix run dream2nix'
         defaultApp =

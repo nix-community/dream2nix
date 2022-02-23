@@ -1,14 +1,16 @@
 {
+  dlib,
   lib,
-
-  externals,
-  translatorName,
-  utils,
-  ...
 }:
 
 {
   translate =
+    {
+      externals,
+      translatorName,
+      utils,
+      ...
+    }:
     {
       inputDirectories,
       inputFiles,
@@ -251,7 +253,7 @@
     }@args:
     {
       inputDirectories = lib.filter
-        (utils.containsMatchingFile [ ''.*Cargo\.lock'' ])
+        (dlib.containsMatchingFile [ ''.*Cargo\.lock'' ])
         args.inputDirectories;
 
       inputFiles = [ ];

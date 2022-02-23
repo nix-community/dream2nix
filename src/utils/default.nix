@@ -68,14 +68,6 @@ rec {
   # directory names of a given directory
   dirNames = dir: lib.attrNames (lib.filterAttrs (name: type: type == "directory") (builtins.readDir dir));
 
-  # Returns true if every given pattern is satisfied by at least one file name
-  # inside the given directory.
-  # Sub-directories are not recursed.
-  containsMatchingFile = patterns: dir:
-    lib.all
-      (pattern: lib.any (file: b.match pattern file != null) (listFiles dir))
-      patterns;
-
   # Calls any function with an attrset arugment, even if that function
   # doesn't accept an attrset argument, in which case the arguments are
   # recursively applied as parameters.

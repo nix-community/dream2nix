@@ -5,6 +5,7 @@
 
 {
   pkgs ? import <nixpkgs> {},
+  dlib ? import ./lib { inherit lib; },
   lib ? pkgs.lib,
 
   # the dream2nix cli depends on some nix 2.4 features
@@ -62,6 +63,7 @@ let
     inherit callPackageDream;
     inherit config;
     inherit configFile;
+    inherit dlib;
     inherit externals;
     inherit externalSources;
     inherit fetchers;

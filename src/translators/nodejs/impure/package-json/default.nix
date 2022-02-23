@@ -1,59 +1,64 @@
 {
-  # dream2nix utils
-  translators,
-  utils,
-
-  # nixpkgs dependenies
-  bash,
-  coreutils,
-  jq,
+  dlib,
   lib,
-  nodePackages,
-  writeScriptBin,
-  ...
 }:
 
 {
 
   # the input format is specified in /specifications/translator-call-example.json
   # this script receives a json file including the input paths and specialArgs
-  translateBin = utils.writePureShellScript
-    [
-      bash
-      coreutils
-      jq
-      nodePackages.npm
-    ]
-    ''
-      # accroding to the spec, the translator reads the input from a json file
-      jsonInput=$1
+  translateBin =
+    {
+      # dream2nix utils
+      translators,
+      utils,
 
-      # read the json input
-      outputFile=$(jq '.outputFile' -c -r $jsonInput)
-      inputDirectory=$(jq '.inputDirectories | .[0]' -c -r $jsonInput)
-      npmArgs=$(jq '.npmArgs' -c -r $jsonInput)
-      # inputFiles=$(jq '.inputFiles | .[]' -c -r $jsonInput)
+      # nixpkgs dependenies
+      bash,
+      coreutils,
+      jq,
+      nodePackages,
+      writeScriptBin,
+      ...
+    }:
 
-      cp -r $inputDirectory/* ./
-      chmod -R +w ./
-      rm -rf package-lock.json
-      cat ./package.json
+    utils.writePureShellScript
+      [
+        bash
+        coreutils
+        jq
+        nodePackages.npm
+      ]
+      ''
+        # accroding to the spec, the translator reads the input from a json file
+        jsonInput=$1
 
-      if [ "$(jq '.noDev' -c -r $jsonInput)" == "true" ]; then
-        echo "excluding dev dependencies"
-        jq '.devDependencies = {}' ./package.json > package.json.mod
-        mv package.json.mod package.json
-        npm install --package-lock-only --production $npmArgs
-      else
-        npm install --package-lock-only $npmArgs
-      fi
+        # read the json input
+        outputFile=$(jq '.outputFile' -c -r $jsonInput)
+        inputDirectory=$(jq '.inputDirectories | .[0]' -c -r $jsonInput)
+        npmArgs=$(jq '.npmArgs' -c -r $jsonInput)
+        # inputFiles=$(jq '.inputFiles | .[]' -c -r $jsonInput)
 
-      cat package-lock.json
+        cp -r $inputDirectory/* ./
+        chmod -R +w ./
+        rm -rf package-lock.json
+        cat ./package.json
 
-      jq ".inputDirectories[0] = \"$(pwd)\"" -c -r $jsonInput > ./newJsonInput
+        if [ "$(jq '.noDev' -c -r $jsonInput)" == "true" ]; then
+          echo "excluding dev dependencies"
+          jq '.devDependencies = {}' ./package.json > package.json.mod
+          mv package.json.mod package.json
+          npm install --package-lock-only --production $npmArgs
+        else
+          npm install --package-lock-only $npmArgs
+        fi
 
-      ${translators.translators.nodejs.pure.package-lock.translateBin} $(realpath ./newJsonInput)
-    '';
+        cat package-lock.json
+
+        jq ".inputDirectories[0] = \"$(pwd)\"" -c -r $jsonInput > ./newJsonInput
+
+        ${translators.translators.nodejs.pure.package-lock.translateBin} $(realpath ./newJsonInput)
+      '';
 
 
   # From a given list of paths, this function returns all paths which can be processed by this translator.
@@ -66,20 +71,26 @@
     }@args:
     {
       inputDirectories = lib.filter
-        (utils.containsMatchingFile [ ''.*package.json'' ])
+        (dlib.containsMatchingFile [ ''.*package.json'' ])
         args.inputDirectories;
 
       inputFiles = [];
     };
 
-  extraArgs = translators.translators.nodejs.pure.package-lock.extraArgs // {
-    npmArgs = {
-      description = "Additional arguments for npm";
-      type = "argument";
-      default = "";
-      examples = [
-        "--force"
-      ];
-    };
-  };
+  # inherit options from package-lock translator
+  extraArgs =
+    let
+      packageLockExtraArgs =
+        (import ../../pure/package-lock { inherit dlib lib; }).extraArgs;
+    in
+      packageLockExtraArgs // {
+        npmArgs = {
+          description = "Additional arguments for npm";
+          type = "argument";
+          default = "";
+          examples = [
+            "--force"
+          ];
+        };
+      };
 }
