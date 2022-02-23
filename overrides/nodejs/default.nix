@@ -598,6 +598,12 @@ in
     };
   };
 
+  simple-git-hooks = {
+    dont-postinstall = {
+      buildScript = "true";
+    };
+  };
+
   sodium-native = {
 
     build = {
