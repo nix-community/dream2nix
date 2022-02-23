@@ -33,11 +33,11 @@
 
         # read the json input
         outputFile=$(${jq}/bin/jq '.outputFile' -c -r $jsonInput)
-        inputDirectory=$(${jq}/bin/jq '.inputDirectories | .[0]' -c -r $jsonInput)
+        source=$(${jq}/bin/jq '.source' -c -r $jsonInput)
 
         tmpBuild=$(mktemp -d)
         cd $tmpBuild
-        cp -r $inputDirectory/* .
+        cp -r $source/* .
         chmod -R +w .
         # This should be in sync with gomod2nix version in flake.lock
         nix run github:tweag/gomod2nix/67f22dd738d092c6ba88e420350ada0ed4992ae8
@@ -51,16 +51,9 @@
   # to automatically select the right translator.
   compatiblePaths =
     {
-      inputDirectories,
-      inputFiles,
-    }@args:
-    {
-      inputDirectories = lib.filter
-        (dlib.containsMatchingFile [ ''go\.sum'' ''go\.mod'' ])
-        args.inputDirectories;
-
-      inputFiles = [];
-    };
+      source,
+    }:
+    dlib.containsMatchingFile [ ''go\.sum'' ''go\.mod'' ] source;
 
 
   # If the translator requires additional arguments, specify them here.

@@ -12,15 +12,14 @@
       ...
     }:
     {
-      inputDirectories,
-      inputFiles,
-
+      source,
+      packageName,
       ...
     }@args:
     let
       l = lib // builtins;
 
-      inputDir = l.elemAt inputDirectories 0;
+      inputDir = source;
 
       recurseFiles = path:
         l.flatten (
@@ -34,7 +33,7 @@
         );
 
       # Find all Cargo.toml files and parse them
-      allFiles = l.flatten (l.map recurseFiles inputDirectories);
+      allFiles = l.flatten (l.map recurseFiles [ inputDir ]);
       cargoTomlPaths = l.filter (path: l.baseNameOf path == "Cargo.toml") allFiles;
       cargoTomls =
         l.map
@@ -248,16 +247,9 @@
   # to automatically select the right translator.
   compatiblePaths =
     {
-      inputDirectories,
-      inputFiles,
-    }@args:
-    {
-      inputDirectories = lib.filter
-        (dlib.containsMatchingFile [ ''.*Cargo\.lock'' ])
-        args.inputDirectories;
-
-      inputFiles = [ ];
-    };
+      source,
+    }:
+    dlib.containsMatchingFile [ ''.*Cargo\.lock'' ] source;
 
 
   # If the translator requires additional arguments, specify them here.

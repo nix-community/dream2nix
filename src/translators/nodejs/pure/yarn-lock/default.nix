@@ -13,8 +13,7 @@
       ...
     }:
     {
-      inputDirectories,
-      inputFiles,
+      source,
 
       # extraArgs
       name,
@@ -28,7 +27,7 @@
       b = builtins;
       dev = ! noDev;
 
-      sourceDir = lib.elemAt inputDirectories 0;
+      sourceDir = source;
       yarnLock = utils.readTextFile "${sourceDir}/yarn.lock";
       packageJSON = b.fromJSON (b.readFile "${sourceDir}/package.json");
       parser = import ../yarn-lock/parser.nix
@@ -281,16 +280,9 @@
   # to automatically select the right translator.
   compatiblePaths =
     {
-      inputDirectories,
-      inputFiles,
-    }@args:
-    {
-      inputDirectories = lib.filter
-        (dlib.containsMatchingFile [ ''.*yarn\.lock'' ''.*package.json'' ])
-        args.inputDirectories;
-
-      inputFiles = [];
-    };
+      source,
+    }:
+    dlib.containsMatchingFile [ ''.*yarn\.lock'' ''.*package.json'' ] source;
 
 
   # If the translator requires additional arguments, specify them here.

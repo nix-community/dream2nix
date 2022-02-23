@@ -51,7 +51,7 @@ def checkLockJSON(lock):
 def list_translators_for_source(sourcePath):
   translators_dict = callNixFunction(
     "translators.translatorsForInputRecursive",
-    inputDirectories=[sourcePath],
+    source=sourcePath,
   )
   for path, translators_list in translators_dict.copy().items():
     translators_dict[path] = \

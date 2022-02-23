@@ -1,13 +1,6 @@
 {
-  # dream2nix utils
-  utils,
-
-  # nixpkgs dependenies
-  bash,
-  jq,
+  dlib,
   lib,
-  writeScriptBin,
-  ...
 }:
 
 {
@@ -22,26 +15,37 @@
   # The program is expected to create a file at the location specified
   # by the input parameter `outFile`.
   # The output file must contain the dream lock data encoded as json.
-  translateBin = utils.writePureShellScript
-    [
-      bash
-      coreutils
-      jq
-      nix
-    ]
-    ''
-      # accroding to the spec, the translator reads the input from a json file
-      jsonInput=$1
+  translateBin =
+    {
+      # dream2nix utils
+      utils,
 
-      # read the json input
-      outputFile=$(${jq}/bin/jq '.outputFile' -c -r $jsonInput)
-      inputDirectories=$(${jq}/bin/jq '.inputDirectories | .[]' -c -r $jsonInput)
-      inputFiles=$(${jq}/bin/jq '.inputFiles | .[]' -c -r $jsonInput)
+      # nixpkgs dependenies
+      bash,
+      jq,
+      writeScriptBin,
+      ...
+    }:
+    utils.writePureShellScript
+      [
+        bash
+        coreutils
+        jq
+        nix
+      ]
+      ''
+        # accroding to the spec, the translator reads the input from a json file
+        jsonInput=$1
 
-      # TODO:
-      # read input files/dirs and produce a json file at $outputFile
-      # containing the dream lock similar to /specifications/dream-lock-example.json
-    '';
+        # read the json input
+        outputFile=$(${jq}/bin/jq '.outputFile' -c -r $jsonInput)
+        source=$(${jq}/bin/jq '.source' -c -r $jsonInput)
+        inputFiles=$(${jq}/bin/jq '.inputFiles | .[]' -c -r $jsonInput)
+
+        # TODO:
+        # read input files/dirs and produce a json file at $outputFile
+        # containing the dream lock similar to /specifications/dream-lock-example.json
+      '';
 
 
   # From a given list of paths, this function returns all paths which can be processed by this translator.
@@ -49,20 +53,18 @@
   # to automatically select the right translator.
   compatiblePaths =
     {
-      inputDirectories,
-      inputFiles,
-    }@args:
-    {
-      # TODO: insert regex here that matches valid input file names
-      # examples:
-      #   - ''.*requirements.*\.txt''
-      #   - ''.*package-lock\.json''
-      inputDirectories = lib.filter
-        (utils.containsMatchingFile [ ''TODO: regex1'' ''TODO: regex2'' ])
-        args.inputDirectories;
-
-      inputFiles = [];
-    };
+      source,
+    }:
+    # TODO: insert regex here that matches valid input file names
+    # examples:
+    #   - ''.*requirements.*\.txt''
+    #   - ''.*package-lock\.json''
+    dlib.containsMatchingFile
+      [
+        ''TODO: regex1''
+        ''TODO: regex2''
+      ]
+      source;
 
 
   # If the translator requires additional arguments, specify them here.

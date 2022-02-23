@@ -1,12 +1,5 @@
 {
-  "inputDirectories": [
-    "./some_project_src"
-  ],
-
-  "inputFiles": [
-    "./a/b/c/requirements.txt",
-    "./a/b/c/requirements-dev.txt"
-  ],
+  "source": "./some_project_src",
 
   "outputFile": [
     "./a/b/c/dream-lock.json"

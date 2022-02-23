@@ -226,8 +226,7 @@ let
 
       dreamLock' = translators.translators."${t.subsystem}"."${t.type}"."${t.name}".translate
         (translatorArgs // {
-          inputFiles = [];
-          inputDirectories = [ source ];
+          inherit source;
         });
 
       dreamLock =

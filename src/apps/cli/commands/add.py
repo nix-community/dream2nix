@@ -445,8 +445,7 @@ class AddCommand(Command):
     with tempfile.NamedTemporaryFile("r") as output_temp_file:
       # arguments for calling the translator nix module
       translator_input = dict(
-        inputFiles=[],
-        inputDirectories=[sourcePath],
+        source=sourcePath,
         outputFile=output_temp_file.name,
       )
       translator_input.update(specified_extra_args)

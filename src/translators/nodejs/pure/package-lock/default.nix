@@ -15,8 +15,7 @@ in
       ...
     }:
     {
-      inputDirectories,
-      inputFiles,
+      source,
 
       name,
       noDev,
@@ -29,13 +28,9 @@ in
 
       dev = ! noDev;
 
-      inputDir = lib.elemAt inputDirectories 0;
+      inputDir = source;
 
-      packageLock =
-        if inputDirectories != [] then
-          "${inputDir}/package-lock.json"
-        else
-          lib.elemAt inputFiles 0;
+      packageLock = "${inputDir}/package-lock.json";
 
       parsed = b.fromJSON (b.readFile packageLock);
 
@@ -217,16 +212,14 @@ in
 
   compatiblePaths =
     {
-      inputDirectories,
-      inputFiles,
-    }@args:
-    {
-      inputDirectories = lib.filter
-        (dlib.containsMatchingFile [ ''.*package-lock\.json'' ''.*package.json'' ])
-        args.inputDirectories;
-
-      inputFiles = [];
-    };
+      source,
+    }:
+    dlib.containsMatchingFile
+      [
+        ''.*package-lock\.json''
+        ''.*package.json''
+      ]
+      source;
 
   extraArgs = {
 

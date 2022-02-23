@@ -50,7 +50,7 @@ in
 
         # read the json input
         outputFile=$(${jq}/bin/jq '.outputFile' -c -r $jsonInput)
-        inputDirectory=$(${jq}/bin/jq '.inputDirectories | .[0]' -c -r $jsonInput)
+        source=$(${jq}/bin/jq '.source' -c -r $jsonInput)
         pythonAttr=$(${jq}/bin/jq '.pythonAttr' -c -r $jsonInput)
         application=$(${jq}/bin/jq '.application' -c -r $jsonInput)
 
@@ -70,7 +70,7 @@ in
         tmp=$(mktemp -d)
 
         # extract python requirements from setup.py
-        cp -r $inputDirectory $tmpBuild/src
+        cp -r $source $tmpBuild/src
         chmod -R +w $tmpBuild/src
         cd $tmpBuild/src
         chmod +x setup.py || true
@@ -110,14 +110,13 @@ in
   # from a given list of paths, this function returns all paths which can be processed by this translator
   compatiblePaths =
     {
-      inputDirectories,
-      inputFiles,
-    }@args:
-    {
-      inputDirectories = [];
-
-      inputFiles = lib.filter (f: builtins.match ''.*requirements.*\.txt'' f != null) args.inputFiles;
-    };
+      source,
+    }:
+    dlib.containsMatchingFile
+      [
+        ''.*requirements.*\.txt''
+      ]
+      source;
 
   # define special args and provide defaults
   extraArgs = {

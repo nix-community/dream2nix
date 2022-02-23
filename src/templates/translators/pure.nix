@@ -1,18 +1,20 @@
 {
+  dlib,
   lib,
-  nodejs,
-
-  externals,
-  translatorName,
-  utils,
-  ...
 }:
 
 {
   translate =
     {
-      inputDirectories,
-      inputFiles,
+      nodejs,
+
+      externals,
+      translatorName,
+      utils,
+      ...
+    }:
+    {
+      source,
 
       # arguments specified by user
       noDev,
@@ -132,20 +134,18 @@
   # to automatically select the right translator.
   compatiblePaths =
     {
-      inputDirectories,
-      inputFiles,
-    }@args:
-    {
+      source,
+    }:
       # TODO: insert regex here that matches valid input file names
       # examples:
       #   - ''.*requirements.*\.txt''
       #   - ''.*package-lock\.json''
-      inputDirectories = lib.filter
-        (utils.containsMatchingFile [ ''TODO: regex1'' ''TODO: regex2'' ])
-        args.inputDirectories;
-
-      inputFiles = [];
-    };
+    dlib.containsMatchingFile
+      [
+        ''TODO: regex1''
+        ''TODO: regex2''
+      ]
+      source;
 
 
   # If the translator requires additional arguments, specify them here.

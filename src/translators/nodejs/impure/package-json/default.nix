@@ -35,11 +35,11 @@
 
         # read the json input
         outputFile=$(jq '.outputFile' -c -r $jsonInput)
-        inputDirectory=$(jq '.inputDirectories | .[0]' -c -r $jsonInput)
+        source=$(jq '.source' -c -r $jsonInput)
         npmArgs=$(jq '.npmArgs' -c -r $jsonInput)
         # inputFiles=$(jq '.inputFiles | .[]' -c -r $jsonInput)
 
-        cp -r $inputDirectory/* ./
+        cp -r $source/* ./
         chmod -R +w ./
         rm -rf package-lock.json
         cat ./package.json
@@ -55,7 +55,7 @@
 
         cat package-lock.json
 
-        jq ".inputDirectories[0] = \"$(pwd)\"" -c -r $jsonInput > ./newJsonInput
+        jq ".source = \"$(pwd)\"" -c -r $jsonInput > ./newJsonInput
 
         ${translators.translators.nodejs.pure.package-lock.translateBin} $(realpath ./newJsonInput)
       '';
@@ -66,16 +66,9 @@
   # to automatically select the right translator.
   compatiblePaths =
     {
-      inputDirectories,
-      inputFiles,
-    }@args:
-    {
-      inputDirectories = lib.filter
-        (dlib.containsMatchingFile [ ''.*package.json'' ])
-        args.inputDirectories;
-
-      inputFiles = [];
-    };
+      source,
+    }:
+    dlib.containsMatchingFile [ ''.*package.json'' ] source;
 
   # inherit options from package-lock translator
   extraArgs =

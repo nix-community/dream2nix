@@ -134,9 +134,8 @@ let
   # if the translator is compatible to all given paths
   translatorsForInput =
     {
-      inputDirectories,
-      inputFiles,
-    }@args:
+      source,
+    }:
     lib.forEach translatorsList
       (t: rec {
         inherit (t)
@@ -145,15 +144,14 @@ let
           subsystem
           type
         ;
-        compatiblePaths = t.compatiblePaths args;
-        compatible = compatiblePaths == args;
+        compatible = t.compatiblePaths { inherit source; };
       });
 
   # also includes subdirectories of the given paths up to a certain depth
   # to check for translator compatibility
   translatorsForInputRecursive =
     {
-      inputDirectories,
+      source,
       depth ? 2,
     }:
     let
@@ -175,20 +173,19 @@ let
                 subDirs));
 
       dirsToCheck =
-        inputDirectories
+        [ source ]
         ++
         (lib.flatten
           (map
             (inputDir: listDirsRec inputDir depth)
-            inputDirectories));
+            [ source ]));
 
     in
       lib.genAttrs
         dirsToCheck
         (dir:
           translatorsForInput {
-            inputDirectories = [ dir ];
-            inputFiles = [];
+            source = dir;
           }
         );
 
@@ -213,8 +210,7 @@ let
     }@args:
     let
       translatorsForSource = translatorsForInput {
-        inputFiles = [];
-        inputDirectories = [ source ];
+        inherit source;
       };
 
       nameFilter =
