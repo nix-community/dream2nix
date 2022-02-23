@@ -215,10 +215,10 @@ in
       source,
     }:
     let
-      packageLock = "${source}/package-lock.json";
-      parsed = b.fromJSON (b.readFile packageLock);
+      packageJson = "${source}/package.json";
+      parsed = b.fromJSON (b.readFile packageJson);
     in
-      if b.pathExists packageLock && parsed ? name then
+      if b.pathExists packageJson && parsed ? name then
         parsed.name
       else
         null;

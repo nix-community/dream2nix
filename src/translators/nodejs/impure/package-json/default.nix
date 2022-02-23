@@ -61,6 +61,10 @@
       '';
 
 
+  # inherit projectName function from package-lock translator
+  projectName = dlib.translators.translators.nodejs.pure.package-lock.projectName;
+
+
   # This allows the framework to detect if the translator is compatible with the given input
   # to automatically select the right translator.
   compatible =
@@ -71,18 +75,14 @@
 
   # inherit options from package-lock translator
   extraArgs =
-    let
-      packageLockExtraArgs =
-        (import ../../pure/package-lock { inherit dlib lib; }).extraArgs;
-    in
-      packageLockExtraArgs // {
-        npmArgs = {
-          description = "Additional arguments for npm";
-          type = "argument";
-          default = "";
-          examples = [
-            "--force"
-          ];
-        };
+    dlib.translators.translators.nodejs.pure.package-lock.extraArgs // {
+      npmArgs = {
+        description = "Additional arguments for npm";
+        type = "argument";
+        default = "";
+        examples = [
+          "--force"
+        ];
       };
+    };
 }

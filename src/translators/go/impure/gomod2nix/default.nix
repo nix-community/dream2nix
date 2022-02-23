@@ -2,7 +2,9 @@
   dlib,
   lib,
 }:
-
+let
+  l = lib // builtins;
+in
 {
 
   # the input format is specified in /specifications/translator-call-example.json
@@ -44,6 +46,19 @@
 
         nix eval --show-trace --impure --raw --expr "import ${./translate.nix} ${dream2nixWithExternals} ./." > $outputFile
       '';
+
+  projectName =
+    {
+      source,
+    }:
+    let
+      goModFile = "${source}/go.mod";
+      firstLine = (l.elemAt (l.splitString "\n" (l.readFile goModFile)) 0);
+    in
+      if l.pathExists goModFile then
+        l.last (l.splitString "/" (l.elemAt (l.splitString " " firstLine) 1))
+      else
+        null;
 
 
   # This allows the framework to detect if the translator is compatible with the given input

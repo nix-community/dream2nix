@@ -3,6 +3,10 @@
   lib,
 }:
 
+let
+  l = lib // builtins;
+in
+
 {
   translate =
     {
@@ -17,8 +21,6 @@
       ...
     }@args:
     let
-      l = lib // builtins;
-
       inputDir = source;
 
       recurseFiles = path:
@@ -240,6 +242,19 @@
               };
           };
         });
+
+
+  projectName =
+    {
+      source,
+    }:
+    let
+      cargoToml = "${source}/Cargo.toml";
+    in
+      if l.pathExists cargoToml then
+        (l.fromTOML (l.readFile cargoToml)).package.name or null
+      else
+        null;
 
 
   # This allows the framework to detect if the translator is compatible with the given input
