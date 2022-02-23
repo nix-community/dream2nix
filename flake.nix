@@ -113,7 +113,7 @@
         # Similar to drem2nixFor but will require 'system(s)' or 'pkgs' as an argument.
         # Produces flake-like output schema.
         lib = (import ./src/lib.nix {
-          inherit externalPaths externalSources overridesDirs lib;
+          inherit dlib externalPaths externalSources overridesDirs lib;
           nixpkgsSrc = "${nixpkgs}";
         })
         # system specific dream2nix library

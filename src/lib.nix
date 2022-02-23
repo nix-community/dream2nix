@@ -3,9 +3,9 @@
 # follows flake output schema
 
 {
-  nixpkgsSrc ? <nixpkgs>,
-  lib ? (import nixpkgsSrc {}).lib,
-
+  dlib,
+  nixpkgsSrc,
+  lib,
   overridesDirs,
   externalSources,
   externalPaths,

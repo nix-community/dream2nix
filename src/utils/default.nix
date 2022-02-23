@@ -1,6 +1,7 @@
 {
   bash,
   coreutils,
+  dlib,
   fetchzip,
   lib,
   nix,
@@ -47,6 +48,12 @@ translatorUtils
 //
 rec {
 
+  inherit (dlib)
+    dirNames
+    listDirs
+    listFiles
+  ;
+
   dreamLock = dreamLockUtils;
 
   inherit (dreamLockUtils) readDreamLock;
@@ -59,14 +66,7 @@ rec {
 
   isDir = path: (builtins.readDir (b.dirOf  path))."${b.baseNameOf path}" ==  "directory";
 
-  listFiles = path: lib.attrNames (lib.filterAttrs (n: v: v == "regular") (builtins.readDir path));
-
-  listDirs = path: lib.attrNames (lib.filterAttrs (n: v: v == "directory") (builtins.readDir path));
-
   toDrv = path: runCommand "some-drv" {} "cp -r ${path} $out";
-
-  # directory names of a given directory
-  dirNames = dir: lib.attrNames (lib.filterAttrs (name: type: type == "directory") (builtins.readDir dir));
 
   # Calls any function with an attrset arugment, even if that function
   # doesn't accept an attrset argument, in which case the arguments are

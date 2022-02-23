@@ -12,55 +12,53 @@
   utils,
   ...
 }:
+
 let
 
   b = builtins;
 
-  lib = pkgs.lib;
+  l = lib // builtins;
 
-  callTranslator = subsystem: type: name: file: args:
-    let
-      translatorModule = import file {
-        inherit dlib lib;
-      };
+  tlib = import ./lib.nix { inherit dlib lib; };
 
-      translator =
-        translatorModule
+  translators =
+    tlib.mapTranslators
+      (translatorModule:
+        let
+          translator =
+            translatorModule
 
-        # for pure translators
-        #   - import the `translate` function
-        #   - generate `translateBin`
-        // (lib.optionalAttrs (translatorModule ? translate) {
-          translate = callPackageDream translatorModule.translate (args // {
-            translatorName = name;
-          });
-          translateBin = wrapPureTranslator [ subsystem type name ];
-        })
+            # for pure translators
+            #   - import the `translate` function
+            #   - generate `translateBin`
+            // (lib.optionalAttrs (translatorModule ? translate) {
+              translate = callPackageDream translatorModule.translate {
+                translatorName = translatorModule.name;
+              };
+              translateBin =
+                wrapPureTranslator
+                (with translatorModule; [ subsystem type name ]);
+            })
 
-        # for impure translators:
-        #   - import the `translateBin` function
-        // (lib.optionalAttrs (translatorModule ? translateBin) {
-          translateBin = callPackageDream translatorModule.translateBin
-            (args // {
-              translatorName = name;
+            # for impure translators:
+            #   - import the `translateBin` function
+            // (lib.optionalAttrs (translatorModule ? translateBin) {
+              translateBin = callPackageDream translatorModule.translateBin
+                {
+                  translatorName = translatorModule.name;
+                };
             });
-        });
 
-        # supply calls to translate with default arguments
-        translatorWithDefaults = translator // {
-          inherit subsystem type name;
-          translate = args:
-            translator.translate
-              ((getextraArgsDefaults translator.extraArgs or {}) // args);
-        };
+            # supply calls to translate with default arguments
+            translatorWithDefaults = translator // {
+              translate = args:
+                translator.translate
+                  ((tlib.getextraArgsDefaults translator.extraArgs or {}) // args);
+            };
 
-    in
-      translatorWithDefaults;
+        in
+          translatorWithDefaults);
 
-
-  subsystems = utils.dirNames ./.;
-
-  translatorTypes = [ "impure" "ifd" "pure" ];
 
   # adds a translateBin to a pure translator
   wrapPureTranslator = translatorAttrPath:
@@ -96,155 +94,16 @@ let
         name = "translator-${lib.concatStringsSep "-" translatorAttrPath}";
       });
 
-  # attrset of: subsystem -> translator-type -> (function subsystem translator-type)
-  mkTranslatorsSet = function:
-    lib.genAttrs (utils.dirNames ./.) (subsystem:
-      lib.genAttrs
-        (lib.filter (dir: builtins.pathExists (./. + "/${subsystem}/${dir}")) translatorTypes)
-        (transType: function subsystem transType)
-    );
 
-  # attrset of: subsystem -> translator-type -> translator
-  translators = mkTranslatorsSet (subsystem: type:
-    lib.genAttrs (utils.dirNames (./. + "/${subsystem}/${type}")) (translatorName:
-      callTranslator subsystem type translatorName (./. + "/${subsystem}/${type}/${translatorName}") {}
-    )
-  );
-
-  # flat list of all translators sorted by priority (pure translators first)
-  translatorsList =
-    let
-      list = lib.collect (v: v ? translateBin) translators;
-      prio = translator:
-        if translator.type == "pure" then
-          0
-        else if translator.type == "ifd" then
-          1
-        else if translator.type == "impure" then
-          2
-        else
-          3;
-    in
-      b.sort
-        (a: b: (prio a) < (prio b))
-        list;
-
-  # returns the list of translators including their special args
-  # and adds a flag `compatible` to each translator indicating
-  # if the translator is compatible to all given paths
-  translatorsForInput =
-    {
-      source,
-    }:
-    lib.forEach translatorsList
-      (t: rec {
-        inherit (t)
-          name
-          extraArgs
-          subsystem
-          type
-        ;
-        compatible = t.compatible { inherit source; };
-      });
-
-  # also includes subdirectories of the given paths up to a certain depth
-  # to check for translator compatibility
-  translatorsForInputRecursive =
-    {
-      source,
-      depth ? 2,
-    }:
-    let
-      listDirsRec = dir: depth:
-        let
-          subDirs =
-            b.map
-              (subdir: "${dir}/${subdir}")
-              (utils.listDirs dir);
-        in
-          if depth == 0 then
-            subDirs
-          else
-            subDirs
-            ++
-            (lib.flatten
-              (map
-                (subDir: listDirsRec subDir (depth -1))
-                subDirs));
-
-      dirsToCheck =
-        [ source ]
-        ++
-        (lib.flatten
-          (map
-            (inputDir: listDirsRec inputDir depth)
-            [ source ]));
-
-    in
-      lib.genAttrs
-        dirsToCheck
-        (dir:
-          translatorsForInput {
-            source = dir;
-          }
-        );
-
-
-  # pupulates a translators special args with defaults
-  getextraArgsDefaults = extraArgsDef:
-    lib.mapAttrs
-      (name: def:
-        if def.type == "flag" then
-          false
-        else
-          def.default or null
-      )
-      extraArgsDef;
-
-
-  # return one compatible translator or throw error
-  findOneTranslator =
-    {
-      source,
-      translatorName ? null,
-    }@args:
-    let
-      translatorsForSource = translatorsForInput {
-        inherit source;
-      };
-
-      nameFilter =
-        if translatorName != null then
-          (translator: translator.name == translatorName)
-        else
-          (translator: true);
-
-      compatibleTranslators =
-        let
-          result =
-            b.filter
-              (t: t.compatible)
-              translatorsForSource;
-        in
-          if result == [] then
-            throw "Could not find a compatible translator for input"
-          else
-            result;
-
-      translator =
-        lib.findFirst
-          nameFilter
-          (throw ''Specified translator ${translatorName} not found or incompatible'')
-          compatibleTranslators;
-
-    in
-      translator;
 
 in
 {
   inherit
-    findOneTranslator
     translators
+  ;
+
+  inherit (tlib)
+    findOneTranslator
     translatorsForInput
     translatorsForInputRecursive
   ;
