@@ -190,20 +190,6 @@ rec {
   recursiveUpdateUntilDepth = depth: lhs: rhs:
     lib.recursiveUpdateUntil (path: l: r: (b.length path) > depth) lhs rhs;
 
-  # calculate an invalidation hash for given source translation inputs
-  calcInvalidationHash =
-    {
-      source,
-      translator,
-      translatorArgs,
-    }:
-    b.hashString "sha256" ''
-      ${source}
-      ${translator}
-      ${b.toString
-        (lib.mapAttrsToList (k: v: "${k}=${b.toString v}") translatorArgs)}
-    '';
-
   # a script that produces and dumps the dream-lock json for a given source
   makePackageLockScript =
     {
@@ -220,7 +206,7 @@ rec {
           --force \
           --no-default-nix \
           --translator ${translator} \
-          --invalidation-hash ${calcInvalidationHash {
+          --invalidation-hash ${dlib.calcInvalidationHash {
             inherit source translator translatorArgs;
           }} \
           --packages-root $WORKDIR/${packagesDir} \

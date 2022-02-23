@@ -46,6 +46,11 @@ let
     in
       translatorModule // {
         inherit name subsystem type;
+        projectName =
+          if translatorModule ? projectName then
+            translatorModule.projectName
+          else
+            { ... }: null;
       };
 
 
@@ -79,12 +84,13 @@ let
     l.forEach translatorsList
       (t: rec {
         inherit (t)
-          name
           extraArgs
+          name
           subsystem
           type
         ;
         compatible = t.compatible { inherit source; };
+        projectName = t.projectName { inherit source; };
       });
 
   # also includes subdirectories of the given paths up to a certain depth

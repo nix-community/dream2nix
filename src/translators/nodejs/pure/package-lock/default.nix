@@ -210,6 +210,20 @@ in
       });
 
 
+  projectName =
+    {
+      source,
+    }:
+    let
+      packageLock = "${source}/package-lock.json";
+      parsed = b.fromJSON (b.readFile packageLock);
+    in
+      if b.pathExists packageLock && parsed ? name then
+        parsed.name
+      else
+        null;
+
+
   compatible =
     {
       source,

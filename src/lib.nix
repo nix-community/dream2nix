@@ -16,6 +16,10 @@ let
 
   b = builtins;
 
+  l = lib // builtins;
+
+  tlib = import ./translators/lib.nix { inherit dlib lib; };
+
   dream2nixForSystem = config: system: pkgs:
     import ./default.nix
       { inherit config externalPaths externalSources pkgs; };
@@ -112,7 +116,7 @@ let
 
   makeFlakeOutputsFunc =
     {
-      pname,
+      pname ? null,
       pkgs ? null,
       source,
       systems ? [],
@@ -128,24 +132,46 @@ let
 
       allPkgs = makeNixpkgs pkgs systems;
 
-      dream2nixFor =
-        lib.mapAttrs (dream2nixForSystem config) allPkgs;
+      forAllSystems = f: b.mapAttrs f allPkgs;
+
+      dream2nixFor = forAllSystems (dream2nixForSystem config);
+
+      translatorFound = tlib.findOneTranslator {
+        inherit source;
+        translatorName = args.translator or null;
+      };
+
+      translatorFoundFor = forAllSystems (system: pkgs:
+        with translatorFound;
+        dream2nixFor."${system}".translators.translators
+            ."${subsystem}"."${type}"."${name}"
+      );
+
+      invalidationHash = dlib.calcInvalidationHash {
+        inherit source translatorArgs;
+        translator = translatorFound.name;
+      };
+
+      specifyPnameError = throw ''
+        Translator `${translatorFound.name}` could not automatically determine `pname`.
+        Please specify `pname` when calling `makeFlakeOutputs`
+      '';
+
+      detectedName = translatorFound.projectName;
+
+      pname =
+        if args.pname or null != null then
+          specifyPnameError
+        else if detectedName != null then
+          detectedName
+        else
+          specifyPnameError;
 
       allBuilderOutputs =
         lib.mapAttrs
           (system: pkgs:
             let
               dream2nix = dream2nixFor."${system}";
-
-              translatorFound = dream2nix.translators.findOneTranslator {
-                inherit source;
-                translatorName = args.translator or null;
-              };
-
-              invalidationHash = dream2nix.utils.calcInvalidationHash {
-                inherit source translatorArgs;
-                translator = translatorFound.name;
-              };
 
               dreamLockJsonPath = with config;
                 "${projectRoot}/${packagesDir}/${pname}/dream-lock.json";
@@ -217,8 +243,6 @@ let
           {}
           flakifiedOutputsList;
 
-      forAllSystems = f: b.mapAttrs f allPkgs;
-
     in
       lib.recursiveUpdate
         flakeOutputs
@@ -248,7 +272,7 @@ let
 
 in
 {
-  inherit init;
+  inherit dlib tlib init;
   riseAndShine = throw "Use makeFlakeOutputs instead of riseAndShine.";
   makeFlakeOutpus = makeFlakeOutputsFunc;
 }
