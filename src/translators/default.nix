@@ -19,10 +19,8 @@ let
 
   l = lib // builtins;
 
-  tlib = import ./lib.nix { inherit dlib lib; };
-
   translators =
-    tlib.mapTranslators
+    dlib.translators.mapTranslators
       (translatorModule:
         let
           translator =
@@ -53,7 +51,11 @@ let
             translatorWithDefaults = translator // {
               translate = args:
                 translator.translate
-                  ((tlib.getextraArgsDefaults translator.extraArgs or {}) // args);
+                  (
+                    (dlib.translators.getextraArgsDefaults
+                      (translator.extraArgs or {}))
+                    // args
+                  );
             };
 
         in
@@ -102,7 +104,7 @@ in
     translators
   ;
 
-  inherit (tlib)
+  inherit (dlib.translators)
     findOneTranslator
     translatorsForInput
     translatorsForInputRecursive

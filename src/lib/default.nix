@@ -7,6 +7,22 @@ let
   l = lib // builtins;
 
 
+  # exported attributes
+  dlib = {
+    inherit
+      calcInvalidationHash
+      containsMatchingFile
+      dirNames
+      listDirs
+      listFiles
+      translators
+    ;
+  };
+
+  # other libs
+  translators = import ./translators.nix { inherit dlib lib; };
+
+
   # INTERNAL
 
 
@@ -43,12 +59,4 @@ let
   listFiles = path: l.attrNames (l.filterAttrs (n: v: v == "regular") (builtins.readDir path));
 in
 
-{
-  inherit
-    calcInvalidationHash
-    containsMatchingFile
-    dirNames
-    listDirs
-    listFiles
-  ;
-}
+dlib

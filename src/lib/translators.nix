@@ -7,15 +7,15 @@ let
 
   # INTERNAL
 
-  subsystems = dlib.dirNames ./.;
+  subsystems = dlib.dirNames ../translators;
 
   translatorTypes = [ "impure" "ifd" "pure" ];
 
   # attrset of: subsystem -> translator-type -> (function subsystem translator-type)
   mkTranslatorsSet = function:
-    l.genAttrs (dlib.dirNames ./.) (subsystem:
+    l.genAttrs (dlib.dirNames ../translators) (subsystem:
       l.genAttrs
-        (l.filter (dir: builtins.pathExists (./. + "/${subsystem}/${dir}")) translatorTypes)
+        (l.filter (dir: builtins.pathExists (../translators + "/${subsystem}/${dir}")) translatorTypes)
         (transType: function subsystem transType)
     );
 
@@ -58,8 +58,8 @@ let
 
   # attrset of: subsystem -> translator-type -> translator
   translators = mkTranslatorsSet (subsystem: type:
-    l.genAttrs (dlib.dirNames (./. + "/${subsystem}/${type}")) (translatorName:
-      callTranslator subsystem type translatorName (./. + "/${subsystem}/${type}/${translatorName}") {}
+    l.genAttrs (dlib.dirNames (../translators + "/${subsystem}/${type}")) (translatorName:
+      callTranslator subsystem type translatorName (../translators + "/${subsystem}/${type}/${translatorName}") {}
     )
   );
 

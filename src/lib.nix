@@ -18,8 +18,6 @@ let
 
   l = lib // builtins;
 
-  tlib = import ./translators/lib.nix { inherit dlib lib; };
-
   dream2nixForSystem = config: system: pkgs:
     import ./default.nix
       { inherit config externalPaths externalSources pkgs; };
@@ -136,7 +134,7 @@ let
 
       dream2nixFor = forAllSystems (dream2nixForSystem config);
 
-      translatorFound = tlib.findOneTranslator {
+      translatorFound = dlib.translators.findOneTranslator {
         inherit source;
         translatorName = args.translator or null;
       };
@@ -272,7 +270,7 @@ let
 
 in
 {
-  inherit dlib tlib init;
+  inherit dlib init;
   riseAndShine = throw "Use makeFlakeOutputs instead of riseAndShine.";
   makeFlakeOutpus = makeFlakeOutputsFunc;
 }
