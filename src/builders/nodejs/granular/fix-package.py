@@ -47,7 +47,9 @@ if version not in ["unknown", package_json.get('version')]:
 # This is mostly needed to replace git references with exact versions,
 # as NPM install will otherwise re-fetch these
 if 'dependencies' in package_json:
-  for pname, version in package_json['dependencies'].items():
+  dependencies = package_json['dependencies']
+  # dependencies can be a list or dict
+  for pname in dependencies:
     if 'bundledDependencies' in package_json\
         and pname in package_json['bundledDependencies']:
       continue
@@ -57,8 +59,10 @@ if 'dependencies' in package_json:
         file=sys.stderr
       )
       continue
-    if available_deps[pname] != package_json['dependencies'][pname]:
-      package_json['dependencies'][pname] = available_deps[pname]
+    version =\
+      'unknown' if isinstance(dependencies, list) else dependencies[pname]
+    if available_deps[pname] != version:
+      version = available_deps[pname]
       changed = True
       print(
         f"package.json: Pinning version '{version}' to '{available_deps[pname]}'"
@@ -71,7 +75,7 @@ if 'bin' in package_json and package_json['bin']:
   bin = package_json['bin']
 
   if isinstance(bin, str):
-    name = package_json['name']
+    name = package_json['name'].split('/')[-1]
     if not os.path.isfile(bin):
       raise Exception(f"binary specified in package.json doesn't exist: {bin}")
     source = f'{out}/lib/node_modules/.bin/{name}'
