@@ -62,7 +62,7 @@ class AddCommand(Command):
       multiple=True
     ),
     option("force", None, "override existing files", flag=True),
-    option("no-default-nix", None, "create default.nix", flag=True),
+    option("no-default-nix", None, "do not create default.nix", flag=True),
     option("invalidation-hash", None, "invalidation hash to attach", flag=False),
   ]
 
