@@ -144,7 +144,7 @@ let
           subsystem
           type
         ;
-        compatible = t.compatiblePaths { inherit source; };
+        compatible = t.compatible { inherit source; };
       });
 
   # also includes subdirectories of the given paths up to a certain depth

@@ -210,7 +210,7 @@ in
       });
 
 
-  compatiblePaths =
+  compatible =
     {
       source,
     }:

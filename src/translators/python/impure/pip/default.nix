@@ -107,8 +107,7 @@ in
       '';
 
 
-  # from a given list of paths, this function returns all paths which can be processed by this translator
-  compatiblePaths =
+  compatible =
     {
       source,
     }:

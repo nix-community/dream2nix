@@ -46,10 +46,9 @@
       '';
 
 
-  # From a given list of paths, this function returns all paths which can be processed by this translator.
-  # This allows the framework to detect if the translator is compatible with the given inputs
+  # This allows the framework to detect if the translator is compatible with the given input
   # to automatically select the right translator.
-  compatiblePaths =
+  compatible =
     {
       source,
     }:
