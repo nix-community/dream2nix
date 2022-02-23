@@ -7,9 +7,6 @@
     # required for builder go/gomod2nix
     gomod2nix = { url = "github:tweag/gomod2nix"; flake = false; };
 
-    # required for translator nodejs/pure/package-lock
-    nix-parsec = { url = "github:nprindle/nix-parsec"; flake = false; };
-
     # required for translator pip
     mach-nix = { url = "mach-nix"; flake = false; };
 
@@ -24,7 +21,6 @@
     self,
     gomod2nix,
     mach-nix,
-    nix-parsec,
     nixpkgs,
     node2nix,
     poetry2nix,
@@ -58,11 +54,6 @@
         ];
         node2nix = [
           "nix/node-env.nix"
-          "LICENSE"
-        ];
-        nix-parsec = [
-          "parsec.nix"
-          "lexer.nix"
           "LICENSE"
         ];
         poetry2nix = [

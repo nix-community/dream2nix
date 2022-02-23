@@ -96,12 +96,6 @@ let
       pkgs.callPackage "${externalSources.node2nix}/nix/node-env.nix" {
         inherit nodejs;
       };
-    nix-parsec = rec {
-      lexer = import "${externalSources.nix-parsec}/lexer.nix" {
-        inherit parsec;
-      };
-      parsec = import "${externalSources.nix-parsec}/parsec.nix";
-    };
   };
 
   dreamOverrides =
