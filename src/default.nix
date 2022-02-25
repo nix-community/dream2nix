@@ -419,7 +419,7 @@ let
   resolveAllProjects=
     {
       source ? null,
-      tree ? dlib.prepareSourceTree source,
+      tree ? dlib.prepareSourceTree { inherit source; },
       pname,
     }@args:
 
@@ -430,52 +430,79 @@ let
       getTranslator = subsystem: translatorName:
         translators.translators."${subsystem}".all."${translatorName}";
 
-      isImpure = project:
-        (getTranslator project.subsystem project.translator).type == "impure";
+      isImpure = project: translatorName:
+        (getTranslator project.subsystem translatorName).type == "impure";
 
       getDreamLockPath = project:
-        "${config.projectsDir}/${pname}/${project.relPath}/dream-lock.json";
+        config.projectRoot +
+        (dlib.sanitizeRelativePath
+          "${config.packagesDir}/${pname}/${project.relPath}/dream-lock.json");
 
-      projects =
+      getProjectKey = project:
+        "${project.name}_|_${project.subsystem}_|_${project.relPath}";
+
+      # list of projects extended with some information requried for processing
+      projectsList =
         l.map
           (project: project // rec {
             dreamLockPath = getDreamLockPath project;
             dreamLock = dlib.readDreamLock dreamLockPath;
+            impure = isImpure project translator;
+            key = getProjectKey project;
             resolved = l.pathExists dreamLockPath;
-            impure = isImpure project;
+            translator = l.head project.translators;
           })
           discoveredProjects;
 
-      # unresolved dimpure projects cannot be resolved on the fly
-      projectsImpureUnresolved =
-        l.filter (project: project.impure && ! project.resolved) projects;
+      # attrset of projects by key
+      projects =
+        l.listToAttrs
+          (l.map
+            (proj: l.nameValuePair proj.key proj)
+            projectsList);
 
+      # unresolved impure projects cannot be resolved on the fly
+      projectsImpureUnresolved =
+        l.filter (project: project.impure && ! project.resolved) projectsList;
+
+      # for printing the paths inside the error message
       projectsImpureUnresolvedPaths =
         l.map (project: project.relPath) projectsImpureUnresolved;
 
       # projects without existing valid dream-lock.json
-      projectsUnresolved = l.filter (project: ! project.resolved) projects;
+      projectsUnresolved = l.filter (project: ! project.resolved) projectsList;
 
-      # pure projects keyed by '{subsystem}_{translator_name}'
+      # pure projects grouped by translator
       projectsByTranslator =
         l.groupBy
           (proj: "${proj.subsystem}_${l.head proj.translators}")
           projectsUnresolved;
 
       # list of pure projects extended with 'dreamLock' attribute
-      translatedProjects =
-        l.mapAttrsToList
-          (translatorName: projects:
-            let
-              translator = getTranslator projects.subsystem translatorName;
-            in
-              # transaltor will attach dreamLock to project
-              translator.translate {
-                inherit projects source tree;
-              })
-          projectsByTranslator;
+      resolvedProjectsList =
+        l.flatten
+          (l.mapAttrsToList
+            (translatorName: projects:
+              let
+                p = l.head projects;
+                translator = getTranslator p.subsystem p.translator;
+              in
+                # transaltor will attach dreamLock to project
+                translator.translate {
+                  inherit projects source tree;
+                })
+            projectsByTranslator);
 
-      projectsResolved = projects // translatedProjects;
+      # attrset of projects by key which are now resolved
+      resolvedProjectsKeyed =
+        l.listToAttrs
+          (l.map
+            (proj: l.nameValuePair proj.key proj)
+            resolvedProjectsList);
+
+      # replace all unresolved projects with resolved ones
+      projectsFinal =
+        l.attrValues (projects // resolvedProjectsKeyed);
 
     in
       if projectsImpureUnresolved != [] then
@@ -484,7 +511,7 @@ let
             ${l.concatStringsSep "\n  " projectsImpureUnresolvedPaths}
         ''
       else
-        projectsResolved;
+        projectsFinal;
 
   # produce outputs for a dream-lock or a source
   makeOutputs =
@@ -554,6 +581,7 @@ in
     fetchers
     fetchSources
     makeOutputs
+    resolveAllProjects
     riseAndShine
     translators
     updaters

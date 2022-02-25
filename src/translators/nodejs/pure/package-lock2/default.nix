@@ -253,6 +253,8 @@ rec {
 
   version = 2;
 
+  inherit translate;
+
 
   projectName =
     {

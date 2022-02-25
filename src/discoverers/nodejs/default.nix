@@ -21,7 +21,7 @@ let
     let
       nodes = l.readDir path;
     in
-      l.optionals (nodes ? "package-lock.json") [ "package-lock" ]
+      l.optionals (nodes ? "package-lock.json") [ "package-lock2" ]
       ++ l.optionals (nodes ? "yarn.lock") [ "yarn-lock" ]
       ++ [ "package-json" ];
 
