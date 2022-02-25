@@ -70,9 +70,9 @@ let
     mv node-* $out
   '';
 
-  defaultPackage = packages."${defaultPackageName}"."${defaultPackageVersion}";
+  defaultPackage = allPackages."${defaultPackageName}"."${defaultPackageVersion}";
 
-  packages =
+  allPackages =
     lib.mapAttrs
       (name: versions:
         lib.genAttrs
@@ -82,9 +82,12 @@ let
       packageVersions;
 
   outputs = {
-    inherit defaultPackage packages;
+    inherit defaultPackage;
+    packages = {
+      "${defaultPackageName}"."${defaultPackageVersion}" = defaultPackage;
+    };
   };
-
+-
   # This is only executed for electron based packages.
   # Electron ships its own version of node, requiring a rebuild of native
   # extensions.
@@ -156,7 +159,7 @@ let
       nodeDeps =
         lib.forEach
           deps
-          (dep: packages."${dep.name}"."${dep.version}" );
+          (dep: allPackages."${dep.name}"."${dep.version}" );
 
       dependenciesJson = b.toJSON
         (lib.listToAttrs
