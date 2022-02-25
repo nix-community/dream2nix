@@ -416,6 +416,76 @@ let
     in
       allOutputs;
 
+  resolveAllProjects=
+    {
+      source ? null,
+      tree ? dlib.prepareSourceTree source,
+      pname,
+    }@args:
+
+    let
+
+      discoveredProjects = dlib.discoverers.discoverProjects { inherit tree; };
+
+      getTranslator = subsystem: translatorName:
+        translators.translators."${subsystem}".all."${translatorName}";
+
+      isImpure = project:
+        (getTranslator project.subsystem project.translator).type == "impure";
+
+      getDreamLockPath = project:
+        "${config.projectsDir}/${pname}/${project.relPath}/dream-lock.json";
+
+      projects =
+        l.map
+          (project: project // rec {
+            dreamLockPath = getDreamLockPath project;
+            dreamLock = dlib.readDreamLock dreamLockPath;
+            resolved = l.pathExists dreamLockPath;
+            impure = isImpure project;
+          })
+          discoveredProjects;
+
+      # unresolved dimpure projects cannot be resolved on the fly
+      projectsImpureUnresolved =
+        l.filter (project: project.impure && ! project.resolved) projects;
+
+      projectsImpureUnresolvedPaths =
+        l.map (project: project.relPath) projectsImpureUnresolved;
+
+      # projects without existing valid dream-lock.json
+      projectsUnresolved = l.filter (project: ! project.resolved) projects;
+
+      # pure projects keyed by '{subsystem}_{translator_name}'
+      projectsByTranslator =
+        l.groupBy
+          (proj: "${proj.subsystem}_${l.head proj.translators}")
+          projectsUnresolved;
+
+      # list of pure projects extended with 'dreamLock' attribute
+      translatedProjects =
+        l.mapAttrsToList
+          (translatorName: projects:
+            let
+              translator = getTranslator projects.subsystem translatorName;
+            in
+              # transaltor will attach dreamLock to project
+              translator.translate {
+                inherit projects source tree;
+              })
+          projectsByTranslator;
+
+      projectsResolved = projects // translatedProjects;
+
+    in
+      if projectsImpureUnresolved != [] then
+        throw ''
+          The following projects cannot be resolved on the fly and require preprocessing:
+            ${l.concatStringsSep "\n  " projectsImpureUnresolvedPaths}
+        ''
+      else
+        projectsResolved;
+
   # produce outputs for a dream-lock or a source
   makeOutputs =
     {
