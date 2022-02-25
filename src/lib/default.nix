@@ -16,16 +16,24 @@ let
       discoverers
       listDirs
       listFiles
+      nameVersionPair
       prepareSourceTree
       readTextFile
       translators
       sanitizeRelativePath
+    ;
+
+    inherit (parseUtils)
+      identifyGitUrl
+      parseGitUrl
     ;
   };
 
   # other libs
   translators = import ./translators.nix { inherit dlib lib; };
   discoverers = import ../discoverers { inherit dlib lib; };
+
+  parseUtils = callPackageDream ./parsing.nix {};
 
 
   # INTERNAL
@@ -159,6 +167,9 @@ let
   listDirs = path: l.attrNames (l.filterAttrs (n: v: v == "directory") (builtins.readDir path));
 
   listFiles = path: l.attrNames (l.filterAttrs (n: v: v == "regular") (builtins.readDir path));
+
+  nameVersionPair = name: version:
+    { inherit name version; };
 
   prepareSourceTree =
     {

@@ -24,8 +24,6 @@ let
 
   overrideUtils = callPackageDream ./override.nix {};
 
-  parseUtils = callPackageDream ./parsing.nix {};
-
   translatorUtils = callPackageDream ./translator.nix {};
 
   poetry2nixSemver = import "${externalSources.poetry2nix}/semver.nix" {
@@ -40,8 +38,6 @@ let
 
 in
 
-parseUtils
-//
 overrideUtils
 //
 translatorUtils
@@ -50,8 +46,11 @@ rec {
 
   inherit (dlib)
     dirNames
+    identifyGitUrl
     listDirs
     listFiles
+    nameVersionPair
+    parseGitUrl
     readTextFile
   ;
 
@@ -171,9 +170,6 @@ rec {
 
   sanitizeDerivationName = name:
     lib.replaceStrings [ "@" "/" ] [ "__at__" "__slash__" ] name;
-
-  nameVersionPair = name: version:
-    { inherit name version; };
 
   # determines if version v1 is greater than version v2
   versionGreater = v1: v2: b.compareVersions v1 v2 == 1;

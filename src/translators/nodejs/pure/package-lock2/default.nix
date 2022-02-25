@@ -80,7 +80,7 @@ let
       identifyGitSource = dependencyObject:
         # TODO: when integrity is there, and git url is github then use tarball instead
         # ! (dependencyObject ? integrity) &&
-          utils.identifyGitUrl dependencyObject.version;
+          dlib.identifyGitUrl dependencyObject.version;
 
       getVersion = dependencyObject:
         let
@@ -91,7 +91,7 @@ let
           if npmMatch != null then
             b.elemAt npmMatch 0
           else if identifyGitSource dependencyObject then
-            "0.0.0-rc.${b.substring 0 8 (utils.parseGitUrl dependencyObject.version).rev}"
+            "0.0.0-rc.${b.substring 0 8 (dlib.parseGitUrl dependencyObject.version).rev}"
           else if lib.hasPrefix "file:" dependencyObject.version then
             let
               path = getPath dependencyObject;
@@ -218,7 +218,7 @@ let
         sourceConstructors = {
 
           git = dependencyObject:
-            utils.parseGitUrl dependencyObject.version;
+            dlib.parseGitUrl dependencyObject.version;
 
           http = dependencyObject:
             if lib.hasPrefix "https://" dependencyObject.version then

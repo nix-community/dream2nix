@@ -3,7 +3,7 @@
 
   # dream2nix
   fetchers,
-  utils,
+  dlib,
   ...
 }:
 let
@@ -200,7 +200,7 @@ let
 
               cyclesList =
                 findCycles
-                  (utils.nameVersionPair defaultPackage packages."${defaultPackage}")
+                  (dlib.nameVersionPair defaultPackage packages."${defaultPackage}")
                   {}
                   [];
             in
