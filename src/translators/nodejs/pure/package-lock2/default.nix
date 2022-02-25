@@ -38,20 +38,18 @@ let
       allProjectsTranslated =
         l.map
           (proj:
-            translateOne
-              {
-                inherit translatorName utils name noDev nodejs;
-                source = "${args.source}/${proj.relPath}";
-                packageLock = getLock proj;
-              })
+            proj // {
+              dreamLock =
+                translateOne {
+                  inherit translatorName utils name noDev nodejs;
+                  source = "${args.source}/${proj.relPath}";
+                  packageLock = getLock proj;
+                };
+            })
           projects;
 
     in
-      l.foldl'
-        l.recursiveUpdate
-        {}
-        # reverse the project list so the first defaultPacke persists
-        (lib.reverseList allProjectsTranslated);
+      allProjectsTranslated;
 
 
   translateOne =

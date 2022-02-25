@@ -13,10 +13,11 @@ let
       (v: v ? discover)
       discoverers;
 
-  discoverProjects = source:
-    let
-      tree = dlib.prepareSourceTree { inherit source; };
-    in
+  discoverProjects =
+    {
+      source ? null,
+      tree ? dlib.prepareSourceTree { inherit source; },
+    }:
       l.flatten
         (l.map
           (discoverer: discoverer.discover { inherit tree; })
