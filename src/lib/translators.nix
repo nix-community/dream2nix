@@ -13,11 +13,28 @@ let
 
   # attrset of: subsystem -> translator-type -> (function subsystem translator-type)
   mkTranslatorsSet = function:
-    l.genAttrs (dlib.dirNames ../translators) (subsystem:
-      l.genAttrs
-        (l.filter (dir: builtins.pathExists (../translators + "/${subsystem}/${dir}")) translatorTypes)
-        (transType: function subsystem transType)
-    );
+    l.genAttrs
+      (dlib.dirNames ../translators)
+      (subsystem:
+        let
+          availableTypes =
+            l.filter
+              (type: l.pathExists (../translators + "/${subsystem}/${type}"))
+              translatorTypes;
+
+          translatorsForTypes =
+            l.genAttrs
+              availableTypes
+              (transType: function subsystem transType);
+
+        in
+          translatorsForTypes // {
+            all =
+              l.foldl'
+                (a: b: a // b)
+                {}
+                (l.attrValues translatorsForTypes);
+          });
 
   # flat list of all translators sorted by priority (pure translators first)
   translatorsList =
@@ -58,9 +75,22 @@ let
 
   # attrset of: subsystem -> translator-type -> translator
   translators = mkTranslatorsSet (subsystem: type:
-    l.genAttrs (dlib.dirNames (../translators + "/${subsystem}/${type}")) (translatorName:
-      callTranslator subsystem type translatorName (../translators + "/${subsystem}/${type}/${translatorName}") {}
-    )
+    let
+      translatorNames =
+        dlib.dirNames (../translators + "/${subsystem}/${type}");
+
+      translatorsLoaded =
+        l.genAttrs
+          translatorNames
+          (translatorName:
+            callTranslator
+              subsystem
+              type
+              translatorName
+              (../translators + "/${subsystem}/${type}/${translatorName}")
+              {});
+    in
+      translatorsLoaded
   );
 
   mapTranslators = f:

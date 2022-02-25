@@ -33,7 +33,7 @@ let
   translators = import ./translators.nix { inherit dlib lib; };
   discoverers = import ../discoverers { inherit dlib lib; };
 
-  parseUtils = callPackageDream ./parsing.nix {};
+  parseUtils = import ./parsing.nix { inherit lib; };
 
 
   # INTERNAL
