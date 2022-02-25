@@ -87,7 +87,7 @@ let
       "${defaultPackageName}"."${defaultPackageVersion}" = defaultPackage;
     };
   };
--
+
   # This is only executed for electron based packages.
   # Electron ships its own version of node, requiring a rebuild of native
   # extensions.
