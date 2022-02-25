@@ -5,9 +5,10 @@
 
 let
   b = builtins;
+  l = lib // builtins;
 in
 
-{
+rec {
   translate =
     {
       translatorName,

@@ -52,13 +52,12 @@ rec {
     dirNames
     listDirs
     listFiles
+    readTextFile
   ;
 
   dreamLock = dreamLockUtils;
 
   inherit (dreamLockUtils) readDreamLock;
-
-  readTextFile = file: lib.replaceStrings [ "\r\n" ] [ "\n" ] (b.readFile file);
 
   traceJ = toTrace: eval: b.trace (b.toJSON toTrace) eval;
 
