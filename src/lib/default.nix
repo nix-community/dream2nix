@@ -71,7 +71,7 @@ let
         if prefix == "" then
           name
         else
-          "${prefix}/name";
+          "${prefix}/${name}";
 
       directories =
         l.mapAttrs
@@ -85,19 +85,41 @@ let
 
       files =
         l.mapAttrs
-          (fname: _: l.trace fname rec {
+          (fname: _: rec {
             name = fname;
             fullPath = "${fullPath'}/${fname}";
-            relPath = makeNewPath relPath fname;
+            relPath = makeNewPath relPath' fname;
             content = readTextFile fullPath;
             jsonContent = l.fromJSON content;
             tomlContent = l.fromTOML content;
           })
           fileNames;
 
+      getNodeFromPath = path:
+        let
+          pathSplit = l.splitString "/" path;
+          dirSplit = l.init pathSplit;
+          leaf = l.last pathSplit;
+
+          dirAttrPath =
+            l.init
+              (l.concatMap
+                (x: [x] ++ ["directories"])
+                dirSplit);
+
+          dir = l.getAttrFromPath dirAttrPath directories;
+
+        in
+          if dir ? directories."${leaf}" then
+            dir.directories."${leaf}"
+          else if dir ? files."${leaf}" then
+            dir.files."${leaf}"
+          else
+            throw "could not find file or directory ${path} in ${fullPath'}";
+
     in
       {
-        inherit name files relPath;
+        inherit files getNodeFromPath name relPath;
 
         fullPath = fullPath';
       }
