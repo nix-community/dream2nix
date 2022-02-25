@@ -52,6 +52,8 @@ let
 
   b = builtins;
 
+  l = lib // builtins;
+
   config = (import ./utils/config.nix).loadConfig args.config or {};
 
   configFile = pkgs.writeText "dream2nix-config.json" (b.toJSON config);
@@ -352,10 +354,9 @@ let
     Use makeOutputs instead of riseAndShine.
   '';
 
-  # produce outputs for a dream-lock or a source
-  makeOutputs =
+  makeOutputsForDreamLock =
     {
-      source,  # source tree or dream-lock
+      dreamLock,
       builder ? null,
       fetcher ? null,
       inject ? {},
@@ -365,30 +366,11 @@ let
       translator ? null,
       translatorArgs ? {},
     }@args:
-
     let
-
-      dreamLock' =
-        # in case of a dream-lock.json file or dream-lock attributes
-        if ( lib.isAttrs args.source && args.source ? _generic && args.source ? _subsytem )
-            || lib.hasSuffix "dream-lock.json" source then
-          args.source
-        # input is a source tree -> generate the dream-lock
-        else
-          makeDreamLockForSource { inherit source translator translatorArgs; };
-
       # parse dreamLock
-      dreamLockLoaded = utils.readDreamLock { dreamLock = dreamLock'; };
+      dreamLockLoaded = utils.readDreamLock { inherit (args) dreamLock; };
       dreamLock = dreamLockLoaded.lock;
       dreamLockInterface = dreamLockLoaded.interface;
-
-      # rise and shine sub packages
-      builderOutputsSub =
-        b.mapAttrs
-          (dirName: dreamLock:
-            makeOutputs
-              (args // {source = dreamLock.lock; }))
-          dreamLockInterface.subDreamLocks;
 
       builder' =
         if builder == null then
@@ -428,6 +410,54 @@ let
         inject =
           utils.dreamLock.decompressDependencyGraph args.inject or {};
       };
+
+      allOutputs = builderOutputs;
+
+    in
+      allOutputs;
+
+  # produce outputs for a dream-lock or a source
+  makeOutputs =
+    {
+      source,  # source tree or dream-lock
+      builder ? null,
+      fetcher ? null,
+      inject ? {},
+      sourceOverrides ? oldSources: {},
+      packageOverrides ? {},
+      builderArgs ? {},
+      translator ? null,
+      translatorArgs ? {},
+    }@args:
+
+    let
+
+      dreamLock' =
+        # in case of a dream-lock.json file or dream-lock attributes
+        if ( lib.isAttrs args.source && args.source ? _generic && args.source ? _subsytem )
+            || lib.hasSuffix "dream-lock.json" source then
+          args.source
+        # input is a source tree -> generate the dream-lock
+        else
+          makeDreamLockForSource { inherit source translator translatorArgs; };
+
+      # parse dreamLock
+      dreamLockLoaded = utils.readDreamLock { dreamLock = dreamLock'; };
+      dreamLock = dreamLockLoaded.lock;
+      dreamLockInterface = dreamLockLoaded.interface;
+
+      # sub packages
+      builderOutputsSub =
+        b.mapAttrs
+          (dirName: dreamLock:
+            makeOutputs
+              (args // {source = dreamLock.lock; }))
+          dreamLockInterface.subDreamLocks;
+
+      builderOutputs = makeOutputsForDreamLock
+        ((b.removeAttrs args ["source"]) // {
+          inherit dreamLock;
+        });
 
       allOutputs =
         { subPackages = builderOutputsSub; }
