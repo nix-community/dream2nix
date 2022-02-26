@@ -25,9 +25,10 @@
   buildPackageWithOtherBuilder, # { builder, name, version }: -> drv
 
   # Attributes
-  subsystemAttrs,       # attrset
+  subsystemAttrs,          # attrset
   defaultPackageName,      # string
   defaultPackageVersion,   # string
+  packages,                # list
 
   # attrset of pname -> versions,
   # where versions is a list of version strings
@@ -83,9 +84,17 @@ let
 
   outputs = {
     inherit defaultPackage;
-    packages = {
-      "${defaultPackageName}"."${defaultPackageVersion}" = defaultPackage;
-    };
+
+    # select only the packages listed in dreamLock as main packages
+    packages =
+      b.foldl'
+        (ps: p: ps // p)
+        {}
+        (lib.mapAttrsToList
+          (name: version:{
+            "${name}"."${version}" = allPackages."${name}"."${version}";
+          })
+          packages);
   };
 
   # This is only executed for electron based packages.
