@@ -46,53 +46,24 @@ rec {
 
   inherit (dlib)
     dirNames
+    callViaEnv
     identifyGitUrl
+    latestVersion
     listDirs
     listFiles
     nameVersionPair
     parseGitUrl
     readTextFile
+    recursiveUpdateUntilDepth
+    sanitizeDerivationName
+    traceJ
   ;
 
   dreamLock = dreamLockUtils;
 
   inherit (dreamLockUtils) readDreamLock;
 
-  traceJ = toTrace: eval: b.trace (b.toJSON toTrace) eval;
-
-  isFile = path: (builtins.readDir (b.dirOf path))."${b.baseNameOf path}" ==  "regular";
-
-  isDir = path: (builtins.readDir (b.dirOf  path))."${b.baseNameOf path}" ==  "directory";
-
   toDrv = path: runCommand "some-drv" {} "cp -r ${path} $out";
-
-  # Calls any function with an attrset arugment, even if that function
-  # doesn't accept an attrset argument, in which case the arguments are
-  # recursively applied as parameters.
-  # For this to work, the function parameters defined by the called function
-  # must always be ordered alphabetically.
-  callWithAttrArgs = func: args:
-    let
-      applyParamsRec = func: params:
-        if b.length params == 1 then
-          func (b.head params)
-        else
-          applyParamsRec
-            (func (b.head params))
-            (b.tail params);
-
-    in
-      if lib.functionArgs func == {} then
-        applyParamsRec func (b.attrValues args)
-      else
-        func args;
-
-  # call a function using arguments defined by the env var FUNC_ARGS
-  callViaEnv = func:
-    let
-      funcArgs = b.fromJSON (b.readFile (b.getEnv "FUNC_ARGS"));
-    in
-      callWithAttrArgs func funcArgs;
 
   # hash the contents of a path via `nix hash path`
   hashPath = algo: path:
@@ -168,22 +139,7 @@ rec {
       '';
     };
 
-  sanitizeDerivationName = name:
-    lib.replaceStrings [ "@" "/" ] [ "__at__" "__slash__" ] name;
-
-  # determines if version v1 is greater than version v2
-  versionGreater = v1: v2: b.compareVersions v1 v2 == 1;
-
-  # picks the latest version from a list of version strings
-  latestVersion = versions:
-    b.head
-      (lib.sort versionGreater versions);
-
   satisfiesSemver = poetry2nixSemver.satisfiesSemver;
-
-  # like nixpkgs recursiveUpdateUntil, but with the depth as a stop condition
-  recursiveUpdateUntilDepth = depth: lhs: rhs:
-    lib.recursiveUpdateUntil (path: l: r: (b.length path) > depth) lhs rhs;
 
   # a script that produces and dumps the dream-lock json for a given source
   makePackageLockScript =

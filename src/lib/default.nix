@@ -11,16 +11,21 @@ let
   dlib = {
     inherit
       calcInvalidationHash
+      callViaEnv
       containsMatchingFile
       dirNames
       discoverers
+      latestVersion
       listDirs
       listFiles
       nameVersionPair
       prepareSourceTree
       readTextFile
+      recursiveUpdateUntilDepth
       translators
+      sanitizeDerivationName
       sanitizeRelativePath
+      traceJ
     ;
 
     inherit (parseUtils)
@@ -37,6 +42,27 @@ let
 
 
   # INTERNAL
+
+  # Calls any function with an attrset arugment, even if that function
+  # doesn't accept an attrset argument, in which case the arguments are
+  # recursively applied as parameters.
+  # For this to work, the function parameters defined by the called function
+  # must always be ordered alphabetically.
+  callWithAttrArgs = func: args:
+    let
+      applyParamsRec = func: params:
+        if l.length params == 1 then
+          func (l.head params)
+        else
+          applyParamsRec
+            (func (l.head params))
+            (l.tail params);
+
+    in
+      if lib.functionArgs func == {} then
+        applyParamsRec func (l.attrValues args)
+      else
+        func args;
 
   # prepare source tree for executing discovery phase
   # produces this structure:
@@ -145,6 +171,9 @@ let
     in
       self;
 
+  # determines if version v1 is greater than version v2
+  versionGreater = v1: v2: l.compareVersions v1 v2 == 1;
+
 
   # EXPORTED
 
@@ -162,6 +191,13 @@ let
         (l.mapAttrsToList (k: v: "${k}=${l.toString v}") translatorArgs)}
     '';
 
+  # call a function using arguments defined by the env var FUNC_ARGS
+  callViaEnv = func:
+    let
+      funcArgs = l.fromJSON (l.readFile (l.getEnv "FUNC_ARGS"));
+    in
+      callWithAttrArgs func funcArgs;
+
   # Returns true if every given pattern is satisfied by at least one file name
   # inside the given directory.
   # Sub-directories are not recursed.
@@ -172,6 +208,11 @@ let
 
   # directory names of a given directory
   dirNames = dir: l.attrNames (l.filterAttrs (name: type: type == "directory") (builtins.readDir dir));
+
+  # picks the latest version from a list of version strings
+  latestVersion = versions:
+    l.head
+      (lib.sort versionGreater versions);
 
   listDirs = path: l.attrNames (l.filterAttrs (n: v: v == "directory") (builtins.readDir path));
 
@@ -189,8 +230,17 @@ let
 
   readTextFile = file: l.replaceStrings [ "\r\n" ] [ "\n" ] (l.readFile file);
 
+  # like nixpkgs recursiveUpdateUntil, but with the depth as a stop condition
+  recursiveUpdateUntilDepth = depth: lhs: rhs:
+    lib.recursiveUpdateUntil (path: l: r: (l.length path) > depth) lhs rhs;
+
+  sanitizeDerivationName = name:
+    lib.replaceStrings [ "@" "/" ] [ "__at__" "__slash__" ] name;
+
   sanitizeRelativePath = path:
     l.removePrefix "/" (l.toString (l.toPath "/${path}"));
+
+  traceJ = toTrace: eval: l.trace (l.toJSON toTrace) eval;
 
 in
 
