@@ -26,8 +26,8 @@ let
       ++ [ "package-json" ];
 
   # returns the parsed package.json of a given directory
-        getPackageJson = dirPath:
-          l.fromJSON (l.readFile "${dirPath}/package.json");
+  getPackageJson = dirPath:
+    l.fromJSON (l.readFile "${dirPath}/package.json");
 
   # returns all relative paths to workspaces defined by a glob
   getWorkspacePaths = glob: tree:

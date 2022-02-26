@@ -7,6 +7,32 @@ let
   b = builtins;
   l = lib // builtins;
 
+  # One translator call can process a whole workspace containing all
+  # sub-packages of that workspace.
+  # Therefore we can filter out projects which are children of a workspace.
+  filterProjects = projects:
+    let
+      workspaceRoots =
+        l.filter
+          (proj: proj.subsystemInfo.workspaces or [] != [])
+          projects;
+
+      allWorkspaceChildren =
+        l.flatten
+          (l.map
+            (root: root.subsystemInfo.workspaces)
+            workspaceRoots);
+
+      childrenRemoved =
+        l.filter
+          (proj:
+            (! b.elem proj.relPath allWorkspaceChildren))
+          projects;
+
+    in
+      childrenRemoved;
+
+
   translate =
     {
       translatorName,
@@ -24,7 +50,7 @@ let
       ...
     }@args:
     let
-      getLock = project:
+      getPackageLock = project:
         let
           # returns the parsed package-lock.json for a given project
           fileRelPath =
@@ -35,18 +61,26 @@ let
         in
           (tree.getNodeFromPath fileRelPath).jsonContent;
 
+      getPackageJson = project:
+        let
+          node = tree.getNodeFromPath "${project.relPath}/package.json";
+        in
+          node.jsonContent;
+
+      filteredProjects = filterProjects projects;
+
       allProjectsTranslated =
         l.map
           (proj:
-            proj // {
-              dreamLock =
-                translateOne {
-                  inherit translatorName utils name noDev nodejs;
-                  source = "${args.source}/${proj.relPath}";
-                  packageLock = getLock proj;
-                };
+            translateOne {
+              inherit translatorName utils name noDev nodejs;
+              source = "${args.source}/${proj.relPath}";
+              tree = tree.getNodeFromPath proj.relPath;
+              packageLock = getPackageLock proj;
+              packageJson = getPackageJson proj;
+              workspaces = proj.subsystemInfo.workspaces or [];
             })
-          projects;
+          filteredProjects;
 
     in
       allProjectsTranslated;
@@ -56,10 +90,15 @@ let
     {
       translatorName,
       utils,
-
       source,
-      packageLock,
+      tree,
 
+      # subsystem specific
+      packageLock,
+      packageJson,
+      workspaces,
+
+      # translator args
       name,
       noDev,
       nodejs,
@@ -73,7 +112,30 @@ let
 
       parsed = packageLock;
 
-      parsedDependencies = parsed.dependencies or {};
+      workspacePackageJson =
+        l.genAttrs
+          workspaces
+          (wsRelPath:
+            (tree.getNodeFromPath "${wsRelPath}/package.json").jsonContent);
+
+      workspacePackages =
+        lib.mapAttrs'
+          (wsRelPath: json:
+            l.nameValuePair
+              json.name
+              json.version)
+          workspacePackageJson;
+
+      rootDependencies =
+        packageLock.dependencies or {};
+
+      packageJsonDeps =
+        packageJson.dependencies or {} // packageJson.devDependencies or {};
+
+      parsedDependencies =
+        l.filterAttrs
+          (name: dep: packageJsonDeps ? "${name}")
+          parsed.dependencies or {};
 
       identifyGitSource = dependencyObject:
         # TODO: when integrity is there, and git url is github then use tarball instead
@@ -126,7 +188,8 @@ let
           )
           dependencies;
 
-      packageLockWithPinnedVersions = pinVersions parsedDependencies parsedDependencies;
+      pinnedRootDeps =
+        pinVersions rootDependencies rootDependencies;
 
       createMissingSource = name: version:
         {
@@ -148,18 +211,20 @@ let
         inherit translatorName;
 
         # values
-        inputData = packageLockWithPinnedVersions;
+        inputData = pinnedRootDeps;
 
         defaultPackage =
           if name != "{automatic}" then
             name
           else
-            parsed.name or (throw (
+            packageJson.name or (throw (
               "Could not identify package name. "
               + "Please specify extra argument 'name'"
             ));
 
-        packages."${defaultPackage}" = parsed.version or "unknown";
+        packages =
+          { "${defaultPackage}" = parsed.version or "unknown"; }
+          // workspacePackages;
 
         mainPackageDependencies =
           lib.mapAttrsToList
