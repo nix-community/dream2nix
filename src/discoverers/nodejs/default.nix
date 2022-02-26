@@ -46,7 +46,7 @@ let
       packageJson = tree.files."package.json".jsonContent;
     in
       l.flatten
-        (l.forEach packageJson.workspaces
+        (l.forEach (packageJson.workspaces or [])
           (glob:
             let
               workspacePaths = getWorkspacePaths glob tree;
