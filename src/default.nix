@@ -416,7 +416,7 @@ let
     in
       allOutputs;
 
-  resolveAllProjects=
+  resolveProjectsFromSource =
     {
       source ? null,
       tree ? dlib.prepareSourceTree { inherit source; },
@@ -434,9 +434,17 @@ let
         (getTranslator project.subsystem translatorName).type == "impure";
 
       getDreamLockPath = project:
-        config.projectRoot +
-        (dlib.sanitizeRelativePath
-          "${config.packagesDir}/${pname}/${project.relPath}/dream-lock.json");
+        let
+          root =
+            if config.projectRoot == null then
+              "/projectRoot_not_set_in_dream2nix_config"
+            else
+              config.projectRoot;
+        in
+          "${root}/"
+          +
+          (dlib.sanitizeRelativePath
+            "${config.packagesDir}/${pname}/${project.relPath}/dream-lock.json");
 
       getProjectKey = project:
         "${project.name}_|_${project.subsystem}_|_${project.relPath}";
@@ -479,7 +487,7 @@ let
           projectsUnresolved;
 
       # list of pure projects extended with 'dreamLock' attribute
-      resolvedProjectsList =
+      dreamLocks =
         l.flatten
           (l.mapAttrsToList
             (translatorName: projects:
@@ -493,17 +501,6 @@ let
                 })
             projectsByTranslator);
 
-      # attrset of projects by key which are now resolved
-      resolvedProjectsKeyed =
-        l.listToAttrs
-          (l.map
-            (proj: l.nameValuePair proj.key proj)
-            resolvedProjectsList);
-
-      # replace all unresolved projects with resolved ones
-      projectsFinal =
-        l.attrValues (projects // resolvedProjectsKeyed);
-
     in
       if projectsImpureUnresolved != [] then
         throw ''
@@ -511,7 +508,46 @@ let
             ${l.concatStringsSep "\n  " projectsImpureUnresolvedPaths}
         ''
       else
-        projectsFinal;
+        dreamLocks;
+
+  # transform a list of resolved projects to buildable outputs
+  realizeProjects =
+    {
+      dreamLocks ? resolveProjectsFromSource { inherit pname source; },
+
+      # alternative way of calling (for debugging)
+      pname ? null,
+      source ? null,
+    }:
+    let
+      projectOutputs =
+        l.map
+          (dreamLock: makeOutputsForDreamLock rec {
+            inherit dreamLock;
+            sourceOverrides =
+              let
+                defaultPackage = dreamLock._generic.defaultPackage;
+                defaultPackageVersion =
+                  dreamLock._generic.packages."${defaultPackage}";
+              in
+                oldSources: {
+                  "${defaultPackage}"."${defaultPackageVersion}" = source;
+                };
+          })
+          dreamLocks;
+
+      mergedOutputs =
+        l.foldl'
+          (all: outputs: all // {
+            packages = all.packages or {} // outputs.packages;
+          })
+          {}
+          projectOutputs;
+
+    in
+      mergedOutputs;
+
+
 
   # produce outputs for a dream-lock or a source
   makeOutputs =
@@ -581,7 +617,8 @@ in
     fetchers
     fetchSources
     makeOutputs
-    resolveAllProjects
+    realizeProjects
+    resolveProjectsFromSource
     riseAndShine
     translators
     updaters
