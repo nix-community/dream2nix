@@ -23,7 +23,7 @@ let
       defaults =  {
         overridesDirs = [];
         packagesDir = "./packages";
-        projectRoot = /project/root/not/set;
+        projectRoot = null;
         repoName = null;
       };
     in
