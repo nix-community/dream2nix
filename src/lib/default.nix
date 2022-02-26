@@ -115,26 +115,35 @@ let
                 (x: [x] ++ ["directories"])
                 dirSplit);
 
-          dir = l.getAttrFromPath dirAttrPath directories;
+          dir =
+            if dirAttrPath == [ "" ] then
+              self
+            else
+              l.getAttrFromPath dirAttrPath directories;
 
         in
-          if dir ? directories."${leaf}" then
+          if path == "" then
+            self
+          else if dir ? directories."${leaf}" then
             dir.directories."${leaf}"
           else if dir ? files."${leaf}" then
             dir.files."${leaf}"
           else
             throw "could not find file or directory ${path} in ${fullPath'}";
 
-    in
-      {
-        inherit files getNodeFromPath name relPath;
+      self =
+        {
+          inherit files getNodeFromPath name relPath;
 
-        fullPath = fullPath';
-      }
-      # stop recursion if depth is reached
-      // (l.optionalAttrs (depth > 0) {
-        inherit directories;
-      });
+          fullPath = fullPath';
+        }
+        # stop recursion if depth is reached
+        // (l.optionalAttrs (depth > 0) {
+          inherit directories;
+        });
+
+    in
+      self;
 
 
   # EXPORTED
