@@ -23,21 +23,15 @@
 let
   l = lib // builtins;
 
-  vendoring = import ../vendor.nix {
-    inherit lib pkgs getSource getSourceSpec
-    getDependencies getCyclicDependencies subsystemAttrs;
-  };
-
-  getRootSource = import ../getRootSource.nix {
-    inherit getSource getSourceSpec;
-  };
+  utils = import ../utils.nix args;
+  vendoring = import ../vendor.nix (args // { inherit lib pkgs utils; });
 
   crane = externals.crane;
 
   buildPackage = pname: version:
     let
-      src = getRootSource pname version;
-      cargoVendorDir = vendoring.vendorPackageDependencies pname version;
+      src = utils.getRootSource pname version;
+      cargoVendorDir = vendoring.vendorDependencies pname version;
       preBuild = ''
         ${vendoring.writeGitVendorEntries "nix-sources"}
       '';

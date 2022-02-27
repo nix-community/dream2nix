@@ -22,19 +22,13 @@
 let
   l = lib // builtins;
 
-  vendoring = import ../vendor.nix {
-    inherit lib pkgs getSource getSourceSpec
-    getDependencies getCyclicDependencies subsystemAttrs;
-  };
-
-  getRootSource = import ../getRootSource.nix {
-    inherit getSource getSourceSpec;
-  };
+  utils = import ../utils.nix args;
+  vendoring = import ../vendor.nix (args // { inherit lib pkgs utils; });
 
   buildPackage = pname: version:
     let
-      src = getRootSource pname version;
-      vendorDir = vendoring.vendorPackageDependencies pname version;
+      src = utils.getRootSource pname version;
+      vendorDir = vendoring.vendorDependencies pname version;
 
       cargoBuildFlags = "--package ${pname}";
     in

@@ -91,6 +91,16 @@ let
       getCyclicDependencies = pname: version:
         cyclicDependencies."${pname}"."${version}" or [];
 
+      getRoot = pname: version:
+        let spec = getSourceSpec pname version; in
+          if spec.type == "path" then
+            {
+              pname = spec.rootName;
+              version = spec.rootVersion;
+            }
+          else
+            { inherit pname version; };
+
     in
       {
         inherit lock;
@@ -103,6 +113,7 @@ let
             getCyclicDependencies
             getDependencies
             getSourceSpec
+            getRoot
             packages
             packageVersions
             subDreamLocks

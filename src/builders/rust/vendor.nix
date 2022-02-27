@@ -7,6 +7,8 @@
   getDependencies,
   getCyclicDependencies,
   subsystemAttrs,
+
+  utils,
 }:
 let
   l = lib // builtins;
@@ -38,7 +40,7 @@ let
         (l.filter (isCyclic cyclic) direct)
       )
     ));
-in {
+in rec {
   # Generates a shell script that writes git vendor entries to .cargo/config.
   # `replaceWith` is the name of the vendored source(s) to use.
   writeGitVendorEntries = replaceWith:
@@ -122,4 +124,9 @@ in {
         sources
        }
     '';
+
+  # Vendors a package's roots dependencies.
+  vendorDependencies = pname: version:
+    let root = utils.getRootSource pname version; in
+    vendorPackageDependencies root.pname root.version;
 }
