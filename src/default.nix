@@ -426,6 +426,7 @@ let
 
     let
 
+      flakeMode = ! builtins ? currentSystem;
       discoveredProjects = dlib.discoverers.discoverProjects { inherit tree; };
 
       getTranslator = subsystem: translatorName:
@@ -433,6 +434,23 @@ let
 
       isImpure = project: translatorName:
         (getTranslator project.subsystem translatorName).type == "impure";
+
+      isResolved = project:
+        let
+          dreamLockExists = l.pathExists project.dreamLockPath;
+
+          invalidationHash = dlib.calcInvalidationHash {
+            inherit source;
+            # TODO: add translatorArgs
+            translatorArgs = {};
+            translator = project.translator;
+          };
+
+          dreamLockValid =
+            project.dreamLock.lock._generic.invalidationHash or ""
+            == invalidationHash;
+        in
+          dreamLockExists && dreamLockValid;
 
       getDreamLockPath = project:
         let
@@ -453,14 +471,14 @@ let
       # list of projects extended with some information requried for processing
       projectsList =
         l.map
-          (project: project // rec {
+          (project: project // (let self = rec {
             dreamLockPath = getDreamLockPath project;
             dreamLock = dlib.readDreamLock dreamLockPath;
             impure = isImpure project translator;
             key = getProjectKey project;
-            resolved = l.pathExists dreamLockPath;
+            resolved = isResolved self;
             translator = l.head project.translators;
-          })
+          }; in self))
           discoveredProjects;
 
       # attrset of projects by key
@@ -504,10 +522,36 @@ let
 
     in
       if projectsImpureUnresolved != [] then
-        throw ''
-          The following projects cannot be resolved on the fly and require preprocessing:
-            ${l.concatStringsSep "\n  " projectsImpureUnresolvedPaths}
-        ''
+        if flakeMode then
+          throw ''
+            ${"\n"}
+            Run `nix run .#resolve` once to resolve impure projects.
+            The following projects cannot be resolved on the fly and require preprocessing:
+              ${l.concatStringsSep "\n  " projectsImpureUnresolvedPaths}
+          ''
+        else
+          throw ''
+            ${"\n"}
+            The following projects cannot be resolved on the fly and require preprocessing:
+              ${l.concatStringsSep "\n  " projectsImpureUnresolvedPaths}
+          ''
+      else if projectsUnresolved != [] then
+        if flakeMode then
+          b.trace ''
+            ${"\n"}
+            The dream-lock.json for some projects doesn't exist or is outdated.
+            ...Falling back to on-the-fly evaluation (possibly slow).
+            To speed up future evalutations run once:
+              nix run .#resolve
+          ''
+          dreamLocks
+        else
+          b.trace ''
+            ${"\n"}
+            The dream-lock.json for some projects doesn't exist or is outdated.
+            ...Falling back to on-the-fly evaluation (possibly slow).
+          ''
+          dreamLocks
       else
         dreamLocks;
 
@@ -518,22 +562,28 @@ let
 
       # alternative way of calling (for debugging)
       pname ? null,
-      source ? throw "Pass either `dreamLocks` or `source` to realizeProjects",
+      source ? null,
     }:
     let
+
+      defaultSourceOverride = dreamLock:
+        if source == null then
+          {}
+        else
+          let
+            defaultPackage = dreamLock._generic.defaultPackage;
+            defaultPackageVersion =
+              dreamLock._generic.packages."${defaultPackage}";
+          in
+            { "${defaultPackage}"."${defaultPackageVersion}" = source; };
+
+
       projectOutputs =
         l.map
           (dreamLock: makeOutputsForDreamLock rec {
             inherit dreamLock;
-            sourceOverrides =
-              let
-                defaultPackage = dreamLock._generic.defaultPackage;
-                defaultPackageVersion =
-                  dreamLock._generic.packages."${defaultPackage}";
-              in
-                oldSources: {
-                  "${defaultPackage}"."${defaultPackageVersion}" = source;
-                };
+            sourceOverrides = oldSources:
+              (defaultSourceOverride dreamLock);
           })
           dreamLocks;
 
