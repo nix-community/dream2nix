@@ -184,10 +184,9 @@ let
                 && dreamLock.lock._generic.invalidationHash or "" == invalidationHash;
 
               result = translator: args:
-                dream2nix.makeOutputs (argsForward // args // {
+                dream2nix.makeOutputs (argsForward // {
                   # TODO: this triggers the translator finding routine a second time
                   translator = translatorFound.name;
-                  builder = args.builder or null;
                 });
             in
 
