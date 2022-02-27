@@ -19,7 +19,7 @@ let
 
   l = lib // builtins;
 
-  # transforms all V1 translators to V2 translators
+  # transforms V1 translators to V2 translators
   ensureTranslatorV2 = translator:
     let
       version = translator.version or 1;
@@ -29,12 +29,11 @@ let
         translator // {
           translate = args:
             l.map
-              (proj: proj // {
-                dreamLock = translator.translate
+              (proj:
+                translator.translate
                   ((cleanedArgs args) // {
                     source = "${args.source}${proj.relPath}";
-                  });
-              })
+                  }))
               args.projects;
         };
     in
@@ -43,9 +42,36 @@ let
       else
         upgradedTranslator;
 
+  # transforms V2 translators to V1 translators
+  ensureTranslatorV1 = translator:
+    let
+      version = translator.version or 1;
+
+      downgradeTranslator =
+        translator // {
+          translate = args:
+            translator.translate (args // {
+              inherit (args) source;
+              tree = dlib.prepareSourceTree { inherit (args) source; };
+              projects = [{
+                name = translator.projectName { inherit (args) source; };
+                relPath = "";
+                subsystem = translator.subsystem;
+              }];
+            });
+        };
+    in
+      if version == 1 then
+        translator
+      else
+        downgradeTranslator;
+
 
   makeTranslatorV2 = translatorModule:
     ensureTranslatorV2 (makeTranslator translatorModule);
+
+  makeTranslatorV1 = translatorModule:
+    ensureTranslatorV1 (makeTranslator translatorModule);
 
 
   makeTranslator =
@@ -90,7 +116,7 @@ let
         translatorWithDefaults;
 
 
-  translators = dlib.translators.mapTranslators makeTranslator;
+  translators = dlib.translators.mapTranslators makeTranslatorV1;
 
   translatorsV2 = dlib.translators.mapTranslators makeTranslatorV2;
 
