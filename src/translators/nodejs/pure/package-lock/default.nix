@@ -63,7 +63,7 @@ let
             (tree.getNodeFromPath "${dirRelPath}/package.json").jsonContent;
 
           hasNoDependencies =
-            ! packageJson ? dependencies && ! packageJson ? devDependenices;
+            ! packageJson ? dependencies && ! packageJson ? devDependencies;
 
         in
           if hasNoDependencies then
