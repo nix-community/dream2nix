@@ -32,7 +32,8 @@ let
               (proj:
                 translator.translate
                   ((cleanedArgs args) // {
-                    source = "${args.source}${proj.relPath}";
+                    source = "${args.source}/${proj.relPath}";
+                    name = proj.name;
                   }))
               args.projects;
         };
@@ -50,15 +51,16 @@ let
       downgradeTranslator =
         translator // {
           translate = args:
-            translator.translate (args // {
-              inherit (args) source;
-              tree = dlib.prepareSourceTree { inherit (args) source; };
-              projects = [{
-                name = translator.projectName { inherit (args) source; };
-                relPath = "";
-                subsystem = translator.subsystem;
-              }];
-            });
+            l.head
+              (translator.translate (args // {
+                inherit (args) source;
+                tree = dlib.prepareSourceTree { inherit (args) source; };
+                projects = [{
+                  name = translator.projectName { inherit (args) source; };
+                  relPath = "";
+                  subsystem = translator.subsystem;
+                }];
+              }));
         };
     in
       if version == 1 then

@@ -21,7 +21,7 @@ let
     let
       nodes = l.readDir path;
     in
-      l.optionals (nodes ? "package-lock.json") [ "package-lock2" ]
+      l.optionals (nodes ? "package-lock.json") [ "package-lock" ]
       ++ l.optionals (nodes ? "yarn.lock") [ "yarn-lock" ]
       ++ [ "package-json" ];
 
@@ -57,7 +57,9 @@ let
   makeWorkspaceProjectInfo = tree: wsRelPath: parentInfo:
     {
       inherit subsystem;
-      name = (getPackageJson "${tree.fullPath}/${wsRelPath}").name or null;
+      name =
+        (getPackageJson "${tree.fullPath}/${wsRelPath}").name
+        or "${parentInfo.name}/${wsRelPath}";
       relPath = dlib.sanitizeRelativePath "${tree.relPath}/${wsRelPath}";
       translators =
         l.unique
@@ -90,7 +92,7 @@ let
           {
             inherit subsystem;
             inherit (tree) relPath;
-            name = tree.files."package.json".jsonContent.name or null;
+            name = tree.files."package.json".jsonContent.name or tree.relPath;
             translators = getTranslatorNames tree.fullPath;
             subsystemInfo =
               l.optionalAttrs (workspaces != []) {
@@ -120,6 +122,7 @@ let
             (l.map (p: p.relPath) foundProjects)
             (relPath: null));
       in
+        # l.trace tree.directories
         # the current directory
         foundProjects
 
