@@ -15,7 +15,7 @@ let
 
   discoverProjects =
     {
-      source ? null,
+      source ? throw "Pass either `source` or `tree` to discoverProjects",
       tree ? dlib.prepareSourceTree { inherit source; },
     }:
       l.flatten

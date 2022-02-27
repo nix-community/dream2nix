@@ -418,7 +418,8 @@ let
 
   resolveProjectsFromSource =
     {
-      source ? null,
+      source ?
+        throw "Pass either `source` or `tree` to resolveProjectsFromSource",
       tree ? dlib.prepareSourceTree { inherit source; },
       pname,
     }@args:
@@ -517,7 +518,7 @@ let
 
       # alternative way of calling (for debugging)
       pname ? null,
-      source ? null,
+      source ? throw "Pass either `dreamLocks` or `source` to realizeProjects",
     }:
     let
       projectOutputs =
