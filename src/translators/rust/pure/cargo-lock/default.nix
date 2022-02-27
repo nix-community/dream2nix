@@ -223,8 +223,9 @@ in
                 relDir = lib.removePrefix "${inputDir}/" (l.dirOf toml.path);
               in
               {
-                path =
-                  relDir;
+                path = relDir;
+                rootName = package.name;
+                rootVersion = package.version;
               };
 
             git = dependencyObject:

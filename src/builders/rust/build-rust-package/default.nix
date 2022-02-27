@@ -27,9 +27,13 @@ let
     getDependencies getCyclicDependencies subsystemAttrs;
   };
 
+  getRootSource = import ../getRootSource.nix {
+    inherit getSource getSourceSpec;
+  };
+
   buildPackage = pname: version:
     let
-      src = getSource pname version;
+      src = getRootSource pname version;
       vendorDir = vendoring.vendorPackageDependencies pname version;
     in
     produceDerivation pname (pkgs.rustPlatform.buildRustPackage {

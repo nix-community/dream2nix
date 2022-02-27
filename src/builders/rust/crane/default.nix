@@ -29,11 +29,15 @@ let
     getDependencies getCyclicDependencies subsystemAttrs;
   };
 
+  getRootSource = import ../getRootSource.nix {
+    inherit getSource getSourceSpec;
+  };
+
   crane = externals.crane;
 
   buildPackage = pname: version:
     let
-      src = getSource pname version;
+      src = getRootSource pname version;
       cargoVendorDir = vendoring.vendorPackageDependencies pname version;
       preBuild = ''
         ${vendoring.writeGitVendorEntries "nix-sources"}
