@@ -379,6 +379,7 @@ let
           inherit (dreamLockInterface)
             subsystemAttrs
             getSourceSpec
+            getRoot
             getDependencies
             getCyclicDependencies
             defaultPackageName
