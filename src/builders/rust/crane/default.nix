@@ -37,14 +37,16 @@ let
       '';
       # The deps-only derivation will use this as a prefix to the `pname`
       depsNameSuffix = "-deps";
+      # Make sure cargo only builds the package we want
+      cargoExtraArgs = "--package ${pname}";
 
       deps = produceDerivation "${pname}${depsNameSuffix}" (crane.buildDepsOnly {
-        inherit pname version src cargoVendorDir preBuild;
+        inherit pname version src cargoVendorDir cargoExtraArgs preBuild;
         pnameSuffix = depsNameSuffix;
       });
     in
     produceDerivation pname (crane.buildPackage {
-      inherit pname version src cargoVendorDir preBuild;
+      inherit pname version src cargoVendorDir cargoExtraArgs preBuild;
       cargoArtifacts = deps;
     });
 in
