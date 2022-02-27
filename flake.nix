@@ -110,6 +110,12 @@
         # system specific dream2nix library
         // (forAllSystems (system: pkgs: dream2nixFor."${system}"));
 
+        # with project discovery enabled
+        lib2 = (import ./src/libV2.nix {
+          inherit dlib externalPaths externalSources overridesDirs lib;
+          nixpkgsSrc = "${nixpkgs}";
+        });
+
         # the dream2nix cli to be used with 'nix run dream2nix'
         defaultApp =
           forAllSystems (system: pkgs: self.apps."${system}".dream2nix);
