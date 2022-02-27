@@ -2,13 +2,12 @@
   lib,
   pkgs,
 
+  getRoot,
   getSource,
   getSourceSpec,
   getDependencies,
   getCyclicDependencies,
   subsystemAttrs,
-
-  utils,
 
   ...
 }:
@@ -129,6 +128,6 @@ in rec {
 
   # Vendors a package's roots dependencies.
   vendorDependencies = pname: version:
-    let root = utils.getRootSource pname version; in
+    let root = getRoot pname version; in
     vendorPackageDependencies root.pname root.version;
 }
