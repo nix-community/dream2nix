@@ -575,7 +575,10 @@ let
             defaultPackageVersion =
               dreamLock._generic.packages."${defaultPackage}";
           in
-            { "${defaultPackage}"."${defaultPackageVersion}" = source; };
+            {
+              "${defaultPackage}"."${defaultPackageVersion}" =
+                "${source}/${dreamLock._generic.location}";
+            };
 
 
       projectOutputs =

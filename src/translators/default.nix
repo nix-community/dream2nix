@@ -30,11 +30,19 @@ let
           translate = args:
             l.map
               (proj:
-                translator.translate
-                  ((cleanedArgs args) // {
-                    source = "${args.source}/${proj.relPath}";
-                    name = proj.name;
-                  }))
+                let
+                  dreamLock =
+                    translator.translate
+                      ((cleanedArgs args) // {
+                        source = "${args.source}/${proj.relPath}";
+                        name = proj.name;
+                      });
+                  in
+                    dreamLock // {
+                      _generic = dreamLock._generic // {
+                        location = proj.relPath;
+                      };
+                    })
               args.projects;
         };
     in

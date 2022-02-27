@@ -204,6 +204,13 @@ class AddCommand(Command):
     # add main package source
     self.add_main_source(lock, defaultPackage, defaultPackageVersion, sourceSpec)
 
+    # add location
+    if 'location' not in lock['_generic']:
+      if 'dir' in sourceSpecSub:
+        lock['_generic']['location'] = sourceSpecSub['dir']
+      else:
+        lock['_generic']['location'] = ''
+
     # clean up dependency graph
     if 'dependencies' in lock['_generic']:
       self.postprocess_dep_graph(lock)
@@ -396,7 +403,7 @@ class AddCommand(Command):
     existingFiles = set(os.listdir(output))
     if not self.option('no-default-nix') \
         and not 'default.nix' in existingFiles \
-        and not config['packagesDir']:
+        and not config['projectRoot']:
       filesToCreate.append('default.nix')
     # overwrite existing files only if --force is set
     if self.option('force'):

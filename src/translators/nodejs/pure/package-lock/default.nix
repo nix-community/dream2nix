@@ -88,6 +88,7 @@ let
               tree = tree.getNodeFromPath proj.relPath;
               packageLock = getPackageLock proj;
               packageJson = getPackageJson proj;
+              relPath = proj.relPath;
               workspaces = proj.subsystemInfo.workspaces or [];
             })
           filteredProjects;
@@ -106,6 +107,7 @@ let
       # subsystem specific
       packageLock,
       packageJson,
+      relPath,
       workspaces,
 
       # translator args
@@ -222,6 +224,7 @@ let
         rec {
 
         inherit translatorName;
+        location = relPath;
 
         # values
         inputData = pinnedRootDeps;

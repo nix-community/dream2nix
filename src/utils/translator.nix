@@ -47,8 +47,9 @@ let
       magic =
         {
           # values
-          inputData,
           defaultPackage,
+          inputData,
+          location ? "",
           mainPackageDependencies,
           packages,
           subsystemName,
@@ -239,6 +240,7 @@ let
               {
                 inherit
                   defaultPackage
+                  location
                   packages
                 ;
                 subsystem = subsystemName;
