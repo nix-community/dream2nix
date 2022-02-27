@@ -35,15 +35,20 @@ let
     let
       src = getRootSource pname version;
       vendorDir = vendoring.vendorPackageDependencies pname version;
+
+      cargoBuildFlags = "--package ${pname}";
     in
     produceDerivation pname (pkgs.rustPlatform.buildRustPackage {
       inherit pname version src;
 
+      cargoBuildFlags = cargoBuildFlags;
+      cargoCheckFlags = cargoBuildFlags;
+
+      cargoVendorDir = "../nix-vendor";
+
       postUnpack = ''
         ln -s ${vendorDir} ./nix-vendor
       '';
-
-      cargoVendorDir = "../nix-vendor";
 
       preBuild = ''
         ${vendoring.writeGitVendorEntries "vendored-sources"}
