@@ -16,7 +16,6 @@
   getSourceSpec,
   packages,
   produceDerivation,
-  source,
 
   ...
 }@args:
@@ -46,17 +45,8 @@ let
       depsNameSuffix = "-deps";
 
       deps = produceDerivation "${pname}${depsNameSuffix}" (crane.buildDepsOnly {
-        inherit pname version cargoVendorDir preBuild;
+        inherit pname version src cargoVendorDir preBuild;
         pnameSuffix = depsNameSuffix;
-        src =
-          # This is needed because path dependencies will not contain a Cargo.lock
-          # which are common when building from a git source that is a workspace.
-          # crane expects a Cargo.lock *and* a Cargo.toml for a dependencies only build.
-          if (lib.isAttrs source && source ? _generic && source ? _subsytem )
-              || lib.hasSuffix "dream-lock.json" source then
-            src
-          else
-            source;
       });
     in
     produceDerivation pname (crane.buildPackage {
