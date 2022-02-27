@@ -2,6 +2,8 @@
   getSourceSpec,
   getSource,
   getRoot,
+
+  ...
 }:
 rec {
   getRootSource = pname: version:
