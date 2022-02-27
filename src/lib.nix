@@ -114,6 +114,7 @@ let
 
   makeFlakeOutputsFunc =
     {
+      builder ? null,
       pname ? null,
       pkgs ? null,
       source,
@@ -159,7 +160,7 @@ let
 
       pname =
         if args.pname or null != null then
-          specifyPnameError
+          args.pname
         else if detectedName != null then
           detectedName
         else
@@ -186,6 +187,7 @@ let
                 dream2nix.makeOutputs (argsForward // args // {
                   # TODO: this triggers the translator finding routine a second time
                   translator = translatorFound.name;
+                  builder = args.builder or null;
                 });
             in
 
