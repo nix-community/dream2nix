@@ -53,13 +53,23 @@ let
       getPackageLock = project:
         let
           # returns the parsed package-lock.json for a given project
-          fileRelPath =
+          dirRelPath =
             if project ? subsystemInfo.workspaceParent then
-              "${project.subsystemInfo.workspaceParent}/package-lock.json"
+              "${project.subsystemInfo.workspaceParent}"
             else
-              "${project.relPath}/package-lock.json";
+              "${project.relPath}";
+
+          packageJson =
+            (tree.getNodeFromPath "${dirRelPath}/package.json").jsonContent;
+
+          hasNoDependencies =
+            ! packageJson ? dependencies && ! packageJson ? devDependenices;
+
         in
-          (tree.getNodeFromPath fileRelPath).jsonContent;
+          if hasNoDependencies then
+            null
+          else
+            (tree.getNodeFromPath "${dirRelPath}/package-lock.json").jsonContent;
 
       getPackageJson = project:
         let
@@ -110,7 +120,11 @@ let
 
       dev = ! noDev;
 
-      parsed = packageLock;
+      packageLockDeps =
+        if packageLock == null then
+          {}
+        else
+          packageLock.dependencies or {};
 
       workspacePackageJson =
         l.genAttrs
@@ -126,8 +140,7 @@ let
               json.version)
           workspacePackageJson;
 
-      rootDependencies =
-        packageLock.dependencies or {};
+      rootDependencies = packageLockDeps;
 
       packageJsonDeps =
         packageJson.dependencies or {} // packageJson.devDependencies or {};
@@ -135,7 +148,7 @@ let
       parsedDependencies =
         l.filterAttrs
           (name: dep: packageJsonDeps ? "${name}")
-          parsed.dependencies or {};
+          packageLockDeps;
 
       identifyGitSource = dependencyObject:
         # TODO: when integrity is there, and git url is github then use tarball instead
@@ -223,7 +236,7 @@ let
             ));
 
         packages =
-          { "${defaultPackage}" = parsed.version or "unknown"; }
+          { "${defaultPackage}" = packageJson.version or "unknown"; }
           // workspacePackages;
 
         mainPackageDependencies =

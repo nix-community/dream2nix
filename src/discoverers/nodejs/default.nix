@@ -20,9 +20,16 @@ let
   getTranslatorNames = path:
     let
       nodes = l.readDir path;
+      packageJson = l.fromJSON (l.readFile "${path}/package.json");
     in
       l.optionals (nodes ? "package-lock.json") [ "package-lock" ]
       ++ l.optionals (nodes ? "yarn.lock") [ "yarn-lock" ]
+      # if the package has no dependencies we use the
+      # package-lock translator with `packageLock = null`
+      ++ l.optionals
+        (! packageJson ? dependencies
+            && ! packageJson ? devDependencies)
+        [ "package-lock" ]
       ++ [ "package-json" ];
 
   # returns the parsed package.json of a given directory
@@ -78,12 +85,21 @@ let
       # twice.
       alreadyDiscovered ? {},
     }:
+    let
+      foundSubProjects = alreadyDiscovered:
+        l.flatten
+          ((l.mapAttrsToList
+            (dname: dir: discoverInternal {
+              inherit alreadyDiscovered;
+              tree = dir;
+            })
+            (tree.directories or {})));
+    in
     # skip if not a nodajs project
     if alreadyDiscovered ? "${tree.relPath}"
-        || ! tree ? files."package.json"
-    then
+        || ! tree ? files."package.json" then
       # this will be cleaned by `flatten` for sub-directories
-      []
+      foundSubProjects alreadyDiscovered
     else
       let
 
@@ -130,13 +146,7 @@ let
         # Thanks to `alreadyDiscovered`, workspace projects won't be discovered
         # a second time.
         ++
-        l.flatten
-          ((l.mapAttrsToList
-            (dname: dir: discoverInternal {
-              alreadyDiscovered = alreadyDiscovered';
-              tree = dir;
-            })
-            (tree.directories or {})));
+        (foundSubProjects alreadyDiscovered');
 in
 
 {
