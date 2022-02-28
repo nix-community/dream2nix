@@ -110,6 +110,10 @@ let
             (system: pkgs:
               dream2nixFor."${system}".apps.flakeApps.dream2nix);
 
+        builders =
+          forAllSystems
+            (system: pkgs:
+              dream2nixFor."${system}".builders);
       };
 
   makeFlakeOutputsFunc =

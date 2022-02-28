@@ -63,18 +63,18 @@ in
                 || l.pathExists "${l.dirOf toml.path}/src/bin";
 
             # Try to find a package with a binary
-            pkg =
-              l.findFirst
-              hasBinaries
-              (l.warn "couldn't find a package with a binary to use as mainPackage" (l.elemAt cargoPackages 0))
-              cargoPackages;
+            pkg = l.findFirst hasBinaries (l.elemAt cargoPackages 0) cargoPackages;
 
           in pkg.value.package.name
         else args.packageName;
 
       # Find the Cargo.toml matching the package name
       checkForPackageName = cargoToml: (cargoToml.value.package.name or null) == packageName;
-      packageToml = l.findFirst checkForPackageName (throw "no Cargo.toml found with the package name passed: ${packageName}") cargoTomls;
+      packageToml =
+        l.findFirst
+        checkForPackageName
+        (throw "no Cargo.toml found with the package name passed: ${packageName}")
+        cargoTomls;
 
       # Parse Cargo.lock and extract dependencies
       parsedLock = l.fromTOML (l.readFile "${inputDir}/Cargo.lock");
@@ -223,8 +223,9 @@ in
                 relDir = lib.removePrefix "${inputDir}/" (l.dirOf toml.path);
               in
               {
-                path =
-                  relDir;
+                path = relDir;
+                rootName = package.name;
+                rootVersion = package.version;
               };
 
             git = dependencyObject:

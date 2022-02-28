@@ -96,6 +96,8 @@
                   },
                   "then": {
                     "properties": {
+                      "rootName": { "type": "string" },
+                      "rootVersion": { "type": "string" },
                       "path": { "type": "string" },
                       "type": { "type": "string" },
                       "dir": { "type": "string" }

@@ -22,24 +22,27 @@
 let
   l = lib // builtins;
 
-  vendoring = import ../vendor.nix {
-    inherit lib pkgs getSource getSourceSpec
-    getDependencies getCyclicDependencies subsystemAttrs;
-  };
+  utils = import ../utils.nix args;
+  vendoring = import ../vendor.nix (args // { inherit lib pkgs utils; });
 
   buildPackage = pname: version:
     let
-      src = getSource pname version;
-      vendorDir = vendoring.vendorPackageDependencies pname version;
+      src = utils.getRootSource pname version;
+      vendorDir = vendoring.vendorDependencies pname version;
+
+      cargoBuildFlags = "--package ${pname}";
     in
     produceDerivation pname (pkgs.rustPlatform.buildRustPackage {
       inherit pname version src;
 
+      cargoBuildFlags = cargoBuildFlags;
+      cargoCheckFlags = cargoBuildFlags;
+
+      cargoVendorDir = "../nix-vendor";
+
       postUnpack = ''
         ln -s ${vendorDir} ./nix-vendor
       '';
-
-      cargoVendorDir = "../nix-vendor";
 
       preBuild = ''
         ${vendoring.writeGitVendorEntries "vendored-sources"}

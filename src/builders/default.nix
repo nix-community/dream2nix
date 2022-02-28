@@ -24,5 +24,8 @@
     default = buildRustPackage;
 
     buildRustPackage = callPackageDream ./rust/build-rust-package {};
+
+    # this builder requires IFD!
+    crane = callPackageDream ./rust/crane {};
   };
 }
