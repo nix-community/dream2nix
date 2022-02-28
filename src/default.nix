@@ -27,7 +27,7 @@
   externalSources ?
     lib.genAttrs
       (lib.attrNames (builtins.readDir externalDir))
-      (inputName: "${externalDir}/${inputName}"),
+      (inputName: "${/. + externalDir}/${inputName}"),
 
   # will be defined if called via flake
   externalPaths ? null,
@@ -41,7 +41,7 @@
       })
     # if called via CLI, load externals via env
     else if builtins ? getEnv && builtins.getEnv "d2nExternalDir" != "" then
-      builtins.getEnv "d2nExternalDir"
+      /. + (builtins.getEnv "d2nExternalDir")
     # load from default directory
     else
       ./external,
