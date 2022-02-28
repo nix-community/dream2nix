@@ -66,14 +66,16 @@
         ];
         crane = [
           "lib/buildDepsOnly.nix"
-          "lib/cargoBuild.nix"
           "lib/buildPackage.nix"
+          "lib/cargoBuild.nix"
+          "lib/cleanCargoToml.nix"
+          "lib/findCargoFiles.nix"
           "lib/mkCargoDerivation.nix"
           "lib/mkDummySrc.nix"
           "lib/writeTOML.nix"
-          "lib/cleanCargoToml.nix"
           "pkgs/configureCargoCommonVarsHook.sh"
           "pkgs/configureCargoVendoredDepsHook.sh"
+          "pkgs/installFromCargoBuildLogHook.sh"
           "pkgs/inheritCargoArtifactsHook.sh"
           "pkgs/installCargoArtifactsHook.sh"
           "pkgs/remapSourcePathPrefixHook.sh"
