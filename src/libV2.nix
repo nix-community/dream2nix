@@ -58,17 +58,9 @@ let
 
 
     flakifyBuilderOutputs = system: outputs:
-      (lib.optionalAttrs (outputs ? "defaultPackage") {
-        defaultPackage."${system}" = outputs.defaultPackage;
-      })
-      //
-      (lib.optionalAttrs (outputs ? "packages") {
-        packages."${system}" = outputs.packages;
-      })
-      //
-      (lib.optionalAttrs (outputs ? "devShell") {
-        devShell."${system}" = outputs.devShell;
-      });
+      l.mapAttrs
+        (ouputType: outputValue: { "${system}" = outputValue; })
+        outputs;
 
   init =
     {
@@ -129,6 +121,9 @@ let
       allPkgs = makeNixpkgs pkgs systems;
       forAllSystems = f: b.mapAttrs f allPkgs;
       dream2nixFor = forAllSystems (dream2nixForSystem config);
+      discoveredProjects = dlib.discoverers.discoverProjects {
+        tree = dlib.prepareSourceTree { inherit source; };
+      };
 
       allBuilderOutputs =
         lib.mapAttrs
@@ -150,11 +145,15 @@ let
           (system: outputs: flakifyBuilderOutputs system outputs)
           allBuilderOutputs;
 
-      flakeOutputs =
+      flakeOutputsBuilders =
         b.foldl'
           (allOutputs: output: lib.recursiveUpdate allOutputs output)
           {}
           flakifiedOutputsList;
+
+      flakeOutputs =
+        { projectsJson = l.toJSON (discoveredProjects); }
+        // flakeOutputsBuilders;
 
     in
       lib.recursiveUpdate

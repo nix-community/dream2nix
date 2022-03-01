@@ -489,6 +489,7 @@ let
 
   resolveProjectsFromSource =
     {
+      discoveredProjects ? dlib.discoverers.discoverProjects { inherit tree; },
       source ?
         throw "Pass either `source` or `tree` to resolveProjectsFromSource",
       tree ? dlib.prepareSourceTree { inherit source; },
@@ -498,7 +499,6 @@ let
     let
 
       flakeMode = ! builtins ? currentSystem;
-      discoveredProjects = dlib.discoverers.discoverProjects { inherit tree; };
 
       getTranslator = subsystem: translatorName:
         translators.translatorsV2."${subsystem}".all."${translatorName}";
