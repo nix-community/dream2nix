@@ -22,15 +22,15 @@ let
       nodes = l.readDir path;
       packageJson = l.fromJSON (l.readFile "${path}/package.json");
     in
-      l.optionals (nodes ? "package-lock.json") [ "package-lock" ]
-      ++ l.optionals (nodes ? "yarn.lock") [ "yarn-lock" ]
       # if the package has no dependencies we use the
       # package-lock translator with `packageLock = null`
-      ++ l.optionals
-        (! packageJson ? dependencies
-            && ! packageJson ? devDependencies)
-        [ "package-lock" ]
-      ++ [ "package-json" ];
+      if ! packageJson ? dependencies && ! packageJson ? devDependencies
+      then [ "package-lock" ]
+
+      else
+        l.optionals (nodes ? "package-lock.json") [ "package-lock" ]
+        ++ l.optionals (nodes ? "yarn.lock") [ "yarn-lock" ]
+        ++ [ "package-json" ];
 
   # returns the parsed package.json of a given directory
   getPackageJson = dirPath:

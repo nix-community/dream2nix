@@ -1,6 +1,6 @@
 
 {
-  lib,
+  lib ? (import <nixpkgs> {}).lib,
   ...
 }:
 
