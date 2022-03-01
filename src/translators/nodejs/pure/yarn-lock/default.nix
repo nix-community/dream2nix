@@ -3,23 +3,66 @@
   lib,
 }:
 
-{
-  translate =
+let
+  l = lib // builtins;
+  nodejsUtils = import ../../utils.nix { inherit lib; };
+
+  translate = {
+    translatorName,
+    utils,
+    ...
+  }:
+  {
+    projects,
+    source,
+    tree,
+
+    name,
+    noDev,
+    nodejs,
+    ...
+  }@args: let
+
+    # filteredProjects = nodejsUtils.filterProjects projects;
+
+    parser = import ./parser.nix { inherit lib; };
+
+    getYarnLock = proj:
+      tree.getNodeFromPath "${proj.relPath}/yarn.lock";
+
+    allProjectsTranslated =
+      l.map
+        (proj:
+          translateOne {
+            inherit translatorName utils name noDev nodejs;
+            source = "${args.source}/${proj.relPath}";
+            tree = tree.getNodeFromPath proj.relPath;
+            yarnLock =
+              parser.parse (getYarnLock proj).content;
+            relPath = proj.relPath;
+            # workspaces = proj.subsystemInfo.workspaces or [];
+          })
+        projects;
+
+  in
+    allProjectsTranslated;
+
+  translateOne =
     {
-      externals,
-      nodejs,
       translatorName,
       utils,
-      ...
-    }:
-    {
       source,
+      tree,
+
+      # subsystem specific
+      yarnLock,
+      relPath,
+      # workspaces,
 
       # extraArgs
       name,
-      noDev,
       nodejs,
-      peer,
+      noDev,
       ...
     }@args:
 
@@ -27,13 +70,24 @@
       b = builtins;
       dev = ! noDev;
 
-      sourceDir = source;
-      yarnLock = utils.readTextFile "${sourceDir}/yarn.lock";
-      packageJSON = b.fromJSON (b.readFile "${sourceDir}/package.json");
-      parser = import ./parser.nix
-        { inherit lib; };
+      packageJson =
+        (tree.getNodeFromPath "${relPath}/package.json").jsonContent;
 
-      parsedLock = parser.parse yarnLock;
+      packageJsonDeps = nodejsUtils.getPackageJsonDeps packageJson noDev;
+
+      # workspacesPackageJson = utils.getWorkspacePackageJson tree workspaces;
+
+      # workspaceYarnEntries = workspace
+      #   l.map
+      #     (ws:
+      #       let
+      #         json =
+      #           (tree.getNodeFromPath "${wsRelPath}/package.json").jsonContent;
+      #       in {
+
+      #       }
+      #     )
+      #     workspacesPackageJson."${workspace}".;
     in
 
     utils.simpleTranslate
@@ -47,18 +101,20 @@
 
         inherit translatorName;
 
-        inputData = parsedLock;
+        inputData = yarnLock;
 
         defaultPackage =
           if name != "{automatic}" then
             name
           else
-            packageJSON.name or (throw (
+            packageJson.name or (throw (
               "Could not identify package name. "
               + "Please specify extra argument 'name'"
             ));
 
-        packages."${defaultPackage}" = packageJSON.version or "unknown";
+        packages =
+          { "${defaultPackage}" = packageJson.version or "unknown"; };
+          # // (nodejsUtils.getWorkspacePackages tree workspaces);
 
         subsystemName = "nodejs";
 
@@ -80,20 +136,12 @@
                   version = dependencyAttrs.version;
                 }
             )
-            (
-              packageJSON.dependencies or {}
-              //
-              packageJSON.optionalDependencies or {}
-              //
-              (lib.optionalAttrs dev (packageJSON.devDependencies or {}))
-              //
-              (lib.optionalAttrs peer (packageJSON.peerDependencies or {}))
-            );
+            packageJsonDeps;
 
         serializePackages = inputData:
           lib.mapAttrsToList
             (yarnName: depAttrs: depAttrs // { inherit yarnName; })
-            parsedLock;
+            yarnLock;
 
         getOriginalID = dependencyObject:
           dependencyObject.yarnName;
@@ -130,7 +178,6 @@
                   (name: version: { "${name}" = version; })
                   deps;
           in
-            # utils.traceJ dependencies
             lib.forEach
               dependencies
               (dependency:
@@ -146,8 +193,6 @@
                           # handle missing lock file entry
                           let
                             versionMatch =
-                              # b.trace name
-                              # b.trace versionSpec
                               b.match ''.*\^([[:digit:]|\.]+)'' versionSpec;
                           in
                             {
@@ -272,6 +317,11 @@
 
       });
 
+in {
+
+  version = 2;
+
+  inherit translate;
 
   # inherit projectName function from package-lock translator
   projectName = dlib.translators.translators.nodejs.pure.package-lock.projectName;
@@ -316,11 +366,6 @@
         "16"
       ];
       type = "argument";
-    };
-
-    peer = {
-      description = "Include peer dependencies";
-      type = "flag";
     };
 
   };

@@ -72,8 +72,10 @@ let
       relPath = dlib.sanitizeRelativePath "${tree.relPath}/${wsRelPath}";
       translators =
         l.unique
-          (parentInfo.translators
-          ++ (getTranslatorNames "${tree.fullPath}/${wsRelPath}"));
+          (
+            (lib.filter (trans: trans == "package-lock") parentInfo.translators)
+            ++ (getTranslatorNames "${tree.fullPath}/${wsRelPath}")
+          );
       subsystemInfo = {
         workspaceParent = tree.relPath;
       };
