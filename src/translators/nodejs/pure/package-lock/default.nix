@@ -6,32 +6,7 @@
 let
   b = builtins;
   l = lib // builtins;
-
-  # One translator call can process a whole workspace containing all
-  # sub-packages of that workspace.
-  # Therefore we can filter out projects which are children of a workspace.
-  filterProjects = projects:
-    let
-      workspaceRoots =
-        l.filter
-          (proj: proj.subsystemInfo.workspaces or [] != [])
-          projects;
-
-      allWorkspaceChildren =
-        l.flatten
-          (l.map
-            (root: root.subsystemInfo.workspaces)
-            workspaceRoots);
-
-      childrenRemoved =
-        l.filter
-          (proj:
-            (! b.elem proj.relPath allWorkspaceChildren))
-          projects;
-
-    in
-      childrenRemoved;
-
+  nodejsUtils = import ../../utils.nix { inherit lib; };
 
   translate =
     {
@@ -50,34 +25,10 @@ let
       ...
     }@args:
     let
+      filteredProjects = nodejsUtils.filterProjects projects;
+
       getPackageLock = project:
-        let
-          # returns the parsed package-lock.json for a given project
-          dirRelPath =
-            if project ? subsystemInfo.workspaceParent then
-              "${project.subsystemInfo.workspaceParent}"
-            else
-              "${project.relPath}";
-
-          packageJson =
-            (tree.getNodeFromPath "${dirRelPath}/package.json").jsonContent;
-
-          hasNoDependencies =
-            ! packageJson ? dependencies && ! packageJson ? devDependencies;
-
-        in
-          if hasNoDependencies then
-            null
-          else
-            (tree.getNodeFromPath "${dirRelPath}/package-lock.json").jsonContent;
-
-      getPackageJson = project:
-        let
-          node = tree.getNodeFromPath "${project.relPath}/package.json";
-        in
-          node.jsonContent;
-
-      filteredProjects = filterProjects projects;
+        nodejsUtils.getWorkspaceLockFile tree project "package-lock.json";
 
       allProjectsTranslated =
         l.map
@@ -86,8 +37,7 @@ let
               inherit translatorName utils name noDev nodejs;
               source = "${args.source}/${proj.relPath}";
               tree = tree.getNodeFromPath proj.relPath;
-              packageLock = getPackageLock proj;
-              packageJson = getPackageJson proj;
+              packageLock = (getPackageLock proj).jsonContent;
               relPath = proj.relPath;
               workspaces = proj.subsystemInfo.workspaces or [];
             })
@@ -106,7 +56,6 @@ let
 
       # subsystem specific
       packageLock,
-      packageJson,
       relPath,
       workspaces,
 
@@ -122,30 +71,18 @@ let
 
       dev = ! noDev;
 
+      packageJson =
+        (tree.getNodeFromPath "${relPath}/package.json").jsonContent;
+
       packageLockDeps =
         if packageLock == null then
           {}
         else
           packageLock.dependencies or {};
 
-      workspacePackageJson =
-        l.genAttrs
-          workspaces
-          (wsRelPath:
-            (tree.getNodeFromPath "${wsRelPath}/package.json").jsonContent);
-
-      workspacePackages =
-        lib.mapAttrs'
-          (wsRelPath: json:
-            l.nameValuePair
-              json.name
-              json.version)
-          workspacePackageJson;
-
       rootDependencies = packageLockDeps;
 
-      packageJsonDeps =
-        packageJson.dependencies or {} // packageJson.devDependencies or {};
+      packageJsonDeps = nodejsUtils.getPackageJsonDeps packageJson noDev;
 
       parsedDependencies =
         l.filterAttrs
@@ -240,7 +177,7 @@ let
 
         packages =
           { "${defaultPackage}" = packageJson.version or "unknown"; }
-          // workspacePackages;
+          // (nodejsUtils.getWorkspacePackages tree workspaces);
 
         mainPackageDependencies =
           lib.mapAttrsToList
