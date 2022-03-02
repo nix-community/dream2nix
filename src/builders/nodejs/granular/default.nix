@@ -56,8 +56,7 @@ let
   nodejsVersion = subsystemAttrs.nodejsVersion;
 
   isMainPackage = name: version:
-    name == defaultPackageName
-    && version == defaultPackageVersion;
+    (args.packages."${name}" or null) == version;
 
   nodejs =
     if args ? nodejs then
