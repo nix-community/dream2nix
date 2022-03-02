@@ -43,19 +43,63 @@ let
     if l.hasSuffix "*" glob then
       let
         prefix = l.removeSuffix "*" glob;
-        dirNames = dlib.listDirs "${tree.fullPath}/${prefix}";
+        path = "${tree.fullPath}/${prefix}";
+
+        dirNames =
+          if l.pathExists path
+          then dlib.listDirs path
+          else
+            l.trace
+              "WARNING: Detected workspace ${glob} does not exist."
+              [];
+
+        existingWsPaths =
+          l.filter
+            (wsPath:
+              if l.pathExists "${path}/${wsPath}/package.json"
+              then true
+              else
+                let
+                  notExistingPath =
+                    dlib.sanitizeRelativePath "${prefix}/${wsPath}";
+                in
+                  l.trace
+                    "WARNING: Detected workspace ${notExistingPath} does not exist."
+                    false)
+            dirNames;
       in
-        l.map (dname: "${prefix}/${dname}") dirNames
+        l.map (dname: "${prefix}/${dname}") existingWsPaths
+
     else
-      [ glob ];
+      if l.pathExists "${tree.fullPath}/${glob}/package.json"
+      then [ glob ]
+      else
+        l.trace
+          "WARNING: Detected workspace ${glob} does not exist."
+          [];
 
   # collect project info for workspaces defined by current package.json
   getWorkspaces = tree: parentInfo:
     let
       packageJson = tree.files."package.json".jsonContent;
+      workspacesRaw = packageJson.workspaces or [];
+
+      workspacesFlattened =
+        if l.isAttrs workspacesRaw
+        then
+          l.flatten
+            (l.mapAttrsToList
+              (category: workspaces: workspaces)
+              workspacesRaw)
+
+        else if l.isList workspacesRaw
+        then workspacesRaw
+
+        else throw "Error parsing workspaces in ${tree.files."package.json".relPath}";
+
     in
       l.flatten
-        (l.forEach (packageJson.workspaces or [])
+        (l.forEach workspacesFlattened
           (glob:
             let
               workspacePaths = getWorkspacePaths glob tree;
