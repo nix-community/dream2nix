@@ -25,6 +25,7 @@ let
   overrideUtils = callPackageDream ./override.nix {};
 
   translatorUtils = callPackageDream ./translator.nix {};
+  translatorUtils2 = callPackageDream ./translator2.nix {};
 
   poetry2nixSemver = import "${externalSources.poetry2nix}/semver.nix" {
     inherit lib;
@@ -39,10 +40,9 @@ let
 in
 
 overrideUtils
-//
-translatorUtils
-//
-rec {
+// translatorUtils
+// translatorUtils2
+// rec {
 
   inherit (dlib)
     dirNames
