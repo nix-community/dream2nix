@@ -34,10 +34,11 @@ let
         l.map
           (proj:
             translateOne {
-              inherit translatorName utils name noDev nodejs;
+              inherit translatorName utils noDev nodejs;
+              name = proj.name;
               source = "${args.source}/${proj.relPath}";
               tree = tree.getNodeFromPath proj.relPath;
-              packageLock = (getPackageLock proj).jsonContent;
+              packageLock = (getPackageLock proj).jsonContent or null;
               relPath = proj.relPath;
               workspaces = proj.subsystemInfo.workspaces or [];
             })
@@ -72,7 +73,7 @@ let
       dev = ! noDev;
 
       packageJson =
-        (tree.getNodeFromPath "${relPath}/package.json").jsonContent;
+        (tree.getNodeFromPath "package.json").jsonContent;
 
       packageLockDeps =
         if packageLock == null then

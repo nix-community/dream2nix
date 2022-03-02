@@ -22,6 +22,5 @@ utils.writePureShellScript
     --attribute-name prettier \
     --arg name="{automatic}" \
     --arg noDev=false \
-    --arg nodejs=14 \
-    --arg peer=false
+    --arg nodejs=14
 ''
