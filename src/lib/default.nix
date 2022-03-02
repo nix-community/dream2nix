@@ -142,7 +142,7 @@ let
                 dirSplit);
 
           dir =
-            if dirAttrPath == [ "" ] then
+            if (l.length dirSplit == 0) || dirAttrPath == [ "" ] then
               self
             else
               l.getAttrFromPath dirAttrPath directories;
