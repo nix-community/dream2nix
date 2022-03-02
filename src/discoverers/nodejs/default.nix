@@ -73,7 +73,7 @@ let
       translators =
         l.unique
           (
-            (lib.filter (trans: trans == "package-lock") parentInfo.translators)
+            (lib.filter (trans: l.elem trans ["package-lock" "yarn-lock"]) parentInfo.translators)
             ++ (getTranslatorNames "${tree.fullPath}/${wsRelPath}")
           );
       subsystemInfo = {

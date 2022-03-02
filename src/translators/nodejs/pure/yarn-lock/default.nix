@@ -23,7 +23,7 @@ let
     ...
   }@args: let
 
-    # filteredProjects = nodejsUtils.filterProjects projects;
+    filteredProjects = nodejsUtils.filterProjects projects;
 
     parser = import ./parser.nix { inherit lib; };
 
@@ -41,9 +41,9 @@ let
             yarnLock =
               parser.parse (getYarnLock proj).content;
             relPath = proj.relPath;
-            # workspaces = proj.subsystemInfo.workspaces or [];
+            workspaces = proj.subsystemInfo.workspaces or [];
           })
-        projects;
+        filteredProjects;
 
   in
     allProjectsTranslated;
@@ -58,7 +58,7 @@ let
       # subsystem specific
       yarnLock,
       relPath,
-      # workspaces,
+      workspaces,
 
       # extraArgs
       name,
@@ -71,24 +71,22 @@ let
       b = builtins;
       dev = ! noDev;
 
+      defaultPackage =
+        if name != "{automatic}" then
+          name
+        else
+          packageJson.name or (throw (
+            "Could not identify package name. "
+            + "Please specify extra argument 'name'"
+          ));
+
       packageJson =
         (tree.getNodeFromPath "package.json").jsonContent;
 
       packageJsonDeps = nodejsUtils.getPackageJsonDeps packageJson noDev;
 
-      # workspacesPackageJson = utils.getWorkspacePackageJson tree workspaces;
+      workspacesPackageJson = nodejsUtils.getWorkspacePackageJson tree workspaces;
 
-      # workspaceYarnEntries = workspace
-      #   l.map
-      #     (ws:
-      #       let
-      #         json =
-      #           (tree.getNodeFromPath "${wsRelPath}/package.json").jsonContent;
-      #       in {
-
-      #       }
-      #     )
-      #     workspacesPackageJson."${workspace}".;
     in
 
     utils.simpleTranslate2
@@ -96,6 +94,48 @@ let
         objectsByKey,
         ...
       }: let
+
+        makeWorkspaceExtraObject = workspace: let
+          json = workspacesPackageJson."${workspace}";
+          name = json.name or workspace;
+          version = json.version or "unknown";
+        in
+          {
+            inherit name version;
+
+            dependencies =
+              l.mapAttrsToList
+                (depName: semVer: let
+                  yarnName = "${depName}@${semVer}";
+                  depObject = objectsByKey.yarnName."${yarnName}";
+                in
+                  if exportedWorkspacePackages ? "${depName}"
+                  then
+                    {
+                      name = depName;
+                      version = exportedWorkspacePackages."${depName}";
+                    }
+                  else {name = depName; version = depObject.version;})
+                (nodejsUtils.getPackageJsonDeps json noDev);
+
+            sourceSpec = {
+              type = "path";
+              path = workspace;
+              rootName = defaultPackage;
+              rootVersion = packageJson.version or "unknown";
+            };
+          };
+
+        extraObjects = l.map makeWorkspaceExtraObject workspaces;
+
+        exportedWorkspacePackages =
+          l.listToAttrs
+            (l.map
+              (wsObject:
+                l.nameValuePair
+                  wsObject.name
+                  wsObject.version)
+              extraObjects);
 
         getSourceType = rawObj: finalObj: let
           dObj = rawObj;
@@ -133,20 +173,11 @@ let
 
       in rec {
 
-        inherit translatorName;
-
-        defaultPackage =
-          if name != "{automatic}" then
-            name
-          else
-            packageJson.name or (throw (
-              "Could not identify package name. "
-              + "Please specify extra argument 'name'"
-            ));
+        inherit defaultPackage extraObjects translatorName;
 
         exportedPackages =
-          { "${defaultPackage}" = packageJson.version or "unknown"; };
-          # // (nodejsUtils.getWorkspacePackages tree workspaces);
+          { "${defaultPackage}" = packageJson.version or "unknown"; }
+          // exportedWorkspacePackages;
 
         subsystemName = "nodejs";
 
@@ -176,7 +207,16 @@ let
                   lib.head split;
 
           version = rawObj: finalObj:
-            rawObj.version;
+            if l.hasInfix "@git+" rawObj.yarnName
+            then
+              let
+                split = l.splitString "@git+" rawObj.yarnName;
+                gitUrl = l.last split;
+              in
+                # l.strings.sanitizeDerivationName
+                  "${rawObj.version}@git+${gitUrl}"
+
+            else rawObj.version;
 
           dependencies = rawObj: finalObj: let
             dependencies = let

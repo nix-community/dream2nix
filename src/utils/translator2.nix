@@ -62,7 +62,7 @@ let
                 merged
                 // {"${keyFunc finalObj.rawObj finalObj}" = finalObj;})
               {}
-              finalObjects)
+              finalObjects')
           final.keys;
 
 
@@ -86,13 +86,13 @@ let
 
           allDependencies = l.foldl'
             (result: finalObj:
-              lib.recursiveUpdate
-                result
-                {
-                  "${finalObj.name}" = {
-                    "${finalObj.version}" = finalObj;
-                  };
-                })
+                lib.recursiveUpdate
+                  result
+                  {
+                    "${finalObj.name}" = {
+                      "${finalObj.version}" = finalObj;
+                    };
+                  })
             {}
             finalObjects;
 
@@ -132,10 +132,21 @@ let
           cyclicDependencies =
             # TODO: inefficient! Implement some kind of early cutoff
             let
+              depGraphWithFakeRoot =
+                l.recursiveUpdate
+                  dependencyGraph
+                  {
+                    __fake-entry.__fake-version =
+                      l.mapAttrsToList
+                        dlib.nameVersionPair
+                        exportedPackages;
+                  };
+
               findCycles = node: prevNodes: cycles:
                 let
 
-                  children = dependencyGraph."${node.name}"."${node.version}";
+                  children =
+                    depGraphWithFakeRoot."${node.name}"."${node.version}";
 
                   cyclicChildren =
                     lib.filter
@@ -169,8 +180,8 @@ let
               cyclesList =
                 findCycles
                   (dlib.nameVersionPair
-                    defaultPackage
-                    exportedPackages."${defaultPackage}")
+                    "__fake-entry"
+                    "__fake-version")
                   {}
                   [];
             in
