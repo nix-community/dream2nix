@@ -489,15 +489,18 @@ let
 
   resolveProjectsFromSource =
     {
-      discoveredProjects ? dlib.discoverers.discoverProjects { inherit tree; },
+      discoveredProjects ? dlib.discoverers.discoverProjects
+        {inherit settings tree;},
       source ?
         throw "Pass either `source` or `tree` to resolveProjectsFromSource",
       tree ? dlib.prepareSourceTree { inherit source; },
       pname,
+      settings ? [],
     }@args:
 
     let
 
+      # This influences error messages only
       flakeMode = ! builtins ? currentSystem;
 
       getTranslator = subsystem: translatorName:
@@ -548,7 +551,7 @@ let
             impure = isImpure project translator;
             key = getProjectKey project;
             resolved = isResolved self;
-            translator = l.head project.translators;
+            translator = project.translator or (l.head project.translators);
           }; in self))
           discoveredProjects;
 
@@ -610,8 +613,7 @@ let
         if flakeMode then
           b.trace ''
             ${"\n"}
-            The dream-lock.json for some projects doesn't exist or is outdated.
-            ...Falling back to on-the-fly evaluation (possibly slow).
+            Evaluating project data on the fly...
             To speed up future evalutations run once:
               nix run .#resolve
           ''
@@ -619,8 +621,7 @@ let
         else
           b.trace ''
             ${"\n"}
-            The dream-lock.json for some projects doesn't exist or is outdated.
-            ...Falling back to on-the-fly evaluation (possibly slow).
+            Evaluating project data on the fly...
           ''
           dreamLocks
       else
@@ -629,11 +630,13 @@ let
   # transform a list of resolved projects to buildable outputs
   realizeProjects =
     {
-      dreamLocks ? resolveProjectsFromSource { inherit pname source; },
+      dreamLocks ? resolveProjectsFromSource { inherit pname settings source; },
 
       # alternative way of calling (for debugging)
       pname ? null,
       source ? null,
+
+      settings ? [],
     }:
     let
 

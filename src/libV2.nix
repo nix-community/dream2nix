@@ -108,6 +108,7 @@ let
     {
       pname ? throw "Please pass `pname` to makeFlakeOutputs",
       pkgs ? null,
+      settings ? [],
       source,
       systems ? [],
       translator ? null,
@@ -122,6 +123,7 @@ let
       forAllSystems = f: b.mapAttrs f allPkgs;
       dream2nixFor = forAllSystems (dream2nixForSystem config);
       discoveredProjects = dlib.discoverers.discoverProjects {
+        inherit settings;
         tree = dlib.prepareSourceTree { inherit source; };
       };
 
@@ -132,7 +134,7 @@ let
               dream2nix = dream2nixFor."${system}";
 
               dreamLocks = dream2nix.resolveProjectsFromSource {
-                inherit pname source;
+                inherit pname settings source;
               };
             in
               dream2nix.realizeProjects {
