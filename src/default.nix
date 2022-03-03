@@ -571,13 +571,16 @@ let
         l.map (project: project.relPath) projectsImpureUnresolved;
 
       # projects without existing valid dream-lock.json
-      projectsUnresolved = l.filter (project: ! project.resolved) projectsList;
+      projectsPureUnresolved =
+        l.filter
+          (project: ! project.resolved && ! project.impure)
+          projectsList;
 
       # pure projects grouped by translator
       projectsByTranslator =
         l.groupBy
           (proj: "${proj.subsystem}_${l.head proj.translators}")
-          projectsUnresolved;
+          projectsPureUnresolved;
 
       # list of pure projects extended with 'dreamLock' attribute
       dreamLocks =
@@ -597,21 +600,23 @@ let
     in
       if projectsImpureUnresolved != [] then
         if flakeMode then
-          throw ''
+          l.trace ''
             ${"\n"}
             Run `nix run .#resolve` once to resolve impure projects.
             The following projects cannot be resolved on the fly and require preprocessing:
               ${l.concatStringsSep "\n  " projectsImpureUnresolvedPaths}
           ''
+          dreamLocks
         else
-          throw ''
+          l.trace ''
             ${"\n"}
             The following projects cannot be resolved on the fly and require preprocessing:
               ${l.concatStringsSep "\n  " projectsImpureUnresolvedPaths}
           ''
-      else if projectsUnresolved != [] then
+          dreamLocks
+      else if projectsPureUnresolved != [] then
         if flakeMode then
-          b.trace ''
+          l.trace ''
             ${"\n"}
             Evaluating project data on the fly...
             To speed up future evalutations run once:
@@ -619,7 +624,7 @@ let
           ''
           dreamLocks
         else
-          b.trace ''
+          l.trace ''
             ${"\n"}
             Evaluating project data on the fly...
           ''
