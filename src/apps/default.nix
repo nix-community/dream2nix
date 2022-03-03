@@ -29,6 +29,8 @@ rec {
   # the dream2nix cli
   cli = callPackageDream (import ./cli) {};
 
+  cli2 = callPackageDream (import ./cli2) {};
+
   # the contribute cli
   contribute = callPackageDream (import ./contribute) {};
 
