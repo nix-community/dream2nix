@@ -41,7 +41,7 @@
       supportedSystems = [ "x86_64-linux" "x86_64-darwin" "aarch64-darwin" ];
 
       forAllSystems = f: lib.genAttrs supportedSystems (system:
-        f system (import nixpkgs { inherit system; overlays = [ self.overlay ]; })
+        f system nixpkgs.legacyPackages.${system}
       );
 
       # To use dream2nix in non-flake + non-IFD enabled repos, the source code of dream2nix
@@ -113,14 +113,6 @@
 
     in
       {
-        # overlay with flakes enabled nix
-        # (all of dream2nix cli dependends on nix ^2.4)
-        overlay = final: prev: {
-          nix = prev.writeScriptBin "nix" ''
-            ${final.nixUnstable}/bin/nix --option experimental-features "nix-command flakes" "$@"
-          '';
-        };
-
         # System independent dream2nix api.
         # Similar to drem2nixFor but will require 'system(s)' or 'pkgs' as an argument.
         # Produces flake-like output schema.

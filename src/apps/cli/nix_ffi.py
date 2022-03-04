@@ -6,6 +6,8 @@ import tempfile
 
 dream2nix_src = os.environ.get("dream2nixSrc")
 
+def nix(*args, **kwargs):
+  return sp.run(["nix", "--option", "experimental-features", "nix-command flakes"] + list(args), capture_output=True, **kwargs)
 
 def callNixFunction(function_path, **kwargs):
   with tempfile.NamedTemporaryFile("w") as input_json_file:
@@ -15,19 +17,16 @@ def callNixFunction(function_path, **kwargs):
     env.update(dict(
       FUNC_ARGS=input_json_file.name
     ))
-    proc = sp.run(
-      [
-        "nix", "eval", "--show-trace", "--impure", "--raw", "--expr",
-        f'''
-          let
-            d2n = (import {dream2nix_src} {{}});
-          in
-            builtins.toJSON (
-              (d2n.utils.callViaEnv d2n.{function_path})
-            )
-        ''',
-      ],
-      capture_output=True,
+    proc = nix(
+      "eval", "--show-trace", "--impure", "--raw", "--expr",
+      f'''
+        let
+          d2n = (import {dream2nix_src} {{}});
+        in
+          builtins.toJSON (
+            (d2n.utils.callViaEnv d2n.{function_path})
+          )
+      ''',
       env=env
     )
   if proc.returncode:
@@ -47,17 +46,14 @@ def buildNixFunction(function_path, **kwargs):
     env.update(dict(
       FUNC_ARGS=input_json_file.name
     ))
-    proc = sp.run(
-      [
-        "nix", "build", "--show-trace", "--impure", "-o", "tmp-result", "--expr",
-        f'''
-          let
-            d2n = (import {dream2nix_src} {{}});
-          in
-            (d2n.utils.callViaEnv d2n.{function_path})
-        ''',
-      ],
-      capture_output=True,
+    proc = nix(
+      "build", "--show-trace", "--impure", "-o", "tmp-result", "--expr",
+      f'''
+        let
+          d2n = (import {dream2nix_src} {{}});
+        in
+          (d2n.utils.callViaEnv d2n.{function_path})
+      ''',
       env=env
     )
   if proc.returncode:
@@ -72,12 +68,9 @@ def buildNixFunction(function_path, **kwargs):
 
 
 def buildNixAttribute(attribute_path):
-  proc = sp.run(
-    [
-      "nix", "build", "--show-trace", "--impure", "-o", "tmp-result", "--expr",
-      f"(import {dream2nix_src} {{}}).{attribute_path}",
-    ],
-    capture_output=True,
+  proc = nix(
+    "build", "--show-trace", "--impure", "-o", "tmp-result", "--expr",
+    f"(import {dream2nix_src} {{}}).{attribute_path}",
   )
   if proc.returncode:
     print(f"Failed to build '{attribute_path}'", file=sys.stderr)
