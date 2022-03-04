@@ -71,7 +71,7 @@ overrideUtils
   hashPath = algo: path:
     let
       hashPath = runCommand "hash-${algo}" {} ''
-        ${nix}/bin/nix hash path ${path} | tr --delete '\n' > $out
+        ${nix}/bin/nix --option experimental-features nix-command hash path ${path} | tr --delete '\n' > $out
       '';
     in
       b.readFile hashPath;
@@ -80,7 +80,7 @@ overrideUtils
   hashFile = algo: path:
     let
       hashFile = runCommand "hash-${algo}" {} ''
-        ${nix}/bin/nix hash file ${path} | tr --delete '\n' > $out
+        ${nix}/bin/nix --option experimental-features nix-command hash file ${path} | tr --delete '\n' > $out
       '';
     in
       b.readFile hashFile;
