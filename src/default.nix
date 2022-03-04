@@ -521,19 +521,6 @@ let
         in
           dreamLockExists && dreamLockValid;
 
-      getDreamLockPath = project:
-        let
-          root =
-            if config.projectRoot == null then
-              "/projectRoot_not_set_in_dream2nix_config"
-            else
-              config.projectRoot;
-        in
-          "${root}/"
-          +
-          (dlib.sanitizeRelativePath
-            "${config.packagesDir}/${pname}/${project.relPath}/dream-lock.json");
-
       getProjectKey = project:
         "${project.name}_|_${project.subsystem}_|_${project.relPath}";
 
@@ -541,8 +528,7 @@ let
       projectsList =
         l.map
           (project: project // (let self = rec {
-            dreamLockPath = getDreamLockPath project;
-            dreamLock = dlib.readDreamLock dreamLockPath;
+            dreamLock = dlib.readDreamLock project.dreamLockPath;
             impure = isImpure project translator;
             key = getProjectKey project;
             resolved = isResolved self;
@@ -751,5 +737,9 @@ in
     translators
     updaters
     utils
+  ;
+
+  inherit (dlib)
+    discoverers
   ;
 }

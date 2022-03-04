@@ -1,4 +1,5 @@
 {
+  config,
   dlib,
   lib,
 }:
@@ -19,13 +20,35 @@ let
       tree ? dlib.prepareSourceTree { inherit source; },
       settings ? [],
     }: let
-      discovered =
+      discoveredProjects =
         l.flatten
           (l.map
             (discoverer: discoverer.discover { inherit tree; })
             allDiscoverers);
+
+      rootProjectName = l.head discoveredProjects;
+
+      projectsExtended = l.forEach discoveredProjects
+        (proj: proj
+          // {
+            translator = l.head proj.translators;
+            dreamLockPath = getDreamLockPath proj rootProjectName;
+          });
     in
-      applyProjectSettings discovered settings;
+      applyProjectSettings projectsExtended settings;
+
+  getDreamLockPath = project: rootProject:
+    let
+      root =
+        if config.projectRoot == null then
+          "."
+        else
+          config.projectRoot;
+    in
+      "${root}/"
+      +
+      (dlib.sanitizeRelativePath
+        "${config.packagesDir}/${rootProject.name}/${project.relPath}/dream-lock.json");
 
   applyProjectSettings = projects: settingsList:
     let
