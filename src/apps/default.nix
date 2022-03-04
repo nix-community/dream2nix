@@ -14,7 +14,7 @@ in
 
 rec {
   apps = {
-    inherit cli contribute install;
+    inherit cli cli2 contribute install;
     dream2nix = cli;
   };
 

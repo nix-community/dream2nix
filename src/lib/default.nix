@@ -1,5 +1,6 @@
 {
   lib,
+  config ? (import ../utils/config.nix).loadConfig {},
   ...
 }:
 let
@@ -36,7 +37,7 @@ let
 
   # other libs
   translators = import ./translators.nix { inherit dlib lib; };
-  discoverers = import ../discoverers { inherit dlib lib; };
+  discoverers = import ../discoverers { inherit config dlib lib; };
 
   parseUtils = import ./parsing.nix { inherit lib; };
 
