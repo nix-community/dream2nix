@@ -7,12 +7,7 @@
   pkgs ? import <nixpkgs> {},
   dlib ? import ./lib { inherit lib; },
   lib ? pkgs.lib,
-
-  # the dream2nix cli depends on some nix 2.4 features
-  nix ? pkgs.writeScriptBin "nix" ''
-    #!${pkgs.bash}/bin/bash
-    ${pkgs.nixUnstable}/bin/nix --option experimental-features "nix-command flakes" "$@"
-  '',
+  nix ? pkgs.nix,
 
   # default to empty dream2nix config
   config ?

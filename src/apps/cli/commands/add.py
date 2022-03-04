@@ -12,7 +12,7 @@ import networkx as nx
 from cleo import Command, argument, option
 
 from utils import config, dream2nix_src, checkLockJSON, list_translators_for_source, strip_hashes_from_lock
-from nix_ffi import callNixFunction, buildNixFunction, buildNixAttribute
+from nix_ffi import nix, callNixFunction, buildNixFunction, buildNixAttribute
 
 
 class AddCommand(Command):
@@ -294,12 +294,9 @@ class AddCommand(Command):
     with open(outputDreamLock, 'w') as f:
       json.dump(lock, f, indent=2)
     # compute FOD hash of aggregated sources
-    proc = sp.run(
-      [
-        "nix", "build", "--impure", "-L", "--show-trace", "--expr",
-        f"(import {dream2nix_src} {{}}).fetchSources {{ dreamLock = {outputDreamLock}; }}"
-      ],
-      capture_output=True,
+    proc = nix(
+      "build", "--impure", "-L", "--show-trace", "--expr",
+      f"(import {dream2nix_src} {{}}).fetchSources {{ dreamLock = {outputDreamLock}; }}"
     )
     # read the output hash from the failed build log
     match = re.search(r"FOD_HASH=(.*=)", proc.stderr.decode())
