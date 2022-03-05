@@ -548,8 +548,10 @@ let
         l.filter (project: project.impure && ! project.resolved) projectsList;
 
       # for printing the paths inside the error message
-      projectsImpureUnresolvedPaths =
-        l.map (project: project.relPath) projectsImpureUnresolved;
+      projectsImpureUnresolvedInfo =
+        l.map
+          (project: "${project.name}: ${project.relPath}")
+          projectsImpureUnresolved;
 
       # projects without existing valid dream-lock.json
       projectsPureUnresolved =
@@ -585,16 +587,16 @@ let
         if flakeMode then
           l.trace ''
             ${"\n"}
-            Run `nix run .#resolve` once to resolve impure projects.
+            Run `nix run .#resolveImpure` once to resolve impure projects.
             The following projects cannot be resolved on the fly and require preprocessing:
-              ${l.concatStringsSep "\n  " projectsImpureUnresolvedPaths}
+              ${l.concatStringsSep "\n  " projectsImpureUnresolvedInfo}
           ''
           resolvedProjects
         else
           l.trace ''
             ${"\n"}
             The following projects cannot be resolved on the fly and require preprocessing:
-              ${l.concatStringsSep "\n  " projectsImpureUnresolvedPaths}
+              ${l.concatStringsSep "\n  " projectsImpureUnresolvedInfo}
           ''
           resolvedProjects
       else if projectsPureUnresolved != [] then
@@ -618,7 +620,7 @@ let
   # transform a list of resolved projects to buildable outputs
   realizeProjects =
     {
-      resolvedProjects ? translateProjects { inherit pname settings source; },
+      translatedProjects ? translateProjects { inherit pname settings source; },
 
       # alternative way of calling (for debugging)
       pname ? null,
@@ -629,7 +631,7 @@ let
     }:
     let
 
-      dreamLocks = l.forEach resolvedProjects (proj: proj.dreamLock);
+      dreamLocks = l.forEach translatedProjects (proj: proj.dreamLock);
 
       defaultSourceOverride = dreamLock:
         if source == null then
@@ -670,11 +672,10 @@ let
               (outputs.packages or {});
           };
 
-
       projectOutputs =
         l.map
           (proj: outputsForProject proj)
-          resolvedProjects;
+          translatedProjects;
 
       mergedOutputs =
         l.foldl'

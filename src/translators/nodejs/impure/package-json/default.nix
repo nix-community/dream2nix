@@ -37,12 +37,10 @@
         outputFile=$(jq '.outputFile' -c -r $jsonInput)
         source=$(jq '.source' -c -r $jsonInput)
         npmArgs=$(jq '.npmArgs' -c -r $jsonInput)
-        # inputFiles=$(jq '.inputFiles | .[]' -c -r $jsonInput)
 
         cp -r $source/* ./
         chmod -R +w ./
         rm -rf package-lock.json
-        cat ./package.json
 
         if [ "$(jq '.noDev' -c -r $jsonInput)" == "true" ]; then
           echo "excluding dev dependencies"
@@ -53,11 +51,10 @@
           npm install --package-lock-only $npmArgs
         fi
 
-        cat package-lock.json
+        jq ".source = \"$(pwd)\"" -c -r $jsonInput > $TMPDIR/newJsonInput
 
-        jq ".source = \"$(pwd)\"" -c -r $jsonInput > ./newJsonInput
-
-        ${translators.translators.nodejs.pure.package-lock.translateBin} $(realpath ./newJsonInput)
+        cd $WORKDIR
+        ${translators.translators.nodejs.pure.package-lock.translateBin} $TMPDIR/newJsonInput
       '';
 
 

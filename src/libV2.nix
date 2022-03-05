@@ -133,13 +133,57 @@ let
             let
               dream2nix = dream2nixFor."${system}";
 
-              resolvedProjects = dream2nix.translateProjects {
+              impureDiscoveredProjects =
+                l.filter
+                  (proj:
+                    dream2nix.translators.translatorsV2."${proj.subsystem}".all
+                    ."${proj.translator}".type == "impure")
+                  discoveredProjects;
+
+              impureResolveScriptsList =
+                l.listToAttrs
+                  (l.forEach impureDiscoveredProjects
+                    (project:
+                      l.nameValuePair
+                        "Name: ${project.name}; Subsystem: ${project.subsystem}; relPath: ${project.relPath}"
+                        (dream2nix.utils.makeTranslateScript {
+                          inherit project source;
+                        })));
+
+              resolveImpureScript =
+                dream2nix.utils.writePureShellScript
+                  []
+                  ''
+                    cd $WORKDIR
+                    ${l.concatStringsSep "\n"
+                      (l.mapAttrsToList
+                        (title: script: ''
+                          echo "Resolving:: ${title}"
+                          ${script}/bin/resolve
+                        '')
+                        impureResolveScriptsList)}
+                  '';
+
+              translatedProjects = dream2nix.translateProjects {
                 inherit pname settings source;
               };
+
+              realizedProjects =
+                dream2nix.realizeProjects {
+                  inherit packageOverrides translatedProjects source;
+                };
+
+              allOutputs =
+                realizedProjects
+                //(l.optionalAttrs
+                    (l.length (l.attrNames impureResolveScriptsList) > 0) {
+                      apps.resolveImpure = {
+                        type = "app";
+                        program = l.toString resolveImpureScript;
+                      };
+                    });
             in
-              dream2nix.realizeProjects {
-                inherit packageOverrides resolvedProjects source;
-              })
+              allOutputs)
           allPkgs;
 
       flakifiedOutputsList =

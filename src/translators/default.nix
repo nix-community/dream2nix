@@ -5,6 +5,7 @@
   lib,
   nix,
   pkgs,
+  python3,
 
   callPackageDream,
   externals,
@@ -26,7 +27,8 @@ let
       cleanedArgs = args: l.removeAttrs args [ "project" "tree" ];
 
       upgradedTranslator =
-        translator // {
+        translator
+         // (lib.optionalAttrs (translator ? translate) {
           translate = args:
             let
               dreamLock =
@@ -41,7 +43,7 @@ let
                     location = args.project.relPath;
                   };
                 };
-        };
+        });
 
       finalTranslator =
         if version == 2 then
@@ -50,7 +52,7 @@ let
           upgradedTranslator;
     in
       finalTranslator
-      // (lib.optionalAttrs (finalTranslator ? translate){
+      // (lib.optionalAttrs (finalTranslator ? translate) {
         translateBin =
           wrapPureTranslator2
           (with translator; [ subsystem type name ]);
@@ -68,7 +70,8 @@ let
       version = translator.version or 1;
 
       downgradeTranslator =
-        translator // {
+        translator
+         // (lib.optionalAttrs (translator ? translate) {
           translate = args:
             translator.translate (args // {
               inherit (args) source;
@@ -79,7 +82,7 @@ let
                 subsystem = translator.subsystem;
               };
             });
-        };
+        });
 
       finalTranslator =
         if version == 1 then
@@ -107,9 +110,18 @@ let
           #   - import the `translate` function
           #   - generate `translateBin`
           // (lib.optionalAttrs (translatorModule ? translate) {
-            translate = callPackageDream translatorModule.translate {
-              translatorName = translatorModule.name;
-            };
+            translate =
+              let
+                translateOriginal = callPackageDream translatorModule.translate {
+                  translatorName = translatorModule.name;
+                };
+              in
+                args: translateOriginal
+                (
+                  (dlib.translators.getextraArgsDefaults
+                    (translatorModule.extraArgs or {}))
+                  // args
+                );
             translateBin =
               wrapPureTranslator
               (with translatorModule; [ subsystem type name ]);
@@ -124,19 +136,8 @@ let
               };
           });
 
-          # supply calls to translate with default arguments
-          translatorWithDefaults = translator // {
-            translate = args:
-              translator.translate
-                (
-                  (dlib.translators.getextraArgsDefaults
-                    (translator.extraArgs or {}))
-                  // args
-                );
-          };
-
       in
-        translatorWithDefaults;
+        translator;
 
 
   translators = dlib.translators.mapTranslators makeTranslatorV1;
@@ -194,11 +195,13 @@ let
           coreutils
           jq
           nix
+          python3
         ]
         ''
           jsonInputFile=$(realpath $1)
           outputFile=$(jq '.outputFile' -c -r $jsonInputFile)
 
+          cd $WORKDIR
           mkdir -p $(dirname $outputFile)
 
           nix eval \
@@ -222,7 +225,7 @@ let
                 (dreamLock // {
                   _generic = builtins.removeAttrs dreamLock._generic [ \"cyclicDependencies\" ];
                 })
-          " | jq > $outputFile
+          " | python3 ${../apps/cli2/format-dream-lock.py} > $outputFile
         '';
     in
       bin.overrideAttrs (old: {

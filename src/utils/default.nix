@@ -97,13 +97,13 @@ overrideUtils
     export NIX_PATH=nixpkgs=${pkgs.path}
     export WORKDIR="$PWD"
 
-    tmpdir=$(${coreutils}/bin/mktemp -d)
-    cd $tmpdir
+    TMPDIR=$(${coreutils}/bin/mktemp -d)
+    cd $TMPDIR
 
     ${script}
 
     cd
-    ${coreutils}/bin/rm -rf $tmpdir
+    ${coreutils}/bin/rm -rf $TMPDIR
   '';
 
   # builder to create a shell script that has it's own PATH
@@ -116,13 +116,13 @@ overrideUtils
       export NIX_PATH=nixpkgs=${pkgs.path}
       export WORKDIR="$PWD"
 
-      tmpdir=$(${coreutils}/bin/mktemp -d)
-      cd $tmpdir
+      TMPDIR=$(${coreutils}/bin/mktemp -d)
+      cd $TMPDIR
 
       ${script}
 
       cd
-      ${coreutils}/bin/rm -rf $tmpdir
+      ${coreutils}/bin/rm -rf $TMPDIR
     '';
 
   extractSource =
