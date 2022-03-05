@@ -187,7 +187,10 @@ let
             translators = getTranslatorNames tree.fullPath;
             subsystemInfo =
               l.optionalAttrs (workspaces != []) {
-                workspaces = l.map (w: w.relPath) workspaces;
+                workspaces =
+                  l.map
+                  (w: l.removePrefix tree.relPath w.relPath)
+                  workspaces;
               };
           };
 

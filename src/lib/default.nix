@@ -132,7 +132,8 @@ let
 
       getNodeFromPath = path:
         let
-          pathSplit = l.splitString "/" path;
+          cleanPath = l.removePrefix "/" path;
+          pathSplit = l.splitString "/" cleanPath;
           dirSplit = l.init pathSplit;
           leaf = l.last pathSplit;
 
@@ -225,7 +226,7 @@ let
   prepareSourceTree =
     {
       source,
-      depth ? 5,
+      depth ? 10,
     }:
     prepareSourceTreeInternal source "" "" depth;
 
