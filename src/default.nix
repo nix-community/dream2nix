@@ -557,6 +557,12 @@ let
           (project: ! project.resolved && ! project.impure)
           projectsList;
 
+      # already resolved projects
+      projectsResolved =
+        l.filter
+          (project: project.resolved)
+          projectsList;
+
       # pure projects grouped by translator
       projectsByTranslator =
         l.groupBy
@@ -564,19 +570,25 @@ let
           projectsPureUnresolved;
 
       # list of pure projects extended with 'dreamLock' attribute
-      dreamLocks =
+      projectsResolvedOnTheFly =
         l.flatten
           (l.mapAttrsToList
             (translatorName: projects:
               let
                 p = l.head projects;
                 translator = getTranslator p.subsystem p.translator;
+                dreamLocks =
+                  translator.translate {
+                    inherit projects source tree;
+                  };
               in
-                # transaltor will attach dreamLock to project
-                translator.translate {
-                  inherit projects source tree;
-                })
+                l.zipListsWith
+                  (proj: dreamLock: proj // { inherit dreamLock; })
+                  projects
+                  dreamLocks)
             projectsByTranslator);
+
+      resolvedProjects = projectsResolved ++ projectsResolvedOnTheFly;
 
     in
       if projectsImpureUnresolved != [] then
@@ -587,14 +599,14 @@ let
             The following projects cannot be resolved on the fly and require preprocessing:
               ${l.concatStringsSep "\n  " projectsImpureUnresolvedPaths}
           ''
-          dreamLocks
+          resolvedProjects
         else
           l.trace ''
             ${"\n"}
             The following projects cannot be resolved on the fly and require preprocessing:
               ${l.concatStringsSep "\n  " projectsImpureUnresolvedPaths}
           ''
-          dreamLocks
+          resolvedProjects
       else if projectsPureUnresolved != [] then
         if flakeMode then
           l.trace ''
@@ -603,20 +615,20 @@ let
             To speed up future evalutations run once:
               nix run .#resolve
           ''
-          dreamLocks
+          resolvedProjects
         else
           l.trace ''
             ${"\n"}
             Evaluating project data on the fly...
           ''
-          dreamLocks
+          resolvedProjects
       else
-        dreamLocks;
+        resolvedProjects;
 
   # transform a list of resolved projects to buildable outputs
   realizeProjects =
     {
-      dreamLocks ? translateProjects { inherit pname settings source; },
+      resolvedProjects ? translateProjects { inherit pname settings source; },
 
       # alternative way of calling (for debugging)
       pname ? null,
@@ -626,6 +638,8 @@ let
       settings ? [],
     }:
     let
+
+      dreamLocks = l.forEach resolvedProjects (proj: proj.dreamLock);
 
       defaultSourceOverride = dreamLock:
         if source == null then

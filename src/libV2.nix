@@ -133,12 +133,12 @@ let
             let
               dream2nix = dream2nixFor."${system}";
 
-              dreamLocks = dream2nix.translateProjects {
+              resolvedProjects = dream2nix.translateProjects {
                 inherit pname settings source;
               };
             in
               dream2nix.realizeProjects {
-                inherit dreamLocks packageOverrides source;
+                inherit packageOverrides resolvedProjects source;
               })
           allPkgs;
 
