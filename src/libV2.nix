@@ -108,6 +108,7 @@ let
     {
       pname ? throw "Please pass `pname` to makeFlakeOutputs",
       pkgs ? null,
+      packageOverrides ? {},
       settings ? [],
       source,
       systems ? [],
@@ -118,7 +119,6 @@ let
     let
 
       config = args.config or ((import ./utils/config.nix).loadConfig {});
-      argsForward = b.removeAttrs args [ "config" "pname" "pkgs" "systems" ];
       allPkgs = makeNixpkgs pkgs systems;
       forAllSystems = f: b.mapAttrs f allPkgs;
       dream2nixFor = forAllSystems (dream2nixForSystem config);
@@ -138,7 +138,7 @@ let
               };
             in
               dream2nix.realizeProjects {
-                inherit dreamLocks source;
+                inherit dreamLocks packageOverrides source;
               })
           allPkgs;
 

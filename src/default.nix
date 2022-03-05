@@ -622,6 +622,7 @@ let
       pname ? null,
       source ? null,
 
+      packageOverrides ? {},
       settings ? [],
     }:
     let
@@ -644,7 +645,7 @@ let
       projectOutputs =
         l.map
           (dreamLock: makeOutputsForDreamLock rec {
-            inherit dreamLock;
+            inherit dreamLock packageOverrides;
             sourceOverrides = oldSources:
               (defaultSourceOverride dreamLock);
           })
