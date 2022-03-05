@@ -55,8 +55,8 @@ in rec {
         '';
       entries = l.map makeEntry subsystemAttrs.gitSources;
     in ''
-      mkdir -p ../.cargo/ && touch ../.cargo/config
-      cat >> ../.cargo/config <<EOF
+      mkdir -p $CARGO_HOME && touch $CARGO_HOME/config.toml
+      cat >> $CARGO_HOME/config.toml <<EOF
       ${l.concatStringsSep "\n" entries}
       EOF
     '';

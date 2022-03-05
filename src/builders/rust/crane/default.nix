@@ -32,23 +32,24 @@ let
     let
       src = utils.getRootSource pname version;
       cargoVendorDir = vendoring.vendorDependencies pname version;
-      preBuild = ''
+      preConfigure = ''
         ${vendoring.writeGitVendorEntries "nix-sources"}
       '';
       # The deps-only derivation will use this as a prefix to the `pname`
       depsNameSuffix = "-deps";
       # Make sure cargo only builds the package we want
       cargoExtraArgs = "--package ${pname}";
+      # Set CARGO_HOME to /build because we write our .cargo/config there
+      CARGO_HOME = "/build/.cargo_home";
 
-      deps = produceDerivation "${pname}${depsNameSuffix}" (crane.buildDepsOnly {
-        inherit pname version src cargoVendorDir cargoExtraArgs preBuild;
-        pnameSuffix = depsNameSuffix;
-      });
+      common = {inherit pname version src cargoVendorDir cargoExtraArgs preConfigure CARGO_HOME;};
+
+      depsArgs = common // { pnameSuffix = depsNameSuffix; };
+      deps = produceDerivation "${pname}${depsNameSuffix}" (crane.buildDepsOnly depsArgs);
+      
+      buildArgs = common // { cargoArtifacts = deps; };
     in
-    produceDerivation pname (crane.buildPackage {
-      inherit pname version src cargoVendorDir cargoExtraArgs preBuild;
-      cargoArtifacts = deps;
-    });
+    produceDerivation pname (crane.buildPackage buildArgs);
 in
 rec {
   packages =

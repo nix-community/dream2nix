@@ -40,11 +40,15 @@ let
 
       cargoVendorDir = "../nix-vendor";
 
+      CARGO_HOME = "/build/.cargo-home";
+
       postUnpack = ''
         ln -s ${vendorDir} ./nix-vendor
       '';
 
-      preBuild = ''
+      preConfigure = ''
+        mkdir -p $CARGO_HOME
+        mv /build/.cargo/config $CARGO_HOME/config.toml
         ${vendoring.writeGitVendorEntries "vendored-sources"}
       '';
     });
