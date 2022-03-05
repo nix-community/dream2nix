@@ -25,7 +25,6 @@ let
       ...
     }@args:
     let
-      filteredProjects = nodejsUtils.filterProjects projects;
 
       getPackageLock = project:
         nodejsUtils.getWorkspaceLockFile tree project "package-lock.json";
@@ -42,7 +41,7 @@ let
               relPath = proj.relPath;
               workspaces = proj.subsystemInfo.workspaces or [];
             })
-          filteredProjects;
+          projects;
 
     in
       allProjectsTranslated;

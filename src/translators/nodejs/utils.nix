@@ -6,31 +6,6 @@ l = lib // builtins;
 
 in rec {
 
-  # One translator call can process a whole workspace containing all
-  # sub-packages of that workspace.
-  # Therefore we can filter out projects which are children of a workspace.
-  filterProjects = projects:
-    let
-      workspaceRoots =
-        l.filter
-          (proj: proj.subsystemInfo.workspaces or [] != [])
-          projects;
-
-      allWorkspaceChildren =
-        l.flatten
-          (l.map
-            (root: root.subsystemInfo.workspaces)
-            workspaceRoots);
-
-      childrenRemoved =
-        l.filter
-          (proj:
-            (! l.elem proj.relPath allWorkspaceChildren))
-          projects;
-
-    in
-      childrenRemoved;
-
   getPackageJsonDeps = packageJson: noDev:
     packageJson.dependencies or {}
     // (lib.optionalAttrs (! noDev) (packageJson.devDependencies or {}));

@@ -23,8 +23,6 @@ let
     ...
   }@args: let
 
-    filteredProjects = nodejsUtils.filterProjects projects;
-
     parser = import ./parser.nix { inherit lib; };
 
     getYarnLock = proj:
@@ -43,7 +41,7 @@ let
             relPath = proj.relPath;
             workspaces = proj.subsystemInfo.workspaces or [];
           })
-        filteredProjects;
+        projects;
 
   in
     allProjectsTranslated;

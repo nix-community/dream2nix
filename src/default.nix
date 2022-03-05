@@ -5,7 +5,7 @@
 
 {
   pkgs ? import <nixpkgs> {},
-  dlib ? import ./lib { inherit lib; },
+  dlib ? import ./lib { inherit config lib; },
   lib ? pkgs.lib,
   nix ? pkgs.nix,
 
@@ -531,7 +531,7 @@ let
             dreamLock = dlib.readDreamLock project.dreamLockPath;
             impure = isImpure project translator;
             key = getProjectKey project;
-            resolved = isResolved self;
+            resolved = isResolved project;
             translator = project.translator or (l.head project.translators);
           }; in self))
           discoveredProjects;

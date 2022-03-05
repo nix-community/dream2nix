@@ -225,7 +225,7 @@ let
   prepareSourceTree =
     {
       source,
-      depth ? 3,
+      depth ? 5,
     }:
     prepareSourceTreeInternal source "" "" depth;
 
