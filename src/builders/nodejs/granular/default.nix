@@ -93,7 +93,7 @@ let
           (name: version:{
             "${name}"."${version}" = allPackages."${name}"."${version}";
           })
-          packages);
+          args.packages);
   };
 
   # This is only executed for electron based packages.

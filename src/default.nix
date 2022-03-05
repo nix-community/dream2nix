@@ -506,7 +506,7 @@ let
 
       isResolved = project:
         let
-          dreamLockExists = l.pathExists project.dreamLockPath;
+          dreamLockExists = l.pathExists "${config.projectRoot}/${project.dreamLockPath}";
 
           invalidationHash = dlib.calcInvalidationHash {
             inherit source;
@@ -528,7 +528,7 @@ let
       projectsList =
         l.map
           (project: project // (let self = rec {
-            dreamLock = dlib.readDreamLock project.dreamLockPath;
+            dreamLock = dlib.readDreamLock "${config.projectRoot}/${project.dreamLockPath}";
             impure = isImpure project translator;
             key = getProjectKey project;
             resolved = isResolved project;
@@ -645,15 +645,36 @@ let
                 "${source}/${dreamLock._generic.location}";
             };
 
+      # extends each package with a `.resolve` attribute
+      outputsForProject = proj:
+        let
+          outputs = makeOutputsForDreamLock rec {
+            inherit packageOverrides;
+            dreamLock = proj.dreamLock;
+            sourceOverrides = oldSources:
+              (defaultSourceOverride proj.dreamLock);
+          };
+        in
+          outputs
+          // {
+            packages =
+              l.mapAttrs
+                (pname: pkg: pkg.overrideAttrs (old: {
+                  passthru = old.passthru or {} // {
+                    resolve = utils.makeTranslateScript {
+                      inherit source;
+                      project = proj;
+                    };
+                  };
+                }))
+              (outputs.packages or {});
+          };
+
 
       projectOutputs =
         l.map
-          (dreamLock: makeOutputsForDreamLock rec {
-            inherit dreamLock packageOverrides;
-            sourceOverrides = oldSources:
-              (defaultSourceOverride dreamLock);
-          })
-          dreamLocks;
+          (proj: outputsForProject proj)
+          resolvedProjects;
 
       mergedOutputs =
         l.foldl'

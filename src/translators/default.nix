@@ -42,11 +42,25 @@ let
                   };
                 };
         };
+
+      finalTranslator =
+        if version == 2 then
+          translator
+        else
+          upgradedTranslator;
     in
-      if version == 2 then
-        translator
-      else
-        upgradedTranslator;
+      finalTranslator
+      // (lib.optionalAttrs (finalTranslator ? translate){
+        translateBin =
+          wrapPureTranslator2
+          (with translator; [ subsystem type name ]);
+        # ensure `tree` is passed
+        translate = args:
+          finalTranslator.translate (args // {
+            tree =
+              args.tree or (dlib.prepareSourceTree { inherit (args) source; });
+          });
+      });
 
   # transforms V2 translators to V1 translators
   ensureTranslatorV1 = translator:
@@ -66,11 +80,14 @@ let
               };
             });
         };
+
+      finalTranslator =
+        if version == 1 then
+          translator
+        else
+          downgradeTranslator;
     in
-      if version == 1 then
-        translator
-      else
-        downgradeTranslator;
+      finalTranslator;
 
 
   makeTranslatorV2 = translatorModule:
@@ -126,6 +143,48 @@ let
 
   translatorsV2 = dlib.translators.mapTranslators makeTranslatorV2;
 
+  # adds a translateBin to a pure translator
+  wrapPureTranslator2 = translatorAttrPath:
+    let
+      bin = utils.writePureShellScript
+        [
+          coreutils
+          jq
+          nix
+        ]
+        ''
+          jsonInputFile=$(realpath $1)
+          outputFile=$WORKDIR/$(jq '.outputFile' -c -r $jsonInputFile)
+
+          mkdir -p $(dirname $outputFile)
+
+          nix eval \
+            --option experimental-features "nix-command flakes"\
+            --show-trace --impure --raw --expr "
+            let
+              dream2nix = import ${dream2nixWithExternals} {};
+
+              translatorArgs =
+                (builtins.fromJSON
+                    (builtins.unsafeDiscardStringContext (builtins.readFile '''$1''')));
+
+              dreamLock =
+                dream2nix.translators.translatorsV2.${
+                  lib.concatStringsSep "." translatorAttrPath
+                }.translate
+                  translatorArgs;
+            in
+              dream2nix.utils.dreamLock.toJSON
+                # don't use nix to detect cycles, this will be more efficient in python
+                (dreamLock // {
+                  _generic = builtins.removeAttrs dreamLock._generic [ \"cyclicDependencies\" ];
+                })
+          " | jq > $outputFile
+        '';
+    in
+      bin.overrideAttrs (old: {
+        name = "translator-${lib.concatStringsSep "-" translatorAttrPath}";
+      });
 
   # adds a translateBin to a pure translator
   wrapPureTranslator = translatorAttrPath:
@@ -140,20 +199,29 @@ let
           jsonInputFile=$(realpath $1)
           outputFile=$(jq '.outputFile' -c -r $jsonInputFile)
 
-          nix eval --show-trace --impure --raw --expr "
-              let
-                dream2nix = import ${dream2nixWithExternals} {};
-                dreamLock =
-                  dream2nix.translators.translators.${
-                    lib.concatStringsSep "." translatorAttrPath
-                  }.translate
-                    (builtins.fromJSON (builtins.readFile '''$1'''));
-              in
-                dream2nix.utils.dreamLock.toJSON
-                  # don't use nix to detect cycles, this will be more efficient in python
-                  (dreamLock // {
-                    _generic = builtins.removeAttrs dreamLock._generic [ \"cyclicDependencies\" ];
-                  })
+          mkdir -p $(dirname $outputFile)
+
+          nix eval \
+            --option experimental-features "nix-command flakes"\
+            --show-trace --impure --raw --expr "
+            let
+              dream2nix = import ${dream2nixWithExternals} {};
+
+              translatorArgs =
+                (builtins.fromJSON
+                    (builtins.unsafeDiscardStringContext (builtins.readFile '''$1''')));
+
+              dreamLock =
+                dream2nix.translators.translators.${
+                  lib.concatStringsSep "." translatorAttrPath
+                }.translate
+                  translatorArgs;
+            in
+              dream2nix.utils.dreamLock.toJSON
+                # don't use nix to detect cycles, this will be more efficient in python
+                (dreamLock // {
+                  _generic = builtins.removeAttrs dreamLock._generic [ \"cyclicDependencies\" ];
+                })
           " | jq > $outputFile
         '';
     in

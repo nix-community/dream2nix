@@ -45,10 +45,8 @@ let
         else
           config.projectRoot;
     in
-      "${root}/"
-      +
-      (dlib.sanitizeRelativePath
-        "${config.packagesDir}/${rootProject.name}/${project.relPath}/dream-lock.json");
+      dlib.sanitizeRelativePath
+        "${config.packagesDir}/${rootProject.name}/${project.relPath}/dream-lock.json";
 
   applyProjectSettings = projects: settingsList:
     let

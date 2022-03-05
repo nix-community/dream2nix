@@ -9,16 +9,19 @@
   runCommand,
   stdenv,
   writeScript,
+  writeScriptBin,
 
   # dream2nix inputs
   apps,
   callPackageDream,
   externalSources,
+  translators,
   ...
 }:
 let
 
   b = builtins;
+  l = lib // builtins;
 
   dreamLockUtils = callPackageDream ./dream-lock.nix {};
 
@@ -103,6 +106,25 @@ overrideUtils
     ${coreutils}/bin/rm -rf $tmpdir
   '';
 
+  # builder to create a shell script that has it's own PATH
+  writePureShellScriptBin = binName: availablePrograms: script:
+    writeScriptBin binName ''
+      #!${bash}/bin/bash
+      set -Eeuo pipefail
+
+      export PATH="${lib.makeBinPath availablePrograms}"
+      export NIX_PATH=nixpkgs=${pkgs.path}
+      export WORKDIR="$PWD"
+
+      tmpdir=$(${coreutils}/bin/mktemp -d)
+      cd $tmpdir
+
+      ${script}
+
+      cd
+      ${coreutils}/bin/rm -rf $tmpdir
+    '';
+
   extractSource =
     {
       source,
@@ -142,6 +164,32 @@ overrideUtils
     };
 
   satisfiesSemver = poetry2nixSemver.satisfiesSemver;
+
+  makeTranslateScript =
+    {
+      source,
+      project,
+    }@args:
+    let
+      translator =
+        translators.translatorsV2."${project.subsystem}".all."${project.translator}";
+
+      argsJsonFile = pkgs.writeText "translator-args.json"
+        (l.toJSON
+          (args
+          // {
+            project = l.removeAttrs args.project ["dreamLock"];
+            outputFile = project.dreamLockPath;
+          }));
+    in
+      writePureShellScriptBin "resolve"
+      [
+        pkgs.nix
+      ]
+      ''
+        cd $WORKDIR
+        ${translator.translateBin} ${argsJsonFile}
+      '';
 
   # a script that produces and dumps the dream-lock json for a given source
   makePackageLockScript =
