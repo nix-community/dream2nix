@@ -37,17 +37,20 @@ let
       '';
       # The deps-only derivation will use this as a prefix to the `pname`
       depsNameSuffix = "-deps";
-      # Make sure cargo only builds the package we want
-      cargoExtraArgs = "--package ${pname}";
       # Set CARGO_HOME to /build because we write our .cargo/config there
       CARGO_HOME = "/build/.cargo_home";
 
-      common = {inherit pname version src cargoVendorDir cargoExtraArgs preConfigure CARGO_HOME;};
+      common = {inherit pname version src cargoVendorDir preConfigure CARGO_HOME;};
 
       depsArgs = common // { pnameSuffix = depsNameSuffix; };
       deps = produceDerivation "${pname}${depsNameSuffix}" (crane.buildDepsOnly depsArgs);
       
-      buildArgs = common // { cargoArtifacts = deps; };
+      buildArgs = common // {
+        cargoArtifacts = deps;
+        # Make sure cargo only builds & tests the package we want
+        cargoBuildCommand = "cargo build --release --package ${pname}";
+        cargoTestCommand = "cargo test --release --package ${pname}";
+      };
     in
     produceDerivation pname (crane.buildPackage buildArgs);
 in
