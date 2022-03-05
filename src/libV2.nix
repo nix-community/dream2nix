@@ -185,13 +185,12 @@ let
 
               allOutputs =
                 realizedProjects
-                //(l.optionalAttrs
-                    (l.length (l.attrNames impureResolveScriptsList) > 0) {
-                      apps.resolveImpure = {
-                        type = "app";
-                        program = l.toString resolveImpureScript;
-                      };
-                    });
+                // {
+                  apps.resolveImpure = {
+                    type = "app";
+                    program = l.toString resolveImpureScript;
+                  };
+                };
             in
               allOutputs)
           allPkgs;
