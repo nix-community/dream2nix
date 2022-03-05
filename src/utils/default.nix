@@ -185,10 +185,15 @@ overrideUtils
       writePureShellScriptBin "resolve"
       [
         pkgs.nix
+        pkgs.gitMinimal
       ]
       ''
         cd $WORKDIR
         ${translator.translateBin} ${argsJsonFile}
+        if git rev-parse --show-toplevel &>/dev/null; then
+          echo "adding file to git: ${project.dreamLockPath}"
+          git add ${project.dreamLockPath}
+        fi
       '';
 
   # a script that produces and dumps the dream-lock json for a given source
