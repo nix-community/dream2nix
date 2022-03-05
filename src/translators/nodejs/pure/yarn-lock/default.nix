@@ -6,60 +6,23 @@
 let
   l = lib // builtins;
   nodejsUtils = import ../../utils.nix { inherit lib; };
+  parser = import ./parser.nix { inherit lib; };
 
-  translate = {
-    translatorName,
-    utils,
-    ...
-  }:
-  {
-    projects,
-    source,
-    tree,
+  getYarnLock = tree: proj:
+    tree.getNodeFromPath "${proj.relPath}/yarn.lock";
 
-    name,
-    noDev,
-    nodejs,
-    ...
-  }@args: let
-
-    parser = import ./parser.nix { inherit lib; };
-
-    getYarnLock = proj:
-      tree.getNodeFromPath "${proj.relPath}/yarn.lock";
-
-    allProjectsTranslated =
-      l.map
-        (proj:
-          translateOne {
-            inherit translatorName utils noDev nodejs;
-            name = proj.name;
-            source = "${args.source}/${proj.relPath}";
-            tree = tree.getNodeFromPath proj.relPath;
-            yarnLock =
-              parser.parse (getYarnLock proj).content;
-            relPath = proj.relPath;
-            workspaces = proj.subsystemInfo.workspaces or [];
-          })
-        projects;
-
-  in
-    allProjectsTranslated;
-
-  translateOne =
+  translate =
     {
       translatorName,
       utils,
+      ...
+    }:
+    {
+      project,
       source,
       tree,
 
-      # subsystem specific
-      yarnLock,
-      relPath,
-      workspaces,
-
       # extraArgs
-      name,
       nodejs,
       noDev,
       ...
@@ -68,6 +31,11 @@ let
     let
       b = builtins;
       dev = ! noDev;
+      name = project.name;
+      relPath = project.relPath;
+      tree = args.tree.getNodeFromPath project.relPath;
+      workspaces = project.subsystemInfo.workspaces or [];
+      yarnLock = parser.parse (tree.getNodeFromPath "yarn.lock").content;
 
       defaultPackage =
         if name != "{automatic}" then

@@ -563,30 +563,20 @@ let
           (project: project.resolved)
           projectsList;
 
-      # pure projects grouped by translator
-      projectsByTranslator =
-        l.groupBy
-          (proj: "${proj.subsystem}_${l.head proj.translators}")
-          projectsPureUnresolved;
-
       # list of pure projects extended with 'dreamLock' attribute
       projectsResolvedOnTheFly =
-        l.flatten
-          (l.mapAttrsToList
-            (translatorName: projects:
-              let
-                p = l.head projects;
-                translator = getTranslator p.subsystem p.translator;
-                dreamLocks =
-                  translator.translate {
-                    inherit projects source tree;
-                  };
-              in
-                l.zipListsWith
-                  (proj: dreamLock: proj // { inherit dreamLock; })
-                  projects
-                  dreamLocks)
-            projectsByTranslator);
+        l.forEach projectsPureUnresolved
+          (proj:
+            let
+              translator = getTranslator proj.subsystem proj.translator;
+            in
+              proj
+              // {
+                dreamLock = translator.translate {
+                  inherit source tree;
+                  project = proj;
+                };
+              });
 
       resolvedProjects = projectsResolved ++ projectsResolvedOnTheFly;
 

@@ -8,6 +8,9 @@ let
   l = lib // builtins;
   nodejsUtils = import ../../utils.nix { inherit lib; };
 
+  getPackageLock = tree: project:
+    nodejsUtils.getWorkspaceLockFile tree project "package-lock.json";
+
   translate =
     {
       translatorName,
@@ -15,52 +18,11 @@ let
       ...
     }:
     {
-      projects,
+      project,
       source,
       tree,
-
-      name,
-      noDev,
-      nodejs,
-      ...
-    }@args:
-    let
-
-      getPackageLock = project:
-        nodejsUtils.getWorkspaceLockFile tree project "package-lock.json";
-
-      allProjectsTranslated =
-        l.map
-          (proj:
-            translateOne {
-              inherit translatorName utils noDev nodejs;
-              name = proj.name;
-              source = "${args.source}/${proj.relPath}";
-              tree = tree.getNodeFromPath proj.relPath;
-              packageLock = (getPackageLock proj).jsonContent or null;
-              relPath = proj.relPath;
-              workspaces = proj.subsystemInfo.workspaces or [];
-            })
-          projects;
-
-    in
-      allProjectsTranslated;
-
-
-  translateOne =
-    {
-      translatorName,
-      utils,
-      source,
-      tree,
-
-      # subsystem specific
-      packageLock,
-      relPath,
-      workspaces,
 
       # translator args
-      name,
       noDev,
       nodejs,
       ...
@@ -70,6 +32,13 @@ let
       b = builtins;
 
       dev = ! noDev;
+      name = project.name;
+      tree = args.tree.getNodeFromPath project.relPath;
+      relPath = project.relPath;
+      source = "${args.source}/${relPath}";
+      workspaces = project.subsystemInfo.workspaces or [];
+
+      packageLock = (getPackageLock args.tree project).jsonContent or null;
 
       packageJson =
         (tree.getNodeFromPath "package.json").jsonContent;

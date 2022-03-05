@@ -136,6 +136,9 @@ let
           pathSplit = l.splitString "/" cleanPath;
           dirSplit = l.init pathSplit;
           leaf = l.last pathSplit;
+          error = throw ''
+            Failed while trying to navigate to ${path} from ${fullPath'}
+          '';
 
           dirAttrPath =
             l.init
@@ -146,6 +149,8 @@ let
           dir =
             if (l.length dirSplit == 0) || dirAttrPath == [ "" ] then
               self
+            else if ! l.hasAttrByPath dirAttrPath directories then
+              error
             else
               l.getAttrFromPath dirAttrPath directories;
 
@@ -157,7 +162,7 @@ let
           else if dir ? files."${leaf}" then
             dir.files."${leaf}"
           else
-            throw "could not find file or directory ${path} in ${fullPath'}";
+            error;
 
       self =
         {

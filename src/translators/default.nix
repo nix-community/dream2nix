@@ -23,27 +23,24 @@ let
   ensureTranslatorV2 = translator:
     let
       version = translator.version or 1;
-      cleanedArgs = args: l.removeAttrs args [ "projets" "tree" ];
+      cleanedArgs = args: l.removeAttrs args [ "project" "tree" ];
 
       upgradedTranslator =
         translator // {
           translate = args:
-            l.map
-              (proj:
-                let
-                  dreamLock =
-                    translator.translate
-                      ((cleanedArgs args) // {
-                        source = "${args.source}/${proj.relPath}";
-                        name = proj.name;
-                      });
-                  in
-                    dreamLock // {
-                      _generic = dreamLock._generic // {
-                        location = proj.relPath;
-                      };
-                    })
-              args.projects;
+            let
+              dreamLock =
+                translator.translate
+                  ((cleanedArgs args) // {
+                    source = "${args.source}/${args.project.relPath}";
+                    name = args.project.name;
+                  });
+              in
+                dreamLock // {
+                  _generic = dreamLock._generic // {
+                    location = args.project.relPath;
+                  };
+                };
         };
     in
       if version == 2 then
@@ -59,16 +56,15 @@ let
       downgradeTranslator =
         translator // {
           translate = args:
-            l.head
-              (translator.translate (args // {
-                inherit (args) source;
-                tree = dlib.prepareSourceTree { inherit (args) source; };
-                projects = [{
-                  name = translator.projectName { inherit (args) source; };
-                  relPath = "";
-                  subsystem = translator.subsystem;
-                }];
-              }));
+            translator.translate (args // {
+              inherit (args) source;
+              tree = dlib.prepareSourceTree { inherit (args) source; };
+              project = {
+                name = translator.projectName { inherit (args) source; };
+                relPath = "";
+                subsystem = translator.subsystem;
+              };
+            });
         };
     in
       if version == 1 then
