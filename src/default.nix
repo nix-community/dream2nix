@@ -482,12 +482,12 @@ let
     in
       allOutputs;
 
-  resolveProjectsFromSource =
+  translateProjects =
     {
       discoveredProjects ? dlib.discoverers.discoverProjects
         {inherit settings tree;},
       source ?
-        throw "Pass either `source` or `tree` to resolveProjectsFromSource",
+        throw "Pass either `source` or `tree` to translateProjects",
       tree ? dlib.prepareSourceTree { inherit source; },
       pname,
       settings ? [],
@@ -616,7 +616,7 @@ let
   # transform a list of resolved projects to buildable outputs
   realizeProjects =
     {
-      dreamLocks ? resolveProjectsFromSource { inherit pname settings source; },
+      dreamLocks ? translateProjects { inherit pname settings source; },
 
       # alternative way of calling (for debugging)
       pname ? null,
@@ -733,7 +733,7 @@ in
     fetchSources
     makeOutputs
     realizeProjects
-    resolveProjectsFromSource
+    translateProjects
     riseAndShine
     translators
     updaters

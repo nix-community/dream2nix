@@ -133,7 +133,7 @@ let
             let
               dream2nix = dream2nixFor."${system}";
 
-              dreamLocks = dream2nix.resolveProjectsFromSource {
+              dreamLocks = dream2nix.translateProjects {
                 inherit pname settings source;
               };
             in
