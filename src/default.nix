@@ -504,22 +504,24 @@ let
       isImpure = project: translatorName:
         (getTranslator project.subsystem translatorName).type == "impure";
 
+      getInvalidationHash = project:
+        dlib.calcInvalidationHash {
+          inherit source;
+          # TODO: add translatorArgs
+          translatorArgs = {};
+          translator = project.translator;
+        };
+
       isResolved = project:
         let
-          dreamLockExists = l.pathExists "${config.projectRoot}/${project.dreamLockPath}";
-
-          invalidationHash = dlib.calcInvalidationHash {
-            inherit source;
-            # TODO: add translatorArgs
-            translatorArgs = {};
-            translator = project.translator;
-          };
+          dreamLockExists =
+            l.pathExists "${config.projectRoot}/${project.dreamLockPath}";
 
           dreamLockValid =
             project.dreamLock.lock._generic.invalidationHash or ""
-            == invalidationHash;
-        in
-          dreamLockExists && dreamLockValid;
+            == project.invalidationHash;
+      in
+        dreamLockExists && dreamLockValid;
 
       getProjectKey = project:
         "${project.name}_|_${project.subsystem}_|_${project.relPath}";
@@ -527,11 +529,14 @@ let
       # list of projects extended with some information requried for processing
       projectsList =
         l.map
-          (project: project // (let self = rec {
-            dreamLock = dlib.readDreamLock "${config.projectRoot}/${project.dreamLockPath}";
+          (project: (let self = project // rec {
+            dreamLock = utils.readDreamLock {
+              dreamLock = "${config.projectRoot}/${project.dreamLockPath}";
+            };
             impure = isImpure project translator;
+            invalidationHash = getInvalidationHash project;
             key = getProjectKey project;
-            resolved = isResolved project;
+            resolved = isResolved self;
             translator = project.translator or (l.head project.translators);
           }; in self))
           discoveredProjects;
@@ -571,13 +576,18 @@ let
           (proj:
             let
               translator = getTranslator proj.subsystem proj.translator;
-            in
-              proj
-              // {
-                dreamLock = translator.translate {
-                  inherit source tree;
-                  project = proj;
+              dreamLock' = translator.translate {
+                inherit source tree;
+                project = proj;
+              };
+              dreamLock = dreamLock' // {
+                _generic = dreamLock'._generic // {
+                  invalidationHash = proj.invalidationHash;
                 };
+              };
+            in
+              proj // {
+                inherit dreamLock;
               });
 
       resolvedProjects = projectsResolved ++ projectsResolvedOnTheFly;
