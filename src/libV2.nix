@@ -122,6 +122,15 @@ let
       allPkgs = makeNixpkgs pkgs systems;
       forAllSystems = f: b.mapAttrs f allPkgs;
       dream2nixFor = forAllSystems (dream2nixForSystem config);
+
+      getInvalidationHash = project:
+        dlib.calcInvalidationHash {
+          inherit source;
+          # TODO: add translatorArgs
+          translatorArgs = {};
+          translator = project.translator;
+        };
+
       discoveredProjects = dlib.discoverers.discoverProjects {
         inherit settings;
         tree = dlib.prepareSourceTree { inherit source; };
@@ -148,6 +157,7 @@ let
                         "Name: ${project.name}; Subsystem: ${project.subsystem}; relPath: ${project.relPath}"
                         (dream2nix.utils.makeTranslateScript {
                           inherit project source;
+                          invalidationHash = getInvalidationHash project;
                         })));
 
               resolveImpureScript =

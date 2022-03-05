@@ -167,6 +167,7 @@ overrideUtils
 
   makeTranslateScript =
     {
+      invalidationHash,
       source,
       project,
     }@args:
@@ -184,12 +185,23 @@ overrideUtils
     in
       writePureShellScriptBin "resolve"
       [
-        pkgs.nix
+        pkgs.coreutils
+        pkgs.jq
         pkgs.gitMinimal
+        pkgs.nix
       ]
       ''
         cd $WORKDIR
         ${translator.translateBin} ${argsJsonFile}
+
+        # add invalidationHash to dream-lock.json
+        cp ${project.dreamLockPath} ${project.dreamLockPath}.tmp
+        cat ${project.dreamLockPath}.tmp \
+          | jq '._generic.invalidationHash = "${invalidationHash}"' \
+          > ${project.dreamLockPath}
+        rm ${project.dreamLockPath}.tmp
+
+        # add dream-lock.json to git
         if git rev-parse --show-toplevel &>/dev/null; then
           echo "adding file to git: ${project.dreamLockPath}"
           git add ${project.dreamLockPath}

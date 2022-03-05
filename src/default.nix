@@ -518,7 +518,7 @@ let
             l.pathExists "${config.projectRoot}/${project.dreamLockPath}";
 
           dreamLockValid =
-            project.dreamLock.lock._generic.invalidationHash or ""
+            project.dreamLock._generic.invalidationHash or ""
             == project.invalidationHash;
       in
         dreamLockExists && dreamLockValid;
@@ -530,9 +530,9 @@ let
       projectsList =
         l.map
           (project: (let self = project // rec {
-            dreamLock = utils.readDreamLock {
+            dreamLock = (utils.readDreamLock {
               dreamLock = "${config.projectRoot}/${project.dreamLockPath}";
-            };
+            }).lock;
             impure = isImpure project translator;
             invalidationHash = getInvalidationHash project;
             key = getProjectKey project;
@@ -598,31 +598,18 @@ let
           l.trace ''
             ${"\n"}
             Run `nix run .#resolveImpure` once to resolve impure projects.
-            The following projects cannot be resolved on the fly and require preprocessing:
+            The following projects cannot be resolved on the fly and are therefore excluded:
               ${l.concatStringsSep "\n  " projectsImpureUnresolvedInfo}
           ''
           resolvedProjects
         else
           l.trace ''
             ${"\n"}
-            The following projects cannot be resolved on the fly and require preprocessing:
+            The following projects cannot be resolved on the fly and are therefore excluded:
               ${l.concatStringsSep "\n  " projectsImpureUnresolvedInfo}
           ''
           resolvedProjects
       else if projectsPureUnresolved != [] then
-        if flakeMode then
-          l.trace ''
-            ${"\n"}
-            Evaluating project data on the fly...
-            To speed up future evalutations run once:
-              nix run .#resolve
-          ''
-          resolvedProjects
-        else
-          l.trace ''
-            ${"\n"}
-            Evaluating project data on the fly...
-          ''
           resolvedProjects
       else
         resolvedProjects;
@@ -675,6 +662,7 @@ let
                   passthru = old.passthru or {} // {
                     resolve = utils.makeTranslateScript {
                       inherit source;
+                      invalidationHash = proj.invalidationHash;
                       project = proj;
                     };
                   };
