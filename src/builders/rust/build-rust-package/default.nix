@@ -40,10 +40,9 @@ let
 
       cargoVendorDir = "../nix-vendor";
 
-      CARGO_HOME = "/build/.cargo-home";
-
       postUnpack = ''
         ln -s ${vendorDir} ./nix-vendor
+        export CARGO_HOME=$(pwd)/.cargo_home
       '';
 
       preConfigure = ''
