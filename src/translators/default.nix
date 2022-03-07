@@ -152,11 +152,13 @@ let
           coreutils
           jq
           nix
+          python3
         ]
         ''
           jsonInputFile=$(realpath $1)
           outputFile=$WORKDIR/$(jq '.outputFile' -c -r $jsonInputFile)
 
+          cd $WORKDIR
           mkdir -p $(dirname $outputFile)
 
           nix eval \
@@ -180,7 +182,7 @@ let
                 (dreamLock // {
                   _generic = builtins.removeAttrs dreamLock._generic [ \"cyclicDependencies\" ];
                 })
-          " | jq > $outputFile
+          " | python3 ${../apps/cli2/format-dream-lock.py} > $outputFile
         '';
     in
       bin.overrideAttrs (old: {

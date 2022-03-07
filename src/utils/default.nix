@@ -3,9 +3,12 @@
   coreutils,
   dlib,
   fetchzip,
+  gitMinimal,
+  jq,
   lib,
   nix,
   pkgs,
+  python3,
   runCommand,
   stdenv,
   writeScript,
@@ -185,21 +188,29 @@ overrideUtils
     in
       writePureShellScriptBin "resolve"
       [
-        pkgs.coreutils
-        pkgs.jq
-        pkgs.gitMinimal
-        pkgs.nix
+        coreutils
+        jq
+        gitMinimal
+        nix
+        python3
       ]
       ''
+        dreamLockPath=${project.dreamLockPath}
+
         cd $WORKDIR
         ${translator.translateBin} ${argsJsonFile}
 
         # add invalidationHash to dream-lock.json
-        cp ${project.dreamLockPath} ${project.dreamLockPath}.tmp
-        cat ${project.dreamLockPath}.tmp \
+        cp $dreamLockPath $dreamLockPath.tmp
+        cat $dreamLockPath \
           | jq '._generic.invalidationHash = "${invalidationHash}"' \
-          > ${project.dreamLockPath}
-        rm ${project.dreamLockPath}.tmp
+          > $dreamLockPath.tmp
+
+        cat $dreamLockPath.tmp \
+          | python3 ${../apps/cli2/format-dream-lock.py} \
+          > $dreamLockPath
+
+        rm $dreamLockPath.tmp
 
         # add dream-lock.json to git
         if git rev-parse --show-toplevel &>/dev/null; then
