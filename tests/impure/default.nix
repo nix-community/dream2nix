@@ -30,7 +30,7 @@ let
     ]
     ''
       S=$(mktemp)
-      async -s=$S server --start -j4
+      async -s=$S server --start -j$(nproc)
 
       for test in ${toString allTests}; do
         async -s=$S cmd -- $test

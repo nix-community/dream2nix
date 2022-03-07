@@ -1,4 +1,6 @@
 .*/
 !.github/
+
+/.pre-commit-config.yaml
 result
 interpreter

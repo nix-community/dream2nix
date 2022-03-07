@@ -4,6 +4,18 @@
   inputs = {
     nixpkgs.url = "nixpkgs/nixos-unstable";
 
+    ### dev dependencies
+    alejandra.url = github:kamadorueda/alejandra;
+    alejandra.inputs.nixpkgs.follows = "nixpkgs";
+
+    pre-commit-hooks.url = "github:cachix/pre-commit-hooks.nix";
+    pre-commit-hooks.inputs.nixpkgs.follows = "nixpkgs";
+    # upstream flake-utils dep not supporting `aarch64-darwin` yet
+    flake-utils-pre-commit.url = "github:numtide/flake-utils";
+    pre-commit-hooks.inputs.flake-utils.follows = "flake-utils-pre-commit";
+
+
+    ### framework dependencies
     # required for builder go/gomod2nix
     gomod2nix = { url = "github:tweag/gomod2nix"; flake = false; };
 
@@ -22,16 +34,20 @@
 
   outputs = {
     self,
+    alejandra,
     gomod2nix,
     mach-nix,
     nixpkgs,
     node2nix,
     poetry2nix,
+    pre-commit-hooks,
     crane,
+    ...
   }@inp:
     let
 
       b = builtins;
+      l = lib // builtins;
 
       lib = nixpkgs.lib;
 
@@ -40,9 +56,10 @@
 
       supportedSystems = [ "x86_64-linux" "x86_64-darwin" "aarch64-darwin" ];
 
-      forAllSystems = f: lib.genAttrs supportedSystems (system:
-        f system nixpkgs.legacyPackages.${system}
-      );
+      forSystems = systems: f: lib.genAttrs systems
+        (system: f system nixpkgs.legacyPackages.${system});
+
+      forAllSystems = forSystems supportedSystems;
 
       # To use dream2nix in non-flake + non-IFD enabled repos, the source code of dream2nix
       # must be installed into these repos (using nix run dream2nix#install).
@@ -111,6 +128,24 @@
         };
       });
 
+      pre-commit-check = forAllSystems (system: pkgs:
+        pre-commit-hooks.lib.${system}.run {
+          src = ./.;
+          hooks = {
+            treefmt = {
+              enable = true;
+              name = "treefmt";
+              pass_filenames = true;
+              entry = l.toString (pkgs.writeScript "treefmt" ''
+                #!${pkgs.bash}/bin/bash
+                export PATH="$PATH:${alejandra.defaultPackage.${system}}/bin"
+                ${pkgs.treefmt}/bin/treefmt --fail-on-change "$@"
+              '');
+            };
+          };
+        }
+      );
+
     in
       {
         # System independent dream2nix api.
@@ -139,11 +174,41 @@
             tests-impure.type = "app";
             tests-impure.program = b.toString
               (dream2nixFor."${system}".callPackageDream ./tests/impure {});
+
             tests-unit.type = "app";
             tests-unit.program = b.toString
               (dream2nixFor."${system}".callPackageDream ./tests/unit {
                 inherit self;
               });
+
+            tests-all.type = "app";
+            tests-all.program = l.toString
+              (dream2nixFor.${system}.utils.writePureShellScript
+                [
+                  alejandra.defaultPackage.${system}
+                  pkgs.coreutils
+                  pkgs.gitMinimal
+                  pkgs.nix
+                ]
+                ''
+                  echo "running unit tests"
+                  ${self.apps.${system}.tests-unit.program}
+
+                  echo "running impure CLI tests"
+                  ${self.apps.${system}.tests-impure.program}
+
+                  echo "running nix flake check"
+                  cd $WORKDIR
+                  nix flake check
+                '');
+
+            # passes through extra flags to treefmt
+            format.type = "app";
+            format.program = l.toString
+              (pkgs.writeScript "format" ''
+                export PATH="${alejandra.defaultPackage.${system}}/bin"
+                ${pkgs.treefmt}/bin/treefmt "$@"
+              '');
           }
         );
 
@@ -151,37 +216,67 @@
         # use via 'nix develop . -c $SHELL'
         devShell = forAllSystems (system: pkgs: pkgs.mkShell {
 
-          buildInputs = with pkgs;
+          buildInputs =
             (with pkgs; [
-              nixUnstable
+              nix
+              treefmt
             ])
+            ++ [
+              alejandra.defaultPackage."${system}"
+            ]
             # using linux is highly recommended as cntr is amazing for debugging builds
-            ++ lib.optionals stdenv.isLinux [ cntr ];
+            ++ lib.optionals pkgs.stdenv.isLinux [ pkgs.cntr ];
 
-          shellHook = ''
-            export NIX_PATH=nixpkgs=${nixpkgs}
-            export d2nExternalDir=${externalDirFor."${system}"}
-            export dream2nixWithExternals=${dream2nixFor."${system}".dream2nixWithExternals}
+          shellHook =
+            # TODO: enable this once code base is formatted
+            # self.checks.${system}.pre-commit-check.shellHook
+            ''
+              export NIX_PATH=nixpkgs=${nixpkgs}
+              export d2nExternalDir=${externalDirFor."${system}"}
+              export dream2nixWithExternals=${dream2nixFor."${system}".dream2nixWithExternals}
 
-            if [ -e ./overrides ]; then
-              export d2nOverridesDir=$(realpath ./overrides)
-            else
-              export d2nOverridesDir=${./overrides}
-              echo -e "\nManually execute 'export d2nOverridesDir={path to your dream2nix overrides dir}'"
-            fi
+              if [ -e ./overrides ]; then
+                export d2nOverridesDir=$(realpath ./overrides)
+              else
+                export d2nOverridesDir=${./overrides}
+                echo -e "\nManually execute 'export d2nOverridesDir={path to your dream2nix overrides dir}'"
+              fi
 
-            if [ -e ../dream2nix ]; then
-              export dream2nixWithExternals=$(realpath ./src)
-            else
-              export dream2nixWithExternals=${./src}
-              echo -e "\nManually execute 'export dream2nixWithExternals={path to your dream2nix checkout}'"
-            fi
-          '';
+              if [ -e ../dream2nix ]; then
+                export dream2nixWithExternals=$(realpath ./src)
+              else
+                export dream2nixWithExternals=${./src}
+                echo -e "\nManually execute 'export dream2nixWithExternals={path to your dream2nix checkout}'"
+              fi
+            '';
         });
 
-        checks = forAllSystems (system: pkgs: import ./tests/pure {
-          inherit lib pkgs;
-          dream2nix = dream2nixFor."${system}";
-        });
+        checks = l.recursiveUpdate
+          (forAllSystems (system: pkgs:
+            (import ./tests/pure {
+              inherit lib pkgs;
+              dream2nix = dream2nixFor."${system}";
+            })))
+          {}
+          # TODO: enable this once code base is formatted
+          # (forAllSystems (system: pkgs:{
+          #   pre-commit-check =
+          #     pre-commit-hooks.lib.${system}.run {
+          #       src = ./.;
+          #       hooks = {
+          #         treefmt = {
+          #           enable = true;
+          #           name = "treefmt";
+          #           pass_filenames = false;
+          #           entry = l.toString (pkgs.writeScript "treefmt" ''
+          #             #!${pkgs.bash}/bin/bash
+          #             export PATH="$PATH:${alejandra.defaultPackage.${system}}/bin"
+          #             ${pkgs.treefmt}/bin/treefmt --fail-on-change
+          #           '');
+          #         };
+          #       };
+          #     };
+          # }))
+        ;
       };
 }
