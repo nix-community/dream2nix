@@ -9,108 +9,102 @@
   nix,
   stdenv,
   writeScript,
-
   # dream2nix
   defaultFetcher,
   utils,
   ...
-}:
-{
+}: {
   # sources attrset from dream lock
   sources,
   sourcesAggregatedHash,
   ...
-}@args:
-let
-
+} @ args: let
   b = builtins;
 
   # resolve to individual fetcher calls
   defaultFetched = (defaultFetcher args).fetchedSources;
 
   # extract the arguments from the individual fetcher calls
-  FODArgsAll =
-    let
-      FODArgsAll' =
-        lib.mapAttrs
-          (name: versions:
-            lib.mapAttrs
-              (version: fetched:
-                # handle FOD sources
-                if lib.all
-                    (attr: fetched ? "${attr}")
-                    [ "outputHash" "outputHashAlgo" "outputHashMode" ] then
+  FODArgsAll = let
+    FODArgsAll' =
+      lib.mapAttrs
+      (
+        name: versions:
+          lib.mapAttrs
+          (version: fetched:
+            # handle FOD sources
+              if
+                lib.all
+                (attr: fetched ? "${attr}")
+                ["outputHash" "outputHashAlgo" "outputHashMode"]
+              then
+                (fetched.overrideAttrs (args: {
+                  passthru.originalArgs = args;
+                }))
+                .originalArgs
+                // {
+                  outPath = let
+                    sanitizedName = utils.sanitizeDerivationName name;
+                  in "${sanitizedName}/${version}/${fetched.name}";
+                }
+              # handle path sources
+              else if lib.isString fetched
+              then "ignore"
+              # handle store path sources
+              else if lib.isStorePath fetched
+              then "ignore"
+              # handle unknown sources
+              else if fetched == "unknown"
+              then "ignore"
+              # error out on unknown source types
+              else
+                throw ''
+                  Error while generating FOD fetcher for combined sources.
+                  Cannot classify source of ${name}#${version}.
+                '')
+          versions
+      )
+      defaultFetched;
+  in
+    lib.filterAttrs
+    (name: versions: versions != {})
+    (lib.mapAttrs
+      (name: versions:
+        lib.filterAttrs
+        (version: fetcherArgs: fetcherArgs != "ignore")
+        versions)
+      FODArgsAll');
 
-                  (fetched.overrideAttrs (args: {
-                    passthru.originalArgs = args;
-                  })).originalArgs // {
-                    outPath =
-                      let
-                        sanitizedName = utils.sanitizeDerivationName name;
-                      in
-                        "${sanitizedName}/${version}/${fetched.name}";
-                  }
-
-                # handle path sources
-                else if lib.isString fetched then
-                  "ignore"
-
-                # handle store path sources
-                else if lib.isStorePath fetched then
-                  "ignore"
-
-                # handle unknown sources
-                else if fetched == "unknown" then
-                  "ignore"
-
-                # error out on unknown source types
-                else
-                  throw ''
-                    Error while generating FOD fetcher for combined sources.
-                    Cannot classify source of ${name}#${version}.
-                  '')
-              versions
-          )
-          defaultFetched;
-    in
-      lib.filterAttrs
-        (name: versions: versions != {})
-        (lib.mapAttrs
-          (name: versions:
-            lib.filterAttrs
-              (version: fetcherArgs: fetcherArgs != "ignore")
-              versions)
-          FODArgsAll');
-
-    FODArgsAllList =
-      lib.flatten
-        (lib.mapAttrsToList
-          (name: versions:
-            b.attrValues versions)
-          FODArgsAll);
+  FODArgsAllList =
+    lib.flatten
+    (lib.mapAttrsToList
+      (name: versions:
+        b.attrValues versions)
+      FODArgsAll);
 
   # convert arbitrary types to string, like nix does with derivation arguments
   toString' = x:
-    if lib.isBool x then
-      if x then
-        "1"
-      else
-        ""
-    else if lib.isList x then
-      ''"${lib.concatStringsSep " " (lib.forEach x (y: toString' y))}"''
-    else if x == null then
-      ""
-    else
-      b.toJSON x;
+    if lib.isBool x
+    then
+      if x
+      then "1"
+      else ""
+    else if lib.isList x
+    then ''"${lib.concatStringsSep " " (lib.forEach x (y: toString' y))}"''
+    else if x == null
+    then ""
+    else b.toJSON x;
 
   # set up nix build env for signle item
   setupEnvForItem = fetcherArgs: ''
 
     # export arguments for builder
     ${lib.concatStringsSep "\n" (lib.mapAttrsToList (argName: argVal: ''
-      export ${argName}=${
-        lib.replaceStrings [ "$" ''\n'' ] [ ''\$'' "\n" ] (toString' argVal)}
-    '') fetcherArgs)}
+        export ${argName}=${
+          lib.replaceStrings ["$" ''\n''] [''\$'' "\n"] (toString' argVal)
+        }
+      '')
+      fetcherArgs)}
 
     # run builder
     bash ${fetcherArgs.builder}
@@ -159,40 +153,37 @@ let
     echo "FOD_HASH=$(${nix}/bin/nix hash path $out)"
   '';
 
-  FODAllSources =
-    let
-      nativeBuildInputs' =
-        lib.unique
-          (lib.foldl (a: b: a ++ b) []
-            (b.map
-              (fetcherArgs: (fetcherArgs.nativeBuildInputs or []))
-              FODArgsAllList));
-    in
-      stdenv.mkDerivation rec {
-        name = "sources-combined";
-        inherit builder;
-        nativeBuildInputs = nativeBuildInputs' ++ [
+  FODAllSources = let
+    nativeBuildInputs' =
+      lib.unique
+      (lib.foldl (a: b: a ++ b) []
+        (b.map
+          (fetcherArgs: (fetcherArgs.nativeBuildInputs or []))
+          FODArgsAllList));
+  in
+    stdenv.mkDerivation rec {
+      name = "sources-combined";
+      inherit builder;
+      nativeBuildInputs =
+        nativeBuildInputs'
+        ++ [
           coreutils
         ];
-        outputHashAlgo = "sha256";
-        outputHashMode = "recursive";
-        outputHash = sourcesAggregatedHash;
-      };
-
-in
-
-{
+      outputHashAlgo = "sha256";
+      outputHashMode = "recursive";
+      outputHash = sourcesAggregatedHash;
+    };
+in {
   FOD = FODAllSources;
 
   fetchedSources =
     lib.mapAttrs
-      (name: versions:
-        lib.mapAttrs
-          (version: source:
-            if FODArgsAll ? "${name}"."${version}" then
-                "${FODAllSources}/${FODArgsAll."${name}"."${version}".outPath}"
-            else
-              defaultFetched."${name}"."${version}")
-          versions)
-      sources;
+    (name: versions:
+      lib.mapAttrs
+      (version: source:
+        if FODArgsAll ? "${name}"."${version}"
+        then "${FODAllSources}/${FODArgsAll."${name}"."${version}".outPath}"
+        else defaultFetched."${name}"."${version}")
+      versions)
+    sources;
 }

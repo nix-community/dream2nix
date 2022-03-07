@@ -1,14 +1,12 @@
 {
   runCommand,
   writeScript,
-
   # dream2nix inputs
   dream2nixWithExternals,
   ...
-}:
-
-{
-  program = writeScript "install"
+}: {
+  program =
+    writeScript "install"
     ''
       target="$1"
       if [[ "$target" == "" ]]; then

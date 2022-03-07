@@ -13,16 +13,13 @@
   stdenv,
   writeScript,
   writeScriptBin,
-
   # dream2nix inputs
   apps,
   callPackageDream,
   externalSources,
   translators,
   ...
-}:
-let
-
+}: let
   b = builtins;
   l = lib // builtins;
 
@@ -38,153 +35,150 @@ let
     # copied from poetry2nix
     ireplace = idx: value: list: (
       lib.genList
-        (i: if i == idx then value else (b.elemAt list i))
-        (b.length list)
+      (i:
+        if i == idx
+        then value
+        else (b.elemAt list i))
+      (b.length list)
     );
   };
-
 in
+  overrideUtils
+  // translatorUtils
+  // translatorUtils2
+  // rec {
+    inherit
+      (dlib)
+      dirNames
+      callViaEnv
+      identifyGitUrl
+      latestVersion
+      listDirs
+      listFiles
+      nameVersionPair
+      parseGitUrl
+      readTextFile
+      recursiveUpdateUntilDepth
+      sanitizeDerivationName
+      traceJ
+      ;
 
-overrideUtils
-// translatorUtils
-// translatorUtils2
-// rec {
+    dreamLock = dreamLockUtils;
 
-  inherit (dlib)
-    dirNames
-    callViaEnv
-    identifyGitUrl
-    latestVersion
-    listDirs
-    listFiles
-    nameVersionPair
-    parseGitUrl
-    readTextFile
-    recursiveUpdateUntilDepth
-    sanitizeDerivationName
-    traceJ
-  ;
+    inherit (dreamLockUtils) readDreamLock;
 
-  dreamLock = dreamLockUtils;
+    toDrv = path: runCommand "some-drv" {} "cp -r ${path} $out";
 
-  inherit (dreamLockUtils) readDreamLock;
+    toTOML = import ./toTOML.nix {inherit lib;};
 
-  toDrv = path: runCommand "some-drv" {} "cp -r ${path} $out";
-
-  toTOML = import ./toTOML.nix { inherit lib; };
-
-  # hash the contents of a path via `nix hash path`
-  hashPath = algo: path:
-    let
+    # hash the contents of a path via `nix hash path`
+    hashPath = algo: path: let
       hashPath = runCommand "hash-${algo}" {} ''
         ${nix}/bin/nix --option experimental-features nix-command hash path ${path} | tr --delete '\n' > $out
       '';
     in
       b.readFile hashPath;
 
-  # hash a file via `nix hash file`
-  hashFile = algo: path:
-    let
+    # hash a file via `nix hash file`
+    hashFile = algo: path: let
       hashFile = runCommand "hash-${algo}" {} ''
         ${nix}/bin/nix --option experimental-features nix-command hash file ${path} | tr --delete '\n' > $out
       '';
     in
       b.readFile hashFile;
 
-  # builder to create a shell script that has it's own PATH
-  writePureShellScript = availablePrograms: script: writeScript "script.sh" ''
-    #!${bash}/bin/bash
-    set -Eeuo pipefail
+    # builder to create a shell script that has it's own PATH
+    writePureShellScript = availablePrograms: script:
+      writeScript "script.sh" ''
+        #!${bash}/bin/bash
+        set -Eeuo pipefail
 
-    export PATH="${lib.makeBinPath availablePrograms}"
-    export NIX_PATH=nixpkgs=${pkgs.path}
-    export WORKDIR="$PWD"
+        export PATH="${lib.makeBinPath availablePrograms}"
+        export NIX_PATH=nixpkgs=${pkgs.path}
+        export WORKDIR="$PWD"
 
-    TMPDIR=$(${coreutils}/bin/mktemp -d)
-    cd $TMPDIR
+        TMPDIR=$(${coreutils}/bin/mktemp -d)
+        cd $TMPDIR
 
-    ${script}
+        ${script}
 
-    cd
-    ${coreutils}/bin/rm -rf $TMPDIR
-  '';
+        cd
+        ${coreutils}/bin/rm -rf $TMPDIR
+      '';
 
-  # builder to create a shell script that has it's own PATH
-  writePureShellScriptBin = binName: availablePrograms: script:
-    writeScriptBin binName ''
-      #!${bash}/bin/bash
-      set -Eeuo pipefail
+    # builder to create a shell script that has it's own PATH
+    writePureShellScriptBin = binName: availablePrograms: script:
+      writeScriptBin binName ''
+        #!${bash}/bin/bash
+        set -Eeuo pipefail
 
-      export PATH="${lib.makeBinPath availablePrograms}"
-      export NIX_PATH=nixpkgs=${pkgs.path}
-      export WORKDIR="$PWD"
+        export PATH="${lib.makeBinPath availablePrograms}"
+        export NIX_PATH=nixpkgs=${pkgs.path}
+        export WORKDIR="$PWD"
 
-      TMPDIR=$(${coreutils}/bin/mktemp -d)
-      cd $TMPDIR
+        TMPDIR=$(${coreutils}/bin/mktemp -d)
+        cd $TMPDIR
 
-      ${script}
+        ${script}
 
-      cd
-      ${coreutils}/bin/rm -rf $TMPDIR
-    '';
+        cd
+        ${coreutils}/bin/rm -rf $TMPDIR
+      '';
 
-  extractSource =
-    {
+    extractSource = {
       source,
       dir ? "",
     }:
-    stdenv.mkDerivation {
-      name = "${(source.name or "")}-extracted";
-      src = source;
-      inherit dir;
-      phases = [ "unpackPhase" ];
-      dontInstall = true;
-      dontFixup = true;
-      unpackCmd =
-        if lib.hasSuffix ".tgz" source.name then
-          ''
+      stdenv.mkDerivation {
+        name = "${(source.name or "")}-extracted";
+        src = source;
+        inherit dir;
+        phases = ["unpackPhase"];
+        dontInstall = true;
+        dontFixup = true;
+        unpackCmd =
+          if lib.hasSuffix ".tgz" source.name
+          then ''
             tar --delay-directory-restore -xf $src
 
             # set executable flag only on directories
             chmod -R +X .
           ''
-        else
-          null;
-      # sometimes tarballs do not end with .tar.??
-      preUnpack = ''
-        unpackFallback(){
-          local fn="$1"
-          tar xf "$fn"
-        }
+          else null;
+        # sometimes tarballs do not end with .tar.??
+        preUnpack = ''
+          unpackFallback(){
+            local fn="$1"
+            tar xf "$fn"
+          }
 
-        unpackCmdHooks+=(unpackFallback)
-      '';
-      postUnpack = ''
-        echo postUnpack
-        mv "$sourceRoot/$dir" $out
-        exit
-      '';
-    };
+          unpackCmdHooks+=(unpackFallback)
+        '';
+        postUnpack = ''
+          echo postUnpack
+          mv "$sourceRoot/$dir" $out
+          exit
+        '';
+      };
 
-  satisfiesSemver = poetry2nixSemver.satisfiesSemver;
+    satisfiesSemver = poetry2nixSemver.satisfiesSemver;
 
-  makeTranslateScript =
-    {
+    makeTranslateScript = {
       invalidationHash,
       source,
       project,
-    }@args:
-    let
+    } @ args: let
       translator =
         translators.translatorsV2."${project.subsystem}".all."${project.translator}";
 
-      argsJsonFile = pkgs.writeText "translator-args.json"
+      argsJsonFile =
+        pkgs.writeText "translator-args.json"
         (l.toJSON
           (args
-          // {
-            project = l.removeAttrs args.project ["dreamLock"];
-            outputFile = project.dreamLockPath;
-          }));
+            // {
+              project = l.removeAttrs args.project ["dreamLock"];
+              outputFile = project.dreamLockPath;
+            }));
     in
       writePureShellScriptBin "resolve"
       [
@@ -219,15 +213,14 @@ overrideUtils
         fi
       '';
 
-  # a script that produces and dumps the dream-lock json for a given source
-  makePackageLockScript =
-    {
+    # a script that produces and dumps the dream-lock json for a given source
+    makePackageLockScript = {
       packagesDir,
       source,
       translator,
       translatorArgs,
     }:
-    writePureShellScript
+      writePureShellScript
       []
       ''
         cd $WORKDIR
@@ -236,12 +229,12 @@ overrideUtils
           --no-default-nix \
           --translator ${translator} \
           --invalidation-hash ${dlib.calcInvalidationHash {
-            inherit source translator translatorArgs;
-          }} \
+          inherit source translator translatorArgs;
+        }} \
           --packages-root $WORKDIR/${packagesDir} \
           ${lib.concatStringsSep " \\\n"
-            (lib.mapAttrsToList
-              (key: val: "--arg ${key}=${b.toString val}")
-              translatorArgs)}
+          (lib.mapAttrsToList
+            (key: val: "--arg ${key}=${b.toString val}")
+            translatorArgs)}
       '';
-}
+  }

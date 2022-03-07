@@ -1,75 +1,66 @@
-dream2nixWithExternals:
-cwd:
-let
-  dream2nix = import dream2nixWithExternals { };
+dream2nixWithExternals: cwd: let
+  dream2nix = import dream2nixWithExternals {};
   b = builtins;
   parsed = b.fromTOML (builtins.readFile "${cwd}/gomod2nix.toml");
-  pkgs = import <nixpkgs> { };
+  pkgs = import <nixpkgs> {};
   lib = pkgs.lib;
   serializePackages = inputData:
     lib.mapAttrsToList
-      (goName: depAttrs: depAttrs // { inherit goName; })
-      parsed;
+    (goName: depAttrs: depAttrs // {inherit goName;})
+    parsed;
   translated =
     dream2nix.utils.simpleTranslate
-      ({
-        getDepByNameVer,
-        dependenciesByOriginalID,
-        ...
-      }:
+    ({
+      getDepByNameVer,
+      dependenciesByOriginalID,
+      ...
+    }: rec {
+      translatorName = "gomod2nix";
 
-      rec {
+      inputData = parsed;
 
-        translatorName = "gomod2nix";
+      defaultPackage = let
+        firstLine = b.elemAt (lib.splitString "\n" (b.readFile "${cwd}/go.mod")) 0;
+      in
+        lib.last (lib.splitString "/" (b.elemAt (lib.splitString " " firstLine) 1));
 
-        inputData = parsed;
+      packages."${defaultPackage}" = "unknown";
 
-        defaultPackage =
-          let
-            firstLine = (b.elemAt (lib.splitString "\n" (b.readFile "${cwd}/go.mod")) 0);
-          in
-            lib.last (lib.splitString "/" (b.elemAt (lib.splitString " " firstLine) 1));
+      subsystemName = "go";
 
-        packages."${defaultPackage}" = "unknown";
+      subsystemAttrs = {};
 
-        subsystemName = "go";
+      inherit serializePackages;
 
-        subsystemAttrs = { };
+      mainPackageDependencies =
+        lib.forEach
+        (serializePackages parsed)
+        (dep: {
+          name = getName dep;
+          version = getVersion dep;
+        });
 
-        inherit serializePackages;
+      getOriginalID = dependencyObject:
+        null;
 
-        mainPackageDependencies =
-          lib.forEach
-            (serializePackages parsed)
-            (dep: {
-                name = getName dep;
-                version = getVersion dep;
-            });
+      getName = dependencyObject:
+        dependencyObject.goName;
 
-        getOriginalID = dependencyObject:
-          null;
+      getVersion = dependencyObject:
+        lib.removePrefix "v" dependencyObject.sumVersion;
 
-        getName = dependencyObject:
-          dependencyObject.goName;
+      getDependencies = dependencyObject: [];
 
-        getVersion = dependencyObject:
-          lib.removePrefix "v" dependencyObject.sumVersion;
+      getSourceType = dependencyObject: "git";
 
-        getDependencies = dependencyObject:
-          [];
-
-        getSourceType = dependencyObject: "git";
-
-        sourceConstructors = {
-          git = dependencyObject:
-            {
-              type = "git";
-              hash = dependencyObject.fetch.sha256;
-              url = dependencyObject.fetch.url;
-              rev = dependencyObject.fetch.rev;
-            };
+      sourceConstructors = {
+        git = dependencyObject: {
+          type = "git";
+          hash = dependencyObject.fetch.sha256;
+          url = dependencyObject.fetch.url;
+          rev = dependencyObject.fetch.rev;
         };
-
-      });
+      };
+    });
 in
   dream2nix.utils.dreamLock.toJSON translated

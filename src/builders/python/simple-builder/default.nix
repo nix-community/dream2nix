@@ -1,41 +1,34 @@
 # A very simple single derivation python builder
-
 {
   lib,
   pkgs,
   ...
-}:
-
-{
+}: {
   fetchedSources,
   dreamLock,
-}:
-
-let
+}: let
   python = pkgs."${dreamLock._subsystem.pythonAttr}";
 
   buildFunc =
-    if dreamLock._subsystem.application then
-      python.pkgs.buildPythonApplication
-    else
-      python.pkgs.buildPythonPackage;
+    if dreamLock._subsystem.application
+    then python.pkgs.buildPythonApplication
+    else python.pkgs.buildPythonPackage;
 
   defaultPackage = dreamLock._generic.defaultPackage;
 
   packageName =
-    if defaultPackage == null then
-      if dreamLock._subsystem.application then
-        "application"
-      else
-        "environment"
-    else
-      defaultPackage;
+    if defaultPackage == null
+    then
+      if dreamLock._subsystem.application
+      then "application"
+      else "environment"
+    else defaultPackage;
 
   defaultPackage = buildFunc {
     name = packageName;
     format = "";
     buildInputs = pkgs.pythonManylinuxPackages.manylinux1;
-    nativeBuildInputs = [ pkgs.autoPatchelfHook python.pkgs.wheelUnpackHook ];
+    nativeBuildInputs = [pkgs.autoPatchelfHook python.pkgs.wheelUnpackHook];
     unpackPhase = ''
       mkdir dist
       for file in ${builtins.toString (lib.attrValues fetchedSources)}; do
@@ -57,8 +50,7 @@ let
         --ignore-installed
       runHook postInstall
     '';
-};
-
+  };
 in {
   inherit defaultPackage;
 }

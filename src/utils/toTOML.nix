@@ -1,5 +1,4 @@
-{ lib }:
-let
+{lib}: let
   inherit
     (lib)
     length
@@ -31,14 +30,13 @@ let
     ty = tomlTy v;
   in
     if ty == "set"
-    then
-      let
-        vals =
-          mapAttrsToList
-          (k': v': "${quoteKey k'} = ${outputValInner v'}")
-          v;
-        valsStr = concatStringsSep ", " vals;
-      in "{ ${valsStr} }"
+    then let
+      vals =
+        mapAttrsToList
+        (k': v': "${quoteKey k'} = ${outputValInner v'}")
+        v;
+      valsStr = concatStringsSep ", " vals;
+    in "{ ${valsStr} }"
     else outputVal v;
 
   outputVal = v: let
@@ -49,11 +47,10 @@ let
     else if ty == "string"
     then quoteString v
     else if ty == "list" || ty == "list_of_attrs"
-    then
-      let
-        vals = map quoteString v;
-        valsStr = concatStringsSep ", " vals;
-      in "[ ${valsStr} ]"
+    then let
+      vals = map quoteString v;
+      valsStr = concatStringsSep ", " vals;
+    in "[ ${valsStr} ]"
     else if ty == "set"
     then abort "unsupported set for not-inner value"
     else abort "Not implemented: type ${ty}";
@@ -62,14 +59,13 @@ let
     ty = tomlTy v;
   in
     if ty == "set"
-    then
-      let
-        vals =
-          mapAttrsToList
-          (k': v': "${quoteKey k'} = ${outputValInner v'}")
-          v;
-        valsStr = concatStringsSep ", " vals;
-      in ["${quoteKey k} = { ${valsStr} }"]
+    then let
+      vals =
+        mapAttrsToList
+        (k': v': "${quoteKey k'} = ${outputValInner v'}")
+        v;
+      valsStr = concatStringsSep ", " vals;
+    in ["${quoteKey k} = { ${valsStr} }"]
     else outputKeyVal k v;
 
   # Returns a list of strings; one string per line
@@ -88,11 +84,10 @@ let
       )
       v
     else if ty == "list"
-    then
-      let
-        vals = map quoteString v;
-        valsStr = concatStringsSep ", " vals;
-      in ["${quoteKey k} = [ ${valsStr} ]"]
+    then let
+      vals = map quoteString v;
+      valsStr = concatStringsSep ", " vals;
+    in ["${quoteKey k} = [ ${valsStr} ]"]
     else if ty == "set"
     then ["[${k}]"] ++ (concatLists (mapAttrsToList outputKeyValInner v))
     else abort "Not implemented: type ${ty} for key ${k}";
@@ -115,26 +110,26 @@ let
     then
       if length x == 0
       then "list"
-      else
-        let
-          ty = typeOf (elemAt x 0);
-        in
-          #assert (all (v: typeOf v == ty) x);
-          if ty == "set"
-          then "list_of_attrs"
-          else "list"
+      else let
+        ty = typeOf (elemAt x 0);
+      in
+        #assert (all (v: typeOf v == ty) x);
+        if ty == "set"
+        then "list_of_attrs"
+        else "list"
     else abort "Not implemented: toml type for ${typeOf x}";
 
   toTOML = attrs:
     assert (typeOf attrs == "set"); let
-      byTy = lib.foldl
-      (
-        acc: x: let
-          ty = tomlTy x.v;
-        in
-          acc // { "${ty}" = (acc.${ty} or []) ++ [x]; }
-      )
-      {} (mapAttrsToList (k: v: { inherit k v; }) attrs);
+      byTy =
+        lib.foldl
+        (
+          acc: x: let
+            ty = tomlTy x.v;
+          in
+            acc // {"${ty}" = (acc.${ty} or []) ++ [x];}
+        )
+        {} (mapAttrsToList (k: v: {inherit k v;}) attrs);
     in
       concatMapStringsSep "\n"
       (kv: concatStringsSep "\n" (outputKeyVal kv.k kv.v))
