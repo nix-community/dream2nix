@@ -13,13 +13,14 @@ in rec {
     dream2nix = cli;
   };
 
-  flakeApps = lib.mapAttrs (
-    appName: app: {
-      type = "app";
-      program = b.toString app.program;
-    }
-  )
-  apps;
+  flakeApps =
+    lib.mapAttrs (
+      appName: app: {
+        type = "app";
+        program = b.toString app.program;
+      }
+    )
+    apps;
 
   # the dream2nix cli
   cli = callPackageDream (import ./cli) {};

@@ -234,7 +234,7 @@
             l.toString
             (pkgs.writeScript "format" ''
               export PATH="${alejandra.defaultPackage.${system}}/bin"
-              ${pkgs.treefmt}/bin/treefmt "$@"
+              ${pkgs.treefmt}/bin/treefmt --clear-cache "$@"
             '');
         }
     );
@@ -255,8 +255,10 @@
           ++ lib.optionals pkgs.stdenv.isLinux [pkgs.cntr];
 
         shellHook =
-          self.checks.${system}.pre-commit-check.shellHook
-          + ''
+          # TODO: pre-commit shellHook disabled until this is solved:
+          # https://github.com/cachix/pre-commit-hooks.nix/issues/140
+          # self.checks.${system}.pre-commit-check.shellHook
+          ''
             export NIX_PATH=nixpkgs=${nixpkgs}
             export d2nExternalDir=${externalDirFor."${system}"}
             export dream2nixWithExternals=${dream2nixFor."${system}".dream2nixWithExternals}

@@ -1,4 +1,7 @@
 [formatter.nix]
 command = "alejandra"
 includes = ["*.nix"]
-excludes = ["overrides/nodejs/electron/*"]
+excludes = [
+  "overrides/nodejs/electron/*",
+  "src/templates/translators/*",
+]
