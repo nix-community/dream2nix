@@ -53,3 +53,16 @@ jobs:
           access-tokens = github.com=${{ secrets.GITHUB_TOKEN }}
 
     - run: nix run .#tests-unit
+
+  tests-format:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2.4.0
+    - uses: cachix/install-nix-action@v15
+      with:
+        install_url: https://nixos-nix-install-tests.cachix.org/serve/w659aglf1hfvkj5wj696q9x8r19p6b7k/install
+        install_options: '--tarball-url-prefix https://nixos-nix-install-tests.cachix.org/serve'
+        extra_nix_config: |
+          access-tokens = github.com=${{ secrets.GITHUB_TOKEN }}
+
+    - run: nix run .#format -- --fail-on-change
