@@ -211,6 +211,12 @@
                 pkgs.nix
               ]
               ''
+                echo "check for correct formatting"
+                cp -r $WORKDIR ./repo
+                cd ./repo
+                ${self.apps.${system}.format.program} --fail-on-change
+                cd -
+
                 echo "running unit tests"
                 ${self.apps.${system}.tests-unit.program}
 
@@ -249,9 +255,8 @@
           ++ lib.optionals pkgs.stdenv.isLinux [pkgs.cntr];
 
         shellHook =
-          # TODO: enable this once code base is formatted
-          # self.checks.${system}.pre-commit-check.shellHook
-          ''
+          self.checks.${system}.pre-commit-check.shellHook
+          + ''
             export NIX_PATH=nixpkgs=${nixpkgs}
             export d2nExternalDir=${externalDirFor."${system}"}
             export dream2nixWithExternals=${dream2nixFor."${system}".dream2nixWithExternals}
@@ -278,26 +283,22 @@
         inherit lib pkgs;
         dream2nix = dream2nixFor."${system}";
       })))
-      {}
-      # TODO: enable this once code base is formatted
-      # (forAllSystems (system: pkgs:{
-      #   pre-commit-check =
-      #     pre-commit-hooks.lib.${system}.run {
-      #       src = ./.;
-      #       hooks = {
-      #         treefmt = {
-      #           enable = true;
-      #           name = "treefmt";
-      #           pass_filenames = false;
-      #           entry = l.toString (pkgs.writeScript "treefmt" ''
-      #             #!${pkgs.bash}/bin/bash
-      #             export PATH="$PATH:${alejandra.defaultPackage.${system}}/bin"
-      #             ${pkgs.treefmt}/bin/treefmt --fail-on-change
-      #           '');
-      #         };
-      #       };
-      #     };
-      # }))
-      ;
+      (forAllSystems (system: pkgs: {
+        pre-commit-check = pre-commit-hooks.lib.${system}.run {
+          src = ./.;
+          hooks = {
+            treefmt = {
+              enable = true;
+              name = "treefmt";
+              pass_filenames = false;
+              entry = l.toString (pkgs.writeScript "treefmt" ''
+                #!${pkgs.bash}/bin/bash
+                export PATH="$PATH:${alejandra.defaultPackage.${system}}/bin"
+                ${pkgs.treefmt}/bin/treefmt --fail-on-change
+              '');
+            };
+          };
+        };
+      }));
   };
 }
