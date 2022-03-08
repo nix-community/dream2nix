@@ -38,6 +38,20 @@ A simple way to use dream2nix is to drop the following `flake.nix` inside the re
       };
     in dream2nix.makeFlakeOutputs {
       source = ./.;
+
+      # configure package builds via overrides
+      packageOverrides = {
+        # name of the package
+        package-name = {
+          # name the override
+          add-pre-build-steps = {
+            # override attributes
+            preBuild = "...";
+            # update attributes
+            buildInputs = old: old ++ [ pkgs.hello ];
+          };
+        };
+      };
     };
 }
 ```
