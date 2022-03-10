@@ -277,13 +277,12 @@
           l.mapAttrsToList
           (name: semVer: let
             depYarnKey = "${name}@${semVer}";
-            dependencyAttrs =
+            version =
               if ! yarnLock ? "${depYarnKey}"
               then throw "Cannot find entry for top level dependency: '${depYarnKey}'"
-              else yarnLock."${depYarnKey}";
+              else yarnLock."${depYarnKey}".version;
           in {
-            inherit name;
-            inherit (dependencyAttrs) version;
+            inherit name version;
           })
           packageJsonDeps;
 
