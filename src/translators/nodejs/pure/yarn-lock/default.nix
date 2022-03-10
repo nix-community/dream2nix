@@ -6,8 +6,8 @@
   nodejsUtils = import ../../utils.nix {inherit lib;};
   parser = import ./parser.nix {inherit lib;};
 
-  getYarnLock = tree: proj:
-    tree.getNodeFromPath "${proj.relPath}/yarn.lock";
+  getYarnLock = tree: project:
+    nodejsUtils.getWorkspaceLockFile tree project "yarn.lock";
 
   translate = {
     translatorName,
@@ -28,7 +28,7 @@
     relPath = project.relPath;
     tree = args.tree.getNodeFromPath project.relPath;
     workspaces = project.subsystemInfo.workspaces or [];
-    yarnLock = parser.parse (tree.getNodeFromPath "yarn.lock").content;
+    yarnLock = parser.parse (getYarnLock args.tree project).content;
 
     defaultPackage =
       if name != "{automatic}"
@@ -270,25 +270,35 @@
           );
       };
 
-      extraDependencies =
-        l.mapAttrsToList
-        (name: semVer: let
-          depYarnKey = "${name}@${semVer}";
-          dependencyAttrs =
-            if ! yarnLock ? "${depYarnKey}"
-            then throw "Cannot find entry for top level dependency: '${depYarnKey}'"
-            else yarnLock."${depYarnKey}";
-        in {
+      extraDependencies = let
+        defaultPackageDependencies =
+          l.mapAttrsToList
+          (name: semVer: let
+            depYarnKey = "${name}@${semVer}";
+            dependencyAttrs =
+              if ! yarnLock ? "${depYarnKey}"
+              then throw "Cannot find entry for top level dependency: '${depYarnKey}'"
+              else yarnLock."${depYarnKey}";
+          in {
+            inherit name;
+            inherit (dependencyAttrs) version;
+          })
+          packageJsonDeps;
+
+        workspaceDependendencies =
+          l.mapAttrsToList
+          (wsName: wsJson: {
+            name = wsName;
+            version = wsJson.version or "unknown";
+          })
+          workspacesPackageJson;
+      in [
+        {
           name = defaultPackage;
           version = packageJson.version or "unknown";
-          dependencies = [
-            {
-              inherit name;
-              version = dependencyAttrs.version;
-            }
-          ];
-        })
-        packageJsonDeps;
+          dependencies = defaultPackageDependencies ++ workspaceDependendencies;
+        }
+      ];
 
       serializedRawObjects =
         lib.mapAttrsToList
