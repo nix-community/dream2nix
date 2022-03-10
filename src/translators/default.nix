@@ -148,9 +148,6 @@
         jsonInputFile=$(realpath $1)
         outputFile=$WORKDIR/$(jq '.outputFile' -c -r $jsonInputFile)
 
-        cd $WORKDIR
-        mkdir -p $(dirname $outputFile)
-
         nix eval \
           --option experimental-features "nix-command flakes"\
           --show-trace --impure --raw --expr "
@@ -172,7 +169,12 @@
               (dreamLock // {
                 _generic = builtins.removeAttrs dreamLock._generic [ \"cyclicDependencies\" ];
               })
-        " | python3 ${../apps/cli2/format-dream-lock.py} > $outputFile
+        " | python3 ${../apps/cli2/format-dream-lock.py} > out
+
+        tmpOut=$(realpath out)
+        cd $WORKDIR
+        mkdir -p $(dirname $outputFile)
+        cp $tmpOut $outputFile
       '';
   in
     bin.overrideAttrs (old: {
@@ -192,9 +194,6 @@
       ''
         jsonInputFile=$(realpath $1)
         outputFile=$(jq '.outputFile' -c -r $jsonInputFile)
-
-        cd $WORKDIR
-        mkdir -p $(dirname $outputFile)
 
         nix eval \
           --option experimental-features "nix-command flakes"\
@@ -217,7 +216,12 @@
               (dreamLock // {
                 _generic = builtins.removeAttrs dreamLock._generic [ \"cyclicDependencies\" ];
               })
-        " | python3 ${../apps/cli2/format-dream-lock.py} > $outputFile
+        " | python3 ${../apps/cli2/format-dream-lock.py} > out
+
+        tmpOut=$(realpath out)
+        cd $WORKDIR
+        mkdir -p $(dirname $outputFile)
+        cp $tmpOut $outputFile
       '';
   in
     bin.overrideAttrs (old: {
