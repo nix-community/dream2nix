@@ -170,7 +170,7 @@
           versions)
         [
           oldDependencyGraph
-          inject
+          (decompressDependencyGraph inject)
         ];
     in
       lib.recursiveUpdate lock {

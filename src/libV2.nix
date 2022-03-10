@@ -92,6 +92,7 @@
   };
 
   makeFlakeOutputsFunc = {
+    inject ? {},
     pname ? throw "Please pass `pname` to makeFlakeOutputs",
     pkgs ? null,
     packageOverrides ? {},
@@ -168,7 +169,7 @@
         };
 
         realizedProjects = dream2nix.realizeProjects {
-          inherit packageOverrides translatedProjects source;
+          inherit inject packageOverrides translatedProjects source;
         };
 
         allOutputs =

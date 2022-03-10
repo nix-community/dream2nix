@@ -439,8 +439,7 @@
         (dreamOverrides."${dreamLock._generic.subsystem}" or {})
         (args.packageOverrides or {});
 
-      inject =
-        utils.dreamLock.decompressDependencyGraph args.inject or {};
+      inject = args.inject or {};
     };
 
     allOutputs = builderOutputs;
@@ -587,6 +586,7 @@
 
   # transform a list of resolved projects to buildable outputs
   realizeProjects = {
+    inject ? {},
     translatedProjects ? translateProjects {inherit pname settings source;},
     # alternative way of calling (for debugging)
     pname ? null,
@@ -610,7 +610,7 @@
     # extends each package with a `.resolve` attribute
     outputsForProject = proj: let
       outputs = makeOutputsForDreamLock rec {
-        inherit packageOverrides;
+        inherit inject packageOverrides;
         dreamLock = proj.dreamLock;
         sourceOverrides = oldSources: (defaultSourceOverride proj.dreamLock);
       };
