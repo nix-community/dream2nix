@@ -25,8 +25,7 @@
         then
           if lib.isStorePath source.path
           then source.path
-          # assume path relative to main package source
-          else "${overriddenSources."${defaultPackage}"."${defaultPackageVersion}"}/${source.path}"
+          else "${overriddenSources."${source.rootName}"."${source.rootVersion}"}/${source.path}"
         else if fetchers.fetchers ? "${source.type}"
         then
           fetchSource {

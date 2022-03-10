@@ -180,7 +180,6 @@
         cp -r ${./.} $out
         chmod +w $out
         mkdir $out/external
-        ls -lah ${externalDir}
         cp -r ${externalDir}/* $out/external/
       '';
 
