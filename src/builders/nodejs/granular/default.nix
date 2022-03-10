@@ -40,6 +40,7 @@
   ...
 } @ args: let
   b = builtins;
+  l = lib // builtins;
 
   nodejsVersion = subsystemAttrs.nodejsVersion;
 
@@ -155,6 +156,14 @@
       deps
       (dep: allPackages."${dep.name}"."${dep.version}");
 
+    passthruDeps =
+      l.listToAttrs
+      (l.forEach deps
+        (dep:
+          l.nameValuePair
+          dep.name
+          allPackages."${dep.name}"."${dep.version}"));
+
     dependenciesJson =
       b.toJSON
       (lib.listToAttrs
@@ -191,6 +200,8 @@
       packageName = name;
 
       pname = utils.sanitizeDerivationName name;
+
+      passthru.dependencies = passthruDeps;
 
       installMethod = "symlink";
 

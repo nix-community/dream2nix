@@ -124,6 +124,8 @@
     in rec {
       inherit defaultPackage extraObjects translatorName;
 
+      location = relPath;
+
       exportedPackages =
         {"${defaultPackage}" = packageJson.version or "unknown";}
         // exportedWorkspacePackages;
