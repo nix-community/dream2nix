@@ -17,7 +17,9 @@ in rec {
       (tree.getNodeFromPath "${dirRelPath}/package.json").jsonContent;
 
     hasNoDependencies =
-      ! packageJson ? dependencies && ! packageJson ? devDependencies;
+      ! packageJson ? dependencies
+      && ! packageJson ? devDependencies
+      && ! packageJson ? workspaces;
   in
     if hasNoDependencies
     then null

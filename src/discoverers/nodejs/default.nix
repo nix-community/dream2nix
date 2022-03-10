@@ -40,7 +40,10 @@
     translators =
       # if the package has no dependencies we use the
       # package-lock translator with `packageLock = null`
-      if ! packageJson ? dependencies && ! packageJson ? devDependencies
+      if
+        ! packageJson ? dependencies
+        && ! packageJson ? devDependencies
+        && ! packageJson ? workspaces
       then ["package-lock"]
       else
         l.optionals (nodes ? "package-lock.json") ["package-lock"]
@@ -165,7 +168,7 @@
         subsystemInfo = l.optionalAttrs (workspaces != []) {
           workspaces =
             l.map
-            (w: l.removePrefix tree.relPath w.relPath)
+            (w: l.removePrefix "${tree.relPath}/" w.relPath)
             workspaces;
         };
       };
