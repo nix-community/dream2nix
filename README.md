@@ -70,3 +70,7 @@ nix flake show
 - [How would this improve the packaging situation in nixpkgs](/docs/nixpkgs-improvements.md)
 - [Override System](/docs/override-system.md)
 - [Contributors Guide](/docs/contributors-guide.md)
+
+### Community
+matrix: https://matrix.to/#/#dream2nix:nixos.org
+
