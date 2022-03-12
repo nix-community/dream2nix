@@ -117,22 +117,23 @@
         l.forEach workspacePaths
         (wPath: makeWorkspaceProjectInfo tree wPath parentInfo)));
 
-  makeWorkspaceProjectInfo = tree: wsRelPath: parentInfo: {
-    inherit subsystem;
-    name =
-      (getPackageJson "${tree.fullPath}/${wsRelPath}").name
-      or "${parentInfo.name}/${wsRelPath}";
-    relPath = dlib.sanitizeRelativePath "${tree.relPath}/${wsRelPath}";
-    translators =
-      l.unique
-      (
-        (lib.filter (trans: l.elem trans ["package-lock" "yarn-lock"]) parentInfo.translators)
-        ++ (getTranslatorNames "${tree.fullPath}/${wsRelPath}")
-      );
-    subsystemInfo = {
-      workspaceParent = tree.relPath;
+  makeWorkspaceProjectInfo = tree: wsRelPath: parentInfo:
+    dlib.construct.discoveredProject {
+      inherit subsystem;
+      name =
+        (getPackageJson "${tree.fullPath}/${wsRelPath}").name
+        or "${parentInfo.name}/${wsRelPath}";
+      relPath = dlib.sanitizeRelativePath "${tree.relPath}/${wsRelPath}";
+      translators =
+        l.unique
+        (
+          (lib.filter (trans: l.elem trans ["package-lock" "yarn-lock"]) parentInfo.translators)
+          ++ (getTranslatorNames "${tree.fullPath}/${wsRelPath}")
+        );
+      subsystemInfo = {
+        workspaceParent = tree.relPath;
+      };
     };
-  };
 
   discoverInternal = {
     tree,
@@ -160,7 +161,7 @@
       foundSubProjects alreadyDiscovered
     else let
       # project info of current directory
-      currentProjectInfo = {
+      currentProjectInfo = dlib.construct.discoveredProject {
         inherit subsystem;
         inherit (tree) relPath;
         name = tree.files."package.json".jsonContent.name or tree.relPath;

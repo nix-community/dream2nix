@@ -10,6 +10,7 @@
     inherit
       calcInvalidationHash
       callViaEnv
+      construct
       containsMatchingFile
       dirNames
       discoverers
@@ -34,8 +35,9 @@
   };
 
   # other libs
-  translators = import ./translators.nix {inherit dlib lib;};
+  construct = import ./construct.nix {inherit lib;};
   discoverers = import ../discoverers {inherit config dlib lib;};
+  translators = import ./translators.nix {inherit dlib lib;};
 
   parseUtils = import ./parsing.nix {inherit lib;};
 
