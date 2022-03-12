@@ -4,6 +4,9 @@
 }: let
   l = lib // builtins;
 in {
+  # disable this as we don't have a builder yet
+  disabled = true;
+
   # the input format is specified in /specifications/translator-call-example.json
   # this script receives a json file including the input paths and specialArgs
   translateBin = {

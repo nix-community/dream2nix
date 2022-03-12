@@ -83,6 +83,8 @@
           (../translators + "/${subsystem}/${type}/${translatorName}")
           {});
     in
+      l.filterAttrs
+      (name: t: t.disabled or false == false)
       translatorsLoaded
   );
 
