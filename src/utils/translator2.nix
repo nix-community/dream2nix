@@ -93,10 +93,19 @@
 
       sources =
         l.mapAttrs
-        (name: versions:
+        (name: versions: let
+          # Filter out all `path` sources which link to store paths.
+          # The removed sources can be added back via source override later
+          filteredObjects =
+            l.filterAttrs
+            (version: finalObj:
+              (finalObj.sourceSpec.type != "path")
+              || ! l.isStorePath (l.removeSuffix "/" finalObj.sourceSpec.path))
+            versions;
+        in
           l.mapAttrs
           (version: finalObj: finalObj.sourceSpec)
-          versions)
+          filteredObjects)
         allDependencies;
 
       dependencyGraph = let

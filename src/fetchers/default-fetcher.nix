@@ -41,7 +41,8 @@
     sources;
 
   overriddenSources =
-    lib.recursiveUpdate
+    lib.recursiveUpdateUntil
+    (path: l: r: lib.isDerivation l)
     fetchedSources
     (sourceOverrides fetchedSources);
 in {

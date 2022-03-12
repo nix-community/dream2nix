@@ -83,27 +83,32 @@
         (result: pkgData: let
           pkgName = getName pkgData;
           pkgVersion = getVersion pkgData;
+          type = getSourceType pkgData;
+          constructedArgs = sourceConstructors."${type}" pkgData;
+
+          constructedArgsKeep =
+            overrideWarning ["pname" "version"] constructedArgs;
+
+          constructedSource = fetchers.constructSource (constructedArgsKeep
+            // {
+              inherit type;
+              pname = pkgName;
+              version = pkgVersion;
+            });
+
+          skip =
+            (type == "path")
+            && lib.isStorePath (lib.removeSuffix "/" constructedArgs.path);
         in
-          lib.recursiveUpdate result {
-            "${pkgName}" = {
-              "${pkgVersion}" = let
-                type = getSourceType pkgData;
-
-                constructedArgs = sourceConstructors."${type}" pkgData;
-
-                constructedArgsKeep =
-                  overrideWarning ["pname" "version"] constructedArgs;
-
-                constructedSource = fetchers.constructSource (constructedArgsKeep
-                  // {
-                    inherit type;
-                    pname = pkgName;
-                    version = pkgVersion;
-                  });
-              in
-                b.removeAttrs constructedSource ["pname" "version"];
-            };
-          })
+          if skip
+          then result
+          else
+            lib.recursiveUpdate result {
+              "${pkgName}" = {
+                "${pkgVersion}" =
+                  b.removeAttrs constructedSource ["pname" "version"];
+              };
+            })
         {}
         serializedPackagesList;
 
