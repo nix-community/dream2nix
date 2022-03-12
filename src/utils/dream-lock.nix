@@ -81,12 +81,14 @@
     getRoot = pname: version: let
       spec = getSourceSpec pname version;
     in
-      if spec.type == "path"
-      then {
+      if
+        (pname == defaultPackageName && version == defaultPackageVersion)
+        || spec.type != "path"
+      then {inherit pname version;}
+      else {
         pname = spec.rootName;
         version = spec.rootVersion;
-      }
-      else {inherit pname version;};
+      };
   in {
     inherit lock;
     interface = {
