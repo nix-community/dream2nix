@@ -100,7 +100,8 @@
           || (dObj
             ? resolved
             && lib.hasInfix "codeload.github.com/" dObj.resolved)
-          || lib.hasInfix "@git+" dObj.yarnName
+          || (lib.hasInfix "@git+" dObj.yarnName
+            || lib.hasPrefix "git+" dObj.resolved)
           # example:
           # "jest-image-snapshot@https://github.com/machard/jest-image-snapshot#machard-patch-1":
           #   version "4.2.0"
@@ -139,7 +140,9 @@
 
       extractors = {
         name = rawObj: finalObj:
-          if lib.hasInfix "@git+" rawObj.yarnName
+          if
+            (lib.hasInfix "@git+" rawObj.yarnName
+              || lib.hasPrefix "git+" rawObj.resolved)
           then lib.head (lib.splitString "@git+" rawObj.yarnName)
           # Example:
           # @matrix-org/olm@https://gitlab.matrix.org/api/v4/projects/27/packages/npm/@matrix-org/olm/-/@matrix-org/olm-3.2.3.tgz
@@ -159,7 +162,7 @@
             split = l.splitString "@git+" rawObj.yarnName;
             gitUrl = l.last split;
           in
-            # l.strings.sanitizeDerivationName
+            l.strings.sanitizeDerivationName
             "${rawObj.version}@git+${gitUrl}"
           else rawObj.version;
 
