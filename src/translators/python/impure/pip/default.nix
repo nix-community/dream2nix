@@ -18,7 +18,7 @@ in {
     writeScriptBin,
     ...
   }: let
-    machNixExtractor = "${externalSources.mach-nix}/lib/default.nix";
+    machNixExtractor = "${externalSources.mach-nix}/lib/extractor/default.nix";
 
     setuptools_shim = ''
       import sys, setuptools, tokenize, os; sys.argv[0] = 'setup.py'; __file__='setup.py';
@@ -53,7 +53,7 @@ in {
             (import <nixpkgs> {}).$pythonAttr
         " \
         -o $tmpBuild/python
-      nix build --impure --expr "(import <nixpkgs> {}).$pythonAttr.pkgs.pip" -o $tmpBuild/pip
+      nix build --impure --expr "(import <nixpkgs> {}).$pythonAttr.withPackages (ps: [ps.pip ps.setuptools])" -o $tmpBuild/pip
       python=$tmpBuild/python/bin/python
       pip=$tmpBuild/pip/bin/pip
 
@@ -100,7 +100,7 @@ in {
   compatible = {source}:
     dlib.containsMatchingFile
     [
-      ''.*requirements.*\.txt''
+      ''.*setup\.py''
     ]
     source;
 

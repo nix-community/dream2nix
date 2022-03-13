@@ -136,6 +136,9 @@ in
         phases = ["unpackPhase"];
         dontInstall = true;
         dontFixup = true;
+        # Allow to access the original output of the FOD.
+        # Some builders like python require the original archive.
+        passthru.original = source;
         unpackCmd =
           if lib.hasSuffix ".tgz" source.name
           then ''

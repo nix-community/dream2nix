@@ -206,8 +206,8 @@ class AddCommand(Command):
 
     # add location
     if 'location' not in lock['_generic']:
-      if 'dir' in sourceSpecSub:
-        lock['_generic']['location'] = sourceSpecSub['dir']
+      if 'dir' in sourceSpec:
+        lock['_generic']['location'] = sourceSpec['dir']
       else:
         lock['_generic']['location'] = ''
 

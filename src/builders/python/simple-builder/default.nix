@@ -4,34 +4,53 @@
   pkgs,
   ...
 }: {
-  fetchedSources,
-  dreamLock,
+  defaultPackageName,
+  defaultPackageVersion,
+  getSource,
+  packageVersions,
+  subsystemAttrs,
+  ...
 }: let
-  python = pkgs."${dreamLock._subsystem.pythonAttr}";
+  l = lib // builtins;
+  python = pkgs."${subsystemAttrs.pythonAttr}";
 
   buildFunc =
-    if dreamLock._subsystem.application
+    if subsystemAttrs.application
     then python.pkgs.buildPythonApplication
     else python.pkgs.buildPythonPackage;
 
-  defaultPackage = dreamLock._generic.defaultPackage;
-
   packageName =
-    if defaultPackage == null
+    if defaultPackageName == null
     then
-      if dreamLock._subsystem.application
+      if subsystemAttrs.application
       then "application"
       else "environment"
-    else defaultPackage;
+    else defaultPackageName;
 
-  defaultPackage = buildFunc {
+  allDependencySources' =
+    l.flatten
+    (l.mapAttrsToList
+      (name: versions:
+        if name == defaultPackageName
+        then []
+        else l.map (ver: getSource name ver) versions)
+      packageVersions);
+
+  allDependencySources =
+    l.map
+    (src: src.original or src)
+    allDependencySources';
+
+  package = buildFunc {
     name = packageName;
-    format = "";
+    src = getSource defaultPackageName defaultPackageVersion;
+    format = "setuptools";
     buildInputs = pkgs.pythonManylinuxPackages.manylinux1;
-    nativeBuildInputs = [pkgs.autoPatchelfHook python.pkgs.wheelUnpackHook];
-    unpackPhase = ''
+    nativeBuildInputs = [pkgs.autoPatchelfHook];
+    doCheck = false;
+    preBuild = ''
       mkdir dist
-      for file in ${builtins.toString (lib.attrValues fetchedSources)}; do
+      for file in ${builtins.toString allDependencySources}; do
         # pick right most element of path
         fname=''${file##*/}
         fname=$(stripHash $fname)
@@ -42,15 +61,16 @@
       runHook preInstall
       mkdir -p "$out/${python.sitePackages}"
       export PYTHONPATH="$out/${python.sitePackages}:$PYTHONPATH"
-      ${python}/bin/python -m pip install ./dist/*.{whl,tar.gz,zip} $src \
+      ${python}/bin/python -m pip install \
+        ./dist/*.{whl,tar.gz,zip} \
         --no-index \
         --no-warn-script-location \
         --prefix="$out" \
-        --no-cache $pipInstallFlags \
-        --ignore-installed
+        --no-cache \
+        $pipInstallFlags
       runHook postInstall
     '';
   };
 in {
-  inherit defaultPackage;
+  packages.${defaultPackageName}.${defaultPackageVersion} = package;
 }
