@@ -66,7 +66,7 @@
     # dream2nix lib (system independent utils)
     dlib = import ./src/lib {inherit lib;};
 
-    supportedSystems = ["x86_64-linux" "x86_64-darwin" "aarch64-darwin"];
+    supportedSystems = ["x86_64-linux" "aarch64-linux" "x86_64-darwin" "aarch64-darwin"];
 
     forSystems = systems: f:
       lib.genAttrs systems
