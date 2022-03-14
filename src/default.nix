@@ -507,13 +507,6 @@
         self))
       discoveredProjects;
 
-    # attrset of projects by key
-    projects =
-      l.listToAttrs
-      (l.map
-        (proj: l.nameValuePair proj.key proj)
-        projectsList);
-
     # unresolved impure projects cannot be resolved on the fly
     projectsImpureUnresolved =
       l.filter (project: project.impure && ! project.resolved) projectsList;

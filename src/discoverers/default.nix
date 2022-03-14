@@ -23,15 +23,23 @@
         (discoverer: discoverer.discover {inherit tree;})
         allDiscoverers);
 
-    rootProjectName = l.head discoveredProjects;
+    discoveredProjectsSorted = let
+      toposorted =
+        l.toposort
+        (p1: p2: l.hasPrefix p1.relPath p2.relPath)
+        discoveredProjects;
+    in
+      toposorted.result;
+
+    rootProject = l.head discoveredProjectsSorted;
 
     projectsExtended =
-      l.forEach discoveredProjects
+      l.forEach discoveredProjectsSorted
       (proj:
         proj
         // {
           translator = l.head proj.translators;
-          dreamLockPath = getDreamLockPath proj rootProjectName;
+          dreamLockPath = getDreamLockPath proj rootProject;
         });
   in
     applyProjectSettings projectsExtended settings;
