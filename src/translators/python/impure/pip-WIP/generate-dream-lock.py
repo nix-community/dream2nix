@@ -3,6 +3,7 @@ import base64
 import hashlib
 import json
 import os
+import pathlib
 import sys
 import urllib.request
 
@@ -66,7 +67,7 @@ def main():
       "sourcesAggregatedHash": None,
     },
     _subsystem={
-      "application": jsonInput['application'],
+      "application": jsonInput.get('application', False),
       "pythonAttr": f"python{sys.version_info.major}{sys.version_info.minor}",
       "sourceFormats":
         {pname: data['format'] for pname, data in packages.items()}
@@ -85,6 +86,8 @@ def main():
 
   # dump dream lock to $ouputFile
   print(jsonInput['outputFile'])
+  dirPath = pathlib.Path(os.path.dirname(jsonInput['outputFile']))
+  dirPath.mkdir(parents=True, exist_ok=True)
   with open(jsonInput['outputFile'], 'w') as lock:
     json.dump(dream_lock, lock, indent=2)
 

@@ -40,10 +40,9 @@ in {
       jsonInput=$1
 
       # read the json input
-      outputFile=$(${jq}/bin/jq '.outputFile' -c -r $jsonInput)
-      source=$(${jq}/bin/jq '.source' -c -r $jsonInput)
-      pythonAttr=$(${jq}/bin/jq '.pythonAttr' -c -r $jsonInput)
-      application=$(${jq}/bin/jq '.application' -c -r $jsonInput)
+      outputFile=$WORKDIR/$(${jq}/bin/jq '.outputFile' -c -r $jsonInput)
+      source="$(${jq}/bin/jq '.source' -c -r $jsonInput)/$(${jq}/bin/jq '.project.relPath' -c -r $jsonInput)"
+      pythonAttr=$(${jq}/bin/jq '.project.subsystemInfo.pythonAttr' -c -r $jsonInput)
 
       # build python and pip executables
       tmpBuild=$(mktemp -d)
@@ -89,6 +88,7 @@ in {
         -r $tmpBuild/computed_requirements
         # -r ''${inputFiles/$'\n'/$' -r '}
 
+      cd $WORKDIR
       # generate the dream lock from the downloaded list of files
       NAME=$(${jq}/bin/jq '.name' -c -r $tmpBuild/python.json) \
           VERSION=$(${jq}/bin/jq '.version' -c -r $tmpBuild/python.json) \
