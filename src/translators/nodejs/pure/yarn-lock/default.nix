@@ -291,8 +291,9 @@
 
         workspaceDependendencies =
           l.mapAttrsToList
-          (wsName: wsJson: {
-            name = wsName;
+          (wsPath: wsJson: {
+            # If the name attr doesn't exist, use the relative path as name
+            name = wsJson.name or wsPath;
             version = wsJson.version or "unknown";
           })
           workspacesPackageJson;
