@@ -225,5 +225,5 @@
 in {
   inherit dlib init;
   riseAndShine = throw "Use makeFlakeOutputs instead of riseAndShine.";
-  makeFlakeOutpus = makeFlakeOutputsFunc;
+  makeFlakeOutputs = makeFlakeOutputsFunc;
 }
