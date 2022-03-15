@@ -289,7 +289,7 @@
           })
           packageJsonDeps;
 
-        workspaceDependendencies =
+        workspaceDependencies =
           l.mapAttrsToList
           (wsPath: wsJson: {
             # If the name attr doesn't exist, use the relative path as name
@@ -301,7 +301,7 @@
         {
           name = defaultPackage;
           version = packageJson.version or "unknown";
-          dependencies = defaultPackageDependencies ++ workspaceDependendencies;
+          dependencies = defaultPackageDependencies ++ workspaceDependencies;
         }
       ];
 
