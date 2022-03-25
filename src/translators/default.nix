@@ -169,7 +169,7 @@
               (dreamLock // {
                 _generic = builtins.removeAttrs dreamLock._generic [ \"cyclicDependencies\" ];
               })
-        " | python3 ${../apps/cli2/format-dream-lock.py} > out
+        " | python3 ${../apps/cli/format-dream-lock.py} > out
 
         tmpOut=$(realpath out)
         cd $WORKDIR
@@ -216,7 +216,7 @@
               (dreamLock // {
                 _generic = builtins.removeAttrs dreamLock._generic [ \"cyclicDependencies\" ];
               })
-        " | python3 ${../apps/cli2/format-dream-lock.py} > out
+        " | python3 ${../apps/cli/format-dream-lock.py} > out
 
         tmpOut=$(realpath out)
         cd $WORKDIR

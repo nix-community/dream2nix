@@ -204,7 +204,7 @@ in
           > $dreamLockPath.tmp
 
         cat $dreamLockPath.tmp \
-          | python3 ${../apps/cli2/format-dream-lock.py} \
+          | python3 ${../apps/cli/format-dream-lock.py} \
           > $dreamLockPath
 
         rm $dreamLockPath.tmp
