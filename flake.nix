@@ -200,6 +200,13 @@
               inherit self;
             });
 
+          tests-examples.type = "app";
+          tests-examples.program =
+            b.toString
+            (dream2nixFor."${system}".callPackageDream ./tests/examples {
+              inherit self;
+            });
+
           tests-all.type = "app";
           tests-all.program =
             l.toString
@@ -219,6 +226,9 @@
 
                 echo "running unit tests"
                 ${self.apps.${system}.tests-unit.program}
+
+                echo "checking flakes under ./examples"
+                ${self.apps.${system}.tests-examples.program}
 
                 echo "running impure CLI tests"
                 ${self.apps.${system}.tests-impure.program}
