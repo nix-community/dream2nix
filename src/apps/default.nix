@@ -9,8 +9,7 @@
   b = builtins;
 in rec {
   apps = {
-    inherit cli cli2 contribute install;
-    dream2nix = cli;
+    inherit contribute install;
   };
 
   flakeApps =
@@ -21,11 +20,6 @@ in rec {
       }
     )
     apps;
-
-  # the dream2nix cli
-  cli = callPackageDream (import ./cli) {};
-
-  cli2 = callPackageDream (import ./cli2) {};
 
   # the contribute cli
   contribute = callPackageDream (import ./contribute) {};
