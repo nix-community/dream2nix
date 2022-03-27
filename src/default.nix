@@ -587,6 +587,7 @@
     pname ? null,
     source ? null,
     packageOverrides ? {},
+    sourceOverrides ? oldSources: {},
     settings ? [],
   }: let
     dreamLocks = l.forEach translatedProjects (proj: proj.dreamLock);
@@ -603,12 +604,17 @@
       };
 
     # extends each package with a `.resolve` attribute
+    # and applies sourceOverrides
     outputsForProject = proj: let
-      outputs = makeOutputsForDreamLock rec {
+      outputs = makeOutputsForDreamLock {
         inherit inject packageOverrides;
         builder = proj.builder or null;
         dreamLock = proj.dreamLock;
-        sourceOverrides = oldSources: (defaultSourceOverride proj.dreamLock);
+        sourceOverrides = oldSources:
+          dlib.recursiveUpdateUntilDepth
+          1
+          (defaultSourceOverride proj.dreamLock)
+          (sourceOverrides oldSources);
       };
     in
       outputs

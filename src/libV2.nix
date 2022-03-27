@@ -99,6 +99,7 @@
     packageOverrides ? {},
     settings ? [],
     source,
+    sourceOverrides ? oldSources: {},
     systems ? [],
     translator ? null,
     translatorArgs ? {},
@@ -169,7 +170,13 @@
         };
 
         realizedProjects = dream2nix.realizeProjects {
-          inherit inject packageOverrides translatedProjects source;
+          inherit
+            inject
+            packageOverrides
+            sourceOverrides
+            translatedProjects
+            source
+            ;
         };
 
         allOutputs =
