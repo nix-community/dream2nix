@@ -92,6 +92,7 @@
   };
 
   makeFlakeOutputsFunc = {
+    config ? {},
     inject ? {},
     pname ? throw "Please pass `pname` to makeFlakeOutputs",
     pkgs ? null,
@@ -101,7 +102,6 @@
     systems ? [],
     translator ? null,
     translatorArgs ? {},
-    ...
   } @ args: let
     config = args.config or ((import ./utils/config.nix).loadConfig {});
     allPkgs = makeNixpkgs pkgs systems;

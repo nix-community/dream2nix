@@ -408,6 +408,8 @@
     builder' =
       if builder == null
       then findBuilder dreamLock
+      else if l.isString builder
+      then builders.${dreamLock._generic.subsystem}.${builder}
       else builder;
 
     fetcher' =
@@ -604,6 +606,7 @@
     outputsForProject = proj: let
       outputs = makeOutputsForDreamLock rec {
         inherit inject packageOverrides;
+        builder = proj.builder or null;
         dreamLock = proj.dreamLock;
         sourceOverrides = oldSources: (defaultSourceOverride proj.dreamLock);
       };
