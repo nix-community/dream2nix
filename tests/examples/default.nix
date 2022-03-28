@@ -20,8 +20,11 @@ in
       mkdir tmp
       cp ${examples}/$dir/* ./tmp/
       chmod -R +w ./tmp
-      nix flake lock --override-input dream2nix ${../../.} ./tmp
-      nix flake check ./tmp
+      cd ./tmp
+      nix flake lock --override-input dream2nix ${../../.}
+      nix run .#resolveImpure
+      nix flake check
+      cd -
       rm -r tmp
     done
   ''

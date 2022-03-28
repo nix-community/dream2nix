@@ -15,7 +15,7 @@
       config.projectRoot = ./.;
     };
   in
-    dream2nix.makeFlakeOutputs {
+    (dream2nix.makeFlakeOutputs {
       source = src;
       settings = [
         {
@@ -23,5 +23,8 @@
           translator = "cargo-lock";
         }
       ];
+    })
+    // {
+      checks = self.packages;
     };
 }
