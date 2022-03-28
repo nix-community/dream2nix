@@ -11,18 +11,32 @@
   writeScript,
   # dream2nix
   defaultFetcher,
+  dlib,
   utils,
   ...
 }: {
   # sources attrset from dream lock
   sources,
   sourcesAggregatedHash,
+  sourceOverrides,
   ...
 } @ args: let
   b = builtins;
+  l = lib // builtins;
 
   # resolve to individual fetcher calls
   defaultFetched = (defaultFetcher args).fetchedSources;
+
+  isFOD = drv:
+    lib.all
+    (attr: drv ? "${attr}")
+    ["outputHash" "outputHashAlgo" "outputHashMode"];
+
+  drvArgs = drv:
+    (drv.overrideAttrs (args: {
+      passthru.originalArgs = args;
+    }))
+    .originalArgs;
 
   # extract the arguments from the individual fetcher calls
   FODArgsAll = let
@@ -33,19 +47,24 @@
           lib.mapAttrs
           (version: fetched:
             # handle FOD sources
-              if
-                lib.all
-                (attr: fetched ? "${attr}")
-                ["outputHash" "outputHashAlgo" "outputHashMode"]
+              if isFOD fetched
               then
-                (fetched.overrideAttrs (args: {
-                  passthru.originalArgs = args;
-                }))
-                .originalArgs
+                (drvArgs fetched)
                 // {
+                  isOriginal = false;
                   outPath = let
                     sanitizedName = utils.sanitizeDerivationName name;
                   in "${sanitizedName}/${version}/${fetched.name}";
+                }
+              # handle already extracted sources
+              else if fetched ? original && isFOD fetched.original
+              then
+                (drvArgs fetched.original)
+                // {
+                  isOriginal = true;
+                  outPath = let
+                    sanitizedName = utils.sanitizeDerivationName name;
+                  in "${sanitizedName}/${version}/${fetched.original.name}";
                 }
               # handle path sources
               else if lib.isString fetched
@@ -96,7 +115,7 @@
     else b.toJSON x;
 
   # set up nix build env for signle item
-  setupEnvForItem = fetcherArgs: ''
+  itemScript = fetcherArgs: ''
 
     # export arguments for builder
     ${lib.concatStringsSep "\n" (lib.mapAttrsToList (argName: argVal: ''
@@ -124,7 +143,7 @@
 
     # do the work
     pushd $workdir
-    ${setupEnvForItem fetcherArgs}
+    ${itemScript fetcherArgs}
     popd
     rm -r $workdir
   '';
@@ -141,6 +160,9 @@
     async=${async}/bin/async
     $async -s="$S" server --start -j40
 
+    # remove if resolved: https://github.com/ctbur/async/issues/6
+    sleep 1
+
     ${lib.concatStringsSep "\n"
       (b.map
         (fetcherArgs: ''
@@ -150,7 +172,17 @@
 
     $async -s="$S" wait
 
-    echo "FOD_HASH=$(${nix}/bin/nix hash path $out)"
+    ${lib.concatStringsSep "\n"
+      (b.map
+        (fetcherArgs: ''
+          if [ ! -e "$out/${fetcherArgs.outPath}" ]; then
+            echo "builder for ${fetcherArgs.name} terminated without creating out path: ${fetcherArgs.outPath}"
+            exit 1
+          fi
+        '')
+        FODArgsAllList)}
+
+    echo "FOD_HASH=$(${nix}/bin/nix --extra-experimental-features "nix-command flakes" hash path $out)"
   '';
 
   FODAllSources = let
@@ -181,9 +213,18 @@ in {
     (name: versions:
       lib.mapAttrs
       (version: source:
-        if FODArgsAll ? "${name}"."${version}"
-        then "${FODAllSources}/${FODArgsAll."${name}"."${version}".outPath}"
+        if FODArgsAll ? "${name}"."${version}".outPath
+        then
+          if FODArgsAll ? "${name}"."${version}".isOriginal
+          then
+            utils.extractSource {
+              source =
+                l.trace "${FODAllSources}/${FODArgsAll."${name}"."${version}".outPath}"
+                "${FODAllSources}/${FODArgsAll."${name}"."${version}".outPath}";
+              name = dlib.sanitizeDerivationName name;
+            }
+          else "${FODAllSources}/${FODArgsAll."${name}"."${version}".outPath}"
         else defaultFetched."${name}"."${version}")
       versions)
-    sources;
+    defaultFetched;
 }

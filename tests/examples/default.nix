@@ -17,6 +17,7 @@ in
   ]
   ''
     for dir in $(ls ${examples}); do
+      echo -e "\ntesting example for $dir"
       mkdir tmp
       cp ${examples}/$dir/* ./tmp/
       chmod -R +w ./tmp

@@ -16,6 +16,7 @@
   # dream2nix inputs
   apps,
   callPackageDream,
+  dream2nixWithExternals,
   externalSources,
   translators,
   ...
@@ -128,9 +129,10 @@ in
     extractSource = {
       source,
       dir ? "",
-    }:
+      name ? null,
+    } @ args:
       stdenv.mkDerivation {
-        name = "${(source.name or "")}-extracted";
+        name = "${(args.name or source.name or "")}-extracted";
         src = source;
         inherit dir;
         phases = ["unpackPhase"];
@@ -140,7 +142,7 @@ in
         # Some builders like python require the original archive.
         passthru.original = source;
         unpackCmd =
-          if lib.hasSuffix ".tgz" source.name
+          if lib.hasSuffix ".tgz" (source.name or "${source}")
           then ''
             tar --delay-directory-restore -xf $src
 
@@ -171,6 +173,8 @@ in
       source,
       project,
     } @ args: let
+      aggregate = project.aggregate or false;
+
       translator =
         translators.translatorsV2."${project.subsystem}".all."${project.translator}";
 
@@ -197,12 +201,20 @@ in
         cd $WORKDIR
         ${translator.translateBin} ${argsJsonFile}
 
+        # aggregate source hashes
+        if [ "${l.toJSON aggregate}" == "true" ]; then
+          echo "aggregating all sources to one large FOD"
+          dream2nixWithExternals=${dream2nixWithExternals} \
+            python3 ${../apps/cli}/aggregate-hashes.py $dreamLockPath
+        fi
+
         # add invalidationHash to dream-lock.json
         cp $dreamLockPath $dreamLockPath.tmp
         cat $dreamLockPath \
           | jq '._generic.invalidationHash = "${invalidationHash}"' \
           > $dreamLockPath.tmp
 
+        # format dream lock
         cat $dreamLockPath.tmp \
           | python3 ${../apps/cli/format-dream-lock.py} \
           > $dreamLockPath

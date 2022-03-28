@@ -111,7 +111,7 @@
 
     getInvalidationHash = project:
       dlib.calcInvalidationHash {
-        inherit source;
+        inherit project source;
         # TODO: add translatorArgs
         translatorArgs = {};
         translator = project.translator;

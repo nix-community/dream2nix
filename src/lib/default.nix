@@ -174,12 +174,14 @@
 
   # calculate an invalidation hash for given source translation inputs
   calcInvalidationHash = {
+    project,
     source,
     translator,
     translatorArgs,
   }:
     l.hashString "sha256" ''
       ${source}
+      ${l.toJSON project}
       ${translator}
       ${l.toString
         (l.mapAttrsToList (k: v: "${k}=${l.toString v}") translatorArgs)}
