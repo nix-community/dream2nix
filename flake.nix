@@ -185,11 +185,6 @@
       system: pkgs:
         dream2nixFor."${system}".apps.flakeApps
         // {
-          tests-impure.type = "app";
-          tests-impure.program =
-            b.toString
-            (dream2nixFor."${system}".callPackageDream ./tests/impure {});
-
           tests-unit.type = "app";
           tests-unit.program =
             b.toString
@@ -226,9 +221,6 @@
 
                 echo "checking flakes under ./examples"
                 ${self.apps.${system}.tests-examples.program}
-
-                echo "running impure CLI tests"
-                ${self.apps.${system}.tests-impure.program}
 
                 echo "running nix flake check"
                 cd $WORKDIR

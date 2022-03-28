@@ -218,9 +218,7 @@ in {
           if FODArgsAll ? "${name}"."${version}".isOriginal
           then
             utils.extractSource {
-              source =
-                l.trace "${FODAllSources}/${FODArgsAll."${name}"."${version}".outPath}"
-                "${FODAllSources}/${FODArgsAll."${name}"."${version}".outPath}";
+              source = "${FODAllSources}/${FODArgsAll."${name}"."${version}".outPath}";
               name = dlib.sanitizeDerivationName name;
             }
           else "${FODAllSources}/${FODArgsAll."${name}"."${version}".outPath}"
