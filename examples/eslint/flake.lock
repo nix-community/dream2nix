@@ -208,18 +208,13 @@
     "src": {
       "flake": false,
       "locked": {
-        "lastModified": 1623499944,
-        "narHash": "sha256-udEh+Re2PeO3DnX4fQThsaT1Y3MBHFfrX5Q5EN2XrF0=",
-        "owner": "BurntSushi",
-        "repo": "ripgrep",
-        "rev": "af6b6c543b224d348a8876f0c06245d9ea7929c5",
-        "type": "github"
+        "narHash": "sha256-HDDazTp3p3P0cVSyMcEHbTt0gYdM2lCV1yJamh+GxNw=",
+        "type": "tarball",
+        "url": "https://registry.npmjs.org/eslint/-/eslint-8.4.1.tgz"
       },
       "original": {
-        "owner": "BurntSushi",
-        "ref": "13.0.0",
-        "repo": "ripgrep",
-        "type": "github"
+        "type": "tarball",
+        "url": "https://registry.npmjs.org/eslint/-/eslint-8.4.1.tgz"
       }
     }
   },

@@ -208,17 +208,17 @@
     "src": {
       "flake": false,
       "locked": {
-        "lastModified": 1623499944,
-        "narHash": "sha256-udEh+Re2PeO3DnX4fQThsaT1Y3MBHFfrX5Q5EN2XrF0=",
-        "owner": "BurntSushi",
-        "repo": "ripgrep",
-        "rev": "af6b6c543b224d348a8876f0c06245d9ea7929c5",
+        "lastModified": 1636572315,
+        "narHash": "sha256-8waz6VCNlgvgfNnE5Fjc8lKbB7YvagS6wYxdYagDWmA=",
+        "owner": "mattermost",
+        "repo": "mattermost-webapp",
+        "rev": "36b11330781a9f9ced8bf12ed9c085fbdc0dc5ef",
         "type": "github"
       },
       "original": {
-        "owner": "BurntSushi",
-        "ref": "13.0.0",
-        "repo": "ripgrep",
+        "owner": "mattermost",
+        "ref": "v6.1.0",
+        "repo": "mattermost-webapp",
         "type": "github"
       }
     }

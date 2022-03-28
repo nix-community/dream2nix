@@ -208,17 +208,17 @@
     "src": {
       "flake": false,
       "locked": {
-        "lastModified": 1623499944,
-        "narHash": "sha256-udEh+Re2PeO3DnX4fQThsaT1Y3MBHFfrX5Q5EN2XrF0=",
-        "owner": "BurntSushi",
-        "repo": "ripgrep",
-        "rev": "af6b6c543b224d348a8876f0c06245d9ea7929c5",
+        "lastModified": 1631772360,
+        "narHash": "sha256-0be+sNcFrz90Fle00NT679oCoxpov1WsyFZTOBU+Y6U=",
+        "owner": "prettier",
+        "repo": "prettier",
+        "rev": "7ced9e66549b8d5a8e3a74473af462f86fb0245c",
         "type": "github"
       },
       "original": {
-        "owner": "BurntSushi",
-        "ref": "13.0.0",
-        "repo": "ripgrep",
+        "owner": "prettier",
+        "ref": "2.4.1",
+        "repo": "prettier",
         "type": "github"
       }
     }
