@@ -2,6 +2,7 @@
   self,
   lib,
   coreutils,
+  git,
   nix,
   utils,
   dream2nixWithExternals,
@@ -13,6 +14,7 @@ in
   utils.writePureShellScript
   [
     coreutils
+    git
     nix
   ]
   ''
