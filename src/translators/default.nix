@@ -55,11 +55,14 @@
         (with translator; [subsystem type name]);
       # ensure `tree` is passed
       translate = args:
-        finalTranslator.translate (args
+        finalTranslator.translate (
+          args
+          // args.project.subsystemInfo
           // {
             tree =
               args.tree or (dlib.prepareSourceTree {inherit (args) source;});
-          });
+          }
+        );
     });
 
   # transforms V2 translators to V1 translators

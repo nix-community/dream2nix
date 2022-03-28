@@ -36,7 +36,7 @@
       chmod -R +w ./
       rm -rf package-lock.json
 
-      if [ "$(jq '.noDev' -c -r $jsonInput)" == "true" ]; then
+      if [ "$(jq '.project.subsystemInfo.noDev' -c -r $jsonInput)" == "true" ]; then
         echo "excluding dev dependencies"
         jq '.devDependencies = {}' ./package.json > package.json.mod
         mv package.json.mod package.json
@@ -48,7 +48,7 @@
       jq ".source = \"$(pwd)\"" -c -r $jsonInput > $TMPDIR/newJsonInput
 
       cd $WORKDIR
-      ${translators.translators.nodejs.pure.package-lock.translateBin} $TMPDIR/newJsonInput
+      ${translators.translatorsV2.nodejs.pure.package-lock.translateBin} $TMPDIR/newJsonInput
     '';
 
   # inherit projectName function from package-lock translator
