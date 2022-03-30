@@ -41,7 +41,7 @@
       chmod -R +w ./
       newSource=$(pwd)
 
-      cd $relPath
+      cd ./$relPath
       rm -rf package-lock.json
 
       if [ "$(jq '.project.subsystemInfo.noDev' -c -r $jsonInput)" == "true" ]; then
