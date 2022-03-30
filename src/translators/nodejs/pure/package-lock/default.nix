@@ -87,6 +87,8 @@
           requires = pdata.requires or {};
           dependencies = pdata.dependencies or {};
 
+          # this was required to in order to fix .#resolveImpure for this projet:
+          # https://gitlab.com/Shinobi-Systems/Shinobi/-/commit/a2faa40ab0e9952ff6a7fcf682534171614180c1
           filteredRequires =
             l.filterAttrs
             (name: spec:
