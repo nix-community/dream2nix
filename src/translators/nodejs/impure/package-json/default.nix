@@ -11,8 +11,10 @@
     # nixpkgs dependenies
     bash,
     coreutils,
+    git,
     jq,
     nodePackages,
+    openssh,
     writeScriptBin,
     ...
   }:
@@ -20,8 +22,10 @@
     [
       bash
       coreutils
+      git
       jq
       nodePackages.npm
+      openssh
     ]
     ''
       # accroding to the spec, the translator reads the input from a json file
@@ -30,10 +34,14 @@
       # read the json input
       outputFile=$(jq '.outputFile' -c -r $jsonInput)
       source=$(jq '.source' -c -r $jsonInput)
-      npmArgs=$(jq '.npmArgs' -c -r $jsonInput)
+      relPath=$(jq '.project.relPath' -c -r $jsonInput)
+      npmArgs=$(jq '.project.subsystemInfo.npmArgs' -c -r $jsonInput)
 
       cp -r $source/* ./
       chmod -R +w ./
+      newSource=$(pwd)
+
+      cd $relPath
       rm -rf package-lock.json
 
       if [ "$(jq '.project.subsystemInfo.noDev' -c -r $jsonInput)" == "true" ]; then
@@ -45,7 +53,7 @@
         npm install --package-lock-only $npmArgs
       fi
 
-      jq ".source = \"$(pwd)\"" -c -r $jsonInput > $TMPDIR/newJsonInput
+      jq ".source = \"$newSource\"" -c -r $jsonInput > $TMPDIR/newJsonInput
 
       cd $WORKDIR
       ${translators.translatorsV2.nodejs.pure.package-lock.translateBin} $TMPDIR/newJsonInput

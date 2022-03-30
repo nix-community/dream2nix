@@ -86,12 +86,26 @@
           selfScopeDeps = parentScopeDeps // dependencies;
           requires = pdata.requires or {};
           dependencies = pdata.dependencies or {};
+
+          filteredRequires =
+            l.filterAttrs
+            (name: spec:
+              if selfScopeDeps ? ${name}
+              then true
+              else
+                l.trace
+                ''
+                  WARNING: could not find dependency ${name} in package-lock.json
+                  This might be expected for bundled dependencies of sub-dependencies.
+                ''
+                false)
+            requires;
         in
           pdata
           // {
             depsExact =
               lib.forEach
-              (lib.attrNames requires)
+              (lib.attrNames filteredRequires)
               (reqName: {
                 name = reqName;
                 version = getVersion selfScopeDeps."${reqName}";
