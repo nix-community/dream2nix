@@ -4,8 +4,7 @@ in rec {
   getPackageJsonDeps = packageJson: noDev:
     packageJson.dependencies
     or {}
-    // (lib.optionalAttrs (! noDev) (packageJson.devDependencies or {}))
-    // packageJson.peerDependencies or {};
+    // (lib.optionalAttrs (! noDev) (packageJson.devDependencies or {}));
 
   getWorkspaceLockFile = tree: project: fname: let
     # returns the parsed package-lock.json for a given project
