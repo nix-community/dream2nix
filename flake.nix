@@ -176,10 +176,6 @@
     # with project discovery enabled
     lib2 = self.lib;
 
-    # the dream2nix cli to be used with 'nix run dream2nix'
-    defaultApp =
-      forAllSystems (system: pkgs: self.apps."${system}".dream2nix);
-
     # all apps including cli, install, etc.
     apps = forAllSystems (
       system: pkgs:
@@ -224,6 +220,7 @@
 
                 echo "running nix flake check"
                 cd $WORKDIR
+                nix flake show >/dev/null
                 nix flake check
               '');
 
