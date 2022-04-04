@@ -25,6 +25,8 @@
         then
           if lib.isStorePath source.path
           then source.path
+          else if name == source.rootName && version == source.rootVersion
+          then throw "source for ${name}@${version} is referencing itself"
           else "${overriddenSources."${source.rootName}"."${source.rootVersion}"}/${source.path}"
         else if fetchers.fetchers ? "${source.type}"
         then

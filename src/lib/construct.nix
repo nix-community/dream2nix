@@ -15,4 +15,14 @@
       translators
       ;
   };
+
+  pathSource = {
+    path,
+    rootName,
+    rootVersion,
+  } @ args:
+    args
+    // {
+      type = "path";
+    };
 }

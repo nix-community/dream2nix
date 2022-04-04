@@ -61,6 +61,7 @@ in {
 
     # Find the Cargo.toml matching the package name
     checkForPackageName = cargoToml: (cargoToml.value.package.name or null) == packageName;
+
     packageToml =
       l.findFirst
       checkForPackageName
@@ -213,11 +214,23 @@ in {
             cargoPackages
           );
           relDir = lib.removePrefix "${inputDir}/" (l.dirOf toml.path);
-        in {
-          path = relDir;
-          rootName = package.name;
-          rootVersion = package.version;
-        };
+        in
+          if
+            package.name
+            == dependencyObject.name
+            && package.version == dependencyObject.version
+          then
+            dlib.construct.pathSource {
+              path = source;
+              rootName = null;
+              rootVersion = null;
+            }
+          else
+            dlib.construct.pathSource {
+              path = relDir;
+              rootName = package.name;
+              rootVersion = package.version;
+            };
 
         git = dependencyObject: let
           parsed = parseGitSource dependencyObject.source;
