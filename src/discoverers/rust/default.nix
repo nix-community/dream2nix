@@ -25,7 +25,7 @@
         (dlib.construct.discoveredProject {
           inherit subsystem;
           relPath = tree.relPath;
-          name = cargoToml.package.name;
+          name = cargoToml.package.name or tree.relPath;
           translators = ["cargo-lock"];
           subsystemInfo = {};
         })
