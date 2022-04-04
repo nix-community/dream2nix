@@ -227,29 +227,4 @@ in
           git add ${project.dreamLockPath}
         fi
       '';
-
-    # a script that produces and dumps the dream-lock json for a given source
-    makePackageLockScript = {
-      packagesDir,
-      source,
-      translator,
-      translatorArgs,
-    }:
-      writePureShellScript
-      []
-      ''
-        cd $WORKDIR
-        ${apps.cli.program} add ${source} \
-          --force \
-          --no-default-nix \
-          --translator ${translator} \
-          --invalidation-hash ${dlib.calcInvalidationHash {
-          inherit source translator translatorArgs;
-        }} \
-          --packages-root $WORKDIR/${packagesDir} \
-          ${lib.concatStringsSep " \\\n"
-          (lib.mapAttrsToList
-            (key: val: "--arg ${key}=${b.toString val}")
-            translatorArgs)}
-      '';
   }

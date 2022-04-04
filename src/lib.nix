@@ -206,29 +206,7 @@
       {projectsJson = l.toJSON discoveredProjects;}
       // flakeOutputsBuilders;
   in
-    lib.recursiveUpdate
-    flakeOutputs
-    {
-      apps = forAllSystems (system: pkgs: {
-        resolve.type = "app";
-        resolve.program = let
-          utils = dream2nixFor."${system}".utils;
-
-          # TODO: Too many calls to findOneTranslator.
-          #   -> make findOneTranslator system independent
-          translatorFound = dream2nixFor."${system}".translators.findOneTranslator {
-            inherit source;
-            translatorName = args.translator or null;
-          };
-        in
-          b.toString
-          (utils.makePackageLockScript {
-            inherit source translatorArgs;
-            packagesDir = config.packagesDir;
-            translator = translatorFound.name;
-          });
-      });
-    };
+    flakeOutputs;
 in {
   inherit dlib init;
   riseAndShine = throw "Use makeFlakeOutputs instead of riseAndShine.";
