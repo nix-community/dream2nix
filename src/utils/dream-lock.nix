@@ -1,10 +1,12 @@
 {
   lib,
   # dream2nix
+  dlib,
   utils,
   ...
 }: let
   b = builtins;
+  l = lib // builtins;
 
   subDreamLockNames = dreamLockFile: let
     dir = b.dirOf dreamLockFile;
@@ -57,10 +59,36 @@
 
     dependencyGraph = lock.dependencies;
 
-    packageVersions =
+    allDependencies = let
+      candidatesList =
+        l.unique
+        (l.flatten
+          (l.mapAttrsToList
+            (name: versions:
+              l.flatten (l.attrValues versions))
+            dependencyGraph));
+    in
+      l.foldl'
+      (all: new:
+        all
+        // {
+          "${new.name}" = all.${new.name} or [] ++ [new.version];
+        })
+      {}
+      candidatesList;
+
+    allDependants =
       lib.mapAttrs
       (name: versions: lib.attrNames versions)
       dependencyGraph;
+
+    packageVersions =
+      l.zipAttrsWith
+      (name: versions: l.flatten versions)
+      [
+        allDependants
+        allDependencies
+      ];
 
     cyclicDependencies = lock.cyclicDependencies;
 
@@ -164,6 +192,8 @@
 
       oldDependencyGraph = lock.dependencies;
 
+      newDependcyGraph = decompressDependencyGraph inject;
+
       newDependencyGraph =
         lib.zipAttrsWith
         (name: versions:
@@ -172,7 +202,7 @@
           versions)
         [
           oldDependencyGraph
-          (decompressDependencyGraph inject)
+          newDependcyGraph
         ];
     in
       lib.recursiveUpdate lock {
