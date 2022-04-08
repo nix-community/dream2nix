@@ -300,7 +300,7 @@
     templates = {
       simple = {
         description = "Simple dream2nix flake";
-        path = ./simple;
+        path = ./templates/simple;
       };
     };
   };
