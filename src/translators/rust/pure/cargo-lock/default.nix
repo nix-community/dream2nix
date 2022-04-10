@@ -12,61 +12,90 @@ in {
   }: {
     source,
     packageName,
+    discoveredProjects,
     ...
   } @ args: let
     inputDir = source;
 
-    recurseFiles = path:
-      l.flatten (
-        l.mapAttrsToList
-        (n: v:
-          if v == "directory"
-          then recurseFiles "${path}/${n}"
-          else "${path}/${n}")
-        (l.readDir path)
-      );
+    # Function to read and parse a TOML file and return an attrset
+    # containing its path and parsed TOML value
+    readToml = path: {
+      inherit path;
+      value = l.fromTOML (l.readFile path);
+    };
 
-    # Find all Cargo.toml files and parse them
-    allFiles = l.flatten (l.map recurseFiles [inputDir]);
-    cargoTomlPaths = l.filter (path: l.baseNameOf path == "Cargo.toml") allFiles;
-    cargoTomls =
+    # Get the root toml
+    rootToml = readToml "${inputDir}/Cargo.toml";
+
+    # Get all workspace members
+    workspaceMembers =
       l.map
-      (path: {
-        inherit path;
-        value = l.fromTOML (l.readFile path);
-      })
-      cargoTomlPaths;
+      (
+        memberName: let
+          components = l.splitString "/" memberName;
+        in
+          # Resolve globs if there are any
+          if l.last components == "*"
+          then let
+            parentDirRel = l.concatStringsSep "/" (l.init components);
+            parentDir = "${inputDir}/${parentDirRel}";
+            dirs = l.readDir parentDir;
+          in
+            l.mapAttrsToList
+            (name: _: "${parentDirRel}/${name}")
+            (l.filterAttrs (_: type: type == "directory") dirs)
+          else memberName
+      )
+      (rootToml.value.workspace.members or []);
+    # Get cargo packages (for workspace members)
+    workspaceCargoPackages =
+      l.map
+      (relPath: readToml "${inputDir}/${relPath}/Cargo.toml")
+      workspaceMembers;
 
-    # Filter cargo-tomls to for files that actually contain packages
+    # All cargo packages that we will output
     cargoPackages =
-      l.filter
-      (toml: l.hasAttrByPath ["package" "name"] toml.value)
-      cargoTomls;
+      if l.hasAttrByPath ["package" "name"] rootToml.value
+      # Note: the ordering is important here, since packageToml assumes
+      # the rootToml to be at 0 index (if it is a package)
+      then [rootToml] ++ workspaceCargoPackages
+      else workspaceCargoPackages;
 
+    # Get a "main" package toml
+    packageToml = l.elemAt cargoPackages 0;
+
+    # Figure out a package name
     packageName =
       if args.packageName == "{automatic}"
-      then let
-        # Small function to check if a given package path has a package
-        # that has binaries
-        hasBinaries = toml:
-          l.hasAttr "bin" toml.value
-          || l.pathExists "${l.dirOf toml.path}/src/main.rs"
-          || l.pathExists "${l.dirOf toml.path}/src/bin";
-
-        # Try to find a package with a binary
-        pkg = l.findFirst hasBinaries (l.elemAt cargoPackages 0) cargoPackages;
-      in
-        pkg.value.package.name
+      then packageToml.value.package.name
       else args.packageName;
 
-    # Find the Cargo.toml matching the package name
-    checkForPackageName = cargoToml: (cargoToml.value.package.name or null) == packageName;
-
-    packageToml =
-      l.findFirst
-      checkForPackageName
-      (throw "no Cargo.toml found with the package name passed: ${packageName}")
-      cargoTomls;
+    # Find the base input directory, aka the root source
+    baseInputDir = let
+      # Find the package we are translating in discovered projects
+      thisProject =
+        l.findFirst (project: project.name == packageName) null discoveredProjects;
+      # Default to an no suffix, since if we can't find our package in
+      # discoveredProjects, it means that we are in a workspace and our
+      # package will be in this workspace, so root source is inputDir
+    in
+      l.removeSuffix (thisProject.relPath or "") inputDir;
+    # Map the list of discovered Cargo projects to cargo tomls
+    discoveredCargoTomls =
+      l.map (project: rec {
+        value = l.fromTOML (l.readFile path);
+        path = "${baseInputDir}/${project.relPath}/Cargo.toml";
+      })
+      discoveredProjects;
+    # Filter cargo-tomls to for files that actually contain packages
+    # These aren't included in the packages for the dream-lock,
+    # because that would result in duplicate packages
+    # Therefore, this is only used for figuring out dependencies
+    # that are out of this source's path
+    discoveredCargoPackages =
+      l.filter
+      (toml: l.hasAttrByPath ["package" "name"] toml.value)
+      discoveredCargoTomls;
 
     # Parse Cargo.lock and extract dependencies
     parsedLock = l.fromTOML (l.readFile "${inputDir}/Cargo.lock");
@@ -102,7 +131,9 @@ in {
       tomlPath = packageToml.path;
 
       name = toml.package.name;
-      version = toml.package.version or (l.warn "no version found in Cargo.toml for ${name}, defaulting to unknown" "unknown");
+      version =
+        toml.package.version
+        or (l.warn "no version found in Cargo.toml for ${name}, defaulting to unknown" "unknown");
     };
 
     # Parses a git source, taken straight from nixpkgs.
@@ -211,7 +242,7 @@ in {
             l.findFirst
             (toml: toml.value.package.name == dependencyObject.name)
             (throw "could not find crate ${dependencyObject.name}")
-            cargoPackages
+            (cargoPackages ++ discoveredCargoPackages)
           );
           relDir = lib.removePrefix "${inputDir}/" (l.dirOf toml.path);
         in

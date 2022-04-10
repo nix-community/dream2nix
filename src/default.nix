@@ -537,7 +537,7 @@
       (proj: let
         translator = getTranslator proj.subsystem proj.translator;
         dreamLock' = translator.translate {
-          inherit source tree;
+          inherit source tree discoveredProjects;
           project = proj;
         };
         dreamLock =
