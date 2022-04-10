@@ -51,7 +51,8 @@ in {
     workspaceCargoPackages =
       l.map
       (relPath: readToml "${inputDir}/${relPath}/Cargo.toml")
-      workspaceMembers;
+      # Filter root referencing member, we already parsed this (rootToml)
+      (l.filter (relPath: relPath != ".") workspaceMembers);
 
     # All cargo packages that we will output
     cargoPackages =
