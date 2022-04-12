@@ -12,18 +12,18 @@
   sources,
   ...
 }: let
-  b = builtins;
+  l = lib // builtins;
 
   fetchedSources =
-    lib.mapAttrs
+    l.mapAttrs
     (name: versions:
-      lib.mapAttrs
+      l.mapAttrs
       (version: source:
         if source.type == "unknown"
         then "unknown"
         else if source.type == "path"
         then
-          if lib.isStorePath source.path
+          if l.isStorePath (l.concatStringsSep "/" (l.take 4 (l.splitString "/" source.path)))
           then source.path
           else if name == source.rootName && version == source.rootVersion
           then throw "source for ${name}@${version} is referencing itself"
@@ -43,7 +43,7 @@
     sources;
 
   overriddenSources =
-    lib.recursiveUpdateUntil
+    l.recursiveUpdateUntil
     (path: l: r: lib.isDerivation l)
     fetchedSources
     (sourceOverrides fetchedSources);

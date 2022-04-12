@@ -239,12 +239,12 @@ in {
       # source definition containing url, hash, etc.
       sourceConstructors = {
         path = dependencyObject: let
-          toml = (
+          findToml =
             l.findFirst
             (toml: toml.value.package.name == dependencyObject.name)
-            (throw "could not find crate ${dependencyObject.name}")
-            (cargoPackages ++ discoveredCargoPackages)
-          );
+            null;
+          toml = findToml cargoPackages;
+          discoveredToml = findToml discoveredCargoPackages;
           relDir = lib.removePrefix "${inputDir}/" (l.dirOf toml.path);
         in
           if
@@ -257,12 +257,21 @@ in {
               rootName = null;
               rootVersion = null;
             }
-          else
+          else if discoveredToml != null
+          then
+            dlib.construct.pathSource {
+              path = l.dirOf discoveredToml.path;
+              rootName = null;
+              rootVersion = null;
+            }
+          else if toml != null
+          then
             dlib.construct.pathSource {
               path = relDir;
               rootName = package.name;
               rootVersion = package.version;
-            };
+            }
+          else throw "could not find crate ${dependencyObject.name}";
 
         git = dependencyObject: let
           parsed = parseGitSource dependencyObject.source;
