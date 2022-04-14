@@ -10,22 +10,22 @@ in {
     utils,
     ...
   }: {
-    source,
+    project,
+    tree,
     packageName,
     discoveredProjects,
     ...
   } @ args: let
-    inputDir = source;
-
-    # Function to read and parse a TOML file and return an attrset
-    # containing its path and parsed TOML value
-    readToml = path: {
-      inherit path;
-      value = l.fromTOML (l.readFile path);
-    };
+    # get the root source and project source
+    rootSource = tree.fullPath;
+    projectSource = "${tree.fullPath}/${project.relPath}";
+    projectTree = tree.getNodeFromPath project.relPath;
 
     # Get the root toml
-    rootToml = readToml "${inputDir}/Cargo.toml";
+    rootToml = {
+      path = "${projectSource}/Cargo.toml";
+      value = projectTree.files."Cargo.toml".tomlContent;
+    };
 
     # Get all workspace members
     workspaceMembers =
@@ -38,7 +38,7 @@ in {
           if l.last components == "*"
           then let
             parentDirRel = l.concatStringsSep "/" (l.init components);
-            parentDir = "${inputDir}/${parentDirRel}";
+            parentDir = "${projectSource}/${parentDirRel}";
             dirs = l.readDir parentDir;
           in
             l.mapAttrsToList
@@ -50,7 +50,10 @@ in {
     # Get cargo packages (for workspace members)
     workspaceCargoPackages =
       l.map
-      (relPath: readToml "${inputDir}/${relPath}/Cargo.toml")
+      (relPath: {
+        path = "${projectSource}/${relPath}/Cargo.toml";
+        value = (projectTree.getNodeFromPath "${relPath}/Cargo.toml").tomlContent;
+      })
       # Filter root referencing member, we already parsed this (rootToml)
       (l.filter (relPath: relPath != ".") workspaceMembers);
 
@@ -70,22 +73,11 @@ in {
       if args.packageName == "{automatic}"
       then packageToml.value.package.name
       else args.packageName;
-
-    # Find the base input directory, aka the root source
-    baseInputDir = let
-      # Find the package we are translating in discovered projects
-      thisProject =
-        l.findFirst (project: project.name == packageName) null discoveredProjects;
-      # Default to an no suffix, since if we can't find our package in
-      # discoveredProjects, it means that we are in a workspace and our
-      # package will be in this workspace, so root source is inputDir
-    in
-      l.removeSuffix (thisProject.relPath or "") inputDir;
     # Map the list of discovered Cargo projects to cargo tomls
     discoveredCargoTomls =
       l.map (project: rec {
         value = l.fromTOML (l.readFile path);
-        path = "${baseInputDir}/${project.relPath}/Cargo.toml";
+        path = "${rootSource}/${project.relPath}/Cargo.toml";
       })
       discoveredProjects;
     # Filter cargo-tomls to for files that actually contain packages
@@ -99,7 +91,7 @@ in {
       discoveredCargoTomls;
 
     # Parse Cargo.lock and extract dependencies
-    parsedLock = l.fromTOML (l.readFile "${inputDir}/Cargo.lock");
+    parsedLock = l.fromTOML (l.readFile "${projectSource}/Cargo.lock");
     parsedDeps = parsedLock.package;
     # This parses a "package-name version" entry in the "dependencies"
     # field of a dependency in Cargo.lock
@@ -129,8 +121,6 @@ in {
 
     package = rec {
       toml = packageToml.value;
-      tomlPath = packageToml.path;
-
       name = toml.package.name;
       version =
         toml.package.version
@@ -245,7 +235,7 @@ in {
             null;
           toml = findToml cargoPackages;
           discoveredToml = findToml discoveredCargoPackages;
-          relDir = lib.removePrefix "${inputDir}/" (l.dirOf toml.path);
+          relDir = lib.removePrefix "${projectSource}/" (l.dirOf toml.path);
         in
           if
             package.name
@@ -253,7 +243,7 @@ in {
             && package.version == dependencyObject.version
           then
             dlib.construct.pathSource {
-              path = source;
+              path = projectSource;
               rootName = null;
               rootVersion = null;
             }
@@ -285,6 +275,8 @@ in {
         };
       };
     });
+
+  version = 2;
 
   projectName = {source}: let
     cargoToml = "${source}/Cargo.toml";
