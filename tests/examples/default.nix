@@ -18,7 +18,13 @@ in
     nix
   ]
   ''
-    for dir in $(ls ${examples}); do
+    if [ -n "$1" ]; then
+      examples=$1
+    else
+      examples=$(ls ${examples})
+    fi
+
+    for dir in $examples; do
       echo -e "\ntesting example for $dir"
       mkdir tmp
       cp ${examples}/$dir/* ./tmp/
