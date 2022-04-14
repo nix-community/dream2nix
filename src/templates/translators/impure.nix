@@ -35,7 +35,7 @@
       # read the json input
       outputFile=$(${jq}/bin/jq '.outputFile' -c -r $jsonInput)
       source=$(${jq}/bin/jq '.source' -c -r $jsonInput)
-      inputFiles=$(${jq}/bin/jq '.inputFiles | .[]' -c -r $jsonInput)
+      relPath=$(jq '.project.relPath' -c -r $jsonInput)
 
       # TODO:
       # read input files/dirs and produce a json file at $outputFile
