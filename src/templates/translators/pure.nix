@@ -6,125 +6,212 @@
 {
   translate =
     {
-      nodejs,
-
-      externals,
       translatorName,
       utils,
       ...
     }:
     {
-      source,
+      /*
+        A list of projects returned by `discoverProjects`
+        Example:
+          [
+            {
+              "dreamLockPath": "packages/optimism/dream-lock.json",
+              "name": "optimism",
+              "relPath": "",
+              "subsystem": "nodejs",
+              "subsystemInfo": {
+                "workspaces": [
+                  "packages/common-ts",
+                  "packages/contracts",
+                  "packages/core-utils",
+                ]
+              },
+              "translator": "yarn-lock",
+              "translators": [
+                "yarn-lock",
+                "package-json"
+              ]
+            }
+          ]
+      */
+      project,
 
-      # arguments specified by user
+      /*
+        Entire source tree represented as deep attribute set.
+        (produced by `prepareSourceTree`)
+
+        This has the advantage that files will only be read once, even when
+        accessed by multiple times or by multiple translators.
+
+        Example:
+          {
+            files = {
+              "package.json" = {
+                relPath = "package.json"
+                fullPath = "${source}/package.json"
+                content = ;
+                jsonContent = ;
+                tomlContent = ;
+              }
+            };
+
+            directories = {
+              "packages" = {
+                relPath = "packages";
+                fullPath = "${source}/packages";
+                files = {
+
+                };
+                directories = {
+
+                };
+              };
+            };
+
+            # returns the tree object of the given sub-path
+            getNodeFromPath = path: ...
+          }
+      */
+      tree,
+
+      # arguments defined in `extraArgs` specified by user
       noDev,
-      nodejs,
+      theAnswer,
       ...
     }@args:
     let
 
       l = lib // builtins;
 
+      # get the root source and project source
+      rootSource = tree.fullPath;
+      projectSource = "${tree.fullPath}/${project.relPath}";
+
       # parse the json / toml etc.
-      parsed = ;
+      projectJsonPath = "${projectSource}/project.json";
+      projectJson = (tree.getNodeFromPath projectJsonPath).jsonContent;
 
     in
 
-      utils.simpleTranslate
+      utils.simpleTranslate2
         ({
-          getDepByNameVer,
-          dependenciesByOriginalID,
+          objectsByKey,
           ...
         }:
 
         rec {
 
+          inherit translatorName;
 
-          # VALUES
-
-          # name of the translator
-          translatorName = ;
-
-          # The raw input data as an attribute set.
-          # This will then be processed by `serializePackages` (see below) and
-          # transformed into a flat list.
-          inputData = ;
-
-          defaultPackageName = ;
-
-          defaultPackageVersion = ;
-
-          mainPackageDependencies =
-            lib.mapAttrsToList
-              () # some function
-              parsedDependencies;
+          # relative path of the project within the source tree.
+          location = project.relPath;
 
           # the name of the subsystem
           subsystemName = "nodejs";
 
           # Extract subsystem specific attributes.
-          # The structure of this should be defined in:
+          # The structur of this should be defined in:
           #   ./src/specifications/{subsystem}
-          subsystemAttrs = { nodejsVersion = args.nodejs; };
+          subsystemAttrs = {theAnswer = args.theAnswer;};
 
+          # name of the default package
+          defaultPackage = "name-of-the-default-package";
 
-          # FUNCTIONS
+          /*
+            List the package candidates which should be exposed to the user.
+            Only top-level packages should be listed here.
+            Users will not be interested in all individual dependencies.
+          */
+          exportedPackages = {
+            foo = "1.1.0";
+            bar = "1.2.0";
+          };
 
-          # return a list of package objects of arbitrary structure
-          serializePackages = inputData: ;
+          /*
+            a list of raw package objects
+            If the upstream format is a deep attrset, this list should contain
+            a flattened representation of all entries.
+          */
+          serializedRawObjects = [];
 
-          # return the name for a package object
-          getName = dependencyObject: ;
+          /*
+            Define extractor functions which each extract one property from
+            a given raw object.
+            (Each rawObj comes from serializedRawObjects).
 
-          # return the version for a package object
-          getVersion = dependencyObject: ;
+            Extractors can access the fields extracted by other extractors
+            by accessing finalObj.
+          */
+          extractors = {
+            name = rawObj: finalObj:
+              # example
+              "foo";
 
-          # get dependencies of a dependency object
-          getDependencies = dependencyObject:
-            dependencyObject.depsExact;
+            version = rawObj: finalObj:
+              # example
+              "1.2.3";
 
-          # return the soruce type of a package object
-          getSourceType = dependencyObject:
-            # example
-            if utils.identifyGitUrl dependencyObject.resolved then
-              "git"
-            else
-              "http";
+            dependencies = rawObj: finalObj:
+              # example
+              [];
 
-          # An attrset of constructor functions.
-          # Given a dependency object and a source type, construct the
-          # source definition containing url, hash, etc.
-          sourceConstructors = {
-
-            git = dependencyObject:
+            sourceSpec = rawObj: finalObj:
+              # example
               {
-                url = ;
-                rev = ;
-              };
-
-            github = dependencyObject:
-              {
-                owner = ;
-                repo = ;
-                rev = ;
-                hash = ;
-              };
-
-            gitlab = dependencyObject:
-              {
-                owner = ;
-                repo = ;
-                rev = ;
-                hash = ;
-              };
-
-            http = dependencyObject:
-              {
-                version = ;
-                url = ;
-                hash = ;
+                type = "http";
+                url = "https://registry.npmjs.org/${finalObj.name}/-/${finalObj.name}-${finalObj.version}.tgz";
+                hash = "sha1-4h3xCtbCBTKVvLuNq0Cwnb6ofk0=";
               };
           };
+
+          /*
+            Optionally define extra extractors which will be used to key all
+            final objects, so objects can be accessed via:
+            `objectsByKey.${keyName}.${value}`
+          */
+          keys = {
+            sanitizedName = rawObj: finalObj:
+              l.strings.sanitizeDerivationName rawObj.name;
+          };
+
+          /*
+            Optionally add extra dependencies.
+            For example, this might be required to add the top-level
+            dependencies.
+          */
+          extraDependencies = [
+            {
+              # dependant
+              name = "foo";
+              version = "1.2.3";
+
+              # dependencies
+              dependencies = [
+                {name = "bar"; version = "3.2.1";}
+                {name = "baz"; version = "2.1.3";}
+              ];
+            }
+          ];
+
+          /*
+            Optionally add extra objects (list of `finalObj`) to be added to
+            the dream-lock.
+          */
+          extraObjects = [
+            {
+              name = "foo2";
+              version = "1.0";
+              dependencies = [
+                {name = "bar2"; version = "1.1";}
+              ];
+              sourceSpec = {
+                type = "git";
+                url = "https://...";
+                rev = "...";
+              };
+            }
+          ];
 
         });
 

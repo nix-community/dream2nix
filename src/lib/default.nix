@@ -124,6 +124,7 @@
       })
       fileNames;
 
+    # returns the tree object of the given sub-path
     getNodeFromPath = path: let
       cleanPath = l.removePrefix "/" path;
       pathSplit = l.splitString "/" cleanPath;
