@@ -51,8 +51,8 @@ in {
     workspaceCargoPackages =
       l.map
       (relPath: {
-        path = "${projectSource}/${relPath}/Cargo.toml";
         value = (projectTree.getNodeFromPath "${relPath}/Cargo.toml").tomlContent;
+        path = "${projectSource}/${relPath}/Cargo.toml";
       })
       # Filter root referencing member, we already parsed this (rootToml)
       (l.filter (relPath: relPath != ".") workspaceMembers);
@@ -76,7 +76,7 @@ in {
     # Map the list of discovered Cargo projects to cargo tomls
     discoveredCargoTomls =
       l.map (project: rec {
-        value = l.fromTOML (l.readFile path);
+        value = (tree.getNodeFromPath "${project.relPath}/Cargo.toml").tomlContent;
         path = "${rootSource}/${project.relPath}/Cargo.toml";
       })
       discoveredProjects;
@@ -91,7 +91,7 @@ in {
       discoveredCargoTomls;
 
     # Parse Cargo.lock and extract dependencies
-    parsedLock = l.fromTOML (l.readFile "${projectSource}/Cargo.lock");
+    parsedLock = projectTree.files."Cargo.lock".tomlContent;
     parsedDeps = parsedLock.package;
     # This parses a "package-name version" entry in the "dependencies"
     # field of a dependency in Cargo.lock
@@ -157,41 +157,12 @@ in {
         else throw "registries other than crates.io are not supported yet"
       else throw "unknown or unsupported source type: ${dependencyObject.source}";
   in
-    utils.simpleTranslate
-    ({
-      getDepByNameVer,
-      dependenciesByOriginalID,
-      ...
-    }: rec {
-      # VALUES
-
+    utils.simpleTranslate2
+    ({...}: rec {
       inherit translatorName;
 
-      # The raw input data as an attribute set.
-      # This will then be processed by `serializePackages` (see below) and
-      # transformed into a flat list.
-      inputData = parsedDeps;
-
-      defaultPackage = package.name;
-
-      packages =
-        (l.listToAttrs
-          (l.map
-            (toml:
-              l.nameValuePair
-              toml.value.package.name
-              toml.value.package.version)
-            cargoPackages))
-        // {"${defaultPackage}" = package.version;};
-
-      mainPackageDependencies = let
-        mainPackage =
-          l.findFirst
-          (dep: dep.name == package.name)
-          (throw "could not find main package in Cargo.lock")
-          parsedDeps;
-      in
-        l.map makeDepNameVersion (mainPackage.dependencies or []);
+      # relative path of the project within the source tree.
+      location = project.relPath;
 
       # the name of the subsystem
       subsystemName = "rust";
@@ -206,73 +177,93 @@ in {
           l.unique (l.map (dep: parseGitSource dep.source) gitDeps);
       };
 
-      # FUNCTIONS
+      defaultPackage = package.name;
 
-      # return a list of package objects of arbitrary structure
-      serializePackages = inputData: inputData;
+      /*
+       List the package candidates which should be exposed to the user.
+       Only top-level packages should be listed here.
+       Users will not be interested in all individual dependencies.
+       */
+      exportedPackages =
+        l.foldl
+        (acc: el: acc // {"${el.value.package.name}" = el.value.package.version;})
+        {}
+        cargoPackages;
 
-      # return the name for a package object
-      getName = dependencyObject: dependencyObject.name;
+      /*
+       a list of raw package objects
+       If the upstream format is a deep attrset, this list should contain
+       a flattened representation of all entries.
+       */
+      serializedRawObjects = parsedDeps;
 
-      # return the version for a package object
-      getVersion = dependencyObject: dependencyObject.version;
+      /*
+       Define extractor functions which each extract one property from
+       a given raw object.
+       (Each rawObj comes from serializedRawObjects).
+       
+       Extractors can access the fields extracted by other extractors
+       by accessing finalObj.
+       */
+      extractors = {
+        name = rawObj: finalObj: rawObj.name;
 
-      # get dependencies of a dependency object
-      getDependencies = dependencyObject:
-        l.map makeDepNameVersion (dependencyObject.dependencies or []);
+        version = rawObj: finalObj: rawObj.version;
 
-      # return the source type of a package object
-      getSourceType = getSourceTypeFrom;
+        dependencies = rawObj: finalObj:
+          l.map makeDepNameVersion (rawObj.dependencies or []);
 
-      # An attrset of constructor functions.
-      # Given a dependency object and a source type, construct the
-      # source definition containing url, hash, etc.
-      sourceConstructors = {
-        path = dependencyObject: let
-          findToml =
-            l.findFirst
-            (toml: toml.value.package.name == dependencyObject.name)
-            null;
-          toml = findToml cargoPackages;
-          discoveredToml = findToml discoveredCargoPackages;
-          relDir = lib.removePrefix "${projectSource}/" (l.dirOf toml.path);
+        sourceSpec = rawObj: finalObj: let
+          sourceType = getSourceTypeFrom rawObj;
+          sourceConstructors = {
+            path = dependencyObject: let
+              findToml =
+                l.findFirst
+                (toml: toml.value.package.name == dependencyObject.name)
+                null;
+              toml = findToml cargoPackages;
+              discoveredToml = findToml discoveredCargoPackages;
+              relDir = lib.removePrefix "${projectSource}/" (l.dirOf toml.path);
+            in
+              if
+                package.name
+                == dependencyObject.name
+                && package.version == dependencyObject.version
+              then
+                dlib.construct.pathSource {
+                  path = projectSource;
+                  rootName = null;
+                  rootVersion = null;
+                }
+              else if discoveredToml != null
+              then
+                dlib.construct.pathSource {
+                  path = l.dirOf discoveredToml.path;
+                  rootName = null;
+                  rootVersion = null;
+                }
+              else if toml != null
+              then
+                dlib.construct.pathSource {
+                  path = relDir;
+                  rootName = package.name;
+                  rootVersion = package.version;
+                }
+              else throw "could not find crate ${dependencyObject.name}";
+
+            git = dependencyObject: let
+              parsed = parseGitSource dependencyObject.source;
+            in {
+              url = parsed.url;
+              rev = parsed.sha;
+            };
+
+            crates-io = dependencyObject: {
+              hash = dependencyObject.checksum;
+            };
+          };
         in
-          if
-            package.name
-            == dependencyObject.name
-            && package.version == dependencyObject.version
-          then
-            dlib.construct.pathSource {
-              path = projectSource;
-              rootName = null;
-              rootVersion = null;
-            }
-          else if discoveredToml != null
-          then
-            dlib.construct.pathSource {
-              path = l.dirOf discoveredToml.path;
-              rootName = null;
-              rootVersion = null;
-            }
-          else if toml != null
-          then
-            dlib.construct.pathSource {
-              path = relDir;
-              rootName = package.name;
-              rootVersion = package.version;
-            }
-          else throw "could not find crate ${dependencyObject.name}";
-
-        git = dependencyObject: let
-          parsed = parseGitSource dependencyObject.source;
-        in {
-          url = parsed.url;
-          rev = parsed.sha;
-        };
-
-        crates-io = dependencyObject: {
-          hash = dependencyObject.checksum;
-        };
+          sourceConstructors."${sourceType}" rawObj;
       };
     });
 

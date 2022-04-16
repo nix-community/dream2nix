@@ -69,7 +69,7 @@
       defaultPackage,
       exportedPackages,
       extractors,
-      extraDependencies ? {},
+      extraDependencies ? [],
       extraObjects ? [],
       keys ? {},
       location ? "",
