@@ -1,6 +1,7 @@
 {
   lib,
   # dream2nix attributes
+  dlib,
   fetchSource,
   fetchers,
   ...
@@ -43,10 +44,15 @@
     sources;
 
   overriddenSources =
-    l.recursiveUpdateUntil
-    (path: l: r: lib.isDerivation l)
-    fetchedSources
-    (sourceOverrides fetchedSources);
+    l.zipAttrsWith
+    (name: versionsSets:
+      l.zipAttrsWith
+      (version: sources: l.last sources)
+      versionsSets)
+    [
+      fetchedSources
+      (sourceOverrides fetchedSources)
+    ];
 in {
   # attrset: pname -> path of downloaded source
   fetchedSources = overriddenSources;
