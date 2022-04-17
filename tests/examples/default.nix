@@ -18,10 +18,10 @@ in
     nix
   ]
   ''
-    if [ -n "$1" ]; then
-      examples=$1
-    else
+    if [ -z ''${1+x} ]; then
       examples=$(ls ${examples})
+    else
+      examples=$1
     fi
 
     for dir in $examples; do

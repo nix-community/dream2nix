@@ -140,7 +140,7 @@ in {
           url = builtins.elemAt parts 0;
           sha = builtins.elemAt parts 4;
         }
-        // lib.optionalAttrs (type != null) {inherit type value;};
+        // (lib.optionalAttrs (type != null) {inherit type value;});
 
     # Extracts a source type from a dependency.
     getSourceTypeFrom = dependencyObject: let
@@ -254,11 +254,15 @@ in {
             git = dependencyObject: let
               parsed = parseGitSource dependencyObject.source;
             in {
+              type = "git";
               url = parsed.url;
               rev = parsed.sha;
             };
 
             crates-io = dependencyObject: {
+              type = "crates-io";
+              name = dependencyObject.name;
+              version = dependencyObject.version;
               hash = dependencyObject.checksum;
             };
           };
