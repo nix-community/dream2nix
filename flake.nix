@@ -273,29 +273,23 @@
           '';
       });
 
-    checks =
-      l.recursiveUpdate
-      (forAllSystems (system: pkgs: (import ./tests/pure {
-        inherit lib pkgs;
-        dream2nix = dream2nixFor."${system}";
-      })))
-      (forAllSystems (system: pkgs: {
-        pre-commit-check = pre-commit-hooks.lib.${system}.run {
-          src = ./.;
-          hooks = {
-            treefmt = {
-              enable = true;
-              name = "treefmt";
-              pass_filenames = false;
-              entry = l.toString (pkgs.writeScript "treefmt" ''
-                #!${pkgs.bash}/bin/bash
-                export PATH="$PATH:${alejandra.defaultPackage.${system}}/bin"
-                ${pkgs.treefmt}/bin/treefmt --clear-cache --fail-on-change
-              '');
-            };
+    checks = forAllSystems (system: pkgs: {
+      pre-commit-check = pre-commit-hooks.lib.${system}.run {
+        src = ./.;
+        hooks = {
+          treefmt = {
+            enable = true;
+            name = "treefmt";
+            pass_filenames = false;
+            entry = l.toString (pkgs.writeScript "treefmt" ''
+              #!${pkgs.bash}/bin/bash
+              export PATH="$PATH:${alejandra.defaultPackage.${system}}/bin"
+              ${pkgs.treefmt}/bin/treefmt --clear-cache --fail-on-change
+            '');
           };
         };
-      }));
+      };
+    });
 
     templates = {
       simple = {
