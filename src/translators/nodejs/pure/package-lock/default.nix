@@ -242,22 +242,6 @@ in rec {
 
   inherit translate;
 
-  projectName = {source}: let
-    packageJson = "${source}/package.json";
-    parsed = b.fromJSON (b.readFile packageJson);
-  in
-    if b.pathExists packageJson && parsed ? name
-    then parsed.name
-    else null;
-
-  compatible = {source}:
-    dlib.containsMatchingFile
-    [
-      ''.*package-lock\.json''
-      ''.*package.json''
-    ]
-    source;
-
   extraArgs = {
     name = {
       description = "The name of the main package";

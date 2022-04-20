@@ -273,18 +273,6 @@ in {
 
   version = 2;
 
-  projectName = {source}: let
-    cargoToml = "${source}/Cargo.toml";
-  in
-    if l.pathExists cargoToml
-    then (l.fromTOML (l.readFile cargoToml)).package.name or null
-    else null;
-
-  # This allows the framework to detect if the translator is compatible with the given input
-  # to automatically select the right translator.
-  compatible = {source}:
-    dlib.containsMatchingFile [''.*Cargo\.lock''] source;
-
   # If the translator requires additional arguments, specify them here.
   # When users run the CLI, they will be asked to specify these arguments.
   # There are only two types of arguments:

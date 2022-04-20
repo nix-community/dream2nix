@@ -45,19 +45,6 @@ in {
       nix eval --show-trace --impure --raw --expr "import ${./translate.nix} ${dream2nixWithExternals} ./." > $outputFile
     '';
 
-  projectName = {source}: let
-    goModFile = "${source}/go.mod";
-    firstLine = l.elemAt (l.splitString "\n" (l.readFile goModFile)) 0;
-  in
-    if l.pathExists goModFile
-    then l.last (l.splitString "/" (l.elemAt (l.splitString " " firstLine) 1))
-    else null;
-
-  # This allows the framework to detect if the translator is compatible with the given input
-  # to automatically select the right translator.
-  compatible = {source}:
-    dlib.containsMatchingFile [''go\.sum'' ''go\.mod''] source;
-
   # If the translator requires additional arguments, specify them here.
   # There are only two types of arguments:
   #   - string argument (type = "argument")

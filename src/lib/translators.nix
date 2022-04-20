@@ -58,10 +58,6 @@
     translatorModule
     // {
       inherit name subsystem type;
-      projectName =
-        if translatorModule ? projectName
-        then translatorModule.projectName
-        else {...}: null;
     };
 
   # EXPORTED
@@ -99,60 +95,6 @@
       types)
     translators;
 
-  # returns the list of translators including their special args
-  # and adds a flag `compatible` to each translator indicating
-  # if the translator is compatible to all given paths
-  translatorsForInput = {source}:
-    l.forEach translatorsList
-    (t: rec {
-      inherit
-        (t)
-        extraArgs
-        name
-        subsystem
-        type
-        ;
-      compatible = t.compatible {inherit source;};
-      projectName = t.projectName {inherit source;};
-    });
-
-  # also includes subdirectories of the given paths up to a certain depth
-  # to check for translator compatibility
-  translatorsForInputRecursive = {
-    source,
-    depth ? 2,
-  }: let
-    listDirsRec = dir: depth: let
-      subDirs =
-        l.map
-        (subdir: "${dir}/${subdir}")
-        (dlib.listDirs dir);
-    in
-      if depth == 0
-      then subDirs
-      else
-        subDirs
-        ++ (l.flatten
-          (map
-            (subDir: listDirsRec subDir (depth - 1))
-            subDirs));
-
-    dirsToCheck =
-      [source]
-      ++ (l.flatten
-        (map
-          (inputDir: listDirsRec inputDir depth)
-          [source]));
-  in
-    l.genAttrs
-    dirsToCheck
-    (
-      dir:
-        translatorsForInput {
-          source = dir;
-        }
-    );
-
   # pupulates a translators special args with defaults
   getextraArgsDefaults = extraArgsDef:
     l.mapAttrs
@@ -163,45 +105,10 @@
         else def.default or null
     )
     extraArgsDef;
-
-  # return one compatible translator or throw error
-  findOneTranslator = {
-    source,
-    translatorName ? null,
-  } @ args: let
-    translatorsForSource = translatorsForInput {
-      inherit source;
-    };
-
-    nameFilter =
-      if translatorName != null
-      then (translator: translator.name == translatorName)
-      else (translator: true);
-
-    compatibleTranslators = let
-      result =
-        l.filter
-        (t: t.compatible)
-        translatorsForSource;
-    in
-      if result == []
-      then throw "Could not find a compatible translator for input"
-      else result;
-
-    translator =
-      l.findFirst
-      nameFilter
-      (throw ''Specified translator ${translatorName} not found or incompatible'')
-      compatibleTranslators;
-  in
-    translator;
 in {
   inherit
-    findOneTranslator
     getextraArgsDefaults
     mapTranslators
     translators
-    translatorsForInput
-    translatorsForInputRecursive
     ;
 }

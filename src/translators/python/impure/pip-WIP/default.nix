@@ -97,13 +97,6 @@ in {
       rm -rf $tmp $tmpBuild
     '';
 
-  compatible = {source}:
-    dlib.containsMatchingFile
-    [
-      ''.*setup\.py''
-    ]
-    source;
-
   # define special args and provide defaults
   extraArgs = {
     # the python attribute

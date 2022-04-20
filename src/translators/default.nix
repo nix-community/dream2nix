@@ -125,11 +125,4 @@ in {
   inherit
     translatorsV2
     ;
-
-  inherit
-    (dlib.translators)
-    findOneTranslator
-    translatorsForInput
-    translatorsForInputRecursive
-    ;
 }

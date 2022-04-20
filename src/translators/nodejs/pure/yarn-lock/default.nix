@@ -315,11 +315,6 @@ in {
 
   inherit translate;
 
-  # This allows the framework to detect if the translator is compatible with the given input
-  # to automatically select the right translator.
-  compatible = {source}:
-    dlib.containsMatchingFile [''.*yarn\.lock'' ''.*package.json''] source;
-
   # If the translator requires additional arguments, specify them here.
   # There are only two types of arguments:
   #   - string argument (type = "argument")

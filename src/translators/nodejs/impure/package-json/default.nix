@@ -59,11 +59,6 @@
       ${translators.translatorsV2.nodejs.pure.package-lock.translateBin} $TMPDIR/newJsonInput
     '';
 
-  # This allows the framework to detect if the translator is compatible with the given input
-  # to automatically select the right translator.
-  compatible = {source}:
-    dlib.containsMatchingFile [''.*package.json''] source;
-
   # inherit options from package-lock translator
   extraArgs =
     dlib.translators.translatorsV2.nodejs.pure.package-lock.extraArgs
