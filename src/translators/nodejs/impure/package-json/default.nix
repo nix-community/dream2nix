@@ -59,9 +59,6 @@
       ${translators.translatorsV2.nodejs.pure.package-lock.translateBin} $TMPDIR/newJsonInput
     '';
 
-  # inherit projectName function from package-lock translator
-  projectName = dlib.translators.translators.nodejs.pure.package-lock.projectName;
-
   # This allows the framework to detect if the translator is compatible with the given input
   # to automatically select the right translator.
   compatible = {source}:
@@ -69,7 +66,7 @@
 
   # inherit options from package-lock translator
   extraArgs =
-    dlib.translators.translators.nodejs.pure.package-lock.extraArgs
+    dlib.translators.translatorsV2.nodejs.pure.package-lock.extraArgs
     // {
       npmArgs = {
         description = "Additional arguments for npm";

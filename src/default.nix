@@ -233,57 +233,6 @@
         else fetchedSources;
     };
 
-  makeDreamLockForSource = {
-    source,
-    translator ? null,
-    translatorArgs ? {},
-  } @ args: let
-    sourceSpec =
-      if b.isString args.source && ! lib.isStorePath args.source
-      then fetchers.translateShortcut {shortcut = args.source;}
-      else {
-        type = "path";
-        path = args.source;
-      };
-
-    source = fetchers.fetchSource {source = sourceSpec;};
-
-    t = let
-      translator = translators.findOneTranslator {
-        inherit source;
-        translatorName = args.translator or null;
-      };
-    in
-      if b.elem translator.type ["pure" "ifd"]
-      then translator
-      else
-        throw ''
-          All comaptible translators are impure and therefore require
-          pre-processing the input before evaluation.
-          Use the CLI to add this package:
-            nix run .# -- add ...
-        '';
-
-    dreamLock' =
-      translators.translators."${t.subsystem}"."${t.type}"."${t.name}".translate
-      (translatorArgs
-        // {
-          inherit source;
-        });
-
-    dreamLock = let
-      defaultPackage = dreamLock'._generic.defaultPackage;
-      defaultPackageVersion = dreamLock'._generic.packages."${defaultPackage}";
-    in
-      lib.recursiveUpdate dreamLock' {
-        sources."${defaultPackage}"."${defaultPackageVersion}" = {
-          type = "path";
-          path = "${source}";
-        };
-      };
-  in
-    dreamLock;
-
   # build a dream lock via a specific builder
   callBuilder = {
     builder,
@@ -386,7 +335,7 @@
     formattedOutputs;
 
   riseAndShine = throw ''
-    Use makeOutputs instead of riseAndShine.
+    `riseAndShine` is deprecated. See usage in readme.md.
   '';
 
   makeOutputsForDreamLock = {
@@ -653,62 +602,6 @@
       projectOutputs;
   in
     mergedOutputs;
-
-  # produce outputs for a dream-lock or a source
-  makeOutputs = {
-    source, # source tree or dream-lock
-    builder ? null,
-    fetcher ? null,
-    inject ? {},
-    sourceOverrides ? oldSources: {},
-    packageOverrides ? {},
-    builderArgs ? {},
-    translator ? null,
-    translatorArgs ? {},
-  } @ args: let
-    dreamLock' =
-      # in case of a dream-lock.json file or dream-lock attributes
-      if
-        (lib.isAttrs args.source && args.source ? _generic && args.source ? _subsytem)
-        || lib.hasSuffix "dream-lock.json" source
-      then args.source
-      # input is a source tree -> generate the dream-lock
-      else makeDreamLockForSource {inherit source translator translatorArgs;};
-
-    # parse dreamLock
-    dreamLockLoaded = utils.readDreamLock {dreamLock = dreamLock';};
-    dreamLock = dreamLockLoaded.lock;
-    dreamLockInterface = dreamLockLoaded.interface;
-
-    # sub packages
-    builderOutputsSub =
-      b.mapAttrs
-      (dirName: dreamLock:
-        makeOutputs
-        (args // {source = dreamLock.lock;}))
-      dreamLockInterface.subDreamLocks;
-
-    builderOutputs =
-      makeOutputsForDreamLock
-      ((b.removeAttrs args ["source"])
-        // {
-          inherit dreamLock;
-        });
-
-    allOutputs =
-      {subPackages = builderOutputsSub;}
-      //
-      # merge with sub package outputs
-      b.foldl'
-      (old: new:
-        old
-        // {
-          packages = new.packages or {} // old.packages;
-        })
-      builderOutputs
-      (b.attrValues builderOutputsSub);
-  in
-    allOutputs;
 in {
   inherit
     apps
@@ -717,7 +610,6 @@ in {
     dream2nixWithExternals
     fetchers
     fetchSources
-    makeOutputs
     realizeProjects
     translateProjects
     riseAndShine
