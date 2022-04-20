@@ -12,7 +12,7 @@ def strip_hashes_from_lock(lock):
         del source['hash']
 
 def aggregate_hashes(lock, outputDreamLock, dream2nix_src):
-    print("Building FOD of aggregates sources to retrieve output hash")
+    print("Building FOD of aggregated sources to retrieve output hash")
     # remove hashes from lock file and init sourcesAggregatedHash with empty string
     strip_hashes_from_lock(lock)
     lock['_generic']['sourcesAggregatedHash'] = ""
