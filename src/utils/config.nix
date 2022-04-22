@@ -19,7 +19,7 @@ let
     config = loadAttrs configInput;
     defaults = {
       overridesDirs = [];
-      packagesDir = "./packages";
+      packagesDir = "./dream2nix-packages";
       projectRoot = null;
       repoName = null;
     };
