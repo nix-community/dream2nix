@@ -174,6 +174,13 @@ in {
       # The structure of this should be defined in:
       #   ./src/specifications/{subsystem}
       subsystemAttrs = rec {
+        replacePathsWithAbsolute = l.listToAttrs (l.map (
+            project: {
+              name = project.relPath;
+              value = "${rootSource}/${project.relPath}";
+            }
+          )
+          discoveredProjects);
         gitSources = let
           gitDeps = l.filter (dep: (getSourceTypeFrom dep) == "git") parsedDeps;
         in
