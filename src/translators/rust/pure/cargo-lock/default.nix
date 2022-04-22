@@ -31,24 +31,25 @@ in {
 
     # Get all workspace members
     workspaceMembers =
-      l.map
-      (
-        memberName: let
-          components = l.splitString "/" memberName;
-        in
-          # Resolve globs if there are any
-          if l.last components == "*"
-          then let
-            parentDirRel = l.concatStringsSep "/" (l.init components);
-            parentDir = "${projectSource}/${parentDirRel}";
-            dirs = l.readDir parentDir;
+      l.flatten
+      (l.map
+        (
+          memberName: let
+            components = l.splitString "/" memberName;
           in
-            l.mapAttrsToList
-            (name: _: "${parentDirRel}/${name}")
-            (l.filterAttrs (_: type: type == "directory") dirs)
-          else memberName
-      )
-      (rootToml.value.workspace.members or []);
+            # Resolve globs if there are any
+            if l.last components == "*"
+            then let
+              parentDirRel = l.concatStringsSep "/" (l.init components);
+              parentDir = "${projectSource}/${parentDirRel}";
+              dirs = l.readDir parentDir;
+            in
+              l.mapAttrsToList
+              (name: _: "${parentDirRel}/${name}")
+              (l.filterAttrs (_: type: type == "directory") dirs)
+            else memberName
+        )
+        (rootToml.value.workspace.members or []));
     # Get cargo packages (for workspace members)
     workspaceCargoPackages =
       l.map
