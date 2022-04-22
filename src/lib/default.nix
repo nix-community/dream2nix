@@ -179,9 +179,31 @@
     source,
     translator,
     translatorArgs,
-  }:
+  }: let
+    sanitizedPackagesDir = sanitizeRelativePath config.packagesDir;
+
+    localOverridesDirs =
+      l.filter
+      (oDir: ! l.hasPrefix l.storeDir oDir)
+      config.overridesDirs;
+
+    sanitizedOverridesDirs = l.map sanitizeRelativePath localOverridesDirs;
+
+    filter = path: _:
+      (baseNameOf path != "flake.nix")
+      && l.match ''.*/${sanitizedPackagesDir}'' path == null
+      && (l.any
+        (oDir: l.match ''.*/${oDir}'' path == null)
+        sanitizedOverridesDirs);
+
+    ca-source = builtins.path {
+      path = source;
+      name = "dream2nix-package-source";
+      inherit filter;
+    };
+  in
     l.hashString "sha256" ''
-      ${source}
+      ${ca-source}
       ${l.toJSON project}
       ${translator}
       ${l.toString
@@ -233,6 +255,14 @@
 
   sanitizeRelativePath = path:
     l.removePrefix "/" (l.toString (l.toPath "/${path}"));
+
+  sanitizePath = path: let
+    absolute = (l.substring 0 1 path) == "/";
+    sanitizedRelPath = l.removePrefix "/" (l.toString (l.toPath "/${path}"));
+  in
+    if absolute
+    then "/${sanitizedRelPath}"
+    else sanitizedRelPath;
 
   traceJ = toTrace: eval: l.trace (l.toJSON toTrace) eval;
 in
