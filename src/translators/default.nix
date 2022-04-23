@@ -41,7 +41,7 @@
               }
             );
         translateBin =
-          wrapPureTranslator2
+          wrapPureTranslator
           (with translatorModule; [subsystem type name]);
       })
       # for impure translators:
@@ -59,7 +59,7 @@
   translators = dlib.translators.mapTranslators makeTranslator;
 
   # adds a translateBin to a pure translator
-  wrapPureTranslator2 = translatorAttrPath: let
+  wrapPureTranslator = translatorAttrPath: let
     bin =
       utils.writePureShellScript
       [
