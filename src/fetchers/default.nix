@@ -2,13 +2,13 @@
   lib,
   # dream2nix
   callPackageDream,
-  utils,
+  dlib,
   ...
 }: let
   b = builtins;
   callFetcher = file: args: callPackageDream file args;
 in rec {
-  fetchers = lib.genAttrs (utils.dirNames ./.) (
+  fetchers = lib.genAttrs (dlib.dirNames ./.) (
     name:
       callFetcher (./. + "/${name}") {}
   );

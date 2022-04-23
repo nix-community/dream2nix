@@ -4,12 +4,7 @@
 }: let
   l = lib // builtins;
 in {
-  translate = {
-    externals,
-    translatorName,
-    utils,
-    ...
-  }: {
+  translate = {translatorName, ...}: {
     project,
     tree,
     packageName,
@@ -157,7 +152,7 @@ in {
         else throw "registries other than crates.io are not supported yet"
       else throw "unknown or unsupported source type: ${dependencyObject.source}";
   in
-    utils.simpleTranslate2
+    dlib.simpleTranslate2
     ({...}: rec {
       inherit translatorName;
 

@@ -21,6 +21,7 @@
       prepareSourceTree
       readTextFile
       recursiveUpdateUntilDepth
+      simpleTranslate2
       translators
       sanitizeDerivationName
       sanitizeRelativePath
@@ -38,6 +39,9 @@
   construct = import ./construct.nix {inherit lib;};
   discoverers = import ../discoverers {inherit config dlib lib;};
   translators = import ./translators.nix {inherit dlib lib;};
+
+  simpleTranslate2 =
+    (import ./simpleTranslate2.nix {inherit dlib lib;}).simpleTranslate2;
 
   parseUtils = import ./parsing.nix {inherit lib;};
 

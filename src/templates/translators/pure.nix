@@ -7,7 +7,6 @@
   translate =
     {
       translatorName,
-      utils,
       ...
     }:
     {
@@ -94,7 +93,7 @@
 
     in
 
-      utils.simpleTranslate2
+      dlib.simpleTranslate2
         ({
           objectsByKey,
           ...

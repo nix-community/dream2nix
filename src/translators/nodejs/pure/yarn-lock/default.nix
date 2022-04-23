@@ -9,11 +9,7 @@
   getYarnLock = tree: project:
     nodejsUtils.getWorkspaceLockFile tree project "yarn.lock";
 
-  translate = {
-    translatorName,
-    utils,
-    ...
-  }: {
+  translate = {translatorName, ...}: {
     project,
     source,
     tree,
@@ -47,7 +43,7 @@
 
     workspacesPackageJson = nodejsUtils.getWorkspacePackageJson tree workspaces;
   in
-    utils.simpleTranslate2
+    dlib.simpleTranslate2
     ({objectsByKey, ...}: let
       makeWorkspaceExtraObject = workspace: let
         json = workspacesPackageJson."${workspace}";
@@ -214,9 +210,9 @@
           // (
             if type == "git"
             then
-              if utils.identifyGitUrl rawObj.resolved
+              if dlib.identifyGitUrl rawObj.resolved
               then
-                (utils.parseGitUrl rawObj.resolved)
+                (dlib.parseGitUrl rawObj.resolved)
                 // {
                   version = rawObj.version;
                 }
