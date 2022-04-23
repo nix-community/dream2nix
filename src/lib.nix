@@ -132,7 +132,7 @@
           (proj:
             dream2nix
             .translators
-            .translatorsV2
+            .translators
             ."${proj.subsystem}"
             .all
             ."${proj.translator}"

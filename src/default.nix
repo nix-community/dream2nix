@@ -410,7 +410,7 @@
     flakeMode = ! builtins ? currentSystem;
 
     getTranslator = subsystem: translatorName:
-      translators.translatorsV2."${subsystem}".all."${translatorName}";
+      translators.translators."${subsystem}".all."${translatorName}";
 
     isImpure = project: translatorName:
       (getTranslator project.subsystem translatorName).type == "impure";

@@ -16,28 +16,6 @@
 
   l = lib // builtins;
 
-  # transforms V1 translators to V2 translators
-  ensureTranslatorV2 = translator:
-    translator
-    // (lib.optionalAttrs (translator ? translate) {
-      translateBin =
-        wrapPureTranslator2
-        (with translator; [subsystem type name]);
-      # ensure `tree` is passed
-      translate = args:
-        translator.translate (
-          args
-          // args.project.subsystemInfo
-          // {
-            tree =
-              args.tree or (dlib.prepareSourceTree {inherit (args) source;});
-          }
-        );
-    });
-
-  makeTranslatorV2 = translatorModule:
-    ensureTranslatorV2 (makeTranslator translatorModule);
-
   makeTranslator = translatorModule: let
     translator =
       translatorModule
@@ -56,6 +34,11 @@
               (dlib.translators.getextraArgsDefaults
                 (translatorModule.extraArgs or {}))
               // args
+              // args.project.subsystemInfo
+              // {
+                tree =
+                  args.tree or (dlib.prepareSourceTree {inherit (args) source;});
+              }
             );
         translateBin =
           wrapPureTranslator2
@@ -73,7 +56,7 @@
   in
     translator;
 
-  translatorsV2 = dlib.translators.mapTranslators makeTranslatorV2;
+  translators = dlib.translators.mapTranslators makeTranslator;
 
   # adds a translateBin to a pure translator
   wrapPureTranslator2 = translatorAttrPath: let
@@ -100,7 +83,7 @@
                   (builtins.unsafeDiscardStringContext (builtins.readFile '''$1''')));
 
             dreamLock =
-              dream2nix.translators.translatorsV2.${
+              dream2nix.translators.translators.${
           lib.concatStringsSep "." translatorAttrPath
         }.translate
                 translatorArgs;
@@ -123,6 +106,6 @@
     });
 in {
   inherit
-    translatorsV2
+    translators
     ;
 }

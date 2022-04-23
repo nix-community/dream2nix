@@ -56,12 +56,12 @@
       jq ".source = \"$newSource\"" -c -r $jsonInput > $TMPDIR/newJsonInput
 
       cd $WORKDIR
-      ${translators.translatorsV2.nodejs.pure.package-lock.translateBin} $TMPDIR/newJsonInput
+      ${translators.translators.nodejs.pure.package-lock.translateBin} $TMPDIR/newJsonInput
     '';
 
   # inherit options from package-lock translator
   extraArgs =
-    dlib.translators.translatorsV2.nodejs.pure.package-lock.extraArgs
+    dlib.translators.translators.nodejs.pure.package-lock.extraArgs
     // {
       npmArgs = {
         description = "Additional arguments for npm";
