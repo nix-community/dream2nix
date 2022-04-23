@@ -19,6 +19,7 @@
       source = src;
     })
     // {
-      checks = self.packages;
+      # checks are too expensive
+      # checks = self.packages;
     };
 }
