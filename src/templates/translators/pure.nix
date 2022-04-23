@@ -42,7 +42,7 @@
         (produced by `prepareSourceTree`)
 
         This has the advantage that files will only be read once, even when
-        accessed by multiple times or by multiple translators.
+        accessed multiple times or by multiple translators.
 
         Example:
           {
@@ -75,7 +75,7 @@
       */
       tree,
 
-      # arguments defined in `extraArgs` specified by user
+      # arguments defined in `extraArgs` (see below) specified by user
       noDev,
       theAnswer,
       ...
@@ -111,7 +111,7 @@
           subsystemName = "nodejs";
 
           # Extract subsystem specific attributes.
-          # The structur of this should be defined in:
+          # The structure of this should be defined in:
           #   ./src/specifications/{subsystem}
           subsystemAttrs = {theAnswer = args.theAnswer;};
 
@@ -171,6 +171,10 @@
             `objectsByKey.${keyName}.${value}`
           */
           keys = {
+            /*
+              This is an example. Remove this completely or replace in case you
+              need a key.
+            */
             sanitizedName = rawObj: finalObj:
               l.strings.sanitizeDerivationName rawObj.name;
           };
