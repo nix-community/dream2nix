@@ -370,6 +370,24 @@ in
           };
         in "${esbuild}/bin/esbuild";
       };
+      "add-binary-0.14" = {
+        _condition = satisfiesSemver "~0.14";
+        ESBUILD_BINARY_PATH = let
+          esbuild = pkgs.buildGoModule rec {
+            pname = "esbuild";
+            version = "0.14.38";
+
+            src = pkgs.fetchFromGitHub {
+              owner = "evanw";
+              repo = "esbuild";
+              rev = "v${version}";
+              sha256 = "sha256-rvMi1oC7qGidvi4zrm9KCMMntu6LJGVOGN6VmU2ivQE=";
+            };
+
+            vendorSha256 = "sha256-QPkBR+FscUc3jOvH7olcGUhM6OW4vxawmNJuRQxPuGs=";
+          };
+        in "${esbuild}/bin/esbuild";
+      };
     };
 
     fontmanager-redux = {
