@@ -5,13 +5,40 @@
 }: let
   l = lib // builtins;
 
-  discover = {tree}: let
+  discoverCrates = {tree}: let
+    cargoToml = tree.files."Cargo.toml".tomlContent or {};
+
+    subdirCrates =
+      l.flatten
+      (l.mapAttrsToList
+        (dirName: dir: discoverCrates {tree = dir;})
+        (tree.directories or {}));
+  in
+    if cargoToml ? package.name
+    then
+      [
+        {
+          inherit (cargoToml.package) name version;
+          inherit (tree) relPath;
+        }
+      ]
+      ++ subdirCrates
+    else subdirCrates;
+
+  discoverProjects = {
+    tree,
+    crates,
+  }: let
     cargoToml = tree.files."Cargo.toml".tomlContent;
 
     subdirProjects =
       l.flatten
       (l.mapAttrsToList
-        (dirName: dir: discover {tree = dir;})
+        (dirName: dir:
+          discoverProjects {
+            inherit crates;
+            tree = dir;
+          })
         (tree.directories or {}));
   in
     # A directory is identified as a project only if it contains a Cargo.toml
@@ -27,11 +54,17 @@
           relPath = tree.relPath;
           name = cargoToml.package.name or tree.relPath;
           translators = ["cargo-lock"];
-          subsystemInfo = {};
+          subsystemInfo = {inherit crates;};
         })
       ]
       ++ subdirProjects
     else subdirProjects;
+
+  discover = {tree}:
+    discoverProjects {
+      inherit tree;
+      crates = discoverCrates {inherit tree;};
+    };
 in {
   inherit discover;
 }

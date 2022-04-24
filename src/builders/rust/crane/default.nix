@@ -30,6 +30,7 @@
     '';
     preConfigure = ''
       ${vendoring.writeGitVendorEntries "nix-sources"}
+      ${vendoring.replaceRelativePathsWithAbsolute}
     '';
     # The deps-only derivation will use this as a prefix to the `pname`
     depsNameSuffix = "-deps";

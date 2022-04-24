@@ -15,46 +15,47 @@ in {
     project,
     tree,
     packageName,
-    discoveredProjects ? [project],
     ...
   } @ args: let
     # get the root source and project source
     rootSource = tree.fullPath;
     projectSource = "${tree.fullPath}/${project.relPath}";
     projectTree = tree.getNodeFromPath project.relPath;
+    subsystemInfo = project.subsystemInfo;
 
     # Get the root toml
     rootToml = {
-      path = "${projectSource}/Cargo.toml";
+      relPath = "";
       value = projectTree.files."Cargo.toml".tomlContent;
     };
 
     # Get all workspace members
     workspaceMembers =
-      l.map
-      (
-        memberName: let
-          components = l.splitString "/" memberName;
-        in
-          # Resolve globs if there are any
-          if l.last components == "*"
-          then let
-            parentDirRel = l.concatStringsSep "/" (l.init components);
-            parentDir = "${projectSource}/${parentDirRel}";
-            dirs = l.readDir parentDir;
+      l.flatten
+      (l.map
+        (
+          memberName: let
+            components = l.splitString "/" memberName;
           in
-            l.mapAttrsToList
-            (name: _: "${parentDirRel}/${name}")
-            (l.filterAttrs (_: type: type == "directory") dirs)
-          else memberName
-      )
-      (rootToml.value.workspace.members or []);
+            # Resolve globs if there are any
+            if l.last components == "*"
+            then let
+              parentDirRel = l.concatStringsSep "/" (l.init components);
+              parentDir = "${projectSource}/${parentDirRel}";
+              dirs = (projectTree.getNodeFromPath parentDirRel).directories;
+            in
+              l.mapAttrsToList
+              (name: _: "${parentDirRel}/${name}")
+              dirs
+            else memberName
+        )
+        (rootToml.value.workspace.members or []));
     # Get cargo packages (for workspace members)
     workspaceCargoPackages =
       l.map
       (relPath: {
+        inherit relPath;
         value = (projectTree.getNodeFromPath "${relPath}/Cargo.toml").tomlContent;
-        path = "${projectSource}/${relPath}/Cargo.toml";
       })
       # Filter root referencing member, we already parsed this (rootToml)
       (l.filter (relPath: relPath != ".") workspaceMembers);
@@ -75,22 +76,6 @@ in {
       if args.packageName == "{automatic}"
       then packageToml.value.package.name
       else args.packageName;
-    # Map the list of discovered Cargo projects to cargo tomls
-    discoveredCargoTomls =
-      l.map (project: rec {
-        value = (tree.getNodeFromPath "${project.relPath}/Cargo.toml").tomlContent;
-        path = "${rootSource}/${project.relPath}/Cargo.toml";
-      })
-      discoveredProjects;
-    # Filter cargo-tomls to for files that actually contain packages
-    # These aren't included in the packages for the dream-lock,
-    # because that would result in duplicate packages
-    # Therefore, this is only used for figuring out dependencies
-    # that are out of this source's path
-    discoveredCargoPackages =
-      l.filter
-      (toml: l.hasAttrByPath ["package" "name"] toml.value)
-      discoveredCargoTomls;
 
     # Parse Cargo.lock and extract dependencies
     parsedLock = projectTree.files."Cargo.lock".tomlContent;
@@ -173,6 +158,33 @@ in {
       # The structure of this should be defined in:
       #   ./src/specifications/{subsystem}
       subsystemAttrs = rec {
+        replacePathsWithAbsolute = let
+          # Extract dependencies from the Cargo.toml of the
+          # package we are currently building
+          tomlDeps =
+            l.flatten
+            (
+              l.map
+              (
+                target:
+                  (l.attrValues (target.dependencies or {}))
+                  ++ (l.attrValues (target.buildDependencies or {}))
+              )
+              ([package.toml] ++ (l.attrValues (package.toml.target or {})))
+            );
+          # We only need to patch path dependencies
+          pathDeps = l.filter (dep: dep ? path) tomlDeps;
+        in
+          l.listToAttrs (
+            l.map
+            (
+              dep: {
+                name = dep.path;
+                value = dlib.sanitizePath "${projectSource}/${dep.path}";
+              }
+            )
+            pathDeps
+          );
         gitSources = let
           gitDeps = l.filter (dep: (getSourceTypeFrom dep) == "git") parsedDeps;
         in
@@ -221,11 +233,24 @@ in {
             path = dependencyObject: let
               findToml =
                 l.findFirst
-                (toml: toml.value.package.name == dependencyObject.name)
+                (
+                  crate:
+                    crate.name
+                    == dependencyObject.name
+                    && crate.version == dependencyObject.version
+                )
                 null;
-              toml = findToml cargoPackages;
-              discoveredToml = findToml discoveredCargoPackages;
-              relDir = lib.removePrefix "${projectSource}/" (l.dirOf toml.path);
+              workspaceCrates =
+                l.map
+                (
+                  pkg: rec {
+                    inherit (pkg.value.package) name version;
+                    inherit (pkg) relPath;
+                  }
+                )
+                cargoPackages;
+              workspaceToml = findToml workspaceCrates;
+              nonWorkspaceToml = findToml (subsystemInfo.crates or []);
             in
               if
                 package.name
@@ -237,17 +262,17 @@ in {
                   rootName = null;
                   rootVersion = null;
                 }
-              else if discoveredToml != null
+              else if nonWorkspaceToml != null
               then
                 dlib.construct.pathSource {
-                  path = l.dirOf discoveredToml.path;
+                  path = "${rootSource}/${nonWorkspaceToml.relPath}";
                   rootName = null;
                   rootVersion = null;
                 }
-              else if toml != null
+              else if workspaceToml != null
               then
                 dlib.construct.pathSource {
-                  path = relDir;
+                  path = workspaceToml.relPath;
                   rootName = package.name;
                   rootVersion = package.version;
                 }

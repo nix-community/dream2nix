@@ -122,4 +122,21 @@ in rec {
     root = getRoot pname version;
   in
     vendorPackageDependencies root.pname root.version;
+
+  # Generates a script that replaces relative path dependency paths
+  # with absolute ones, if the path dependency isn't in the source
+  # dream2nix provides
+  replaceRelativePathsWithAbsolute = let
+    replacements =
+      l.concatStringsSep
+      " \\\n"
+      (
+        l.mapAttrsToList
+        (rel: abs: "--replace '${rel}' '${abs}'")
+        subsystemAttrs.replacePathsWithAbsolute
+      );
+  in ''
+    substituteInPlace ./Cargo.toml \
+      ${replacements}
+  '';
 }
