@@ -24,6 +24,7 @@
       simpleTranslate2
       translators
       sanitizeDerivationName
+      sanitizePath
       sanitizeRelativePath
       traceJ
       ;

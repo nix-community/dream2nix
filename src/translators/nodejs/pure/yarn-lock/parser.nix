@@ -38,7 +38,7 @@
       else if m2 != null
       then {
         indent = (l.stringLength (l.elemAt m2 0)) / 2;
-        # transform yarn 1 to yarn 2 tyle
+        # transform yarn 1 to yarn 2 style
         key =
           l.replaceStrings ['', "''] ['', '']
           (l.replaceStrings [''", ''] ['', ''] (l.elemAt m2 1));
