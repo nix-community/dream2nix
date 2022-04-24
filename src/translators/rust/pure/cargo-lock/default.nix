@@ -268,7 +268,7 @@ in {
               else if workspaceToml != null
               then
                 dlib.construct.pathSource {
-                  path = relDir;
+                  path = workspaceToml.relPath;
                   rootName = package.name;
                   rootVersion = package.version;
                 }
