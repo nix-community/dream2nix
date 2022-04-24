@@ -104,6 +104,34 @@ Extensive Example `flake.nix`:
             # update attributes
             buildInputs = old: old ++ [ pkgs.hello ];
           };
+          # a more complicated override like esbuild in the repo
+          "add-binary-0.13" = let 
+            # some additional functions are available in utils
+            # run `nix repl flake.nix` and `:lf .` to find out about
+            # all of them
+            utils = inputs.dream2nix.lib.x86_64-linux.utils;
+            # in case you need to use nixpkgs
+            pkgs = inputs.dream2nix.inputs.nixpkgs.legacyPackages.x86_64-linux;
+            in {
+            _condition = utils.satisfiesSemver "~0.13";
+            # you can add environment variables if needed
+            ESBUILD_BINARY_PATH = let
+              esbuild = pkgs.buildGoModule rec {
+                pname = "esbuild";
+                version = "0.13.15";
+
+                src = pkgs.fetchFromGitHub {
+                  owner = "evanw";
+                  repo = "esbuild";
+                  rev = "v${version}";
+                  sha256 = "sha256-Ffnz70UfHAu3p39oZkiwPF0tX++uYr/T4E7G4jVRUUE=";
+                };
+
+                vendorSha256 = "sha256-QPkBR+FscUc3jOvH7olcGUhM6OW4vxawmNJuRQxPuGs=";
+              };
+            in "${esbuild}/bin/esbuild";
+            };
+          };
         };
       };
 
