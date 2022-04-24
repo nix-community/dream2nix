@@ -168,7 +168,7 @@ in {
                 )
                 pathDeps
             )
-            subsystemInfo.crates;
+            (subsystemInfo.crates or []);
         in
           l.listToAttrs (
             l.map
@@ -246,7 +246,7 @@ in {
                 )
                 cargoPackages;
               workspaceToml = findToml workspaceCrates;
-              nonWorkspaceToml = findToml subsystemInfo.crates;
+              nonWorkspaceToml = findToml (subsystemInfo.crates or []);
             in
               if
                 package.name
