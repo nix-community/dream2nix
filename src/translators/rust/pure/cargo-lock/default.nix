@@ -4,11 +4,18 @@
 }: let
   l = lib // builtins;
 in {
+  generateUnitTestsForProjects = [
+    (builtins.fetchTarball {
+      url = "https://github.com/BurntSushi/ripgrep/tarball/30ee6f08ee8e22c42ab2ef837c764f52656d025b";
+      sha256 = "1g73qfc6wm7d70pksmbzq714mwycdfx1n4vfrivjs7jpkj40q4vv";
+    })
+  ];
+
   translate = {translatorName, ...}: {
     project,
     tree,
     packageName,
-    discoveredProjects,
+    discoveredProjects ? [project],
     ...
   } @ args: let
     # get the root source and project source
