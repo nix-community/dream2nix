@@ -15,13 +15,13 @@ in {
     project,
     tree,
     packageName,
-    subsystemInfo,
     ...
   } @ args: let
     # get the root source and project source
     rootSource = tree.fullPath;
     projectSource = "${tree.fullPath}/${project.relPath}";
     projectTree = tree.getNodeFromPath project.relPath;
+    subsystemInfo = project.subsystemInfo;
 
     # Get the root toml
     rootToml = {
