@@ -228,11 +228,25 @@ in {
             path = dependencyObject: let
               findToml =
                 l.findFirst
-                (toml: toml.value.package.name == dependencyObject.name)
+                (
+                  crate:
+                    crate.name
+                    == dependencyObject.name
+                    && crate.version == dependencyObject.version
+                )
                 null;
-              toml = findToml cargoPackages;
-              discoveredToml = findToml discoveredCargoPackages;
-              relDir = lib.removePrefix "${projectSource}/" (l.dirOf toml.path);
+              workspaceCrates =
+                l.map
+                (
+                  pkg: rec {
+                    inherit (pkg.value.package) name version;
+                    relPath = lib.removePrefix "${projectSource}/" fullPath;
+                    fullPath = l.dirOf pkg.path;
+                  }
+                )
+                cargoPackages;
+              workspaceToml = findToml workspaceCrates;
+              nonWorkspaceToml = findToml subsystemInfo.crates;
             in
               if
                 package.name
@@ -244,14 +258,14 @@ in {
                   rootName = null;
                   rootVersion = null;
                 }
-              else if discoveredToml != null
+              else if nonWorkspaceToml != null
               then
                 dlib.construct.pathSource {
-                  path = l.dirOf discoveredToml.path;
+                  path = nonWorkspaceToml.fullPath;
                   rootName = null;
                   rootVersion = null;
                 }
-              else if toml != null
+              else if workspaceToml != null
               then
                 dlib.construct.pathSource {
                   path = relDir;
