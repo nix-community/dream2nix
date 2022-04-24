@@ -2,9 +2,9 @@
 <img width="400" src="https://gist.githubusercontent.com/DavHau/755fed3774e89c0b9b8953a0a25309fa/raw/e2a12a60ae49aa5eb11b42775abdd1652dbe63c0/dream2nix-01.png">
 </p>
 
-## [WIP] dream2nix - A framework for 2nix tools
+## [WIP] dream2nix - A framework for automated nix packaging
 
-dream2nix is a framework for 2nix converters (converting from other build systems to nix).
+dream2nix is a framework for automatically converting packages from other build systems to nix.
 It focuses on the following aspects:
 
 - Modularity
@@ -19,13 +19,26 @@ It focuses on the following aspects:
 - Exploration and adoption of new nix features
 - Simplified updating of packages
 
-The goal of this project is to create a standardized, generic, modular framework for 2nix solutions, aiming for better flexibility, maintainability and usability.
+The goal of this project is to create a standardized, generic, modular framework for automated packaging solutions, aiming for better flexibility, maintainability and usability.
 
 The intention is to integrate many existing 2nix converters into this framework, thereby improving many of the previously named aspects and providing a unified UX for all 2nix solutions.
 
 ### Test the experimental version of dream2nix
-There are different ways how dream2nix can be invoked (CLI, flake, In-tree, IFD).
-A simple way to use dream2nix is to drop the following `flake.nix` inside the repository of the project intended to be packaged:
+(Currently only nodejs and rust packaging is supported)
+
+1. Make sure you use a nix version >= 2.4 and have `experimental-features = "nix-command flakes"` set.
+1. Navigate to to the project indended to be packaged and initialize a dream2nix flake:
+    ```command
+      cd ./my-project
+      nix flake init -t github:nix-community/dream2nix#simple
+    ```
+1. List the packages that can be built
+    ```command
+      nix flake show
+    ```
+
+
+Minimal Example `flake.nix`:
 ```nix
 {
   inputs.dream2nix.url = "github:nix-community/dream2nix";
@@ -38,8 +51,49 @@ A simple way to use dream2nix is to drop the following `flake.nix` inside the re
       };
     in dream2nix.makeFlakeOutputs {
       source = ./.;
+    };
+}
+```
+
+Extensive Example `flake.nix`:
+```nix
+{
+  inputs.dream2nix.url = "github:nix-community/dream2nix";
+  outputs = { self, dream2nix }@inputs:
+    let
+      system = "x86_64-linux";
+
+      pkgs = inputs.dream2nix.nixpkgs.legacyPackages.${system};
+
+      dream2nix = inputs.dream2nix.lib.init {
+        # modify according to your supported systems
+        systems = [ system ];
+        config.projectRoot = ./. ;
+      };
+
+    in dream2nix.makeFlakeOutputs {
+      source = ./.;
+
+      # Configure the behavior of dream2nix when translating projects.
+      # A setting applies to all discovered projects if `filter` is unset,
+      # or just to a subset or projects if `filter` is used.
+      settings = [
+
+        # prefer aggregated source fetching (large FODs)
+        {
+          aggregate = true;
+        }
+
+        # for all impure nodejs projects with just a `package.json`,
+        # add arguments for the `package-json` translator
+        {
+          filter = project: project.translator == "package-json";
+          subsystemInfo.npmArgs = "--legacy-peer-deps";
+        }
+      ];
 
       # configure package builds via overrides
+      # (see docs for override system below)
       packageOverrides = {
         # name of the package
         package-name = {
@@ -52,16 +106,29 @@ A simple way to use dream2nix is to drop the following `flake.nix` inside the re
           };
         };
       };
+
+      # Inject missing dependencies
+      # Make foo depend on bar and baz
+      inject = {
+        # from
+        foo."6.4.1" = [
+          # to
+          ["bar" "13.2.0"]
+          ["baz" "1.0.0"]
+        ];
+      };
+
+      # add sources for `bar` and `baz`
+      sourceOverrides = {
+        bar."13.2.0" = builtins.fetchTarball {url = ""; sha256 = "";};
+        baz."1.0.0" = builtins.fetchTarball {url = ""; sha256 = "";};
+      };
     };
 }
 ```
-After adding the flake.nix, execute the following commands to list the packages which can be built:
-```shell
-git add ./flake.nix
-nix flake show
-```
 
-### Watch the recent presentation
+### Watch the presentation
+(The code examples of the presentation are outdated)
 [![dream2nix - A generic framework for 2nix tools](https://gist.githubusercontent.com/DavHau/755fed3774e89c0b9b8953a0a25309fa/raw/3c8b2c56f5fca3bf5c343ffc179136eef39d4d6a/dream2nix-youtube-talk.png)](https://www.youtube.com/watch?v=jqCfHMvCsfQ)
 
 ### Further Reading
