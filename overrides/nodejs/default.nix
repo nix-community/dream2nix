@@ -370,6 +370,39 @@ in
           };
         in "${esbuild}/bin/esbuild";
       };
+      "add-binary-0.13" = let
+        version = "0.13.15";
+      in {
+        _condition = satisfiesSemver "~0.13";
+        ESBUILD_BINARY_PATH = let
+          esbuild = pkgs.buildGoModule rec {
+            pname = "esbuild";
+            version = "0.13.15";
+
+            src = pkgs.fetchFromGitHub {
+              owner = "evanw";
+              repo = "esbuild";
+              rev = "v${version}";
+              sha256 = "sha256-Ffnz70UfHAu3p39oZkiwPF0tX++uYr/T4E7G4jVRUUE=";
+            };
+
+            vendorSha256 = "sha256-QPkBR+FscUc3jOvH7olcGUhM6OW4vxawmNJuRQxPuGs=";
+            # there is a binary version check when running esbuild that prevents us from running
+            # a semver compatible binary
+            postPatch = ''
+              substituteInPlace cmd/esbuild/main.go --replace \
+                "hostVersion != esbuildVersion" \
+                "false"
+            '';
+          };
+        in "${esbuild}/bin/esbuild";
+        overrideAttrs = old: {
+          postPatch = ''
+            substituteInPlace lib/main.js --replace \
+              "${old.version}" "${version}"
+          '';
+        };
+      };
       "add-binary-0.14" = let
         version = "0.14.38";
       in {
