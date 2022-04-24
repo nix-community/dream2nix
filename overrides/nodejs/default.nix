@@ -730,6 +730,7 @@ in
     # TODO: Maybe should replace binaries with the ones from nixpkgs
     "7zip-bin" = {
       patch-binaries = {
+        _condition = _pkg: !pkgs.stdenv.isDarwin;
         nativeBuildInputs = old:
           old
           ++ [
