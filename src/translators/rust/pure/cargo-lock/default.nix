@@ -15,7 +15,7 @@ in {
     project,
     tree,
     packageName,
-    discoveredProjects ? [project],
+    subsystemInfo,
     ...
   } @ args: let
     # get the root source and project source
@@ -76,22 +76,6 @@ in {
       if args.packageName == "{automatic}"
       then packageToml.value.package.name
       else args.packageName;
-    # Map the list of discovered Cargo projects to cargo tomls
-    discoveredCargoTomls =
-      l.map (project: rec {
-        value = (tree.getNodeFromPath "${project.relPath}/Cargo.toml").tomlContent;
-        path = "${rootSource}/${project.relPath}/Cargo.toml";
-      })
-      discoveredProjects;
-    # Filter cargo-tomls to for files that actually contain packages
-    # These aren't included in the packages for the dream-lock,
-    # because that would result in duplicate packages
-    # Therefore, this is only used for figuring out dependencies
-    # that are out of this source's path
-    discoveredCargoPackages =
-      l.filter
-      (toml: l.hasAttrByPath ["package" "name"] toml.value)
-      discoveredCargoTomls;
 
     # Parse Cargo.lock and extract dependencies
     parsedLock = projectTree.files."Cargo.lock".tomlContent;
@@ -174,13 +158,28 @@ in {
       # The structure of this should be defined in:
       #   ./src/specifications/{subsystem}
       subsystemAttrs = rec {
-        replacePathsWithAbsolute = l.listToAttrs (l.map (
-            project: {
-              name = project.relPath;
-              value = "${rootSource}/${project.relPath}";
-            }
-          )
-          discoveredProjects);
+        replacePathsWithAbsolute = let
+          pathDeps = l.filter (dep: (getSourceTypeFrom dep) == "path") parsedDeps;
+          depCrates =
+            l.filter (
+              crate:
+                l.any (
+                  dep: dep.name == crate.name && dep.version == crate.version
+                )
+                pathDeps
+            )
+            subsystemInfo.crates;
+        in
+          l.listToAttrs (
+            l.map
+            (
+              crate: {
+                name = crate.relPath;
+                value = crate.fullPath;
+              }
+            )
+            depCrates
+          );
         gitSources = let
           gitDeps = l.filter (dep: (getSourceTypeFrom dep) == "git") parsedDeps;
         in
