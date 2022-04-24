@@ -42,11 +42,11 @@ in {
             then let
               parentDirRel = l.concatStringsSep "/" (l.init components);
               parentDir = "${projectSource}/${parentDirRel}";
-              dirs = l.readDir parentDir;
+              dirs = (projectTree.getNodeFromPath parentDirRel).directories;
             in
               l.mapAttrsToList
               (name: _: "${parentDirRel}/${name}")
-              (l.filterAttrs (_: type: type == "directory") dirs)
+              dirs
             else memberName
         )
         (rootToml.value.workspace.members or []));
