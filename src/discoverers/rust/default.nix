@@ -19,7 +19,7 @@
       [
         {
           inherit (cargoToml.package) name version;
-          inherit (tree) relPath fullPath;
+          inherit (tree) relPath;
         }
       ]
       ++ subdirCrates

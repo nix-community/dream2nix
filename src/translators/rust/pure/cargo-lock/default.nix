@@ -25,7 +25,7 @@ in {
 
     # Get the root toml
     rootToml = {
-      path = "${projectSource}/Cargo.toml";
+      relPath = "";
       value = projectTree.files."Cargo.toml".tomlContent;
     };
 
@@ -54,8 +54,8 @@ in {
     workspaceCargoPackages =
       l.map
       (relPath: {
+        inherit relPath;
         value = (projectTree.getNodeFromPath "${relPath}/Cargo.toml").tomlContent;
-        path = "${projectSource}/${relPath}/Cargo.toml";
       })
       # Filter root referencing member, we already parsed this (rootToml)
       (l.filter (relPath: relPath != ".") workspaceMembers);
@@ -245,8 +245,7 @@ in {
                 (
                   pkg: rec {
                     inherit (pkg.value.package) name version;
-                    relPath = lib.removePrefix "${projectSource}/" fullPath;
-                    fullPath = l.dirOf pkg.path;
+                    inherit (pkg) relPath;
                   }
                 )
                 cargoPackages;
@@ -266,7 +265,7 @@ in {
               else if nonWorkspaceToml != null
               then
                 dlib.construct.pathSource {
-                  path = nonWorkspaceToml.fullPath;
+                  path = "${rootSource}/${nonWorkspaceToml.relPath}";
                   rootName = null;
                   rootVersion = null;
                 }
