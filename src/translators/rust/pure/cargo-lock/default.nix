@@ -173,7 +173,7 @@ in {
               ([package.toml] ++ (l.attrValues (package.toml.target or {})))
             );
           # We only need to patch path dependencies
-          pathDeps = l.filter (dep: l.hasAttr "path" dep) tomlDeps;
+          pathDeps = l.filter (dep: dep ? path) tomlDeps;
         in
           l.listToAttrs (
             l.map
