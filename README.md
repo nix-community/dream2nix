@@ -108,14 +108,19 @@ Extensive Example `flake.nix`:
       };
 
       # Inject missing dependencies
-      # Make foo depend on bar and baz
       inject = {
+        # Make foo depend on bar and baz
         # from
         foo."6.4.1" = [
           # to
           ["bar" "13.2.0"]
           ["baz" "1.0.0"]
         ];
+        # dependencies with @ and slash require quoting
+        # the format is the one that is in the lockfile
+        "@tiptap/extension-code"."2.0.0-beta.26" = [
+           ["@tiptap/core" "2.0.0-beta.174"]
+         ];
       };
 
       # add sources for `bar` and `baz`
