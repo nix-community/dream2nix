@@ -139,13 +139,22 @@
 
   # Only executed for electron based packages.
   # Creates an executable script under /bin starting the electron app
-  electron-wrap = ''
-    mkdir -p $out/bin
-    makeWrapper \
-      $electronDist/electron \
-      $out/bin/$(basename "$packageName") \
-      --add-flags "$(realpath $electronAppDir)"
-  '';
+  electron-wrap =
+    if pkgs.stdenv.isLinux
+    then ''
+      mkdir -p $out/bin
+      makeWrapper \
+        $electronDist/electron \
+        $out/bin/$(basename "$packageName") \
+        --add-flags "$(realpath $electronAppDir)"
+    ''
+    else ''
+      mkdir -p $out/bin
+      makeWrapper \
+        $electronDist/Electron.app/Contents/MacOS/Electron \
+        $out/bin/$(basename "$packageName") \
+        --add-flags "$(realpath $electronAppDir)"
+    '';
 
   # Generates a derivation for a specific package name + version
   makePackage = name: version: let

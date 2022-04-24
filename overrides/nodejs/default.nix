@@ -288,17 +288,23 @@ in
     in {
       add-binary = {
         overrideAttrs = old: {
-          postPatch = ''
-            cp -r ${getElectronFor "${old.version}"}/lib/electron ./dist
-            chmod -R +w ./dist
-            echo -n $version > ./dist/version
-            echo -n "electron" > ./path.txt
-          '';
+          postPatch =
+            if pkgs.stdenv.isLinux
+            then ''
+              cp -r ${getElectronFor "${old.version}"}/lib/electron ./dist
+              chmod -R +w ./dist
+              echo -n $version > ./dist/version
+              echo -n "electron" > ./path.txt
+            ''
+            else "";
 
-          postFixup = ''
-            mkdir -p $out/lib
-            ln -s $(realpath ./dist) $out/lib/electron
-          '';
+          postFixup =
+            if pkgs.stdenv.isLinux
+            then ''
+              mkdir -p $out/lib
+              ln -s $(realpath ./dist) $out/lib/electron
+            ''
+            else "";
         };
       };
     };
