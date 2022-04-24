@@ -406,9 +406,6 @@
     pname,
     settings ? [],
   } @ args: let
-    # This influences error messages only
-    flakeMode = ! builtins ? currentSystem;
-
     getTranslator = subsystem: translatorName:
       translators.translators."${subsystem}".all."${translatorName}";
 
@@ -515,24 +512,14 @@
   in
     if projectsImpureUnresolved != []
     then
-      if flakeMode
-      then
-        l.trace ''
-          ${"\n"}
-          Run `nix run .#resolveImpure` once to resolve impure projects.
-          The following projects cannot be resolved on the fly and are therefore excluded:
-            ${l.concatStringsSep "\n  " projectsImpureUnresolvedInfo}
-        ''
-        resolvedProjects
-      else
-        l.trace ''
-          ${"\n"}
-          The following projects cannot be resolved on the fly and are therefore excluded:
-            ${l.concatStringsSep "\n  " projectsImpureUnresolvedInfo}
-        ''
-        resolvedProjects
-    else if projectsPureUnresolved != []
-    then resolvedProjects
+      l.trace ''
+        ${"\n"}
+        The following projects cannot be resolved on the fly and are therefore excluded:
+          ${l.concatStringsSep "\n  " projectsImpureUnresolvedInfo}
+        Run `nix run .#resolveImpure` once to resolve impurities of the projects listed above.
+        Afterwards these projects will be available via flake outputs.
+      ''
+      resolvedProjects
     else resolvedProjects;
 
   # transform a list of resolved projects to buildable outputs
