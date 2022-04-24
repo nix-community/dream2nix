@@ -8,22 +8,24 @@
   discoverCrates = {tree}: let
     cargoToml = tree.files."Cargo.toml".tomlContent or {};
 
-    subdirProjects =
+    subdirCrates =
       l.flatten
       (l.mapAttrsToList
         (dirName: dir: discoverCrates {tree = dir;})
         (tree.directories or {}));
   in
     if cargoToml ? package.name
-    then [
-      {
-        inherit (cargoToml.package) name version;
-        inherit (tree) relPath fullPath;
-      }
-    ]
+    then
+      [
+        {
+          inherit (cargoToml.package) name version;
+          inherit (tree) relPath fullPath;
+        }
+      ]
+      ++ subdirCrates
     else subdirCrates;
 
-  _discover = {
+  discoverProjects = {
     tree,
     crates,
   }: let
@@ -33,7 +35,7 @@
       l.flatten
       (l.mapAttrsToList
         (dirName: dir:
-          _discover {
+          discoverProjects {
             inherit crates;
             tree = dir;
           })
@@ -59,7 +61,7 @@
     else subdirProjects;
 
   discover = {tree}:
-    _discover {
+    discoverProjects {
       inherit tree;
       crates = discoverCrates {inherit tree;};
     };
