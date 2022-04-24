@@ -4,6 +4,23 @@
 }:
 
 {
+
+  /*
+    Automatically generate unit tests for this translator using project sources
+    from the specified list.
+
+    !!! Your first action should be adding a project here. This will simplify
+    your work because you will be able to use `nix run .#tests-unit` to
+    test your implementation for correctness.
+  */
+  generateUnitTestsForProjects = [
+    (builtins.fetchTarball {
+      url = "";
+      sha256 = "";
+    })
+  ];
+
+  # translate from a given source and a project specification to a dream-lock.
   translate =
     {
       translatorName,
@@ -219,11 +236,12 @@
         });
 
   # If the translator requires additional arguments, specify them here.
-  # When users run the CLI, they will be asked to specify these arguments.
+  # Users will be able to set these arguments via `settings`.
   # There are only two types of arguments:
   #   - string argument (type = "argument")
   #   - boolean flag (type = "flag")
   # String arguments contain a default value and examples. Flags do not.
+  # Flags are false by default.
   extraArgs = {
 
     # Example: boolean option

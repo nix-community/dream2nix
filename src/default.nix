@@ -485,10 +485,17 @@
       l.forEach projectsPureUnresolved
       (proj: let
         translator = getTranslator proj.subsystem proj.translator;
-        dreamLock' = translator.translate {
+        dreamLock'' = translator.translate {
           inherit source tree discoveredProjects;
           project = proj;
         };
+
+        /*
+         simpleTranslate2 exposes result via `.result` in order to allow for
+         unit testing via `.inputs`.
+         */
+        dreamLock' = dreamLock''.result or dreamLock'';
+
         dreamLock =
           dreamLock'
           // {

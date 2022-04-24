@@ -78,6 +78,22 @@
       subsystemAttrs ? {},
       translatorName,
     }: let
+      inputs = {
+        inherit
+          defaultPackage
+          exportedPackages
+          extractors
+          extraDependencies
+          extraObjects
+          keys
+          location
+          serializedRawObjects
+          subsystemName
+          subsystemAttrs
+          translatorName
+          ;
+      };
+
       allDependencies =
         l.foldl'
         (result: finalObj:
@@ -217,28 +233,35 @@
           ))
           {}
           cyclesList;
-    in
-      {
-        decompressed = true;
 
-        _generic = {
-          inherit
-            defaultPackage
-            location
-            ;
-          packages = exportedPackages;
-          subsystem = subsystemName;
-          sourcesAggregatedHash = null;
-        };
+      data =
+        {
+          decompressed = true;
 
-        # build system specific attributes
-        _subsystem = subsystemAttrs;
+          _generic = {
+            inherit
+              defaultPackage
+              location
+              ;
+            packages = exportedPackages;
+            subsystem = subsystemName;
+            sourcesAggregatedHash = null;
+          };
 
-        inherit cyclicDependencies sources;
-      }
-      // {dependencies = dependencyGraph;};
-  in
-    dreamLockData;
+          # build system specific attributes
+          _subsystem = subsystemAttrs;
+
+          inherit cyclicDependencies sources;
+        }
+        // {dependencies = dependencyGraph;};
+    in {
+      inherit data;
+      inherit inputs;
+    };
+  in {
+    result = dreamLockData.data;
+    inputs = dreamLockData.inputs;
+  };
 in {
   inherit simpleTranslate2;
 }

@@ -6,12 +6,13 @@
   # The executable will be called by dream2nix for translation
   # The input format is specified in /specifications/translator-call-example.json.
   # The first arg `$1` will be a json file containing the input parameters
-  # like defined in /specifications/translator-call-example.json and the
+  # like defined in /src/specifications/translator-call-example.json and the
   # additional arguments required according to extraArgs
   #
   # The program is expected to create a file at the location specified
   # by the input parameter `outFile`.
   # The output file must contain the dream lock data encoded as json.
+  # See /src/specifications/dream-lock-example.json
   translateBin = {
     # dream2nix utils
     utils,
@@ -39,10 +40,11 @@
 
       # TODO:
       # read input files/dirs and produce a json file at $outputFile
-      # containing the dream lock similar to /specifications/dream-lock-example.json
+      # containing the dream lock similar to /src/specifications/dream-lock-example.json
     '';
 
   # If the translator requires additional arguments, specify them here.
+  # When users run the CLI, they will be asked to specify these arguments.
   # There are only two types of arguments:
   #   - string argument (type = "argument")
   #   - boolean flag (type = "flag")

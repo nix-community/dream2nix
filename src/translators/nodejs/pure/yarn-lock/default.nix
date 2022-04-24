@@ -97,7 +97,7 @@
             ? resolved
             && lib.hasInfix "codeload.github.com/" dObj.resolved)
           || (lib.hasInfix "@git+" dObj.yarnName
-            || lib.hasPrefix "git+" dObj.resolved)
+            || lib.hasPrefix "git+" (dObj.resolved or ""))
           # example:
           # "jest-image-snapshot@https://github.com/machard/jest-image-snapshot#machard-patch-1":
           #   version "4.2.0"
@@ -140,7 +140,7 @@
         name = rawObj: finalObj:
           if
             (lib.hasInfix "@git+" rawObj.yarnName
-              || lib.hasPrefix "git+" rawObj.resolved)
+              || lib.hasPrefix "git+" (rawObj.resolved or ""))
           then lib.head (lib.splitString "@git+" rawObj.yarnName)
           # Example:
           # @matrix-org/olm@https://gitlab.matrix.org/api/v4/projects/27/packages/npm/@matrix-org/olm/-/@matrix-org/olm-3.2.3.tgz
@@ -310,6 +310,13 @@ in {
   version = 2;
 
   inherit translate;
+
+  generateUnitTestsForProjects = [
+    (builtins.fetchTarball {
+      url = "https://github.com/prettier/prettier/tarball/66585d9f250f11569456421e66a2407397e98f69";
+      sha256 = "14fqwavb04b1ws1s58cmwq7wqj9xif4pv166ab23qpgnq57629yy";
+    })
+  ];
 
   # If the translator requires additional arguments, specify them here.
   # There are only two types of arguments:
