@@ -159,26 +159,31 @@ in {
       #   ./src/specifications/{subsystem}
       subsystemAttrs = rec {
         replacePathsWithAbsolute = let
-          pathDeps = l.filter (dep: (getSourceTypeFrom dep) == "path") parsedDeps;
-          depCrates =
-            l.filter (
-              crate:
-                l.any (
-                  dep: dep.name == crate.name && dep.version == crate.version
-                )
-                pathDeps
-            )
-            (subsystemInfo.crates or []);
+          # Extract dependencies from the Cargo.toml of the
+          # package we are currently building
+          tomlDeps =
+            l.flatten
+            (
+              l.map
+              (
+                target:
+                  (l.attrValues (target.dependencies or {}))
+                  ++ (l.attrValues (target.buildDependencies or {}))
+              )
+              ([package.toml] ++ (l.attrValues (package.toml.target or {})))
+            );
+          # We only need to patch path dependencies
+          pathDeps = l.filter (dep: l.hasAttr "path" dep) tomlDeps;
         in
           l.listToAttrs (
             l.map
             (
-              crate: {
-                name = crate.relPath;
-                value = crate.fullPath;
+              dep: {
+                name = dep.path;
+                value = dlib.sanitizePath "${projectSource}/${dep.path}";
               }
             )
-            depCrates
+            pathDeps
           );
         gitSources = let
           gitDeps = l.filter (dep: (getSourceTypeFrom dep) == "git") parsedDeps;
