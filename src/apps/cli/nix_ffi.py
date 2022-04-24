@@ -9,6 +9,7 @@ dream2nix_src = os.environ.get("dream2nixSrc")
 def nix(*args, **kwargs):
   return sp.run(["nix", "--option", "experimental-features", "nix-command flakes"] + list(args), capture_output=True, **kwargs)
 
+# TODO: deprecate and replace all usage with `eval()` (see below).
 def callNixFunction(function_path, **kwargs):
   with tempfile.NamedTemporaryFile("w") as input_json_file:
     json.dump(dict(**kwargs), input_json_file, indent=2)
@@ -31,6 +32,48 @@ def callNixFunction(function_path, **kwargs):
     )
   if proc.returncode:
     print(f"Failed calling nix function '{function_path}'", file=sys.stderr)
+    print(proc.stderr.decode(), file=sys.stderr)
+    exit(1)
+
+  # parse result data
+  return json.loads(proc.stdout)
+
+def eval(attr_path, wrapper_code=None, **kwargs):
+  if wrapper_code == None:
+    # dummy wrapper code
+    wrapper_code = "{result}: result"
+
+  is_function_call = len(kwargs) > 0
+
+  with tempfile.NamedTemporaryFile("w") as input_json_file:
+    json.dump(dict(**kwargs), input_json_file, indent=2)
+    input_json_file.seek(0) # flushes write cache
+    env = os.environ.copy()
+    env.update(dict(
+      FUNC_ARGS=input_json_file.name
+    ))
+    with tempfile.NamedTemporaryFile("w") as wrapper_code_file:
+      wrapper_code_file.write(wrapper_code)
+      wrapper_code_file.seek(0) # flushes write cache
+      proc = nix(
+        "eval", "--show-trace", "--impure", "--raw", "--expr",
+        f'''
+          let
+            d2n = (import {dream2nix_src} {{}});
+            wrapper = import {wrapper_code_file.name};
+            result =
+              if "{is_function_call}" == "True"
+              then d2n.utils.callViaEnv d2n.{attr_path}
+              else d2n.{attr_path};
+          in
+            builtins.toJSON (
+              wrapper {{ inherit result; }}
+            )
+        ''',
+        env=env
+      )
+  if proc.returncode:
+    print(f"Failed evaluating '{attr_path}'", file=sys.stderr)
     print(proc.stderr.decode(), file=sys.stderr)
     exit(1)
 
