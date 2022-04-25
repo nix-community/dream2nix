@@ -262,19 +262,19 @@ in {
                   rootName = null;
                   rootVersion = null;
                 }
-              else if nonWorkspaceToml != null
-              then
-                dlib.construct.pathSource {
-                  path = "${rootSource}/${nonWorkspaceToml.relPath}";
-                  rootName = null;
-                  rootVersion = null;
-                }
               else if workspaceToml != null
               then
                 dlib.construct.pathSource {
                   path = workspaceToml.relPath;
                   rootName = package.name;
                   rootVersion = package.version;
+                }
+              else if nonWorkspaceToml != null
+              then
+                dlib.construct.pathSource {
+                  path = "${rootSource}/${nonWorkspaceToml.relPath}";
+                  rootName = null;
+                  rootVersion = null;
                 }
               else throw "could not find crate ${dependencyObject.name}";
 

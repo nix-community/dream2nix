@@ -132,7 +132,7 @@ in rec {
       " \\\n"
       (
         l.mapAttrsToList
-        (rel: abs: "--replace '${rel}' '${abs}'")
+        (rel: abs: "--replace '\"${rel}\"' '\"${abs}\"'")
         subsystemAttrs.replacePathsWithAbsolute
       );
   in ''
