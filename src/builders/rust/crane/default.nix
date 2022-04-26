@@ -3,7 +3,7 @@
   pkgs,
   externals,
   ...
-}: {
+} @ topArgs: {
   subsystemAttrs,
   defaultPackageName,
   defaultPackageVersion,
@@ -17,20 +17,24 @@
 } @ args: let
   l = lib // builtins;
 
-  utils = import ../utils.nix args;
-  vendoring = import ../vendor.nix (args // {inherit lib pkgs utils;});
+  utils = import ../utils.nix (args // topArgs);
+  vendoring = import ../vendor.nix (args // topArgs);
 
   crane = externals.crane;
 
   buildPackage = pname: version: let
     src = utils.getRootSource pname version;
-    cargoVendorDir = vendoring.vendorDependencies pname version;
+    cargoVendorDir = vendoring.vendoredDependencies;
+    replacePaths =
+      utils.replaceRelativePathsWithAbsolute subsystemAttrs.relPathReplacements;
+    writeGitVendorEntries = vendoring.writeGitVendorEntries "nix-sources";
+
     postUnpack = ''
       export CARGO_HOME=$(pwd)/.cargo_home
     '';
     preConfigure = ''
-      ${vendoring.writeGitVendorEntries "nix-sources"}
-      ${vendoring.replaceRelativePathsWithAbsolute}
+      ${writeGitVendorEntries}
+      ${replacePaths}
     '';
     # The deps-only derivation will use this as a prefix to the `pname`
     depsNameSuffix = "-deps";
