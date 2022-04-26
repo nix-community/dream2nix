@@ -40,7 +40,7 @@
 
       preConfigure = ''
         mkdir -p $CARGO_HOME
-        mv /build/.cargo/config $CARGO_HOME/config.toml
+        mv ../.cargo/config $CARGO_HOME/config.toml
         ${vendoring.writeGitVendorEntries "vendored-sources"}
         ${vendoring.replaceRelativePathsWithAbsolute}
       '';
