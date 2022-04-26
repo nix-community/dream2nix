@@ -32,7 +32,7 @@
       inherit pname version src;
 
       cargoBuildFlags = cargoBuildFlags;
-      cargoCheckFlags = cargoBuildFlags;
+      cargoTestFlags = cargoBuildFlags;
 
       cargoVendorDir = "../nix-vendor";
 
