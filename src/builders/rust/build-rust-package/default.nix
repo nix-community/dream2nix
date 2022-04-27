@@ -2,7 +2,7 @@
   lib,
   pkgs,
   ...
-}: {
+} @ topArgs: {
   subsystemAttrs,
   defaultPackageName,
   defaultPackageVersion,
@@ -16,12 +16,15 @@
 } @ args: let
   l = lib // builtins;
 
-  utils = import ../utils.nix args;
-  vendoring = import ../vendor.nix (args // {inherit lib pkgs utils;});
+  utils = import ../utils.nix (args // topArgs);
+  vendoring = import ../vendor.nix (args // topArgs);
 
   buildPackage = pname: version: let
     src = utils.getRootSource pname version;
-    vendorDir = vendoring.vendorDependencies pname version;
+    vendorDir = vendoring.vendoredDependencies;
+    replacePaths =
+      utils.replaceRelativePathsWithAbsolute subsystemAttrs.relPathReplacements;
+    writeGitVendorEntries = vendoring.writeGitVendorEntries "vendored-sources";
 
     cargoBuildFlags = "--package ${pname}";
   in
@@ -29,7 +32,7 @@
       inherit pname version src;
 
       cargoBuildFlags = cargoBuildFlags;
-      cargoCheckFlags = cargoBuildFlags;
+      cargoTestFlags = cargoBuildFlags;
 
       cargoVendorDir = "../nix-vendor";
 
@@ -40,9 +43,9 @@
 
       preConfigure = ''
         mkdir -p $CARGO_HOME
-        mv /build/.cargo/config $CARGO_HOME/config.toml
-        ${vendoring.writeGitVendorEntries "vendored-sources"}
-        ${vendoring.replaceRelativePathsWithAbsolute}
+        mv ../.cargo/config $CARGO_HOME/config.toml
+        ${writeGitVendorEntries}
+        ${replacePaths}
       '';
     });
 in rec {

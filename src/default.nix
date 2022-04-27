@@ -289,6 +289,7 @@
         inherit
           buildPackageWithOtherBuilder
           produceDerivation
+          dreamLock
           ;
 
         inherit

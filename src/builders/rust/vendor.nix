@@ -1,43 +1,24 @@
 {
   lib,
   pkgs,
-  getRoot,
   getSource,
   getSourceSpec,
-  getDependencies,
-  getCyclicDependencies,
   subsystemAttrs,
+  dreamLock,
   ...
 }: let
   l = lib // builtins;
 
-  isCyclic = cyclic: dep:
-    l.any (odep: dep.name == odep.name && dep.version == odep.version) cyclic;
-
-  getUncyclicDependencies = cyclic: deps:
-    l.map
-    (dep: getAllTransitiveDependencies dep.name dep.version)
-    (l.filter (dep: !(isCyclic cyclic dep)) deps);
-
-  getAllTransitiveUncyclicDependencies = pname: version: let
-    cyclic = getCyclicDependencies pname version;
-    direct = getDependencies pname version;
-  in
-    l.unique (l.flatten (direct ++ (getUncyclicDependencies cyclic direct)));
-
-  getAllTransitiveDependencies = pname: version: let
-    direct = getDependencies pname version;
-    cyclic = getCyclicDependencies pname version;
-  in
-    l.unique (l.flatten (
-      direct
-      ++ (getUncyclicDependencies cyclic direct)
-      ++ (
-        l.map
-        (dep: getAllTransitiveUncyclicDependencies dep.name dep.version)
-        (l.filter (isCyclic cyclic) direct)
+  allDependencies =
+    l.flatten
+    (
+      l.mapAttrsToList
+      (
+        name: versions:
+          l.map (version: {inherit name version;}) (l.attrNames versions)
       )
-    ));
+      dreamLock.dependencies
+    );
 in rec {
   # Generates a shell script that writes git vendor entries to .cargo/config.
   # `replaceWith` is the name of the vendored source(s) to use.
@@ -56,11 +37,8 @@ in rec {
     EOF
   '';
 
-  # Vendor a package's dependencies like how `cargo vendor` would do,
-  # so we can use it with `cargo`.
-  vendorPackageDependencies = pname: version: let
-    deps = getAllTransitiveDependencies pname version;
-
+  # Vendors the dependencies passed as Cargo expects them
+  vendorDependencies = deps: let
     makeSource = dep: let
       path = getSource dep.name dep.version;
       spec = getSourceSpec dep.name dep.version;
@@ -107,7 +85,7 @@ in rec {
         ${l.optionalString isGit "printf '{\"files\":{},\"package\":null}' > \"$out/${source.name}/.cargo-checksum.json\""}
       '';
   in
-    pkgs.runCommand "vendor-${pname}-${version}" {} ''
+    pkgs.runCommand "vendor" {} ''
       mkdir -p $out
 
       ${
@@ -117,26 +95,6 @@ in rec {
       }
     '';
 
-  # Vendors a package's roots dependencies.
-  vendorDependencies = pname: version: let
-    root = getRoot pname version;
-  in
-    vendorPackageDependencies root.pname root.version;
-
-  # Generates a script that replaces relative path dependency paths
-  # with absolute ones, if the path dependency isn't in the source
-  # dream2nix provides
-  replaceRelativePathsWithAbsolute = let
-    replacements =
-      l.concatStringsSep
-      " \\\n"
-      (
-        l.mapAttrsToList
-        (rel: abs: "--replace '\"${rel}\"' '\"${abs}\"'")
-        subsystemAttrs.replacePathsWithAbsolute
-      );
-  in ''
-    substituteInPlace ./Cargo.toml \
-      ${replacements}
-  '';
+  # All dependencies in the Cargo.lock file, vendored
+  vendoredDependencies = vendorDependencies allDependencies;
 }

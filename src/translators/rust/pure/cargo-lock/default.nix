@@ -158,7 +158,7 @@ in {
       # The structure of this should be defined in:
       #   ./src/specifications/{subsystem}
       subsystemAttrs = rec {
-        replacePathsWithAbsolute = let
+        relPathReplacements = let
           # Extract dependencies from the Cargo.toml of the
           # package we are currently building
           tomlDeps =
@@ -231,13 +231,12 @@ in {
           sourceType = getSourceTypeFrom rawObj;
           sourceConstructors = {
             path = dependencyObject: let
-              findToml =
+              findCrate =
                 l.findFirst
                 (
                   crate:
-                    crate.name
-                    == dependencyObject.name
-                    && crate.version == dependencyObject.version
+                    (crate.name == dependencyObject.name)
+                    && (crate.version == dependencyObject.version)
                 )
                 null;
               workspaceCrates =
@@ -249,34 +248,33 @@ in {
                   }
                 )
                 cargoPackages;
-              workspaceToml = findToml workspaceCrates;
-              nonWorkspaceToml = findToml (subsystemInfo.crates or []);
+              workspaceCrate = findCrate workspaceCrates;
+              nonWorkspaceCrate = findCrate (subsystemInfo.crates or []);
             in
               if
-                package.name
-                == dependencyObject.name
-                && package.version == dependencyObject.version
+                (package.name == dependencyObject.name)
+                && (package.version == dependencyObject.version)
               then
                 dlib.construct.pathSource {
                   path = projectSource;
                   rootName = null;
                   rootVersion = null;
                 }
-              else if workspaceToml != null
+              else if workspaceCrate != null
               then
                 dlib.construct.pathSource {
-                  path = workspaceToml.relPath;
+                  path = workspaceCrate.relPath;
                   rootName = package.name;
                   rootVersion = package.version;
                 }
-              else if nonWorkspaceToml != null
+              else if nonWorkspaceCrate != null
               then
                 dlib.construct.pathSource {
-                  path = "${rootSource}/${nonWorkspaceToml.relPath}";
+                  path = dlib.sanitizePath "${rootSource}/${nonWorkspaceCrate.relPath}";
                   rootName = null;
                   rootVersion = null;
                 }
-              else throw "could not find crate ${dependencyObject.name}";
+              else throw "could not find crate '${dependencyObject.name}-${dependencyObject.version}'";
 
             git = dependencyObject: let
               parsed = parseGitSource dependencyObject.source;
