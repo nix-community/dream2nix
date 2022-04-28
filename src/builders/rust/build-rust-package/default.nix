@@ -43,7 +43,9 @@
 
       preConfigure = ''
         mkdir -p $CARGO_HOME
-        mv ../.cargo/config $CARGO_HOME/config.toml
+        if [ -f ../.cargo/config ]; then
+          mv ../.cargo/config $CARGO_HOME/config.toml
+        fi
         ${writeGitVendorEntries}
         ${replacePaths}
       '';
