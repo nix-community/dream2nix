@@ -124,7 +124,7 @@ Extensive Example `flake.nix`:
       };
 
       # add sources for `bar` and `baz`
-      sourceOverrides = {
+      sourceOverrides = oldSources: {
         bar."13.2.0" = builtins.fetchTarball {url = ""; sha256 = "";};
         baz."1.0.0" = builtins.fetchTarball {url = ""; sha256 = "";};
       };
