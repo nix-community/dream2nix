@@ -18,6 +18,7 @@
     utils,
     # nixpkgs dependenies
     bash,
+    coreutils,
     jq,
     writeScriptBin,
     callPackage,
@@ -28,7 +29,6 @@
       bash
       coreutils
       jq
-      (callPackage externalSources.gradle2nix {})
     ]
     ''
       # accroding to the spec, the translator reads the input from a json file
@@ -40,7 +40,8 @@
       relPath=$(${jq}/bin/jq '.project.relPath' -c -r $jsonInput)
 
       tmpDir=$(mktemp -d)
-      gradle2nix --project $source --out-dir $tmpDir
+      nix shell github:kranzes/gradle2nix/8921415b908bc847ee01009a1a5ddd40466533b7 -c \
+        gradle2nix --project $source --out-dir $tmpDir
 
       somehow format the json file created by gradle2nix $tmpDir/gradle-env.json > $outputFile
 

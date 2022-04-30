@@ -84,22 +84,6 @@
         "type": "github"
       }
     },
-    "gradle2nix": {
-      "flake": false,
-      "locked": {
-        "lastModified": 1651167340,
-        "narHash": "sha256-U+YBGk/c2jjp6uExGiyrO8+vGpLqeRu6BlhvNDzbfJo=",
-        "owner": "kranzes",
-        "repo": "gradle2nix",
-        "rev": "5acbd615af9f26bbf11e5dd2b620c4d3cf06e01a",
-        "type": "github"
-      },
-      "original": {
-        "owner": "kranzes",
-        "repo": "gradle2nix",
-        "type": "github"
-      }
-    },
     "mach-nix": {
       "flake": false,
       "locked": {
@@ -192,7 +176,6 @@
         "crane": "crane",
         "flake-utils-pre-commit": "flake-utils-pre-commit",
         "gomod2nix": "gomod2nix",
-        "gradle2nix": "gradle2nix",
         "mach-nix": "mach-nix",
         "nixpkgs": "nixpkgs",
         "node2nix": "node2nix",

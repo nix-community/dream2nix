@@ -44,12 +44,6 @@
       url = "github:ipetkov/crane";
       flake = false;
     };
-
-    # required for builder/translator java/gradle2nix
-    gradle2nix = {
-      url = "github:kranzes/gradle2nix";
-      flake = false;
-    };
   };
 
   outputs = {
