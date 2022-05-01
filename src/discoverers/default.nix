@@ -2,10 +2,9 @@
   config,
   dlib,
   lib,
-}: let
+  ...
+} @ args: let
   l = lib // builtins;
-
-  subsystems = dlib.dirNames ./.;
 
   allDiscoverers =
     l.collect
@@ -77,9 +76,24 @@
   in
     settingsApplied;
 
-  discoverers = l.genAttrs subsystems (
-    subsystem: (import (./. + "/${subsystem}") {inherit dlib lib subsystem;})
+  makeDiscoverer = (name: subsystem:
+    let
+      constructor = (     if l.isPath subsystem     then (import subsystem)
+                     else if l.isFunction subsystem then subsystem
+                     else throw "Discoverer can be a path or a function, but instead was ${l.typeOf subsystem}");
+      discoverer  = constructor { inherit dlib lib; subsystem = name; }; 
+    in
+      discoverer
   );
+
+  subsystems = (l.genAttrs (dlib.dirNames ./.) (subsystem: ./. + "/${subsystem}"))
+    // (config.discoverers or {});
+
+  discoverers = l.mapAttrs makeDiscoverer subsystems;
+
+  # discoverers = if subsystems ? ruby
+  #   then l.mapAttrs makeDiscoverer subsystems
+  #   else let _ = l.traceValSeq config; in throw "WTF MATE";
 in {
   inherit
     applyProjectSettings

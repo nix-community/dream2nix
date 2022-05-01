@@ -7,6 +7,8 @@
 
   # exported attributes
   dlib = {
+    lib = l;
+
     inherit
       calcInvalidationHash
       callViaEnv
@@ -37,9 +39,9 @@
   };
 
   # other libs
-  construct = import ./construct.nix {inherit lib;};
+  construct   = import ./construct.nix {inherit config lib;};
   discoverers = import ../discoverers {inherit config dlib lib;};
-  translators = import ./translators.nix {inherit dlib lib;};
+  translators = import ./translators.nix {inherit config dlib lib;};
 
   simpleTranslate2 =
     (import ./simpleTranslate2.nix {inherit dlib lib;}).simpleTranslate2;

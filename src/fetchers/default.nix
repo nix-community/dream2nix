@@ -1,6 +1,6 @@
 {
+  config,
   lib,
-  # dream2nix
   callPackageDream,
   dlib,
   ...
@@ -8,10 +8,10 @@
   b = builtins;
   callFetcher = file: args: callPackageDream file args;
 in rec {
-  fetchers = lib.genAttrs (dlib.dirNames ./.) (
-    name:
-      callFetcher (./. + "/${name}") {}
-  );
+  fetchers' = (lib.genAttrs (dlib.dirNames ../.) (name: ./. + "/${name}"))
+    // (config.fetchers or {});
+
+  fetchers = lib.mapAttrs (name: pathOrModule: callFetcher pathOrModule {}) fetchers';
 
   defaultFetcher = callPackageDream ./default-fetcher.nix {inherit fetchers fetchSource;};
 

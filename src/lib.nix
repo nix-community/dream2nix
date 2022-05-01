@@ -2,7 +2,7 @@
 # (allows to generate outputs for several systems)
 # follows flake output schema
 {
-  dlib,
+  # dlib,
   nixpkgsSrc,
   lib,
   overridesDirs,
@@ -13,9 +13,9 @@
 
   l = lib // builtins;
 
-  dream2nixForSystem = config: system: pkgs:
+  dream2nixForSystem = dlib: config: system: pkgs:
     import ./default.nix
-    {inherit config externalPaths externalSources pkgs;};
+    {inherit dlib config externalPaths externalSources pkgs;};
 
   # TODO: design output schema for cross compiled packages
   makePkgsKey = pkgs: let
@@ -56,27 +56,29 @@
     pkgs ? null,
     systems ? [],
     config ? {},
-  } @ argsInit: let
-    config' = (import ./utils/config.nix).loadConfig argsInit.config or {};
+  }: let
+    config' = (import ./utils/config.nix).loadConfig config;
 
-    config =
+    finalConfig =
       config'
       // {
         overridesDirs = args.overridesDirs ++ config'.overridesDirs;
       };
 
+    dlib = import ./lib {inherit lib; config = finalConfig;};
+
     allPkgs = makeNixpkgs pkgs systems;
 
     forAllSystems = f: lib.mapAttrs f allPkgs;
 
-    dream2nixFor = forAllSystems (dream2nixForSystem config);
+    dream2nixFor = forAllSystems (dream2nixForSystem dlib finalConfig);
   in {
     riseAndShine = throw "Use makeFlakeOutputs instead of riseAndShine.";
 
     makeFlakeOutputs = mArgs:
       makeFlakeOutputsFunc
       (
-        {inherit config pkgs systems;}
+        {inherit dlib pkgs systems; config = finalConfig;}
         // mArgs
       );
 
@@ -92,6 +94,7 @@
   };
 
   makeFlakeOutputsFunc = {
+    dlib ? import ./lib {inherit config lib;},
     config ? {},
     inject ? {},
     pname ? throw "Please pass `pname` to makeFlakeOutputs",
@@ -104,10 +107,13 @@
     translator ? null,
     translatorArgs ? {},
   } @ args: let
-    config = args.config or ((import ./utils/config.nix).loadConfig {});
+    finalConfig = (import ./utils/config.nix).loadConfig config;
     allPkgs = makeNixpkgs pkgs systems;
     forAllSystems = f: b.mapAttrs f allPkgs;
-    dream2nixFor = forAllSystems (dream2nixForSystem config);
+    dream2nixFor = forAllSystems (
+      dream2nixForSystem
+      dlib
+      finalConfig);
 
     getInvalidationHash = project:
       dlib.calcInvalidationHash {
@@ -208,7 +214,7 @@
   in
     flakeOutputs;
 in {
-  inherit dlib init;
+  inherit init;
   riseAndShine = throw "Use makeFlakeOutputs instead of riseAndShine.";
   makeFlakeOutputs = makeFlakeOutputsFunc;
 }

@@ -1,5 +1,5 @@
 # constructors to have at least some kind of `type` safety
-{lib}: {
+{ config, lib }: {
   discoveredProject = {
     name,
     relPath,
