@@ -1,29 +1,36 @@
 {
+  config,
   dlib,
   lib,
+  translators,
 }: let
   l = lib // builtins;
 
   # INTERNAL
 
-  subsystems = dlib.dirNames ../translators;
+  # subsystems = (l.genAttrs (dlib.dirNames ../translators) (subsystem: ../translators + "/${subsystem}"))
+  #   // (config.translators or {});
 
   translatorTypes = ["impure" "ifd" "pure"];
 
   # attrset of: subsystem -> translator-type -> (function subsystem translator-type)
   mkTranslatorsSet = function:
-    l.genAttrs
-    (dlib.dirNames ../translators)
-    (subsystem: let
+    l.mapAttrs
+    (subsystemName: subsystem: let
       availableTypes =
         l.filter
-        (type: l.pathExists (../translators + "/${subsystem}/${type}"))
+        (type:
+          if l.isPath subsystem
+          then (l.pathExists "${subsystem}/${type}")
+          else if l.isAttrs subsystem
+          then subsystem ? ${type}
+          else throw "Translator can be a path or an attrset, but instead was ${l.typeOf subsystem}")
         translatorTypes;
 
       translatorsForTypes =
         l.genAttrs
         availableTypes
-        (transType: function subsystem transType);
+        (transType: function subsystemName subsystem transType);
     in
       translatorsForTypes
       // {
@@ -32,7 +39,8 @@
           (a: b: a // b)
           {}
           (l.attrValues translatorsForTypes);
-      });
+      })
+    subsystems;
 
   # flat list of all translators sorted by priority (pure translators first)
   translatorsList = let
@@ -50,8 +58,8 @@
     (a: b: (prio a) < (prio b))
     list;
 
-  callTranslator = subsystem: type: name: file: args: let
-    translatorModule = import file {
+  callTranslator = subsystem: type: name: mkModule: args: let
+    translatorModule = mkModule {
       inherit dlib lib;
     };
   in
@@ -64,19 +72,32 @@
 
   # attrset of: subsystem -> translator-type -> translator
   translators = mkTranslatorsSet (
-    subsystem: type: let
+    # subsystem can be a path or an attrset
+    subsystemName: subsystem: type: let
       translatorNames =
-        dlib.dirNames (../translators + "/${subsystem}/${type}");
+        if l.isPath subsystem
+        then dlib.dirNames "${subsystem}/${type}"
+        else if l.isAttrs subsystem
+        then l.attrNames (subsystem.${type} or {})
+        # TODO: it would be sensible for translator leafs to be either functions or paths
+        else throw "Translator can be a path or an attrset, but instead was ${l.typeOf subsystem}";
 
       translatorsLoaded =
         l.genAttrs
         translatorNames
         (translatorName:
           callTranslator
-          subsystem
+          subsystemName
           type
           translatorName
-          (../translators + "/${subsystem}/${type}/${translatorName}")
+          (
+            if l.isPath subsystem
+            then (import "${subsystem}/${type}/${translatorName}")
+            else if l.isAttrs subsystem
+            then subsystem.${type}.${translatorName}
+            # TODO: it would be sensible for translator leafs to be either functions or paths
+            else throw "Translator can be a path or an attrset, but instead was ${l.typeOf subsystem}"
+          )
           {});
     in
       l.filterAttrs

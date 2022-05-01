@@ -1,15 +1,16 @@
 {
+  pkgs,
   coreutils,
   dlib,
   jq,
   lib,
   nix,
-  pkgs,
   python3,
   callPackageDream,
   externals,
   dream2nixWithExternals,
   utils,
+  # translators,
   ...
 }: let
   b = builtins;
@@ -18,21 +19,23 @@
 
   makeTranslator = translatorModule: let
     translator =
-      translatorModule
+      (lib.traceVal (lib.trace "MAKING MODULE" translatorModule))
       # for pure translators
       #   - import the `translate` function
       #   - generate `translateBin`
       // (lib.optionalAttrs (translatorModule ? translate) {
         translate = let
-          translateOriginal = callPackageDream translatorModule.translate {
-            translatorName = translatorModule.name;
-          };
+          translateOriginal = translatorModule.translate;
+          # translateOriginal = callPackageDream translatorModule.translate {
+          #   translatorName = translatorModule.name;
+          # };
         in
           args:
             translateOriginal
             (
-              (dlib.translators.getextraArgsDefaults
-                (translatorModule.extraArgs or {}))
+              {}
+              # (dlib.translators.getextraArgsDefaults
+              #   (translatorModule.extraArgs or {}))
               // args
               // args.project.subsystemInfo
               // {
@@ -47,16 +50,21 @@
       # for impure translators:
       #   - import the `translateBin` function
       // (lib.optionalAttrs (translatorModule ? translateBin) {
-        translateBin =
-          callPackageDream translatorModule.translateBin
-          {
-            translatorName = translatorModule.name;
-          };
+        translateBin = translatorModule.translateBin;
+        # translateBin = pkgs.callPackage (translatorModule.translateBin) {};
+        # callPackageDream translatorModule.translateBin
+        # {
+        #   translatorName = translatorModule.name;
+        # };
       });
   in
     translator;
 
-  translators = dlib.translators.mapTranslators makeTranslator;
+  # finalTranslators = dlib.translators.mapTranslators makeTranslator;
+
+  # finalTranslators = lib.mapAttrsRecursive
+  #   (_: t: makeTranslator t)
+  #   translators;
 
   # adds a translateBin to a pure translator
   wrapPureTranslator = translatorAttrPath: let
@@ -83,7 +91,7 @@
                   (builtins.unsafeDiscardStringContext (builtins.readFile '''$1''')));
 
             dreamLock' =
-              dream2nix.translators.translators.${
+              dream2nix.translators.${
           lib.concatStringsSep "." translatorAttrPath
         }.translate
                 translatorArgs;
@@ -107,7 +115,6 @@
       name = "translator-${lib.concatStringsSep "-" translatorAttrPath}";
     });
 in {
-  inherit
-    translators
-    ;
+  # translators = finalTranslators;
+  makeTranslator = makeTranslator;
 }

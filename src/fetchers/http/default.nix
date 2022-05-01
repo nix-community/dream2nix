@@ -37,6 +37,6 @@
         source = drvSanitized;
       };
     in
-      extracted;
+      drvSanitized;
   };
 }

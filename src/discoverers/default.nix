@@ -2,15 +2,19 @@
   config,
   dlib,
   lib,
-}: let
+  # name,
+  discoverers,
+  ...
+} @ args: let
   l = lib // builtins;
 
-  subsystems = dlib.dirNames ./.;
-
   allDiscoverers =
+    #l.traceVal (
     l.collect
     (v: v ? discover)
-    discoverers;
+    discoverers
+    # )
+    ;
 
   discoverProjects = {
     source ? throw "Pass either `source` or `tree` to discoverProjects",
@@ -76,14 +80,10 @@
       (proj: applyAllSettings proj);
   in
     settingsApplied;
-
-  discoverers = l.genAttrs subsystems (
-    subsystem: (import (./. + "/${subsystem}") {inherit dlib lib subsystem;})
-  );
+  # discoverers = l.mapAttrs
+  #   (subsystem: discoverers:
+  #     l.mapAttrs (name: discoverer: discoverer // { inherit name subsystem; }) discoverers)
+  #   args.discoverers;
 in {
-  inherit
-    applyProjectSettings
-    discoverProjects
-    discoverers
-    ;
+  inherit applyProjectSettings discoverProjects;
 }

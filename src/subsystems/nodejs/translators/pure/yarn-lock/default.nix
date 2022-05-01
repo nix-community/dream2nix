@@ -1,6 +1,7 @@
 {
   dlib,
   lib,
+  ...
 }: let
   l = lib // builtins;
   nodejsUtils = import ../../utils.nix {inherit lib;};
@@ -319,6 +320,8 @@
     });
 in {
   version = 2;
+
+  type = "pure";
 
   inherit translate;
 

@@ -67,17 +67,42 @@
   # apps for CLI and installation
   apps = callPackageDream ./apps {};
 
-  # builder implementaitons for all subsystems
-  builders = callPackageDream ./builders {};
+  # # builder implementaitons for all subsystems
+  # builders = callPackageDream ./builders {};
 
-  # fetcher implementations
-  fetchers = callPackageDream ./fetchers {};
+  # # fetcher implementations
+  # fetchers = callPackageDream ./fetchers {};
 
-  # updater modules to find newest package versions
-  updaters = callPackageDream ./updaters {};
+  # # updater modules to find newest package versions
+  # updaters = callPackageDream ./updaters {};
 
-  # the translator modules and utils for all subsystems
-  translators = callPackageDream ./translators {};
+  # # the translator modules and utils for all subsystems
+  # translators = callPackageDream ./translators {};
+
+  subsystems = callPackageDream ./subsystems {};
+
+  finalConfig = subsystems.config; # lib.traceValSeq result.config;
+
+  inherit
+    (subsystems)
+    discoverers
+    translators
+    fetchers
+    updaters
+    builders
+    applyProjectSettings
+    discoverProjects
+    ;
+
+  # discoverers = finalConfig.discoverers;
+  # translators = finalConfig.translators;
+  # fetchers    = finalConfig.fetchers;
+  # updaters    = finalConfig.updaters;
+  # builders    = finalConfig.builders;
+
+  # instantiatedDiscoverers = import ./discoverers { inherit dlib lib discoverers; config = finalConfig; };
+
+  # inherit (instantiatedDiscoverers) applyProjectSettings discoverProjects;
 
   externals = {
     node2nix = nodejs:
@@ -374,7 +399,7 @@
 
   translateProjects = {
     discoveredProjects ?
-      dlib.discoverers.discoverProjects
+      discoverProjects
       {inherit settings tree;},
     source ? throw "Pass either `source` or `tree` to translateProjects",
     tree ? dlib.prepareSourceTree {inherit source;},
@@ -382,7 +407,7 @@
     settings ? [],
   } @ args: let
     getTranslator = subsystem: translatorName:
-      translators.translators."${subsystem}".all."${translatorName}";
+      translators."${subsystem}".all."${translatorName}";
 
     isImpure = project: translatorName:
       (getTranslator project.subsystem translatorName).type == "impure";
@@ -572,6 +597,12 @@
       projectOutputs;
   in
     mergedOutputs;
+
+  finalDlib =
+    dlib
+    // {
+      inherit discoverers discoverProjects translators;
+    };
 in {
   inherit
     apps
@@ -583,14 +614,16 @@ in {
     realizeProjects
     translateProjects
     riseAndShine
-    translators
     updaters
     utils
     makeOutputsForDreamLock
+    translators
     ;
 
+  dlib = finalDlib;
+
   inherit
-    (dlib)
+    (finalDlib)
     discoverers
     ;
 }

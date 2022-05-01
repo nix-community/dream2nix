@@ -1,6 +1,8 @@
 {
   dlib,
   lib,
+  utils,
+  ...
 }: let
   b = builtins;
   l = lib // builtins;
@@ -10,10 +12,6 @@
     nodejsUtils.getWorkspaceLockFile tree project "package-lock.json";
 
   translate = {
-    translatorName,
-    utils,
-    ...
-  }: {
     project,
     source,
     tree,
@@ -133,7 +131,9 @@
       dependenciesByOriginalID,
       ...
     }: rec {
-      inherit translatorName;
+      # inherit translatorName;
+      translatorName = "package-lock";
+
       location = relPath;
 
       # values
@@ -236,6 +236,8 @@
     });
 in rec {
   version = 2;
+
+  type = "pure";
 
   inherit translate;
 

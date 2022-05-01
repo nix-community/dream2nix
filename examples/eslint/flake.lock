@@ -45,18 +45,18 @@
         "flake-utils-pre-commit": "flake-utils-pre-commit",
         "gomod2nix": "gomod2nix",
         "mach-nix": "mach-nix",
-        "nixpkgs": "nixpkgs",
+        "nixpkgs": [
+          "nixpkgs"
+        ],
         "node2nix": "node2nix",
         "poetry2nix": "poetry2nix",
         "pre-commit-hooks": "pre-commit-hooks"
       },
       "locked": {
-        "lastModified": 1648394205,
-        "narHash": "sha256-eR+9A0NryKXnDYHZNzOcgqIrbwC5W3KqQxctOUOVlCw=",
-        "owner": "nix-community",
-        "repo": "dream2nix",
-        "rev": "f7c034d4eee5d3cf8df4baaad59e715a0cf24db7",
-        "type": "github"
+        "lastModified": 1651968639,
+        "narHash": "sha256-B2OwMnGLh5JGnV5q83fBNuuucAMll61zjBljcQgPCxs=",
+        "type": "git",
+        "url": "file:///home/jaen/Projects/nix/dream2nix"
       },
       "original": {
         "owner": "nix-community",
@@ -128,17 +128,18 @@
     },
     "nixpkgs": {
       "locked": {
-        "lastModified": 1645433236,
-        "narHash": "sha256-4va4MvJ076XyPp5h8sm5eMQvCrJ6yZAbBmyw95dGyw4=",
-        "owner": "NixOS",
-        "repo": "nixpkgs",
-        "rev": "7f9b6e2babf232412682c09e57ed666d8f84ac2d",
-        "type": "github"
+        "lastModified": 1651690893,
+        "narHash": "sha256-xfQydh1vfpbB146zJszlxt1ar9h/TKHYnKMn2H/e8XA=",
+        "ref": "fix-brave-gpu-acceleration-wayland",
+        "rev": "de4a99db5e4a34e41175179c12f61b724472ca1e",
+        "shallow": true,
+        "type": "git",
+        "url": "file:///home/jaen/Projects/nix/nixpkgs"
       },
       "original": {
-        "id": "nixpkgs",
-        "ref": "nixos-unstable",
-        "type": "indirect"
+        "owner": "NixOS",
+        "repo": "nixpkgs",
+        "type": "github"
       }
     },
     "node2nix": {
@@ -202,6 +203,7 @@
     "root": {
       "inputs": {
         "dream2nix": "dream2nix",
+        "nixpkgs": "nixpkgs",
         "src": "src"
       }
     },
