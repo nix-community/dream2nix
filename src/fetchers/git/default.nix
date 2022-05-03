@@ -5,6 +5,11 @@
   ...
 }: let
   b = builtins;
+
+  # check if a string is a git ref
+  isGitRef = b.match "refs/(heads|tags)/.*";
+  # check if a string is a git rev
+  isGitRev = b.match "[a-f0-9]*";
 in {
   inputs = [
     "url"
@@ -18,14 +23,21 @@ in {
     rev,
     ...
   } @ inp:
-    if b.match "refs/(heads|tags)/.*" rev == null && builtins.match "[a-f0-9]*" rev == null
+    if isGitRef rev == null && isGitRev rev == null
     then throw ''rev must either be a sha1 revision or "refs/heads/branch-name" or "refs/tags/tag-name"''
+    else if isGitRef (inp.ref or "") == null
+    then throw ''ref must be in either "refs/heads/branch-name" or "refs/tags/tag-name" format''
     else let
       b = builtins;
 
       refAndRev =
-        if b.match "refs/(heads|tags)/.*" inp.rev != null
+        # if the source specifies a ref, then we add both the ref and rev
+        if inp ? ref
+        then {inherit (inp) rev ref;}
+        # otherwise check if the rev is a ref, if it is add to ref
+        else if b.match "refs/(heads|tags)/.*" inp.rev != null
         then {ref = inp.rev;}
+        # if the rev isn't a ref, then it is a rev, so add it there
         else {rev = inp.rev;};
     in {
       calcHash = algo:
@@ -34,7 +46,8 @@ in {
           (refAndRev
             // {
               inherit url;
-              allRefs = true;
+              # disable fetching all refs if the source specifies a ref
+              allRefs = !(inp ? ref);
               submodules = true;
             }));
 
