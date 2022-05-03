@@ -278,11 +278,19 @@ in {
 
             git = dependencyObject: let
               parsed = parseGitSource dependencyObject.source;
-            in {
-              type = "git";
-              url = parsed.url;
-              rev = parsed.sha;
-            };
+              maybeRef =
+                if parsed.type == "branch"
+                then {ref = "refs/heads/${parsed.value}";}
+                else if parsed.type == "tag"
+                then {ref = "refs/tags/${parsed.value}";}
+                else {};
+            in
+              maybeRef
+              // {
+                type = "git";
+                url = parsed.url;
+                rev = parsed.sha;
+              };
 
             crates-io = dependencyObject: {
               type = "crates-io";
