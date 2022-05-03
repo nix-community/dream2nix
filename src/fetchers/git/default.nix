@@ -22,8 +22,10 @@ in {
     url,
     rev,
     ...
-  } @ inp:
-    if isGitRef rev == null && isGitRev rev == null
+  } @ inp: let
+    isRevGitRef = isGitRef rev;
+  in
+    if isRevGitRef == null && isGitRev rev == null
     then throw ''rev must either be a sha1 revision or "refs/heads/branch-name" or "refs/tags/tag-name"''
     else if isGitRef (inp.ref or "") == null
     then throw ''ref must be in either "refs/heads/branch-name" or "refs/tags/tag-name" format''
@@ -35,7 +37,7 @@ in {
         if inp ? ref
         then {inherit (inp) rev ref;}
         # otherwise check if the rev is a ref, if it is add to ref
-        else if b.match "refs/(heads|tags)/.*" inp.rev != null
+        else if isRevGitRef != null
         then {ref = inp.rev;}
         # if the rev isn't a ref, then it is a rev, so add it there
         else {rev = inp.rev;};
