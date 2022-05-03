@@ -87,7 +87,7 @@ in {
       name = l.head parsed;
       maybeVersion =
         if l.length parsed > 1
-        then l.last parsed
+        then l.elemAt parsed 1
         else null;
     in {
       inherit name;
