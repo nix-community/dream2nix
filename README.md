@@ -10,10 +10,10 @@ It focuses on the following aspects:
 - Modularity
 - Customizability
 - Maintainability
-- Nixpkgs Compatibility (not enforcing IFD)
+- Nixpkgs Compatibility, by not enforcing IFD (import from derivation)
 - Code de-duplication across 2nix converters
 - Code de-duplication in nixpkgs
-- Risk free opt-in FOD fetching (no reproducibility issues)
+- Risk-free opt-in aggregated fetching (larger [FODs](https://nixos.wiki/wiki/Glossary), less checksums)
 - Common UI across 2nix converters
 - Reduce effort to develop new 2nix solutions
 - Exploration and adoption of new nix features
