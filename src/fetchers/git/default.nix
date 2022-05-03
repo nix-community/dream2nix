@@ -34,7 +34,7 @@ in {
 
       refAndRev =
         # if the source specifies a ref, then we add both the ref and rev
-        if inp ? ref
+        if inp.ref or null != null
         then {inherit (inp) rev ref;}
         # otherwise check if the rev is a ref, if it is add to ref
         else if isRevGitRef != null
