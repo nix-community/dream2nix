@@ -611,6 +611,7 @@ in {
     translators
     updaters
     utils
+    makeOutputsForDreamLock
     ;
 
   inherit

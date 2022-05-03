@@ -80,6 +80,13 @@ in {
     # Parse Cargo.lock and extract dependencies
     parsedLock = projectTree.files."Cargo.lock".tomlContent;
     parsedDeps = parsedLock.package;
+
+    # Gets a checksum from the [metadata] table of the lockfile
+    getChecksum = dep: let
+      key = "checksum ${dep.name} ${dep.version} (${dep.source})";
+    in
+      parsedLock.metadata."${key}";
+
     # This parses a "package-name version" entry in the "dependencies"
     # field of a dependency in Cargo.lock
     makeDepNameVersion = entry: let
@@ -87,7 +94,7 @@ in {
       name = l.head parsed;
       maybeVersion =
         if l.length parsed > 1
-        then l.last parsed
+        then l.elemAt parsed 1
         else null;
     in {
       inherit name;
@@ -288,7 +295,7 @@ in {
               type = "crates-io";
               name = dependencyObject.name;
               version = dependencyObject.version;
-              hash = dependencyObject.checksum;
+              hash = dependencyObject.checksum or (getChecksum dependencyObject);
             };
           };
         in
