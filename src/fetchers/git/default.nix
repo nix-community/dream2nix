@@ -47,7 +47,7 @@ in {
             // {
               inherit url;
               # disable fetching all refs if the source specifies a ref
-              allRefs = !(inp ? ref);
+              allRefs = inp.ref or null == null;
               submodules = true;
             }));
 
