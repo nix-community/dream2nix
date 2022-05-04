@@ -24,17 +24,18 @@ in {
     ...
   } @ inp: let
     isRevGitRef = isGitRef rev;
+    hasGitRef = inp.ref or null != null;
   in
     if isRevGitRef == null && isGitRev rev == null
     then throw ''rev must either be a sha1 revision or "refs/heads/branch-name" or "refs/tags/tag-name"''
-    else if isGitRef (inp.ref or "") == null
+    else if hasGitRef && isGitRef inp.ref == null
     then throw ''ref must be in either "refs/heads/branch-name" or "refs/tags/tag-name" format''
     else let
       b = builtins;
 
       refAndRev =
         # if the source specifies a ref, then we add both the ref and rev
-        if inp.ref or null != null
+        if hasGitRef
         then {inherit (inp) rev ref;}
         # otherwise check if the rev is a ref, if it is add to ref
         else if isRevGitRef != null
@@ -49,7 +50,7 @@ in {
             // {
               inherit url;
               # disable fetching all refs if the source specifies a ref
-              allRefs = inp.ref or null == null;
+              allRefs = ! hasGitRef;
               submodules = true;
             }));
 
