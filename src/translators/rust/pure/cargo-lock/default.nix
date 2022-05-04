@@ -286,9 +286,9 @@ in {
             git = dependencyObject: let
               parsed = parseGitSource dependencyObject.source;
               maybeRef =
-                if parsed.type == "branch"
+                if parsed.type or null == "branch"
                 then {ref = "refs/heads/${parsed.value}";}
-                else if parsed.type == "tag"
+                else if parsed.type or null == "tag"
                 then {ref = "refs/tags/${parsed.value}";}
                 else {};
             in
