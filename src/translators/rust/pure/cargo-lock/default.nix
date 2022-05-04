@@ -9,6 +9,10 @@ in {
       url = "https://github.com/BurntSushi/ripgrep/tarball/30ee6f08ee8e22c42ab2ef837c764f52656d025b";
       sha256 = "1g73qfc6wm7d70pksmbzq714mwycdfx1n4vfrivjs7jpkj40q4vv";
     })
+    (builtins.fetchTarball {
+      url = "https://github.com/yusdacra/cargo-basic-git/tarball/ba781213ed1c0e653c3247ab339cc84bda9d0337";
+      sha256 = "08fs64gm7r5l5pipn78lkkzdkalysk0c7hx5b1bcqdq99lbdhpbp";
+    })
   ];
 
   translate = {translatorName, ...}: {
