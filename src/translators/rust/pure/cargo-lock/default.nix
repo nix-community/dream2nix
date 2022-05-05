@@ -305,8 +305,6 @@ in {
 
             crates-io = dependencyObject: {
               type = "crates-io";
-              name = dependencyObject.name;
-              version = dependencyObject.version;
               hash = dependencyObject.checksum or (getChecksum dependencyObject);
             };
           };
