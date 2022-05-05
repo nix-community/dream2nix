@@ -1,12 +1,12 @@
-diff --git a/packages/webpack-cli/bin/cli.js b/packages/webpack-cli/bin/cli.js
---- a/bin/cli.js
-+++ b/bin/cli.js
-@@ -21,7 +21,7 @@ if (!process.env.WEBPACK_CLI_SKIP_IMPORT_LOCAL) {
+diff --git a/packages/webpack-cli/src/webpack-cli.ts b/packages/webpack-cli/src/webpack-cli.ts
+--- a/lib/webpack-cli.js
++++ b/lib/webpack-cli.js
+@@ -342,7 +342,7 @@
+           continue;
+         }
  
- process.title = "webpack";
+-        let skipInstallation = false;
++        let skipInstallation = true;
  
--if (utils.packageExists("webpack")) {
-+if (true) {
-     runCLI(process.argv, originalModuleCompile);
- } else {
-     const { promptInstallation, logger, colors } = utils;
+         // Allow to use `./path/to/webpack.js` outside `node_modules`
+         if (dependency === WEBPACK_PACKAGE && fs.existsSync(WEBPACK_PACKAGE)) {

@@ -782,6 +782,15 @@ in
       };
     };
 
+    webpack-cli = {
+      remove-webpack-check = {
+        _condition = satisfiesSemver "^4.9.0";
+        patches = [
+          ./webpack-cli/remove-webpack-check.patch
+        ];
+      };
+    };
+
     # TODO: Maybe should replace binaries with the ones from nixpkgs
     "7zip-bin" = {
       patch-binaries = {
