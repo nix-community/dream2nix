@@ -12,8 +12,6 @@
         (dirName: dir: discover {tree = dir;})
         (tree.directories or {}));
   in
-    # A directory is identified as a project only if it contains a Cargo.toml
-    # and a Cargo.lock.
     if tree ? files."setup.py"
     then
       [
