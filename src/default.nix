@@ -200,6 +200,7 @@
   # fetch only sources and do not build
   fetchSources = {
     dreamLock,
+    sourceRoot,
     fetcher ? null,
     extract ? false,
     sourceOverrides ? oldSources: {},
@@ -213,7 +214,7 @@
       else args.fetcher;
 
     fetched = fetcher rec {
-      inherit sourceOverrides;
+      inherit sourceOverrides sourceRoot;
       defaultPackage = dreamLock._generic.defaultPackage;
       defaultPackageVersion = dreamLock._generic.packages."${defaultPackage}";
       sources = dreamLock'.sources;
@@ -341,6 +342,7 @@
 
   makeOutputsForDreamLock = {
     dreamLock,
+    sourceRoot,
     builder ? null,
     fetcher ? null,
     inject ? {},
@@ -369,7 +371,7 @@
 
     fetchedSources =
       (fetchSources {
-        inherit dreamLock sourceOverrides;
+        inherit dreamLock sourceOverrides sourceRoot;
         fetcher = fetcher';
       })
       .fetchedSources;
@@ -552,6 +554,7 @@
     outputsForProject = proj: let
       outputs = makeOutputsForDreamLock {
         inherit inject packageOverrides;
+        sourceRoot = source;
         builder = proj.builder or null;
         dreamLock = proj.dreamLock;
         sourceOverrides = oldSources:
