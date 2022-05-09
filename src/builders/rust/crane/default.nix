@@ -26,7 +26,6 @@
     src = utils.getRootSource pname version;
     cargoVendorDir = vendoring.vendoredDependencies;
     replacePaths = utils.replaceRelativePathsWithAbsolute {
-      inherit src;
       paths = subsystemAttrs.relPathReplacements;
     };
     writeGitVendorEntries = vendoring.writeGitVendorEntries "nix-sources";

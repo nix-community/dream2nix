@@ -16,17 +16,14 @@ in rec {
 
   # Generates a script that replaces relative path dependency paths with absolute
   # ones, if the path dependency isn't in the source dream2nix provides
-  replaceRelativePathsWithAbsolute = {
-    paths,
-    src,
-  }: let
+  replaceRelativePathsWithAbsolute = {paths}: let
     replacements =
       l.concatStringsSep
       " \\\n"
       (
         l.mapAttrsToList
         (
-          from: rel: "--replace '\"${from}\"' '\"${dlib.sanitizePath "${src}/${rel}"}\"'"
+          from: rel: ''--replace "\"${from}\"" "\"$TEMPDIR/$sourceRoot/${rel}\""''
         )
         paths
       );

@@ -23,7 +23,6 @@
     src = utils.getRootSource pname version;
     vendorDir = vendoring.vendoredDependencies;
     replacePaths = utils.replaceRelativePathsWithAbsolute {
-      inherit src;
       paths = subsystemAttrs.relPathReplacements;
     };
     writeGitVendorEntries = vendoring.writeGitVendorEntries "vendored-sources";
