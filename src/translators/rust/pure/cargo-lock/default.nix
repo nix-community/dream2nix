@@ -23,7 +23,7 @@ in {
   } @ args: let
     # get the root source and project source
     rootSource = tree.fullPath;
-    projectSource = "${tree.fullPath}/${project.relPath}";
+    projectSource = dlib.sanitizePath "${tree.fullPath}/${project.relPath}";
     projectTree = tree.getNodeFromPath project.relPath;
     subsystemInfo = project.subsystemInfo;
 
@@ -170,7 +170,11 @@ in {
             (
               dep: {
                 name = dep.path;
-                value = dlib.sanitizePath "${projectSource}/${dep.path}";
+                value = let
+                  absPath = dlib.sanitizePath "${projectSource}/${dep.path}";
+                  relPath = l.removePrefix rootSource absPath;
+                in
+                  relPath;
               }
             )
             pathDeps

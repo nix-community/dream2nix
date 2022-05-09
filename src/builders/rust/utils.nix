@@ -3,6 +3,7 @@
   getSource,
   getRoot,
   lib,
+  dlib,
   ...
 }: let
   l = lib // builtins;
@@ -15,13 +16,18 @@ in rec {
 
   # Generates a script that replaces relative path dependency paths with absolute
   # ones, if the path dependency isn't in the source dream2nix provides
-  replaceRelativePathsWithAbsolute = paths: let
+  replaceRelativePathsWithAbsolute = {
+    paths,
+    src,
+  }: let
     replacements =
       l.concatStringsSep
       " \\\n"
       (
         l.mapAttrsToList
-        (rel: abs: "--replace '\"${rel}\"' '\"${abs}\"'")
+        (
+          from: rel: "--replace '\"${from}\"' '\"${dlib.sanitizePath "${src}/${rel}"}\"'"
+        )
         paths
       );
   in ''
