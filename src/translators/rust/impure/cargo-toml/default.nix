@@ -28,7 +28,7 @@
       outputFile=$(jq '.outputFile' -c -r $jsonInput)
       source=$(jq '.source' -c -r $jsonInput)
       relPath=$(jq '.project.relPath' -c -r $jsonInput)
-      cargoArgs=$(jq '.project.subsystemInfo.cargoArgs' -c -r $jsonInput)
+      cargoArgs=$(jq '.project.subsystemInfo.cargoArgs | select (.!=null)' -c -r $jsonInput)
 
       cp -r $source/* ./
       chmod -R +w ./
