@@ -41,7 +41,11 @@ in {
         value = (projectTree.getNodeFromPath "${relPath}/Cargo.toml").tomlContent;
       })
       # Filter root referencing member, we already parsed this (rootToml)
-      (l.filter (relPath: relPath != ".") subsystemInfo.workspaceMembers);
+      (
+        l.filter
+        (relPath: relPath != ".")
+        (subsystemInfo.workspaceMembers or [])
+      );
 
     # All cargo packages that we will output
     cargoPackages =
