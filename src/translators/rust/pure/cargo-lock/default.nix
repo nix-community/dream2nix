@@ -190,6 +190,19 @@ in {
             );
           # We only need to patch path dependencies
           pathDeps = l.filter (dep: dep ? path) tomlDeps;
+          # filter out path dependencies whose path are same as in
+          # workspace members.
+          # this is because otherwise workspace.members paths will also
+          # get replaced in the build.
+          # and there is no reason to replace these anyways
+          # since they are in the source.
+          outsideDeps =
+            l.filter
+            (
+              dep:
+                !(l.any (memberPath: dep.path == memberPath) workspaceMembers)
+            )
+            pathDeps;
         in
           l.listToAttrs (
             l.map
@@ -203,7 +216,7 @@ in {
                   relPath;
               }
             )
-            pathDeps
+            outsideDeps
           );
         gitSources = let
           gitDeps = l.filter (dep: (getSourceTypeFrom dep) == "git") parsedDeps;
