@@ -33,6 +33,32 @@ in {
       value = projectTree.files."Cargo.toml".tomlContent;
     };
 
+    # use workspace members from discover phase
+    # or discover them again ourselves
+    workspaceMembers =
+      subsystemInfo.workspaceMembers
+      or (
+        l.flatten
+        (
+          l.map
+          (
+            memberName: let
+              components = l.splitString "/" memberName;
+            in
+              # Resolve globs if there are any
+              if l.last components == "*"
+              then let
+                parentDirRel = l.concatStringsSep "/" (l.init components);
+                dirs = (tree.getNodeFromPath parentDirRel).directories;
+              in
+                l.mapAttrsToList
+                (name: _: "${parentDirRel}/${name}")
+                dirs
+              else memberName
+          )
+          (rootToml.value.workspace.members or [])
+        )
+      );
     # Get cargo packages (for workspace members)
     workspaceCargoPackages =
       l.map
@@ -41,11 +67,7 @@ in {
         value = (projectTree.getNodeFromPath "${relPath}/Cargo.toml").tomlContent;
       })
       # Filter root referencing member, we already parsed this (rootToml)
-      (
-        l.filter
-        (relPath: relPath != ".")
-        (subsystemInfo.workspaceMembers or [])
-      );
+      (l.filter (relPath: relPath != ".") workspaceMembers);
 
     # All cargo packages that we will output
     cargoPackages =
