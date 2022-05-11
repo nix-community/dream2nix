@@ -49,6 +49,7 @@
         fi
         ${writeGitVendorEntries}
         ${replacePaths}
+        ${utils.writeCargoLock}
       '';
     });
 in rec {

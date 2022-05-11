@@ -36,6 +36,7 @@
     preConfigure = ''
       ${writeGitVendorEntries}
       ${replacePaths}
+      ${utils.writeCargoLock}
     '';
     # The deps-only derivation will use this as a prefix to the `pname`
     depsNameSuffix = "-deps";
