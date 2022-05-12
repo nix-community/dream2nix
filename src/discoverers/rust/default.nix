@@ -81,7 +81,11 @@
       l.filter
       (
         project:
-          !(l.any (memberPath: project.relPath == memberPath) workspaceMembers)
+          !(
+            l.any
+            (memberPath: l.hasSuffix memberPath project.relPath)
+            workspaceMembers
+          )
       )
       subdirProjects';
   in
