@@ -143,6 +143,11 @@ Extensive Example `flake.nix`:
 - [Override System](/docs/override-system.md)
 - [Contributors Guide](/docs/contributors-guide.md)
 
+### Funding
+This project receives financial support by [NLNet](https://nlnet.nl/) as part of the [NGI Assure Programme](https://nlnet.nl/assure/) funded by the European Commission.
+
+If your organization wants to support the project with extra funding in order to add support for more languages or new featuress, please contact one of the maintainers.
+
 ### Community
 matrix: https://matrix.to/#/#dream2nix:nixos.org
 
