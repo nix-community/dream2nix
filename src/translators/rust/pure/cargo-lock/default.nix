@@ -96,9 +96,13 @@ in {
     in
       parsedLock.metadata."${key}";
 
+    # map of dependency names to versions
+    depNamesToVersions =
+      l.listToAttrs
+      (l.map (dep: l.nameValuePair dep.name dep.version) parsedDeps);
     # This parses a "package-name version" entry in the "dependencies"
     # field of a dependency in Cargo.lock
-    makeDepNameVersion = entry: let
+    parseDepEntryImpl = entry: let
       parsed = l.splitString " " entry;
       name = l.head parsed;
       maybeVersion =
@@ -113,25 +117,18 @@ in {
         if maybeVersion != null
         then maybeVersion
         else
-          (
-            l.findFirst
-            (dep: dep.name == name)
-            (throw "no dependency found with name ${name} in Cargo.lock")
-            parsedDeps
-          )
-          .version;
+          depNamesToVersions.${name}
+          or (throw "no dependency found with name ${name} in Cargo.lock");
     };
-
-    package = rec {
-      toml = packageToml.value;
-      name = toml.package.name;
-      version =
-        toml.package.version
-        or (l.warn "no version found in Cargo.toml for ${name}, defaulting to unknown" "unknown");
-    };
+    depNameVersionAttrs = let
+      makePair = entry: l.nameValuePair entry (parseDepEntryImpl entry);
+      depEntries = l.flatten (l.map (dep: dep.dependencies or []) parsedDeps);
+    in
+      l.listToAttrs (l.map makePair (l.unique depEntries));
+    parseDepEntry = entry: depNameVersionAttrs.${entry};
 
     # Parses a git source, taken straight from nixpkgs.
-    parseGitSource = src: let
+    parseGitSourceImpl = src: let
       parts = builtins.match ''git\+([^?]+)(\?(rev|tag|branch)=(.*))?#(.*)'' src;
       type = builtins.elemAt parts 2; # rev, tag or branch
       value = builtins.elemAt parts 3;
@@ -144,9 +141,17 @@ in {
           sha = builtins.elemAt parts 4;
         }
         // (lib.optionalAttrs (type != null) {inherit type value;});
+    parsedGitSources = let
+      makePair = dep:
+        l.nameValuePair
+        dep.source
+        (parseGitSourceImpl (dep.source or ""));
+    in
+      l.listToAttrs (l.map makePair parsedDeps);
+    parseGitSource = src: parsedGitSources.${src};
 
     # Extracts a source type from a dependency.
-    getSourceTypeFrom = dependencyObject: let
+    getSourceTypeFromImpl = dependencyObject: let
       checkType = type: l.hasPrefix "${type}+" dependencyObject.source;
     in
       if !(l.hasAttr "source" dependencyObject)
@@ -159,6 +164,22 @@ in {
         then "crates-io"
         else throw "registries other than crates.io are not supported yet"
       else throw "unknown or unsupported source type: ${dependencyObject.source}";
+    depSourceTypes = let
+      makePair = dep:
+        l.nameValuePair
+        "${dep.name}-${dep.version}"
+        (getSourceTypeFromImpl dep);
+    in
+      l.listToAttrs (l.map makePair parsedDeps);
+    getSourceTypeFrom = dep: depSourceTypes."${dep.name}-${dep.version}";
+
+    package = rec {
+      toml = packageToml.value;
+      name = toml.package.name;
+      version =
+        toml.package.version
+        or (l.warn "no version found in Cargo.toml for ${name}, defaulting to unknown" "unknown");
+    };
   in
     dlib.simpleTranslate2
     ({...}: rec {
@@ -231,11 +252,13 @@ in {
        Only top-level packages should be listed here.
        Users will not be interested in all individual dependencies.
        */
-      exportedPackages =
-        l.foldl
-        (acc: el: acc // {"${el.value.package.name}" = el.value.package.version;})
-        {}
-        cargoPackages;
+      exportedPackages = let
+        makePair = p: let
+          pkg = p.value.package;
+        in
+          l.nameValuePair pkg.name pkg.version;
+      in
+        l.listToAttrs (l.map makePair cargoPackages);
 
       /*
        a list of raw package objects
@@ -258,7 +281,7 @@ in {
         version = rawObj: finalObj: rawObj.version;
 
         dependencies = rawObj: finalObj:
-          l.map makeDepNameVersion (rawObj.dependencies or []);
+          l.map parseDepEntry (rawObj.dependencies or []);
 
         sourceSpec = rawObj: finalObj: let
           sourceType = getSourceTypeFrom rawObj;
