@@ -242,7 +242,7 @@ in {
         gitSources = let
           gitDeps = l.filter (dep: (getSourceTypeFrom dep) == "git") parsedDeps;
         in
-          l.unique (l.map (dep: parseGitSource dep.source) gitDeps);
+          l.unique (l.map (dep: parseGitSource dep) gitDeps);
       };
 
       defaultPackage = package.name;
@@ -333,7 +333,7 @@ in {
               else throw "could not find crate '${dependencyObject.name}-${dependencyObject.version}'";
 
             git = dependencyObject: let
-              parsed = parseGitSource dependencyObject.source;
+              parsed = parseGitSource dependencyObject;
               maybeRef =
                 if parsed.type or null == "branch"
                 then {ref = "refs/heads/${parsed.value}";}
