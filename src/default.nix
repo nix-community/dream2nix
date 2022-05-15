@@ -200,7 +200,7 @@
   # fetch only sources and do not build
   fetchSources = {
     dreamLock,
-    sourceRoot,
+    sourceRoot ? null,
     fetcher ? null,
     extract ? false,
     sourceOverrides ? oldSources: {},
@@ -342,7 +342,7 @@
 
   makeOutputsForDreamLock = {
     dreamLock,
-    sourceRoot,
+    sourceRoot ? null,
     builder ? null,
     fetcher ? null,
     inject ? {},
