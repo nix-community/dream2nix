@@ -144,11 +144,11 @@ in {
     parsedGitSources = let
       makePair = dep:
         l.nameValuePair
-        dep.source
+        "${dep.name}-${dep.version}"
         (parseGitSourceImpl (dep.source or ""));
     in
       l.listToAttrs (l.map makePair parsedDeps);
-    parseGitSource = src: parsedGitSources.${src};
+    parseGitSource = dep: parsedGitSources."${dep.name}-${dep.version}";
 
     # Extracts a source type from a dependency.
     getSourceTypeFromImpl = dependencyObject: let
