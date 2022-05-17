@@ -41,9 +41,9 @@
       # if the package has no dependencies we use the
       # package-lock translator with `packageLock = null`
       if
-        ! packageJson ? dependencies
-        && ! packageJson ? devDependencies
-        && ! packageJson ? workspaces
+        (packageJson.dependencies or {} == {})
+        && (packageJson.devDependencies or {} == {})
+        && (packageJson.workspaces or [] == [])
       then ["package-lock"]
       else
         l.optionals (nodes ? "package-lock.json") ["package-lock"]
