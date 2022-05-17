@@ -37,7 +37,7 @@
   # the main package
   defaultPackage = packages."${defaultPackageName}"."${defaultPackageVersion}";
 
-  # manage pakcages in attrset to prevent duplicated evaluation
+  # manage packages in attrset to prevent duplicated evaluation
   packages =
     lib.mapAttrs
     (name: versions:
