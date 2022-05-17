@@ -39,6 +39,8 @@
     packageJson =
       (tree.getNodeFromPath "package.json").jsonContent;
 
+    packageVersion = packageJson.version or "unknown";
+
     packageJsonDeps = nodejsUtils.getPackageJsonDeps packageJson noDev;
 
     workspacesPackageJson = nodejsUtils.getWorkspacePackageJson tree workspaces;
@@ -73,7 +75,7 @@
           type = "path";
           path = workspace;
           rootName = defaultPackage;
-          rootVersion = packageJson.version or "unknown";
+          rootVersion = packageVersion;
         };
       };
 
@@ -124,7 +126,7 @@
       location = relPath;
 
       exportedPackages =
-        {"${defaultPackage}" = packageJson.version or "unknown";}
+        {"${defaultPackage}" = packageVersion;}
         // exportedWorkspacePackages;
 
       subsystemName = "nodejs";
@@ -243,15 +245,21 @@
             else if type == "path"
             then
               if lib.hasInfix "@link:" rawObj.yarnName
-              then {
-                path =
-                  lib.last (lib.splitString "@link:" rawObj.yarnName);
-              }
+              then
+                dlib.contruct.pathSource {
+                  path =
+                    lib.last (lib.splitString "@link:" rawObj.yarnName);
+                  rootName = project.name;
+                  rootVersion = packageVersion;
+                }
               else if lib.hasInfix "@file:" rawObj.yarnName
-              then {
-                path =
-                  lib.last (lib.splitString "@file:" rawObj.yarnName);
-              }
+              then
+                dlib.contruct.pathSource {
+                  path =
+                    lib.last (lib.splitString "@file:" rawObj.yarnName);
+                  rootName = project.name;
+                  rootVersion = packageVersion;
+                }
               else throw "unknown path format ${b.toJSON rawObj}"
             else # type == "http"
               {
@@ -296,7 +304,7 @@
       in [
         {
           name = defaultPackage;
-          version = packageJson.version or "unknown";
+          version = packageVersion;
           dependencies = defaultPackageDependencies ++ workspaceDependencies;
         }
       ];

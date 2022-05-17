@@ -36,6 +36,8 @@
     packageJson =
       (tree.getNodeFromPath "package.json").jsonContent;
 
+    packageVersion = packageJson.version or "unknown";
+
     packageLockDeps =
       if packageLock == null
       then {}
@@ -137,18 +139,10 @@
       # values
       inputData = pinnedRootDeps;
 
-      defaultPackage =
-        if name != "{automatic}"
-        then name
-        else
-          packageJson.name
-          or (throw (
-            "Could not identify package name. "
-            + "Please specify extra argument 'name'"
-          ));
+      defaultPackage = project.name;
 
       packages =
-        {"${defaultPackage}" = packageJson.version or "unknown";}
+        {"${defaultPackage}" = packageVersion;}
         // (nodejsUtils.getWorkspacePackages tree workspaces);
 
       mainPackageDependencies =
@@ -229,9 +223,12 @@
             hash = dependencyObject.integrity;
           };
 
-        path = dependencyObject: rec {
-          path = getPath dependencyObject;
-        };
+        path = dependencyObject:
+          dlib.construct.pathSource {
+            path = getPath dependencyObject;
+            rootName = project.name;
+            rootVersion = packageVersion;
+          };
       };
 
       getDependencies = dependencyObject:
