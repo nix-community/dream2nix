@@ -37,7 +37,7 @@ in rec {
   # Script to write the Cargo.lock if it doesn't already exist.
   writeCargoLock = ''
     if [ ! -f "$PWD/Cargo.lock" ]; then
-      ln -s ${cargoLock} "$PWD/Cargo.lock"
+      cp -v ${cargoLock} "$PWD/Cargo.lock"
     fi
   '';
 
