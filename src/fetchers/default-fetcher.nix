@@ -32,7 +32,7 @@
           else if source.rootName != null && source.rootVersion != null
           then "${overriddenSources."${source.rootName}"."${source.rootVersion}"}/${source.path}"
           else if sourceRoot != null
-          then "${sourceOverrides}/${source.path}"
+          then "${sourceRoot}/${source.path}"
           else throw "${name}-${version}: cannot determine path source"
         else if fetchers.fetchers ? "${source.type}"
         then
