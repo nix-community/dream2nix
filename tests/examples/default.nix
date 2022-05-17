@@ -5,6 +5,7 @@
   bash,
   coreutils,
   git,
+  parallel,
   nix,
   utils,
   dream2nixWithExternals,
@@ -12,43 +13,34 @@
 }: let
   l = lib // builtins;
   examples = ../../examples;
+  testScript =
+    utils.writePureShellScript
+    [
+      async
+      bash
+      coreutils
+      git
+      nix
+    ]
+    ''
+      dir=$1
+      echo -e \"\ntesting example for $dir\"
+      cp -r ${examples}/$dir/* .
+      chmod -R +w .
+      nix flake lock --override-input dream2nix ${../../.}
+      nix run .#resolveImpure
+      nix flake check
+    '';
 in
   utils.writePureShellScript
   [
-    async
-    bash
     coreutils
-    git
-    nix
+    parallel
   ]
   ''
     if [ -z ''${1+x} ]; then
-      examples=$(ls ${examples})
+      parallel --halt now,fail=1 -j$(nproc) -a <(ls ${examples}) ${testScript}
     else
-      examples=$1
+      ${testScript} $1
     fi
-
-    S=$(mktemp)
-    async -s=$S server --start -j$(nproc)
-    sleep 1
-
-    for dir in $examples; do
-      async -s=$S cmd -- bash -c "
-        echo -e \"\ntesting example for $dir\"
-        tmp=\$(mktemp -d)
-        echo \"tempdir: \$tmp\"
-        mkdir \$tmp
-        cp -r ${examples}/$dir/* \$tmp/
-        chmod -R +w \$tmp
-        cd \$tmp
-        nix flake lock --override-input dream2nix ${../../.}
-        nix run .#resolveImpure
-        nix flake check
-        cd -
-        rm -r \$tmp
-      "
-    done
-
-    async -s=$S wait
-    rm $S
   ''
