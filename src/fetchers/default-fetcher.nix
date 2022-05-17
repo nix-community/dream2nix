@@ -11,6 +11,7 @@
   defaultPackageVersion,
   sourceOverrides,
   sources,
+  sourceRoot ? null,
   ...
 }: let
   l = lib // builtins;
@@ -28,7 +29,11 @@
           then source.path
           else if name == source.rootName && version == source.rootVersion
           then throw "source for ${name}@${version} is referencing itself"
-          else "${overriddenSources."${source.rootName}"."${source.rootVersion}"}/${source.path}"
+          else if source.rootName != null && source.rootVersion != null
+          then "${overriddenSources."${source.rootName}"."${source.rootVersion}"}/${source.path}"
+          else if sourceRoot != null
+          then "${sourceRoot}/${source.path}"
+          else throw "${name}-${version}: cannot determine path source"
         else if fetchers.fetchers ? "${source.type}"
         then
           fetchSource {
