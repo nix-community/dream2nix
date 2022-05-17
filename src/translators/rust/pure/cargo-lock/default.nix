@@ -312,7 +312,7 @@ in {
                 && (package.version == dependencyObject.version)
               then
                 dlib.construct.pathSource {
-                  path = projectSource;
+                  path = project.relPath;
                   rootName = null;
                   rootVersion = null;
                 }
@@ -326,7 +326,7 @@ in {
               else if nonWorkspaceCrate != null
               then
                 dlib.construct.pathSource {
-                  path = dlib.sanitizePath "${rootSource}/${nonWorkspaceCrate.relPath}";
+                  path = nonWorkspaceCrate.relPath;
                   rootName = null;
                   rootVersion = null;
                 }
