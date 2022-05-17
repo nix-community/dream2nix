@@ -39,7 +39,7 @@ in
   ]
   ''
     if [ -z ''${1+x} ]; then
-      parallel --halt now,fail=1 -j$(nproc) -a <(ls ${examples}) ${testScript}
+      parallel -j$(nproc) -a <(ls ${examples}) ${testScript}
     else
       ${testScript} $1
     fi
