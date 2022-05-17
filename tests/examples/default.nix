@@ -38,7 +38,7 @@ in
         tmp=\$(mktemp -d)
         echo \"tempdir: \$tmp\"
         mkdir \$tmp
-        cp ${examples}/$dir/* \$tmp/
+        cp -r ${examples}/$dir/* \$tmp/
         chmod -R +w \$tmp
         cd \$tmp
         nix flake lock --override-input dream2nix ${../../.}
