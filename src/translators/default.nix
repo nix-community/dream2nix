@@ -82,11 +82,13 @@
               (builtins.fromJSON
                   (builtins.unsafeDiscardStringContext (builtins.readFile '''$1''')));
 
-            dreamLock =
+            dreamLock' =
               dream2nix.translators.translators.${
           lib.concatStringsSep "." translatorAttrPath
         }.translate
                 translatorArgs;
+            # simpleTranslate2 puts dream-lock in result
+            dreamLock = dreamLock'.result or dreamLock';
           in
             dream2nix.utils.dreamLock.toJSON
               # don't use nix to detect cycles, this will be more efficient in python

@@ -23,10 +23,20 @@
   crane = externals.crane;
 
   buildPackage = pname: version: let
-    src = utils.getRootSource pname version;
+    _src = utils.getRootSource pname version;
+    # patch the source so the cargo lock is written if it doesnt exist
+    # we can't do this in preConfigure, crane fails
+    src = pkgs.runCommand "${pname}-${version}-patched-src" {} ''
+      mkdir -p $out
+      cp -rv ${_src}/* $out
+      cd $out
+      ${utils.writeCargoLock}
+    '';
+
     cargoVendorDir = vendoring.vendoredDependencies;
-    replacePaths =
-      utils.replaceRelativePathsWithAbsolute subsystemAttrs.relPathReplacements;
+    replacePaths = utils.replaceRelativePathsWithAbsolute {
+      paths = subsystemAttrs.relPathReplacements;
+    };
     writeGitVendorEntries = vendoring.writeGitVendorEntries "nix-sources";
 
     postUnpack = ''
@@ -36,11 +46,11 @@
       ${writeGitVendorEntries}
       ${replacePaths}
     '';
-    # The deps-only derivation will use this as a prefix to the `pname`
-    depsNameSuffix = "-deps";
 
     common = {inherit pname version src cargoVendorDir preConfigure postUnpack;};
 
+    # The deps-only derivation will use this as a prefix to the `pname`
+    depsNameSuffix = "-deps";
     depsArgs = common // {pnameSuffix = depsNameSuffix;};
     deps = produceDerivation "${pname}${depsNameSuffix}" (crane.buildDepsOnly depsArgs);
 

@@ -23,7 +23,7 @@ in {
   } @ args: let
     # get the root source and project source
     rootSource = tree.fullPath;
-    projectSource = "${tree.fullPath}/${project.relPath}";
+    projectSource = dlib.sanitizePath "${tree.fullPath}/${project.relPath}";
     projectTree = tree.getNodeFromPath project.relPath;
     subsystemInfo = project.subsystemInfo;
 
@@ -33,27 +33,32 @@ in {
       value = projectTree.files."Cargo.toml".tomlContent;
     };
 
-    # Get all workspace members
+    # use workspace members from discover phase
+    # or discover them again ourselves
     workspaceMembers =
-      l.flatten
-      (l.map
+      subsystemInfo.workspaceMembers
+      or (
+        l.flatten
         (
-          memberName: let
-            components = l.splitString "/" memberName;
-          in
-            # Resolve globs if there are any
-            if l.last components == "*"
-            then let
-              parentDirRel = l.concatStringsSep "/" (l.init components);
-              parentDir = "${projectSource}/${parentDirRel}";
-              dirs = (projectTree.getNodeFromPath parentDirRel).directories;
+          l.map
+          (
+            memberName: let
+              components = l.splitString "/" memberName;
             in
-              l.mapAttrsToList
-              (name: _: "${parentDirRel}/${name}")
-              dirs
-            else memberName
+              # Resolve globs if there are any
+              if l.last components == "*"
+              then let
+                parentDirRel = l.concatStringsSep "/" (l.init components);
+                dirs = (tree.getNodeFromPath parentDirRel).directories;
+              in
+                l.mapAttrsToList
+                (name: _: "${parentDirRel}/${name}")
+                dirs
+              else memberName
+          )
+          (rootToml.value.workspace.members or [])
         )
-        (rootToml.value.workspace.members or []));
+      );
     # Get cargo packages (for workspace members)
     workspaceCargoPackages =
       l.map
@@ -91,9 +96,13 @@ in {
     in
       parsedLock.metadata."${key}";
 
+    # map of dependency names to versions
+    depNamesToVersions =
+      l.listToAttrs
+      (l.map (dep: l.nameValuePair dep.name dep.version) parsedDeps);
     # This parses a "package-name version" entry in the "dependencies"
     # field of a dependency in Cargo.lock
-    makeDepNameVersion = entry: let
+    parseDepEntryImpl = entry: let
       parsed = l.splitString " " entry;
       name = l.head parsed;
       maybeVersion =
@@ -108,25 +117,18 @@ in {
         if maybeVersion != null
         then maybeVersion
         else
-          (
-            l.findFirst
-            (dep: dep.name == name)
-            (throw "no dependency found with name ${name} in Cargo.lock")
-            parsedDeps
-          )
-          .version;
+          depNamesToVersions.${name}
+          or (throw "no dependency found with name ${name} in Cargo.lock");
     };
-
-    package = rec {
-      toml = packageToml.value;
-      name = toml.package.name;
-      version =
-        toml.package.version
-        or (l.warn "no version found in Cargo.toml for ${name}, defaulting to unknown" "unknown");
-    };
+    depNameVersionAttrs = let
+      makePair = entry: l.nameValuePair entry (parseDepEntryImpl entry);
+      depEntries = l.flatten (l.map (dep: dep.dependencies or []) parsedDeps);
+    in
+      l.listToAttrs (l.map makePair (l.unique depEntries));
+    parseDepEntry = entry: depNameVersionAttrs.${entry};
 
     # Parses a git source, taken straight from nixpkgs.
-    parseGitSource = src: let
+    parseGitSourceImpl = src: let
       parts = builtins.match ''git\+([^?]+)(\?(rev|tag|branch)=(.*))?#(.*)'' src;
       type = builtins.elemAt parts 2; # rev, tag or branch
       value = builtins.elemAt parts 3;
@@ -139,9 +141,17 @@ in {
           sha = builtins.elemAt parts 4;
         }
         // (lib.optionalAttrs (type != null) {inherit type value;});
+    parsedGitSources = let
+      makePair = dep:
+        l.nameValuePair
+        "${dep.name}-${dep.version}"
+        (parseGitSourceImpl (dep.source or ""));
+    in
+      l.listToAttrs (l.map makePair parsedDeps);
+    parseGitSource = dep: parsedGitSources."${dep.name}-${dep.version}";
 
     # Extracts a source type from a dependency.
-    getSourceTypeFrom = dependencyObject: let
+    getSourceTypeFromImpl = dependencyObject: let
       checkType = type: l.hasPrefix "${type}+" dependencyObject.source;
     in
       if !(l.hasAttr "source" dependencyObject)
@@ -154,6 +164,22 @@ in {
         then "crates-io"
         else throw "registries other than crates.io are not supported yet"
       else throw "unknown or unsupported source type: ${dependencyObject.source}";
+    depSourceTypes = let
+      makePair = dep:
+        l.nameValuePair
+        "${dep.name}-${dep.version}"
+        (getSourceTypeFromImpl dep);
+    in
+      l.listToAttrs (l.map makePair parsedDeps);
+    getSourceTypeFrom = dep: depSourceTypes."${dep.name}-${dep.version}";
+
+    package = rec {
+      toml = packageToml.value;
+      name = toml.package.name;
+      version =
+        toml.package.version
+        or (l.warn "no version found in Cargo.toml for ${name}, defaulting to unknown" "unknown");
+    };
   in
     dlib.simpleTranslate2
     ({...}: rec {
@@ -185,21 +211,38 @@ in {
             );
           # We only need to patch path dependencies
           pathDeps = l.filter (dep: dep ? path) tomlDeps;
+          # filter out path dependencies whose path are same as in
+          # workspace members.
+          # this is because otherwise workspace.members paths will also
+          # get replaced in the build.
+          # and there is no reason to replace these anyways
+          # since they are in the source.
+          outsideDeps =
+            l.filter
+            (
+              dep:
+                !(l.any (memberPath: dep.path == memberPath) workspaceMembers)
+            )
+            pathDeps;
         in
           l.listToAttrs (
             l.map
             (
               dep: {
                 name = dep.path;
-                value = dlib.sanitizePath "${projectSource}/${dep.path}";
+                value = let
+                  absPath = dlib.sanitizePath "${projectSource}/${dep.path}";
+                  relPath = l.removePrefix rootSource absPath;
+                in
+                  relPath;
               }
             )
-            pathDeps
+            outsideDeps
           );
         gitSources = let
           gitDeps = l.filter (dep: (getSourceTypeFrom dep) == "git") parsedDeps;
         in
-          l.unique (l.map (dep: parseGitSource dep.source) gitDeps);
+          l.unique (l.map (dep: parseGitSource dep) gitDeps);
       };
 
       defaultPackage = package.name;
@@ -209,11 +252,13 @@ in {
        Only top-level packages should be listed here.
        Users will not be interested in all individual dependencies.
        */
-      exportedPackages =
-        l.foldl
-        (acc: el: acc // {"${el.value.package.name}" = el.value.package.version;})
-        {}
-        cargoPackages;
+      exportedPackages = let
+        makePair = p: let
+          pkg = p.value.package;
+        in
+          l.nameValuePair pkg.name pkg.version;
+      in
+        l.listToAttrs (l.map makePair cargoPackages);
 
       /*
        a list of raw package objects
@@ -236,7 +281,7 @@ in {
         version = rawObj: finalObj: rawObj.version;
 
         dependencies = rawObj: finalObj:
-          l.map makeDepNameVersion (rawObj.dependencies or []);
+          l.map parseDepEntry (rawObj.dependencies or []);
 
         sourceSpec = rawObj: finalObj: let
           sourceType = getSourceTypeFrom rawObj;
@@ -267,7 +312,7 @@ in {
                 && (package.version == dependencyObject.version)
               then
                 dlib.construct.pathSource {
-                  path = projectSource;
+                  path = project.relPath;
                   rootName = null;
                   rootVersion = null;
                 }
@@ -281,14 +326,14 @@ in {
               else if nonWorkspaceCrate != null
               then
                 dlib.construct.pathSource {
-                  path = dlib.sanitizePath "${rootSource}/${nonWorkspaceCrate.relPath}";
+                  path = nonWorkspaceCrate.relPath;
                   rootName = null;
                   rootVersion = null;
                 }
               else throw "could not find crate '${dependencyObject.name}-${dependencyObject.version}'";
 
             git = dependencyObject: let
-              parsed = parseGitSource dependencyObject.source;
+              parsed = parseGitSource dependencyObject;
               maybeRef =
                 if parsed.type or null == "branch"
                 then {ref = "refs/heads/${parsed.value}";}

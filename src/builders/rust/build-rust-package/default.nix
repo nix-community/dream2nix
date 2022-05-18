@@ -22,8 +22,9 @@
   buildPackage = pname: version: let
     src = utils.getRootSource pname version;
     vendorDir = vendoring.vendoredDependencies;
-    replacePaths =
-      utils.replaceRelativePathsWithAbsolute subsystemAttrs.relPathReplacements;
+    replacePaths = utils.replaceRelativePathsWithAbsolute {
+      paths = subsystemAttrs.relPathReplacements;
+    };
     writeGitVendorEntries = vendoring.writeGitVendorEntries "vendored-sources";
 
     cargoBuildFlags = "--package ${pname}";
@@ -48,6 +49,7 @@
         fi
         ${writeGitVendorEntries}
         ${replacePaths}
+        ${utils.writeCargoLock}
       '';
     });
 in rec {
