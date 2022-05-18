@@ -24,12 +24,13 @@
     ]
     ''
       dir=$1
+      shift
       echo -e \"\ntesting example for $dir\"
       cp -r ${examples}/$dir/* .
       chmod -R +w .
       nix flake lock --override-input dream2nix ${../../.}
       nix run .#resolveImpure
-      nix flake check
+      nix flake check "$@"
     '';
 in
   utils.writePureShellScript
@@ -41,6 +42,8 @@ in
     if [ -z ''${1+x} ]; then
       parallel -j$(nproc) -a <(ls ${examples}) ${testScript}
     else
-      ${testScript} $1
+      arg1=$1
+      shift
+      ${testScript} $arg1 "$@"
     fi
   ''
