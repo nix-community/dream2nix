@@ -25,7 +25,7 @@
     ''
       dir=$1
       shift
-      echo -e \"\ntesting example for $dir\"
+      echo -e "\ntesting example for $dir"
       cp -r ${examples}/$dir/* .
       chmod -R +w .
       nix flake lock --override-input dream2nix ${../../.}
