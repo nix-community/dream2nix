@@ -50,15 +50,17 @@
       fi
     '';
 
-  # inherit options from package-lock translator
-  extraArgs = {
-    cargoArgs = {
-      description = "Additional arguments for Cargo";
-      type = "argument";
-      default = "";
-      examples = [
-        "--verbose"
-      ];
+  # inherit options from cargo-lock translator
+  extraArgs =
+    dlib.translators.translators.rust.pure.cargo-lock.extraArgs
+    // {
+      cargoArgs = {
+        description = "Additional arguments for Cargo";
+        type = "argument";
+        default = "";
+        examples = [
+          "--verbose"
+        ];
+      };
     };
-  };
 }
