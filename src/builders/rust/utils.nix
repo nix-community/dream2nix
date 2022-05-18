@@ -54,7 +54,7 @@ in rec {
         then "registry+https://github.com/rust-lang/crates.io-index"
         else if sourceSpec.type == "git"
         then let
-          ref = sourceSpec.ref or null;
+          ref = sourceSpec.ref or "";
           refPart =
             if l.hasPrefix "refs/heads/" ref
             then "branch=${l.removePrefix "refs/heads/" ref}"
