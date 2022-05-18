@@ -17,9 +17,14 @@
   in
     (dream2nix.makeFlakeOutputs {
       source = src;
-      settings = [{builder = "crane";}];
+      settings = [
+        {
+          builder = "crane";
+          translator = "cargo-toml";
+        }
+      ];
     })
     // {
-      #checks.x86_64-linux.rand = self.packages.x86_64-linux.rand;
+      checks.x86_64-linux.rand = self.packages.x86_64-linux.rand;
     };
 }
