@@ -37,7 +37,7 @@ in rec {
   # Script to write the Cargo.lock if it doesn't already exist.
   writeCargoLock = ''
     if [ ! -f "$PWD/Cargo.lock" ]; then
-      cp -v ${cargoLock} "$PWD/Cargo.lock"
+      echo '${cargoLock}' > "$PWD/Cargo.lock"
     fi
   '';
 
@@ -96,5 +96,5 @@ in rec {
     );
     lock = {inherit package;};
   in
-    l.toFile "Cargo.lock" (utils.toTOML lock);
+    utils.toTOML lock;
 }
