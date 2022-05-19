@@ -69,7 +69,7 @@
     };
   in
     # apply packageOverrides to current derivation
-    (utils.applyOverridesToPackage packageOverrides pkg name);
+    produceDerivation name pkg;
 in {
   inherit defaultPackage packages;
 }
