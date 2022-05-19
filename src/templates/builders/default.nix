@@ -3,22 +3,24 @@
   pkgs,
   stdenv,
   # dream2nix inputs
-  builders,
   externals,
   utils,
   ...
 }: {
-  # Funcs
+  ### FUNCTIONS
   # AttrSet -> Bool) -> AttrSet -> [x]
   getCyclicDependencies, # name: version: -> [ {name=; version=; } ]
   getDependencies, # name: version: -> [ {name=; version=; } ]
   getSource, # name: version: -> store-path
   # to get information about the original source spec
   getSourceSpec, # name: version: -> {type="git"; url=""; hash="";}
-  # Attributes
+  ### ATTRIBUTES
   subsystemAttrs, # attrset
   defaultPackageName, # string
   defaultPackageVersion, # string
+  # all exported (top-level) package names and versions
+  # attrset of pname -> version,
+  packages,
   # all existing package names and versions
   # attrset of pname -> versions,
   # where versions is a list of version strings
@@ -33,10 +35,16 @@
   b = builtins;
 
   # the main package
-  defaultPackage = packages."${defaultPackageName}"."${defaultPackageVersion}";
+  defaultPackage = allPackages."${defaultPackageName}"."${defaultPackageVersion}";
+
+  # packages to export
+  packages =
+    lib.mapAttrs
+    (name: version: allPackages.${name}.${version})
+    packages;
 
   # manage packages in attrset to prevent duplicated evaluation
-  packages =
+  allPackages =
     lib.mapAttrs
     (name: versions:
       lib.genAttrs
@@ -54,10 +62,10 @@
 
       buildInputs =
         map
-        (dep: packages."${dep.name}"."${dep.version}")
+        (dep: allPackages."${dep.name}"."${dep.version}")
         (getDependencies name version);
 
-      # Implement build phases
+      # TODO: Implement build phases
     };
   in
     # apply packageOverrides to current derivation
