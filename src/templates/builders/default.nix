@@ -13,11 +13,13 @@
   getCyclicDependencies, # name: version: -> [ {name=; version=; } ]
   getDependencies, # name: version: -> [ {name=; version=; } ]
   getSource, # name: version: -> store-path
-  buildPackageWithOtherBuilder, # { builder, name, version }: -> drv
+  # to get information about the original source spec
+  getSourceSpec, # name: version: -> {type="git"; url=""; hash="";}
   # Attributes
   subsystemAttrs, # attrset
   defaultPackageName, # string
   defaultPackageVersion, # string
+  # all existing package names and versions
   # attrset of pname -> versions,
   # where versions is a list of version strings
   packageVersions,
@@ -26,10 +28,6 @@
   # Example:
   #   produceDerivation name (mkDerivation {...})
   produceDerivation,
-  # Custom Options: (parametrize builder behavior)
-  # These can be passed by the user via `builderArgs`.
-  # All options must provide default
-  standalonePackageNames ? [],
   ...
 } @ args: let
   b = builtins;

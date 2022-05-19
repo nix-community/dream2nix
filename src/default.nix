@@ -258,37 +258,9 @@
         conditionalOverrides = packageOverrides;
       };
 
-    buildPackageWithOtherBuilder = {
-      builder,
-      name,
-      version,
-      inject ? {},
-    }: let
-      subDreamLockLoaded = utils.readDreamLock {
-        dreamLock =
-          utils.dreamLock.getSubDreamLock dreamLock name version;
-      };
-    in
-      callBuilder {
-        inherit
-          builder
-          builderArgs
-          fetchedSources
-          inject
-          sourceOverrides
-          packageOverrides
-          ;
-
-        dreamLock =
-          subDreamLockLoaded.lock;
-
-        outputs = allOutputs;
-      };
-
     outputs = builder (builderArgs
       // {
         inherit
-          buildPackageWithOtherBuilder
           produceDerivation
           dreamLock
           ;

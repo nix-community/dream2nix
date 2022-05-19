@@ -18,7 +18,6 @@
   getCyclicDependencies, # name: version: -> [ {name=; version=; } ]
   getDependencies, # name: version: -> [ {name=; version=; } ]
   getSource, # name: version: -> store-path
-  buildPackageWithOtherBuilder, # { builder, name, version }: -> drv
   # Attributes
   subsystemAttrs, # attrset
   defaultPackageName, # string
@@ -32,10 +31,6 @@
   # Example:
   #   produceDerivation name (mkDerivation {...})
   produceDerivation,
-  # Custom Options: (parametrize builder behavior)
-  # These can be passed by the user via `builderArgs`.
-  # All options must provide default
-  standalonePackageNames ? [],
   nodejs ? null,
   ...
 } @ args: let
