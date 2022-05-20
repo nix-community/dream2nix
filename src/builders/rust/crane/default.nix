@@ -26,7 +26,7 @@
     _src = utils.getRootSource pname version;
     # patch the source so the cargo lock is written if it doesnt exist
     # we can't do this in preConfigure, crane fails
-    src = pkgs.runCommand "${pname}-${version}-patched-src" {} ''
+    src = pkgs.runCommandNoCC "${pname}-${version}-patched-src" {} ''
       mkdir -p $out
       cp -rv ${_src}/* $out
       cd $out
