@@ -194,10 +194,13 @@
                       # handle missing lock file entry
                       let
                         versionMatch =
-                          b.match ''.*\^([[:digit:]|\.]+)'' versionSpec;
+                          b.match ''[^[:digit:]]*([[:digit:]|\.]+)'' versionSpec;
                       in {
                         inherit name;
-                        version = b.elemAt versionMatch 0;
+                        version =
+                          if versionMatch != null && versionMatch != []
+                          then b.elemAt versionMatch 0
+                          else "unversioned";
                       }
                     else {inherit name version;}
                 )
