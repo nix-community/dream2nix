@@ -333,7 +333,7 @@
       if builder == null
       then findBuilder dreamLock
       else if l.isString builder
-      then builders.${dreamLock._generic.subsystem}.${builder}
+      then builders.${dreamLock._generic.subsystem}.all.${builder}
       else builder;
 
     fetcher' =

@@ -1,28 +1,32 @@
 {
-  builders,
+  dlib,
+  lib,
   callPackageDream,
   ...
-}: {
-  python = rec {
-    default = simpleBuilder;
+}: let
+  l = lib // builtins;
 
-    simpleBuilder = callPackageDream ./python/simple-builder {};
+  defaults = {
+    rust = "build-rust-package";
+    python = "simple-builder";
+    go = "gomod2nix";
+    nodejs = "granular";
   };
 
-  nodejs = rec {
-    default = granular;
+  makeBuilder = builderModule:
+    builderModule
+    // {
+      builder = callPackageDream builderModule.builder;
+    };
 
-    node2nix = callPackageDream ./nodejs/node2nix {};
-
-    granular = callPackageDream ./nodejs/granular {inherit builders;};
-  };
-
-  rust = rec {
-    default = buildRustPackage;
-
-    buildRustPackage = callPackageDream ./rust/build-rust-package {};
-
-    # this builder requires IFD!
-    crane = callPackageDream ./rust/crane {};
-  };
-}
+  builders = dlib.builders.mapBuilders makeBuilder;
+  buildersWithDefaults =
+    l.mapAttrs
+    (subsystem: attrs:
+      attrs
+      // {
+        default = attrs.all."${defaults."${subsystem}"}";
+      })
+    builders;
+in
+  buildersWithDefaults

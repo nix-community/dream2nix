@@ -17,8 +17,8 @@
 } @ args: let
   l = lib // builtins;
 
-  utils = import ../utils.nix (args // topArgs);
-  vendoring = import ../vendor.nix (args // topArgs);
+  utils = import ../../utils.nix (args // topArgs);
+  vendoring = import ../../vendor.nix (args // topArgs);
 
   crane = externals.crane;
 
