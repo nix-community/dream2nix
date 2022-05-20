@@ -36,7 +36,7 @@
 
   callBuilder = subsystem: type: name: file: let
     builderModule = {
-      builder = import file;
+      build = import file;
       inherit name subsystem type;
     };
   in

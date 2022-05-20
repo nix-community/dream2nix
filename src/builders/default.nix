@@ -16,7 +16,7 @@
   makeBuilder = builderModule:
     builderModule
     // {
-      builder = callPackageDream builderModule.builder;
+      build = callPackageDream builderModule.build;
     };
 
   builders = dlib.builders.mapBuilders makeBuilder;

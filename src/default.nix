@@ -258,7 +258,7 @@
         conditionalOverrides = packageOverrides;
       };
 
-    outputs = builder (builderArgs
+    outputs = builder.build (builderArgs
       // {
         inherit
           produceDerivation
