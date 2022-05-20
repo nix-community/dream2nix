@@ -327,6 +327,12 @@ in {
       url = "https://github.com/prettier/prettier/tarball/66585d9f250f11569456421e66a2407397e98f69";
       sha256 = "14fqwavb04b1ws1s58cmwq7wqj9xif4pv166ab23qpgnq57629yy";
     })
+    # this yarn-lock contains version specifiers starting with space and
+    # without `^`
+    (builtins.fetchTarball {
+      url = "https://github.com/input-output-hk/cardano-js-sdk/tarball/0d7c3d8d5a102cc689abe9e4e0833528a91eb1e2";
+      sha256 = "1j154slk8f29y4b85bbvxs05nacxcy04702ygag1hpvw1wccjq0y";
+    })
   ];
 
   # If the translator requires additional arguments, specify them here.
