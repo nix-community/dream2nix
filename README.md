@@ -63,7 +63,7 @@ Extensive Example `flake.nix`:
     let
       system = "x86_64-linux";
 
-      pkgs = inputs.dream2nix.nixpkgs.legacyPackages.${system};
+      pkgs = inputs.dream2nix.inputs.nixpkgs.legacyPackages.${system};
 
       dream2nix = inputs.dream2nix.lib.init {
         # modify according to your supported systems
