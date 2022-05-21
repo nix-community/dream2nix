@@ -9,8 +9,7 @@ const ts = require("typescript")
 const fs = require('fs')
 
 try {
-  const data = fs.readFileSync('/Users/joe/test.txt', 'utf8')
-  console.log(data)
+  const data = fs.readFileSync('tsconfig.json', 'utf8')
 } catch (err) {
   console.error(err)
 }
