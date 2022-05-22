@@ -5,9 +5,7 @@
   l = lib // builtins;
 
   # TODO
-  validator = module: {
-    success = true;
-  };
+  validator = module: true;
 
   modules = dlib.makeSubsystemModules {
     inherit validator;
