@@ -1,4 +1,5 @@
 {
+  config,
   dlib,
   lib,
 }: let
@@ -10,6 +11,7 @@
   modules = dlib.makeSubsystemModules {
     inherit validator;
     modulesCategory = "builders";
+    extraModules = config.extraBuilders or [];
   };
 in {
   callBuilder = modules.callModule;

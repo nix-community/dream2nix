@@ -8,7 +8,7 @@
   allDiscoverers =
     l.collect
     (v: v ? discover)
-    discoverers;
+    discoverersExtended;
 
   discoverProjects = {
     source ? throw "Pass either `source` or `tree` to discoverProjects",
@@ -75,13 +75,44 @@
   in
     settingsApplied;
 
-  discoverers = l.genAttrs dlib.subsystems (
-    subsystem: (import (../subsystems + "/${subsystem}/discoverers") {inherit dlib lib subsystem;})
-  );
+  # TODO
+  validator = module: true;
+  # TODO
+  valiateExtraDiscoverer = extra: true;
+
+  callDiscoverer = {
+    subsystem,
+    file,
+  }:
+    dlib.modules.importModule {
+      validate = validator;
+      inherit subsystem file;
+    };
+
+  _extraDiscoverers = config.extraDiscoverers or [];
+  extraDiscoverers =
+    l.seq
+    (dlib.modules.validateExtraModules valiateExtraDiscoverer _extraDiscoverers)
+    _extraDiscoverers;
+
+  discoverers =
+    l.genAttrs
+    dlib.subsystems
+    (subsystem:
+      callDiscoverer {
+        inherit subsystem;
+        file = ../subsystems + "/${subsystem}/discoverers";
+      });
+  discoverersExtended =
+    l.foldl'
+    (acc: el: acc // {${el.subsystem} = callDiscoverer el;})
+    discoverers
+    extraDiscoverers;
 in {
+  discoverers = discoverersExtended;
   inherit
     applyProjectSettings
     discoverProjects
-    discoverers
+    callDiscoverer
     ;
 }

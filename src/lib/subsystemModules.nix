@@ -4,27 +4,37 @@
 }: let
   l = lib // builtins;
 
+  validateExtraModules = f: extra:
+    l.foldl'
+    (acc: el: l.seq (f el) acc)
+    {}
+    extra;
+  validateExtraModule = extra:
+    true;
+
   makeSubsystemModules = {
     modulesCategory,
     validator,
+    extraModules ? [],
   }: let
     callModule = {
       subsystem,
       name,
-      # this should point to a module module file.
-      # this can be used to import your own modules.
-      file ? null,
+      file,
       ...
     } @ args: let
-      file = args.file or (../subsystems + "/${subsystem}/${modulesCategory}/${name}");
       filteredArgs = l.removeAttrs args ["subsystem" "name"];
       module = dlib.modules.importModule (filteredArgs
         // {
-          inherit file;
           validate = validator;
         });
     in
       module // {inherit subsystem name;};
+
+    _extraModules =
+      l.seq
+      (validateExtraModules validateExtraModule extraModules)
+      extraModules;
 
     modules =
       l.genAttrs
@@ -37,12 +47,26 @@
           modulesLoaded =
             l.genAttrs
             moduleNames
-            (name: callModule {inherit subsystem name;});
+            (name:
+              callModule {
+                inherit subsystem name;
+                file = ../subsystems + "/${subsystem}/${modulesCategory}/${name}";
+              });
         in
           l.filterAttrs
           (name: t: t.disabled or false == false)
           modulesLoaded
       );
+    modulesExtended =
+      l.foldl'
+      (
+        acc: el:
+          l.recursiveUpdate
+          acc
+          {"${el.subsytem}"."${el.name}" = callModule el;}
+      )
+      modules
+      extraModules;
 
     mapModules = f:
       l.mapAttrs
@@ -52,14 +76,17 @@
           (name: module: f module)
           names
       )
-      modules;
+      modulesExtended;
   in {
+    modules = modulesExtended;
     inherit
       callModule
-      modules
       mapModules
       ;
   };
 in {
-  inherit makeSubsystemModules;
+  inherit
+    makeSubsystemModules
+    validateExtraModules
+    ;
 }
