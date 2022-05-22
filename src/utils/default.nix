@@ -18,7 +18,7 @@
   callPackageDream,
   dream2nixWithExternals,
   externalSources,
-  translators,
+  subsystems,
   ...
 }: let
   b = builtins;
@@ -174,7 +174,7 @@ in
       aggregate = project.aggregate or false;
 
       translator =
-        translators.translators."${project.subsystem}".all."${project.translator}";
+        subsystems."${project.subsystem}".translators.translators."${project.translator}";
 
       argsJsonFile =
         pkgs.writeText "translator-args.json"

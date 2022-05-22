@@ -131,10 +131,10 @@
           l.filter
           (proj:
             dream2nix
-            .translators
-            .translators
+            .subsystems
             ."${proj.subsystem}"
-            .all
+            .translators
+            .translators
             ."${proj.translator}"
             .type
             == "impure")

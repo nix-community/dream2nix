@@ -8,6 +8,7 @@
   # exported attributes
   dlib = {
     inherit
+      builders
       calcInvalidationHash
       callViaEnv
       construct
@@ -26,7 +27,10 @@
       sanitizeDerivationName
       sanitizePath
       sanitizeRelativePath
+      subsystems
       traceJ
+      modules
+      makeSubsystemModules
       ;
 
     inherit
@@ -36,10 +40,17 @@
       ;
   };
 
+  subsystems = dirNames ../subsystems;
+
   # other libs
+  builders = import ./builders.nix {inherit dlib lib;};
   construct = import ./construct.nix {inherit lib;};
-  discoverers = import ../discoverers {inherit config dlib lib;};
+  discoverers = import ./discoverers.nix {inherit config dlib lib;};
   translators = import ./translators.nix {inherit dlib lib;};
+
+  modules = import ./modules.nix {inherit dlib lib;};
+  makeSubsystemModules =
+    (import ./subsystemModules.nix {inherit dlib lib;}).makeSubsystemModules;
 
   simpleTranslate2 =
     (import ./simpleTranslate2.nix {inherit dlib lib;}).simpleTranslate2;

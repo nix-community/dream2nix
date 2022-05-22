@@ -48,7 +48,6 @@
     pkgs.callPackage f (args
       // {
         inherit apps;
-        inherit builders;
         inherit callPackageDream;
         inherit config;
         inherit configFile;
@@ -57,9 +56,9 @@
         inherit externalSources;
         inherit fetchers;
         inherit dream2nixWithExternals;
-        inherit translators;
         inherit utils;
         inherit nix;
+        inherit subsystems;
       });
 
   utils = callPackageDream ./utils {};
@@ -67,17 +66,13 @@
   # apps for CLI and installation
   apps = callPackageDream ./apps {};
 
-  # builder implementaitons for all subsystems
-  builders = callPackageDream ./builders {};
-
   # fetcher implementations
   fetchers = callPackageDream ./fetchers {};
 
   # updater modules to find newest package versions
   updaters = callPackageDream ./updaters {};
 
-  # the translator modules and utils for all subsystems
-  translators = callPackageDream ./translators {};
+  subsystems = callPackageDream ./subsystems {};
 
   externals = {
     node2nix = nodejs:
@@ -187,9 +182,9 @@
   findBuilder = dreamLock: let
     subsystem = dreamLock._generic.subsystem;
   in
-    if ! builders ? "${subsystem}"
+    if ! subsystems."${subsystem}" ? builders
     then throw "Could not find any builder for subsystem '${subsystem}'"
-    else builders."${subsystem}".default;
+    else subsystems."${subsystem}".builders.builders.default;
 
   # detect if granular or combined fetching must be used
   findFetcher = dreamLock:
@@ -258,7 +253,7 @@
         conditionalOverrides = packageOverrides;
       };
 
-    outputs = builder (builderArgs
+    outputs = builder.build (builderArgs
       // {
         inherit
           produceDerivation
@@ -333,7 +328,7 @@
       if builder == null
       then findBuilder dreamLock
       else if l.isString builder
-      then builders.${dreamLock._generic.subsystem}.${builder}
+      then subsystems.${dreamLock._generic.subsystem}.builders.builders.${builder}
       else builder;
 
     fetcher' =
@@ -382,7 +377,7 @@
     settings ? [],
   } @ args: let
     getTranslator = subsystem: translatorName:
-      translators.translators."${subsystem}".all."${translatorName}";
+      subsystems."${subsystem}".translators.translators."${translatorName}";
 
     isImpure = project: translatorName:
       (getTranslator project.subsystem translatorName).type == "impure";
@@ -575,7 +570,6 @@
 in {
   inherit
     apps
-    builders
     callPackageDream
     dream2nixWithExternals
     fetchers
@@ -583,14 +577,9 @@ in {
     realizeProjects
     translateProjects
     riseAndShine
-    translators
     updaters
     utils
     makeOutputsForDreamLock
-    ;
-
-  inherit
-    (dlib)
-    discoverers
+    subsystems
     ;
 }

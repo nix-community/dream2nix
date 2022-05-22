@@ -1,9 +1,7 @@
 {
   lib,
   pkgs,
-  # dream2nix
   callPackageDream,
-  translators,
   ...
 }: let
   b = builtins;
