@@ -1,6 +1,7 @@
 {
   dlib,
   lib,
+  ...
 }: let
   l = lib // builtins;
   nodejsUtils = import ../../utils.nix {inherit lib;};

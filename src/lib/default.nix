@@ -47,7 +47,7 @@
   discoverers = import ./discoverers.nix {inherit config dlib lib;};
   translators = import ./translators.nix {inherit config dlib lib;};
 
-  modules = import ./modules.nix {inherit dlib lib;};
+  modules = import ./modules.nix {inherit config dlib lib;};
 
   simpleTranslate2 =
     (import ./simpleTranslate2.nix {inherit dlib lib;}).simpleTranslate2;

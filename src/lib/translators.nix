@@ -11,7 +11,6 @@
   modules = dlib.modules.makeSubsystemModules {
     inherit validator;
     modulesCategory = "translators";
-    extraModules = config.extraTranslators or [];
   };
 in {
   callTranslator = modules.callModule;

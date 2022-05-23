@@ -78,7 +78,6 @@
   modules = dlib.modules.makeSubsystemModules {
     modulesCategory = "discoverers";
     inherit validator;
-    extraModules = config.extraDiscoverers or [];
   };
 in {
   inherit

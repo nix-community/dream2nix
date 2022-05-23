@@ -11,7 +11,6 @@
   modules = dlib.modules.makeSubsystemModules {
     inherit validator;
     modulesCategory = "builders";
-    extraModules = config.extraBuilders or [];
   };
 in {
   callBuilder = modules.callModule;

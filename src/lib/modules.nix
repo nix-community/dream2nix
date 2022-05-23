@@ -1,4 +1,5 @@
 {
+  config,
   dlib,
   lib,
 }: let
@@ -21,6 +22,51 @@
   in
     l.seq (validator module) module;
 
+  extra = let
+    _extra = config.extra or {};
+    extra =
+      if l.isFunction _extra
+      then _extra {inherit config dlib lib;}
+      else if l.isAttrs _extra && (! _extra ? drvPath)
+      then _extra
+      else import _extra {inherit config dlib lib;};
+    _extraSubsystemModules =
+      l.mapAttrsToList
+      (subsystem: categories:
+        l.mapAttrs
+        (category: modules:
+          l.mapAttrsToList
+          (name: module: {
+            file = module;
+            extraArgs = {inherit subsystem name;};
+          })
+          modules)
+        categories)
+      (extra.subsystems or {});
+    extraSubsystemModules =
+      l.foldl'
+      (acc: el:
+        acc
+        // (
+          l.mapAttrs
+          (category: modules: modules ++ (acc.${category} or []))
+          el
+        ))
+      {}
+      (l.flatten _extraSubsystemModules);
+    extraFetcherModules =
+      l.mapAttrsToList
+      (name: fetcher: {
+        file = fetcher;
+        extraArgs = {inherit name;};
+      })
+      (extra.fetchers or {});
+  in
+    extraSubsystemModules
+    // {
+      fetchers = extraFetcherModules;
+    };
+
   collectSubsystemModules = modules: let
     allModules = l.flatten (l.map l.attrValues (l.attrValues modules));
     hasModule = module: modules:
@@ -34,10 +80,12 @@
       modules;
   in
     l.foldl'
-    (acc: el:
-      if hasModule el acc
-      then acc
-      else acc ++ [el])
+    (
+      acc: el:
+        if hasModule el acc
+        then acc
+        else acc ++ [el]
+    )
     []
     allModules;
 
@@ -53,7 +101,7 @@
   makeSubsystemModules = {
     modulesCategory,
     validator,
-    extraModules ? [],
+    extraModules ? extra.${modulesCategory} or [],
   }: let
     callModule = {
       file,
@@ -62,7 +110,13 @@
       importModule {inherit file validator extraArgs;};
 
     importedExtraModules =
-      l.map (file: callModule {inherit file;}) extraModules;
+      l.map
+      (
+        module:
+          (callModule module)
+          // {inherit (module) subsystem name;}
+      )
+      extraModules;
     validatedExtraModules =
       l.seq
       (validateExtraModules validateExtraModule importedExtraModules)
@@ -95,11 +149,9 @@
     modulesExtended =
       l.foldl'
       (
-        acc: el: let
-          module = callModule el;
-        in
+        acc: el:
           l.recursiveUpdate acc
-          {"${module.subsystem}"."${module.name}" = module;}
+          {"${el.subsystem}"."${el.name}" = el;}
       )
       modules
       validatedExtraModules;
@@ -125,5 +177,6 @@ in {
     importModule
     makeSubsystemModules
     collectSubsystemModules
+    extra
     ;
 }
