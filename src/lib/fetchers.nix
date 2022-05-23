@@ -29,7 +29,10 @@
         // extraArgs
     );
 
-  importedExtraFetchers = l.map callFetcher (dlib.modules.extra.fetchers or []);
+  importedExtraFetchers =
+    l.map
+    (module: (callFetcher module) // {inherit (module) name;})
+    (dlib.modules.extra.fetchers or []);
   validatedExtraFetchers =
     l.seq
     (dlib.modules.validateExtraModules validateExtraFetcher importedExtraFetchers)
