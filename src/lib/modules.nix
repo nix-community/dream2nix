@@ -6,6 +6,10 @@
   l = lib // builtins;
 
   # imports a module.
+  #
+  # - 'file' can be a function or a path to a function.
+  # - 'dlib', 'lib', 'config' and attributes in
+  # 'extraArgs' are passed to the function.
   importModule = {
     file,
     validator ? _: true,
@@ -17,11 +21,13 @@
       else import file;
     module =
       if l.isFunction _module
-      then _module ({inherit dlib lib;} // extraArgs)
+      then _module ({inherit config dlib lib;} // extraArgs)
       else throw "module file (${file}) must return a function that takes an attrset";
   in
     l.seq (validator module) module;
 
+  # collects extra modules from a list
+  # ex: [{translators = [module1];} {translators = [module2];}] -> {translators = [module1 module2];}
   collectExtraModules =
     l.foldl'
     (acc: el:
@@ -32,6 +38,8 @@
         el
       ))
     {};
+  # processes one extra (config.extra)
+  # returns extra modules like {fetchers = [...]; translators = [...];}
   processOneExtra = _extra: let
     extra =
       if l.isFunction _extra
@@ -75,6 +83,9 @@
       (l.map processOneExtra _extra)
     else processOneExtra _extra;
 
+  # collect subsystem modules into a list
+  # ex: {rust.translators.cargo-lock = cargo-lock; go.translators.gomod2nix = gomod2nix;}
+  # -> [cargo-lock gomod2nix]
   collectSubsystemModules = modules: let
     allModules = l.flatten (l.map l.attrValues (l.attrValues modules));
     hasModule = module: modules:
