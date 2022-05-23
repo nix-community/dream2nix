@@ -10,7 +10,10 @@
     validator ? _: true,
     extraArgs,
   }: let
-    _module = import file;
+    _module =
+      if l.isFunction file
+      then file
+      else import file;
     module =
       if l.isFunction _module
       then _module ({inherit dlib lib;} // extraArgs)
