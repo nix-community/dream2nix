@@ -43,6 +43,7 @@
     (acc: el: l.seq (f el) acc)
     {}
     extra;
+  # TODO
   validateExtraModule = extra:
     true;
 
@@ -57,10 +58,12 @@
     }:
       importModule {inherit file validator extraArgs;};
 
+    importedExtraModules =
+      l.map (file: callModule {inherit file;}) extraModules;
     validatedExtraModules =
       l.seq
-      (validateExtraModules validateExtraModule extraModules)
-      extraModules;
+      (validateExtraModules validateExtraModule importedExtraModules)
+      importedExtraModules;
 
     modules =
       l.genAttrs
@@ -89,10 +92,11 @@
     modulesExtended =
       l.foldl'
       (
-        acc: el:
-          l.recursiveUpdate
-          acc
-          {"${el.subsystem}"."${el.name}" = callModule el;}
+        acc: el: let
+          module = callModule el;
+        in
+          l.recursiveUpdate acc
+          {"${module.subsystem}"."${module.name}" = module;}
       )
       modules
       validatedExtraModules;
