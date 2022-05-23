@@ -5,10 +5,7 @@
 }: let
   l = lib // builtins;
 
-  allDiscoverers =
-    l.collect
-    (v: v ? discover)
-    discoverersExtended;
+  allDiscoverers = dlib.modules.collectSubsystemModules modules.modules;
 
   discoverProjects = {
     source ? throw "Pass either `source` or `tree` to discoverProjects",
@@ -77,42 +74,19 @@
 
   # TODO
   validator = module: true;
-  # TODO
-  valiateExtraDiscoverer = extra: true;
 
-  callDiscoverer = {
-    subsystem,
-    file,
-  }:
-    dlib.modules.importModule {
-      validate = validator;
-      inherit subsystem file;
-    };
-
-  _extraDiscoverers = config.extraDiscoverers or [];
-  extraDiscoverers =
-    l.seq
-    (dlib.modules.validateExtraModules valiateExtraDiscoverer _extraDiscoverers)
-    _extraDiscoverers;
-
-  discoverers =
-    l.genAttrs
-    dlib.subsystems
-    (subsystem:
-      callDiscoverer {
-        inherit subsystem;
-        file = ../subsystems + "/${subsystem}/discoverers";
-      });
-  discoverersExtended =
-    l.foldl'
-    (acc: el: acc // {${el.subsystem} = callDiscoverer el;})
-    discoverers
-    extraDiscoverers;
+  modules = dlib.modules.makeSubsystemModules {
+    modulesCategory = "discoverers";
+    inherit validator;
+    extraModules = config.extraDiscoverers or [];
+  };
 in {
-  discoverers = discoverersExtended;
   inherit
     applyProjectSettings
     discoverProjects
-    callDiscoverer
     ;
+
+  discoverers = modules.modules;
+  callDiscoverer = modules.callModule;
+  mapDiscoverers = modules.mapModules;
 }

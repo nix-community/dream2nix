@@ -30,7 +30,6 @@
       subsystems
       traceJ
       modules
-      makeSubsystemModules
       ;
 
     inherit
@@ -49,8 +48,6 @@
   translators = import ./translators.nix {inherit config dlib lib;};
 
   modules = import ./modules.nix {inherit dlib lib;};
-  makeSubsystemModules =
-    (import ./subsystemModules.nix {inherit dlib lib;}).makeSubsystemModules;
 
   simpleTranslate2 =
     (import ./simpleTranslate2.nix {inherit dlib lib;}).simpleTranslate2;

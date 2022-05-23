@@ -8,7 +8,7 @@
   # TODO
   validator = module: true;
 
-  modules = dlib.makeSubsystemModules {
+  modules = dlib.modules.makeSubsystemModules {
     inherit validator;
     modulesCategory = "builders";
     extraModules = config.extraBuilders or [];

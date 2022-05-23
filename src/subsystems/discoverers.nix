@@ -1,3 +1,1 @@
-{dlib, ...}: {
-  discoverers = dlib.discoverers.discoverers;
-}
+{dlib, ...}: dlib.discoverers
