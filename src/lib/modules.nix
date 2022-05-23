@@ -22,8 +22,17 @@
   in
     l.seq (validator module) module;
 
-  extra = let
-    _extra = config.extra or {};
+  collectExtraModules =
+    l.foldl'
+    (acc: el:
+      acc
+      // (
+        l.mapAttrs
+        (category: modules: modules ++ (acc.${category} or []))
+        el
+      ))
+    {};
+  processOneExtra = _extra: let
     extra =
       if l.isFunction _extra
       then _extra {inherit config dlib lib;}
@@ -44,16 +53,7 @@
         categories)
       (extra.subsystems or {});
     extraSubsystemModules =
-      l.foldl'
-      (acc: el:
-        acc
-        // (
-          l.mapAttrs
-          (category: modules: modules ++ (acc.${category} or []))
-          el
-        ))
-      {}
-      (l.flatten _extraSubsystemModules);
+      collectExtraModules (l.flatten _extraSubsystemModules);
     extraFetcherModules =
       l.mapAttrsToList
       (name: fetcher: {
@@ -66,6 +66,14 @@
     // {
       fetchers = extraFetcherModules;
     };
+  extra = let
+    _extra = config.extra or {};
+  in
+    if l.isList _extra
+    then
+      collectExtraModules
+      (l.map processOneExtra _extra)
+    else processOneExtra _extra;
 
   collectSubsystemModules = modules: let
     allModules = l.flatten (l.map l.attrValues (l.attrValues modules));
