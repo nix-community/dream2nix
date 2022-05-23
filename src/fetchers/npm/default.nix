@@ -1,10 +1,4 @@
-{
-  fetchurl,
-  lib,
-  python3,
-  utils,
-  ...
-}: let
+{lib, ...}: let
   b = builtins;
 in rec {
   inputs = ["pname" "version"];
@@ -42,6 +36,11 @@ in rec {
   # defaultUpdater = "";
 
   outputs = {
+    python3,
+    utils,
+    fetchurl,
+    ...
+  }: {
     pname,
     version,
   } @ inp: let

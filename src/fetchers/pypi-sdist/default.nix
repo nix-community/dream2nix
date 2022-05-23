@@ -1,9 +1,4 @@
-{
-  fetchurl,
-  python3,
-  utils,
-  ...
-}: {
+{...}: {
   inputs = ["pname" "version"];
 
   versionField = "version";
@@ -11,6 +6,11 @@
   defaultUpdater = "pypiNewestReleaseVersion";
 
   outputs = {
+    fetchurl,
+    python3,
+    utils,
+    ...
+  }: {
     pname,
     version,
     extension ? "tar.gz",

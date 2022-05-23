@@ -1,11 +1,4 @@
-{
-  fetchFromGitHub,
-  lib,
-  nix,
-  runCommand,
-  utils,
-  ...
-}: {
+{lib, ...}: {
   inputs = [
     "owner"
     "repo"
@@ -17,6 +10,10 @@
   defaultUpdater = "githubNewestReleaseTag";
 
   outputs = {
+    fetchFromGitHub,
+    utils,
+    ...
+  }: {
     owner,
     repo,
     rev,

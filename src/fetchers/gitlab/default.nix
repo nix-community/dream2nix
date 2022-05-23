@@ -1,8 +1,4 @@
-{
-  fetchFromGitLab,
-  utils,
-  ...
-}: {
+{...}: {
   inputs = [
     "owner"
     "repo"
@@ -12,6 +8,10 @@
   versionField = "rev";
 
   outputs = {
+    fetchFromGitLab,
+    utils,
+    ...
+  }: {
     owner,
     repo,
     rev,

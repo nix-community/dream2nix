@@ -15,6 +15,7 @@
       containsMatchingFile
       dirNames
       discoverers
+      fetchers
       latestVersion
       listDirs
       listFiles
@@ -45,6 +46,7 @@
   builders = import ./builders.nix {inherit config dlib lib;};
   construct = import ./construct.nix {inherit lib;};
   discoverers = import ./discoverers.nix {inherit config dlib lib;};
+  fetchers = import ./fetchers.nix {inherit dlib lib;};
   translators = import ./translators.nix {inherit config dlib lib;};
 
   modules = import ./modules.nix {inherit config dlib lib;};

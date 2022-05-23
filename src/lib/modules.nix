@@ -178,5 +178,6 @@ in {
     makeSubsystemModules
     collectSubsystemModules
     extra
+    validateExtraModules
     ;
 }

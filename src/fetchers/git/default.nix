@@ -1,9 +1,4 @@
-{
-  fetchgit,
-  lib,
-  utils,
-  ...
-}: let
+{lib, ...}: let
   b = builtins;
 
   # check if a string is a git ref
@@ -19,6 +14,10 @@ in {
   versionField = "rev";
 
   outputs = {
+    fetchgit,
+    utils,
+    ...
+  }: {
     url,
     rev,
     ...
