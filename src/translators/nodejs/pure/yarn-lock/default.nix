@@ -148,6 +148,13 @@
           # @matrix-org/olm@https://gitlab.matrix.org/api/v4/projects/27/packages/npm/@matrix-org/olm/-/@matrix-org/olm-3.2.3.tgz
           else if lib.hasInfix "@https://" rawObj.yarnName
           then lib.head (lib.splitString "@https://" rawObj.yarnName)
+          else if lib.hasInfix "npm:" rawObj.version
+          then let
+            name' = l.last (l.splitString "npm:" rawObj.version);
+            split = l.splitString "@" name';
+            name = l.head split;
+          in
+            name
           else let
             split = lib.splitString "@" rawObj.yarnName;
             version = lib.last split;
@@ -164,6 +171,12 @@
           in
             l.strings.sanitizeDerivationName
             "${rawObj.version}@git+${gitUrl}"
+          else if l.hasInfix "npm:" rawObj.version
+          then let
+            split = l.splitString "@" rawObj.version;
+            version = l.last split;
+          in
+            version
           else rawObj.version;
 
         dependencies = rawObj: finalObj: let
