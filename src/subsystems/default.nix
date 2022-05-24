@@ -5,6 +5,7 @@
   ...
 }: let
   l = lib // builtins;
+  inherit (dlib.modules) collectSubsystemModules;
 
   builders = callPackageDream ./builders.nix {};
   translators = callPackageDream ./translators.nix {};
@@ -25,5 +26,11 @@
     (mapModules translators.translators "translators")
     (mapModules discoverers.discoverers "discoverers")
   ];
+  allModules = l.foldl' l.recursiveUpdate {} modules;
 in
-  l.foldl' l.recursiveUpdate {} modules
+  allModules
+  // {
+    allTranslators = collectSubsystemModules translators.translators;
+    allBuilders = collectSubsystemModules builders.builders;
+    allDiscoverers = collectSubsystemModules discoverers.discoverers;
+  }
