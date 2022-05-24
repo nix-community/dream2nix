@@ -4,7 +4,7 @@
   ...
 }: let
   l = lib // builtins;
-  nodejsUtils = import ../../utils.nix {inherit lib;};
+  nodejsUtils = import ../utils.nix {inherit lib;};
   parser = import ./parser.nix {inherit lib;};
 
   getYarnLock = tree: project:

@@ -174,7 +174,7 @@ in
       aggregate = project.aggregate or false;
 
       translator =
-        subsystems."${project.subsystem}".translators.translators."${project.translator}";
+        subsystems."${project.subsystem}".translators."${project.translator}";
 
       argsJsonFile =
         pkgs.writeText "translator-args.json"

@@ -5,7 +5,7 @@
 }: let
   b = builtins;
   l = lib // builtins;
-  nodejsUtils = import ../../utils.nix {inherit lib;};
+  nodejsUtils = import ../utils.nix {inherit lib;};
 
   getPackageLock = tree: project:
     nodejsUtils.getWorkspaceLockFile tree project "package-lock.json";
