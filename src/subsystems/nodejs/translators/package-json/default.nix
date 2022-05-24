@@ -9,7 +9,7 @@
   # this script receives a json file including the input paths and specialArgs
   translateBin = {
     # dream2nix utils
-    translators,
+    subsystems,
     utils,
     # nixpkgs dependenies
     bash,
@@ -59,12 +59,12 @@
       jq ".source = \"$newSource\"" -c -r $jsonInput > $TMPDIR/newJsonInput
 
       cd $WORKDIR
-      ${translators.translators.nodejs.pure.package-lock.translateBin} $TMPDIR/newJsonInput
+      ${subsystems.nodejs.translators.package-lock.translateBin} $TMPDIR/newJsonInput
     '';
 
   # inherit options from package-lock translator
   extraArgs =
-    dlib.translators.translators.nodejs.pure.package-lock.extraArgs
+    dlib.translators.nodejs.package-lock.extraArgs
     // {
       npmArgs = {
         description = "Additional arguments for npm";

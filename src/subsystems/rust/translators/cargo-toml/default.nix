@@ -9,7 +9,7 @@
   # this script receives a json file including the input paths and specialArgs
   translateBin = {
     # dream2nix utils
-    translators,
+    subsystems,
     utils,
     # nixpkgs dependenies
     coreutils,
@@ -46,7 +46,7 @@
       cd $WORKDIR
 
       if [ $cargoResult -eq 0 ]; then
-        ${translators.translators.rust.pure.cargo-lock.translateBin} $TMPDIR/newJsonInput
+        ${subsystems.rust.translators.cargo-lock.translateBin} $TMPDIR/newJsonInput
       else
         echo "cargo failed to generate the lockfile"
         exit 1
@@ -55,7 +55,7 @@
 
   # inherit options from cargo-lock translator
   extraArgs =
-    dlib.translators.translators.rust.pure.cargo-lock.extraArgs
+    dlib.translators.rust.cargo-lock.extraArgs
     // {
       cargoArgs = {
         description = "Additional arguments for Cargo";
