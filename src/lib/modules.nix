@@ -92,9 +92,8 @@
       l.any
       (
         omodule:
-          omodule.name
-          == module.name
-          && omodule.subsystem == module.subsystem
+          (omodule.name == module.name)
+          && (omodule.subsystem == module.subsystem)
       )
       modules;
   in
@@ -160,10 +159,9 @@
             };
           in
             module // extraArgs;
+          modulesLoaded = l.genAttrs moduleNames loadModule;
         in
-          l.filterAttrs
-          (name: t: t.disabled or false == false)
-          (l.genAttrs moduleNames loadModule)
+          l.filterAttrs (name: t: t.disabled or false == false) modulesLoaded
       );
     modulesExtended =
       l.foldl'
