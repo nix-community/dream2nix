@@ -21,7 +21,7 @@ def get_projects_to_test():
                   translator = translator.name;
                   inherit (translator) subsystem type;
                 })
-                (translator.generateUnitTestsForProjects or []))
+                (translator.generateUnitTestsForProjects or [])
           )
           result
         )
