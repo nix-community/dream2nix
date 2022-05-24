@@ -120,6 +120,7 @@
     modulesCategory,
     validator,
     extraModules ? extra.${modulesCategory} or [],
+    defaults ? {},
   }: let
     callModule = {
       file,
@@ -140,7 +141,7 @@
       (validateExtraModules validateExtraModule importedExtraModules)
       importedExtraModules;
 
-    modules =
+    modulesBuiltin =
       l.genAttrs
       dlib.subsystems
       (
@@ -170,8 +171,17 @@
           l.recursiveUpdate acc
           {"${el.subsystem}"."${el.name}" = el;}
       )
-      modules
+      modulesBuiltin
       validatedExtraModules;
+    modules =
+      l.mapAttrs
+      (
+        subsystem: modules:
+          if l.hasAttr subsystem defaults
+          then modules // {default = modules.${defaults.${subsystem}};}
+          else modules
+      )
+      modulesExtended;
 
     mapModules = f:
       l.mapAttrs
@@ -181,12 +191,12 @@
           (name: module: f module)
           names
       )
-      modulesExtended;
+      modules;
   in {
-    modules = modulesExtended;
     inherit
       callModule
       mapModules
+      modules
       ;
   };
 in {

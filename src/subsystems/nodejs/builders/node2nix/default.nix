@@ -1,4 +1,4 @@
-{...}: let
+let
   build =
     # builder imported from node2nix
     {

@@ -1,1 +1,0 @@
-import ../gomod2nix

@@ -5,11 +5,17 @@
 }: let
   l = lib // builtins;
 
+  defaults = {
+    rust = "build-rust-package";
+    nodejs = "granular";
+    python = "simple-builder";
+  };
+
   # TODO
   validator = module: true;
 
   modules = dlib.modules.makeSubsystemModules {
-    inherit validator;
+    inherit validator defaults;
     modulesCategory = "builders";
   };
 in {
