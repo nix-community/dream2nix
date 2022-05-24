@@ -184,7 +184,7 @@
   in
     if ! subsystems."${subsystem}" ? builders
     then throw "Could not find any builder for subsystem '${subsystem}'"
-    else subsystems."${subsystem}".builders.builders.default;
+    else subsystems."${subsystem}".builders.default;
 
   # detect if granular or combined fetching must be used
   findFetcher = dreamLock:
@@ -328,7 +328,7 @@
       if builder == null
       then findBuilder dreamLock
       else if l.isString builder
-      then subsystems.${dreamLock._generic.subsystem}.builders.builders.${builder}
+      then subsystems.${dreamLock._generic.subsystem}.builders.${builder}
       else builder;
 
     fetcher' =
@@ -377,7 +377,7 @@
     settings ? [],
   } @ args: let
     getTranslator = subsystem: translatorName:
-      subsystems."${subsystem}".translators.translators."${translatorName}";
+      subsystems."${subsystem}".translators."${translatorName}";
 
     isImpure = project: translatorName:
       (getTranslator project.subsystem translatorName).type == "impure";
