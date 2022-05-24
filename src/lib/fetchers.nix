@@ -31,7 +31,7 @@
 
   importedExtraFetchers =
     l.map
-    (module: (callFetcher module) // {inherit (module) name;})
+    (module: (callFetcher module) // {inherit (module.extraArgs) name;})
     (dlib.modules.extra.fetchers or []);
   validatedExtraFetchers =
     l.seq

@@ -133,7 +133,7 @@
       (
         module:
           (callModule module)
-          // {inherit (module) subsystem name;}
+          // {inherit (module.extraArgs) subsystem name;}
       )
       extraModules;
     validatedExtraModules =
