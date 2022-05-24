@@ -17,7 +17,10 @@
   l = lib // builtins;
 
   # adds a translateBin to a pure translator
-  wrapPureTranslator = translatorAttrPath: let
+  wrapPureTranslator = {
+    subsystem,
+    name,
+  }: let
     bin =
       utils.writePureShellScript
       [
@@ -41,9 +44,7 @@
                   (builtins.unsafeDiscardStringContext (builtins.readFile '''$1''')));
 
             dreamLock' =
-              dream2nix.translators.translators.${
-          lib.concatStringsSep "." translatorAttrPath
-        }.translate
+              dream2nix.subsystems.${subsystem}.translators.${name}.translate
                 translatorArgs;
             # simpleTranslate2 puts dream-lock in result
             dreamLock = dreamLock'.result or dreamLock';
@@ -62,7 +63,7 @@
       '';
   in
     bin.overrideAttrs (old: {
-      name = "translator-${lib.concatStringsSep "-" translatorAttrPath}";
+      name = "translator-${subsystem}-pure-${name}";
     });
 
   makeTranslator = translatorModule: let
@@ -91,7 +92,7 @@
             );
         translateBin =
           wrapPureTranslator
-          (with translatorModule; [subsystem type name]);
+          {inherit (translatorModule) subsystem name;};
       })
       # for impure translators:
       #   - import the `translateBin` function
