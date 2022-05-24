@@ -134,7 +134,6 @@
             .subsystems
             ."${proj.subsystem}"
             .translators
-            .translators
             ."${proj.translator}"
             .type
             == "impure")

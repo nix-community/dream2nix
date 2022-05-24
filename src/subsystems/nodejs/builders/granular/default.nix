@@ -9,7 +9,6 @@ let
     stdenv,
     writeText,
     # dream2nix inputs
-    builders,
     externals,
     utils,
     ...
