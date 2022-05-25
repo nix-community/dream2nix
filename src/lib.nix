@@ -2,7 +2,6 @@
 # (allows to generate outputs for several systems)
 # follows flake output schema
 {
-  dlib,
   nixpkgsSrc,
   lib,
   overridesDirs,
@@ -108,6 +107,7 @@
     allPkgs = makeNixpkgs pkgs systems;
     forAllSystems = f: b.mapAttrs f allPkgs;
     dream2nixFor = forAllSystems (dream2nixForSystem config);
+    dlib = import ./lib {inherit lib config;};
 
     getInvalidationHash = project:
       dlib.calcInvalidationHash {
@@ -207,7 +207,8 @@
   in
     flakeOutputs;
 in {
-  inherit dlib init;
+  inherit init;
+  dlib = import ./lib {inherit lib;};
   riseAndShine = throw "Use makeFlakeOutputs instead of riseAndShine.";
   makeFlakeOutputs = makeFlakeOutputsFunc;
 }

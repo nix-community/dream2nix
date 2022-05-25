@@ -63,9 +63,6 @@
 
     lib = nixpkgs.lib;
 
-    # dream2nix lib (system independent utils)
-    dlib = import ./src/lib {inherit lib;};
-
     supportedSystems = ["x86_64-linux" "aarch64-linux" "x86_64-darwin" "aarch64-darwin"];
 
     forSystems = systems: f:
@@ -137,7 +134,7 @@
     dream2nixFor = forAllSystems (system: pkgs:
       import ./src rec {
         externalDir = externalDirFor."${system}";
-        inherit dlib externalPaths externalSources lib pkgs;
+        inherit externalPaths externalSources lib pkgs;
         config = {
           inherit overridesDirs;
         };
@@ -167,7 +164,7 @@
     # Produces flake-like output schema.
     lib =
       (import ./src/lib.nix {
-        inherit dlib externalPaths externalSources overridesDirs lib;
+        inherit externalPaths externalSources overridesDirs lib;
         nixpkgsSrc = "${nixpkgs}";
       })
       # system specific dream2nix library
