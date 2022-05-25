@@ -40,7 +40,7 @@
 
   fetchersExtended =
     l.foldl'
-    (acc: el: l.recursiveUpdate acc {${el.name} = el;})
+    (acc: el: acc // {${el.name} = el;})
     fetchers
     validatedExtraFetchers;
 
