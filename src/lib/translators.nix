@@ -1,5 +1,4 @@
 {
-  config,
   dlib,
   lib,
 }: let

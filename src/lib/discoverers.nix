@@ -1,7 +1,7 @@
 {
-  config,
   dlib,
   lib,
+  config,
 }: let
   l = lib // builtins;
 

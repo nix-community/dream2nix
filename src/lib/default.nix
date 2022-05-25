@@ -43,11 +43,11 @@
   subsystems = dirNames ../subsystems;
 
   # other libs
-  builders = import ./builders.nix {inherit config dlib lib;};
+  builders = import ./builders.nix {inherit dlib lib;};
   construct = import ./construct.nix {inherit lib;};
   discoverers = import ./discoverers.nix {inherit config dlib lib;};
   fetchers = import ./fetchers.nix {inherit dlib lib;};
-  translators = import ./translators.nix {inherit config dlib lib;};
+  translators = import ./translators.nix {inherit dlib lib;};
 
   modules = import ./modules.nix {inherit config dlib lib;};
 

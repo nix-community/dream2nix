@@ -4,8 +4,8 @@
 }: let
   l = lib // builtins;
 
+  # TODO:
   validator = module: true;
-  validateExtraFetcher = module: true;
 
   callFetcher = {
     file,
@@ -33,16 +33,12 @@
     l.map
     (module: (callFetcher module) // {inherit (module.extraArgs) name;})
     (dlib.modules.extra.fetchers or []);
-  validatedExtraFetchers =
-    l.seq
-    (dlib.modules.validateExtraModules validateExtraFetcher importedExtraFetchers)
-    importedExtraFetchers;
 
   fetchersExtended =
     l.foldl'
     (acc: el: acc // {${el.name} = el;})
     fetchers
-    validatedExtraFetchers;
+    importedExtraFetchers;
 
   mapFetchers = f:
     l.mapAttrs

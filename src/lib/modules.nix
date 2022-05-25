@@ -5,6 +5,13 @@
 }: let
   l = lib // builtins;
 
+  configFuncMsg = ''
+    consider passing a path to a file instead of a function
+    - functions can't be encoded to JSON, and as such most features of
+    dream2nix won't work because of this since they require passing around
+    the config as JSON.
+  '';
+
   # imports a module.
   #
   # - 'file' can be a function or a path to a function.
@@ -17,7 +24,7 @@
   }: let
     _module =
       if l.isFunction file
-      then file
+      then l.trace configFuncMsg file
       else import file;
     module =
       if l.isFunction _module
@@ -43,7 +50,7 @@
   processOneExtra = _extra: let
     extra =
       if l.isFunction _extra
-      then _extra {inherit config dlib lib;}
+      then l.trace configFuncMsg (_extra {inherit config dlib lib;})
       else if l.isAttrs _extra && (! _extra ? drvPath)
       then _extra
       else import _extra {inherit config dlib lib;};
@@ -107,15 +114,6 @@
     []
     allModules;
 
-  validateExtraModules = f: extra:
-    l.foldl'
-    (acc: el: l.seq (f el) acc)
-    {}
-    extra;
-  # TODO
-  validateExtraModule = extra:
-    true;
-
   makeSubsystemModules = {
     modulesCategory,
     validator,
@@ -136,10 +134,6 @@
           // {inherit (module.extraArgs) subsystem name;}
       )
       extraModules;
-    validatedExtraModules =
-      l.seq
-      (validateExtraModules validateExtraModule importedExtraModules)
-      importedExtraModules;
 
     modulesBuiltin =
       l.genAttrs
@@ -172,7 +166,7 @@
           {"${el.subsystem}"."${el.name}" = el;}
       )
       modulesBuiltin
-      validatedExtraModules;
+      importedExtraModules;
     modules =
       l.mapAttrs
       (
