@@ -16,6 +16,7 @@ in {
     # dream2nix utils
     utils,
     dream2nixWithExternals,
+    config,
     bash,
     coreutils,
     jq,
@@ -45,7 +46,10 @@ in {
       # This should be in sync with gomod2nix version in flake.lock
       nix run github:tweag/gomod2nix/67f22dd738d092c6ba88e420350ada0ed4992ae8
 
-      nix eval --show-trace --impure --raw --expr "import ${./translate.nix} ${dream2nixWithExternals} ./." > $outputFile
+      nix eval --show-trace --impure --raw --expr "import ${./translate.nix} { \
+        dream2nixWithExternals = ${dream2nixWithExternals}; \
+        dream2nixConfig = ${l.toFile "dream2nix-config.json" (l.toJSON config)}; \
+      } ./." > $outputFile
     '';
 
   # If the translator requires additional arguments, specify them here.

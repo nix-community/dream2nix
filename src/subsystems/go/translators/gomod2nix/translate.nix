@@ -1,6 +1,11 @@
-dream2nixWithExternals: cwd: let
-  dream2nix = import dream2nixWithExternals {};
+{
+  dream2nixWithExternals,
+  dream2nixConfig,
+}: cwd: let
   b = builtins;
+  dream2nix = import dream2nixWithExternals {
+    config = b.path {path = dream2nixConfig;};
+  };
   parsed = b.fromTOML (builtins.readFile "${cwd}/gomod2nix.toml");
   pkgs = import <nixpkgs> {};
   lib = pkgs.lib;
