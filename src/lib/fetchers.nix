@@ -13,9 +13,12 @@
   }:
     dlib.modules.importModule {inherit file extraArgs validator;};
 
+  # get information for builtin fetchers
   fetchersDir = ../fetchers;
   fetcherNames = dlib.dirNames fetchersDir;
-  fetchers =
+
+  # import the builtin fetchers
+  fetchersBuiltin =
     l.genAttrs
     fetcherNames
     (
@@ -29,22 +32,23 @@
         // extraArgs
     );
 
+  # import extra fetchers
   importedExtraFetchers =
     l.map
     (module: (callFetcher module) // {inherit (module.extraArgs) name;})
     (dlib.modules.extra.fetchers or []);
 
-  fetchersExtended =
+  # extend builtin fetchers with extra fetchers
+  fetchers =
     l.foldl'
     (acc: el: acc // {${el.name} = el;})
-    fetchers
+    fetchersBuiltin
     importedExtraFetchers;
 
   mapFetchers = f:
     l.mapAttrs
     (_: fetcher: f fetcher)
-    fetchersExtended;
+    fetchers;
 in {
-  fetchers = fetchersExtended;
-  inherit callFetcher mapFetchers;
+  inherit fetchers callFetcher mapFetchers;
 }

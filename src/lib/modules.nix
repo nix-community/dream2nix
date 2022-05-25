@@ -24,7 +24,7 @@
   }: let
     _module =
       if l.isFunction file
-      then l.trace configFuncMsg file
+      then file
       else import file;
     module =
       if l.isFunction _module
@@ -48,12 +48,24 @@
   # processes one extra (config.extra)
   # returns extra modules like {fetchers = [...]; translators = [...];}
   processOneExtra = _extra: let
+    # was extra declared with a function
+    # ex: config.extra = {...}: {};
+    isExtraFuncDecl = l.isFunction _extra;
+    # was extra declared with an attrset
+    # ex: config.extra = {fetchers.ipfs = <path>;};
+    isExtraAttrsDecl = l.isAttrs _extra && (! _extra ? drvPath);
+    # extra attrset itself
+    # config.extra is imported here if it's a path
     extra =
-      if l.isFunction _extra
-      then l.trace configFuncMsg (_extra {inherit config dlib lib;})
-      else if l.isAttrs _extra && (! _extra ? drvPath)
+      if isExtraFuncDecl
+      then l.warn configFuncMsg (_extra {inherit config dlib lib;})
+      else if isExtraAttrsDecl
       then _extra
       else import _extra {inherit config dlib lib;};
+    # warn user if they are declaring a module as a function
+    warnIfModuleNotPath = module:
+      l.warnIf (isExtraAttrsDecl && (! l.isPath module)) configFuncMsg module;
+    # collect subsystem modules (translators, discoverers, builders)
     _extraSubsystemModules =
       l.mapAttrsToList
       (subsystem: categories:
@@ -61,7 +73,7 @@
         (category: modules:
           l.mapAttrsToList
           (name: module: {
-            file = module;
+            file = warnIfModuleNotPath module;
             extraArgs = {inherit subsystem name;};
           })
           modules)
@@ -69,10 +81,11 @@
       (extra.subsystems or {});
     extraSubsystemModules =
       collectExtraModules (l.flatten _extraSubsystemModules);
+    # collect fetcher modules
     extraFetcherModules =
       l.mapAttrsToList
       (name: fetcher: {
-        file = fetcher;
+        file = warnIfModuleNotPath fetcher;
         extraArgs = {inherit name;};
       })
       (extra.fetchers or {});
@@ -114,6 +127,8 @@
     []
     allModules;
 
+  # create subsystem modules
+  # returns ex: {rust = {moduleName = module;}; go = {moduleName = module;};}
   makeSubsystemModules = {
     modulesCategory,
     validator,
@@ -126,6 +141,7 @@
     }:
       importModule {inherit file validator extraArgs;};
 
+    # import the extra modules
     importedExtraModules =
       l.map
       (
@@ -135,6 +151,7 @@
       )
       extraModules;
 
+    # import builtin modules from subsystems directory
     modulesBuiltin =
       l.genAttrs
       dlib.subsystems
@@ -158,6 +175,7 @@
         in
           l.filterAttrs (name: t: t.disabled or false == false) modulesLoaded
       );
+    # extend the builtin modules with the extra modules
     modulesExtended =
       l.foldl'
       (
@@ -167,6 +185,7 @@
       )
       modulesBuiltin
       importedExtraModules;
+    # add default module attribute to a subsystem if declared in `defaults`
     modules =
       l.mapAttrs
       (
