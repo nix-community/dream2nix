@@ -10,6 +10,7 @@
   externals,
   dream2nixWithExternals,
   utils,
+  config,
   ...
 }: let
   b = builtins;
@@ -37,7 +38,9 @@
           --option experimental-features "nix-command flakes"\
           --show-trace --impure --raw --expr "
           let
-            dream2nix = import ${dream2nixWithExternals} {};
+            dream2nix = import ${dream2nixWithExternals} {
+              config = ${l.toFile (l.toJSON config)};
+            };
 
             translatorArgs =
               (builtins.fromJSON
