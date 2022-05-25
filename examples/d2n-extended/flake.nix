@@ -15,9 +15,11 @@
       config.projectRoot = ./.;
       config.extra = {
         subsystems.rust = {
-          builders.crane-new = "${dream2nix}/src/subsystems/rust/builders/crane";
-          translators.cargo-lock-new = "${dream2nix}/src/subsystems/rust/translators/cargo-lock";
+          builders.crane-new = "${inp.dream2nix}/src/subsystems/rust/builders/crane";
+          translators.cargo-lock-new = "${inp.dream2nix}/src/subsystems/rust/translators/cargo-lock";
+          discoverers.default = "${inp.dream2nix}/src/subsystems/rust/discoverers/default";
         };
+        fetchers.crates-io = "${inp.dream2nix}/src/fetchers/crates-io";
       };
     };
   in
