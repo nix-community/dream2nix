@@ -39,7 +39,7 @@
           --show-trace --impure --raw --expr "
           let
             dream2nix = import ${dream2nixWithExternals} {
-              config = ${l.toFile (l.toJSON config)};
+              config = ${l.toFile "dream2nix-config.json" (l.toJSON config)};
             };
 
             translatorArgs =
