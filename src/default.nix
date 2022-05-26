@@ -253,7 +253,7 @@
         conditionalOverrides = packageOverrides;
       };
 
-    outputs = builder.build (builderArgs
+    _outputs = builder.build (builderArgs
       // {
         inherit
           produceDerivation
@@ -275,6 +275,7 @@
 
         getSource = utils.dreamLock.getSource fetchedSources;
       });
+    outputs = dlib.builders.warnIfIfd builder _outputs;
 
     # Makes the packages tree compatible with flakes schema.
     # For each package the attr `{pname}` will link to the latest release.
