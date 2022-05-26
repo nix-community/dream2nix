@@ -8,6 +8,8 @@ utilize the `config.extra` option of the dream2nix config.
 
 ```nix
 dream2nix.lib.init {
+  # this also works around errors with function modules
+  # being declared here, which will be explained later.
   config.extra = ./nix/d2n/extras.nix;
 }
 ```
@@ -42,11 +44,20 @@ dream2nix.lib.init {
 }
 ```
 
+note: you can't declare modules using functions here. This is
+because the `config` may need to be serialized to JSON and passed
+around in impure situations (mostly impure translators).
+
 ## Compose multiple different `extra`s
+
+This allows one to compose multiple `extra`s together with ease.
+The `dream2nixExtras` flake output in this case can be any of the
+approaches explained in this document for declaring `config.extra`.
 
 ```nix
 dream2nix.lib.init {
   # note: .dream2nixExtras is a hypothetical standardized flake output
+  # in practice this can be any flake output.
   config.extra = [
     haskellSubsystemFlake.dream2nixExtras
     crystalSubsystemFlake.dream2nixExtras
