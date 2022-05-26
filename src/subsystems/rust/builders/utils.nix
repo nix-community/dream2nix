@@ -36,6 +36,7 @@ in rec {
 
   # Script to write the Cargo.lock if it doesn't already exist.
   writeCargoLock = ''
+    rm -f "$PWD/Cargo.lock"
     echo '${cargoLock}' > "$PWD/Cargo.lock"
   '';
 
