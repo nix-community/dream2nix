@@ -30,13 +30,13 @@ dream2nix.lib.init {
       # add new modules
       ruby.discoverers.default = ./nix/d2n/ruby/discoverer.nix;
       ruby.translators.bundix = ./nix/d2n/ruby/bundix.nix;
-      # existing modules can be overrided
+      # existing modules can be overridden
       rust.builders.crane = ./nix/d2n/rust/crane.nix;
     };
     # add new fetchers
     fetchers.ipfs = ./nix/d2n/fetchers/ipfs.nix;
     fetchers.gitea = ./nix/d2n/fetchers/gitea.nix;
-    # existing fetchers can be overrided
+    # existing fetchers can be overridden
     fetchers.http = ./nix/d2n/fetchers/http-proxied.nix;
   };
 }
