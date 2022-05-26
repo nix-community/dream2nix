@@ -16,7 +16,7 @@
       config.extra = {
         subsystems.rust = {
           builders.crane-new = "${inp.dream2nix}/src/subsystems/rust/builders/crane";
-          translators.cargo-lock-new = "${inp.dream2nix}/src/subsystems/rust/translators/cargo-lock";
+          translators.cargo-toml-new = "${inp.dream2nix}/src/subsystems/rust/translators/cargo-toml";
           discoverers.default = "${inp.dream2nix}/src/subsystems/rust/discoverers/default";
         };
         fetchers.crates-io = "${inp.dream2nix}/src/fetchers/crates-io";
@@ -28,7 +28,7 @@
       settings = [
         {
           builder = "crane-new";
-          translator = "cargo-lock-new";
+          translator = "cargo-toml-new";
         }
       ];
     })
