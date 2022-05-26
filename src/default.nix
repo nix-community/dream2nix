@@ -253,7 +253,8 @@
         conditionalOverrides = packageOverrides;
       };
 
-    _outputs = builder.build (builderArgs
+    build = dlib.warnIfIfd builder builder.build;
+    outputs = build (builderArgs
       // {
         inherit
           produceDerivation
@@ -275,7 +276,6 @@
 
         getSource = utils.dreamLock.getSource fetchedSources;
       });
-    outputs = dlib.builders.warnIfIfd builder _outputs;
 
     # Makes the packages tree compatible with flakes schema.
     # For each package the attr `{pname}` will link to the latest release.
@@ -453,7 +453,8 @@
       l.forEach projectsPureUnresolved
       (proj: let
         translator = getTranslator proj.subsystem proj.translator;
-        dreamLock'' = translator.translate {
+        translate = dlib.warnIfIfd translator translator.translate;
+        dreamLock'' = translate {
           inherit source tree discoveredProjects;
           project = proj;
         };
