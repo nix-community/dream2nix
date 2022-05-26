@@ -64,7 +64,7 @@
       else import _extra {inherit config dlib lib;};
     # warn user if they are declaring a module as a function
     warnIfModuleNotPath = module:
-      l.warnIf (isExtraAttrsDecl && (! l.isPath module)) configFuncMsg module;
+      l.warnIf (isExtraAttrsDecl && (l.isFunction module)) configFuncMsg module;
     # collect subsystem modules (translators, discoverers, builders)
     _extraSubsystemModules =
       l.mapAttrsToList

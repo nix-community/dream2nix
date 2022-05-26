@@ -9,11 +9,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1646360966,
-        "narHash": "sha256-fJ/WHSU45bMJRDqz9yA3B2lwXtW5DKooU+Pzn13GyZI=",
+        "lastModified": 1652972885,
+        "narHash": "sha256-OKTV5Mi0WyDGsF6GcTwWkgJPNRkskD5yqCZZmghZYHI=",
         "owner": "kamadorueda",
         "repo": "alejandra",
-        "rev": "511c3f6a88b6964e1496fb6f441f4ae5e58bd3ea",
+        "rev": "69d2075e432c562099965829d8bc4da701b10d20",
         "type": "github"
       },
       "original": {
@@ -51,17 +51,14 @@
         "pre-commit-hooks": "pre-commit-hooks"
       },
       "locked": {
-        "lastModified": 1648394205,
-        "narHash": "sha256-eR+9A0NryKXnDYHZNzOcgqIrbwC5W3KqQxctOUOVlCw=",
-        "owner": "nix-community",
-        "repo": "dream2nix",
-        "rev": "f7c034d4eee5d3cf8df4baaad59e715a0cf24db7",
-        "type": "github"
+        "lastModified": 0,
+        "narHash": "sha256-HFATZlo6Z/rt/7NMzIJWGETruAT2y2J72qfrdsokv4I=",
+        "path": "../..",
+        "type": "path"
       },
       "original": {
-        "owner": "nix-community",
-        "repo": "dream2nix",
-        "type": "github"
+        "path": "../..",
+        "type": "path"
       }
     },
     "flake-utils-pre-commit": {
@@ -82,11 +79,11 @@
     "flakeCompat": {
       "flake": false,
       "locked": {
-        "lastModified": 1641205782,
-        "narHash": "sha256-4jY7RCWUoZ9cKD8co0/4tFARpWB+57+r1bLLvXNJliY=",
+        "lastModified": 1648199409,
+        "narHash": "sha256-JwPKdC2PoVBkG6E+eWw3j6BMR6sL3COpYWfif7RVb8Y=",
         "owner": "edolstra",
         "repo": "flake-compat",
-        "rev": "b7547d3eed6f32d06102ead8991ec52ab0a4f1a7",
+        "rev": "64a525ee38886ab9028e6f61790de0832aa3ef03",
         "type": "github"
       },
       "original": {
