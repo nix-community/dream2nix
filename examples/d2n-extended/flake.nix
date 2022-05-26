@@ -15,7 +15,7 @@
       config.projectRoot = ./.;
       config.extra = {
         subsystems.rust = {
-          builders.crane-new = "${inp.dream2nix}/src/subsystems/rust/builders/crane";
+          builders.brp-new = "${inp.dream2nix}/src/subsystems/rust/builders/build-rust-package";
           translators.cargo-toml-new = "${inp.dream2nix}/src/subsystems/rust/translators/cargo-toml";
           discoverers.default = "${inp.dream2nix}/src/subsystems/rust/discoverers/default";
         };
@@ -27,7 +27,7 @@
       source = src;
       settings = [
         {
-          builder = "crane-new";
+          builder = "brp-new";
           translator = "cargo-toml-new";
         }
       ];
