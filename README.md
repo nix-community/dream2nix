@@ -142,6 +142,7 @@ Extensive Example `flake.nix`:
 - [How would this improve the packaging situation in nixpkgs](/docs/nixpkgs-improvements.md)
 - [Override System](/docs/override-system.md)
 - [Contributors Guide](/docs/contributors-guide.md)
+- [Extending dream2nix](/docs/extending-dream2nix.md)
 
 ### Funding
 This project receives financial support by [NLNet](https://nlnet.nl/) as part of the [NGI Assure Programme](https://nlnet.nl/assure/) funded by the European Commission.
