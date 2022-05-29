@@ -20,7 +20,7 @@
   importModule = {
     file,
     validator ? _: true,
-    extraArgs,
+    extraArgs ? {},
   }: let
     _module =
       if l.isFunction file
@@ -48,23 +48,20 @@
   # processes one extra (config.extra)
   # returns extra modules like {fetchers = [...]; translators = [...];}
   processOneExtra = _extra: let
-    # was extra declared with a function
-    # ex: config.extra = {...}: {};
-    isExtraFuncDecl = l.isFunction _extra;
-    # was extra declared with an attrset
-    # ex: config.extra = {fetchers.ipfs = <path>;};
-    isExtraAttrsDecl = l.isAttrs _extra && (! _extra ? drvPath);
+    isAttrs = val: l.isAttrs val && (! val ? drvPath);
+    # imports a modules declaration
+    importDecl = decl:
+      if l.isFunction decl
+      then l.warn configFuncMsg (decl {inherit config dlib lib;})
+      else if isAttrs decl
+      then decl
+      else import decl {inherit config dlib lib;};
     # extra attrset itself
     # config.extra is imported here if it's a path
-    extra =
-      if isExtraFuncDecl
-      then l.warn configFuncMsg (_extra {inherit config dlib lib;})
-      else if isExtraAttrsDecl
-      then _extra
-      else import _extra {inherit config dlib lib;};
+    extra = importDecl _extra;
     # warn user if they are declaring a module as a function
     warnIfModuleNotPath = module:
-      l.warnIf (isExtraAttrsDecl && (l.isFunction module)) configFuncMsg module;
+      l.warnIf ((isAttrs _extra) && (l.isFunction module)) configFuncMsg module;
     # collect subsystem modules (translators, discoverers, builders)
     _extraSubsystemModules =
       l.mapAttrsToList
@@ -76,9 +73,9 @@
             file = warnIfModuleNotPath module;
             extraArgs = {inherit subsystem name;};
           })
-          modules)
+          (importDecl modules))
         categories)
-      (extra.subsystems or {});
+      (importDecl (extra.subsystems or {}));
     extraSubsystemModules =
       collectExtraModules (l.flatten _extraSubsystemModules);
     # collect fetcher modules
@@ -88,7 +85,7 @@
         file = warnIfModuleNotPath fetcher;
         extraArgs = {inherit name;};
       })
-      (extra.fetchers or {});
+      (importDecl (extra.fetchers or {}));
   in
     extraSubsystemModules
     // {
