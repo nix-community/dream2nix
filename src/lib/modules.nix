@@ -52,14 +52,14 @@
     # imports a modules declaration
     importDecl = decl:
       if l.isFunction decl
-      then l.throw configFuncMsg (decl {inherit config dlib lib;})
+      then l.throw configFuncMsg
       else if isAttrs decl
       then decl
       else import decl {inherit config dlib lib;};
     # extra attrset itself
     # config.extra is imported here if it's a path
     extra = importDecl _extra;
-    # warn user if they are declaring a module as a function
+    # throw if declaring a module as a function
     throwIfModuleNotPath = module:
       l.throwIf ((isAttrs _extra) && (l.isFunction module)) configFuncMsg module;
     # collect subsystem modules (translators, discoverers, builders)
