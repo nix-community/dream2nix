@@ -57,19 +57,27 @@
 
         dependencies =
           l.mapAttrsToList
-          (depName: semVer: let
-            yarnName = "${depName}@${semVer}";
-            depObject = objectsByKey.yarnName."${yarnName}";
-          in
-            if exportedWorkspacePackages ? "${depName}"
-            then {
-              name = depName;
-              version = exportedWorkspacePackages."${depName}";
+          (depName: semVer:
+            if l.hasInfix "npm:" semVer
+            then let
+              split = l.splitString "@" (l.last (l.splitString "npm:" semVer));
+            in {
+              name = l.head split;
+              version = l.last split;
             }
-            else {
-              name = depName;
-              version = depObject.version;
-            })
+            else let
+              yarnName = "${depName}@${semVer}";
+              depObject = objectsByKey.yarnName."${yarnName}";
+            in
+              if exportedWorkspacePackages ? "${depName}"
+              then {
+                name = depName;
+                version = exportedWorkspacePackages."${depName}";
+              }
+              else {
+                name = depName;
+                version = depObject.version;
+              })
           (nodejsUtils.getPackageJsonDeps json noDev);
 
         sourceSpec = {
@@ -149,6 +157,13 @@
           # @matrix-org/olm@https://gitlab.matrix.org/api/v4/projects/27/packages/npm/@matrix-org/olm/-/@matrix-org/olm-3.2.3.tgz
           else if lib.hasInfix "@https://" rawObj.yarnName
           then lib.head (lib.splitString "@https://" rawObj.yarnName)
+          else if lib.hasInfix "@npm:" rawObj.yarnName
+          then let
+            name' = l.last (l.splitString "@npm:" rawObj.yarnName);
+            split = l.splitString "@" name';
+            name = l.head split;
+          in
+            name
           else let
             split = lib.splitString "@" rawObj.yarnName;
             version = lib.last split;
@@ -165,6 +180,12 @@
           in
             l.strings.sanitizeDerivationName
             "${rawObj.version}@git+${gitUrl}"
+          else if l.hasInfix "@npm:" rawObj.yarnName
+          then let
+            split = l.splitString "@" rawObj.version;
+            version = l.last split;
+          in
+            version
           else rawObj.version;
 
         dependencies = rawObj: finalObj: let
@@ -286,15 +307,21 @@
       extraDependencies = let
         defaultPackageDependencies =
           l.mapAttrsToList
-          (name: semVer: let
-            depYarnKey = "${name}@${semVer}";
-            version =
-              if ! yarnLock ? "${depYarnKey}"
-              then throw "Cannot find entry for top level dependency: '${depYarnKey}'"
-              else yarnLock."${depYarnKey}".version;
-          in {
-            inherit name version;
-          })
+          (name: semVer:
+            if l.hasInfix "npm:" semVer
+            then let
+              split = l.splitString "@" (l.last (l.splitString "npm:" semVer));
+            in {
+              name = l.head split;
+              version = l.last split;
+            }
+            else let
+              depYarnKey = "${name}@${semVer}";
+              version =
+                if ! yarnLock ? "${depYarnKey}"
+                then throw "Cannot find entry for top level dependency: '${depYarnKey}'"
+                else yarnLock."${depYarnKey}".version;
+            in {inherit name version;})
           packageJsonDeps;
 
         workspaceDependencies =
