@@ -8,12 +8,14 @@
   # exported attributes
   dlib = {
     inherit
+      builders
       calcInvalidationHash
       callViaEnv
       construct
       containsMatchingFile
       dirNames
       discoverers
+      fetchers
       latestVersion
       listDirs
       listFiles
@@ -26,7 +28,10 @@
       sanitizeDerivationName
       sanitizePath
       sanitizeRelativePath
+      subsystems
       traceJ
+      modules
+      warnIfIfd
       ;
 
     inherit
@@ -36,10 +41,16 @@
       ;
   };
 
+  subsystems = dirNames ../subsystems;
+
   # other libs
+  builders = import ./builders.nix {inherit dlib lib config;};
   construct = import ./construct.nix {inherit lib;};
-  discoverers = import ../discoverers {inherit config dlib lib;};
+  discoverers = import ./discoverers.nix {inherit config dlib lib;};
+  fetchers = import ./fetchers.nix {inherit dlib lib;};
   translators = import ./translators.nix {inherit dlib lib;};
+
+  modules = import ./modules.nix {inherit config dlib lib;};
 
   simpleTranslate2 =
     (import ./simpleTranslate2.nix {inherit dlib lib;}).simpleTranslate2;
@@ -270,5 +281,19 @@
     else sanitizedRelPath;
 
   traceJ = toTrace: eval: l.trace (l.toJSON toTrace) eval;
+
+  ifdWarnMsg = module: ''
+    the builder / translator you are using (`${module.subsystem}.${module.name}`)
+    uses IFD (https://nixos.wiki/wiki/Glossary) and this *might* cause issues
+    (for example, `nix flake show` not working). if you are aware of this and
+    don't wish to see this message, set `config.disableIfdWarning` to `true`
+    in `dream2nix.lib.init` (or similar functions that take `config`).
+  '';
+  ifdWarningEnabled = ! (config.disableIfdWarning or false);
+  warnIfIfd = module: val:
+    l.warnIf
+    (ifdWarningEnabled && module.type == "ifd")
+    (ifdWarnMsg module)
+    val;
 in
   dlib

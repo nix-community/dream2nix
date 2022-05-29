@@ -18,7 +18,8 @@
   callPackageDream,
   dream2nixWithExternals,
   externalSources,
-  translators,
+  subsystems,
+  config,
   ...
 }: let
   b = builtins;
@@ -174,7 +175,7 @@ in
       aggregate = project.aggregate or false;
 
       translator =
-        translators.translators."${project.subsystem}".all."${project.translator}";
+        subsystems."${project.subsystem}".translators."${project.translator}";
 
       argsJsonFile =
         pkgs.writeText "translator-args.json"
@@ -203,6 +204,7 @@ in
         if [ "${l.toJSON aggregate}" == "true" ]; then
           echo "aggregating all sources to one large FOD"
           dream2nixWithExternals=${dream2nixWithExternals} \
+          dream2nixConfig=${l.toFile "dream2nix-config.json" (l.toJSON config)} \
             python3 ${../apps/cli}/aggregate-hashes.py $dreamLockPath
         fi
 

@@ -14,7 +14,7 @@
         then
           lib.warn ''
             you are trying to pass a "${name}" key from your source
-            constructor, this will be overrided with a value passed
+            constructor, this will be overridden with a value passed
             by dream2nix.
           ''
           false

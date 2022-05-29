@@ -4,96 +4,22 @@
 }: let
   l = lib // builtins;
 
-  # INTERNAL
+  # TODO
+  validator = module: true;
 
-  subsystems = dlib.dirNames ../translators;
+  modules = dlib.modules.makeSubsystemModules {
+    inherit validator;
+    modulesCategory = "translators";
+  };
 
-  translatorTypes = ["impure" "ifd" "pure"];
-
-  # attrset of: subsystem -> translator-type -> (function subsystem translator-type)
-  mkTranslatorsSet = function:
-    l.genAttrs
-    (dlib.dirNames ../translators)
-    (subsystem: let
-      availableTypes =
-        l.filter
-        (type: l.pathExists (../translators + "/${subsystem}/${type}"))
-        translatorTypes;
-
-      translatorsForTypes =
-        l.genAttrs
-        availableTypes
-        (transType: function subsystem transType);
-    in
-      translatorsForTypes
-      // {
-        all =
-          l.foldl'
-          (a: b: a // b)
-          {}
-          (l.attrValues translatorsForTypes);
-      });
-
-  # flat list of all translators sorted by priority (pure translators first)
-  translatorsList = let
-    list = l.collect (v: v ? subsystem) translators;
-    prio = translator:
-      if translator.type == "pure"
-      then 0
-      else if translator.type == "ifd"
-      then 1
-      else if translator.type == "impure"
-      then 2
-      else 3;
-  in
-    l.sort
-    (a: b: (prio a) < (prio b))
-    list;
-
-  callTranslator = subsystem: type: name: file: args: let
-    translatorModule = import file {
-      inherit dlib lib;
-    };
-  in
-    translatorModule
-    // {
-      inherit name subsystem type;
-    };
-
-  # EXPORTED
-
-  # attrset of: subsystem -> translator-type -> translator
-  translators = mkTranslatorsSet (
-    subsystem: type: let
-      translatorNames =
-        dlib.dirNames (../translators + "/${subsystem}/${type}");
-
-      translatorsLoaded =
-        l.genAttrs
-        translatorNames
-        (translatorName:
-          callTranslator
-          subsystem
-          type
-          translatorName
-          (../translators + "/${subsystem}/${type}/${translatorName}")
-          {});
-    in
-      l.filterAttrs
-      (name: t: t.disabled or false == false)
-      translatorsLoaded
-  );
-
-  mapTranslators = f:
-    l.mapAttrs
-    (subsystem: types:
-      l.mapAttrs
-      (type: names:
-        l.mapAttrs
-        (name: translator: f translator)
-        names)
-      types)
-    translators;
+  translators =
+    dlib.modules.mapSubsystemModules
+    (t: t // {translate = dlib.warnIfIfd t t.translate;})
+    modules.modules;
+  mapTranslators = f: dlib.modules.mapSubsystemModules f translators;
+in {
+  inherit translators mapTranslators;
+  callTranslator = modules.callModule;
 
   # pupulates a translators special args with defaults
   getextraArgsDefaults = extraArgsDef:
@@ -105,10 +31,4 @@
         else def.default or null
     )
     extraArgsDef;
-in {
-  inherit
-    getextraArgsDefaults
-    mapTranslators
-    translators
-    ;
 }

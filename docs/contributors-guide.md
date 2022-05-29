@@ -39,7 +39,7 @@ Unit tests can be executed via `nix run .#tests-unit`
 - temporarily expose internal functions of your translator
 - use nix repl `nix repl ./.`
 - invoke a function via
-   `translators.translators.{subsystem}.{type}.{translator-name}.some_function`
+   `subsystems.{subsystem}.translators.{translator-name}.some_function`
 
 ### Tested example flake
 Add an example flake under `./examples/name-of-example`.

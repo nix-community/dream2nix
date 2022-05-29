@@ -6,12 +6,10 @@
   ...
 }: let
   b = builtins;
-  callFetcher = file: args: callPackageDream file args;
+  callFetcher = module:
+    module // {outputs = callPackageDream module.outputs {};};
 in rec {
-  fetchers = lib.genAttrs (dlib.dirNames ./.) (
-    name:
-      callFetcher (./. + "/${name}") {}
-  );
+  fetchers = dlib.fetchers.mapFetchers callFetcher;
 
   defaultFetcher = callPackageDream ./default-fetcher.nix {inherit fetchers fetchSource;};
 

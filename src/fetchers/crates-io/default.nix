@@ -1,15 +1,14 @@
-{
-  lib,
-  fetchurl,
-  runCommand,
-  utils,
-  ...
-}: {
+{lib, ...}: {
   inputs = ["pname" "version"];
 
   versionField = "version";
 
   outputs = {
+    fetchurl,
+    runCommand,
+    utils,
+    ...
+  }: {
     pname,
     version,
     ...

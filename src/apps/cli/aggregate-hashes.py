@@ -11,7 +11,7 @@ def strip_hashes_from_lock(lock):
       if 'hash' in source:
         del source['hash']
 
-def aggregate_hashes(lock, outputDreamLock, dream2nix_src):
+def aggregate_hashes(lock, outputDreamLock, dream2nix_src, dream2nix_config):
     print("Building FOD of aggregated sources to retrieve output hash")
     # remove hashes from lock file and init sourcesAggregatedHash with empty string
     strip_hashes_from_lock(lock)
@@ -21,7 +21,7 @@ def aggregate_hashes(lock, outputDreamLock, dream2nix_src):
     # compute FOD hash of aggregated sources
     proc = nix(
       "build", "--impure", "-L", "--show-trace", "--expr",
-      f"(import {dream2nix_src} {{}}).fetchSources {{ dreamLock = {outputDreamLock}; }}"
+      f"(import {dream2nix_src} {{ config = {dream2nix_config}; }}).fetchSources {{ dreamLock = {outputDreamLock}; }}"
     )
     print(proc.stderr.decode())
     # read the output hash from the failed build log
@@ -44,6 +44,7 @@ if __name__ == '__main__':
   with open(dreamLockFile) as f:
     lock = json.load(f)
   dream2nix_src = os.environ.get('dream2nixWithExternals')
-  new_lock = aggregate_hashes(lock, dreamLockFile, dream2nix_src)
+  dream2nix_config = os.environ.get('dream2nixConfig')
+  new_lock = aggregate_hashes(lock, dreamLockFile, dream2nix_src, dream2nix_config)
   with open(dreamLockFile, 'w') as f:
     json.dump(new_lock, f, indent=2)

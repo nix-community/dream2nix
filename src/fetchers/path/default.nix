@@ -1,9 +1,9 @@
-{utils, ...}: {
+{...}: {
   inputs = [
     "path"
   ];
 
-  outputs = {path, ...} @ inp: let
+  outputs = {utils, ...}: {path, ...} @ inp: let
     b = builtins;
   in {
     calcHash = algo: utils.hashPath "${path}";

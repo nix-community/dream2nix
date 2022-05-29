@@ -1,14 +1,13 @@
-{
-  lib,
-  fetchurl,
-  utils,
-  ...
-}: {
+{lib, ...}: {
   inputs = [
     "url"
   ];
 
-  outputs = {url, ...} @ inp: let
+  outputs = {
+    fetchurl,
+    utils,
+    ...
+  }: {url, ...} @ inp: let
     b = builtins;
   in {
     calcHash = algo:
