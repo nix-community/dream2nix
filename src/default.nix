@@ -556,20 +556,9 @@
           (outputs.packages or {});
       };
 
-    projectOutputs =
-      l.map
-      (proj: outputsForProject proj)
-      translatedProjects;
+    projectOutputs = l.map outputsForProject translatedProjects;
 
-    mergedOutputs =
-      l.foldl'
-      (all: outputs:
-        all
-        // {
-          packages = all.packages or {} // outputs.packages;
-        })
-      {}
-      projectOutputs;
+    mergedOutputs = l.foldl' l.recursiveUpdate {} projectOutputs;
   in
     mergedOutputs;
 in {
