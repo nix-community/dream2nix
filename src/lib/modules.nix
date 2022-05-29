@@ -6,8 +6,8 @@
   l = lib // builtins;
 
   configFuncMsg = ''
-    consider passing a path to a file instead of a function
-    - functions can't be encoded to JSON, and as such most features of
+    consider passing a path to a file instead of a function:
+    functions can't be encoded to JSON, and as such most features of
     dream2nix won't work because of this since they require passing around
     the config as JSON.
   '';
@@ -52,7 +52,7 @@
     # imports a modules declaration
     importDecl = decl:
       if l.isFunction decl
-      then l.warn configFuncMsg (decl {inherit config dlib lib;})
+      then l.throw configFuncMsg (decl {inherit config dlib lib;})
       else if isAttrs decl
       then decl
       else import decl {inherit config dlib lib;};
@@ -60,8 +60,8 @@
     # config.extra is imported here if it's a path
     extra = importDecl _extra;
     # warn user if they are declaring a module as a function
-    warnIfModuleNotPath = module:
-      l.warnIf ((isAttrs _extra) && (l.isFunction module)) configFuncMsg module;
+    throwIfModuleNotPath = module:
+      l.throwIf ((isAttrs _extra) && (l.isFunction module)) configFuncMsg module;
     # collect subsystem modules (translators, discoverers, builders)
     _extraSubsystemModules =
       l.mapAttrsToList
@@ -70,7 +70,7 @@
         (category: modules:
           l.mapAttrsToList
           (name: module: {
-            file = warnIfModuleNotPath module;
+            file = throwIfModuleNotPath module;
             extraArgs = {inherit subsystem name;};
           })
           (importDecl modules))
@@ -82,7 +82,7 @@
     extraFetcherModules =
       l.mapAttrsToList
       (name: fetcher: {
-        file = warnIfModuleNotPath fetcher;
+        file = throwIfModuleNotPath fetcher;
         extraArgs = {inherit name;};
       })
       (importDecl (extra.fetchers or {}));
