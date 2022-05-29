@@ -94,7 +94,7 @@
   # collect all extras
   extra =
     collectExtraModules
-    (l.map processOneExtra (l.flatten [(extra.config or [])]));
+    (l.map processOneExtra (l.flatten [(config.extra or [])]));
 
   mapSubsystemModules = f: modules:
     l.mapAttrs
