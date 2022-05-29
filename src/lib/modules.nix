@@ -91,14 +91,10 @@
     // {
       fetchers = extraFetcherModules;
     };
-  extra = let
-    _extra = config.extra or {};
-  in
-    if l.isList _extra
-    then
-      collectExtraModules
-      (l.map processOneExtra _extra)
-    else processOneExtra _extra;
+  # collect all extras
+  extra =
+    collectExtraModules
+    (l.map processOneExtra (l.flatten [(extra.config or [])]));
 
   mapSubsystemModules = f: modules:
     l.mapAttrs
@@ -111,8 +107,7 @@
     modules;
 
   # collect subsystem modules into a list
-  # ex: {rust.translators.cargo-lock = cargo-lock; go.translators.gomod2nix = gomod2nix;}
-  # -> [cargo-lock gomod2nix]
+  # ex: {rust.cargo-lock = cargo-lock; go.gomod2nix = gomod2nix;} -> [cargo-lock gomod2nix]
   collectSubsystemModules = modules: let
     allModules = l.flatten (l.map l.attrValues (l.attrValues modules));
     hasModule = module: modules:
@@ -125,12 +120,10 @@
       modules;
   in
     l.foldl'
-    (
-      acc: el:
-        if hasModule el acc
-        then acc
-        else acc ++ [el]
-    )
+    (acc: el:
+      if hasModule el acc
+      then acc
+      else acc ++ [el])
     []
     allModules;
 
@@ -142,56 +135,45 @@
     extraModules ? extra.${modulesCategory} or [],
     defaults ? {},
   }: let
-    callModule = {
-      file,
-      extraArgs ? {},
-    }:
+    callModule = file: extraArgs:
       importModule {inherit file validator extraArgs;};
 
-    # import the extra modules
-    importedExtraModules =
+    # extract builtin modules from subsystems directory
+    modulesBuiltin = l.flatten (
       l.map
-      (
-        module:
-          (callModule module)
-          // {inherit (module.extraArgs) subsystem name;}
-      )
-      extraModules;
-
-    # import builtin modules from subsystems directory
-    modulesBuiltin =
-      l.genAttrs
       dlib.subsystems
       (
         subsystem: let
-          modulesDir = ../subsystems + "/${subsystem}/${modulesCategory}";
+          dir = ../subsystems + "/${subsystem}/${modulesCategory}";
           moduleNames =
-            if l.pathExists modulesDir
-            then dlib.dirNames modulesDir
+            if l.pathExists dir
+            then dlib.dirNames dir
             else [];
-
-          loadModule = name: let
+          makeModule = name: {
+            file = "${dir}/${name}";
             extraArgs = {inherit subsystem name;};
-            module = callModule {
-              file = "${modulesDir}/${name}";
-              inherit extraArgs;
-            };
-          in
-            module // extraArgs;
-          modulesLoaded = l.genAttrs moduleNames loadModule;
+          };
         in
-          l.filterAttrs (name: t: t.disabled or false == false) modulesLoaded
-      );
-    # extend the builtin modules with the extra modules
-    modulesExtended =
-      l.foldl'
-      (
-        acc: el:
-          l.recursiveUpdate acc
-          {"${el.subsystem}"."${el.name}" = el;}
+          l.map makeModule moduleNames
       )
-      modulesBuiltin
-      importedExtraModules;
+    );
+
+    # import the modules
+    importedModules = l.filter (t: t.disabled or false == false) (
+      l.map
+      (
+        module:
+          (callModule module.file module.extraArgs)
+          // {inherit (module.extraArgs) subsystem name;}
+      )
+      (modulesBuiltin ++ extraModules)
+    );
+    # create the modules attrset
+    _modules =
+      l.foldl'
+      (acc: el: l.recursiveUpdate acc {"${el.subsystem}"."${el.name}" = el;})
+      {}
+      importedModules;
     # add default module attribute to a subsystem if declared in `defaults`
     modules =
       l.mapAttrs
@@ -201,7 +183,7 @@
           then modules // {default = modules.${defaults.${subsystem}};}
           else modules
       )
-      modulesExtended;
+      _modules;
     mapModules = f: mapSubsystemModules f modules;
   in {
     inherit
