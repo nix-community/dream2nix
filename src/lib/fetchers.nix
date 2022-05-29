@@ -17,11 +17,11 @@
   # get the builtin fetchers
   builtinFetchers =
     l.map
-    fetcherNames
     (name: {
       file = "${fetchersDir}/${name}";
       extraArgs = {inherit name;};
-    });
+    })
+    fetcherNames;
   # get extra fetchers
   extraFetchers = dlib.modules.extra.fetchers or [];
 

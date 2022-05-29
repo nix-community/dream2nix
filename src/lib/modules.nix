@@ -141,7 +141,6 @@
     # extract builtin modules from subsystems directory
     modulesBuiltin = l.flatten (
       l.map
-      dlib.subsystems
       (
         subsystem: let
           dir = ../subsystems + "/${subsystem}/${modulesCategory}";
@@ -156,6 +155,7 @@
         in
           l.map makeModule moduleNames
       )
+      dlib.subsystems
     );
 
     # import the modules
