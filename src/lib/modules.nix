@@ -185,13 +185,7 @@
       )
       _modules;
     mapModules = f: mapSubsystemModules f modules;
-  in {
-    inherit
-      callModule
-      mapModules
-      modules
-      ;
-  };
+  in {inherit callModule mapModules modules;};
 in {
   inherit
     importModule

@@ -36,8 +36,5 @@
     (builtinFetchers ++ extraFetchers);
   # create the attrset
   fetchers = l.listToAttrs (l.map (f: l.nameValuePair f.name f) importedFetchers);
-
   mapFetchers = f: l.mapAttrs (_: fetcher: f fetcher) fetchers;
-in {
-  inherit fetchers callFetcher mapFetchers;
-}
+in {inherit fetchers callFetcher mapFetchers;}
