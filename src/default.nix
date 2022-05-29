@@ -551,20 +551,16 @@
           (outputs.packages or {});
       };
 
-    projectOutputs =
-      l.map
-      (proj: outputsForProject proj)
-      translatedProjects;
+    projectOutputs = l.map outputsForProject translatedProjects;
 
-    mergedOutputs =
-      l.foldl'
-      (all: outputs:
-        all
-        // {
-          packages = all.packages or {} // outputs.packages;
-        })
-      {}
-      projectOutputs;
+    mergedOutputs = let
+      isNotDrvAttrs = val:
+        l.isAttrs val && (val.type or "") != "derivation";
+      recursiveUpdateUntilDrv =
+        l.recursiveUpdateUntil
+        (_: l: r: !(isNotDrvAttrs l && isNotDrvAttrs r));
+    in
+      l.foldl' recursiveUpdateUntilDrv {} projectOutputs;
   in
     mergedOutputs;
 in {
