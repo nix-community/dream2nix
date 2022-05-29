@@ -100,6 +100,16 @@
       (l.map processOneExtra _extra)
     else processOneExtra _extra;
 
+  mapSubsystemModules = f: modules:
+    l.mapAttrs
+    (
+      subsystem: names:
+        l.mapAttrs
+        (name: module: f module)
+        names
+    )
+    modules;
+
   # collect subsystem modules into a list
   # ex: {rust.translators.cargo-lock = cargo-lock; go.translators.gomod2nix = gomod2nix;}
   # -> [cargo-lock gomod2nix]
@@ -192,16 +202,7 @@
           else modules
       )
       modulesExtended;
-
-    mapModules = f:
-      l.mapAttrs
-      (
-        subsystem: names:
-          l.mapAttrs
-          (name: module: f module)
-          names
-      )
-      modules;
+    mapModules = f: mapSubsystemModules f modules;
   in {
     inherit
       callModule
@@ -214,6 +215,7 @@ in {
     importModule
     makeSubsystemModules
     collectSubsystemModules
+    mapSubsystemModules
     extra
     ;
 }

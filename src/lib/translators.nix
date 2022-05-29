@@ -11,10 +11,15 @@
     inherit validator;
     modulesCategory = "translators";
   };
+
+  translators =
+    dlib.modules.mapSubsystemModules
+    (t: t // {translate = dlib.warnIfIfd t t.translate;})
+    modules.modules;
+  mapTranslators = f: dlib.modules.mapSubsystemModules f translators;
 in {
+  inherit translators mapTranslators;
   callTranslator = modules.callModule;
-  mapTranslators = modules.mapModules;
-  translators = modules.modules;
 
   # pupulates a translators special args with defaults
   getextraArgsDefaults = extraArgsDef:

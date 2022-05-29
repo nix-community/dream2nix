@@ -253,8 +253,7 @@
         conditionalOverrides = packageOverrides;
       };
 
-    build = dlib.warnIfIfd builder builder.build;
-    outputs = build (builderArgs
+    outputs = builder.build (builderArgs
       // {
         inherit
           produceDerivation
@@ -453,8 +452,7 @@
       l.forEach projectsPureUnresolved
       (proj: let
         translator = getTranslator proj.subsystem proj.translator;
-        translate = dlib.warnIfIfd translator translator.translate;
-        dreamLock'' = translate {
+        dreamLock'' = translator.translate {
           inherit source tree discoveredProjects;
           project = proj;
         };

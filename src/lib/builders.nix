@@ -18,8 +18,13 @@
     inherit validator defaults;
     modulesCategory = "builders";
   };
+
+  builders =
+    dlib.modules.mapSubsystemModules
+    (b: b // {build = dlib.warnIfIfd b b.build;})
+    modules.modules;
+  mapBuilders = f: dlib.modules.mapSubsystemModules f builders;
 in {
+  inherit builders mapBuilders;
   callBuilder = modules.callModule;
-  mapBuilders = modules.mapModules;
-  builders = modules.modules;
 }
