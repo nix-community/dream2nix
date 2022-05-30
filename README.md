@@ -132,6 +132,22 @@ Extensive Example `flake.nix`:
 }
 ```
 
+Initializing a dream2nix from a nixpkgs set:
+```nix
+let
+  system = "x86_64-linux";
+  # in this case, 'nixpkgs' is a nixpkgs flake
+  pkgs = nixpkgs.legacyPackages.${system};
+  # 'dream2nix' is a dream2nix flake
+  d2n = dream2nix.lib.init {inherit pkgs;};
+in
+  d2n.realizeProjects {
+    source = ./.;
+    # all other arguments used in above examples
+    # can also be used here (overrides, inject, settings)
+  }
+```
+
 ### Watch the presentation
 (The code examples of the presentation are outdated)
 [![dream2nix - A generic framework for 2nix tools](https://gist.githubusercontent.com/DavHau/755fed3774e89c0b9b8953a0a25309fa/raw/3c8b2c56f5fca3bf5c343ffc179136eef39d4d6a/dream2nix-youtube-talk.png)](https://www.youtube.com/watch?v=jqCfHMvCsfQ)

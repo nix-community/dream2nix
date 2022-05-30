@@ -69,26 +69,29 @@
     forAllSystems = f: lib.mapAttrs f allPkgs;
 
     dream2nixFor = forAllSystems (dream2nixForSystem config);
-  in {
-    riseAndShine = throw "Use makeFlakeOutputs instead of riseAndShine.";
+  in
+    if pkgs != null
+    then dream2nixFor."${makePkgsKey pkgs}"
+    else {
+      riseAndShine = throw "Use makeFlakeOutputs instead of riseAndShine.";
 
-    makeFlakeOutputs = mArgs:
-      makeFlakeOutputsFunc
-      (
-        {inherit config pkgs systems;}
-        // mArgs
-      );
+      makeFlakeOutputs = mArgs:
+        makeFlakeOutputsFunc
+        (
+          {inherit config pkgs systems;}
+          // mArgs
+        );
 
-    apps =
-      forAllSystems
-      (system: pkgs:
-        dream2nixFor."${system}".apps.flakeApps);
+      apps =
+        forAllSystems
+        (system: pkgs:
+          dream2nixFor."${system}".apps.flakeApps);
 
-    defaultApp =
-      forAllSystems
-      (system: pkgs:
-        dream2nixFor."${system}".apps.flakeApps.dream2nix);
-  };
+      defaultApp =
+        forAllSystems
+        (system: pkgs:
+          dream2nixFor."${system}".apps.flakeApps.dream2nix);
+    };
 
   makeFlakeOutputsFunc = {
     config ? {},
