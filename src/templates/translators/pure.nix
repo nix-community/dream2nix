@@ -5,6 +5,8 @@
 
 {
 
+  type = "pure";
+
   /*
     Automatically generate unit tests for this translator using project sources
     from the specified list.

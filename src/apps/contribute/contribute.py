@@ -6,7 +6,7 @@ from cleo.helpers import option
 
 
 dream2nix_src = "./src"
-
+subsystem_dir = dream2nix_src + f"/subsystems/"
 
 class ContributeCommand(Command):
 
@@ -39,7 +39,7 @@ class ContributeCommand(Command):
         "This command will initialize a template for adding a new module to dream2nix"
       )
       self.line("")
-    
+
     module = self.option("module")
     if not module:
       module = self.choice(
@@ -48,10 +48,9 @@ class ContributeCommand(Command):
         0
       )
     module = f"{module}s"
-    module_dir = dream2nix_src + f"/{module}/"
 
     subsystem = self.option('subsystem')
-    known_subsystems = list(dir for dir in os.listdir(module_dir) if os.path.isdir(module_dir + dir))
+    known_subsystems = list(dir for dir in os.listdir(subsystem_dir) if os.path.isdir(subsystem_dir + dir))
     if not subsystem:
       subsystem = self.choice(
         'Select subsystem',
@@ -67,7 +66,7 @@ class ContributeCommand(Command):
         if subsystem in known_subsystems:
           raise Exception(f"subsystem {subsystem} already exists")
 
-    
+
     if module == 'translators':
       type = self.option("type")
       if not type:
@@ -76,18 +75,20 @@ class ContributeCommand(Command):
           ['impure', 'pure'],
           0
         )
-    
+
+    module_dir = subsystem_dir + f"/{subsystem}/{module}"
+
     name = self.option("name")
     if not name:
       name = self.ask('Specify name of new module:')
 
     if module == 'translators':
-      new_path = module_dir + f"{subsystem}/{type}/{name}"
+      new_path = module_dir + f"/{name}"
       template_file = dream2nix_src + f"/templates/{module}/{type}.nix"
     else:
-      new_path = module_dir + f"{subsystem}/{name}"
+      new_path = module_dir + f"/{name}"
       template_file = dream2nix_src + f"/templates/{module}/default.nix"
-    
+
     pathlib.Path(new_path).mkdir(parents=True)
 
     target_file = f"{new_path}/default.nix"
@@ -98,7 +99,7 @@ class ContributeCommand(Command):
     self.line(f"The template has been initialized in {target_file}")
     if self.confirm('Would you like to open it in your default editor now?', True, '(?i)^(y|j)'):
       sp.run(f"{os.environ.get('EDITOR')} {target_file}", shell=True)
-    
+
 
 
 application = Application("contribute")
