@@ -168,9 +168,15 @@ in
     satisfiesSemver = poetry2nixSemver.satisfiesSemver;
 
     makeTranslateScript = {
-      invalidationHash,
       source,
       project,
+      invalidationHash ?
+        dlib.calcInvalidationHash {
+          inherit project source;
+          # TODO: translatorArgs
+          translatorArgs = {};
+          translator = project.translator;
+        },
     } @ args: let
       aggregate = project.aggregate or false;
 

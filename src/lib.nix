@@ -112,14 +112,6 @@
     dream2nixFor = forAllSystems (dream2nixForSystem config);
     dlib = import ./lib {inherit lib config;};
 
-    getInvalidationHash = project:
-      dlib.calcInvalidationHash {
-        inherit project source;
-        # TODO: add translatorArgs
-        translatorArgs = {};
-        translator = project.translator;
-      };
-
     discoveredProjects = dlib.discoverers.discoverProjects {
       inherit settings;
       tree = dlib.prepareSourceTree {inherit source;};
@@ -129,66 +121,17 @@
       lib.mapAttrs
       (system: pkgs: let
         dream2nix = dream2nixFor."${system}";
-
-        impureDiscoveredProjects =
-          l.filter
-          (proj:
-            dream2nix
-            .subsystems
-            ."${proj.subsystem}"
-            .translators
-            ."${proj.translator}"
-            .type
-            == "impure")
-          discoveredProjects;
-
-        impureResolveScriptsList =
-          l.listToAttrs
-          (l.forEach impureDiscoveredProjects
-            (project:
-              l.nameValuePair
-              "Name: ${project.name}; Subsystem: ${project.subsystem}; relPath: ${project.relPath}"
-              (dream2nix.utils.makeTranslateScript {
-                inherit project source;
-                invalidationHash = getInvalidationHash project;
-              })));
-
-        resolveImpureScript =
-          dream2nix.utils.writePureShellScript
-          []
-          ''
-            cd $WORKDIR
-            ${l.concatStringsSep "\n"
-              (l.mapAttrsToList
-                (title: script: ''
-                  echo "Resolving:: ${title}"
-                  ${script}/bin/resolve
-                '')
-                impureResolveScriptsList)}
-          '';
-
-        translatedProjects = dream2nix.translateProjects {
-          inherit pname settings source;
-        };
-
-        realizedProjects = dream2nix.realizeProjects {
+        allOutputs = dream2nix.makeOutputs {
           inherit
-            inject
-            packageOverrides
-            sourceOverrides
-            translatedProjects
             source
+            pname
+            discoveredProjects
+            settings
+            sourceOverrides
+            packageOverrides
+            inject
             ;
         };
-
-        allOutputs =
-          realizedProjects
-          // {
-            apps.resolveImpure = {
-              type = "app";
-              program = l.toString resolveImpureScript;
-            };
-          };
       in
         allOutputs)
       allPkgs;

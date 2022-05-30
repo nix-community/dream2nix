@@ -563,6 +563,100 @@
       l.foldl' recursiveUpdateUntilDrv {} projectOutputs;
   in
     mergedOutputs;
+
+  generateImpureResolveScript = {
+    source,
+    impureDiscoveredProjects,
+  }: let
+    impureResolveScriptsList =
+      l.listToAttrs
+      (
+        l.map
+        (
+          project:
+            l.nameValuePair
+            "Name: ${project.name}; Subsystem: ${project.subsystem}; relPath: ${project.relPath}"
+            (utils.makeTranslateScript {inherit project source;})
+        )
+        impureDiscoveredProjects
+      );
+
+    resolveImpureScript =
+      utils.writePureShellScript
+      []
+      ''
+        cd $WORKDIR
+        ${l.concatStringsSep "\n"
+          (l.mapAttrsToList
+            (title: script: ''
+              echo "Resolving:: ${title}"
+              ${script}/bin/resolve
+            '')
+            impureResolveScriptsList)}
+      '';
+  in
+    resolveImpureScript;
+
+  makeOutputs = {
+    source ? throw "pass a 'source' to 'makeOutputs'",
+    discoveredProjects ? dlib.discoverers.discoverProjects {inherit settings source;},
+    pname ? null,
+    settings ? [],
+    packageOverrides ? {},
+    sourceOverrides ? old: {},
+    inject ? {},
+  }: let
+    impureDiscoveredProjects =
+      l.filter
+      (proj:
+        subsystems
+        ."${proj.subsystem}"
+        .translators
+        ."${proj.translator}"
+        .type
+        == "impure")
+      discoveredProjects;
+
+    resolveImpureScript = generateImpureResolveScript {
+      inherit impureDiscoveredProjects source;
+    };
+
+    translatedProjects = translateProjects {
+      inherit
+        discoveredProjects
+        pname
+        settings
+        source
+        ;
+    };
+
+    realizedProjects = realizeProjects {
+      inherit
+        inject
+        packageOverrides
+        sourceOverrides
+        translatedProjects
+        source
+        ;
+    };
+  in
+    realizedProjects
+    // l.optionalAttrs (l.length impureDiscoveredProjects > 0) {
+      apps =
+        l.warnIf
+        (realizeProjects.apps.resolveImpure or null != null)
+        ''
+          a builder outputted an app named 'resolveImpure'
+          this will be overrided by dream2nix!
+        ''
+        ((realizeProjects.apps or {})
+          // {
+            resolveImpure = {
+              type = "app";
+              program = l.toString resolveImpureScript;
+            };
+          });
+    };
 in {
   inherit
     apps
@@ -576,6 +670,7 @@ in {
     updaters
     utils
     makeOutputsForDreamLock
+    makeOutputs
     subsystems
     ;
 }
