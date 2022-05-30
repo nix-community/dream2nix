@@ -6,6 +6,7 @@
   lib,
   dlib,
   utils,
+  subsystemAttrs,
   ...
 }: let
   l = lib // builtins;
@@ -53,14 +54,16 @@ in rec {
         then "registry+https://github.com/rust-lang/crates.io-index"
         else if sourceSpec.type == "git"
         then let
-          ref = sourceSpec.ref or "";
+          gitSpec =
+            l.findFirst
+            (src: src.url == sourceSpec.url && src.sha == sourceSpec.rev)
+            (throw "no git source: ${sourceSpec.url}#${sourceSpec.rev}")
+            (subsystemAttrs.gitSources or {});
           refPart =
-            if l.hasPrefix "refs/heads/" ref
-            then "branch=${l.removePrefix "refs/heads/" ref}"
-            else if l.hasPrefix "refs/tags/" ref
-            then "tag=${l.removePrefix "refs/tags/" ref}"
-            else "rev=${sourceSpec.rev}";
-        in "git+${sourceSpec.url}?${refPart}#${sourceSpec.rev}"
+            l.optionalString
+            (gitSpec ? type)
+            "?${gitSpec.type}=${gitSpec.value}";
+        in "git+${sourceSpec.url}${refPart}#${sourceSpec.rev}"
         else throw "source type '${sourceSpec.type}' not supported";
     in
       {
