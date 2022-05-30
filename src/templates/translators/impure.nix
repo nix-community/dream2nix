@@ -1,6 +1,7 @@
 {
   dlib,
   lib,
+  ...
 }: {
 
   type = "impure";

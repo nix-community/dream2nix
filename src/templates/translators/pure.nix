@@ -1,8 +1,11 @@
 {
   dlib,
   lib,
+  ...
 }:
-
+let
+  l = lib // builtins;
+in
 {
 
   type = "pure";
@@ -100,11 +103,10 @@
     }@args:
     let
 
-      l = lib // builtins;
-
       # get the root source and project source
       rootSource = tree.fullPath;
       projectSource = "${tree.fullPath}/${project.relPath}";
+      projectTree = tree.getNodeFromPath project.relPath;
 
       # parse the json / toml etc.
       projectJsonPath = "${projectSource}/project.json";
