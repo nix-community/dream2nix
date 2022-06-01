@@ -65,6 +65,11 @@ Extensive Example `flake.nix`:
         (system: nixpkgs.legacyPackages.${system})
         ["x86_64-linux"];
 
+      # shorthand function to create a dream2nix instance from
+      # some pkgs set.
+      #
+      # the 'init' function takes a 'pkgs' and a 'config' and
+      # outputs a dream2nix instance.
       initD2N = pkgs: dream2nix.lib.init {
         inherit pkgs;
         config.projectRoot = ./.;
