@@ -8,13 +8,22 @@
   externalSources,
   externalPaths,
 } @ args: let
-  b = builtins;
-
   l = lib // builtins;
 
-  dream2nixForSystem = config: system: pkgs:
+  initDream2nix = config: pkgs:
     import ./default.nix
-    {inherit config externalPaths externalSources pkgs;};
+    {inherit config pkgs externalPaths externalSources;};
+
+  loadConfig = config'': let
+    config' = (import ./utils/config.nix).loadConfig config'';
+
+    config =
+      config'
+      // {
+        overridesDirs = args.overridesDirs ++ config'.overridesDirs;
+      };
+  in
+    config;
 
   # TODO: design output schema for cross compiled packages
   makePkgsKey = pkgs: let
@@ -35,87 +44,48 @@
     # only pkgs is specified
     else if pkgsList != null
     then
-      if b.isList pkgsList
+      if l.isList pkgsList
       then
-        lib.listToAttrs
-        (pkgs: lib.nameValuePair (makePkgsKey pkgs) pkgs)
+        l.listToAttrs
+        (pkgs: l.nameValuePair (makePkgsKey pkgs) pkgs)
         pkgsList
       else {"${makePkgsKey pkgsList}" = pkgsList;}
     # only systems is specified
     else
-      lib.genAttrs systems
+      l.genAttrs systems
       (system: import nixpkgsSrc {inherit system;});
 
   flakifyBuilderOutputs = system: outputs:
     l.mapAttrs
-    (ouputType: outputValue: {"${system}" = outputValue;})
+    (_: outputValue: {"${system}" = outputValue;})
     outputs;
 
   init = {
+    pkgs ? throw "please pass 'pkgs' (a nixpkgs instance) to 'init'",
+    config ? {},
+  }:
+    initDream2nix (loadConfig config) pkgs;
+
+  makeFlakeOutputs = {
+    source,
     pkgs ? null,
     systems ? [],
-    config ? {},
-  } @ argsInit: let
-    config' = (import ./utils/config.nix).loadConfig argsInit.config or {};
-
-    config =
-      config'
-      // {
-        overridesDirs = args.overridesDirs ++ config'.overridesDirs;
-      };
-
-    allPkgs = makeNixpkgs pkgs systems;
-
-    forAllSystems = f: lib.mapAttrs f allPkgs;
-
-    dream2nixFor = forAllSystems (dream2nixForSystem config);
-  in {
-    riseAndShine = throw "Use makeFlakeOutputs instead of riseAndShine.";
-
-    makeFlakeOutputs = mArgs:
-      makeFlakeOutputsFunc
-      (
-        {inherit config pkgs systems;}
-        // mArgs
-      );
-
-    apps =
-      forAllSystems
-      (system: pkgs:
-        dream2nixFor."${system}".apps.flakeApps);
-
-    defaultApp =
-      forAllSystems
-      (system: pkgs:
-        dream2nixFor."${system}".apps.flakeApps.dream2nix);
-  };
-
-  makeFlakeOutputsFunc = {
     config ? {},
     inject ? {},
     pname ? throw "Please pass `pname` to makeFlakeOutputs",
-    pkgs ? null,
     packageOverrides ? {},
     settings ? [],
-    source,
     sourceOverrides ? oldSources: {},
-    systems ? [],
     translator ? null,
     translatorArgs ? {},
   } @ args: let
-    config = args.config or ((import ./utils/config.nix).loadConfig {});
     allPkgs = makeNixpkgs pkgs systems;
-    forAllSystems = f: b.mapAttrs f allPkgs;
-    dream2nixFor = forAllSystems (dream2nixForSystem config);
+
+    config = loadConfig (args.config or {});
     dlib = import ./lib {inherit lib config;};
 
-    getInvalidationHash = project:
-      dlib.calcInvalidationHash {
-        inherit project source;
-        # TODO: add translatorArgs
-        translatorArgs = {};
-        translator = project.translator;
-      };
+    initD2N = initDream2nix config;
+    dream2nixFor = l.mapAttrs (_: pkgs: initD2N pkgs) allPkgs;
 
     discoveredProjects = dlib.discoverers.discoverProjects {
       inherit settings;
@@ -123,80 +93,31 @@
     };
 
     allBuilderOutputs =
-      lib.mapAttrs
+      l.mapAttrs
       (system: pkgs: let
         dream2nix = dream2nixFor."${system}";
-
-        impureDiscoveredProjects =
-          l.filter
-          (proj:
-            dream2nix
-            .subsystems
-            ."${proj.subsystem}"
-            .translators
-            ."${proj.translator}"
-            .type
-            == "impure")
-          discoveredProjects;
-
-        impureResolveScriptsList =
-          l.listToAttrs
-          (l.forEach impureDiscoveredProjects
-            (project:
-              l.nameValuePair
-              "Name: ${project.name}; Subsystem: ${project.subsystem}; relPath: ${project.relPath}"
-              (dream2nix.utils.makeTranslateScript {
-                inherit project source;
-                invalidationHash = getInvalidationHash project;
-              })));
-
-        resolveImpureScript =
-          dream2nix.utils.writePureShellScript
-          []
-          ''
-            cd $WORKDIR
-            ${l.concatStringsSep "\n"
-              (l.mapAttrsToList
-                (title: script: ''
-                  echo "Resolving:: ${title}"
-                  ${script}/bin/resolve
-                '')
-                impureResolveScriptsList)}
-          '';
-
-        translatedProjects = dream2nix.translateProjects {
-          inherit pname settings source;
-        };
-
-        realizedProjects = dream2nix.realizeProjects {
+        allOutputs = dream2nix.makeOutputs {
           inherit
-            inject
-            packageOverrides
-            sourceOverrides
-            translatedProjects
             source
+            pname
+            discoveredProjects
+            settings
+            sourceOverrides
+            packageOverrides
+            inject
             ;
         };
-
-        allOutputs =
-          realizedProjects
-          // {
-            apps.resolveImpure = {
-              type = "app";
-              program = l.toString resolveImpureScript;
-            };
-          };
       in
         allOutputs)
       allPkgs;
 
     flakifiedOutputsList =
-      lib.mapAttrsToList
+      l.mapAttrsToList
       (system: outputs: flakifyBuilderOutputs system outputs)
       allBuilderOutputs;
 
     flakeOutputsBuilders =
-      b.foldl'
+      l.foldl'
       (allOutputs: output: lib.recursiveUpdate allOutputs output)
       {}
       flakifiedOutputsList;
@@ -207,8 +128,7 @@
   in
     flakeOutputs;
 in {
-  inherit init;
+  inherit init makeFlakeOutputs;
   dlib = import ./lib {inherit lib;};
   riseAndShine = throw "Use makeFlakeOutputs instead of riseAndShine.";
-  makeFlakeOutputs = makeFlakeOutputsFunc;
 }

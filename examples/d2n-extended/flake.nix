@@ -9,8 +9,8 @@
     self,
     dream2nix,
     src,
-  } @ inp: let
-    dream2nix = inp.dream2nix.lib2.init {
+  } @ inp:
+    (dream2nix.lib.makeFlakeOutputs {
       systems = ["x86_64-linux"];
       config.projectRoot = ./.;
       config.extra = {
@@ -21,9 +21,6 @@
         };
         fetchers.crates-io = "${inp.dream2nix}/src/fetchers/crates-io";
       };
-    };
-  in
-    (dream2nix.makeFlakeOutputs {
       source = src;
       settings = [
         {

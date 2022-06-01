@@ -42,14 +42,10 @@ Minimal Example `flake.nix`:
 ```nix
 {
   inputs.dream2nix.url = "github:nix-community/dream2nix";
-  outputs = { self, dream2nix }@inputs:
-    let
-      dream2nix = inputs.dream2nix.lib.init {
-        # modify according to your supported systems
-        systems = [ "x86_64-linux" ];
-        config.projectRoot = ./. ;
-      };
-    in dream2nix.makeFlakeOutputs {
+  outputs = { self, dream2nix }:
+    dream2nix.lib.makeFlakeOutputs {
+      systems = ["x86_64-linux"];
+      config.projectRoot = ./.;
       source = ./.;
     };
 }
@@ -59,31 +55,21 @@ Extensive Example `flake.nix`:
 ```nix
 {
   inputs.dream2nix.url = "github:nix-community/dream2nix";
-  outputs = { self, dream2nix }@inputs:
-    let
-      system = "x86_64-linux";
+  outputs = { self, dream2nix }:
+    dream2nix.lib.makeFlakeOutputs {
+      systems = ["x86_64-linux"];
+      config.projectRoot = ./.;
 
-      pkgs = inputs.dream2nix.inputs.nixpkgs.legacyPackages.${system};
-
-      dream2nix = inputs.dream2nix.lib.init {
-        # modify according to your supported systems
-        systems = [ system ];
-        config.projectRoot = ./. ;
-      };
-
-    in dream2nix.makeFlakeOutputs {
       source = ./.;
 
       # Configure the behavior of dream2nix when translating projects.
       # A setting applies to all discovered projects if `filter` is unset,
       # or just to a subset or projects if `filter` is used.
       settings = [
-
         # prefer aggregated source fetching (large FODs)
         {
           aggregate = true;
         }
-
         # for all impure nodejs projects with just a `package.json`,
         # add arguments for the `package-json` translator
         {
@@ -102,7 +88,7 @@ Extensive Example `flake.nix`:
             # override attributes
             preBuild = "...";
             # update attributes
-            buildInputs = old: old ++ [ pkgs.hello ];
+            buildInputs = old: old ++ [pkgs.hello];
           };
         };
       };
@@ -131,6 +117,9 @@ Extensive Example `flake.nix`:
     };
 }
 ```
+
+An example for instancing dream2nix per pkgs and using it to create outputs
+can be found at [`examples/d2n-init-pkgs`](./examples/d2n-init-pkgs/flake.nix).
 
 ### Watch the presentation
 (The code examples of the presentation are outdated)
