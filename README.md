@@ -27,12 +27,12 @@ The intention is to integrate many existing 2nix converters into this framework,
 (Currently only nodejs and rust packaging is supported)
 
 1. Make sure you use a nix version >= 2.4 and have `experimental-features = "nix-command flakes"` set.
-2. Navigate to to the project intended to be packaged and initialize a dream2nix flake:
+1. Navigate to to the project intended to be packaged and initialize a dream2nix flake:
     ```command
       cd ./my-project
       nix flake init -t github:nix-community/dream2nix#simple
     ```
-3. List the packages that can be built
+1. List the packages that can be built
     ```command
       nix flake show
     ```
