@@ -27,12 +27,12 @@ The intention is to integrate many existing 2nix converters into this framework,
 (Currently only nodejs and rust packaging is supported)
 
 1. Make sure you use a nix version >= 2.4 and have `experimental-features = "nix-command flakes"` set.
-1. Navigate to to the project intended to be packaged and initialize a dream2nix flake:
+2. Navigate to to the project intended to be packaged and initialize a dream2nix flake:
     ```command
       cd ./my-project
       nix flake init -t github:nix-community/dream2nix#simple
     ```
-1. List the packages that can be built
+3. List the packages that can be built
     ```command
       nix flake show
     ```
@@ -43,13 +43,9 @@ Minimal Example `flake.nix`:
 {
   inputs.dream2nix.url = "github:nix-community/dream2nix";
   outputs = { self, dream2nix }@inputs:
-    let
-      dream2nix = inputs.dream2nix.lib.init {
-        # modify according to your supported systems
-        systems = [ "x86_64-linux" ];
-        config.projectRoot = ./. ;
-      };
-    in dream2nix.makeFlakeOutputs {
+    dream2nix.lib.makeFlakeOutputs {
+      systems = ["x86_64-linux"];
+      # config.projectRoot defaults to source
       source = ./.;
     };
 }
@@ -59,93 +55,92 @@ Extensive Example `flake.nix`:
 ```nix
 {
   inputs.dream2nix.url = "github:nix-community/dream2nix";
-  outputs = { self, dream2nix }@inputs:
+  outputs = { self, dream2nix }:
     let
-      system = "x86_64-linux";
+      nixpkgs = dream2nix.inputs.nixpkgs;
+      l = nixpkgs.lib // builtins;
 
-      pkgs = inputs.dream2nix.inputs.nixpkgs.legacyPackages.${system};
+      allPkgs =
+        l.map
+        (system: nixpkgs.legacyPackages.${system})
+        ["x86_64-linux"];
 
-      dream2nix = inputs.dream2nix.lib.init {
-        # modify according to your supported systems
-        systems = [ system ];
-        config.projectRoot = ./. ;
+      initD2N = pkgs: dream2nix.lib.init {
+        inherit pkgs;
+        config.projectRoot = ./.;
       };
 
-    in dream2nix.makeFlakeOutputs {
-      source = ./.;
+      makeOutputs = pkgs: (initD2N pkgs).makeOutputs {
+        source = ./.;
 
-      # Configure the behavior of dream2nix when translating projects.
-      # A setting applies to all discovered projects if `filter` is unset,
-      # or just to a subset or projects if `filter` is used.
-      settings = [
+        # Configure the behavior of dream2nix when translating projects.
+        # A setting applies to all discovered projects if `filter` is unset,
+        # or just to a subset or projects if `filter` is used.
+        settings = [
+          # prefer aggregated source fetching (large FODs)
+          {
+            aggregate = true;
+          }
+          # for all impure nodejs projects with just a `package.json`,
+          # add arguments for the `package-json` translator
+          {
+            filter = project: project.translator == "package-json";
+            subsystemInfo.npmArgs = "--legacy-peer-deps";
+          }
+        ];
 
-        # prefer aggregated source fetching (large FODs)
-        {
-          aggregate = true;
-        }
-
-        # for all impure nodejs projects with just a `package.json`,
-        # add arguments for the `package-json` translator
-        {
-          filter = project: project.translator == "package-json";
-          subsystemInfo.npmArgs = "--legacy-peer-deps";
-        }
-      ];
-
-      # configure package builds via overrides
-      # (see docs for override system below)
-      packageOverrides = {
-        # name of the package
-        package-name = {
-          # name the override
-          add-pre-build-steps = {
-            # override attributes
-            preBuild = "...";
-            # update attributes
-            buildInputs = old: old ++ [ pkgs.hello ];
+        # configure package builds via overrides
+        # (see docs for override system below)
+        packageOverrides = {
+          # name of the package
+          package-name = {
+            # name the override
+            add-pre-build-steps = {
+              # override attributes
+              preBuild = "...";
+              # update attributes
+              buildInputs = old: old ++ [pkgs.hello];
+            };
           };
+        };
+
+        # Inject missing dependencies
+        inject = {
+          # Make foo depend on bar and baz
+          # from
+          foo."6.4.1" = [
+            # to
+            ["bar" "13.2.0"]
+            ["baz" "1.0.0"]
+          ];
+          # dependencies with @ and slash require quoting
+          # the format is the one that is in the lockfile
+          "@tiptap/extension-code"."2.0.0-beta.26" = [
+             ["@tiptap/core" "2.0.0-beta.174"]
+           ];
+        };
+
+        # add sources for `bar` and `baz`
+        sourceOverrides = oldSources: {
+          bar."13.2.0" = builtins.fetchTarball {url = ""; sha256 = "";};
+          baz."1.0.0" = builtins.fetchTarball {url = ""; sha256 = "";};
         };
       };
 
-      # Inject missing dependencies
-      inject = {
-        # Make foo depend on bar and baz
-        # from
-        foo."6.4.1" = [
-          # to
-          ["bar" "13.2.0"]
-          ["baz" "1.0.0"]
-        ];
-        # dependencies with @ and slash require quoting
-        # the format is the one that is in the lockfile
-        "@tiptap/extension-code"."2.0.0-beta.26" = [
-           ["@tiptap/core" "2.0.0-beta.174"]
-         ];
+      # systemize the outputs produced in makeOutputs
+      # so that they fit the flake output structure
+      makeSystemOutputs = pkgs: {
+        name = pkgs.system;
+        value =
+          l.mapAttrs
+          (_: attrs: {${pkgs.system} = attrs;})
+          (makeOutputs pkgs);
       };
-
-      # add sources for `bar` and `baz`
-      sourceOverrides = oldSources: {
-        bar."13.2.0" = builtins.fetchTarball {url = ""; sha256 = "";};
-        baz."1.0.0" = builtins.fetchTarball {url = ""; sha256 = "";};
-      };
-    };
+      allOutputs = l.map makeSystemOutputs allPkgs;
+      outputs = l.foldl' l.recursiveUpdate {} allOutputs;
+    in
+      outputs;
 }
-```
-
-Initializing a dream2nix from a nixpkgs set:
-```nix
-let
-  system = "x86_64-linux";
-  # in this case, 'nixpkgs' is a nixpkgs flake
-  pkgs = nixpkgs.legacyPackages.${system};
-  # 'dream2nix' is a dream2nix flake
-  d2n = dream2nix.lib.init {inherit pkgs;};
-in
-  d2n.realizeProjects {
-    source = ./.;
-    # all other arguments used in above examples
-    # can also be used here (overrides, inject, settings)
-  }
 ```
 
 ### Watch the presentation

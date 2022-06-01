@@ -9,13 +9,10 @@
     self,
     dream2nix,
     src,
-  } @ inp: let
-    dream2nix = inp.dream2nix.lib2.init {
+  } @ inp:
+    (dream2nix.lib.makeFlakeOutputs {
       systems = ["x86_64-linux"];
       config.projectRoot = ./.;
-    };
-  in
-    (dream2nix.makeFlakeOutputs {
       source = src;
     })
     // {

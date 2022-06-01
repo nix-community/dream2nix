@@ -6,14 +6,11 @@
   outputs = {
     self,
     dream2nix,
-  } @ inp: let
-    dream2nix = inp.dream2nix.lib2.init {
+  } @ inp:
+    (dream2nix.lib.makeFlakeOutputs {
       systems = ["x86_64-linux"];
       config.projectRoot = ./.;
       config.extra = ./extra.nix;
-    };
-  in
-    (dream2nix.makeFlakeOutputs {
       source = ./.;
       settings = [
         {

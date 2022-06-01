@@ -57,7 +57,7 @@
 
   flakifyBuilderOutputs = system: outputs:
     l.mapAttrs
-    (ouputType: outputValue: {"${system}" = outputValue;})
+    (_: outputValue: {"${system}" = outputValue;})
     outputs;
 
   init = {
@@ -81,7 +81,13 @@
   } @ args: let
     allPkgs = makeNixpkgs pkgs systems;
 
-    config = loadConfig (args.config or {});
+    config' = args.config or {};
+    config = loadConfig (
+      config'
+      // l.optionalAttrs
+      (! config' ? projectRoot)
+      {projectRoot = source;}
+    );
     dlib = import ./lib {inherit lib config;};
 
     initD2N = initDream2nix config;

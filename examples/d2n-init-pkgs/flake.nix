@@ -10,15 +10,19 @@
   outputs = inp: let
     l = inp.nixpkgs.lib // builtins;
 
-    systems = ["x86_64-linux" "aarch64-linux"];
+    allPkgs =
+      l.map
+      (system: inp.nixpkgs.legacyPackages.${system})
+      ["x86_64-linux" "aarch64-linux"];
 
-    makeOutputsForSystem = system: let
-      pkgs = inp.nixpkgs.legacyPackages.${system};
-      d2n = inp.dream2nix.lib.init {
+    initD2N = pkgs:
+      inp.dream2nix.lib.init {
         inherit pkgs;
         config.projectRoot = ./.;
       };
-      projectOutputs = d2n.makeOutputs {
+
+    makeOutputs = pkgs: let
+      outputs = (initD2N pkgs).makeOutputs {
         source = inp.src;
         settings = [
           {
@@ -28,13 +32,14 @@
         ];
       };
     in rec {
-      packages.${system} = projectOutputs.packages;
-      checks.${system} = {
-        inherit (projectOutputs.packages) ripgrep;
+      packages.${pkgs.system} = outputs.packages;
+      checks.${pkgs.system} = {
+        inherit (outputs.packages) ripgrep;
       };
     };
-    outputsForSystems = l.map makeOutputsForSystem systems;
-    outputs = l.foldl' l.recursiveUpdate {} outputsForSystems;
+
+    allOutputs = l.map makeOutputs allPkgs;
+    outputs = l.foldl' l.recursiveUpdate {} allOutputs;
   in
     outputs;
 }
