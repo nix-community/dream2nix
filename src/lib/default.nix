@@ -228,7 +228,17 @@
 
   # call a function using arguments defined by the env var FUNC_ARGS
   callViaEnv = func: let
-    funcArgs = l.fromJSON (l.readFile (l.getEnv "FUNC_ARGS"));
+    funcArgs' = l.fromJSON (l.readFile (l.getEnv "FUNC_ARGS"));
+    # re-create string contexts for store paths
+    funcArgs =
+      l.mapAttrsRecursive
+      (path: val:
+        if
+          l.isString val
+          && l.hasPrefix "/nix/store/" val
+        then l.path {path = val;}
+        else val)
+      funcArgs';
   in
     callWithAttrArgs func funcArgs;
 
