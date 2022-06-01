@@ -39,12 +39,7 @@
   in
     applyProjectSettings projectsExtended settings;
 
-  getDreamLockPath = project: rootProject: let
-    root =
-      if config.projectRoot == null
-      then "."
-      else config.projectRoot;
-  in
+  getDreamLockPath = project: rootProject:
     dlib.sanitizeRelativePath
     "${config.packagesDir}/${rootProject.name}/${project.relPath}/dream-lock.json";
 
