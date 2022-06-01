@@ -94,15 +94,7 @@
           ;
       };
 
-      /*
-       format:
-       {
-         foo = {
-           "1.0.0" = finalObj
-         }
-       }
-       */
-      makeDependencies = finalObjects:
+      allDependencies =
         l.foldl'
         (result: finalObj:
           lib.recursiveUpdate
@@ -114,31 +106,6 @@
           })
         {}
         finalObjects;
-
-      allDependencies = makeDependencies finalObjects;
-
-      exportedFinalObjects =
-        l.filter
-        (finalObj:
-          exportedPackages.${finalObj.name} or null == finalObj.version)
-        finalObjects;
-
-      relevantFinalObjects = l.genericClosure {
-        startSet =
-          l.map
-          (finalObj:
-            finalObj
-            // {key = "${finalObj.name}#${finalObj.version}";})
-          exportedFinalObjects;
-        operator = finalObj:
-          l.map
-          (c:
-            allDependencies.${c.name}.${c.version}
-            // {key = "${c.name}#${c.version}";})
-          finalObj.dependencies;
-      };
-
-      relevantDependencies = makeDependencies relevantFinalObjects;
 
       sources =
         l.mapAttrs
@@ -155,7 +122,7 @@
           l.mapAttrs
           (version: finalObj: finalObj.sourceSpec)
           filteredObjects)
-        relevantDependencies;
+        allDependencies;
 
       dependencyGraph = let
         depGraph =
@@ -164,7 +131,7 @@
             lib.mapAttrs
             (version: finalObj: finalObj.dependencies)
             versions)
-          relevantDependencies;
+          allDependencies;
       in
         # add extraDependencies to dependency graph
         l.foldl'
