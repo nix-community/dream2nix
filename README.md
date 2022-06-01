@@ -42,10 +42,10 @@ Minimal Example `flake.nix`:
 ```nix
 {
   inputs.dream2nix.url = "github:nix-community/dream2nix";
-  outputs = { self, dream2nix }@inputs:
+  outputs = { self, dream2nix }:
     dream2nix.lib.makeFlakeOutputs {
       systems = ["x86_64-linux"];
-      # config.projectRoot defaults to source
+      config.projectRoot = ./.;
       source = ./.;
     };
 }
@@ -56,97 +56,70 @@ Extensive Example `flake.nix`:
 {
   inputs.dream2nix.url = "github:nix-community/dream2nix";
   outputs = { self, dream2nix }:
-    let
-      nixpkgs = dream2nix.inputs.nixpkgs;
-      l = nixpkgs.lib // builtins;
+    dream2nix.lib.makeFlakeOutputs {
+      systems = ["x86_64-linux"];
+      config.projectRoot = ./.;
 
-      allPkgs =
-        l.map
-        (system: nixpkgs.legacyPackages.${system})
-        ["x86_64-linux"];
+      source = ./.;
 
-      # shorthand function to create a dream2nix instance from
-      # some pkgs set.
-      #
-      # the 'init' function takes a 'pkgs' and a 'config' and
-      # outputs a dream2nix instance.
-      initD2N = pkgs: dream2nix.lib.init {
-        inherit pkgs;
-        config.projectRoot = ./.;
-      };
+      # Configure the behavior of dream2nix when translating projects.
+      # A setting applies to all discovered projects if `filter` is unset,
+      # or just to a subset or projects if `filter` is used.
+      settings = [
+        # prefer aggregated source fetching (large FODs)
+        {
+          aggregate = true;
+        }
+        # for all impure nodejs projects with just a `package.json`,
+        # add arguments for the `package-json` translator
+        {
+          filter = project: project.translator == "package-json";
+          subsystemInfo.npmArgs = "--legacy-peer-deps";
+        }
+      ];
 
-      makeOutputs = pkgs: (initD2N pkgs).makeOutputs {
-        source = ./.;
-
-        # Configure the behavior of dream2nix when translating projects.
-        # A setting applies to all discovered projects if `filter` is unset,
-        # or just to a subset or projects if `filter` is used.
-        settings = [
-          # prefer aggregated source fetching (large FODs)
-          {
-            aggregate = true;
-          }
-          # for all impure nodejs projects with just a `package.json`,
-          # add arguments for the `package-json` translator
-          {
-            filter = project: project.translator == "package-json";
-            subsystemInfo.npmArgs = "--legacy-peer-deps";
-          }
-        ];
-
-        # configure package builds via overrides
-        # (see docs for override system below)
-        packageOverrides = {
-          # name of the package
-          package-name = {
-            # name the override
-            add-pre-build-steps = {
-              # override attributes
-              preBuild = "...";
-              # update attributes
-              buildInputs = old: old ++ [pkgs.hello];
-            };
+      # configure package builds via overrides
+      # (see docs for override system below)
+      packageOverrides = {
+        # name of the package
+        package-name = {
+          # name the override
+          add-pre-build-steps = {
+            # override attributes
+            preBuild = "...";
+            # update attributes
+            buildInputs = old: old ++ [pkgs.hello];
           };
         };
-
-        # Inject missing dependencies
-        inject = {
-          # Make foo depend on bar and baz
-          # from
-          foo."6.4.1" = [
-            # to
-            ["bar" "13.2.0"]
-            ["baz" "1.0.0"]
-          ];
-          # dependencies with @ and slash require quoting
-          # the format is the one that is in the lockfile
-          "@tiptap/extension-code"."2.0.0-beta.26" = [
-             ["@tiptap/core" "2.0.0-beta.174"]
-           ];
-        };
-
-        # add sources for `bar` and `baz`
-        sourceOverrides = oldSources: {
-          bar."13.2.0" = builtins.fetchTarball {url = ""; sha256 = "";};
-          baz."1.0.0" = builtins.fetchTarball {url = ""; sha256 = "";};
-        };
       };
 
-      # systemize the outputs produced in makeOutputs
-      # so that they fit the flake output structure
-      makeSystemOutputs = pkgs: {
-        name = pkgs.system;
-        value =
-          l.mapAttrs
-          (_: attrs: {${pkgs.system} = attrs;})
-          (makeOutputs pkgs);
+      # Inject missing dependencies
+      inject = {
+        # Make foo depend on bar and baz
+        # from
+        foo."6.4.1" = [
+          # to
+          ["bar" "13.2.0"]
+          ["baz" "1.0.0"]
+        ];
+        # dependencies with @ and slash require quoting
+        # the format is the one that is in the lockfile
+        "@tiptap/extension-code"."2.0.0-beta.26" = [
+           ["@tiptap/core" "2.0.0-beta.174"]
+         ];
       };
-      allOutputs = l.map makeSystemOutputs allPkgs;
-      outputs = l.foldl' l.recursiveUpdate {} allOutputs;
-    in
-      outputs;
+
+      # add sources for `bar` and `baz`
+      sourceOverrides = oldSources: {
+        bar."13.2.0" = builtins.fetchTarball {url = ""; sha256 = "";};
+        baz."1.0.0" = builtins.fetchTarball {url = ""; sha256 = "";};
+      };
+    };
 }
 ```
+
+An example for instancing dream2nix per pkgs and using it to create outputs
+can be found at [`examples/d2n-init-pkgs`](./examples/d2n-init-pkgs/flake.nix).
 
 ### Watch the presentation
 (The code examples of the presentation are outdated)
