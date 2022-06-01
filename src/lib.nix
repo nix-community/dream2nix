@@ -81,7 +81,7 @@
   } @ args: let
     allPkgs = makeNixpkgs pkgs systems;
 
-    config = loadConfig config' (args.config or {});
+    config = loadConfig (args.config or {});
     dlib = import ./lib {inherit lib config;};
 
     initD2N = initDream2nix config;
