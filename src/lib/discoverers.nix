@@ -5,7 +5,47 @@
 }: let
   l = lib // builtins;
 
-  allDiscoverers = dlib.modules.collectSubsystemModules modules.modules;
+  allDiscoverers =
+    (dlib.modules.collectSubsystemModules modules.modules)
+    ++ [defaultDiscoverer];
+
+  allTranslators =
+    dlib.modules.collectSubsystemModules dlib.translators.translators;
+
+  translatorsWithDiscoverFunc =
+    l.filter (translator: translator ? discoverProject) allTranslators;
+
+  defaultDiscoverer.discover = {
+    tree,
+    dirName ? tree.relPath,
+  }: let
+    translatorsCurrentDir =
+      l.filter
+      (t: t.discoverProject tree)
+      translatorsWithDiscoverFunc;
+
+    projectsCurrentDir =
+      l.map
+      (t: {
+        name = "${dirName}-${t.name}";
+        relPath = tree.relPath;
+        translators = [t.name];
+        subsystem = t.subsystem;
+      })
+      translatorsCurrentDir;
+
+    subdirProjects =
+      l.flatten
+      (l.mapAttrsToList
+        (dirName: tree:
+          defaultDiscoverer.discover {
+            inherit dirName tree;
+          })
+        tree.directories or {});
+  in
+    if translatorsCurrentDir == []
+    then subdirProjects
+    else projectsCurrentDir ++ subdirProjects;
 
   discoverProjects = {
     source ? throw "Pass either `source` or `tree` to discoverProjects",
