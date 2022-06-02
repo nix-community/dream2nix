@@ -99,8 +99,8 @@ in rec {
     );
     lock = utils.toTOML {inherit package;};
   in
-    # on Nix 2.9.0> builtins.toFile doesn't trigger IFD
-    if l.compareVersions l.nixVersion "2.9.0" >= 0
+    # on Nix 2.9.0pre20220527_ec07a70> builtins.toFile doesn't trigger IFD
+    if l.compareVersions l.nixVersion "2.9.0pre20220527_ec07a70" >= 0
     then l.toFile "Cargo.lock" lock
     else pkgs.writeText "Cargo.lock" lock;
 }
