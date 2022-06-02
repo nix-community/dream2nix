@@ -1,9 +1,16 @@
+/*
+ This is a yarn.lock v1 & v2 to attrs parser.
+ It regexes the yarn file line by line and replaces characters in order to
+ make it a valid json, then parses the json.
+ */
 {lib ? (import <nixpkgs> {}).lib, ...}: let
   l = lib // builtins;
 
   parse = text: let
     lines = l.splitString "\n" text;
 
+    # Find the line number at which the actual data begins.
+    # Jump comments and meta fields at the beginning of the file.
     findStartLineNum = num: let
       line = l.elemAt lines num;
     in
@@ -14,19 +21,25 @@
       then num
       else findStartLineNum (num + 1);
 
+    # all relevant lines which contain the actual data
     contentLines =
       l.sublist
       (findStartLineNum 0)
       ((l.length lines) - 1)
       lines;
 
+    # Match each line to get: indent, key, value.
+    # If a key value expression spans multiple lines,
+    # the value of the current line will be defined null
     matchLine = line: let
       # yarn v2
       m1 = l.match ''( *)(.*): (.*)'' line;
+      # multi line
       m2 = l.match ''( *)(.*):$'' line;
 
       # yarn v1
       m3 = l.match ''( *)(.*) "(.*)"'' line;
+      # multi line
       m4 = l.match ''( *)(.*) (.*)'' line;
     in
       if m1 != null
@@ -58,11 +71,13 @@
       }
       else null;
 
-    closingParenthesis = num:
+    # generate string with `num` closing braces
+    closingBraces = num:
       if num == 1
       then "}"
-      else "}" + (closingParenthesis (num - 1));
+      else "}" + (closingBraces (num - 1));
 
+    # convert yarn lock lines to json lines
     jsonLines = lines: let
       filtered = l.filter (line: l.match ''[[:space:]]*'' line == null) lines;
       matched = l.map (line: matchLine line) filtered;
@@ -71,33 +86,40 @@
       (i: line: let
         mNext = l.elemAt matched (i + 1);
         m = l.elemAt matched i;
-        keyParenthesis = let
+        # ensure key is quoted
+        keyInQuotes = let
           beginOK = l.hasPrefix ''"'' m.key;
           endOK = l.hasSuffix ''"'' m.key;
           begin = l.optionalString (! beginOK) ''"'';
           end = l.optionalString (! endOK) ''"'';
         in ''${begin}${m.key}${end}'';
-        valParenthesis =
+        # ensure value is quoted
+        valInQuotes =
           if l.hasPrefix ''"'' m.value
           then m.value
           else ''"${m.value}"'';
       in
+        # reached the end, put closing braces
         if l.length filtered == i + 1
         then let
-          end = closingParenthesis m.indent;
-        in ''${keyParenthesis}: ${valParenthesis}${end}}''
+          end = closingBraces m.indent;
+        in ''${keyInQuotes}: ${valInQuotes}${end}}''
+        # handle lines with only a key (beginning of multi line statement)
         else if m.value == null
-        then ''${keyParenthesis}: {''
+        then ''${keyInQuotes}: {''
         # if indent of next line is smaller, close the object
         else if mNext.indent < m.indent
         then let
-          end = closingParenthesis (m.indent - mNext.indent);
-        in ''${keyParenthesis}: ${valParenthesis}${end},''
-        else ''${keyParenthesis}: ${valParenthesis},'')
+          end = closingBraces (m.indent - mNext.indent);
+        in ''${keyInQuotes}: ${valInQuotes}${end},''
+        # line with key value statement
+        else ''${keyInQuotes}: ${valInQuotes},'')
       filtered;
 
+    # concatenate json lines to json string
     json = "{${l.concatStringsSep "\n" (jsonLines contentLines)}";
 
+    # parse the json to an attrset
     dataRaw = l.fromJSON json;
 
     # transform key collections like:
