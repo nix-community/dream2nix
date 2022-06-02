@@ -25,8 +25,21 @@ in {
     ...
   } @ args: let
     # get the root source and project source
-    rootSource = tree.fullPath;
-    projectSource = dlib.sanitizePath "${tree.fullPath}/${project.relPath}";
+    #
+    # SAFETY: We first let nix realize any context that might have not
+    # been realized yet. This should almost always not happen, since
+    # sources pass through a discoverer, which travels through a source
+    # tree, so they must be realized. the only time this does not happen
+    # is if someone uses `translate` directly and passes an unrealized source.
+    # After this we can discard the string context and proceed as usual.
+    #
+    # If this is not done, when using the crane builder, the dependency
+    # derivation will capture the fullPath in it's `inputSrcs`, which causes
+    # frequent rebuilds (and the source is not needed anyways).
+    rootSource = l.unsafeDiscardStringContext (
+      l.seq (l.readFile "${tree.fullPath}/Cargo.toml") tree.fullPath
+    );
+    projectSource = dlib.sanitizePath "${rootSource}/${project.relPath}";
     projectTree = tree.getNodeFromPath project.relPath;
     subsystemInfo = project.subsystemInfo;
 
