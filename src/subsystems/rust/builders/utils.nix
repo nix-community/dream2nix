@@ -7,7 +7,7 @@
   dlib,
   utils,
   subsystemAttrs,
-  writeText,
+  pkgs,
   ...
 }: let
   l = lib // builtins;
@@ -102,5 +102,5 @@ in rec {
     # on Nix 2.9.0> builtins.toFile doesn't trigger IFD
     if l.compareVersions l.nixVersion "2.9.0" >= 0
     then l.toFile "dream-lock.json" lock
-    else writeText "dream-lock.json" lock;
+    else pkgs.writeText "dream-lock.json" lock;
 }
