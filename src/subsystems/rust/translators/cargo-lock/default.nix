@@ -27,10 +27,12 @@ in {
     # get the root source and project source
     #
     # SAFETY: We first let nix realize any context that might have not
-    # been realized yet. This should almost always not happen, since
-    # sources pass through a discoverer, which travels through a source
-    # tree, so they must be realized. the only time this does not happen
-    # is if someone uses `translate` directly and passes an unrealized source.
+    # been realized yet. All of the string context should almost always
+    # be realized already, since sources pass through a discoverer, which
+    # travels through a source tree, so they must be realized. the only
+    # time this does not happen is if someone uses `translate` directly
+    # and passes an unrealized source.
+    #
     # After this we can discard the string context and proceed as usual.
     #
     # If this is not done, when using the crane builder, the dependency
