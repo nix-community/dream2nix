@@ -24,35 +24,35 @@ let
     crane = externals.crane;
 
     buildPackage = pname: version: let
-      _src = utils.getRootSource pname version;
-      # patch the source so the cargo lock is written if it doesnt exist
-      # we can't do this in preConfigure, crane fails
-      src = pkgs.runCommandNoCC "${pname}-${version}-patched-src" {} ''
-        mkdir -p $out
-        cp -rv ${_src}/* $out
-        cd $out
-        ${utils.writeCargoLock}
-      '';
-
-      cargoVendorDir = vendoring.vendoredDependencies;
       replacePaths = utils.replaceRelativePathsWithAbsolute {
         paths = subsystemAttrs.relPathReplacements;
       };
       writeGitVendorEntries = vendoring.writeGitVendorEntries "nix-sources";
 
-      postUnpack = ''
-        export CARGO_HOME=$(pwd)/.cargo_home
-      '';
-      preConfigure = ''
-        ${writeGitVendorEntries}
-        ${replacePaths}
-      '';
-
-      common = {inherit pname version src cargoVendorDir preConfigure postUnpack;};
+      # common args we use for both buildDepsOnly and buildPackage
+      common = {
+        inherit pname version;
+        src = utils.getRootSource pname version;
+        cargoVendorDir = vendoring.vendoredDependencies;
+        postUnpack = ''
+          export CARGO_HOME=$(pwd)/.cargo_home
+        '';
+        preConfigure = ''
+          ${writeGitVendorEntries}
+          ${replacePaths}
+        '';
+      };
 
       # The deps-only derivation will use this as a prefix to the `pname`
       depsNameSuffix = "-deps";
-      depsArgs = common // {pnameSuffix = depsNameSuffix;};
+      depsArgs =
+        common
+        // {
+          # we pass cargoLock path to buildDepsOnly
+          # so that crane's mkDummySrc adds it to the dummy source
+          inherit (utils) cargoLock;
+          pnameSuffix = depsNameSuffix;
+        };
       deps = produceDerivation "${pname}${depsNameSuffix}" (crane.buildDepsOnly depsArgs);
 
       buildArgs =
@@ -62,6 +62,13 @@ let
           # Make sure cargo only builds & tests the package we want
           cargoBuildCommand = "cargo build --release --package ${pname}";
           cargoTestCommand = "cargo test --release --package ${pname}";
+          # write our cargo lock
+          # note: we don't do this in buildDepsOnly since
+          # that uses a cargoLock argument instead
+          preConfigure = ''
+            ${common.preConfigure}
+            ${utils.writeCargoLock}
+          '';
         };
     in
       produceDerivation pname (crane.buildPackage buildArgs);
