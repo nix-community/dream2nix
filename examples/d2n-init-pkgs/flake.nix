@@ -1,18 +1,16 @@
 {
   inputs = {
-    nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
     dream2nix.url = "path:../..";
-    dream2nix.inputs.nixpkgs.follows = "nixpkgs";
     src.url = "github:BurntSushi/ripgrep/13.0.0";
     src.flake = false;
   };
 
   outputs = inp: let
-    l = inp.nixpkgs.lib // builtins;
+    l = inp.dream2nix.inputs.nixpkgs.lib // builtins;
 
     allPkgs =
       l.map
-      (system: inp.nixpkgs.legacyPackages.${system})
+      (system: inp.dream2nix.inputs.nixpkgs.legacyPackages.${system})
       ["x86_64-linux" "aarch64-linux"];
 
     initD2N = pkgs:
