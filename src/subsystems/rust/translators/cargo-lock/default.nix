@@ -25,22 +25,7 @@ in {
     ...
   } @ args: let
     # get the root source and project source
-    #
-    # SAFETY: We first let nix realize any context that might have not
-    # been realized yet. All of the string context should almost always
-    # be realized already, since sources pass through a discoverer, which
-    # travels through a source tree, so they must be realized. the only
-    # time this does not happen is if someone uses `translate` directly
-    # and passes an unrealized source.
-    #
-    # After this we can discard the string context and proceed as usual.
-    #
-    # If this is not done, when using the crane builder, the dependency
-    # derivation will capture the fullPath in it's `inputSrcs`, which causes
-    # frequent rebuilds (and the source is not needed anyways).
-    rootSource = l.unsafeDiscardStringContext (
-      l.seq (l.readFile "${tree.fullPath}/Cargo.toml") tree.fullPath
-    );
+    rootSource = tree.fullPath;
     projectSource = dlib.sanitizePath "${rootSource}/${project.relPath}";
     projectTree = tree.getNodeFromPath project.relPath;
     subsystemInfo = project.subsystemInfo;
@@ -214,49 +199,54 @@ in {
       #   ./src/specifications/{subsystem}
       subsystemAttrs = rec {
         relPathReplacements = let
-          # Extract dependencies from the Cargo.toml of the
-          # package we are currently building
-          tomlDeps =
-            l.flatten
-            (
-              l.map
+          # function to find path replacements for one package
+          findReplacements = package: let
+            # Extract dependencies from the Cargo.toml of the package
+            tomlDeps =
+              l.flatten
               (
-                target:
-                  (l.attrValues (target.dependencies or {}))
-                  ++ (l.attrValues (target.buildDependencies or {}))
+                l.map
+                (
+                  target:
+                    (l.attrValues (target.dependencies or {}))
+                    ++ (l.attrValues (target.buildDependencies or {}))
+                )
+                ([package.value] ++ (l.attrValues (package.value.target or {})))
+              );
+            # We only need to patch path dependencies
+            pathDeps = l.filter (dep: dep ? path) tomlDeps;
+            # filter out path dependencies whose path are same as in
+            # workspace members.
+            # this is because otherwise workspace.members paths will also
+            # get replaced in the build.
+            # and there is no reason to replace these anyways
+            # since they are in the source.
+            outsideDeps =
+              l.filter
+              (
+                dep:
+                  !(l.any (memberPath: dep.path == memberPath) workspaceMembers)
               )
-              ([package.toml] ++ (l.attrValues (package.toml.target or {})))
-            );
-          # We only need to patch path dependencies
-          pathDeps = l.filter (dep: dep ? path) tomlDeps;
-          # filter out path dependencies whose path are same as in
-          # workspace members.
-          # this is because otherwise workspace.members paths will also
-          # get replaced in the build.
-          # and there is no reason to replace these anyways
-          # since they are in the source.
-          outsideDeps =
-            l.filter
-            (
-              dep:
-                !(l.any (memberPath: dep.path == memberPath) workspaceMembers)
-            )
-            pathDeps;
-        in
-          l.listToAttrs (
+              pathDeps;
+            makeReplacement = dep: {
+              name = dep.path;
+              value = dlib.sanitizeRelativePath "${package.relPath}/${dep.path}";
+            };
+            replacements = l.listToAttrs (l.map makeReplacement outsideDeps);
+          in
+            replacements;
+          # find replacements for all packages we export
+          allPackageReplacements =
             l.map
             (
-              dep: {
-                name = dep.path;
-                value = let
-                  absPath = dlib.sanitizePath "${projectSource}/${dep.path}";
-                  relPath = l.removePrefix rootSource absPath;
-                in
-                  relPath;
-              }
+              package: let
+                pkg = package.value.package;
+                replacements = findReplacements package;
+              in {${pkg.name}.${pkg.version} = replacements;}
             )
-            outsideDeps
-          );
+            cargoPackages;
+        in
+          l.foldl' l.recursiveUpdate {} allPackageReplacements;
         gitSources = let
           gitDeps = l.filter (dep: (getSourceTypeFrom dep) == "git") parsedDeps;
         in
