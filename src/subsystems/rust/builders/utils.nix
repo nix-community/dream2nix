@@ -99,5 +99,5 @@ in rec {
     );
     lockTOML = utils.toTOML {inherit package;};
   in
-    l.toFile "Cargo.lock" lockTOML;
+    pkgs.writeText "Cargo.lock" lockTOML;
 }
