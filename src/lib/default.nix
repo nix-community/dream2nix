@@ -104,10 +104,7 @@
   # }
   prepareSourceTreeInternal = sourceRoot: relPath: name: depth: let
     relPath' = relPath;
-    fullPath' = l.path {
-      path = "${sourceRoot}/${relPath}";
-      inherit name;
-    };
+    fullPath' = "${sourceRoot}/${relPath}";
     current = l.readDir fullPath';
 
     fileNames =
@@ -293,10 +290,7 @@
     sanitizedRelPath = l.removePrefix "/" (l.toString (l.toPath "/${path}"));
   in
     if absolute
-    then
-      l.path {
-        path = "/${sanitizedRelPath}";
-      }
+    then "/${sanitizedRelPath}"
     else sanitizedRelPath;
 
   traceJ = toTrace: eval: l.trace (l.toJSON toTrace) eval;
