@@ -9,14 +9,11 @@
     self,
     dream2nix,
     src,
-  } @ inp: let
-    dream2nix = inp.dream2nix.lib2.init {
-      systems = ["x86_64-linux"];
-      config.projectRoot = ./.;
-    };
-  in
-    (dream2nix.makeFlakeOutputs {
+  } @ inp:
+    (dream2nix.lib.makeFlakeOutputs {
+      pkgs = dream2nix.inputs.nixpkgs.legacyPackages.x86_64-linux;
       source = src;
+      config.projectRoot = ./.;
       settings = [
         {
           subsystemInfo.noDev = true;

@@ -129,8 +129,6 @@ in {
       snapshotYamlFile = builtins.fetchurl {
         url = snapshotEntry.completed.url;
         sha256 = snapshotEntry.completed.sha256;
-        # This is a plain text file, therefore enable http compression
-        curlOpts = "--compressed";
       };
 
       snapshot = haskellUtils.fromYaml snapshotYamlFile;
