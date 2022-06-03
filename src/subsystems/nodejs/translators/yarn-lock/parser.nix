@@ -32,14 +32,14 @@
     # If a key value expression spans multiple lines,
     # the value of the current line will be defined null
     matchLine = line: let
-      # yarn v2
+      # yarn v2 single line
       m1 = l.match ''( *)(.*): (.*)'' line;
-      # multi line
+      # multi line v1 & v2
       m2 = l.match ''( *)(.*):$'' line;
 
-      # yarn v1
+      # yarn v1 single line with quoted key
       m3 = l.match ''( *)(.*) "(.*)"'' line;
-      # multi line
+      # yarn v1 single line with unquoted key
       m4 = l.match ''( *)(.*) (.*)'' line;
     in
       if m1 != null
