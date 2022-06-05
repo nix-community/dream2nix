@@ -1,4 +1,6 @@
-let
+{...}: {
+  type = "pure";
+
   build = {
     jq,
     lib,
@@ -54,8 +56,6 @@ let
       mv node-* $out
     '';
 
-    defaultPackage = allPackages."${defaultPackageName}"."${defaultPackageVersion}";
-
     allPackages =
       lib.mapAttrs
       (name: versions:
@@ -66,8 +66,6 @@ let
       packageVersions;
 
     outputs = {
-      inherit defaultPackage;
-
       # select only the packages listed in dreamLock as main packages
       packages =
         b.foldl'
@@ -453,8 +451,4 @@ let
       pkg;
   in
     outputs;
-in
-  {...}: {
-    type = "pure";
-    inherit build;
-  }
+}

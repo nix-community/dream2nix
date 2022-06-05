@@ -1,4 +1,6 @@
-let
+{...}: {
+  type = "pure";
+
   build =
     # builder imported from node2nix
     {
@@ -75,18 +77,21 @@ let
             src = getSource defaultPackageName defaultPackageVersion;
           }
           // args);
-    in rec {
-      packages."${defaultPackageName}"."${defaultPackageVersion}" = defaultPackage;
 
-      defaultPackage = let
-        pkg = callNode2Nix "buildNodePackage" {};
-      in
-        utils.applyOverridesToPackage packageOverrides pkg defaultPackageName;
-
-      devShell = callNode2Nix "buildNodeShell" {};
+      devShells = {
+        "${defaultPackageName}" = callNode2Nix "buildNodeShell" {};
+      };
+    in {
+      packages = {
+        "${defaultPackageName}"."${defaultPackageVersion}" = let
+          pkg = callNode2Nix "buildNodePackage" {};
+        in
+          utils.applyOverridesToPackage packageOverrides pkg defaultPackageName;
+      };
+      devShells =
+        devShells
+        // {
+          default = devShells."${defaultPackageName}";
+        };
     };
-in
-  {...}: {
-    type = "pure";
-    inherit build;
-  }
+}
