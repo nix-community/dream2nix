@@ -88,7 +88,7 @@
         };
       };
 
-      extraObjects = l.map makeWorkspaceExtraObject workspaces;
+      extraWorkspaceObjects = l.map makeWorkspaceExtraObject workspaces;
 
       exportedWorkspacePackages =
         l.listToAttrs
@@ -97,7 +97,7 @@
             l.nameValuePair
             wsObject.name
             wsObject.version)
-          extraObjects);
+          extraWorkspaceObjects);
 
       getSourceType = rawObj: finalObj: let
         dObj = rawObj;
@@ -130,7 +130,7 @@
         then "path"
         else "http";
     in rec {
-      inherit defaultPackage extraObjects translatorName;
+      inherit defaultPackage translatorName;
 
       location = relPath;
 
@@ -304,7 +304,7 @@
           );
       };
 
-      extraDependencies = let
+      extraObjects = let
         defaultPackageDependencies =
           l.mapAttrsToList
           (name: semVer:
@@ -332,13 +332,19 @@
             version = wsJson.version or "unknown";
           })
           workspacesPackageJson;
-      in [
-        {
-          name = defaultPackage;
-          version = packageVersion;
-          dependencies = defaultPackageDependencies ++ workspaceDependencies;
-        }
-      ];
+      in
+        extraWorkspaceObjects
+        ++ [
+          {
+            name = defaultPackage;
+            version = packageVersion;
+            dependencies = defaultPackageDependencies ++ workspaceDependencies;
+            sourceSpec = {
+              type = "path";
+              path = tree.fullPath;
+            };
+          }
+        ];
 
       serializedRawObjects =
         lib.mapAttrsToList

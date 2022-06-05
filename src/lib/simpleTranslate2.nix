@@ -69,7 +69,6 @@
       defaultPackage,
       exportedPackages,
       extractors,
-      extraDependencies ? [],
       extraObjects ? [],
       keys ? {},
       location ? "",
@@ -83,7 +82,6 @@
           defaultPackage
           exportedPackages
           extractors
-          extraDependencies
           extraObjects
           keys
           location
@@ -124,32 +122,13 @@
           filteredObjects)
         allDependencies;
 
-      dependencyGraph = let
-        depGraph =
+      dependencyGraph =
+        lib.mapAttrs
+        (name: versions:
           lib.mapAttrs
-          (name: versions:
-            lib.mapAttrs
-            (version: finalObj: finalObj.dependencies)
-            versions)
-          allDependencies;
-      in
-        # add extraDependencies to dependency graph
-        l.foldl'
-        (all: new:
-          all
-          // {
-            "${new.name}" =
-              all."${new.name}"
-              or {}
-              // {
-                "${new.version}" =
-                  all."${new.name}"."${new.version}"
-                  or []
-                  ++ new.dependencies;
-              };
-          })
-        depGraph
-        extraDependencies;
+          (version: finalObj: finalObj.dependencies)
+          versions)
+        allDependencies;
 
       cyclicDependencies =
         # TODO: inefficient! Implement some kind of early cutoff

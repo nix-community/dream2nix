@@ -95,28 +95,6 @@ def test_exportedPackages(p):
   assert len(exportedPackages) > 0
 
 @pytest.mark.parametrize("p", projects)
-def test_extraDependencies(p):
-  extraDependencies = nix_ffi.eval(
-    f"subsystems.{p['subsystem']}.translators.{p['translator']}.translate",
-    params=dict(
-      project=p['project'],
-      source=p['source'],
-    ),
-    wrapper_code = '''
-      {result}:
-      result.inputs.extraDependencies
-    ''',
-  )
-  assert isinstance(extraDependencies, list)
-  for extra_dep in extraDependencies:
-    assert set(extra_dep.keys()) == {"dependencies", "name", "version"}
-    assert isinstance(extra_dep['name'], str)
-    assert len(extra_dep['name']) > 0
-    assert isinstance(extra_dep['version'], str)
-    assert len(extra_dep['version']) > 0
-    check_format_dependencies(extra_dep['dependencies'])
-
-@pytest.mark.parametrize("p", projects)
 def test_extraObjects(p):
   extraObjects = nix_ffi.eval(
     f"subsystems.{p['subsystem']}.translators.{p['translator']}.translate",
@@ -292,7 +270,7 @@ def test_keys(p):
               merged
               // {"${keyFunc finalObj.rawObj finalObj}" = finalObj;})
             {}
-            (finalObjects ++ (inputs.extraObjects or [])))
+            (finalObjects))
           inputs.keys;
       in
         objectsByKey

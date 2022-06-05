@@ -221,25 +221,6 @@ in
           };
 
           /*
-            Optionally add extra dependencies.
-            For example, this might be required to add the top-level
-            dependencies.
-          */
-          extraDependencies = [
-            {
-              # dependant
-              name = "foo";
-              version = "1.2.3";
-
-              # dependencies
-              dependencies = [
-                {name = "bar"; version = "3.2.1";}
-                {name = "baz"; version = "2.1.3";}
-              ];
-            }
-          ];
-
-          /*
             Optionally add extra objects (list of `finalObj`) to be added to
             the dream-lock.
           */
