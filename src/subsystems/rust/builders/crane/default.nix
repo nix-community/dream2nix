@@ -1,4 +1,5 @@
-let
+{...}: {
+  type = "ifd";
   build = {
     lib,
     pkgs,
@@ -65,16 +66,10 @@ let
         };
     in
       produceDerivation pname (crane.buildPackage buildArgs);
-  in rec {
+  in {
     packages =
       l.mapAttrs
       (name: version: {"${version}" = buildPackage name version;})
       args.packages;
-
-    defaultPackage = packages."${defaultPackageName}"."${defaultPackageVersion}";
   };
-in
-  {...}: {
-    type = "ifd";
-    inherit build;
-  }
+}

@@ -1,5 +1,7 @@
 # A very simple single derivation python builder
-let
+{...}: {
+  type = "pure";
+
   build = {
     lib,
     pkgs,
@@ -75,8 +77,4 @@ let
   in {
     packages.${defaultPackageName}.${defaultPackageVersion} = package;
   };
-in
-  {...}: {
-    type = "pure";
-    inherit build;
-  }
+}

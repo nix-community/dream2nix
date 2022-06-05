@@ -1,4 +1,6 @@
-let
+{...}: {
+  type = "pure";
+
   build = {
     lib,
     pkgs,
@@ -53,16 +55,10 @@ let
           ${utils.writeCargoLock}
         '';
       });
-  in rec {
+  in {
     packages =
       l.mapAttrs
       (name: version: {"${version}" = buildPackage name version;})
       args.packages;
-
-    defaultPackage = packages."${defaultPackageName}"."${defaultPackageVersion}";
   };
-in
-  {...}: {
-    type = "pure";
-    inherit build;
-  }
+}

@@ -279,6 +279,7 @@
     # Makes the packages tree compatible with flakes schema.
     # For each package the attr `{pname}` will link to the latest release.
     # Other package versions will be inside: `{pname}.versions`
+    # Adds a `default` package by using `defaultPackageName` and `defaultPackageVersion`.
     formattedOutputs =
       outputs
       // {
@@ -297,8 +298,13 @@
                   versions = releases;
                 })))
             allPackages;
+
+          defaultPackage =
+            allPackages
+            ."${dreamLockInterface.defaultPackageName}"
+            ."${dreamLockInterface.defaultPackageVersion}";
         in
-          latestPackages;
+          latestPackages // {default = defaultPackage;};
       };
   in
     formattedOutputs;
