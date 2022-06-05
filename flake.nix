@@ -5,7 +5,7 @@
     nixpkgs.url = "nixpkgs/nixos-unstable";
 
     ### dev dependencies
-    alejandra.url = github:kamadorueda/alejandra;
+    alejandra.url = "github:kamadorueda/alejandra";
     alejandra.inputs.nixpkgs.follows = "nixpkgs";
 
     pre-commit-hooks.url = "github:cachix/pre-commit-hooks.nix";
@@ -13,6 +13,11 @@
     # upstream flake-utils dep not supporting `aarch64-darwin` yet
     flake-utils-pre-commit.url = "github:numtide/flake-utils";
     pre-commit-hooks.inputs.flake-utils.follows = "flake-utils-pre-commit";
+
+    devshell = {
+      url = "github:numtide/devshell";
+      flake = false;
+    };
 
     ### framework dependencies
     # required for builder go/gomod2nix
@@ -49,6 +54,7 @@
   outputs = {
     self,
     alejandra,
+    devshell,
     gomod2nix,
     mach-nix,
     nixpkgs,
@@ -234,22 +240,42 @@
 
     # a dev shell for working on dream2nix
     # use via 'nix develop . -c $SHELL'
-    devShell = forAllSystems (system: pkgs:
-      pkgs.mkShell {
-        buildInputs =
-          (with pkgs; [
-            nix
-            treefmt
-          ])
-          ++ [
-            alejandra.defaultPackage."${system}"
+    devShells = forAllSystems (system: pkgs: let
+      makeDevshell = import "${inp.devshell}/modules" pkgs;
+      mkShell = config:
+        (makeDevshell {
+          configuration = {
+            inherit config;
+            imports = [];
+          };
+        })
+        .shell;
+    in rec {
+      default = dream2nix-shell;
+      dream2nix-shell = mkShell {
+        devshell.name = "dream2nix-devshell";
+
+        commands =
+          [
+            {package = pkgs.nix;}
+            {
+              package = pkgs.treefmt;
+              category = "formatting";
+            }
+            {
+              package = alejandra.defaultPackage.${system};
+              category = "formatting";
+            }
           ]
           # using linux is highly recommended as cntr is amazing for debugging builds
-          ++ lib.optionals pkgs.stdenv.isLinux [pkgs.cntr];
+          ++ lib.optional pkgs.stdenv.isLinux {
+            package = pkgs.cntr;
+            category = "debugging";
+          };
 
-        shellHook =
-          self.checks.${system}.pre-commit-check.shellHook
-          + ''
+        devshell.startup = {
+          preCommitHooks.text = self.checks.${system}.pre-commit-check.shellHook;
+          dream2nixEnv.text = ''
             export NIX_PATH=nixpkgs=${nixpkgs}
             export d2nExternalDir=${externalDirFor."${system}"}
             export dream2nixWithExternals=${dream2nixFor."${system}".dream2nixWithExternals}
@@ -268,7 +294,9 @@
               echo -e "\nManually execute 'export dream2nixWithExternals={path to your dream2nix checkout}'"
             fi
           '';
-      });
+        };
+      };
+    });
 
     checks = forAllSystems (system: pkgs: {
       pre-commit-check = pre-commit-hooks.lib.${system}.run {
