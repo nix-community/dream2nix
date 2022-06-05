@@ -24,7 +24,7 @@ let
       src = utils.getRootSource pname version;
       vendorDir = vendoring.vendoredDependencies;
       replacePaths = utils.replaceRelativePathsWithAbsolute {
-        paths = subsystemAttrs.relPathReplacements;
+        paths = subsystemAttrs.relPathReplacements.${pname}.${version};
       };
       writeGitVendorEntries = vendoring.writeGitVendorEntries "vendored-sources";
 

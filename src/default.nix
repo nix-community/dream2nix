@@ -114,12 +114,9 @@
       vendorCargoDeps = null;
 
       writeTOML = importLibFile "writeTOML" {
-        inherit (pkgs) writeText;
-        inherit (utils) toTOML;
+        inherit (pkgs) runCommand pkgsBuildBuild;
       };
-      cleanCargoToml = importLibFile "cleanCargoToml" {
-        inherit (builtins) fromTOML;
-      };
+      cleanCargoToml = importLibFile "cleanCargoToml" {};
       findCargoFiles = importLibFile "findCargoFiles" {
         inherit (pkgs) lib;
       };

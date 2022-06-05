@@ -132,7 +132,10 @@
       l.mapAttrs
       (fname: _: rec {
         name = fname;
-        fullPath = "${fullPath'}/${fname}";
+        fullPath = l.path {
+          path = "${fullPath'}/${fname}";
+          name = fname;
+        };
         relPath = makeNewPath relPath' fname;
         content = readTextFile fullPath;
         jsonContent = l.fromJSON content;

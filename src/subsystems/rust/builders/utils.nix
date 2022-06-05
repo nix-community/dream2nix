@@ -7,6 +7,7 @@
   dlib,
   utils,
   subsystemAttrs,
+  pkgs,
   ...
 }: let
   l = lib // builtins;
@@ -38,7 +39,7 @@ in rec {
   # Script to write the Cargo.lock if it doesn't already exist.
   writeCargoLock = ''
     rm -f "$PWD/Cargo.lock"
-    echo '${cargoLock}' > "$PWD/Cargo.lock"
+    cat ${cargoLock} > "$PWD/Cargo.lock"
   '';
 
   # The Cargo.lock for this dreamLock.
@@ -96,7 +97,7 @@ in rec {
       )
       dreamLock.dependencies
     );
-    lock = {inherit package;};
+    lockTOML = utils.toTOML {inherit package;};
   in
-    utils.toTOML lock;
+    pkgs.writeText "Cargo.lock" lockTOML;
 }
