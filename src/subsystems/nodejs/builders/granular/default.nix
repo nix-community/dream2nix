@@ -294,19 +294,19 @@
 
               # Restore write permissions
               find "$packageDir" -type d -exec chmod u+x {} \;
-              chmod -R u+w "$packageDir"
+              chmod -R u+w -- "$packageDir"
 
               # Move the extracted tarball into the output folder
-              mv "$packageDir" "$sourceRoot"
+              mv -- "$packageDir" "$sourceRoot"
           elif [ -d "$src" ]
           then
               export strippedName="$(stripHash $src)"
 
               # Restore write permissions
-              chmod -R u+w "$strippedName"
+              chmod -R u+w -- "$strippedName"
 
               # Move the extracted directory into the output folder
-              mv "$strippedName" "$sourceRoot"
+              mv -- "$strippedName" "$sourceRoot"
           fi
 
           runHook postUnpack
