@@ -10,9 +10,6 @@
     runCommand,
     stdenv,
     writeText,
-    # dream2nix inputs
-    externals,
-    utils,
     ...
   }: {
     # Funcs
@@ -201,7 +198,7 @@
 
         packageName = name;
 
-        pname = utils.sanitizeDerivationName name;
+        pname = lib.replaceStrings ["@" "/"] ["__at__" "__slash__"] name;
 
         passthru.dependencies = passthruDeps;
 

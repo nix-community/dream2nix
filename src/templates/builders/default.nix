@@ -7,7 +7,6 @@
     stdenv,
     # dream2nix inputs
     externals,
-    utils,
     ...
   }: {
     ### FUNCTIONS
@@ -35,7 +34,7 @@
     produceDerivation,
     ...
   } @ args: let
-    b = builtins;
+    l = lib // builtins;
 
     # the main package
     defaultPackage = allPackages."${defaultPackageName}"."${defaultPackageVersion}";
@@ -60,7 +59,7 @@
     # Generates a derivation for a specific package name + version
     makeOnePackage = name: version: let
       pkg = stdenv.mkDerivation rec {
-        pname = utils.sanitizeDerivationName name;
+        pname = l.strings.sanitizeDerivationName name;
         inherit version;
 
         src = getSource name version;

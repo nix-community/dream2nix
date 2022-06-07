@@ -29,7 +29,7 @@ if 'os' in package_json:
 # If it is a github dependency referred by revision,
 # we can not rely on the version inside the package.json.
 # In case of an 'unknown' version coming from the dream lock,
-# do not  override the version from package.json
+# do not override the version from package.json
 version = os.environ.get("version")
 if version not in ["unknown", package_json.get('version')]:
   print(
