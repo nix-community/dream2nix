@@ -134,7 +134,7 @@
         name = fname;
         fullPath = l.path {
           path = "${fullPath'}/${fname}";
-          name = fname;
+          name = l.strings.sanitizeDerivationName fname;
         };
         relPath = makeNewPath relPath' fname;
         content = readTextFile fullPath;

@@ -38,7 +38,7 @@
         in
           l.path {
             inherit path;
-            name = "${name}-${version}-source";
+            name = l.strings.sanitizeDerivationName "${name}-${version}-source";
           }
         else if fetchers.fetchers ? "${source.type}"
         then
