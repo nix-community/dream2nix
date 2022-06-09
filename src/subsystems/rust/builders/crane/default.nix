@@ -54,7 +54,7 @@
           inherit (utils) cargoLock;
           pnameSuffix = depsNameSuffix;
         };
-      deps = produceDerivation "${pname}${depsNameSuffix}" (crane.buildDepsOnly depsArgs);
+      deps = produceDerivation "${pname}" (crane.buildDepsOnly depsArgs);
 
       buildArgs =
         common
