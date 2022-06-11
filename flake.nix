@@ -258,6 +258,7 @@
         commands =
           [
             {package = pkgs.nix;}
+            {package = pkgs.mdbook;}
             {
               package = pkgs.treefmt;
               category = "formatting";
@@ -314,6 +315,17 @@
           };
         };
       };
+    });
+
+    packages = forAllSystems (system: pkgs: {
+      docs =
+        pkgs.runCommand
+        "dream2nix-docs"
+        {nativeBuildInputs = [pkgs.mdbook];}
+        ''
+          cp -r ${./docs}/* .
+          mdbook build -d $out
+        '';
     });
 
     templates = {

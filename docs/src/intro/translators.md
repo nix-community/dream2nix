@@ -1,5 +1,8 @@
 # Translators
-This document classifies different methods for translating requirement/lock files to the generic lock format and describes how the resulting packages can be integrated into nix builds inside and outside of nixpkgs.
+
+This document classifies different methods for translating requirement/lock
+files to the generic lock format and describes how the resulting packages
+can be integrated into nix builds inside and outside of nixpkgs.
 
 
 ## pure-nix (preferred)

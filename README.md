@@ -125,13 +125,12 @@ can be found at [`examples/d2n-init-pkgs`](./examples/d2n-init-pkgs/flake.nix).
 (The code examples of the presentation are outdated)
 [![dream2nix - A generic framework for 2nix tools](https://gist.githubusercontent.com/DavHau/755fed3774e89c0b9b8953a0a25309fa/raw/3c8b2c56f5fca3bf5c343ffc179136eef39d4d6a/dream2nix-youtube-talk.png)](https://www.youtube.com/watch?v=jqCfHMvCsfQ)
 
-### Further Reading
+### Documentation
 
-- [Summary of the core concepts and benefits](/docs/concepts-and-benefits.md)
-- [How would this improve the packaging situation in nixpkgs](/docs/nixpkgs-improvements.md)
-- [Override System](/docs/override-system.md)
-- [Contributors Guide](/docs/contributors-guide.md)
-- [Extending dream2nix](/docs/extending-dream2nix.md)
+Documentation for `main` branch is deployed to https://nix-community.github.io/dream2nix.
+
+You can also build documentation by running `nix build .#docs`, or by entering
+the development shell (`nix develop`) and running `mdbook build docs`.
 
 ### Funding
 This project receives financial support by [NLNet](https://nlnet.nl/) as part of the [NGI Assure Programme](https://nlnet.nl/assure/) funded by the European Commission.
