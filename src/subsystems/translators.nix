@@ -87,7 +87,7 @@
               (dlib.translators.getextraArgsDefaults
                 (translatorModule.extraArgs or {}))
               // args
-              // args.project.subsystemInfo
+              // (args.project.subsystemInfo or {})
               // {
                 tree =
                   args.tree or (dlib.prepareSourceTree {inherit (args) source;});
