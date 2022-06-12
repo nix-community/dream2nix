@@ -164,20 +164,21 @@
           };
         }
     );
-  in {
+
     # System independent dream2nix api.
     # Similar to drem2nixFor but will require 'system(s)' or 'pkgs' as an argument.
     # Produces flake-like output schema.
-    lib =
+    d2n-lib =
       (import ./src/lib.nix {
         inherit externalPaths externalSources overridesDirs lib;
         nixpkgsSrc = "${nixpkgs}";
       })
       # system specific dream2nix library
       // (forAllSystems (system: pkgs: dream2nixFor."${system}"));
-
-    # with project discovery enabled
-    lib2 = self.lib;
+  in {
+    lib = d2n-lib;
+    # kept for compat
+    lib2 = d2n-lib;
 
     # all apps including cli, install, etc.
     apps = forAllSystems (
@@ -234,6 +235,50 @@
             (pkgs.writeScript "format" ''
               export PATH="${alejandra.defaultPackage.${system}}/bin"
               ${pkgs.treefmt}/bin/treefmt --clear-cache "$@"
+            '');
+
+          docs.type = "app";
+          docs.program =
+            l.toString
+            (pkgs.writeScript "docs" ''
+              # convert to lowercase, all of our doc paths are in lowercase
+              __docToShow="''${1,,}"
+              # remove .md suffix if it exists, we add this later ourselves
+              # doing this we can allow both "path" and "path.md"
+              _docToShow="''${__docToShow%".md"}"
+              # replace dots with slashes so "subsystems.name" can be used to access doc
+              docToShow="''${_docToShow//./\/}"
+              docs="${self}/docs/src"
+
+              function showDoc {
+                ${pkgs.glow}/bin/glow -lp "$docs/''${1}''${docToShow}.md"
+              }
+              function docExists {
+                test -f "$docs/''${1}''${docToShow}.md"
+              }
+
+              # if no doc to show was passed then list available docs
+              if [[ "$docToShow" == "" ]]; then
+                echo "available documentation:''\n"
+                cd $docs
+                ${pkgs.ripgrep}/bin/rg --files --sort=path
+              # first we check for the doc in subsystems
+              elif $(docExists "subsystems/"); then
+                showDoc "subsystems/"
+              # then we check in intro
+              elif $(docExists "intro/"); then
+                showDoc "intro/"
+              # then in the root documentation directory
+              # this also allows for any arbitrary doc path to be accessed
+              elif $(docExists ""); then
+                showDoc ""
+              else
+                echo "no documentation for '$docToShow'"
+                echo "suggestions:''\n"
+                cd $docs
+                ${pkgs.ripgrep}/bin/rg --files-with-matches \
+                  --sort=path "$docToShow"
+              fi
             '');
         }
     );

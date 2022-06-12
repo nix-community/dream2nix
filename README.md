@@ -132,6 +132,11 @@ Documentation for `main` branch is deployed to https://nix-community.github.io/d
 You can also build documentation by running `nix build .#docs`, or by entering
 the development shell (`nix develop`) and running `mdbook build docs`.
 
+A CLI app is available if you want to read documentation in your terminal.
+`nix run .#docs` can be used to list available documentation, and you can access
+any of those by running `nix run .#docs -- name`. Subsystem documentation can be
+accessed with just `nix run .#docs -- subsystem`.
+
 ### Funding
 This project receives financial support by [NLNet](https://nlnet.nl/) as part of the [NGI Assure Programme](https://nlnet.nl/assure/) funded by the European Commission.
 
