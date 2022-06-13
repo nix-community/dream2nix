@@ -16,7 +16,7 @@ generated lockfile.
 
 ## Builders
 
-### build-cargo-package (pure)
+### build-rust-package (pure)
 
 Builds a package using `buildRustPackage` from `nixpkgs`.
 
