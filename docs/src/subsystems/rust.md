@@ -30,3 +30,16 @@ This builder builds two separate derivations, one for your crate's dependencies
 and another for your crate. This means that if you want to override stuff for
 the dependencies, you need to use the `<crate-name>-deps` key for your override
 where `<crate-name>` is the name of the crate you are building.
+
+```nix
+{
+  # ...
+  packageOverrides = {
+    # this will apply to your crate
+    crate.my-overrides = { /* ... */ };
+    # this will apply to your crate's dependencies
+    crate-deps.my-overrides = { /* ... */ };
+  };
+  # ...
+}
+```
