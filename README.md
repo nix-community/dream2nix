@@ -4,7 +4,9 @@
 
 ## [WIP] dream2nix - A framework for automated nix packaging
 
-dream2nix is a framework for automatically converting packages from other build systems to nix.
+dream2nix is a framework for automatically converting packages from other build
+systems to nix.
+
 It focuses on the following aspects:
 
 - Modularity
@@ -19,11 +21,16 @@ It focuses on the following aspects:
 - Exploration and adoption of new nix features
 - Simplified updating of packages
 
-The goal of this project is to create a standardized, generic, modular framework for automated packaging solutions, aiming for better flexibility, maintainability and usability.
+The goal of this project is to create a standardized, generic, modular framework
+for automated packaging solutions, aiming for better flexibility, maintainability
+and usability.
 
-The intention is to integrate many existing 2nix converters into this framework, thereby improving many of the previously named aspects and providing a unified UX for all 2nix solutions.
+The intention is to integrate many existing 2nix converters into this framework,
+thereby improving many of the previously named aspects and providing a unified
+UX for all 2nix solutions.
 
 ### Test the experimental version of dream2nix
+
 (Currently only nodejs and rust packaging is supported)
 
 1. Make sure you use a nix version >= 2.4 and have `experimental-features = "nix-command flakes"` set.
@@ -121,23 +128,34 @@ Extensive Example `flake.nix`:
 An example for instancing dream2nix per pkgs and using it to create outputs
 can be found at [`examples/d2n-init-pkgs`](./examples/d2n-init-pkgs/flake.nix).
 
+### Documentation
+
+Documentation for `main` branch is deployed to https://nix-community.github.io/dream2nix.
+
+You can also build documentation by running `nix build .#docs`, or by entering
+the development shell (`nix develop`) and running `mdbook build docs`.
+
+A CLI app is available if you want to read documentation in your terminal.
+`nix run .#docs` can be used to list available documentation, and you can access
+any of those by running `nix run .#docs -- name`. Subsystem documentation can be
+accessed with just `nix run .#docs -- subsystem`.
+
 ### Watch the presentation
+
 (The code examples of the presentation are outdated)
 [![dream2nix - A generic framework for 2nix tools](https://gist.githubusercontent.com/DavHau/755fed3774e89c0b9b8953a0a25309fa/raw/3c8b2c56f5fca3bf5c343ffc179136eef39d4d6a/dream2nix-youtube-talk.png)](https://www.youtube.com/watch?v=jqCfHMvCsfQ)
 
-### Further Reading
-
-- [Summary of the core concepts and benefits](/docs/concepts-and-benefits.md)
-- [How would this improve the packaging situation in nixpkgs](/docs/nixpkgs-improvements.md)
-- [Override System](/docs/override-system.md)
-- [Contributors Guide](/docs/contributors-guide.md)
-- [Extending dream2nix](/docs/extending-dream2nix.md)
-
 ### Funding
-This project receives financial support by [NLNet](https://nlnet.nl/) as part of the [NGI Assure Programme](https://nlnet.nl/assure/) funded by the European Commission.
 
-If your organization wants to support the project with extra funding in order to add support for more languages or new featuress, please contact one of the maintainers.
+This project receives financial support by [NLNet](https://nlnet.nl/) as part
+of the [NGI Assure Programme](https://nlnet.nl/assure/) funded by the European
+Commission.
+
+If your organization wants to support the project with extra funding in order
+to add support for more languages or new featuress, please contact one of the
+maintainers.
 
 ### Community
+
 matrix: https://matrix.to/#/#dream2nix:nixos.org
 
