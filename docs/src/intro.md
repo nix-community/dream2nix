@@ -25,4 +25,13 @@ The intention is to integrate many existing 2nix converters into this framework,
 thereby improving many of the previously named aspects and providing a unified
 UX for all 2nix solutions.
 
+### Further reading
+
+- [Summary of the core concepts and benefits](./intro/concepts-and-benefits.md)
+- [How would this improve the packaging situation in nixpkgs](./intro/nixpkgs-improvements.md)
+- [Override System](./intro/override-system.md)
+- [Contributors Guide](./contributing.md)
+- [Extending dream2nix](./extending-dream2nix.md)
+- [Subsystems](./subsystems.md)
+
 [glossary]: https://nixos.wiki/wiki/Glossary "glossary"
