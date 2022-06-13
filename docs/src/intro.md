@@ -8,10 +8,10 @@ It focuses on the following aspects:
 - Modularity
 - Customizability
 - Maintainability
-- Nixpkgs Compatibility, by not enforcing [IFD (import from derivation)](glossary)
+- Nixpkgs Compatibility, by not enforcing [IFD (import from derivation)][glossary]
 - Code de-duplication across 2nix converters
 - Code de-duplication in nixpkgs
-- Risk-free opt-in aggregated fetching (larger [FODs](glossary), less checksums)
+- Risk-free opt-in aggregated fetching (larger [FODs][glossary], less checksums)
 - Common UI across 2nix converters
 - Reduce effort to develop new 2nix solutions
 - Exploration and adoption of new nix features

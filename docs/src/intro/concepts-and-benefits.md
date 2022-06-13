@@ -86,7 +86,7 @@ Translator:
     - `pure-nix`: translate input by using the nix language only
     - `IFD/recursive`: translate using a nix build
     - `external`: translate using an external tool which resolves against an online package index
-  - for more information about translators and how nixpkgs compatibility is guaranteed, check [./translators.md](/docs/translators.md)
+  - for more information about translators and how nixpkgs compatibility is guaranteed, check [Translators](./translators.md)
 
 Generic Lock (standardized format):
   - Produced by `Translator`. Contains URLs + hashes for sources and metadata relevant for building.
