@@ -1,0 +1,755 @@
+<!DOCTYPE HTML>
+<html lang="en" class="sidebar-visible no-js light">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>dream2nix documentation</title>
+        <meta name="robots" content="noindex" />
+        <!-- Custom HTML head -->
+        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff" />
+
+        <link rel="icon" href="favicon.svg">
+        <link rel="shortcut icon" href="favicon.png">
+        <link rel="stylesheet" href="css/variables.css">
+        <link rel="stylesheet" href="css/general.css">
+        <link rel="stylesheet" href="css/chrome.css">
+        <link rel="stylesheet" href="css/print.css" media="print">
+        <!-- Fonts -->
+        <link rel="stylesheet" href="FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="fonts/fonts.css">
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" href="highlight.css">
+        <link rel="stylesheet" href="tomorrow-night.css">
+        <link rel="stylesheet" href="ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+    </head>
+    <body>
+        <!-- Provide site root to javascript -->
+        <script type="text/javascript">
+            var path_to_root = "";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
+        </script>
+
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script type="text/javascript">
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script type="text/javascript">
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            var html = document.querySelector('html');
+            html.classList.remove('no-js')
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add('js');
+        </script>
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script type="text/javascript">
+            var html = document.querySelector('html');
+            var sidebar = 'hidden';
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            }
+            html.classList.remove('sidebar-visible');
+            html.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <div class="sidebar-scrollbox">
+                <ol class="chapter"><li class="chapter-item expanded "><a href="intro.html"><strong aria-hidden="true">1.</strong> Introduction</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="intro/concepts-and-benefits.html"><strong aria-hidden="true">1.1.</strong> Concepts and benefits</a></li><li class="chapter-item expanded "><a href="intro/nixpkgs-improvements.html"><strong aria-hidden="true">1.2.</strong> Nixpkgs improvements</a></li><li class="chapter-item expanded "><a href="intro/override-system.html"><strong aria-hidden="true">1.3.</strong> Override system</a></li><li class="chapter-item expanded "><a href="intro/translators.html"><strong aria-hidden="true">1.4.</strong> Translators</a></li></ol></li><li class="chapter-item expanded "><a href="subsystems.html"><strong aria-hidden="true">2.</strong> Subsystems</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="subsystems/rust.html"><strong aria-hidden="true">2.1.</strong> Rust</a></li></ol></li><li class="chapter-item expanded "><a href="extending-dream2nix.html"><strong aria-hidden="true">3.</strong> Extending dream2nix</a></li><li class="chapter-item expanded "><a href="contributing.html"><strong aria-hidden="true">4.</strong> Contributing</a></li></ol>
+            </div>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky bordered">
+                    <div class="left-buttons">
+                        <button id="sidebar-toggle" class="icon-button" type="button" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </button>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light (default)</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">dream2nix documentation</h1>
+
+                    <div class="right-buttons">
+                        <a href="print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script type="text/javascript">
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h1 id="dream2nix"><a class="header" href="#dream2nix">dream2nix</a></h1>
+<p>dream2nix is a framework for automatically converting packages from other
+build systems to nix.</p>
+<p>It focuses on the following aspects:</p>
+<ul>
+<li>Modularity</li>
+<li>Customizability</li>
+<li>Maintainability</li>
+<li>Nixpkgs Compatibility, by not enforcing <a href="https://nixos.wiki/wiki/Glossary" title="glossary">IFD (import from derivation)</a></li>
+<li>Code de-duplication across 2nix converters</li>
+<li>Code de-duplication in nixpkgs</li>
+<li>Risk-free opt-in aggregated fetching (larger <a href="https://nixos.wiki/wiki/Glossary" title="glossary">FODs</a>, less checksums)</li>
+<li>Common UI across 2nix converters</li>
+<li>Reduce effort to develop new 2nix solutions</li>
+<li>Exploration and adoption of new nix features</li>
+<li>Simplified updating of packages</li>
+</ul>
+<p>The goal of this project is to create a standardized, generic, modular
+framework for automated packaging solutions, aiming for better flexibility,
+maintainability and usability.</p>
+<p>The intention is to integrate many existing 2nix converters into this framework,
+thereby improving many of the previously named aspects and providing a unified
+UX for all 2nix solutions.</p>
+<h3 id="further-reading"><a class="header" href="#further-reading">Further reading</a></h3>
+<ul>
+<li><a href="./intro/concepts-and-benefits.html">Summary of the core concepts and benefits</a></li>
+<li><a href="./intro/nixpkgs-improvements.html">How would this improve the packaging situation in nixpkgs</a></li>
+<li><a href="./intro/override-system.html">Override System</a></li>
+<li><a href="./contributing.html">Contributors Guide</a></li>
+<li><a href="./extending-dream2nix.html">Extending dream2nix</a></li>
+<li><a href="./subsystems.html">Subsystems</a></li>
+</ul>
+<div style="break-before: page; page-break-before: always;"></div><h3 id="modularity"><a class="header" href="#modularity">Modularity:</a></h3>
+<p>The following phases which are generic to basically all existing 2nix solutions:</p>
+<ul>
+<li>parsing project metadata</li>
+<li>resolving/locking dependencies (not always required)</li>
+<li>fetching sources</li>
+<li>building/installing packages</li>
+</ul>
+<p>... should be separated from each other with well defined interfaces.</p>
+<p>This will allow for free composition of different approaches for these phases.
+The user should be able to freely choose between:</p>
+<ul>
+<li>input metadata formats (eg. lock file formats)</li>
+<li>metadata fetching/translation strategies: IFD vs. in-tree</li>
+<li>source fetching strategies: granular fetching vs fetching via single large FOD to minimize expression file size</li>
+<li>installation strategies: build dependencies individually vs inside a single derivation.</li>
+</ul>
+<h3 id="customizability"><a class="header" href="#customizability">Customizability</a></h3>
+<p>Every Phase mentioned in the previous section should be customizable at a high degree via override functions. Practical examples:</p>
+<ul>
+<li>Inject extra requirements/dependencies</li>
+<li>fetch sources from alternative locations</li>
+<li>replace or modify sources</li>
+<li>customize the build/installation procedure</li>
+</ul>
+<h3 id="maintainability"><a class="header" href="#maintainability">Maintainability</a></h3>
+<p>Due to the modular architecture with strict interfaces, contributers can add support for new lock-file formats or new strategies for fetching, building, installing more easily.</p>
+<h3 id="compatibility"><a class="header" href="#compatibility">Compatibility</a></h3>
+<p>Depending on where the nix code is used, different approaches are desired or discouraged. While IFD might be desired for some out of tree projects to achieve simplified UX, it is strictly prohibited in nixpkgs due to nix/hydra limitations.
+All solutions which follow the dream2nix specification will be compatible with both approaches without having to re-invent the tool.</p>
+<h3 id="code-de-duplication"><a class="header" href="#code-de-duplication">Code de-duplication</a></h3>
+<p>Common problems that apply to many 2nix solutions can be solved once by the framework. Examples:</p>
+<ul>
+<li>handling cyclic dependencies</li>
+<li>handling sources from various origins (http, git, local, ...)</li>
+<li>generate nixpkgs/hydra friendly output (no IFD)</li>
+<li>good user interface</li>
+</ul>
+<h3 id="code-de-duplication-in-nixpkgs"><a class="header" href="#code-de-duplication-in-nixpkgs">Code de-duplication in nixpkgs</a></h3>
+<p>Essential components like package update scripts or fetching and override logic are provided by the dream2nix framework and are stored only once in the source tree instead of several times.</p>
+<h3 id="risk-free-opt-in-fod-fetching"><a class="header" href="#risk-free-opt-in-fod-fetching">Risk free opt-in FOD fetching</a></h3>
+<p>Optionally, to save more storage space, individual hashes for source can be ommited and a single large FOD used instead.
+Due to a unified minimalistic fetching layer the risk of FOD hash breakages should be very low.</p>
+<h3 id="common-ui-across-many-2nix-solutions"><a class="header" href="#common-ui-across-many-2nix-solutions">Common UI across many 2nix solutions</a></h3>
+<p>2nix solutions which follow the dream2nix framework will have a unified UI for workflows like project initialization or code generation. This will allow quicker onboarding of new users by providing familiar workflows across different build systems.</p>
+<h3 id="reduced-effort-to-develop-new-2nix-solutions"><a class="header" href="#reduced-effort-to-develop-new-2nix-solutions">Reduced effort to develop new 2nix solutions</a></h3>
+<p>Since the framework already solves common problems and provides an interface for integrating new build systems, developers will have an easier time creating their next 2nix solution.</p>
+<h3 id="architecture"><a class="header" href="#architecture">Architecture</a></h3>
+<p>The general architecture should consist of these components:<br />
+<code>Input -&gt; Translation -&gt; Generic Lock -&gt; Fetching -&gt; Building</code></p>
+<pre><code>┌───────┐
+│ Input │◄── Arbitrary
+└────┬──┘                 URLs + Metadata containing Build instructions
+     │   ┌──────────┐     in standardized minimalistic form (json)
+     └──►│Translator│        │
+         └───────┬──┘        ▼
+           ▲     │   ┌────────────┐
+           │     └──►│Generic Lock│
+           │         └─────────┬──┘
+  - pure-nix                   │   ┌────────┐
+  - IFD / recursive-nix        ├──►│Fetcher │◄── Same across all
+  - impure (external)          │   └────────┘    languages/frameworks
+                               │       ▼
+                               │   ┌────────┐
+                               └──►│Builder │◄── Reads extra metadata
+                                   └────────┘    from generic lock
+</code></pre>
+<p>Input:</p>
+<ul>
+<li>can consist of:
+<ul>
+<li>requirement contstraints</li>
+<li>requirement files</li>
+<li>lock-files</li>
+<li>project's source tree</li>
+</ul>
+</li>
+</ul>
+<p>Translator:</p>
+<ul>
+<li>read input and generate generic lock format containing:
+<ul>
+<li>URLs + hashes of sources</li>
+<li>metadata for building</li>
+</ul>
+</li>
+<li>different strategies can be used:
+<ul>
+<li><code>pure-nix</code>: translate input by using the nix language only</li>
+<li><code>IFD/recursive</code>: translate using a nix build</li>
+<li><code>external</code>: translate using an external tool which resolves against an online package index</li>
+</ul>
+</li>
+<li>for more information about translators and how nixpkgs compatibility is guaranteed, check <a href="intro/./translators.html">Translators</a></li>
+</ul>
+<p>Generic Lock (standardized format):</p>
+<ul>
+<li>Produced by <code>Translator</code>. Contains URLs + hashes for sources and metadata relevant for building.</li>
+<li>The contained format for sources and dependency relations is independent of the build system. Fetching works always the same.</li>
+<li>The metadata also contains build system specific attributes as individual approaches are required here. A specific builder for the individual build system will later read this metadata and transform it into nix derivations.</li>
+<li>It is not relevant which steps/strategies have been taken to create this lock. From this point on, there are no impurities. This format will contain everything necessary for a fully reproducible build.</li>
+<li>This format can always be put into nixpkgs, not requiring any IFD (given the nix code for the builder exists within nixpkgs).</li>
+<li>In case of a pure-nix translator, the generic lock data can be generated on the fly and passed directly to the builder, preventing unnecessary usage of IFD.</li>
+</ul>
+<p>Fetcher:</p>
+<ul>
+<li>Since a generic lock was produced in the previous step, the fetching layer can be the same across all build systems.</li>
+</ul>
+<p>Builder:</p>
+<ul>
+<li>Receives sources from fetcher and metadata produced by the translator.</li>
+<li>The builder transforms the metadata into nix derivation(s).</li>
+<li>Strictly separating the builder from previous phases allows:
+<ul>
+<li>switching between different build strategies or upgrading the builder without having to re-run the translator each time.</li>
+<li>reducing code duplication if a project contains multiple packages built via dream2nix.</li>
+</ul>
+</li>
+</ul>
+<h3 id="example-walk-through-the-phases"><a class="header" href="#example-walk-through-the-phases">Example (walk through the phases)</a></h3>
+<h4 id="python-project-with-poetrylock"><a class="header" href="#python-project-with-poetrylock">python project with poetry.lock</a></h4>
+<p>As an example we package a python project that uses poetry for dependency management.
+Potery uses <code>pyproject.toml</code> and <code>poetry.lock</code> to lock dependencies</p>
+<ul>
+<li>Input: pyproject.toml, poetry.lock (toml)</li>
+<li>Translator: written in pure nix, reading the toml input and generating the generic lock format</li>
+<li>Generic Lock (for explanatory purposes dumped to json and commented):
+<pre><code class="language-json5">{
+  // generic lock format version
+  &quot;version&quot;: 1,
+
+  // format for sources is always the same (not specific to python)
+  &quot;sources&quot;: {
+    &quot;requests&quot;: {
+      &quot;type&quot;: &quot;tarball&quot;,
+      &quot;url&quot;: &quot;https://download.pypi.org/requests/2.28.0&quot;,
+      &quot;hash&quot;: &quot;deadbeefdeadbeefdeadbeefdeadbeefdeadbeef&quot;,
+    },
+    &quot;certifi&quot;: {
+      &quot;type&quot;: &quot;github&quot;,
+      &quot;owner&quot;: &quot;certifi&quot;,
+      &quot;repo&quot;: &quot;python-certifi&quot;,
+      &quot;hash&quot;: &quot;deadbeefdeadbeefdeadbeefdeadbeefdeadbeef&quot;
+    }
+  },
+
+  // generic metadata (not specific to python)
+  &quot;_generic&quot;: {
+
+    // this indicates which builder must be used
+    &quot;subsystem&quot;: &quot;python&quot;,
+
+    // translator which generated this file
+    // (not relevant for building)
+    &quot;producedBy&quot;: &quot;translator-poetry-1&quot;,
+
+    // dependency graph of the packages
+    &quot;dependencies&quot;: {
+      &quot;requests&quot;: [
+        &quot;certifi&quot;
+      ]
+    }
+  },
+
+  // all fields inside 'subsystem' are specific to
+  // the selected subsystem (python)
+  &quot;_subsystem&quot;: {
+
+    // tell the python builder how the inputs must be handled
+    &quot;sourceFormats&quot;: {
+      &quot;requests&quot;: &quot;sdist&quot;,  // triggers build instructions for sdist
+      &quot;certifi&quot;: &quot;wheel&quot;    // triggers build instructions for wheel
+    }
+  }
+}
+</code></pre>
+</li>
+<li>This lock data can now either:
+<ul>
+<li>be dumped to a .json file and committed to a repo</li>
+<li>passed directly to the fetching/building layer</li>
+</ul>
+</li>
+<li>the fetcher will only read the sources section and translate it to standard fetcher calls.</li>
+<li>the building layer will read the &quot;subsystem&quot; attribute and select the python builder for building.</li>
+<li>the python builder will read all information from &quot;subsystem&quot; and translate the data to a final derivation.</li>
+</ul>
+<p>Notes on IFD, FOD and code generation:</p>
+<ul>
+<li>No matter which type of translator is used, it is always possible to export the generic lock to a file, which can later be evaluated without using IFD or FOD, similar to current nix code generators, just with a standardized format.</li>
+<li>If the translator supports IFD or is written in pure nix, it is optional to the user to skip exporting the generic lock and instead evaluate everything on the fly.</li>
+</ul>
+<div style="break-before: page; page-break-before: always;"></div><h2 id="list-of-problems-which-currently-exist-in-nixpkgs"><a class="header" href="#list-of-problems-which-currently-exist-in-nixpkgs">List of problems which currently exist in nixpkgs</a></h2>
+<h3 id="generated-code-sizeduplication"><a class="header" href="#generated-code-sizeduplication">Generated Code Size/Duplication</a></h3>
+<h4 id="problem"><a class="header" href="#problem">Problem</a></h4>
+<ul>
+<li>large .nix files containing auto generated code for fetching sources (example: nodejs)</li>
+<li>many duplicated .nix files containing build logic</li>
+</ul>
+<h4 id="solution"><a class="header" href="#solution">Solution</a></h4>
+<ul>
+<li>
+<p>dream2nix minimizes the amount of generated nix code, as most of the logic required to build a package resides in the framework and therefore is not duplicated across individual packages.</p>
+</li>
+<li>
+<p>If the upstream lock file format can be interpreted with pure nix and is present at evaluation time, then generating any intermediary code can be omitted.</p>
+</li>
+<li>
+<p>Once any kind of recursive nix (IFD, recursive-nix, RFC-92) is enabled in nixpkgs, dream2nix will utilize it and eliminate the requirement of generating nix code or storing upsteam lock files</p>
+</li>
+</ul>
+<h3 id="update-scripts-duplicationcomplexity"><a class="header" href="#update-scripts-duplicationcomplexity">Update Scripts Duplication/Complexity</a></h3>
+<h4 id="problem-1"><a class="header" href="#problem-1">Problem</a></h4>
+<ul>
+<li>update scripts are largely duplicated</li>
+<li>update scripts are complex</li>
+</ul>
+<h4 id="solution-1"><a class="header" href="#solution-1">Solution</a></h4>
+<ul>
+<li>storing <code>update.sh</code> scripts alongside packages will not be necessary anymore. dream2nix can generate update procedures on the fly by reading the package declaration.</li>
+<li>The UI for updating packages is the same across all languages/frameworks</li>
+</ul>
+<h3 id="fetching--caching-issues-large-fods"><a class="header" href="#fetching--caching-issues-large-fods">Fetching / Caching issues (large FODs)</a></h3>
+<h4 id="problem-2"><a class="header" href="#problem-2">Problem</a></h4>
+<ul>
+<li>non-reproducible large FOD fetchers (example: rust)</li>
+<li>updating FODs is not risk free (forget to update hash)</li>
+<li>bad caching properties due to large FODs</li>
+</ul>
+<h4 id="solution-2"><a class="header" href="#solution-2">Solution</a></h4>
+<ul>
+<li>the translators of dream2nix always produce a clear list of URLs to fetch</li>
+<li>large-FOD fetching is not necessary and never enforced</li>
+<li>large-FOD fetching can be used optionally to reduce amount of hashes to be stored</li>
+<li>even if large-FOD fetching is used, it won't have any of the known reproducibility issues, since dream2nix does never make use of upstream toolchain for fetching and potentially impure operations like dependency resolution are never done inside an FOD.</li>
+<li>updating hashes of FODs is done via dream2nix CLI, which ensures that the correct hashes are in place</li>
+<li>As the use of large-FOD fetching is not necessary and therefore minimized, dependencies are cached on an individual basis and shared between packages.</li>
+</ul>
+<h3 id="update-workflows"><a class="header" href="#update-workflows">Update Workflows</a></h3>
+<h4 id="problem-3"><a class="header" href="#problem-3">Problem</a></h4>
+<ul>
+<li>package update workflows can be complicated</li>
+<li>package update workflows vary significantly depending on the language/fragmework</li>
+</ul>
+<h4 id="solution-3"><a class="header" href="#solution-3">Solution</a></h4>
+<ul>
+<li>the workflow for updating packages will be unified and largely independenct of the underlying language/framework.</li>
+</ul>
+<h3 id="merge-conflicts-for-shared-dependencies"><a class="header" href="#merge-conflicts-for-shared-dependencies">Merge Conflicts for shared dependencies</a></h3>
+<h4 id="problem-4"><a class="header" href="#problem-4">Problem</a></h4>
+<ul>
+<li>Due to how shared dependencies are managed, merge conflicts are likely (example: global node-packages.nix)</li>
+</ul>
+<h4 id="solution-4"><a class="header" href="#solution-4">Solution</a></h4>
+<ul>
+<li>Having a central set of shared dependencies can make sense to reduce the code size of nixpkgs, load on hydra+cache.</li>
+<li>To eliminate merge conflicts, the global package set can be maintained via a two stage process. Individual package maintainers can manage their dependencies independently. Once every staging cycle, common dependencies can be found via graph analysis and moved into a global package set.</li>
+<li>The total amount of dependency versions used can also be minimized by re-running the resolver, prioritizing dependencies from the global set of common packages.</li>
+</ul>
+<h3 id="customizability--overriding"><a class="header" href="#customizability--overriding">Customizability / Overriding</a></h3>
+<h4 id="problem-5"><a class="header" href="#problem-5">Problem</a></h4>
+<ul>
+<li>Capabilities vary depending on the underlying generator/translator.</li>
+<li>UI is different depending on the underlying generator/translator.</li>
+</ul>
+<h4 id="solution-5"><a class="header" href="#solution-5">Solution</a></h4>
+<ul>
+<li>dream2nix provides good interfaces for customizability which are unified as much as possible independently from the underlying subsystems.</li>
+</ul>
+<h3 id="inefficientslow-innovation"><a class="header" href="#inefficientslow-innovation">Inefficient/Slow Innovation</a></h3>
+<h4 id="problem-6"><a class="header" href="#problem-6">Problem</a></h4>
+<ul>
+<li>Design issues (FOD-impurity, Maintainability, etc.) cannot be fixed easily and lead to long term suffering of maintainers.</li>
+<li>Innovation often happens on individual tools and are not adopted ecosystem wide</li>
+<li>New nix features will not be easily adopted as this will require updating many individual tools.</li>
+</ul>
+<h4 id="solution-6"><a class="header" href="#solution-6">Solution</a></h4>
+<ul>
+<li>Since dream2nix centrally handles many core elements of packaging like different strategies for fetching and building, it is much easier to fix problems at large scale and apply new innovations to all underlysing subsystems at once.</li>
+<li>Experimenting with and adding support for new nix features will be easier as the framework offers better abstractions than existing 2nix converters and allows adding/modifying strategies more easily.</li>
+</ul>
+<div style="break-before: page; page-break-before: always;"></div><p>The override system plays an important role when packaging software with dream2nix. Overrides are the only way to express package specific logic in dream2nix. This serves the purpose of strictly separating:</p>
+<pre><code>  - generic logic     (builders)
+  - specific logic    (overrides)
+  - data              (dream-lock.json)
+</code></pre>
+<p>To optimize for scalalable workflows, the structure of dream2nix overrides differs from the ones seen in other projects.
+dream2nix overrides have the following properties:</p>
+<ul>
+<li><strong>referenceable</strong>: each override is assigned to a key through which it can be referenced. This allows for better inspection, selective debugging, replacing, etc.</li>
+<li><strong>conditional</strong>: each override can declare a condition, so that the override only applies when the condiiton evaluates positively.</li>
+<li><strong>attribute-oriented</strong>: The relevant parameters are attributes, not override functions. dream2nix will automatically figure out which underlying function (eg. override, overrideAttrs, ...) needs to be called to update each given attribute. The user is not confronted with this by default.</li>
+</ul>
+<p>Each subsytem in dream2nix like <code>nodejs</code> or <code>python</code> manages its overrides in a separate directory to avoid package name collisions.</p>
+<p>dream2nix supports packaging different versions of the same package within one repository. Therefore conditions are used to make overrides apply only to certain package versions.</p>
+<p>Currently a collection of overrides is maintained at <a href="https://github.com/nix-community/dream2nix/tree/main/overrides">dream2nix/overrides</a></p>
+<p>Example for nodejs overrides:</p>
+<pre><code class="language-nix">{
+  # The name of a package.
+  # Contains all overrides which can apply to the package `enhanced-resolve`
+  enhanced-resolve = {
+
+    # first override for enhanced-resolve named `preserve-symlinks-v4`
+    preserve-symlinks-v4 = {
+
+      # override will apply for packages with major version 4
+      _condition = satisfiesSemver &quot;^4.0.0&quot;;
+
+      # this statement replaces exisiting patches
+      # (for appending see next example)
+      patches = [
+        ./enhanced-resolve/npm-preserve-symlinks-v4.patch
+      ];
+
+    };
+
+    # second override for enhanced-resolve
+    preserve-symlinks-v5 = {
+
+      # override will apply for packages with major version 5
+      _condition = satisfiesSemver &quot;^5.0.0&quot;;
+
+      # this statement adds a patch to the exsiting list of patches
+      patches = old: old ++ [
+        ./enhanced-resolve/npm-preserve-symlinks-v5.patch
+      ];
+    };
+
+  };
+
+  # another package name
+  webpack = {
+    # overrides for webpack
+  };
+}
+</code></pre>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="translators"><a class="header" href="#translators">Translators</a></h1>
+<p>This document classifies different methods for translating requirement/lock
+files to the generic lock format and describes how the resulting packages
+can be integrated into nix builds inside and outside of nixpkgs.</p>
+<h2 id="pure-nix-preferred"><a class="header" href="#pure-nix-preferred">pure-nix (preferred)</a></h2>
+<p>Suitable if:</p>
+<ul>
+<li>the input contains information like URLs and hashes</li>
+<li>nix supports the hashing algorithm</li>
+<li>the input can be processed with the nix language directly</li>
+</ul>
+<p>Usage outside of nixpkgs:</p>
+<ul>
+<li>The input + translator are enough, not requiring any pre-processing.</li>
+</ul>
+<p>Usage inside nixpkgs:</p>
+<ul>
+<li>The input + translator are enough, not requiring any pre-processing.</li>
+</ul>
+<h2 id="ifdrecursive-compatible-with-import-from-derivation-or-recursive-nix"><a class="header" href="#ifdrecursive-compatible-with-import-from-derivation-or-recursive-nix">IFD/recursive (compatible with import from derivation or recursive nix)</a></h2>
+<p>Suitable if:</p>
+<ul>
+<li>the input contains information like URLs and hashes</li>
+<li>nix understands the hashing algorithm</li>
+<li>to process the input, a nix build is required, because for example:
+<ul>
+<li>the format cannot be parsed with the nix language (yaml etc.)</li>
+<li>processing the input is too complex and therefore inefficient in nix language</li>
+</ul>
+</li>
+</ul>
+<p>Usage outside of nixpkgs:</p>
+<ul>
+<li>The input + translator are enough. The generic lock file is generated via IFD</li>
+</ul>
+<p>Usage inside nixpkgs:</p>
+<ul>
+<li>generic lock file must be pre-generated using dream2nix cli</li>
+</ul>
+<h2 id="impure-running-outside-of-nix-build"><a class="header" href="#impure-running-outside-of-nix-build">impure (running outside of nix build)</a></h2>
+<p>Suitable if:</p>
+<ul>
+<li>the input is missing URLs or hashes</li>
+<li>the method used to process the input contains impurities, like for example:
+<ul>
+<li>queries to an online index with varying responses</li>
+<li>packages must be downloaded to discover important meta data like dependencies.</li>
+</ul>
+</li>
+</ul>
+<p>Usage outside of nixpkgs:</p>
+<ul>
+<li>generic lock file must be pre-generated using dream2nix cli</li>
+</ul>
+<p>Usage inside nixpkgs:</p>
+<ul>
+<li>generic lock file must be pre-generated using dream2nix cli</li>
+</ul>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="subsystems"><a class="header" href="#subsystems">Subsystems</a></h1>
+<p>This section documents subsystem specific behaviour and interfaces.</p>
+<h2 id="available-subsystems"><a class="header" href="#available-subsystems">Available subsystems</a></h2>
+<ul>
+<li><a href="./subsystems/rust.html">Rust (<code>rust</code>)</a></li>
+<li>Nodejs (<code>nodejs</code>)</li>
+<li>Python (<code>python</code>)</li>
+<li>Go (<code>go</code>)</li>
+</ul>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="rust-subsystem"><a class="header" href="#rust-subsystem">Rust subsystem</a></h1>
+<p>This section documents the Rust subsystem.</p>
+<h2 id="translators-1"><a class="header" href="#translators-1">Translators</a></h2>
+<h3 id="cargo-lock-pure"><a class="header" href="#cargo-lock-pure">cargo-lock (pure)</a></h3>
+<p>Translates a <code>Cargo.lock</code> file to a dream2nix lockfile.</p>
+<h3 id="cargo-toml-impure"><a class="header" href="#cargo-toml-impure">cargo-toml (impure)</a></h3>
+<p>Translates a <code>Cargo.toml</code> file to a dream2nix lockfile by generating a
+<code>Cargo.lock</code> file first and then using <code>cargo-lock</code> translator on the
+generated lockfile.</p>
+<h2 id="builders"><a class="header" href="#builders">Builders</a></h2>
+<h3 id="build-rust-package-pure"><a class="header" href="#build-rust-package-pure">build-rust-package (pure)</a></h3>
+<p>Builds a package using <code>buildRustPackage</code> from <code>nixpkgs</code>.</p>
+<h3 id="crane-ifd"><a class="header" href="#crane-ifd">crane (ifd)</a></h3>
+<p>Builds a package using <a href="https://github.com/ipetkov/crane"><code>crane</code></a>.</p>
+<h4 id="override-gotchas"><a class="header" href="#override-gotchas">Override gotchas</a></h4>
+<p>This builder builds two separate derivations, one for your crate's dependencies
+and another for your crate. This means that if you want to override stuff for
+the dependencies, you need to use the <code>&lt;crate-name&gt;-deps</code> key for your override
+where <code>&lt;crate-name&gt;</code> is the name of the crate you are building.</p>
+<pre><code class="language-nix">{
+  # ...
+  packageOverrides = {
+    # this will apply to your crate
+    crate.my-overrides = { /* ... */ };
+    # this will apply to your crate's dependencies
+    crate-deps.my-overrides = { /* ... */ };
+  };
+  # ...
+}
+</code></pre>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="extending-dream2nix-with-external-translators-builders-etc"><a class="header" href="#extending-dream2nix-with-external-translators-builders-etc">Extending dream2nix with external translators, builders etc.</a></h1>
+<p><code>dream2nix</code> can be extended while you are <code>init</code>ializing it.
+This can be done in a few ways. For extending, you need to
+utilize the <code>config.extra</code> option of the dream2nix config.</p>
+<h2 id="declare-extras-from-a-nix-file"><a class="header" href="#declare-extras-from-a-nix-file">Declare <code>extra</code>s from a nix file</a></h2>
+<pre><code class="language-nix">dream2nix.lib.init {
+  # this also works around errors with function modules
+  # being declared here, which will be explained later.
+  config.extra = ./nix/d2n/extras.nix;
+}
+</code></pre>
+<p>this file should look like this:</p>
+<pre><code class="language-nix">{dlib, lib, config, ...}:
+{
+  subsystems.rust.translators.example-translator = ./rust-translator.nix;
+  # you can declare modules using functions here
+  fetchers.ipfs = {...}: {/* fetcher attrs */};
+}
+</code></pre>
+<p>See the <a href="https://github.com/nix-community/dream2nix/tree/main/examples/d2n-extended-new-subsystem"><code>d2n-extended-new-subsystem</code> example</a> for a basic example.</p>
+<h2 id="declare-extras-as-an-attribute-set"><a class="header" href="#declare-extras-as-an-attribute-set">Declare <code>extra</code>s as an attribute set</a></h2>
+<pre><code class="language-nix">dream2nix.lib.init {
+  config.extra = {
+    subsystems = {
+      # add new modules
+      ruby.discoverers.default = ./nix/d2n/ruby/discoverer.nix;
+      ruby.translators.bundix = ./nix/d2n/ruby/bundix.nix;
+      # existing modules can be overridden
+      rust.builders.crane = ./nix/d2n/rust/crane.nix;
+    };
+    # add new fetchers
+    fetchers.ipfs = ./nix/d2n/fetchers/ipfs.nix;
+    fetchers.gitea = ./nix/d2n/fetchers/gitea.nix;
+    # existing fetchers can be overridden
+    fetchers.http = ./nix/d2n/fetchers/http-proxied.nix;
+  };
+}
+</code></pre>
+<p>note: you can't declare modules using functions here. This is
+because the <code>config</code> may need to be serialized to JSON and passed
+around in impure situations (mostly impure translators).</p>
+<p>See the <a href="https://github.com/nix-community/dream2nix/tree/main/examples/d2n-extended/flake.nix"><code>d2n-extended</code> example</a> for a basic example.</p>
+<h2 id="compose-multiple-different-extras"><a class="header" href="#compose-multiple-different-extras">Compose multiple different <code>extra</code>s</a></h2>
+<p>This allows one to compose multiple <code>extra</code>s together with ease.
+The <code>dream2nixExtras</code> flake output in this case can be any of the
+approaches explained in this document for declaring <code>config.extra</code>.</p>
+<pre><code class="language-nix">dream2nix.lib.init {
+  # note: .dream2nixExtras is a hypothetical standardized flake output
+  # in practice this can be any flake output.
+  config.extra = [
+    haskellSubsystemFlake.dream2nixExtras
+    crystalSubsystemFlake.dream2nixExtras
+    gleamSubsystemFlake.dream2nixExtras
+  ];
+}
+</code></pre>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="dream2nix-contributers-guide"><a class="header" href="#dream2nix-contributers-guide">dream2nix contributers guide</a></h1>
+<h2 id="translator-notes"><a class="header" href="#translator-notes">Translator Notes</a></h2>
+<p>In general there are 3 different types of translators</p>
+<ol>
+<li>
+<p>pure translator</p>
+<ul>
+<li>translation logic is implemented in nix lang only</li>
+<li>does not invoke build or read from any build output</li>
+</ul>
+</li>
+<li>
+<p>pure translator utilizing IFD (import from derivation)</p>
+<ul>
+<li>part of the logic is integrated as a nix build</li>
+<li>nix code is used to invoke a nix build and parse its results</li>
+<li>same interface as pure translator</li>
+</ul>
+</li>
+<li>
+<p>impure</p>
+<ul>
+<li>translator can be any executable program running outside of a nix build</li>
+<li>not constrained in any way (can do arbitrary network access etc.)</li>
+</ul>
+</li>
+</ol>
+<h2 id="initialize-a-new-translator"><a class="header" href="#initialize-a-new-translator">Initialize a new translator</a></h2>
+<p>Clone dream2nix repo and execute:</p>
+<pre><code class="language-shell">nix run .#contribute
+</code></pre>
+<p>... then select <code>translator</code> and answer all questions. This will generate a template.</p>
+<p>Further instructions are contained in the template in form of code comments.</p>
+<h2 id="debug-or-test-a-translator"><a class="header" href="#debug-or-test-a-translator">Debug or test a translator</a></h2>
+<h3 id="unit-tests-pure-translators-only"><a class="header" href="#unit-tests-pure-translators-only">Unit tests (pure translators only)</a></h3>
+<p>Unit tests will automatically be generated as soon as your translator specifies <code>generateUnitTestsForProjects</code>.
+Unit tests can be executed via <code>nix run .#tests-unit</code></p>
+<h3 id="repl-debugging"><a class="header" href="#repl-debugging">Repl debugging</a></h3>
+<ul>
+<li>temporarily expose internal functions of your translator</li>
+<li>use nix repl <code>nix repl ./.</code></li>
+<li>invoke a function via
+<code>subsystems.{subsystem}.translators.{translator-name}.some_function</code></li>
+</ul>
+<h3 id="tested-example-flake"><a class="header" href="#tested-example-flake">Tested example flake</a></h3>
+<p>Add an example flake under <code>./examples/name-of-example</code>.
+The flake can be tested via:</p>
+<pre><code class="language-command">nix run .#tests-examples name-of-example --show-trace
+</code></pre>
+<p>The flake will be tested in the CI-pipeline as well.</p>
+<hr />
+<h2 id="initialize-a-new-builder"><a class="header" href="#initialize-a-new-builder">Initialize a new builder</a></h2>
+<p>Clone dream2nix repo and execute:</p>
+<pre><code class="language-shell">nix run .#contribute
+</code></pre>
+<p>... then select <code>builder</code> and answer all questions. This will generate a template.</p>
+<p>Further instructions are contained in the template in form of code comments.</p>
+<h2 id="debug-or-test-a-builder"><a class="header" href="#debug-or-test-a-builder">Debug or test a builder</a></h2>
+<h3 id="tested-example-flake-1"><a class="header" href="#tested-example-flake-1">Tested example flake</a></h3>
+<p>Add an example flake under <code>./examples/name-of-example</code>.
+The flake can be tested via:</p>
+<pre><code class="language-command">nix run .#tests-examples name-of-example --show-trace
+</code></pre>
+<p>The flake will be tested in the CI-pipeline as well.</p>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+            </nav>
+
+        </div>
+
+        <script type="text/javascript">
+            window.playground_copyable = true;
+        </script>
+        <script src="elasticlunr.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="mark.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="searcher.js" type="text/javascript" charset="utf-8"></script>
+        <script src="clipboard.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="highlight.js" type="text/javascript" charset="utf-8"></script>
+        <script src="book.js" type="text/javascript" charset="utf-8"></script>
+
+        <!-- Custom JS scripts -->
+        <script type="text/javascript">
+        window.addEventListener('load', function() {
+            window.setTimeout(window.print, 100);
+        });
+        </script>
+    </body>
+</html>

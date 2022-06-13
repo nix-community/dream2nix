@@ -1,0 +1,368 @@
+<!DOCTYPE HTML>
+<html lang="en" class="sidebar-visible no-js light">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Concepts and benefits - dream2nix documentation</title>
+        <!-- Custom HTML head -->
+        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff" />
+
+        <link rel="icon" href="../favicon.svg">
+        <link rel="shortcut icon" href="../favicon.png">
+        <link rel="stylesheet" href="../css/variables.css">
+        <link rel="stylesheet" href="../css/general.css">
+        <link rel="stylesheet" href="../css/chrome.css">
+        <link rel="stylesheet" href="../css/print.css" media="print">
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../fonts/fonts.css">
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" href="../highlight.css">
+        <link rel="stylesheet" href="../tomorrow-night.css">
+        <link rel="stylesheet" href="../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+    </head>
+    <body>
+        <!-- Provide site root to javascript -->
+        <script type="text/javascript">
+            var path_to_root = "../";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
+        </script>
+
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script type="text/javascript">
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script type="text/javascript">
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            var html = document.querySelector('html');
+            html.classList.remove('no-js')
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add('js');
+        </script>
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script type="text/javascript">
+            var html = document.querySelector('html');
+            var sidebar = 'hidden';
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            }
+            html.classList.remove('sidebar-visible');
+            html.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <div class="sidebar-scrollbox">
+                <ol class="chapter"><li class="chapter-item expanded "><a href="../intro.html"><strong aria-hidden="true">1.</strong> Introduction</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../intro/concepts-and-benefits.html" class="active"><strong aria-hidden="true">1.1.</strong> Concepts and benefits</a></li><li class="chapter-item expanded "><a href="../intro/nixpkgs-improvements.html"><strong aria-hidden="true">1.2.</strong> Nixpkgs improvements</a></li><li class="chapter-item expanded "><a href="../intro/override-system.html"><strong aria-hidden="true">1.3.</strong> Override system</a></li><li class="chapter-item expanded "><a href="../intro/translators.html"><strong aria-hidden="true">1.4.</strong> Translators</a></li></ol></li><li class="chapter-item expanded "><a href="../subsystems.html"><strong aria-hidden="true">2.</strong> Subsystems</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../subsystems/rust.html"><strong aria-hidden="true">2.1.</strong> Rust</a></li></ol></li><li class="chapter-item expanded "><a href="../extending-dream2nix.html"><strong aria-hidden="true">3.</strong> Extending dream2nix</a></li><li class="chapter-item expanded "><a href="../contributing.html"><strong aria-hidden="true">4.</strong> Contributing</a></li></ol>
+            </div>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky bordered">
+                    <div class="left-buttons">
+                        <button id="sidebar-toggle" class="icon-button" type="button" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </button>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light (default)</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">dream2nix documentation</h1>
+
+                    <div class="right-buttons">
+                        <a href="../print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script type="text/javascript">
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h3 id="modularity"><a class="header" href="#modularity">Modularity:</a></h3>
+<p>The following phases which are generic to basically all existing 2nix solutions:</p>
+<ul>
+<li>parsing project metadata</li>
+<li>resolving/locking dependencies (not always required)</li>
+<li>fetching sources</li>
+<li>building/installing packages</li>
+</ul>
+<p>... should be separated from each other with well defined interfaces.</p>
+<p>This will allow for free composition of different approaches for these phases.
+The user should be able to freely choose between:</p>
+<ul>
+<li>input metadata formats (eg. lock file formats)</li>
+<li>metadata fetching/translation strategies: IFD vs. in-tree</li>
+<li>source fetching strategies: granular fetching vs fetching via single large FOD to minimize expression file size</li>
+<li>installation strategies: build dependencies individually vs inside a single derivation.</li>
+</ul>
+<h3 id="customizability"><a class="header" href="#customizability">Customizability</a></h3>
+<p>Every Phase mentioned in the previous section should be customizable at a high degree via override functions. Practical examples:</p>
+<ul>
+<li>Inject extra requirements/dependencies</li>
+<li>fetch sources from alternative locations</li>
+<li>replace or modify sources</li>
+<li>customize the build/installation procedure</li>
+</ul>
+<h3 id="maintainability"><a class="header" href="#maintainability">Maintainability</a></h3>
+<p>Due to the modular architecture with strict interfaces, contributers can add support for new lock-file formats or new strategies for fetching, building, installing more easily.</p>
+<h3 id="compatibility"><a class="header" href="#compatibility">Compatibility</a></h3>
+<p>Depending on where the nix code is used, different approaches are desired or discouraged. While IFD might be desired for some out of tree projects to achieve simplified UX, it is strictly prohibited in nixpkgs due to nix/hydra limitations.
+All solutions which follow the dream2nix specification will be compatible with both approaches without having to re-invent the tool.</p>
+<h3 id="code-de-duplication"><a class="header" href="#code-de-duplication">Code de-duplication</a></h3>
+<p>Common problems that apply to many 2nix solutions can be solved once by the framework. Examples:</p>
+<ul>
+<li>handling cyclic dependencies</li>
+<li>handling sources from various origins (http, git, local, ...)</li>
+<li>generate nixpkgs/hydra friendly output (no IFD)</li>
+<li>good user interface</li>
+</ul>
+<h3 id="code-de-duplication-in-nixpkgs"><a class="header" href="#code-de-duplication-in-nixpkgs">Code de-duplication in nixpkgs</a></h3>
+<p>Essential components like package update scripts or fetching and override logic are provided by the dream2nix framework and are stored only once in the source tree instead of several times.</p>
+<h3 id="risk-free-opt-in-fod-fetching"><a class="header" href="#risk-free-opt-in-fod-fetching">Risk free opt-in FOD fetching</a></h3>
+<p>Optionally, to save more storage space, individual hashes for source can be ommited and a single large FOD used instead.
+Due to a unified minimalistic fetching layer the risk of FOD hash breakages should be very low.</p>
+<h3 id="common-ui-across-many-2nix-solutions"><a class="header" href="#common-ui-across-many-2nix-solutions">Common UI across many 2nix solutions</a></h3>
+<p>2nix solutions which follow the dream2nix framework will have a unified UI for workflows like project initialization or code generation. This will allow quicker onboarding of new users by providing familiar workflows across different build systems.</p>
+<h3 id="reduced-effort-to-develop-new-2nix-solutions"><a class="header" href="#reduced-effort-to-develop-new-2nix-solutions">Reduced effort to develop new 2nix solutions</a></h3>
+<p>Since the framework already solves common problems and provides an interface for integrating new build systems, developers will have an easier time creating their next 2nix solution.</p>
+<h3 id="architecture"><a class="header" href="#architecture">Architecture</a></h3>
+<p>The general architecture should consist of these components:<br />
+<code>Input -&gt; Translation -&gt; Generic Lock -&gt; Fetching -&gt; Building</code></p>
+<pre><code>┌───────┐
+│ Input │◄── Arbitrary
+└────┬──┘                 URLs + Metadata containing Build instructions
+     │   ┌──────────┐     in standardized minimalistic form (json)
+     └──►│Translator│        │
+         └───────┬──┘        ▼
+           ▲     │   ┌────────────┐
+           │     └──►│Generic Lock│
+           │         └─────────┬──┘
+  - pure-nix                   │   ┌────────┐
+  - IFD / recursive-nix        ├──►│Fetcher │◄── Same across all
+  - impure (external)          │   └────────┘    languages/frameworks
+                               │       ▼
+                               │   ┌────────┐
+                               └──►│Builder │◄── Reads extra metadata
+                                   └────────┘    from generic lock
+</code></pre>
+<p>Input:</p>
+<ul>
+<li>can consist of:
+<ul>
+<li>requirement contstraints</li>
+<li>requirement files</li>
+<li>lock-files</li>
+<li>project's source tree</li>
+</ul>
+</li>
+</ul>
+<p>Translator:</p>
+<ul>
+<li>read input and generate generic lock format containing:
+<ul>
+<li>URLs + hashes of sources</li>
+<li>metadata for building</li>
+</ul>
+</li>
+<li>different strategies can be used:
+<ul>
+<li><code>pure-nix</code>: translate input by using the nix language only</li>
+<li><code>IFD/recursive</code>: translate using a nix build</li>
+<li><code>external</code>: translate using an external tool which resolves against an online package index</li>
+</ul>
+</li>
+<li>for more information about translators and how nixpkgs compatibility is guaranteed, check <a href="./translators.html">Translators</a></li>
+</ul>
+<p>Generic Lock (standardized format):</p>
+<ul>
+<li>Produced by <code>Translator</code>. Contains URLs + hashes for sources and metadata relevant for building.</li>
+<li>The contained format for sources and dependency relations is independent of the build system. Fetching works always the same.</li>
+<li>The metadata also contains build system specific attributes as individual approaches are required here. A specific builder for the individual build system will later read this metadata and transform it into nix derivations.</li>
+<li>It is not relevant which steps/strategies have been taken to create this lock. From this point on, there are no impurities. This format will contain everything necessary for a fully reproducible build.</li>
+<li>This format can always be put into nixpkgs, not requiring any IFD (given the nix code for the builder exists within nixpkgs).</li>
+<li>In case of a pure-nix translator, the generic lock data can be generated on the fly and passed directly to the builder, preventing unnecessary usage of IFD.</li>
+</ul>
+<p>Fetcher:</p>
+<ul>
+<li>Since a generic lock was produced in the previous step, the fetching layer can be the same across all build systems.</li>
+</ul>
+<p>Builder:</p>
+<ul>
+<li>Receives sources from fetcher and metadata produced by the translator.</li>
+<li>The builder transforms the metadata into nix derivation(s).</li>
+<li>Strictly separating the builder from previous phases allows:
+<ul>
+<li>switching between different build strategies or upgrading the builder without having to re-run the translator each time.</li>
+<li>reducing code duplication if a project contains multiple packages built via dream2nix.</li>
+</ul>
+</li>
+</ul>
+<h3 id="example-walk-through-the-phases"><a class="header" href="#example-walk-through-the-phases">Example (walk through the phases)</a></h3>
+<h4 id="python-project-with-poetrylock"><a class="header" href="#python-project-with-poetrylock">python project with poetry.lock</a></h4>
+<p>As an example we package a python project that uses poetry for dependency management.
+Potery uses <code>pyproject.toml</code> and <code>poetry.lock</code> to lock dependencies</p>
+<ul>
+<li>Input: pyproject.toml, poetry.lock (toml)</li>
+<li>Translator: written in pure nix, reading the toml input and generating the generic lock format</li>
+<li>Generic Lock (for explanatory purposes dumped to json and commented):
+<pre><code class="language-json5">{
+  // generic lock format version
+  &quot;version&quot;: 1,
+
+  // format for sources is always the same (not specific to python)
+  &quot;sources&quot;: {
+    &quot;requests&quot;: {
+      &quot;type&quot;: &quot;tarball&quot;,
+      &quot;url&quot;: &quot;https://download.pypi.org/requests/2.28.0&quot;,
+      &quot;hash&quot;: &quot;deadbeefdeadbeefdeadbeefdeadbeefdeadbeef&quot;,
+    },
+    &quot;certifi&quot;: {
+      &quot;type&quot;: &quot;github&quot;,
+      &quot;owner&quot;: &quot;certifi&quot;,
+      &quot;repo&quot;: &quot;python-certifi&quot;,
+      &quot;hash&quot;: &quot;deadbeefdeadbeefdeadbeefdeadbeefdeadbeef&quot;
+    }
+  },
+
+  // generic metadata (not specific to python)
+  &quot;_generic&quot;: {
+
+    // this indicates which builder must be used
+    &quot;subsystem&quot;: &quot;python&quot;,
+
+    // translator which generated this file
+    // (not relevant for building)
+    &quot;producedBy&quot;: &quot;translator-poetry-1&quot;,
+
+    // dependency graph of the packages
+    &quot;dependencies&quot;: {
+      &quot;requests&quot;: [
+        &quot;certifi&quot;
+      ]
+    }
+  },
+
+  // all fields inside 'subsystem' are specific to
+  // the selected subsystem (python)
+  &quot;_subsystem&quot;: {
+
+    // tell the python builder how the inputs must be handled
+    &quot;sourceFormats&quot;: {
+      &quot;requests&quot;: &quot;sdist&quot;,  // triggers build instructions for sdist
+      &quot;certifi&quot;: &quot;wheel&quot;    // triggers build instructions for wheel
+    }
+  }
+}
+</code></pre>
+</li>
+<li>This lock data can now either:
+<ul>
+<li>be dumped to a .json file and committed to a repo</li>
+<li>passed directly to the fetching/building layer</li>
+</ul>
+</li>
+<li>the fetcher will only read the sources section and translate it to standard fetcher calls.</li>
+<li>the building layer will read the &quot;subsystem&quot; attribute and select the python builder for building.</li>
+<li>the python builder will read all information from &quot;subsystem&quot; and translate the data to a final derivation.</li>
+</ul>
+<p>Notes on IFD, FOD and code generation:</p>
+<ul>
+<li>No matter which type of translator is used, it is always possible to export the generic lock to a file, which can later be evaluated without using IFD or FOD, similar to current nix code generators, just with a standardized format.</li>
+<li>If the translator supports IFD or is written in pure nix, it is optional to the user to skip exporting the generic lock and instead evaluate everything on the fly.</li>
+</ul>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../intro.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+                            <a rel="next" href="../intro/nixpkgs-improvements.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../intro.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+                    <a rel="next" href="../intro/nixpkgs-improvements.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+        <script type="text/javascript">
+            window.playground_copyable = true;
+        </script>
+        <script src="../elasticlunr.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../mark.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../searcher.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../clipboard.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../highlight.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../book.js" type="text/javascript" charset="utf-8"></script>
+
+        <!-- Custom JS scripts -->
+    </body>
+</html>
