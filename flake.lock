@@ -21,6 +21,23 @@
         "type": "github"
       }
     },
+    "all-cabal-hashes": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1655114153,
+        "narHash": "sha256-RktwNeVjpBMsZC0eE/K8JnHxsX0mt371PA4293BnQIw=",
+        "owner": "commercialhaskell",
+        "repo": "all-cabal-hashes",
+        "rev": "e7279a923e7be103f8f03a6eee44ed096f1c7906",
+        "type": "github"
+      },
+      "original": {
+        "owner": "commercialhaskell",
+        "ref": "hackage",
+        "repo": "all-cabal-hashes",
+        "type": "github"
+      }
+    },
     "crane": {
       "flake": false,
       "locked": {
@@ -173,6 +190,7 @@
     "root": {
       "inputs": {
         "alejandra": "alejandra",
+        "all-cabal-hashes": "all-cabal-hashes",
         "crane": "crane",
         "flake-utils-pre-commit": "flake-utils-pre-commit",
         "gomod2nix": "gomod2nix",

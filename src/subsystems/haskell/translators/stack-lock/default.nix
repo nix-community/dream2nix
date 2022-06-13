@@ -1,4 +1,5 @@
 {
+  inputs,
   dlib,
   lib,
   ...
@@ -77,13 +78,9 @@ in {
     utils,
     ...
   }: let
-    haskellUtils = import ./utils.nix {inherit dlib lib pkgs;};
+    haskellUtils = import ./utils.nix {inherit inputs dlib lib pkgs;};
     all-cabal-hashes = let
-      all-cabal-hashes' = pkgs.runCommand "all-cabal-hashes" {} ''
-        mkdir $out
-        cd $out
-        tar --strip-components 1 -xf ${pkgs.all-cabal-hashes}
-      '';
+      all-cabal-hashes' = inputs.all-cabal-hashes;
       names = dlib.listDirs all-cabal-hashes';
       getVersions = name: dlib.listDirs "${all-cabal-hashes'}/${name}";
     in
@@ -93,8 +90,7 @@ in {
         (getVersions name)
         (
           version:
-            (l.fromJSON (l.readFile "${all-cabal-hashes'}/${name}/${version}/${name}.json"))
-            .package-hashes
+            (l.fromJSON (l.readFile "${all-cabal-hashes'}/${name}/${version}/${name}.json")).package-hashes
         ));
   in
     {

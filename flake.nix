@@ -2,7 +2,10 @@
   description = "A framework for 2nix tools";
 
   inputs = {
-    nixpkgs.url = "nixpkgs/nixos-unstable";
+    nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
+
+    all-cabal-hashes.url = "github:commercialhaskell/all-cabal-hashes/hackage";
+    all-cabal-hashes.flake = false;
 
     ### dev dependencies
     alejandra.url = github:kamadorueda/alejandra;
@@ -57,7 +60,7 @@
     pre-commit-hooks,
     crane,
     ...
-  } @ inp: let
+  } @ inputs: let
     b = builtins;
     l = lib // builtins;
 
@@ -126,7 +129,7 @@
     externalSources =
       lib.genAttrs
       (lib.attrNames externalPaths)
-      (inputName: inp."${inputName}");
+      (inputName: inputs."${inputName}");
 
     overridesDirs = ["${./overrides}"];
 
@@ -134,7 +137,7 @@
     dream2nixFor = forAllSystems (system: pkgs:
       import ./src rec {
         externalDir = externalDirFor."${system}";
-        inherit externalPaths externalSources lib pkgs;
+        inherit inputs externalPaths externalSources lib pkgs;
         config = {
           inherit overridesDirs;
         };
@@ -164,7 +167,7 @@
     # Produces flake-like output schema.
     lib =
       (import ./src/lib.nix {
-        inherit externalPaths externalSources overridesDirs lib;
+        inherit inputs externalPaths externalSources overridesDirs lib;
         nixpkgsSrc = "${nixpkgs}";
       })
       # system specific dream2nix library

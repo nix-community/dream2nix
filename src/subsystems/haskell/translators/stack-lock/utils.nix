@@ -1,4 +1,5 @@
 {
+  inputs,
   lib,
   dlib,
   pkgs,
@@ -10,12 +11,6 @@
     sha256 = "1qc703yg0babixi6wshn5wm2kgl5y1drcswgszh4xxzbrwkk9sv7";
   });
 in rec {
-  all-cabal-hashes = pkgs.runCommand "all-cabal-hashes" {} ''
-    mkdir $out
-    cd $out
-    tar --strip-components 1 -xf ${pkgs.all-cabal-hashes}
-  '';
-
   cabal2jsonSrc = builtins.fetchTarball {
     url = "https://github.com/NorfairKing/cabal2json/tarball/8b864d93e3e99eb547a0d377da213a1fae644902";
     sha256 = "0zd38mzfxz8jxdlcg3fy6gqq7bwpkfann9w0vd6n8aasyz8xfbpj";
@@ -47,7 +42,7 @@ in rec {
   batchCabal2Json = candidates: let
     candidatesJsonStr = l.toJSON candidates;
     convertOne = name: version: ''
-      cabalFile=${all-cabal-hashes}/${name}/${version}/${name}.cabal
+      cabalFile=${inputs.all-cabal-hashes}/${name}/${version}/${name}.cabal
       if [ -e $cabalFile ]; then
         echo "converting cabal to json: ${name}-${version}"
         mkdir -p $out/${name}/${version}
@@ -55,7 +50,10 @@ in rec {
           $cabalFile \
           > $out/${name}/${version}/cabal.json
       else
-        echo "all-cabal-hashes" seems to be outdated
+        echo could not find $cabalFile
+        echo $(dirname $(dirname $cabalFile))
+        ls $(dirname $(dirname $cabalFile))
+        echo all-cabal-hashes might be outdated
         exit 1
       fi
     '';

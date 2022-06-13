@@ -1,4 +1,5 @@
 {
+  inputs,
   config,
   dlib,
   lib,
@@ -28,7 +29,7 @@
       else import file;
     module =
       if l.isFunction _module
-      then _module ({inherit config dlib lib;} // extraArgs)
+      then _module ({inherit inputs config dlib lib;} // extraArgs)
       else throw "module file (${file}) must return a function that takes an attrset";
   in
     l.seq (validator module) module;

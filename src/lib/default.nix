@@ -1,4 +1,5 @@
 {
+  inputs,
   lib,
   config ? (import ../utils/config.nix).loadConfig {},
   ...
@@ -19,18 +20,18 @@
       latestVersion
       listDirs
       listFiles
+      modules
       nameVersionPair
       prepareSourceTree
       readTextFile
       recursiveUpdateUntilDepth
-      simpleTranslate2
-      translators
       sanitizeDerivationName
       sanitizePath
       sanitizeRelativePath
+      simpleTranslate2
       subsystems
       traceJ
-      modules
+      translators
       warnIfIfd
       ;
 
@@ -50,7 +51,7 @@
   fetchers = import ./fetchers.nix {inherit dlib lib;};
   translators = import ./translators.nix {inherit dlib lib;};
 
-  modules = import ./modules.nix {inherit config dlib lib;};
+  modules = import ./modules.nix {inherit inputs config dlib lib;};
 
   simpleTranslate2 =
     (import ./simpleTranslate2.nix {inherit dlib lib;}).simpleTranslate2;

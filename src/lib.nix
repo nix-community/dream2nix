@@ -2,6 +2,7 @@
 # (allows to generate outputs for several systems)
 # follows flake output schema
 {
+  inputs,
   nixpkgsSrc,
   lib,
   overridesDirs,
@@ -12,7 +13,7 @@
 
   initDream2nix = config: pkgs:
     import ./default.nix
-    {inherit config pkgs externalPaths externalSources;};
+    {inherit inputs config pkgs externalPaths externalSources;};
 
   loadConfig = config'': let
     config' = (import ./utils/config.nix).loadConfig config'';
@@ -82,7 +83,7 @@
     allPkgs = makeNixpkgs pkgs systems;
 
     config = loadConfig (args.config or {});
-    dlib = import ./lib {inherit lib config;};
+    dlib = import ./lib {inherit inputs lib config;};
 
     initD2N = initDream2nix config;
     dream2nixFor = l.mapAttrs (_: pkgs: initD2N pkgs) allPkgs;
