@@ -3,8 +3,9 @@
 # If the intention is to generate output for several systems,
 # use ./lib.nix instead.
 {
+  inputs,
   pkgs ? import <nixpkgs> {},
-  dlib ? import ./lib {inherit config lib;},
+  dlib ? import ./lib {inherit inputs config lib;},
   lib ? pkgs.lib,
   nix ? pkgs.nix,
   # default to empty dream2nix config
@@ -47,18 +48,21 @@
   callPackageDream = f: args:
     pkgs.callPackage f (args
       // {
-        inherit apps;
-        inherit callPackageDream;
-        inherit config;
-        inherit configFile;
-        inherit dlib;
-        inherit externals;
-        inherit externalSources;
-        inherit fetchers;
-        inherit dream2nixWithExternals;
-        inherit utils;
-        inherit nix;
-        inherit subsystems;
+        inherit
+          apps
+          callPackageDream
+          config
+          configFile
+          dlib
+          dream2nixWithExternals
+          externalSources
+          externals
+          fetchers
+          inputs
+          nix
+          subsystems
+          utils
+          ;
       });
 
   utils = callPackageDream ./utils {};
