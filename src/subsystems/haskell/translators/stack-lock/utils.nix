@@ -16,16 +16,29 @@ in rec {
     tar --strip-components 1 -xf ${pkgs.all-cabal-hashes}
   '';
 
-  cabal2jsonSrc = builtins.fetchTarball {
-    url = "https://github.com/NorfairKing/cabal2json/tarball/8b864d93e3e99eb547a0d377da213a1fae644902";
-    sha256 = "0zd38mzfxz8jxdlcg3fy6gqq7bwpkfann9w0vd6n8aasyz8xfbpj";
-  };
-
-  cabal2jsonFlake = flakeCompat {
-    src = cabal2jsonSrc;
-  };
-
-  cabal2json = cabal2jsonFlake.defaultNix.packages.${pkgs.system}.cabal2json;
+  cabal2json = let
+    haskellPackages = pkgs.haskell.packages.ghc8107.override {
+      overrides = curr: prev: {
+        autodocodec = prev.autodocodec.overrideAttrs (old: {
+          meta = old.meta // {broken = false;};
+        });
+        validity-aeson = prev.validity-aeson.overrideAttrs (old: {
+          meta = old.meta // {broken = false;};
+        });
+        validity = prev.validity.overrideAttrs (old: {
+          patches = [];
+        });
+      };
+    };
+    cabal2json' = haskellPackages.cabal2json;
+    cabal2json'' = cabal2json'.override {
+      Cabal = haskellPackages.Cabal_3_2_1_0;
+    };
+    cabal2json = cabal2json''.overrideAttrs (old: {
+      doCheck = false;
+    });
+  in
+    cabal2json;
 
   # parse cabal file via IFD
   fromCabal = file: name: let
