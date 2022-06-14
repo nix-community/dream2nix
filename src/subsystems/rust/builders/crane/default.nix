@@ -22,7 +22,26 @@
     utils = import ../utils.nix (args // topArgs);
     vendoring = import ../vendor.nix (args // topArgs);
 
-    crane = externals.crane;
+    mkCrane = toolchain:
+      if toolchain ? cargoHostTarget && toolchain ? cargoBuildBuild
+      then externals.crane toolchain
+      else if toolchain ? cargo
+      then
+        externals.crane {
+          cargoHostTarget = toolchain.cargo;
+          cargoBuildBuild = toolchain.cargo;
+        }
+      else throw "crane toolchain must include either a 'cargo' or both of 'cargoHostTarget' and 'cargoBuildBuild'";
+
+    buildDepsWithToolchain =
+      utils.mkBuildWithToolchain
+      (toolchain: (mkCrane toolchain).buildDepsOnly);
+    buildPackageWithToolchain =
+      utils.mkBuildWithToolchain
+      (toolchain: (mkCrane toolchain).buildPackage);
+    defaultToolchain = {
+      inherit (pkgs) cargo;
+    };
 
     buildPackage = pname: version: let
       replacePaths = utils.replaceRelativePathsWithAbsolute {
@@ -54,7 +73,10 @@
           inherit (utils) cargoLock;
           pnameSuffix = depsNameSuffix;
         };
-      deps = produceDerivation "${pname}${depsNameSuffix}" (crane.buildDepsOnly depsArgs);
+      deps =
+        produceDerivation
+        "${pname}${depsNameSuffix}"
+        (buildDepsWithToolchain defaultToolchain depsArgs);
 
       buildArgs =
         common
@@ -72,7 +94,9 @@
           '';
         };
     in
-      produceDerivation pname (crane.buildPackage buildArgs);
+      produceDerivation
+      pname
+      (buildPackageWithToolchain defaultToolchain buildArgs);
   in {
     packages =
       l.mapAttrs

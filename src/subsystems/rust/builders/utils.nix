@@ -36,6 +36,24 @@ in rec {
       ${replacements}
   '';
 
+  mkBuildWithToolchain = mkBuildFunc: let
+    buildWithToolchain = toolchain: args:
+      ((mkBuildFunc toolchain) args)
+      // {
+        overrideRustToolchain = f: let
+          newToolchain = toolchain // (f toolchain);
+          maybePassthru =
+            l.optionalAttrs
+            (newToolchain ? passthru)
+            {inherit (newToolchain) passthru;};
+        in
+          buildWithToolchain newToolchain (args // maybePassthru);
+        overrideAttrs = f:
+          buildWithToolchain toolchain (args // (f args));
+      };
+  in
+    buildWithToolchain;
+
   # Script to write the Cargo.lock if it doesn't already exist.
   writeCargoLock = ''
     rm -f "$PWD/Cargo.lock"

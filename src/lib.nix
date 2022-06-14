@@ -76,8 +76,6 @@
     packageOverrides ? {},
     settings ? [],
     sourceOverrides ? oldSources: {},
-    translator ? null,
-    translatorArgs ? {},
   } @ args: let
     allPkgs = makeNixpkgs pkgs systems;
 
