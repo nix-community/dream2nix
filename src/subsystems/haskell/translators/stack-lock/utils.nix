@@ -22,9 +22,11 @@ in rec {
       overrides = _: prev: {
         autodocodec = haskellLib.markUnbroken prev.autodocodec;
         validity-aeson = haskellLib.markUnbroken prev.validity-aeson;
-        validity = haskellLib.overrideCabal (_: {
-          patches = [];
-        }) prev.validity ;
+        validity =
+          haskellLib.overrideCabal (_: {
+            patches = [];
+          })
+          prev.validity;
       };
     };
     cabal2json' = haskellPackages.cabal2json.override {
