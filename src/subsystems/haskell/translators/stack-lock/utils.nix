@@ -17,26 +17,20 @@ in rec {
   '';
 
   cabal2json = let
+    haskellLib = pkgs.haskell.lib.compose;
     haskellPackages = pkgs.haskell.packages.ghc8107.override {
-      overrides = curr: prev: {
-        autodocodec = prev.autodocodec.overrideAttrs (old: {
-          meta = old.meta // {broken = false;};
-        });
-        validity-aeson = prev.validity-aeson.overrideAttrs (old: {
-          meta = old.meta // {broken = false;};
-        });
-        validity = prev.validity.overrideAttrs (old: {
+      overrides = _: prev: {
+        autodocodec = haskellLib.markUnbroken prev.autodocodec;
+        validity-aeson = haskellLib.markUnbroken prev.validity-aeson;
+        validity = haskellLib.overrideCabal (_: {
           patches = [];
-        });
+        }) prev.validity ;
       };
     };
-    cabal2json' = haskellPackages.cabal2json;
-    cabal2json'' = cabal2json'.override {
+    cabal2json' = haskellPackages.cabal2json.override {
       Cabal = haskellPackages.Cabal_3_2_1_0;
     };
-    cabal2json = cabal2json''.overrideAttrs (old: {
-      doCheck = false;
-    });
+    cabal2json = haskellLib.dontCheck cabal2json';
   in
     cabal2json;
 
