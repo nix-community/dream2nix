@@ -1,10 +1,14 @@
 {
   dream2nixDocsSrc,
   writeScriptBin,
+  lib,
   glow,
+  fzf,
+  bat,
   ripgrep,
 }:
 writeScriptBin "d2n-docs" ''
+  export PATH="${lib.makeBinPath [glow fzf bat ripgrep]}:$PATH"
   # convert to lowercase, all of our doc paths are in lowercase
   __docToShow="''${1,,}"
   # remove .md suffix if it exists, we add this later ourselves
@@ -15,7 +19,7 @@ writeScriptBin "d2n-docs" ''
   docs="${dream2nixDocsSrc}"
 
   function showDoc {
-    ${glow}/bin/glow -lp "$docs/''${1}''${docToShow}.md"
+    glow -lp "$docs/''${1}''${docToShow}.md"
   }
   function docExists {
     test -f "$docs/''${1}''${docToShow}.md"
@@ -23,9 +27,10 @@ writeScriptBin "d2n-docs" ''
 
   # if no doc to show was passed then list available docs
   if [[ "$docToShow" == "" ]]; then
-    echo "available documentation:''\n"
     cd $docs
-    ${ripgrep}/bin/rg --files --sort=path
+    selectedDoc="$(fzf --preview='bat --color=always --style=numbers --theme=base16 {}')"
+    docToShow="''${selectedDoc%".md"}"
+    showDoc ""
   # first we check for the doc in subsystems
   elif $(docExists "subsystems/"); then
     showDoc "subsystems/"
@@ -40,7 +45,6 @@ writeScriptBin "d2n-docs" ''
     echo "no documentation for '$docToShow'"
     echo "suggestions:''\n"
     cd $docs
-    ${ripgrep}/bin/rg --files-with-matches \
-      --sort=path "$docToShow"
+    rg --files-with-matches --sort=path "$docToShow"
   fi
 ''
