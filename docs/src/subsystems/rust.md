@@ -106,3 +106,23 @@ takes `cargo` packages like so:
 
 where `cargoHostTarget` has the same meaning as coming from a `pkgsHostTarget`
 and `cargoBuildBuild` has the same meaning as coming from a `pkgsBuildBuild`.
+
+Also keep in mind that if you want to override the toolchain for a package
+and you are using the `crane` builder, you would need to set an override
+for both the dependencies and the main package derivation:
+
+```nix
+let
+  toolchainOverride = old: { /* ... */ };
+in
+{
+  # ...
+  packageOverrides = {
+    # ...
+    crate-name.set-toolchain.overrideRustToolchain = toolchainOverride;
+    crate-name-deps.set-toolchain.overrideRustToolchain = toolchainOverride;
+    # ...
+  };
+  # ...
+}
+```
