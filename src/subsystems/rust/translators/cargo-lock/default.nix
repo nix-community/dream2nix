@@ -184,7 +184,7 @@ in {
         or (l.warn "no version found in Cargo.toml for ${name}, defaulting to unknown" "unknown");
     };
   in
-    dlib.simpleTranslate2
+    dlib.simpleTranslate2.translate
     ({...}: rec {
       inherit translatorName;
 

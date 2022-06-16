@@ -239,7 +239,7 @@ in {
             && (objectsByName ? ${name}))
         depNames;
     in
-      dlib.simpleTranslate2
+      dlib.simpleTranslate2.translate
       ({objectsByKey, ...}: rec {
         inherit translatorName;
 

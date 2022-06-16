@@ -53,7 +53,7 @@
   modules = import ./modules.nix {inherit config dlib lib;};
 
   simpleTranslate2 =
-    (import ./simpleTranslate2.nix {inherit dlib lib;}).simpleTranslate2;
+    import ./simpleTranslate2.nix {inherit dlib lib;};
 
   parseUtils = import ./parsing.nix {inherit lib;};
 

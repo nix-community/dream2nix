@@ -40,7 +40,7 @@ in
   ]
   ''
     if [ -z ''${1+x} ]; then
-      parallel -j$(nproc) -a <(ls ${examples}) ${testScript}
+      parallel --halt now,fail=1 -j$(nproc) -a <(ls ${examples}) ${testScript}
     else
       arg1=$1
       shift
