@@ -10,7 +10,11 @@
     # flags found in cabal files
     Win32 = null;
 
-    # copied from stacklock2nix
+    # These are the packages which are already contained in the ghc package.
+    # This list actually depends on the ghc version used.
+    # see: https://gitlab.haskell.org/ghc/ghc/-/wikis/commentary/libraries/version-history
+    # and: https://gitlab.haskell.org/bgamari/ghc-utils/-/blob/master/library-versions/pkg_versions.txt
+    # TODO: Generate this list dynamically for the given ghc version via pkg_versions.txt
     array = null;
     base = null;
     binary = null;
@@ -53,10 +57,6 @@ in {
   /*
    Automatically generate unit tests for this translator using project sources
    from the specified list.
-   
-   !!! Your first action should be adding a project here. This will simplify
-   your work because you will be able to use `nix run .#tests-unit` to
-   test your implementation for correctness.
    */
   generateUnitTestsForProjects = [
     (builtins.fetchTarball {
@@ -184,16 +184,6 @@ in {
 
       getHackageUrl = finalObj: "https://hackage.haskell.org/package/${finalObj.name}-${finalObj.version}.tar.gz";
 
-      # downloadCabalFile = finalObj: let
-      #   source' = builtins.fetchurl {
-      #     url = finalObj.sourceSpec.url;
-      #     sha256 = finalObj.sourceSpec.hash;
-      #   };
-      #   source = utils.extractSource {
-      #     source = source';
-      #   };
-      # in "${source}/${finalObj.name}.cabal";
-
       getDependencyNames = finalObj: objectsByName: let
         cabal = with finalObj;
           cabalData.${name}.${version};
@@ -203,12 +193,6 @@ in {
 
         buildToolDepends =
           cabal.library.condTreeData.build-info.buildToolDepends or [];
-
-        # testTargetBuildDepends = l.flatten (
-        #   l.mapAttrsToList
-        #   (suiteName: suite: suite.condTreeData.build-info.targetBuildDepends)
-        #   cabal.test-suites or {}
-        # );
 
         defaultFlags = l.filter (flag: flag.default) cabal.package-flags;
 
@@ -221,6 +205,7 @@ in {
             (x: x ? targetBuildDepends)
             condTreeComponent);
 
+        # TODO: use flags to determine which conditional deps are required
         condBuildDepends =
           l.concatMap
           (component: collectBuildDepends component)
@@ -252,6 +237,7 @@ in {
         # Extract subsystem specific attributes.
         # The structure of this should be defined in:
         #   ./src/specifications/{subsystem}
+        # TODO: put ghc version here
         subsystemAttrs = {};
 
         # name of the default package
@@ -268,8 +254,6 @@ in {
 
         /*
          a list of raw package objects
-         If the upstream format is a deep attrset, this list should contain
-         a flattened representation of all entries.
          */
         serializedRawObjects =
           l.map
@@ -312,21 +296,17 @@ in {
         };
 
         /*
-         Optionally define extra extractors which will be used to key all
+         Define extra extractors which will be used to key all
          final objects, so objects can be accessed via:
          `objectsByKey.${keyName}.${value}`
          */
         keys = {
-          /*
-           This is an example. Remove this completely or replace in case you
-           need a key.
-           */
           name = rawObj: finalObj:
             finalObj.name;
         };
 
         /*
-         Optionally add extra objects (list of `finalObj`) to be added to
+         Add extra objects (list of `finalObj`) to be added to
          the dream-lock.
          */
         extraObjects = [

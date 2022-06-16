@@ -85,8 +85,9 @@ in {
           testToolDepends = libraryHaskellDepends;
 
           libraryHaskellDepends =
+            # TODO: use ghc version from subsystemAttrs
             (with pkgs.haskell.packages.ghc8107; [
-              # Cabal_3_2_1_0
+              # TODO: remove these deps / find out why they were missing
               hspec
               QuickCheck
             ])
