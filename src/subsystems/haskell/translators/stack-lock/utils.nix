@@ -16,6 +16,7 @@ in rec {
     tar --strip-components 1 -xf ${pkgs.all-cabal-hashes}
   '';
 
+  # The cabal2json program
   cabal2json = let
     haskellLib = pkgs.haskell.lib.compose;
     haskellPackages = pkgs.haskell.packages.ghc8107.override {
@@ -45,6 +46,7 @@ in rec {
   in
     l.fromJSON (l.readFile jsonFile);
 
+  # fromYaml IFD implementation
   fromYaml = file: let
     file' = l.path {path = file;};
     jsonFile = pkgs.runCommand "yaml.json" {} ''
@@ -53,6 +55,7 @@ in rec {
   in
     l.fromJSON (l.readFile jsonFile);
 
+  # converts all cabal files for a given list of candidates to json files
   batchCabal2Json = candidates: let
     candidatesJsonStr = l.toJSON candidates;
     convertOne = name: version: ''
@@ -73,6 +76,10 @@ in rec {
     (l.concatStringsSep "\n"
       (l.map (c: convertOne c.name c.version) candidates));
 
+  /*
+   Converts all cabal files for a given list of candiates to an attrset.
+   access like: ${name}.${version}.${some_cabal_attr}
+   */
   batchCabalData = candidates: let
     batchJson = batchCabal2Json candidates;
   in
