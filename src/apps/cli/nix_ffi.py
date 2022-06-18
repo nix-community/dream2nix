@@ -41,7 +41,7 @@ def callNixFunction(function_path, **kwargs):
 def eval(attr_path, wrapper_code=None, **kwargs):
   if wrapper_code == None:
     # dummy wrapper code
-    wrapper_code = "{result}: result"
+    wrapper_code = "{result, ...}: result"
 
   is_function_call = len(kwargs) > 0
 
@@ -59,15 +59,21 @@ def eval(attr_path, wrapper_code=None, **kwargs):
         "eval", "--show-trace", "--impure", "--raw", "--expr",
         f'''
           let
+            b = builtins;
             d2n = (import {dream2nix_src} {{}});
-            wrapper = import {wrapper_code_file.name};
-            result =
+            result' =
               if "{is_function_call}" == "True"
               then d2n.utils.callViaEnv d2n.{attr_path}
               else d2n.{attr_path};
+            result = (d2n.callPackageDream
+              {wrapper_code_file.name}
+              {{ result = result'; }});
           in
-            builtins.toJSON (
-              wrapper {{ inherit result; }}
+            b.toJSON (
+              # remove override attributes added by callPackage
+              if b.isAttrs result
+              then b.removeAttrs result ["override" "overrideDerivation"]
+              else result
             )
         ''',
         env=env

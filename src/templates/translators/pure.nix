@@ -135,7 +135,7 @@ in
 
     in
 
-      dlib.simpleTranslate2
+      dlib.simpleTranslate2.translate
         ({
           objectsByKey,
           ...

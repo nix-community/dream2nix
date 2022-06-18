@@ -46,7 +46,7 @@
 
     workspacesPackageJson = nodejsUtils.getWorkspacePackageJson tree workspaces;
   in
-    dlib.simpleTranslate2
+    dlib.simpleTranslate2.translate
     ({objectsByKey, ...}: let
       makeWorkspaceExtraObject = workspace: let
         json = workspacesPackageJson."${workspace}";

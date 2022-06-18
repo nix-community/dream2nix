@@ -78,21 +78,21 @@ def test_packageName(p):
   assert isinstance(defaultPackage, str)
   assert len(defaultPackage) > 0
 
-@pytest.mark.parametrize("p", projects)
-def test_exportedPackages(p):
-  exportedPackages = nix_ffi.eval(
-    f"subsystems.{p['subsystem']}.translators.{p['translator']}.translate",
-    params=dict(
-      project=p['project'],
-      source=p['source'],
-    ),
-    wrapper_code = '''
-      {result, ...}:
-      result.inputs.exportedPackages
-    ''',
-  )
-  assert isinstance(exportedPackages, dict)
-  assert len(exportedPackages) > 0
+# @pytest.mark.parametrize("p", projects)
+# def test_exportedPackages(p):
+#   exportedPackages = nix_ffi.eval(
+#     f"subsystems.{p['subsystem']}.translators.{p['translator']}.translate",
+#     params=dict(
+#       project=p['project'],
+#       source=p['source'],
+#     ),
+#     wrapper_code = '''
+#       {result, ...}:
+#       result.inputs.exportedPackages
+#     ''',
+#   )
+#   assert isinstance(exportedPackages, dict)
+#   assert len(exportedPackages) > 0
 
 @pytest.mark.parametrize("p", projects)
 def test_extraObjects(p):
@@ -142,13 +142,9 @@ def test_serializedRawObjects(p):
       source=p['source'],
     ),
     wrapper_code = '''
-      {result, lib, ...}:
-      let
-        len = lib.length result.inputs.serializedRawObjects;
-      in
-        # for performance reasons check only first/last 10 items of the list
-        (lib.sublist 0 10 result.inputs.serializedRawObjects)
-        ++ (lib.sublist (lib.max (len - 10) 0) len result.inputs.serializedRawObjects)
+      {result, ...}:
+
+      result.inputs.serializedRawObjects
     ''',
   )
   assert isinstance(serializedRawObjects, list)
@@ -181,7 +177,6 @@ def test_subsystemAttrs(p):
     ),
     wrapper_code = '''
       {result, ...}:
-      builtins.trace result.inputs.subsystemAttrs
       result.inputs.subsystemAttrs
     ''',
   )
@@ -203,39 +198,38 @@ def test_translatorName(p):
   assert isinstance(translatorName, str)
   assert len(translatorName) > 0
 
-@pytest.mark.parametrize("p", projects)
-def test_extractors(p):
-  finalObjects = nix_ffi.eval(
-    f"subsystems.{p['subsystem']}.translators.{p['translator']}.translate",
-    params=dict(
-      project=p['project'],
-      source=p['source'],
-    ),
-    wrapper_code = '''
-      {result, dlib, ...}:
-      let
-        l = builtins;
-        inputs = result.inputs;
-        rawObjects = inputs.serializedRawObjects;
-        s = dlib.simpleTranslate2;
+# @pytest.mark.parametrize("p", projects)
+# def test_extractors(p):
+#   finalObjects = nix_ffi.eval(
+#     f"subsystems.{p['subsystem']}.translators.{p['translator']}.translate",
+#     params=dict(
+#       project=p['project'],
+#       source=p['source'],
+#     ),
+#     wrapper_code = '''
+#       {result, ...}:
+#       let
+#         l = builtins;
+#         inputs = result.inputs;
+#         rawObjects = inputs.serializedRawObjects;
 
-        finalObjects = s.mkFinalObjects rawObjects inputs.extractors;
-        allDependencies = s.makeDependencies finalObjects;
-        exportedFinalObjects =
-          s.mkExportedFinalObjects finalObjects inputs.exportedPackages;
-        relevantFinalObjects =
-          s.mkRelevantFinalObjects exportedFinalObjects allDependencies;
-      in
-        relevantFinalObjects ++ (inputs.extraObjects or [])
-    ''',
-  )
-  assert isinstance(finalObjects, list)
-  assert len(finalObjects) > 0
-  for finalObj in finalObjects:
-    assert (set(finalObj.keys()) - {'rawObj', 'key'}) == \
-      {'name', 'version', 'sourceSpec', 'dependencies'}
-    check_format_dependencies(finalObj['dependencies'])
-    check_format_sourceSpec(finalObj['sourceSpec'])
+#         finalObjects = mkFinalObjects rawObjects inputs.extractors;
+#         allDependencies = makeDependencies finalObjects;
+#         exportedFinalObjects =
+#           mkExportedFinalObjects finalObjects exportedPackages;
+#         relevantFinalObjects =
+#           mkRelevantFinalObjects exportedFinalObjects allDependencies;
+#       in
+#         relevantFinalObjects ++ (inputs.extraObjects or [])
+#     ''',
+#   )
+#   assert isinstance(finalObjects, list)
+#   assert len(finalObjects) > 0
+#   for finalObj in finalObjects:
+#     assert set(finalObj.keys()) == \
+#       {'name', 'version', 'sourceSpec', 'dependencies'}
+#     check_format_dependencies(finalObj['dependencies'])
+#     check_format_sourceSpec(finalObj['sourceSpec'])
 
 @pytest.mark.parametrize("p", projects)
 def test_keys(p):
@@ -246,19 +240,23 @@ def test_keys(p):
       source=p['source'],
     ),
     wrapper_code = '''
-      {result, dlib, ...}:
+      {result, ...}:
       let
         l = builtins;
         inputs = result.inputs;
         rawObjects = inputs.serializedRawObjects;
-        s = dlib.simpleTranslate2;
 
-        finalObjects = s.mkFinalObjects rawObjects inputs.extractors;
-        allDependencies = s.makeDependencies finalObjects;
-        exportedFinalObjects =
-          s.mkExportedFinalObjects finalObjects inputs.exportedPackages;
-        relevantFinalObjects =
-          s.mkRelevantFinalObjects exportedFinalObjects allDependencies;
+        finalObjects =
+          l.map
+          (rawObj: let
+            finalObj =
+              {inherit rawObj;}
+              // l.mapAttrs
+              (key: extractFunc: extractFunc rawObj finalObj)
+              inputs.extractors;
+          in
+            finalObj)
+          rawObjects;
 
         objectsByKey =
           l.mapAttrs
@@ -268,7 +266,7 @@ def test_keys(p):
               merged
               // {"${keyFunc finalObj.rawObj finalObj}" = finalObj;})
             {}
-            relevantFinalObjects)
+            (finalObjects))
           inputs.keys;
       in
         objectsByKey
