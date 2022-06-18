@@ -75,14 +75,12 @@
 
     # filter the overrides by the package name and conditions
     overridesToApply = let
-      # TODO: figure out if regex names will be useful
-      regexOverrides = {};
-      # lib.filterAttrs
-      #   (name: data:
-      #     lib.hasPrefix "^" name
-      #     &&
-      #     b.match name pname != null)
-      #   conditionalOverrides;
+      regexOverrides =
+        lib.filterAttrs
+        (name: data:
+          lib.hasPrefix "^" name
+          && b.match name pname != null)
+        conditionalOverrides;
 
       overridesForPackage =
         b.foldl'
@@ -182,10 +180,10 @@
       (overrideFuncs ++ singleArgOverrideFuncs);
   in
     # apply the overrides to the given pkg
-    (lib.foldl
-      (pkg: condOverride: applyOneOverride pkg condOverride)
-      pkg
-      overridesToApply);
+    lib.foldl
+    (pkg: condOverride: applyOneOverride pkg condOverride)
+    pkg
+    overridesToApply;
 in {
   inherit applyOverridesToPackage loadOverridesDirs;
 }

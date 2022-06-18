@@ -22,6 +22,13 @@
     utils = import ../utils.nix (args // topArgs);
     vendoring = import ../vendor.nix (args // topArgs);
 
+    buildWithToolchain =
+      utils.mkBuildWithToolchain
+      (toolchain: (pkgs.makeRustPlatform toolchain).buildRustPackage);
+    defaultToolchain = {
+      inherit (pkgs) cargo rustc;
+    };
+
     buildPackage = pname: version: let
       src = utils.getRootSource pname version;
       vendorDir = vendoring.vendoredDependencies;
@@ -32,7 +39,7 @@
 
       cargoBuildFlags = "--package ${pname}";
     in
-      produceDerivation pname (pkgs.rustPlatform.buildRustPackage {
+      produceDerivation pname (buildWithToolchain defaultToolchain {
         inherit pname version src;
 
         cargoBuildFlags = cargoBuildFlags;

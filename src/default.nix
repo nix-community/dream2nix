@@ -87,71 +87,76 @@
         ({inherit name;} // attrs)
         "${externalSources.crane}/pkgs/${name}.sh";
       genHooks = names: attrs: lib.genAttrs names (makeHook attrs);
-
-      otherHooks = genHooks [
-        "configureCargoCommonVarsHook"
-        "configureCargoVendoredDepsHook"
-        "remapSourcePathPrefixHook"
-      ] {};
-      installHooks =
-        genHooks [
-          "inheritCargoArtifactsHook"
-          "installCargoArtifactsHook"
-        ] {
+    in
+      {
+        cargoHostTarget,
+        cargoBuildBuild,
+      }: rec {
+        otherHooks = genHooks [
+          "configureCargoCommonVarsHook"
+          "configureCargoVendoredDepsHook"
+          "remapSourcePathPrefixHook"
+        ] {};
+        installHooks =
+          genHooks [
+            "inheritCargoArtifactsHook"
+            "installCargoArtifactsHook"
+          ] {
+            substitutions = {
+              zstd = "${pkgs.pkgsBuildBuild.zstd}/bin/zstd";
+            };
+          };
+        installLogHook = genHooks ["installFromCargoBuildLogHook"] {
           substitutions = {
-            zstd = "${pkgs.pkgsBuildBuild.zstd}/bin/zstd";
+            cargo = "${cargoBuildBuild}/bin/cargo";
+            jq = "${pkgs.pkgsBuildBuild.jq}/bin/jq";
           };
         };
-      installLogHook = genHooks ["installFromCargoBuildLogHook"] {
-        substitutions = {
-          cargo = "${pkgs.pkgsBuildBuild.cargo}/bin/cargo";
-          jq = "${pkgs.pkgsBuildBuild.jq}/bin/jq";
+
+        # These aren't used by dream2nix
+        crateNameFromCargoToml = null;
+        vendorCargoDeps = null;
+
+        writeTOML = importLibFile "writeTOML" {
+          inherit (pkgs) runCommand pkgsBuildBuild;
+        };
+        cleanCargoToml = importLibFile "cleanCargoToml" {};
+        findCargoFiles = importLibFile "findCargoFiles" {
+          inherit (pkgs) lib;
+        };
+        mkDummySrc = importLibFile "mkDummySrc" {
+          inherit (pkgs) writeText runCommandLocal lib;
+          inherit writeTOML cleanCargoToml findCargoFiles;
+        };
+
+        mkCargoDerivation = importLibFile "mkCargoDerivation" ({
+            cargo = cargoHostTarget;
+            inherit (pkgs) stdenv lib;
+          }
+          // installHooks
+          // otherHooks);
+        buildDepsOnly = importLibFile "buildDepsOnly" {
+          inherit
+            mkCargoDerivation
+            crateNameFromCargoToml
+            vendorCargoDeps
+            mkDummySrc
+            ;
+        };
+        cargoBuild = importLibFile "cargoBuild" {
+          inherit
+            mkCargoDerivation
+            buildDepsOnly
+            crateNameFromCargoToml
+            vendorCargoDeps
+            ;
+        };
+        buildPackage = importLibFile "buildPackage" {
+          inherit (pkgs) lib;
+          inherit (installLogHook) installFromCargoBuildLogHook;
+          inherit cargoBuild;
         };
       };
-    in rec {
-      # These aren't used by dream2nix
-      crateNameFromCargoToml = null;
-      vendorCargoDeps = null;
-
-      writeTOML = importLibFile "writeTOML" {
-        inherit (pkgs) runCommand pkgsBuildBuild;
-      };
-      cleanCargoToml = importLibFile "cleanCargoToml" {};
-      findCargoFiles = importLibFile "findCargoFiles" {
-        inherit (pkgs) lib;
-      };
-      mkDummySrc = importLibFile "mkDummySrc" {
-        inherit (pkgs) writeText runCommandLocal lib;
-        inherit writeTOML cleanCargoToml findCargoFiles;
-      };
-
-      mkCargoDerivation = importLibFile "mkCargoDerivation" ({
-          inherit (pkgs) cargo stdenv lib;
-        }
-        // installHooks
-        // otherHooks);
-      buildDepsOnly = importLibFile "buildDepsOnly" {
-        inherit
-          mkCargoDerivation
-          crateNameFromCargoToml
-          vendorCargoDeps
-          mkDummySrc
-          ;
-      };
-      cargoBuild = importLibFile "cargoBuild" {
-        inherit
-          mkCargoDerivation
-          buildDepsOnly
-          crateNameFromCargoToml
-          vendorCargoDeps
-          ;
-      };
-      buildPackage = importLibFile "buildPackage" {
-        inherit (pkgs) lib;
-        inherit (installLogHook) installFromCargoBuildLogHook;
-        inherit cargoBuild;
-      };
-    };
   };
 
   dreamOverrides = let
@@ -313,14 +318,12 @@
   makeOutputsForDreamLock = {
     dreamLock,
     sourceRoot ? null,
-    builder ? null,
     fetcher ? null,
+    builder ? null,
+    builderArgs ? {},
     inject ? {},
     sourceOverrides ? oldSources: {},
     packageOverrides ? {},
-    builderArgs ? {},
-    translator ? null,
-    translatorArgs ? {},
   } @ args: let
     # parse dreamLock
     dreamLockLoaded = utils.readDreamLock {inherit (args) dreamLock;};
