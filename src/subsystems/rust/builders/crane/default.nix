@@ -92,6 +92,7 @@
             ${common.preConfigure}
             ${utils.writeCargoLock}
           '';
+          passthru = {dependencies = deps;};
         };
     in
       produceDerivation
