@@ -1,9 +1,9 @@
 {
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
-    fenix.url = "github:nix-community/fenix";
+    fenix.url = "github:nix-community/fenix/720b54260dee864d2a21745bd2bb55223f58e297";
     fenix.inputs.nixpkgs.follows = "nixpkgs";
-    dream2nix.url = "github:nix-community/dream2nix";
+    dream2nix.url = "path:../..";
     dream2nix.inputs.nixpkgs.follows = "nixpkgs";
     src.url = "github:BurntSushi/ripgrep/13.0.0";
     src.flake = false;

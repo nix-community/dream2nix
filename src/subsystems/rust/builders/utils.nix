@@ -37,8 +37,10 @@ in rec {
   '';
 
   mkBuildWithToolchain = mkBuildFunc: let
-    buildWithToolchain = toolchain: args:
-      ((mkBuildFunc toolchain) args)
+    buildWithToolchain = toolchain: args: let
+      drv = (mkBuildFunc toolchain) args;
+    in
+      drv
       // {
         overrideRustToolchain = f: let
           newToolchain = toolchain // (f toolchain);
@@ -49,7 +51,7 @@ in rec {
         in
           buildWithToolchain newToolchain (args // maybePassthru);
         overrideAttrs = f:
-          buildWithToolchain toolchain (args // (f args));
+          buildWithToolchain toolchain (args // (f drv));
       };
   in
     buildWithToolchain;
