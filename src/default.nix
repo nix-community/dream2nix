@@ -588,7 +588,8 @@
       );
 
     resolveImpureScript =
-      utils.writePureShellScript
+      utils.writePureShellScriptBin
+      "resolve"
       []
       ''
         cd $WORKDIR
@@ -648,19 +649,16 @@
   in
     realizedProjects
     // l.optionalAttrs (l.length impureDiscoveredProjects > 0) {
-      apps =
+      packages =
         l.warnIf
         (realizeProjects.apps.resolveImpure or null != null)
         ''
           a builder outputted an app named 'resolveImpure'
           this will be overrided by dream2nix!
         ''
-        ((realizeProjects.apps or {})
+        ((realizeProjects.packages or {})
           // {
-            resolveImpure = {
-              type = "app";
-              program = l.toString resolveImpureScript;
-            };
+            resolveImpure = resolveImpureScript;
           });
     };
 in {
