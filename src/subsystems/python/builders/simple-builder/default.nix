@@ -34,7 +34,7 @@
       l.flatten
       (l.mapAttrsToList
         (name: versions:
-          if name == defaultPackageName
+          if l.elem name [defaultPackageName "setuptools" "pip"]
           then []
           else l.map (ver: getSource name ver) versions)
         packageVersions);
@@ -51,6 +51,7 @@
       buildInputs = pkgs.pythonManylinuxPackages.manylinux1;
       nativeBuildInputs = [pkgs.autoPatchelfHook];
       doCheck = false;
+      dontStrip = true;
       preBuild = ''
         mkdir dist
         for file in ${builtins.toString allDependencySources}; do
@@ -59,9 +60,6 @@
           fname=$(stripHash $fname)
           cp $file dist/$fname
         done
-      '';
-      installPhase = ''
-        runHook preInstall
         mkdir -p "$out/${python.sitePackages}"
         export PYTHONPATH="$out/${python.sitePackages}:$PYTHONPATH"
         ${python}/bin/python -m pip install \
@@ -71,7 +69,6 @@
           --prefix="$out" \
           --no-cache \
           $pipInstallFlags
-        runHook postInstall
       '';
     };
   in {

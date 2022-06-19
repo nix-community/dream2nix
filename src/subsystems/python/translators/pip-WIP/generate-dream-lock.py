@@ -65,6 +65,7 @@ def main():
         os.environ.get('NAME'): os.environ.get('VERSION'),
       },
       "sourcesAggregatedHash": None,
+      "location": "",
     },
     _subsystem={
       "application": jsonInput.get('application', False),
