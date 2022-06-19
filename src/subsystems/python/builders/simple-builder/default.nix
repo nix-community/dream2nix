@@ -50,6 +50,9 @@
       format = "setuptools";
       buildInputs = pkgs.pythonManylinuxPackages.manylinux1;
       nativeBuildInputs = [pkgs.autoPatchelfHook];
+      propagatedBuildInputs = [
+        python.pkgs.setuptools
+      ];
       doCheck = false;
       dontStrip = true;
       preBuild = ''
