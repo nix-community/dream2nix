@@ -136,8 +136,7 @@
                 <div id="content" class="content">
                     <main>
                         <h1 id="dream2nix"><a class="header" href="#dream2nix">dream2nix</a></h1>
-<p>dream2nix is a framework for automatically converting packages from other
-build systems to nix.</p>
+<p>dream2nix is a framework for automatically converting packages from other build systems to nix.</p>
 <p>It focuses on the following aspects:</p>
 <ul>
 <li>Modularity</li>
@@ -152,12 +151,8 @@ build systems to nix.</p>
 <li>Exploration and adoption of new nix features</li>
 <li>Simplified updating of packages</li>
 </ul>
-<p>The goal of this project is to create a standardized, generic, modular
-framework for automated packaging solutions, aiming for better flexibility,
-maintainability and usability.</p>
-<p>The intention is to integrate many existing 2nix converters into this framework,
-thereby improving many of the previously named aspects and providing a unified
-UX for all 2nix solutions.</p>
+<p>The goal of this project is to create a standardized, generic, modular framework for automated packaging solutions, aiming for better flexibility, maintainability and usability.</p>
+<p>The intention is to integrate many existing 2nix converters into this framework, thereby improving many of the previously named aspects and providing a unified UX for all 2nix solutions.</p>
 <h3 id="further-reading"><a class="header" href="#further-reading">Further reading</a></h3>
 <ul>
 <li><a href="./intro/concepts-and-benefits.html">Summary of the core concepts and benefits</a></li>
@@ -569,6 +564,7 @@ can be integrated into nix builds inside and outside of nixpkgs.</p>
 <li>Nodejs (<code>nodejs</code>)</li>
 <li>Python (<code>python</code>)</li>
 <li>Go (<code>go</code>)</li>
+<li>Haskell (<code>haskell</code>)</li>
 </ul>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="rust-subsystem"><a class="header" href="#rust-subsystem">Rust subsystem</a></h1>
 <p>This section documents the Rust subsystem.</p>
@@ -576,19 +572,15 @@ can be integrated into nix builds inside and outside of nixpkgs.</p>
 <h3 id="cargo-lock-pure"><a class="header" href="#cargo-lock-pure">cargo-lock (pure)</a></h3>
 <p>Translates a <code>Cargo.lock</code> file to a dream2nix lockfile.</p>
 <h3 id="cargo-toml-impure"><a class="header" href="#cargo-toml-impure">cargo-toml (impure)</a></h3>
-<p>Translates a <code>Cargo.toml</code> file to a dream2nix lockfile by generating a
-<code>Cargo.lock</code> file first and then using <code>cargo-lock</code> translator on the
-generated lockfile.</p>
+<p>Translates a <code>Cargo.toml</code> file to a dream2nix lockfile by generating a <code>Cargo.lock</code> file first and then using <code>cargo-lock</code> translator on the generated lockfile.</p>
 <h2 id="builders"><a class="header" href="#builders">Builders</a></h2>
 <h3 id="build-rust-package-pure-default"><a class="header" href="#build-rust-package-pure-default">build-rust-package (pure) (default)</a></h3>
 <p>Builds a package using <code>buildRustPackage</code> from <code>nixpkgs</code>.</p>
 <h3 id="crane-ifd"><a class="header" href="#crane-ifd">crane (ifd)</a></h3>
 <p>Builds a package using <a href="https://github.com/ipetkov/crane"><code>crane</code></a>.</p>
 <h4 id="override-gotchas"><a class="header" href="#override-gotchas">Override gotchas</a></h4>
-<p>This builder builds two separate derivations, one for your crate's dependencies
-and another for your crate. This means that if you want to override stuff for
-the dependencies, you need to use the <code>&lt;crate-name&gt;-deps</code> key for your override
-where <code>&lt;crate-name&gt;</code> is the name of the crate you are building.</p>
+<p>This builder builds two separate derivations, one for your crate's dependencies and another for your crate.
+This means that if you want to override stuff for the dependencies you need to use the <code>&lt;crate-name&gt;-deps</code> key for your override where <code>&lt;crate-name&gt;</code> is the name of the crate you are building.</p>
 <pre><code class="language-nix">{
   # ...
   packageOverrides = {
@@ -602,13 +594,10 @@ where <code>&lt;crate-name&gt;</code> is the name of the crate you are building.
 </code></pre>
 <h4 id="on-the-ifd-marking"><a class="header" href="#on-the-ifd-marking">On the IFD marking</a></h4>
 <p>The <code>crane</code> builder utilizes IFD to clean the source your crates reside in.
-This is needed to not rebuild the dependency only derivation everytime the
-source for your crates is changed.</p>
-<p>However this does not mean that the IFD will always be triggered. If you
-are passing dream2nix a path source or a flake source, then IFD won't be
-triggered as these sources are already realized. But if you are passing
-the result of a <code>pkgs.fetchFromGitHub</code> for example, this will trigger IFD
-since it is not already realized.</p>
+This is needed to not rebuild the dependency only derivation everytime the source for your crates is changed.</p>
+<p>However this does not mean that the IFD will always be triggered.
+If you are passing dream2nix a path source or a flake source, then IFD won't be triggered as these sources are already realized.
+But if you are passing the result of a <code>pkgs.fetchFromGitHub</code> for example, this will trigger IFD since it is not already realized.</p>
 <h3 id="specifying-the-rust-toolchain"><a class="header" href="#specifying-the-rust-toolchain">Specifying the Rust toolchain</a></h3>
 <p>Specify an override for all packages that override the Rust toolchain used.
 This can be done like so:</p>
@@ -638,19 +627,16 @@ This can be done like so:</p>
 }
 </code></pre>
 <h4 id="crane-notes"><a class="header" href="#crane-notes">crane notes</a></h4>
-<p>The crane builder does not require a <code>rustc</code> package in the toolchain specified,
-only a <code>cargo</code> package is needed. If cross-compiling, keep in mind that it also
-takes <code>cargo</code> packages like so:</p>
+<p>The crane builder does not require a <code>rustc</code> package in the toolchain specified, only a <code>cargo</code> package is needed.
+If cross-compiling, keep in mind that it also takes <code>cargo</code> packages like so:</p>
 <pre><code class="language-nix">{
   cargoHostTarget = cargo-package;
   cargoBuildBuild = other-cargo-package;
 }
 </code></pre>
-<p>where <code>cargoHostTarget</code> has the same meaning as coming from a <code>pkgsHostTarget</code>
-and <code>cargoBuildBuild</code> has the same meaning as coming from a <code>pkgsBuildBuild</code>.</p>
-<p>Also keep in mind that if you want to override the toolchain for a package
-and you are using the <code>crane</code> builder, you would need to set an override
-for both the dependencies and the main package derivation:</p>
+<p>where <code>cargoHostTarget</code> has the same meaning as coming from a <code>pkgsHostTarget</code>.
+And <code>cargoBuildBuild</code> has the same meaning as coming from a <code>pkgsBuildBuild</code>.</p>
+<p>To override the toolchain for a specific package, you will need to set an override for both the dependencies and the main package derivation:</p>
 <pre><code class="language-nix">let
   toolchainOverride = old: { /* ... */ };
 in
@@ -666,9 +652,8 @@ in
 }
 </code></pre>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="extending-dream2nix-with-external-translators-builders-etc"><a class="header" href="#extending-dream2nix-with-external-translators-builders-etc">Extending dream2nix with external translators, builders etc.</a></h1>
-<p><code>dream2nix</code> can be extended while you are <code>init</code>ializing it.
-This can be done in a few ways. For extending, you need to
-utilize the <code>config.extra</code> option of the dream2nix config.</p>
+<p><code>dream2nix</code> can be extended while you are <code>init</code>ializing it.This can be done in a few ways.
+For extending, you need to utilize the <code>config.extra</code> option of the dream2nix config.</p>
 <h2 id="declare-extras-from-a-nix-file"><a class="header" href="#declare-extras-from-a-nix-file">Declare <code>extra</code>s from a nix file</a></h2>
 <pre><code class="language-nix">dream2nix.lib.init {
   # this also works around errors with function modules
@@ -703,14 +688,12 @@ utilize the <code>config.extra</code> option of the dream2nix config.</p>
   };
 }
 </code></pre>
-<p>note: you can't declare modules using functions here. This is
-because the <code>config</code> may need to be serialized to JSON and passed
-around in impure situations (mostly impure translators).</p>
+<p>note: you can't declare modules using functions here.
+This is because the <code>config</code> may need to be serialized to JSON and passed around in impure situations (mostly impure translators).</p>
 <p>See the <a href="https://github.com/nix-community/dream2nix/tree/main/examples/d2n-extended/flake.nix"><code>d2n-extended</code> example</a> for a basic example.</p>
 <h2 id="compose-multiple-different-extras"><a class="header" href="#compose-multiple-different-extras">Compose multiple different <code>extra</code>s</a></h2>
 <p>This allows one to compose multiple <code>extra</code>s together with ease.
-The <code>dream2nixExtras</code> flake output in this case can be any of the
-approaches explained in this document for declaring <code>config.extra</code>.</p>
+The <code>dream2nixExtras</code> flake output in this case can be any of the approaches explained in this document for declaring <code>config.extra</code>.</p>
 <pre><code class="language-nix">dream2nix.lib.init {
   # note: .dream2nixExtras is a hypothetical standardized flake output
   # in practice this can be any flake output.

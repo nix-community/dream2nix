@@ -140,19 +140,15 @@
 <h3 id="cargo-lock-pure"><a class="header" href="#cargo-lock-pure">cargo-lock (pure)</a></h3>
 <p>Translates a <code>Cargo.lock</code> file to a dream2nix lockfile.</p>
 <h3 id="cargo-toml-impure"><a class="header" href="#cargo-toml-impure">cargo-toml (impure)</a></h3>
-<p>Translates a <code>Cargo.toml</code> file to a dream2nix lockfile by generating a
-<code>Cargo.lock</code> file first and then using <code>cargo-lock</code> translator on the
-generated lockfile.</p>
+<p>Translates a <code>Cargo.toml</code> file to a dream2nix lockfile by generating a <code>Cargo.lock</code> file first and then using <code>cargo-lock</code> translator on the generated lockfile.</p>
 <h2 id="builders"><a class="header" href="#builders">Builders</a></h2>
 <h3 id="build-rust-package-pure-default"><a class="header" href="#build-rust-package-pure-default">build-rust-package (pure) (default)</a></h3>
 <p>Builds a package using <code>buildRustPackage</code> from <code>nixpkgs</code>.</p>
 <h3 id="crane-ifd"><a class="header" href="#crane-ifd">crane (ifd)</a></h3>
 <p>Builds a package using <a href="https://github.com/ipetkov/crane"><code>crane</code></a>.</p>
 <h4 id="override-gotchas"><a class="header" href="#override-gotchas">Override gotchas</a></h4>
-<p>This builder builds two separate derivations, one for your crate's dependencies
-and another for your crate. This means that if you want to override stuff for
-the dependencies, you need to use the <code>&lt;crate-name&gt;-deps</code> key for your override
-where <code>&lt;crate-name&gt;</code> is the name of the crate you are building.</p>
+<p>This builder builds two separate derivations, one for your crate's dependencies and another for your crate.
+This means that if you want to override stuff for the dependencies you need to use the <code>&lt;crate-name&gt;-deps</code> key for your override where <code>&lt;crate-name&gt;</code> is the name of the crate you are building.</p>
 <pre><code class="language-nix">{
   # ...
   packageOverrides = {
@@ -166,13 +162,10 @@ where <code>&lt;crate-name&gt;</code> is the name of the crate you are building.
 </code></pre>
 <h4 id="on-the-ifd-marking"><a class="header" href="#on-the-ifd-marking">On the IFD marking</a></h4>
 <p>The <code>crane</code> builder utilizes IFD to clean the source your crates reside in.
-This is needed to not rebuild the dependency only derivation everytime the
-source for your crates is changed.</p>
-<p>However this does not mean that the IFD will always be triggered. If you
-are passing dream2nix a path source or a flake source, then IFD won't be
-triggered as these sources are already realized. But if you are passing
-the result of a <code>pkgs.fetchFromGitHub</code> for example, this will trigger IFD
-since it is not already realized.</p>
+This is needed to not rebuild the dependency only derivation everytime the source for your crates is changed.</p>
+<p>However this does not mean that the IFD will always be triggered.
+If you are passing dream2nix a path source or a flake source, then IFD won't be triggered as these sources are already realized.
+But if you are passing the result of a <code>pkgs.fetchFromGitHub</code> for example, this will trigger IFD since it is not already realized.</p>
 <h3 id="specifying-the-rust-toolchain"><a class="header" href="#specifying-the-rust-toolchain">Specifying the Rust toolchain</a></h3>
 <p>Specify an override for all packages that override the Rust toolchain used.
 This can be done like so:</p>
@@ -202,19 +195,16 @@ This can be done like so:</p>
 }
 </code></pre>
 <h4 id="crane-notes"><a class="header" href="#crane-notes">crane notes</a></h4>
-<p>The crane builder does not require a <code>rustc</code> package in the toolchain specified,
-only a <code>cargo</code> package is needed. If cross-compiling, keep in mind that it also
-takes <code>cargo</code> packages like so:</p>
+<p>The crane builder does not require a <code>rustc</code> package in the toolchain specified, only a <code>cargo</code> package is needed.
+If cross-compiling, keep in mind that it also takes <code>cargo</code> packages like so:</p>
 <pre><code class="language-nix">{
   cargoHostTarget = cargo-package;
   cargoBuildBuild = other-cargo-package;
 }
 </code></pre>
-<p>where <code>cargoHostTarget</code> has the same meaning as coming from a <code>pkgsHostTarget</code>
-and <code>cargoBuildBuild</code> has the same meaning as coming from a <code>pkgsBuildBuild</code>.</p>
-<p>Also keep in mind that if you want to override the toolchain for a package
-and you are using the <code>crane</code> builder, you would need to set an override
-for both the dependencies and the main package derivation:</p>
+<p>where <code>cargoHostTarget</code> has the same meaning as coming from a <code>pkgsHostTarget</code>.
+And <code>cargoBuildBuild</code> has the same meaning as coming from a <code>pkgsBuildBuild</code>.</p>
+<p>To override the toolchain for a specific package, you will need to set an override for both the dependencies and the main package derivation:</p>
 <pre><code class="language-nix">let
   toolchainOverride = old: { /* ... */ };
 in
