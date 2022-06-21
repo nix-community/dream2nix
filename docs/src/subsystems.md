@@ -8,3 +8,4 @@ This section documents subsystem specific behaviour and interfaces.
 - Nodejs (`nodejs`)
 - Python (`python`)
 - Go (`go`)
+- Haskell (`haskell`)
