@@ -38,12 +38,18 @@ in rec {
 
   mkBuildWithToolchain = mkBuildFunc: let
     buildWithToolchain = toolchain: args: let
-      drv = (mkBuildFunc toolchain) args;
+      # we pass the actual overrideAttrs function through another attribute
+      # so we can apply it to the actual derivation later
+      overrideDrvFunc = args.overrideDrvFunc or (_: {});
+      cleanedArgs = l.removeAttrs args ["overrideDrvFunc"];
+      drv = ((mkBuildFunc toolchain) cleanedArgs).overrideAttrs overrideDrvFunc;
     in
       drv
       // {
         overrideRustToolchain = f: let
           newToolchain = toolchain // (f toolchain);
+          # we need to do this since dream2nix overrides
+          # use the passthru to get attr names
           maybePassthru =
             l.optionalAttrs
             (newToolchain ? passthru)
@@ -51,7 +57,16 @@ in rec {
         in
           buildWithToolchain newToolchain (args // maybePassthru);
         overrideAttrs = f:
-          buildWithToolchain toolchain (args // (f drv));
+          buildWithToolchain toolchain (
+            args
+            // {
+              # we need to apply the old overrideDrvFunc as well here
+              # so that other potential overrideAttr usages aren't lost
+              # (otherwise only one of them would be applied)
+              overrideDrvFunc = prev:
+                ((args.overrideDrvFunc or (_: {})) prev) // (f prev);
+            }
+          );
       };
   in
     buildWithToolchain;
