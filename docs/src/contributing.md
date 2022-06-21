@@ -31,9 +31,12 @@ nix run .#contribute
 Further instructions are contained in the template in form of code comments.
 
 ## Debug or test a translator
+
 ### Unit tests (pure translators only)
+
 Unit tests will automatically be generated as soon as your translator specifies `generateUnitTestsForProjects`.
 Unit tests can be executed via `nix run .#tests-unit`
+
 ### Repl debugging
 
 - temporarily expose internal functions of your translator
@@ -42,6 +45,7 @@ Unit tests can be executed via `nix run .#tests-unit`
    `subsystems.{subsystem}.translators.{translator-name}.some_function`
 
 ### Tested example flake
+
 Add an example flake under `./examples/name-of-example`.
 The flake can be tested via:
 ```command
@@ -65,6 +69,7 @@ Further instructions are contained in the template in form of code comments.
 ## Debug or test a builder
 
 ### Tested example flake
+
 Add an example flake under `./examples/name-of-example`.
 The flake can be tested via:
 ```command

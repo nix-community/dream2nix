@@ -1,7 +1,6 @@
 # dream2nix
 
-dream2nix is a framework for automatically converting packages from other
-build systems to nix.
+dream2nix is a framework for automatically converting packages from other build systems to nix.
 
 It focuses on the following aspects:
 
@@ -17,13 +16,9 @@ It focuses on the following aspects:
 - Exploration and adoption of new nix features
 - Simplified updating of packages
 
-The goal of this project is to create a standardized, generic, modular
-framework for automated packaging solutions, aiming for better flexibility,
-maintainability and usability.
+The goal of this project is to create a standardized, generic, modular framework for automated packaging solutions, aiming for better flexibility, maintainability and usability.
 
-The intention is to integrate many existing 2nix converters into this framework,
-thereby improving many of the previously named aspects and providing a unified
-UX for all 2nix solutions.
+The intention is to integrate many existing 2nix converters into this framework, thereby improving many of the previously named aspects and providing a unified UX for all 2nix solutions.
 
 ### Further reading
 

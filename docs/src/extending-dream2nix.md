@@ -1,8 +1,7 @@
 # Extending dream2nix with external translators, builders etc.
 
-`dream2nix` can be extended while you are `init`ializing it.
-This can be done in a few ways. For extending, you need to
-utilize the `config.extra` option of the dream2nix config.
+`dream2nix` can be extended while you are `init`ializing it.This can be done in a few ways.
+For extending, you need to utilize the `config.extra` option of the dream2nix config.
 
 ## Declare `extra`s from a nix file
 
@@ -46,17 +45,15 @@ dream2nix.lib.init {
 }
 ```
 
-note: you can't declare modules using functions here. This is
-because the `config` may need to be serialized to JSON and passed
-around in impure situations (mostly impure translators).
+note: you can't declare modules using functions here.
+This is because the `config` may need to be serialized to JSON and passed around in impure situations (mostly impure translators).
 
 See the [`d2n-extended` example](https://github.com/nix-community/dream2nix/tree/main/examples/d2n-extended/flake.nix) for a basic example.
 
 ## Compose multiple different `extra`s
 
 This allows one to compose multiple `extra`s together with ease.
-The `dream2nixExtras` flake output in this case can be any of the
-approaches explained in this document for declaring `config.extra`.
+The `dream2nixExtras` flake output in this case can be any of the approaches explained in this document for declaring `config.extra`.
 
 ```nix
 dream2nix.lib.init {
