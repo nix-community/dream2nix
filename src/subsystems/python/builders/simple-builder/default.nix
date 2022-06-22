@@ -12,6 +12,7 @@
     getSource,
     packageVersions,
     subsystemAttrs,
+    produceDerivation,
     ...
   }: let
     l = lib // builtins;
@@ -21,14 +22,6 @@
       if subsystemAttrs.application
       then python.pkgs.buildPythonApplication
       else python.pkgs.buildPythonPackage;
-
-    packageName =
-      if defaultPackageName == null
-      then
-        if subsystemAttrs.application
-        then "application"
-        else "environment"
-      else defaultPackageName;
 
     allDependencySources' =
       l.flatten
@@ -44,8 +37,8 @@
       (src: src.original or src)
       allDependencySources';
 
-    package = buildFunc {
-      name = packageName;
+    package = produceDerivation defaultPackageName (buildFunc {
+      name = defaultPackageName;
       src = getSource defaultPackageName defaultPackageVersion;
       format = "setuptools";
       buildInputs = pkgs.pythonManylinuxPackages.manylinux1;
@@ -73,7 +66,7 @@
           --no-cache \
           $pipInstallFlags
       '';
-    };
+    });
   in {
     packages.${defaultPackageName}.${defaultPackageVersion} = package;
   };

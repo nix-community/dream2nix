@@ -16,6 +16,6 @@
       source = src;
     })
     // {
-      checks.x86_64-linux.aiohttp = self.packages.x86_64-linux.aiohttp;
+      checks.x86_64-linux.aiohttp = self.packages.x86_64-linux.main;
     };
 }
