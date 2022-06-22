@@ -146,25 +146,6 @@
         };
       });
 
-    pre-commit-check = forAllSystems (
-      system: pkgs:
-        pre-commit-hooks.lib.${system}.run {
-          src = ./.;
-          hooks = {
-            treefmt = {
-              enable = true;
-              name = "treefmt";
-              pass_filenames = true;
-              entry = l.toString (pkgs.writeScript "treefmt" ''
-                #!${pkgs.bash}/bin/bash
-                export PATH="$PATH:${alejandra.defaultPackage.${system}}/bin"
-                ${pkgs.treefmt}/bin/treefmt --fail-on-change "$@"
-              '');
-            };
-          };
-        }
-    );
-
     docsCli = forAllSystems (
       system: pkgs:
         pkgs.callPackage ./src/docs-cli.nix {
@@ -330,6 +311,17 @@
               #!${pkgs.bash}/bin/bash
               export PATH="$PATH:${alejandra.defaultPackage.${system}}/bin"
               ${pkgs.treefmt}/bin/treefmt --clear-cache --fail-on-change
+            '');
+          };
+          is-cleaned = {
+            enable = true;
+            name = "is-cleaned";
+            entry = l.toString (pkgs.writeScript "is-cleaned" ''
+              #!${pkgs.bash}/bin/bash
+              if find ./examples | grep -q 'flake.lock\|dream2nix-packages'; then
+                echo "./examples should not contain any flake.lock files or dream2nix-packages directories" >&2
+                exit 1
+              fi
             '');
           };
         };

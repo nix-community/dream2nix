@@ -431,16 +431,6 @@
         self))
       discoveredProjects;
 
-    # unresolved impure projects cannot be resolved on the fly
-    projectsImpureUnresolved =
-      l.filter (project: project.impure && ! project.resolved) projectsList;
-
-    # for printing the paths inside the error message
-    projectsImpureUnresolvedInfo =
-      l.map
-      (project: "${project.name}: ${project.relPath}")
-      projectsImpureUnresolved;
-
     # projects without existing valid dream-lock.json
     projectsPureUnresolved =
       l.filter
@@ -486,17 +476,7 @@
 
     resolvedProjects = projectsResolved ++ projectsResolvedOnTheFly;
   in
-    if projectsImpureUnresolved != []
-    then
-      l.trace ''
-        ${"\n"}
-        The following projects cannot be resolved on the fly and are therefore excluded:
-          ${l.concatStringsSep "\n  " projectsImpureUnresolvedInfo}
-        Run `nix run .#resolveImpure` once to resolve impurities of the projects listed above.
-        Afterwards these projects will be available via flake outputs.
-      ''
-      resolvedProjects
-    else resolvedProjects;
+    resolvedProjects;
 
   # transform a list of resolved projects to buildable outputs
   realizeProjects = {
@@ -588,7 +568,8 @@
       );
 
     resolveImpureScript =
-      utils.writePureShellScript
+      utils.writePureShellScriptBin
+      "resolve"
       []
       ''
         cd $WORKDIR
@@ -645,23 +626,40 @@
         source
         ;
     };
+
+    impureFakeDerivations =
+      l.listToAttrs
+      (l.map
+        (proj:
+          l.nameValuePair
+          proj.name
+          rec {
+            type = "derivation";
+            name = proj.name;
+            resolve = utils.makeTranslateScript {
+              project = proj;
+              inherit source;
+            };
+            drvPath = throw ''
+              The ${proj.subsystem} package ${proj.name} contains unresolved impurities.
+              Resolve by running the .resolve attribute of this derivation
+              or by resolving all impure projects by running the `resolveImpure` package
+            '';
+          })
+        impureDiscoveredProjects);
   in
     realizedProjects
-    // l.optionalAttrs (l.length impureDiscoveredProjects > 0) {
-      apps =
+    // {
+      packages =
         l.warnIf
-        (realizeProjects.apps.resolveImpure or null != null)
+        (realizeProjects.packages.resolveImpure or null != null)
         ''
-          a builder outputted an app named 'resolveImpure'
-          this will be overrided by dream2nix!
+          a builder outputted a package named 'resolveImpure'
+          this will be overridden by dream2nix!
         ''
-        ((realizeProjects.apps or {})
-          // {
-            resolveImpure = {
-              type = "app";
-              program = l.toString resolveImpureScript;
-            };
-          });
+        impureFakeDerivations
+        // (realizedProjects.packages or {})
+        // {resolveImpure = resolveImpureScript;};
     };
 in {
   inherit

@@ -131,14 +131,19 @@
       overrideFuncs =
         lib.mapAttrsToList
         (funcName: func: {inherit funcName func;})
-        (lib.filterAttrs (n: v: lib.hasPrefix "override" n) condOverride);
+        (lib.filterAttrs (
+            n: v:
+              lib.hasPrefix "override" n
+              && (! b.elem n ["overrideDerivation" "overridePythonAttrs"])
+          )
+          condOverride);
 
       singleArgOverrideFuncs = let
         availableFunctions =
           lib.mapAttrs
           (funcName: func: getOverrideFunctionArgs func)
           (lib.filterAttrs
-            (funcName: func: lib.hasPrefix "override" funcName)
+            (funcName: func: lib.hasPrefix "override" funcName && funcName != "overrideDerivation" && funcName != "overridePythonAttrs")
             base_derivation);
 
         getOverrideFuncNameForAttrName = attrName: let

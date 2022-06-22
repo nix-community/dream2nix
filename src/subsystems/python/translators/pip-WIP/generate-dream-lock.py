@@ -28,7 +28,7 @@ def main():
     # example: charset_normalizer-2.0.4-py3-none-any.whl
     if file.endswith('.whl'):
       format = 'wheel'
-      pname, version, _, _, _ = file.split('-')
+      pname, version = file.split('-')[:2]
       with urllib.request.urlopen(f'https://pypi.org/pypi/{pname}/json') as f:
         releasesForVersion = json.load(f)['releases'][version]
       release = next(r for r in releasesForVersion if r['filename'] == file)
@@ -65,6 +65,7 @@ def main():
         os.environ.get('NAME'): os.environ.get('VERSION'),
       },
       "sourcesAggregatedHash": None,
+      "location": "",
     },
     _subsystem={
       "application": jsonInput.get('application', False),
