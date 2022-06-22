@@ -17,6 +17,7 @@ in {
     jq,
     nix,
     python3,
+    remarshal,
     toml2json,
     writeScriptBin,
     ...
@@ -27,6 +28,7 @@ in {
       coreutils
       jq
       nix
+      remarshal
       toml2json
     ]
     ''
@@ -36,16 +38,17 @@ in {
       # read the json input
       outputFile=$WORKDIR/$(jq '.outputFile' -c -r $jsonInput)
       source="$(jq '.source' -c -r $jsonInput)/$(jq '.project.relPath' -c -r $jsonInput)"
+      name="$(jq '.project.name' -c -r $jsonInput)"
       pythonAttr=$(jq '.project.subsystemInfo.pythonAttr' -c -r $jsonInput)
+      extraRequirements=$(jq '.project.subsystemInfo.extraRequirements' -c -r $jsonInput)
 
       # build python and pip executables
       tmpBuild=$(mktemp -d)
       nix build \
         --impure \
-        --expr "(import <nixpkgs> {}).$pythonAttr.withPackages (ps: [ps.pip ps.setuptools])" \
-        -o $tmpBuild/pip
-      pip=$tmpBuild/pip/bin/pip
-      python=$tmpBuild/pip/bin/python
+        --expr "(import <nixpkgs> {}).$pythonAttr.withPackages (ps: with ps; [pip setuptools $extraRequirements])" \
+        -o $tmpBuild/python
+      python=$tmpBuild/python/bin/python
 
       # prepare temporary directory
       tmp=$(mktemp -d)
@@ -55,15 +58,14 @@ in {
       chmod +w -R ./source
 
       # download setup dependencies from pyproject.toml
-      toml2json ./source/pyproject.toml | jq '."build-system".requires[]' -r > __setup_reqs.txt \
-      && $tmpBuild/pip/bin/pip download \
+      toml2json ./source/pyproject.toml | jq '."build-system".requires[]' -r > __setup_reqs.txt || :
+      $python -m pip download \
         --dest $tmp \
         --progress-bar off \
-        -r __setup_reqs.txt \
-      || :
+        -r __setup_reqs.txt
 
       # download files according to requirements
-      $tmpBuild/pip/bin/pip download \
+      $python -m pip download \
         --dest $tmp \
         --progress-bar off \
         -r __setup_reqs.txt \
@@ -71,7 +73,7 @@ in {
 
       # generate the dream lock from the downloaded list of files
       cd ./source
-      export NAME=$($python ./setup.py --name 2>/dev/null)
+      export NAME=$name
       export VERSION=$($python ./setup.py --version 2>/dev/null)
       cd $WORKDIR
       $python ${./generate-dream-lock.py} $tmp $jsonInput
@@ -89,6 +91,16 @@ in {
         "python27"
         "python39"
         "python310"
+      ];
+      type = "argument";
+    };
+
+    extraRequirements = {
+      default = "";
+      description = "a list of extra requirements to add";
+      examples = [
+        "cython"
+        "numpy"
       ];
       type = "argument";
     };
