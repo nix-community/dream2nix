@@ -148,7 +148,7 @@
 
     docsCli = forAllSystems (
       system: pkgs:
-        pkgs.callPackage ./src/docs-cli.nix {
+        pkgs.callPackage ./src/apps/docs {
           dream2nixDocsSrc = "${self}/docs/src";
         }
     );
