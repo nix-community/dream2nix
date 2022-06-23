@@ -16,6 +16,7 @@
       dirNames
       discoverers
       fetchers
+      indexers
       latestVersion
       listDirs
       listFiles
@@ -49,6 +50,7 @@
   discoverers = import ./discoverers.nix {inherit config dlib lib;};
   fetchers = import ./fetchers.nix {inherit dlib lib;};
   translators = import ./translators.nix {inherit dlib lib;};
+  indexers = import ./indexers.nix {inherit dlib lib;};
 
   modules = import ./modules.nix {inherit config dlib lib;};
 
