@@ -4,7 +4,7 @@
 # use ./lib.nix instead.
 {
   pkgs ? import <nixpkgs> {},
-  dlib ? import ./lib {inherit config lib;},
+  dlib ? null,
   lib ? pkgs.lib,
   nix ? pkgs.nix,
   # default to empty dream2nix config
@@ -43,9 +43,11 @@
 
   configFile = pkgs.writeText "dream2nix-config.json" (b.toJSON config);
 
+  dlib = args.dlib or (import ./lib {inherit config lib;});
+
   # like pkgs.callPackage, but includes all the dream2nix modules
-  callPackageDream = f: args:
-    pkgs.callPackage f (args
+  callPackageDream = f: fargs:
+    pkgs.callPackage f (fargs
       // {
         inherit apps;
         inherit callPackageDream;
@@ -59,6 +61,7 @@
         inherit utils;
         inherit nix;
         inherit subsystems;
+        initDream2nix = fargs: import ./default.nix (args // fargs);
       });
 
   utils = callPackageDream ./utils {};
