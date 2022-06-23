@@ -1,6 +1,7 @@
 {
   bash,
   coreutils,
+  moreutils,
   dlib,
   fetchzip,
   gitMinimal,
@@ -197,6 +198,7 @@ in
     in
       writePureShellScriptBin "resolve"
       [
+        moreutils
         coreutils
         jq
         gitMinimal
@@ -204,7 +206,7 @@ in
         python3
       ]
       ''
-        dreamLockPath=${project.dreamLockPath}
+        dreamLockPath="${project.dreamLockPath}"
 
         cd $WORKDIR
         ${translator.translateBin} ${argsJsonFile}
@@ -218,22 +220,18 @@ in
         fi
 
         # add invalidationHash to dream-lock.json
-        cp $dreamLockPath $dreamLockPath.tmp
-        cat $dreamLockPath \
-          | jq '._generic.invalidationHash = "${invalidationHash}"' \
-          > $dreamLockPath.tmp
+        jq '._generic.invalidationHash = "${invalidationHash}"' $dreamLockPath \
+          | sponge $dreamLockPath
 
         # format dream lock
-        cat $dreamLockPath.tmp \
+        cat $dreamLockPath \
           | python3 ${../apps/cli/format-dream-lock.py} \
-          > $dreamLockPath
-
-        rm $dreamLockPath.tmp
+          | sponge $dreamLockPath
 
         # add dream-lock.json to git
         if git rev-parse --show-toplevel &>/dev/null; then
-          echo "adding file to git: ${project.dreamLockPath}"
-          git add ${project.dreamLockPath}
+          echo "adding file to git: $dreamLockPath"
+          git add $dreamLockPath
         fi
       '';
   }
