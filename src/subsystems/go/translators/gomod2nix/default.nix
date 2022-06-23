@@ -17,6 +17,8 @@ in {
     utils,
     dream2nixWithExternals,
     config,
+    configFile,
+    # nixpkgs deps
     bash,
     coreutils,
     jq,
@@ -48,7 +50,7 @@ in {
 
       nix eval --show-trace --impure --raw --expr "import ${./translate.nix} { \
         dream2nixWithExternals = ${dream2nixWithExternals}; \
-        dream2nixConfig = ${l.toFile "dream2nix-config.json" (l.toJSON config)}; \
+        dream2nixConfig = ${configFile}; \
       } ./." > $outputFile
     '';
 

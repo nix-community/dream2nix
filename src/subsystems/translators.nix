@@ -11,6 +11,7 @@
   dream2nixWithExternals,
   utils,
   config,
+  configFile,
   ...
 }: let
   b = builtins;
@@ -39,7 +40,7 @@
           --show-trace --impure --raw --expr "
           let
             dream2nix = import ${dream2nixWithExternals} {
-              config = ${l.toFile "dream2nix-config.json" (l.toJSON config)};
+              config = ${configFile};
             };
 
             translatorArgs =

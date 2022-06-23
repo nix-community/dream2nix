@@ -21,6 +21,7 @@
   externalSources,
   subsystems,
   config,
+  configFile,
   ...
 }: let
   b = builtins;
@@ -215,7 +216,7 @@ in
         if [ "${l.toJSON aggregate}" == "true" ]; then
           echo "aggregating all sources to one large FOD"
           dream2nixWithExternals=${dream2nixWithExternals} \
-          dream2nixConfig=${l.toFile "dream2nix-config.json" (l.toJSON config)} \
+          dream2nixConfig=${configFile} \
             python3 ${../apps/cli}/aggregate-hashes.py $dreamLockPath
         fi
 
