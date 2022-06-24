@@ -7,9 +7,9 @@ let
   #   - attrset (no changes)
   loadAttrs = input:
     if b.isPath input
-    then b.fromJSON (b.readFile input)
+    then b.fromJSON (b.unsafeDiscardStringContext (b.readFile input))
     else if b.isString input
-    then b.fromJSON input
+    then b.fromJSON (b.unsafeDiscardStringContext input)
     else if b.isAttrs input
     then input
     else throw "input for loadAttrs must be json file or string or attrs";
