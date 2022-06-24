@@ -196,43 +196,45 @@ in
           // (dlib.translators.getextraArgsDefaults translator.extraArgs or {})
           // args.project.subsystemInfo
         ));
+      script =
+        writePureShellScriptBin "resolve"
+        [
+          moreutils
+          coreutils
+          jq
+          gitMinimal
+          nix
+          python3
+        ]
+        ''
+          dreamLockPath="${project.dreamLockPath}"
+
+          cd $WORKDIR
+          ${translator.translateBin} ${argsJsonFile}
+
+          # aggregate source hashes
+          if [ "${l.toJSON aggregate}" == "true" ]; then
+            echo "aggregating all sources to one large FOD"
+            dream2nixWithExternals=${dream2nixWithExternals} \
+            dream2nixConfig=${configFile} \
+              python3 ${../apps/cli}/aggregate-hashes.py $dreamLockPath
+          fi
+
+          # add invalidationHash to dream-lock.json
+          jq '._generic.invalidationHash = "${invalidationHash}"' $dreamLockPath \
+            | sponge $dreamLockPath
+
+          # format dream lock
+          cat $dreamLockPath \
+            | python3 ${../apps/cli/format-dream-lock.py} \
+            | sponge $dreamLockPath
+
+          # add dream-lock.json to git
+          if git rev-parse --show-toplevel &>/dev/null; then
+            echo "adding file to git: $dreamLockPath"
+            git add $dreamLockPath
+          fi
+        '';
     in
-      writePureShellScriptBin "resolve"
-      [
-        moreutils
-        coreutils
-        jq
-        gitMinimal
-        nix
-        python3
-      ]
-      ''
-        dreamLockPath="${project.dreamLockPath}"
-
-        cd $WORKDIR
-        ${translator.translateBin} ${argsJsonFile}
-
-        # aggregate source hashes
-        if [ "${l.toJSON aggregate}" == "true" ]; then
-          echo "aggregating all sources to one large FOD"
-          dream2nixWithExternals=${dream2nixWithExternals} \
-          dream2nixConfig=${configFile} \
-            python3 ${../apps/cli}/aggregate-hashes.py $dreamLockPath
-        fi
-
-        # add invalidationHash to dream-lock.json
-        jq '._generic.invalidationHash = "${invalidationHash}"' $dreamLockPath \
-          | sponge $dreamLockPath
-
-        # format dream lock
-        cat $dreamLockPath \
-          | python3 ${../apps/cli/format-dream-lock.py} \
-          | sponge $dreamLockPath
-
-        # add dream-lock.json to git
-        if git rev-parse --show-toplevel &>/dev/null; then
-          echo "adding file to git: $dreamLockPath"
-          git add $dreamLockPath
-        fi
-      '';
+      script // {passthru = {inherit project;};};
   }

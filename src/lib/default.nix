@@ -1,9 +1,11 @@
 {
   lib,
-  config ? (import ../utils/config.nix).loadConfig {},
+  config ? {},
   ...
-}: let
+} @ args: let
   l = lib // builtins;
+
+  config = (import ../utils/config.nix).loadConfig args.config or {};
 
   # exported attributes
   dlib = {

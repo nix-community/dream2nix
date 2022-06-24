@@ -15,3 +15,6 @@ cargo = { version = "0.61", optional = true }
 curl = { version = "0.4", features = ["http2"], optional = true }
 serde = { version = "1", features = ["derive"], optional = true }
 serde_json = "1"
+
+[profile.release]
+opt-level = 0

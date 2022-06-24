@@ -25,6 +25,8 @@
     # index packages with an indexer
     index = callPackageDream ./index {};
 
+    translate-index = callPackageDream ./translate-index {};
+
     fetchSourceShortcut = callPackageDream ./fetchSourceShortcut {};
 
     callNixWithD2N = callPackageDream ./callNixWithD2N {};
@@ -43,6 +45,7 @@
           translate
           shell
           index
+          translate-index
           ;
       };
   };

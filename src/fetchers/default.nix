@@ -119,8 +119,9 @@ in rec {
 
   # translate shortcut to dream lock source spec
   translateShortcut = {
-    shortcut,
-    computeHash ? true,
+    shortcut ? throw "pass shortcut",
+    parsed ? parseShortcut shortcut,
+    computeHash ? (! parsed.kwargs ? hash),
   }: let
     parsed = parseShortcut shortcut;
 

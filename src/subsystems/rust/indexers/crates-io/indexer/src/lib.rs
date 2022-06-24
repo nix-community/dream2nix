@@ -2,8 +2,7 @@
 
 use std::collections::BTreeMap;
 
-/// A mapping of a crates name to its identifier used in source code
-pub type Index = BTreeMap<String, BTreeMap<String, BTreeMap<String, String>>>;
+pub type Index = Vec<String>;
 
 #[cfg(feature = "gen")]
 pub use self::indexer::{Indexer, Modifications, Settings};
@@ -198,13 +197,13 @@ mod indexer {
                     continue;
                 }
 
-                index
-                    .entry(summary.name().to_string())
-                    .or_default()
-                    .entry(summary.version().to_string())
-                    .or_default()
-                    .entry("hash".to_string())
-                    .or_insert_with(|| summary.checksum().unwrap().to_string());
+                let pname = summary.name();
+                let version = summary.version().to_string();
+                let hash = summary.checksum().unwrap().to_string();
+
+                let entry = format!("crates-io:{pname}/{version}?hash={hash}");
+
+                index.push(entry);
             }
 
             index

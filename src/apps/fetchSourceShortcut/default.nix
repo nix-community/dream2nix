@@ -10,15 +10,19 @@ utils.writePureShellScriptBin
 [coreutils callNixWithD2N jq]
 ''
   sourceShortcut=''${1:?"error: you must pass a source shortcut"}
+  targetDir=''${2:?"error: you must pass a target directory"}
+  targetDir="$(realpath "$targetDir")"
 
-  cd $WORKDIR
+  cd $targetDir
 
   # translate shortcut to source info
   sourceInfo="sourceInfo.json"
   callNixWithD2N eval --json \
     "dream2nix.fetchers.translateShortcut {shortcut=\"$sourceShortcut\";}" > $sourceInfo
   # update source shortcut with hash
-  sourceShortcut="$sourceShortcut?hash=$(jq '.hash' -c -r $sourceInfo)"
+  if [[ "$sourceShortcut" != *"?hash="* ]]; then
+    sourceShortcut="$sourceShortcut?hash=$(jq '.hash' -c -r $sourceInfo)"
+  fi
 
   # fetch source
   source="src"

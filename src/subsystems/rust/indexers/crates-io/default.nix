@@ -24,10 +24,12 @@
           }
         ];
         packageOverrides.indexer-deps.add-deps.overrideAttrs = old: {
+          doCheck = false;
           buildInputs = (old.buildInputs or []) ++ [openssl];
           nativeBuildInputs = (old.nativeBuildInputs or []) ++ [pkg-config];
         };
         packageOverrides.indexer.add-deps.overrideAttrs = old: {
+          doCheck = false;
           LIBSSH2_SYS_USE_PKG_CONFIG = 1;
           buildInputs = (old.buildInputs or []) ++ [libgit2 libssh2 openssl zlib curl];
           nativeBuildInputs = (old.nativeBuildInputs or []) ++ [pkg-config];
