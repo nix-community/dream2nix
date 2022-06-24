@@ -57,6 +57,7 @@
         inherit externals;
         inherit externalSources;
         inherit fetchers;
+        inherit indexers;
         inherit dream2nixWithExternals;
         inherit utils;
         inherit nix;
@@ -71,6 +72,9 @@
 
   # fetcher implementations
   fetchers = callPackageDream ./fetchers {};
+
+  # indexer implementations
+  indexers = callPackageDream ./indexers {};
 
   # updater modules to find newest package versions
   updaters = callPackageDream ./updaters {};
@@ -670,6 +674,7 @@ in {
     callPackageDream
     dream2nixWithExternals
     fetchers
+    indexers
     fetchSources
     realizeProjects
     translateProjects

@@ -10,7 +10,6 @@
   builders = callPackageDream ./builders.nix {};
   translators = callPackageDream ./translators.nix {};
   discoverers = callPackageDream ./discoverers.nix {};
-  indexers = callPackageDream ./indexers.nix {};
 
   # maps modules
   # ex: {rust = <translators attrset>;} -> {rust.translators = <translators attrset>;}
@@ -26,7 +25,6 @@
     (mapModules builders.builders "builders")
     (mapModules translators.translators "translators")
     (mapModules discoverers.discoverers "discoverers")
-    (mapModules indexers.indexers "indexers")
   ];
   allModules = l.foldl' l.recursiveUpdate {} modules;
 in
@@ -35,5 +33,4 @@ in
     allTranslators = collectSubsystemModules translators.translators;
     allBuilders = collectSubsystemModules builders.builders;
     allDiscoverers = collectSubsystemModules discoverers.discoverers;
-    allIndexers = collectSubsystemModules indexers.indexers;
   }

@@ -10,9 +10,8 @@ utils.writePureShellScriptBin
 ''
   cd $WORKDIR
 
-  subsystem=''${1:?"please pass a subsystem"}
-  name=''${2:?"please pass the name of the indexer"}
-  input=''${3:?"please pass indexer input in JSON or JSON file"}
+  name=''${1:?"please pass the name of the indexer"}
+  input=''${2:?"please pass indexer input in JSON or JSON file"}
 
   inputFile="$TMPDIR/input.json"
   if [ -f "$input" ]; then
@@ -24,7 +23,7 @@ utils.writePureShellScriptBin
   resultBin="$TMPDIR/result"
 
   callNixWithD2N build -L --keep-failed --out-link $resultBin \
-    "dream2nix.subsystems.$subsystem.indexers.$name.indexBin"
+    "dream2nix.indexers.indexers.$name.indexBin"
 
   $resultBin $inputFile
 ''
