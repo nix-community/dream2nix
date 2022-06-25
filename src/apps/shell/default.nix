@@ -18,6 +18,11 @@ utils.writePureShellScriptBin
 
   cd $WORKDIR
 
-  callNixWithD2N shell \
-    "(dream2nix.realizeProjects {source = $TMPDIR/src;}).packages"
+  callNixWithD2N shell "
+    (dream2nix.realizeProjects {
+      source = dream2nix.fetchers.fetchSource {
+        source = l.fromJSON (l.readFile "$TMPDIR/sourceInfo.json");
+      };
+    }).packages
+  "
 ''
