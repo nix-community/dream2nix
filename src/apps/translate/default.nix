@@ -7,6 +7,7 @@
   moreutils,
   jq,
   nix,
+  python3,
   ...
 }:
 utils.writePureShellScriptBin
@@ -18,8 +19,11 @@ utils.writePureShellScriptBin
   callNixWithD2N
   nix
   jq
+  python3
 ]
 ''
+  cd $WORKDIR
+
   source=''${1:?"error: pass a source shortcut"}
   targetDir=''${2:?"error: please pass a target directory"}
   targetDir="$(realpath "$targetDir")"
@@ -37,7 +41,7 @@ utils.writePureShellScriptBin
     (p: let
       resolve = p.passthru.resolve or p.resolve;
     in {
-      inherit (resolve.passthru.project) name relPath;
+      inherit (resolve.passthru.project) name dreamLockPath;
       drvPath = resolve.drvPath;
     })
     (b.attrValues (b.removeAttrs
@@ -49,23 +53,22 @@ utils.writePureShellScriptBin
   for resolveData in $(jq '.[]' -c -r $resolveDatas); do
     # extract project data so we can determine where the dream-lock.json will be
     name=$(echo "$resolveData" | jq '.name' -c -r)
-    relPath=$(echo "$resolveData" | jq '.relPath' -c -r)
+    dreamLockPath="$targetDir/$(echo "$resolveData" | jq '.dreamLockPath' -c -r)"
     drvPath=$(echo "$resolveData" | jq '.drvPath' -c -r)
+
+    echo "resolving: $name (lock path: $dreamLockPath)"
 
     # build the resolve script and run it
     nix build --out-link $TMPDIR/resolve $drvPath
     $TMPDIR/resolve/bin/resolve
 
-    # extract data from dream-lock so we can patch the dream-lock
-    dreamLock="$targetDir/$name/$relPath/dream-lock.json"
-    defaultPackageName="$(jq '._generic.defaultPackage' -c -r $dreamLock)"
-    defaultPackageVersion="$(jq "._generic.packages.\"$defaultPackageName\"" -c -r $dreamLock)"
-    sourceInfo="$(jq . -c -r $sourceTargetDir/sourceInfo.json)"
-
     # patch the dream-lock with our source info so the dream-lock works standalone
-    jqQuery=".sources.\"$defaultPackageName\".\"$defaultPackageVersion\" = $sourceInfo"
-    jq "$jqQuery" -c -r "$dreamLock" | sponge "$dreamLock"
+    sourceInfo="$(jq . -c -r $sourceTargetDir/sourceInfo.json)"
+    jqQuery="._generic.sourceRoot = $sourceInfo"
+    jq "$jqQuery" -c -r "$dreamLockPath" \
+      | python3 ${../cli/format-dream-lock.py} \
+      | sponge "$dreamLockPath"
 
-    echo "resolved $defaultPackageName-$defaultPackageVersion (project $name)"
+    echo "resolved: $name (lock path: $dreamLockPath)"
   done
 ''
