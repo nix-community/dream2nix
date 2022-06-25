@@ -37,17 +37,21 @@ utils.writePureShellScriptBin
 
   resolveDatas="$TMPDIR/resolveData.json"
   callNixWithD2N eval --json "
-    b.map
-    (p: let
-      resolve = p.passthru.resolve or p.resolve;
-    in {
-      inherit (resolve.passthru.project) name dreamLockPath;
-      drvPath = resolve.drvPath;
-    })
-    (b.attrValues (b.removeAttrs
-      (dream2nix.makeOutputs {source = $sourceTargetDir/src;}).packages
-      [\"resolveImpure\"]
-    ))
+    let
+      data =
+        l.map
+        (p: let
+          resolve = p.passthru.resolve or p.resolve;
+        in {
+          inherit (resolve.passthru.project) name dreamLockPath;
+          drvPath = resolve.drvPath;
+        })
+        (l.attrValues (l.removeAttrs
+          (dream2nix.makeOutputs {source = $sourceTargetDir/src;}).packages
+          [\"resolveImpure\"]
+        ));
+    in
+      l.unique data
   " > $resolveDatas
 
   for resolveData in $(jq '.[]' -c -r $resolveDatas); do
