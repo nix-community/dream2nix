@@ -10,8 +10,17 @@ utils.writePureShellScriptBin
 ''
   cd $WORKDIR
 
-  name=''${1:?"please pass the name of the indexer"}
-  input=''${2:?"please pass indexer input in JSON or JSON file"}
+  usage="usage:
+    $0 INDEXER_NAME INDEXER_INPUT"
+
+  if [ "$#" -ne 2 ]; then
+    echo "error: wrong number of arguments passed"
+    echo "$usage"
+    exit 1
+  fi
+
+  name=''${1:?"error: please pass the name of the indexer"}
+  input=''${2:?"error: please pass indexer input in JSON or JSON file"}
 
   inputFile="$TMPDIR/input.json"
   if [ -f "$input" ]; then

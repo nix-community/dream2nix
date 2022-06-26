@@ -22,9 +22,19 @@ utils.writePureShellScriptBin
 ''
   cd $WORKDIR
 
+  usage="usage:
+    $0 SOURCE_SHORTCUT TARGET_DIR"
+
+  if [ "$#" -ne 2 ]; then
+    echo "error: wrong number of arguments"
+    echo "$usage"
+    exit 1
+  fi
+
   source=''${1:?"error: pass a source shortcut"}
   targetDir=''${2:?"error: please pass a target directory"}
   targetDir="$(realpath "$targetDir")"
+
   sourceInfoPath=''${translateSourceInfoPath:-"$TMPDIR/sourceInfo.json"}
   translateSkipResolved=''${translateSkipResolved:-"0"}
 

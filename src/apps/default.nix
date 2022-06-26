@@ -19,8 +19,7 @@
     # translate a given source shortcut
     translate = callPackageDream ./translate {};
 
-    # enter a shell with the packages from a specified source
-    shell = callPackageDream ./shell {};
+    runNixCmdInSrc = callPackageDream ./runNixCmdInSrc {};
 
     # index packages with an indexer
     index = callPackageDream ./index {};
@@ -30,6 +29,8 @@
     translateSourceShortcut = callPackageDream ./translateSourceShortcut {};
 
     callNixWithD2N = callPackageDream ./callNixWithD2N {};
+
+    writeFlakeD2N = callPackageDream ./writeFlakeD2N {};
 
     flakeApps =
       b.mapAttrs (
@@ -43,7 +44,7 @@
           contribute
           install
           translate
-          shell
+          runNixCmdInSrc
           index
           translate-index
           ;
