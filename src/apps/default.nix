@@ -27,7 +27,7 @@
 
     translate-index = callPackageDream ./translate-index {};
 
-    fetchSourceShortcut = callPackageDream ./fetchSourceShortcut {};
+    translateSourceShortcut = callPackageDream ./translateSourceShortcut {};
 
     callNixWithD2N = callPackageDream ./callNixWithD2N {};
 

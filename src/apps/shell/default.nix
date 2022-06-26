@@ -1,27 +1,29 @@
 {
   # dream2nix deps
-  utils,
   callNixWithD2N,
   translate,
+  writers,
+  coreutils,
   ...
 }:
-utils.writePureShellScriptBin
+writers.writeBashBin
 "shell"
-[translate callNixWithD2N]
 ''
-  source="''${1:?"error: pass a source shortcut"}"
+  set -e
 
-  export translateSourceDir="$TMPDIR"
-  translate "$source" "packages"
+  source="''${1:?"error: pass a source shortcut"}"
+  TMPDIR="$(${coreutils}/bin/mktemp --directory)"
+
+  export translateSkipResolved=1
+  export translateSourceInfoPath="$TMPDIR/sourceInfo.json"
+  ${translate}/bin/translate "$source" "packages"
 
   export dream2nixConfig="{packagesDir=\"packages\"; projectRoot=\"$TMPDIR\";}"
 
-  cd $WORKDIR
-
-  callNixWithD2N shell "
+  ${callNixWithD2N} shell "
     (dream2nix.realizeProjects {
       source = dream2nix.fetchers.fetchSource {
-        source = l.fromJSON (l.readFile "$TMPDIR/sourceInfo.json");
+        source = l.fromJSON (l.readFile \"$translateSourceInfoPath\");
       };
     }).packages
   "

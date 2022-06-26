@@ -1,17 +1,15 @@
 {
   # dream2nix deps
-  utils,
   dream2nixWithExternals,
   # nixpkgs deps
+  writers,
   nix,
   ...
 } @ args:
-utils.writePureShellScriptBin
+writers.writeBash
 "callNixWithD2N"
-[nix]
 ''
-  cd $WORKDIR
-  nix ''${@:1:$#-1} --impure --expr "
+  ${nix}/bin/nix ''${@:1:$#-1} --impure --expr "
     let
       nixpkgs = <nixpkgs>;
       l = (import \"\''${nixpkgs}/lib\") // builtins;
