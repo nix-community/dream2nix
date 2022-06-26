@@ -42,8 +42,10 @@ utils.writePureShellScriptBin
 
   export dream2nixConfig="{packagesDir=\"./.\"; projectRoot=\"$targetDir\";}"
 
+  # translate the source shortcut
   ${translateSourceShortcut} $source > $sourceInfoPath
 
+  # collect data for the packages we will resolve
   resolveDatas="$TMPDIR/resolveData.json"
   ${callNixWithD2N} eval --json "
     let
@@ -82,6 +84,7 @@ utils.writePureShellScriptBin
       l.unique (l.filter (i: i != null) data)
   " > $resolveDatas
 
+  # resolve the packages
   for resolveData in $(jq '.[]' -c -r $resolveDatas); do
     # extract project data so we can determine where the dream-lock.json will be
     name=$(echo "$resolveData" | jq '.name' -c -r)

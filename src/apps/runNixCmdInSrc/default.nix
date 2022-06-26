@@ -30,19 +30,24 @@ writers.writeBashBin
   TMPDIR="$(${coreutils}/bin/mktemp --directory)"
   SRC="$(${coreutils}/bin/mktemp --directory)"
 
+  # translate any impure packages
   export translateSkipResolved=1
   export translateSourceInfoPath="$SRC/sourceInfo.json"
   ${translate}/bin/translate "$source" "$TMPDIR/packages"
 
+  # write flake.nix file
   export dream2nixConfig="{packagesDir=\"./packages\"; projectRoot=./.;}"
   export flakeSrcInfoPath="$translateSourceInfoPath"
   ${writeFlakeD2N} "$TMPDIR/flake.nix"
 
+  # process arguments to pass to Nix
   args=()
   for arg in ''${@:2:$#}; do
     args+=("''${arg//\.#/$TMPDIR#}")
   done
 
+  # calculate actual command offset so we can pass --impure
+  # to the correct command
   argOffset=1
   if [ "''${args[0]}" == "flake" ]; then
     argOffset=2
@@ -50,11 +55,11 @@ writers.writeBashBin
 
   cmdArgs=(''${args[@]::$argOffset})
   remArgs=(''${args[@]:$argOffset})
-
   if [[ "''${remArgs[@]}" == "" ]]; then
     remArgs+=("$TMPDIR")
   fi
 
+  # enable IFD explicitly so 'flake show' works
   ${nix}/bin/nix --option allow-import-from-derivation true \
     ''${cmdArgs[@]} --impure ''${remArgs[@]}
 
