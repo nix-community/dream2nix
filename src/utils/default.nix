@@ -33,6 +33,8 @@
 
   translatorUtils = callPackageDream ./translator.nix {};
 
+  indexUtils = callPackageDream ./index.nix {};
+
   poetry2nixSemver = import "${externalSources.poetry2nix}/semver.nix" {
     inherit lib;
     # copied from poetry2nix
@@ -48,6 +50,7 @@
 in
   overrideUtils
   // translatorUtils
+  // indexUtils
   // rec {
     inherit
       (dlib)
