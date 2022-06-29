@@ -45,5 +45,7 @@ in {
       );
     dreamLocks = findDreamLocks tree;
   in
-    generatePackagesFromLocks dreamLocks;
+    generatePackagesFromLocks {
+      inherit dreamLocks makePackagesForDreamLock;
+    };
 }
