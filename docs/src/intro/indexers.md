@@ -1,6 +1,6 @@
 # Indexers
 
-Indexers are programs that can query a package source (think of npm, or crates.io) for package information.
+Indexers are programs that can query a package repository (think of npm, or crates.io) for package information.
 This information mainly consists of the package name, the package version, and anything extra that might be useful / needed to fetch / translate it.
 The information is stored as a "source shortcut", which basically follows the format `proto1+proto2:pname/version?key=value&key2=value2`.
 
