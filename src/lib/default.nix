@@ -215,7 +215,7 @@
         (oDir: l.match ''.*/${oDir}'' path == null)
         sanitizedOverridesDirs);
 
-    ca-source = builtins.path {
+    ca-source = l.path {
       path = source;
       name = "dream2nix-package-source";
       inherit filter;
