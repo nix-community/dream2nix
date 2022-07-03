@@ -100,7 +100,7 @@ utils.writePureShellScriptBin
 
     # patch the dream-lock with our source info so the dream-lock works standalone
     for packageName in $(jq '.sources | keys | .[]' -c -r "$dreamLockPath"); do
-      for packageVersion in $(jq ".sources.\"$packageName\" | keys | .[]"); do
+      for packageVersion in $(jq ".sources.\"$packageName\" | keys | .[]" -c -r "$dreamLockPath"); do
         sourceData="$(jq ".sources.\"$packageName\".\"$packageVersion\"" -c -r "$dreamLockPath")"
         usesSourceRoot="$(echo "$sourceData" | jq '.rootName == null and .rootVersion == null' -c -r)"
         if [ "$usesSourceRoot" == "true" ]; then
