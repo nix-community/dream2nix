@@ -120,7 +120,16 @@ utils.writePureShellScriptBin
                     and .rootName == null
                     and .rootVersion == null
                 )
-                then .value = ($sourceInfo | .dir = .value.relPath)
+                then (
+                  .value = (
+                    $sourceInfo
+                    | (
+                      if .value.relPath != null
+                      then .dir = .value.relPath
+                      else . end
+                    )
+                  )
+                )
                 else . end
               )
           )
