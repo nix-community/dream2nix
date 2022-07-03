@@ -62,7 +62,7 @@
           makePackage name version))
       packageVersions;
 
-    outputs = {
+    outputs = rec {
       # select only the packages listed in dreamLock as main packages
       packages =
         b.foldl'
@@ -73,6 +73,16 @@
             "${name}"."${version}" = allPackages."${name}"."${version}";
           })
           args.packages);
+
+      devShell = devShells.default;
+
+      devShells =
+        {default = devShells.${defaultPackageName};}
+        // (
+          l.mapAttrs
+          (name: version: allPackages.${name}.${version}.devShell)
+          args.packages
+        );
     };
 
     # This is only executed for electron based packages.
@@ -201,6 +211,17 @@
         pname = lib.replaceStrings ["@" "/"] ["__at__" "__slash__"] name;
 
         passthru.dependencies = passthruDeps;
+
+        passthru.devShell = pkgs.mkShell {
+          NODE_PATH = l.concatStringsSep ":" (
+            l.map
+            (dep: "${allPackages.${dep.name}.${dep.version}}/lib/node_modules")
+            deps
+          );
+          buildInputs = [
+            nodejs
+          ];
+        };
 
         installMethod = "symlink";
 

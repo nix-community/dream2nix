@@ -66,7 +66,20 @@
           $pipInstallFlags
       '';
     });
+
+    devShell = pkgs.mkShell {
+      buildInputs = [
+        # a drv with all dependencies without the main package
+        (package.overrideAttrs (old: {
+          src = ".";
+          dontUnpack = true;
+          buildPhase = old.preBuild;
+        }))
+      ];
+    };
   in {
     packages.${defaultPackageName}.${defaultPackageVersion} = package;
+    devShells.${defaultPackageName} = devShell;
+    inherit devShell;
   };
 }
