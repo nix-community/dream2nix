@@ -150,5 +150,9 @@ in rec {
         };
     };
   in
-    outputs // (callPackageDream overrideOutputs {inherit mkIndexApp;});
+    outputs
+    // (callPackageDream overrideOutputs {
+      inherit mkIndexApp;
+      prevOutputs = outputs;
+    });
 }
