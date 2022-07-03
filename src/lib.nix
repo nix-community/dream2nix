@@ -150,22 +150,17 @@
       l.mapAttrs
       (system: pkgs: let
         dream2nix = dream2nixFor."${system}";
-        allOutputs = dream2nix.utils.makeOutputsForIndexes (
-          {
-            inherit
-              source
-              indexNames
-              overrideOutputs
-              inject
-              packageOverrides
-              settings
-              sourceOverrides
-              ;
-          }
-          // l.optionalAttrs
-          (makePackagesForDreamLock != null)
-          {inherit makePackagesForDreamLock;}
-        );
+        allOutputs = dream2nix.utils.makeOutputsForIndexes {
+          inherit
+            source
+            indexNames
+            overrideOutputs
+            inject
+            packageOverrides
+            settings
+            sourceOverrides
+            ;
+        };
       in
         allOutputs)
       allPkgs;
