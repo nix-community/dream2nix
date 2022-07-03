@@ -4,6 +4,7 @@
   dream2nixInterface,
   pkgs,
   apps,
+  callPackageDream,
   ...
 } @ topArgs: let
   l = lib // builtins;
@@ -49,7 +50,7 @@ in rec {
   makeOutputsForIndexes = {
     source,
     indexNames,
-    overrideOutputs ? args: prevOutputs: {},
+    overrideOutputs ? args: {},
     settings ? [],
     inject ? {},
     packageOverrides ? {},
@@ -149,5 +150,5 @@ in rec {
         };
     };
   in
-    outputs // (overrideOutputs topArgs outputs);
+    outputs // (callPackageDream overrideOutputs {inherit mkIndexApp;});
 }

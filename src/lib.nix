@@ -132,7 +132,7 @@
     config ? {},
     source,
     indexNames,
-    overrideOutputs ? args: prevOutputs: {},
+    overrideOutputs ? args: {},
     inject ? {},
     packageOverrides ? {},
     settings ? [],
