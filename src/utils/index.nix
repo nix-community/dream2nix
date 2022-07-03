@@ -36,7 +36,7 @@ in rec {
         )
       );
     dreamLocks = findDreamLocks tree;
-    makePackagesFromDreamLock = dreamLock:
+    makePackagesForDreamLock = dreamLock:
       (dream2nixInterface.makeOutputsForDreamLock {
         inherit dreamLock;
       })
