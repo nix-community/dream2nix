@@ -3,27 +3,18 @@
   dlib,
   dream2nixInterface,
   pkgs,
+  apps,
   ...
 } @ topArgs: let
   l = lib // builtins;
-  defaultMkPackagesFromDreamLock = dreamLock:
-    (dream2nixInterface.makeOutputsForDreamLock {
-      inherit dreamLock;
-    })
-    .packages;
-  generatePackagesFromLocks = {
-    dreamLocks,
-    makePackagesForDreamLock ? defaultMkPackagesFromDreamLock,
-  }:
-    l.foldl'
-    (acc: el: acc // el)
-    {}
-    (l.map makePackagesForDreamLock dreamLocks);
 in rec {
   generatePackagesFromLocksTree = {
     source ? throw "pass source",
     tree ? dlib.prepareSourceTree {inherit source;},
-    makePackagesForDreamLock ? defaultMkPackagesFromDreamLock,
+    settings ? [],
+    inject ? {},
+    packageOverrides ? {},
+    sourceOverrides ? {},
   }: let
     findDreamLocks = tree:
       (
@@ -45,14 +36,24 @@ in rec {
         )
       );
     dreamLocks = findDreamLocks tree;
+    makePackagesFromDreamLock = dreamLock:
+      (dream2nixInterface.makeOutputsForDreamLock {
+        inherit dreamLock;
+      })
+      .packages;
   in
-    generatePackagesFromLocks {
-      inherit dreamLocks makePackagesForDreamLock;
-    };
+    l.foldl'
+    (acc: el: acc // el)
+    {}
+    (l.map makePackagesForDreamLock dreamLocks);
   makeOutputsForIndexes = {
     source,
     indexNames,
-    extendOutputs ? args: prevOutputs: {},
+    overrideOutputs ? args: prevOutputs: {},
+    settings ? [],
+    inject ? {},
+    packageOverrides ? {},
+    sourceOverrides ? {},
   }: let
     l = lib // builtins;
     mkApp = script: {
@@ -69,7 +70,7 @@ in rec {
         set -e
         inputJson="$(${pkgs.coreutils}/bin/mktemp)"
         echo '${l.toJSON input}' > $inputJson
-        ${d2n.apps.index}/bin/index ${name} $inputJson
+        ${apps.index}/bin/index ${name} $inputJson
       '';
     in
       mkApp script;
@@ -77,7 +78,7 @@ in rec {
       mkApp (
         pkgs.writers.writeBash "translate-${name}" ''
           set -e
-          ${d2n.apps.translate-index}/bin/translate-index \
+          ${apps.translate-index}/bin/translate-index \
             ${name}/index.json ${name}/locks
         ''
       );
@@ -123,6 +124,12 @@ in rec {
             name = "${name}";
             path = "${source}/${name}/locks";
           };
+          inherit
+            settings
+            inject
+            packageOverrides
+            sourceOverrides
+            ;
         })
         ["default"]
       else {};
@@ -142,5 +149,5 @@ in rec {
         };
     };
   in
-    outputs // (extendOutputs topArgs outputs);
+    outputs // (overrideOutputs topArgs outputs);
 }

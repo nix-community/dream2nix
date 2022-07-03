@@ -125,8 +125,64 @@
       // flakeOutputsBuilders;
   in
     flakeOutputs;
+
+  makeFlakeOutputsForIndexes = {
+    systems ? [],
+    config ? {},
+    source,
+    indexNames,
+    overrideOutputs ? args: prevOutputs: {},
+    inject ? {},
+    packageOverrides ? {},
+    settings ? [],
+    sourceOverrides ? oldSources: {},
+  }: let
+    allPkgs = makeNixpkgs pkgs systems;
+
+    config = loadConfig (args.config or {});
+    dlib = import ./lib {inherit lib config;};
+
+    initD2N = initDream2nix config;
+    dream2nixFor = l.mapAttrs (_: pkgs: initD2N pkgs) allPkgs;
+
+    allOutputs =
+      l.mapAttrs
+      (system: pkgs: let
+        dream2nix = dream2nixFor."${system}";
+        allOutputs = dream2nix.utils.makeOutputsForIndexes (
+          {
+            inherit
+              source
+              indexNames
+              overrideOutputs
+              inject
+              packageOverrides
+              settings
+              sourceOverrides
+              ;
+          }
+          // l.optionalAttrs
+          (makePackagesForDreamLock != null)
+          {inherit makePackagesForDreamLock;}
+        );
+      in
+        allOutputs)
+      allPkgs;
+
+    flakifiedOutputsList =
+      l.mapAttrsToList
+      (system: outputs: flakifyBuilderOutputs system outputs)
+      allOutputs;
+
+    flakeOutputs =
+      l.foldl'
+      (allOutputs: output: lib.recursiveUpdate allOutputs output)
+      {}
+      flakifiedOutputsList;
+  in
+    flakeOutputs;
 in {
-  inherit init makeFlakeOutputs;
+  inherit init makeFlakeOutputs makeFlakeOutputsForIndexes;
   dlib = import ./lib {inherit lib;};
   riseAndShine = throw "Use makeFlakeOutputs instead of riseAndShine.";
 }
