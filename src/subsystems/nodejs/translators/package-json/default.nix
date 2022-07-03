@@ -64,7 +64,7 @@
 
   # inherit options from package-lock translator
   extraArgs =
-    dlib.translators.nodejs.package-lock.extraArgs
+    dlib.translators.translators.nodejs.package-lock.extraArgs
     // {
       npmArgs = {
         description = "Additional arguments for npm";
