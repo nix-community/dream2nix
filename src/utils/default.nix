@@ -185,12 +185,15 @@ in
 
       argsJsonFile =
         pkgs.writeText "translator-args.json"
-        (l.toJSON
-          (args
-            // {
-              project = l.removeAttrs args.project ["dreamLock"];
-              outputFile = project.dreamLockPath;
-            }));
+        (l.toJSON (
+          args
+          // {
+            project = l.removeAttrs args.project ["dreamLock"];
+            outputFile = project.dreamLockPath;
+          }
+          // (dlib.translators.getextraArgsDefaults translator.extraArgs or {})
+          // args.project.subsystemInfo
+        ));
     in
       writePureShellScriptBin "resolve"
       [
