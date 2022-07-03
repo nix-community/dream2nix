@@ -4,7 +4,7 @@
 # use ./lib.nix instead.
 {
   pkgs ? import <nixpkgs> {},
-  dlib ? null,
+  dlib ? import ./lib {inherit config lib;},
   lib ? pkgs.lib,
   nix ? pkgs.nix,
   # default to empty dream2nix config
@@ -35,15 +35,15 @@
   # load from default directory
   else ./external,
 } @ args: let
+  argsConfig = config;
+in let
   b = builtins;
 
   l = lib // builtins;
 
-  config = (import ./utils/config.nix).loadConfig args.config or {};
+  config = (import ./utils/config.nix).loadConfig argsConfig;
 
   configFile = pkgs.writeText "dream2nix-config.json" (b.toJSON config);
-
-  dlib = args.dlib or (import ./lib {inherit config lib;});
 
   # like pkgs.callPackage, but includes all the dream2nix modules
   callPackageDream = f: fargs:
