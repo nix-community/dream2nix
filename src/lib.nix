@@ -128,6 +128,7 @@
 
   makeFlakeOutputsForIndexes = {
     systems ? [],
+    pkgs ? null,
     config ? {},
     source,
     indexNames,
