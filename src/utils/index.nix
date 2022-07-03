@@ -102,7 +102,7 @@ in rec {
           (
             name: translator: ''
               echo "::translating with ${name}::"
-              ${translator}
+              ${translator.program}
               echo "::translated with ${name}::"
             ''
           )
