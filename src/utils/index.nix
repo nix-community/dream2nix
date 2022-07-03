@@ -64,6 +64,7 @@ in rec {
 
     mkIndexApp = {
       name,
+      indexerName ? name,
       input,
     } @ args: let
       input = {outputFile = "${name}/index.json";} // args.input;
@@ -71,7 +72,7 @@ in rec {
         set -e
         inputJson="$(${pkgs.coreutils}/bin/mktemp)"
         echo '${l.toJSON input}' > $inputJson
-        ${apps.index}/bin/index ${name} $inputJson
+        ${apps.index}/bin/index ${indexerName} $inputJson
       '';
     in
       mkApp script;
