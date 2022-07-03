@@ -222,20 +222,11 @@ in let
       else args.fetcher;
 
     fetched = fetcher rec {
-      inherit sourceOverrides;
+      inherit sourceOverrides sourceRoot;
       defaultPackage = dreamLock._generic.defaultPackage;
       defaultPackageVersion = dreamLock._generic.packages."${defaultPackage}";
       sources = dreamLock'.sources;
       sourcesAggregatedHash = dreamLock'._generic.sourcesAggregatedHash;
-      sourceRoot =
-        if sourceRoot != null
-        then sourceRoot
-        else if dreamLock'._generic ? sourceRoot
-        then
-          fetchers.fetchSource {
-            source = dreamLock'._generic.sourceRoot;
-          }
-        else null;
     };
 
     fetchedSources = fetched.fetchedSources;

@@ -99,9 +99,20 @@ utils.writePureShellScriptBin
     $TMPDIR/resolve/bin/resolve
 
     # patch the dream-lock with our source info so the dream-lock works standalone
-    sourceInfo="$(jq . -c -r $sourceInfoPath)"
-    jqQuery="._generic.sourceRoot = $sourceInfo"
-    jq "$jqQuery" -c -r "$dreamLockPath" \
+    for packageName in $(jq '.sources | keys | .[]' -c -r "$dreamLockPath"); do
+      for packageVersion in $(jq ".sources.\"$packageName\" | keys | .[]"); do
+        sourceData="$(jq ".sources.\"$packageName\".\"$packageVersion\"" -c -r "$dreamLockPath")"
+        usesSourceRoot="$(echo "$sourceData" | jq '.rootName == null and .rootVersion == null' -c -r)"
+        if [ "$usesSourceRoot" == "true" ]; then
+          relPath="$(echo "$sourceData" | jq '.relPath' -c -r)"
+          packageSourceInfo="$(jq ".dir = \"$relPath\"" -c -r "$sourceInfoPath")"
+          jq ".sources.\"$packageName\".\"$packageVersion\" = $packageSourceInfo" \
+            -c -r "$dreamLockPath" | sponge "$dreamLockPath"
+        fi
+      done
+    done
+
+    cat "$dreamLockPath" \
       | python3 ${../cli/format-dream-lock.py} \
       | sponge "$dreamLockPath"
 
