@@ -62,7 +62,6 @@ in let
         inherit utils;
         inherit nix;
         inherit subsystems;
-        initDream2nix = fargs: import ./default.nix (args // fargs);
         dream2nixInterface = {
           inherit
             makeOutputsForDreamLock
