@@ -55,7 +55,7 @@
 
   # inherit options from cargo-lock translator
   extraArgs =
-    dlib.translators.rust.cargo-lock.extraArgs
+    dlib.translators.translators.rust.cargo-lock.extraArgs
     // {
       cargoArgs = {
         description = "Additional arguments for Cargo";
