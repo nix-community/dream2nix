@@ -33,7 +33,7 @@
               l.unsafeDiscardStringContext
               (l.last
                 (l.splitString "/" (l.removeSuffix "/" "${tree.fullPath}")));
-          translators = ["pip-WIP"];
+          translators = ["pip"];
           subsystemInfo.pythonAttr = "python3";
         })
       ]

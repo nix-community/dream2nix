@@ -43,9 +43,7 @@
       format = "setuptools";
       buildInputs = pkgs.pythonManylinuxPackages.manylinux1;
       nativeBuildInputs = [pkgs.autoPatchelfHook];
-      propagatedBuildInputs = [
-        python.pkgs.setuptools
-      ];
+      propagatedBuildInputs = [python.pkgs.setuptools];
       doCheck = false;
       dontStrip = true;
       preBuild = ''
@@ -60,6 +58,7 @@
         export PYTHONPATH="$out/${python.sitePackages}:$PYTHONPATH"
         ${python}/bin/python -m pip install \
           ./dist/*.{whl,tar.gz,zip} \
+          --no-build-isolation \
           --no-index \
           --no-warn-script-location \
           --prefix="$out" \

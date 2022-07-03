@@ -39,14 +39,16 @@ in {
       outputFile=$WORKDIR/$(jq '.outputFile' -c -r $jsonInput)
       source="$(jq '.source' -c -r $jsonInput)/$(jq '.project.relPath' -c -r $jsonInput)"
       name="$(jq '.project.name' -c -r $jsonInput)"
-      pythonAttr=$(jq '.project.subsystemInfo.pythonAttr' -c -r $jsonInput)
-      extraRequirements=$(jq '.project.subsystemInfo.extraRequirements' -c -r $jsonInput)
+      pythonAttr=$(jq '.pythonAttr' -c -r $jsonInput)
+      extraSetupDeps=$(jq '[.extraSetupDeps[]] | join(" ")' -c -r $jsonInput)
+
+      sitePackages=$(nix eval --impure --raw --expr "(import <nixpkgs> {}).$pythonAttr.sitePackages")
 
       # build python and pip executables
       tmpBuild=$(mktemp -d)
       nix build \
         --impure \
-        --expr "(import <nixpkgs> {}).$pythonAttr.withPackages (ps: with ps; [pip setuptools $extraRequirements])" \
+        --expr "(import <nixpkgs> {}).$pythonAttr.withPackages (ps: with ps; [pip setuptools])" \
         -o $tmpBuild/python
       python=$tmpBuild/python/bin/python
 
@@ -57,6 +59,12 @@ in {
       cp -r $source ./source
       chmod +w -R ./source
 
+      # install setup dependencies from extraSetupDeps
+      echo "$(jq '.extraSetupDeps[]' -c -r $jsonInput)" > __extra_setup_reqs.txt
+      $python -m pip install \
+        --prefix ./install \
+        -r __extra_setup_reqs.txt
+
       # download setup dependencies from pyproject.toml
       toml2json ./source/pyproject.toml | jq '."build-system".requires[]' -r > __setup_reqs.txt || :
       $python -m pip download \
@@ -65,11 +73,12 @@ in {
         -r __setup_reqs.txt
 
       # download files according to requirements
-      $python -m pip download \
-        --dest $tmp \
-        --progress-bar off \
-        -r __setup_reqs.txt \
-        ./source
+      PYTHONPATH=$(realpath ./install/$sitePackages) \
+        $python -m pip download \
+          --dest $tmp \
+          --progress-bar off \
+          -r __setup_reqs.txt \
+          ./source
 
       # generate the dream lock from the downloaded list of files
       cd ./source
@@ -95,8 +104,8 @@ in {
       type = "argument";
     };
 
-    extraRequirements = {
-      default = "";
+    extraSetupDeps = {
+      default = [];
       description = "a list of extra requirements to add";
       examples = [
         "cython"
