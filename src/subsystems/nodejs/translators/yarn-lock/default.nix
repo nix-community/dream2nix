@@ -62,7 +62,7 @@
             then let
               split = l.splitString "@" (l.last (l.splitString "npm:" semVer));
             in {
-              name = l.head split;
+              name = depName;
               version = l.last split;
             }
             else let
@@ -158,12 +158,7 @@
           else if lib.hasInfix "@https://" rawObj.yarnName
           then lib.head (lib.splitString "@https://" rawObj.yarnName)
           else if lib.hasInfix "@npm:" rawObj.yarnName
-          then let
-            name' = l.last (l.splitString "@npm:" rawObj.yarnName);
-            split = l.splitString "@" name';
-            name = l.head split;
-          in
-            name
+          then l.head (l.splitString "@npm:" rawObj.yarnName)
           else let
             split = lib.splitString "@" rawObj.yarnName;
             version = lib.last split;
@@ -312,7 +307,7 @@
             then let
               split = l.splitString "@" (l.last (l.splitString "npm:" semVer));
             in {
-              name = l.head split;
+              name = name;
               version = l.last split;
             }
             else let
