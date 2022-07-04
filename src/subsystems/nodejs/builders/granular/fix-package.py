@@ -74,27 +74,22 @@ if 'dependencies' in package_json:
 if 'bin' in package_json and package_json['bin']:
   bin = package_json['bin']
 
-  if isinstance(bin, str):
-    name = package_json['name'].split('/')[-1]
-    if not os.path.isfile(bin):
-      raise Exception(f"binary specified in package.json doesn't exist: {bin}")
+  def link(name, relpath):  
     source = f'{out}/lib/node_modules/.bin/{name}'
     sourceDir = os.path.dirname(source)
     # create parent dir
     pathlib.Path(sourceDir).mkdir(parents=True, exist_ok=True)
-
-    dest = os.path.relpath(bin, sourceDir)
+    dest = os.path.relpath(relpath, sourceDir)
     print(f"dest: {dest}; source: {source}")
     os.symlink(dest, source)
 
+  if isinstance(bin, str):
+    name = package_json['name'].split('/')[-1]
+    link(name, bin)
+
   else:
-    for bin_name, relpath in bin.items():
-      source = f'{out}/lib/node_modules/.bin/{bin_name}'
-      sourceDir = os.path.dirname(source)
-      # create parent dir
-      pathlib.Path(sourceDir).mkdir(parents=True, exist_ok=True)
-      dest = os.path.relpath(relpath, sourceDir)
-      os.symlink(dest, source)
+    for name, relpath in bin.items():
+      link(name, relpath)
 
 # write changes to package.json
 if changed:
