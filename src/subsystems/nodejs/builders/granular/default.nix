@@ -158,12 +158,33 @@
 
     # Generates a derivation for a specific package name + version
     makePackage = name: version: let
+      pname = lib.replaceStrings ["@" "/"] ["__at__" "__slash__"] name;
+
       deps = getDependencies name version;
 
       nodeDeps =
         lib.forEach
         deps
         (dep: allPackages."${dep.name}"."${dep.version}");
+
+      nodeModulesDir = pkgs.runCommand "node_modules-${pname}" {} ''
+        mkdir $out
+        ${l.concatStringsSep "\n" (
+          l.forEach nodeDeps
+          (pkg: ''
+            ln -s ${pkg}/lib/node_modules/* $out/
+          '')
+        )}
+      '';
+
+      nodeModulesBinDirs = pkgs.runCommand "node_modules_bin-${pname}" {} ''
+        touch $out
+        for dep in ${l.toString nodeDeps}; do
+          for bin in $(${pkgs.findutils}/bin/find $dep -name .bin); do
+            echo "$bin" >> $out
+          done
+        done
+      '';
 
       passthruDeps =
         l.listToAttrs
@@ -208,19 +229,27 @@
 
         packageName = name;
 
-        pname = lib.replaceStrings ["@" "/"] ["__at__" "__slash__"] name;
+        inherit pname;
 
         passthru.dependencies = passthruDeps;
 
         passthru.devShell = pkgs.mkShell {
-          NODE_PATH = l.concatStringsSep ":" (
-            l.map
-            (dep: "${allPackages.${dep.name}.${dep.version}}/lib/node_modules")
-            deps
-          );
           buildInputs = [
             nodejs
           ];
+          shellHook = ''
+            # set up PATH for executables of node dependencies
+            export PATH="$PATH:$(tr '\n' ':' < ${nodeModulesBinDirs})"
+
+            # create the ./node_modules directory
+            if [ -e ./node_modules ] && [ ! -L ./node_modules ]; then
+              echo -e "\nFailed creating the ./node_modules symlink."
+              echo -e "\n./node_modules already exists and is a directory, which means it is managed by anaother program. Please delete ./node_modules first and re-enter the dev shell."
+            else
+              rm -f ./node_modules
+              ln -s ${nodeModulesDir} ./node_modules
+            fi
+          '';
         };
 
         installMethod = "symlink";
