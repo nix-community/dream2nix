@@ -22,7 +22,7 @@ The intention is to integrate many existing 2nix converters into this framework,
 
 ### Further reading
 
-- [Summary of the core concepts and benefits](./intro/concepts-and-benefits.md)
+- [Architectural Considerations](./intro/architectural-considerations.md)
 - [How would this improve the packaging situation in nixpkgs](./intro/nixpkgs-improvements.md)
 - [Override System](./intro/override-system.md)
 - [Contributors Guide](./contributing.md)

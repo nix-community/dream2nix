@@ -1,7 +1,7 @@
 # Summary
 
 - [Introduction](./intro.md)
-  - [Concepts and benefits](./intro/concepts-and-benefits.md)
+  - [Architectural Considerations](./intro/architectural-considerations.md)
   - [Nixpkgs improvements](./intro/nixpkgs-improvements.md)
   - [Override system](./intro/override-system.md)
   - [Translators](./intro/translators.md)
