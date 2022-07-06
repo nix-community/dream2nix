@@ -145,7 +145,9 @@
 <h3 id="build-rust-package-pure-default"><a class="header" href="#build-rust-package-pure-default">build-rust-package (pure) (default)</a></h3>
 <p>Builds a package using <code>buildRustPackage</code> from <code>nixpkgs</code>.</p>
 <h3 id="crane-ifd"><a class="header" href="#crane-ifd">crane (ifd)</a></h3>
-<p>Builds a package using <a href="https://github.com/ipetkov/crane"><code>crane</code></a>.</p>
+<p>Builds a package using <a href="https://github.com/ipetkov/crane"><code>crane</code></a>.
+This builder builds two seperate derivations, one for dependencies and the other for your crate.
+The dependencies derivation will be named <code>&lt;crate&gt;-deps</code> where <code>&lt;crate&gt;</code> is the name of the crate you are building.</p>
 <h4 id="override-gotchas"><a class="header" href="#override-gotchas">Override gotchas</a></h4>
 <p>This builder builds two separate derivations, one for your crate's dependencies and another for your crate.
 This means that if you want to override stuff for the dependencies you need to use the <code>&lt;crate-name&gt;-deps</code> key for your override where <code>&lt;crate-name&gt;</code> is the name of the crate you are building.</p>
@@ -194,7 +196,7 @@ This can be done like so:</p>
   # ...
 }
 </code></pre>
-<h4 id="crane-notes"><a class="header" href="#crane-notes">crane notes</a></h4>
+<h4 id="crane-notes"><a class="header" href="#crane-notes"><code>crane</code> notes</a></h4>
 <p>The crane builder does not require a <code>rustc</code> package in the toolchain specified, only a <code>cargo</code> package is needed.
 If cross-compiling, keep in mind that it also takes <code>cargo</code> packages like so:</p>
 <pre><code class="language-nix">{
@@ -215,6 +217,53 @@ in
     crate-name.set-toolchain.overrideRustToolchain = toolchainOverride;
     crate-name-deps.set-toolchain.overrideRustToolchain = toolchainOverride;
     # ...
+  };
+  # ...
+}
+</code></pre>
+<h4 id="examples"><a class="header" href="#examples">Examples</a></h4>
+<ul>
+<li>Usage with <a href="https://github.com/nix-community/fenix">fenix</a>:</li>
+</ul>
+<pre><code class="language-nix">let
+  # ...
+  # we use the full toolchain derivation here as using
+  # only the cargo / rustc derivation *does not* work.
+  toolchain = fenix.packages.${system}.minimal.toolchain;
+  # ...
+in
+{
+  # ...
+  packageOverrides = {
+    # for crane builder
+    &quot;^.*&quot;.set-toolchain.overrideRustToolchain = old: {cargo = toolchain};
+    # for build-rust-package builder
+    &quot;^.*&quot;.set-toolchain.overrideRustToolchain = old: {
+      cargo = toolchain;
+      rustc = toolchain;
+    };
+  };
+  # ...
+}
+</code></pre>
+<ul>
+<li>Usage with <a href="https://github.com/oxalica/rust-overlay">oxalica's rust-overlay</a>:</li>
+</ul>
+<pre><code class="language-nix">let
+  # ...
+  toolchain = rust-overlay.packages.${system}.rust;
+  # ...
+in
+{
+  # ...
+  packageOverrides = {
+    # for crane builder
+    &quot;^.*&quot;.set-toolchain.overrideRustToolchain = old: {cargo = toolchain};
+    # for build-rust-package builder
+    &quot;^.*&quot;.set-toolchain.overrideRustToolchain = old: {
+      cargo = toolchain;
+      rustc = toolchain;
+    };
   };
   # ...
 }
