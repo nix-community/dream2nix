@@ -21,6 +21,8 @@ Builds a package using `buildRustPackage` from `nixpkgs`.
 ### crane (ifd)
 
 Builds a package using [`crane`](https://github.com/ipetkov/crane).
+This builder builds two seperate derivations, one for dependencies and the other for your crate.
+The dependencies derivation will be named `<crate>-deps` where `<crate>` is the name of the crate you are building.
 
 #### Override gotchas
 
@@ -84,7 +86,7 @@ You can also of course override the toolchain for only certain crates:
 }
 ```
 
-#### crane notes
+#### `crane` notes
 
 The crane builder does not require a `rustc` package in the toolchain specified, only a `cargo` package is needed.
 If cross-compiling, keep in mind that it also takes `cargo` packages like so:
@@ -112,6 +114,54 @@ in
     crate-name.set-toolchain.overrideRustToolchain = toolchainOverride;
     crate-name-deps.set-toolchain.overrideRustToolchain = toolchainOverride;
     # ...
+  };
+  # ...
+}
+```
+
+#### Examples
+
+- Usage with [fenix](https://github.com/nix-community/fenix):
+```nix
+let
+  # ...
+  # we use the full toolchain derivation here as using
+  # only the cargo / rustc derivation *does not* work.
+  toolchain = fenix.packages.${system}.minimal.toolchain;
+  # ...
+in
+{
+  # ...
+  packageOverrides = {
+    # for crane builder
+    "^.*".set-toolchain.overrideRustToolchain = old: {cargo = toolchain};
+    # for build-rust-package builder
+    "^.*".set-toolchain.overrideRustToolchain = old: {
+      cargo = toolchain;
+      rustc = toolchain;
+    };
+  };
+  # ...
+}
+```
+
+- Usage with [oxalica's rust-overlay](https://github.com/oxalica/rust-overlay):
+```nix
+let
+  # ...
+  toolchain = rust-overlay.packages.${system}.rust;
+  # ...
+in
+{
+  # ...
+  packageOverrides = {
+    # for crane builder
+    "^.*".set-toolchain.overrideRustToolchain = old: {cargo = toolchain};
+    # for build-rust-package builder
+    "^.*".set-toolchain.overrideRustToolchain = old: {
+      cargo = toolchain;
+      rustc = toolchain;
+    };
   };
   # ...
 }
