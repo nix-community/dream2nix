@@ -23,10 +23,7 @@ The intention is to integrate many existing 2nix converters into this framework,
 ### Further reading
 
 - [Architectural Considerations](./intro/architectural-considerations.md)
-- [How would this improve the packaging situation in nixpkgs](./intro/nixpkgs-improvements.md)
-- [Override System](./intro/override-system.md)
-- [Contributors Guide](./contributing.md)
-- [Extending dream2nix](./extending-dream2nix.md)
-- [Subsystems](./subsystems.md)
+- [Potential impact on nixpkgs](./intro/nixpkgs-improvements.md)
+- [Development Roundups](./development-roundups.md)
 
 [glossary]: https://nixos.wiki/wiki/Glossary "glossary"
