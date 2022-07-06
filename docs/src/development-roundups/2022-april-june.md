@@ -20,6 +20,7 @@ This is why we established a unit testing suit for pure translators. This is rea
 
 ## More Changes
 
+- Reorganized internal code structure of `dream2nix` (`builders`, `translators`, `discoverers` moved to `subsystems`)
 - New community overrides to fix some nodejs packages
 - Improved usage examples in readme
 - Improvements on several subsystems including nodejs and rust
@@ -29,8 +30,10 @@ https://nix-community.github.io/dream2nix/
 - Added subsystems:
   - python
   - haskell
-- Added support for formats:
+- Added support for translating formats:
   - python: setup.py
   - haskell: stack.yaml.lock (stack)
   - haskell: plan.json (cabal)
-  - rust: Cargo.toml
+  - rust: Cargo.toml, Cargo.lock
+- Added builders for:
+  - haskell: `default`
