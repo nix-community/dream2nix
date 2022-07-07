@@ -42,7 +42,12 @@ in rec {
       # so we can apply it to the actual derivation later
       overrideDrvFunc = args.overrideDrvFunc or (_: {});
       cleanedArgs = l.removeAttrs args ["overrideDrvFunc"];
-      drv = ((mkBuildFunc toolchain) cleanedArgs).overrideAttrs overrideDrvFunc;
+      _drv = ((mkBuildFunc toolchain) cleanedArgs).overrideAttrs overrideDrvFunc;
+      drv =
+        _drv
+        // {
+          passthru = (_drv.passthru or {}) // {rustToolchain = toolchain;};
+        };
     in
       drv
       // {

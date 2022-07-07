@@ -98,10 +98,34 @@
       produceDerivation
       pname
       (buildPackageWithToolchain defaultToolchain buildArgs);
-  in {
-    packages =
+
+    mkShellForPkg = pkg:
+      pkg.overrideAttrs (old: {
+        buildInputs =
+          (old.buildInputs or [])
+          ++ [
+            (
+              pkg.passthru.rustToolchain.cargoHostTarget
+              or pkg.passthru.rustToolchain.cargo
+            )
+          ];
+      });
+
+    allPackages =
       l.mapAttrs
       (name: version: {"${version}" = buildPackage name version;})
       args.packages;
+
+    allDevshells =
+      l.mapAttrs
+      (name: version: mkShellForPkg allPackages.${name}.${version})
+      args.packages;
+  in {
+    packages = allPackages;
+    devShells =
+      allDevshells
+      // {
+        default = allDevshells.${defaultPackageName};
+      };
   };
 }

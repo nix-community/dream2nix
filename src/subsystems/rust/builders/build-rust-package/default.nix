@@ -62,10 +62,34 @@
           ${utils.writeCargoLock}
         '';
       });
-  in {
-    packages =
+
+    mkShellForPkg = pkg:
+      pkg.overrideAttrs (old: {
+        buildInputs =
+          (old.buildInputs or [])
+          ++ (
+            with pkg.passthru.rustToolchain; [
+              cargo
+              rustc
+            ]
+          );
+      });
+
+    allPackages =
       l.mapAttrs
       (name: version: {"${version}" = buildPackage name version;})
       args.packages;
+
+    allDevshells =
+      l.mapAttrs
+      (name: version: mkShellForPkg allPackages.${name}.${version})
+      args.packages;
+  in {
+    packages = allPackages;
+    devShells =
+      allDevshells
+      // {
+        default = allDevshells.${defaultPackageName};
+      };
   };
 }
