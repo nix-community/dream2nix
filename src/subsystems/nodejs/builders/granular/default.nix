@@ -167,21 +167,31 @@
         deps
         (dep: allPackages."${dep.name}"."${dep.version}");
 
+      # Derivation building the ./node_modules directory in isolation.
+      # This is used for the devShell of the current package.
+      # We do not want to build the full package for the devShell.
       nodeModulesDir = pkgs.runCommand "node_modules-${pname}" {} ''
+        # symlink direct dependencies to ./node_modules
         mkdir $out
         ${l.concatStringsSep "\n" (
           l.forEach nodeDeps
           (pkg: ''
-            ln -s ${pkg}/lib/node_modules/* $out/
+            for dir in $(ls ${pkg}/lib/node_modules/); do
+              if [[ $dir == @* ]]; then
+                mkdir -p $out/$dir
+                ln -s ${pkg}/lib/node_modules/$dir/* $out/$dir/
+              else
+                ln -s ${pkg}/lib/node_modules/$dir $out/
+              fi
+            done
           '')
         )}
-      '';
 
-      nodeModulesBinDirs = pkgs.runCommand "node_modules_bin-${pname}" {} ''
-        touch $out
+        # symlink transitive executables to ./node_modules/.bin
+        mkdir $out/.bin
         for dep in ${l.toString nodeDeps}; do
-          for bin in $(${pkgs.findutils}/bin/find $dep -name .bin); do
-            echo "$bin" >> $out
+          for binDir in $(ls -d $dep/lib/node_modules/.bin 2>/dev/null ||:); do
+            ln -sf $binDir/* $out/.bin/
           done
         done
       '';
@@ -238,9 +248,6 @@
             nodejs
           ];
           shellHook = ''
-            # set up PATH for executables of node dependencies
-            export PATH="$PATH:$(tr '\n' ':' < ${nodeModulesBinDirs})"
-
             # create the ./node_modules directory
             if [ -e ./node_modules ] && [ ! -L ./node_modules ]; then
               echo -e "\nFailed creating the ./node_modules symlink."
@@ -248,6 +255,7 @@
             else
               rm -f ./node_modules
               ln -s ${nodeModulesDir} ./node_modules
+              export PATH="$PATH:$(realpath ./node_modules)/.bin"
             fi
           '';
         };
@@ -470,6 +478,17 @@
             chmod +x $nodeModules/.bin/*
             ln -s $nodeModules/.bin $out/bin
           fi
+
+          echo "Symlinking transitive executables to $nodeModules/.bin"
+          echo "node deps: ${l.toString nodeDeps}"
+          for dep in ${l.toString nodeDeps}; do
+            echo "bin dirs: $(ls -d $dep/lib/node_modules/.bin 2>/dev/null ||:)"
+            for binDir in $(ls -d $dep/lib/node_modules/.bin 2>/dev/null ||:); do
+              echo binDir $binDir
+              mkdir -p $nodeModules/.bin
+              ln -sf $binDir/* $nodeModules/.bin/
+            done
+          done
 
           echo "Symlinking manual pages"
           if [ -d "$nodeModules/$packageName/man" ]
