@@ -179,6 +179,9 @@
     flakeOutputs;
 in {
   inherit init makeFlakeOutputs makeFlakeOutputsForIndexes;
-  dlib = import ./lib {inherit lib;};
+  dlib = import ./lib {
+    inherit lib;
+    config = (import ./utils/config.nix).loadConfig {};
+  };
   riseAndShine = throw "Use makeFlakeOutputs instead of riseAndShine.";
 }

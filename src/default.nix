@@ -4,16 +4,20 @@
 # use ./lib.nix instead.
 {
   pkgs ? import <nixpkgs> {},
-  dlib ? import ./lib {inherit config lib;},
+  dlib ?
+    import ./lib {
+      inherit lib;
+      config = (import ./utils/config.nix).loadConfig config;
+    },
   lib ? pkgs.lib,
   nix ? pkgs.nix,
   # default to empty dream2nix config
   config ?
   # if called via CLI, load config via env
   if builtins ? getEnv && builtins.getEnv "dream2nixConfig" != ""
-  then builtins.toPath (builtins.getEnv "dream2nixConfig")
+  then (import ./utils/config.nix).loadConfig (builtins.toPath (builtins.getEnv "dream2nixConfig"))
   # load from default directory
-  else {},
+  else (import ./utils/config.nix).loadConfig {},
   # dependencies of dream2nix
   externalSources ?
     lib.genAttrs
