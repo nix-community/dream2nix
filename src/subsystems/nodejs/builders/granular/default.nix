@@ -244,13 +244,16 @@
         passthru.dependencies = passthruDeps;
 
         passthru.devShell = pkgs.mkShell {
+          path = [
+            nodejs
+          ];
           buildInputs = [
             nodejs
           ];
           shellHook = ''
             # create the ./node_modules directory
             if [ -e ./node_modules ] && [ ! -L ./node_modules ]; then
-              echo -e "\nFailed creating the ./node_modules symlink."
+              echo -e "\nFailed creating the ./node_modules symlink to ${nodeModulesDir}"
               echo -e "\n./node_modules already exists and is a directory, which means it is managed by anaother program. Please delete ./node_modules first and re-enter the dev shell."
             else
               rm -f ./node_modules
