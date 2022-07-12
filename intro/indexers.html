@@ -3,7 +3,7 @@
     <head>
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
-        <title>Rust - dream2nix documentation</title>
+        <title>Indexers - dream2nix documentation</title>
         <!-- Custom HTML head -->
         <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
         <meta name="description" content="">
@@ -75,7 +75,7 @@
 
         <nav id="sidebar" class="sidebar" aria-label="Table of contents">
             <div class="sidebar-scrollbox">
-                <ol class="chapter"><li class="chapter-item expanded "><a href="../intro.html"><strong aria-hidden="true">1.</strong> Introduction</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../intro/architectural-considerations.html"><strong aria-hidden="true">1.1.</strong> Architectural Considerations</a></li><li class="chapter-item expanded "><a href="../intro/nixpkgs-improvements.html"><strong aria-hidden="true">1.2.</strong> Nixpkgs improvements</a></li><li class="chapter-item expanded "><a href="../intro/override-system.html"><strong aria-hidden="true">1.3.</strong> Override system</a></li><li class="chapter-item expanded "><a href="../intro/translators.html"><strong aria-hidden="true">1.4.</strong> Translators</a></li><li class="chapter-item expanded "><a href="../intro/indexers.html"><strong aria-hidden="true">1.5.</strong> Indexers</a></li></ol></li><li class="chapter-item expanded "><a href="../subsystems.html"><strong aria-hidden="true">2.</strong> Subsystems</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../subsystems/rust.html" class="active"><strong aria-hidden="true">2.1.</strong> Rust</a></li></ol></li><li class="chapter-item expanded "><a href="../extending-dream2nix.html"><strong aria-hidden="true">3.</strong> Extending dream2nix</a></li><li class="chapter-item expanded "><a href="../contributing.html"><strong aria-hidden="true">4.</strong> Contributing</a></li><li class="chapter-item expanded "><a href="../development-roundups.html"><strong aria-hidden="true">5.</strong> Development Roundups</a></li></ol>
+                <ol class="chapter"><li class="chapter-item expanded "><a href="../intro.html"><strong aria-hidden="true">1.</strong> Introduction</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../intro/architectural-considerations.html"><strong aria-hidden="true">1.1.</strong> Architectural Considerations</a></li><li class="chapter-item expanded "><a href="../intro/nixpkgs-improvements.html"><strong aria-hidden="true">1.2.</strong> Nixpkgs improvements</a></li><li class="chapter-item expanded "><a href="../intro/override-system.html"><strong aria-hidden="true">1.3.</strong> Override system</a></li><li class="chapter-item expanded "><a href="../intro/translators.html"><strong aria-hidden="true">1.4.</strong> Translators</a></li><li class="chapter-item expanded "><a href="../intro/indexers.html" class="active"><strong aria-hidden="true">1.5.</strong> Indexers</a></li></ol></li><li class="chapter-item expanded "><a href="../subsystems.html"><strong aria-hidden="true">2.</strong> Subsystems</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../subsystems/rust.html"><strong aria-hidden="true">2.1.</strong> Rust</a></li></ol></li><li class="chapter-item expanded "><a href="../extending-dream2nix.html"><strong aria-hidden="true">3.</strong> Extending dream2nix</a></li><li class="chapter-item expanded "><a href="../contributing.html"><strong aria-hidden="true">4.</strong> Contributing</a></li><li class="chapter-item expanded "><a href="../development-roundups.html"><strong aria-hidden="true">5.</strong> Development Roundups</a></li></ol>
             </div>
             <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
         </nav>
@@ -134,149 +134,45 @@
 
                 <div id="content" class="content">
                     <main>
-                        <h1 id="rust-subsystem"><a class="header" href="#rust-subsystem">Rust subsystem</a></h1>
-<p>This section documents the Rust subsystem.</p>
-<h2 id="translators"><a class="header" href="#translators">Translators</a></h2>
-<h3 id="cargo-lock-pure"><a class="header" href="#cargo-lock-pure">cargo-lock (pure)</a></h3>
-<p>Translates a <code>Cargo.lock</code> file to a dream2nix lockfile.</p>
-<h3 id="cargo-toml-impure"><a class="header" href="#cargo-toml-impure">cargo-toml (impure)</a></h3>
-<p>Translates a <code>Cargo.toml</code> file to a dream2nix lockfile by generating a <code>Cargo.lock</code> file first and then using <code>cargo-lock</code> translator on the generated lockfile.</p>
-<h2 id="builders"><a class="header" href="#builders">Builders</a></h2>
-<h3 id="build-rust-package-pure-default"><a class="header" href="#build-rust-package-pure-default">build-rust-package (pure) (default)</a></h3>
-<p>Builds a package using <code>buildRustPackage</code> from <code>nixpkgs</code>.</p>
-<h3 id="crane-ifd"><a class="header" href="#crane-ifd">crane (ifd)</a></h3>
-<p>Builds a package using <a href="https://github.com/ipetkov/crane"><code>crane</code></a>.
-This builder builds two seperate derivations, one for dependencies and the other for your crate.
-The dependencies derivation will be named <code>&lt;crate&gt;-deps</code> where <code>&lt;crate&gt;</code> is the name of the crate you are building.</p>
-<h4 id="override-gotchas"><a class="header" href="#override-gotchas">Override gotchas</a></h4>
-<p>This builder builds two separate derivations, one for your crate's dependencies and another for your crate.
-This means that if you want to override stuff for the dependencies you need to use the <code>&lt;crate-name&gt;-deps</code> key for your override where <code>&lt;crate-name&gt;</code> is the name of the crate you are building.</p>
-<pre><code class="language-nix">{
-  # ...
-  packageOverrides = {
-    # this will apply to your crate
-    crate.my-overrides = { /* ... */ };
-    # this will apply to your crate's dependencies
-    crate-deps.my-overrides = { /* ... */ };
-  };
-  # ...
-}
-</code></pre>
-<h4 id="on-the-ifd-marking"><a class="header" href="#on-the-ifd-marking">On the IFD marking</a></h4>
-<p>The <code>crane</code> builder utilizes IFD to clean the source your crates reside in.
-This is needed to not rebuild the dependency only derivation everytime the source for your crates is changed.</p>
-<p>However this does not mean that the IFD will always be triggered.
-If you are passing dream2nix a path source or a flake source, then IFD won't be triggered as these sources are already realized.
-But if you are passing the result of a <code>pkgs.fetchFromGitHub</code> for example, this will trigger IFD since it is not already realized.</p>
-<h3 id="specifying-the-rust-toolchain"><a class="header" href="#specifying-the-rust-toolchain">Specifying the Rust toolchain</a></h3>
-<p>Specify an override for all packages that override the Rust toolchain used.
-This can be done like so:</p>
-<pre><code class="language-nix">{
-  # ...
-  packageOverrides = {
-    # ...
-    &quot;^.*&quot;.set-toolchain.overrideRustToolchain = old: {
-      inherit (pkgs) cargo rustc;
-    };
-    # ...
-  };
-  # ...
-}
-</code></pre>
-<p>You can also of course override the toolchain for only certain crates:</p>
-<pre><code class="language-nix">{
-  # ...
-  packageOverrides = {
-    # ...
-    crate-name.set-toolchain.overrideRustToolchain = old: {
-      inherit (pkgs) cargo rustc;
-    };
-    # ...
-  };
-  # ...
-}
-</code></pre>
-<h4 id="crane-notes"><a class="header" href="#crane-notes"><code>crane</code> notes</a></h4>
-<p>The crane builder does not require a <code>rustc</code> package in the toolchain specified, only a <code>cargo</code> package is needed.
-If cross-compiling, keep in mind that it also takes <code>cargo</code> packages like so:</p>
-<pre><code class="language-nix">{
-  cargoHostTarget = cargo-package;
-  cargoBuildBuild = other-cargo-package;
-}
-</code></pre>
-<p>where <code>cargoHostTarget</code> has the same meaning as coming from a <code>pkgsHostTarget</code>.
-And <code>cargoBuildBuild</code> has the same meaning as coming from a <code>pkgsBuildBuild</code>.</p>
-<p>To override the toolchain for a specific package, you will need to set an override for both the dependencies and the main package derivation:</p>
-<pre><code class="language-nix">let
-  toolchainOverride = old: { /* ... */ };
-in
-{
-  # ...
-  packageOverrides = {
-    # ...
-    crate-name.set-toolchain.overrideRustToolchain = toolchainOverride;
-    crate-name-deps.set-toolchain.overrideRustToolchain = toolchainOverride;
-    # ...
-  };
-  # ...
-}
-</code></pre>
-<h4 id="examples"><a class="header" href="#examples">Examples</a></h4>
+                        <h1 id="indexers"><a class="header" href="#indexers">Indexers</a></h1>
+<p>Indexers are programs that can query a package repository (think of npm, or crates.io) for package information.
+This information mainly consists of the package name, the package version, and anything extra that might be useful / needed to fetch / translate it.
+The information is stored as a &quot;source shortcut&quot;, which basically follows the format <code>proto1+proto2:pname/version?key=value&amp;key2=value2</code>.</p>
+<p>Examples:</p>
 <ul>
-<li>Usage with <a href="https://github.com/nix-community/fenix">fenix</a>:</li>
+<li><code>npm:execa/6.1.0</code></li>
+<li><code>crates-io:ripgrep/13.0.0?hash=somehash</code></li>
+<li><code>git+ssh://github.com/owner/repo?rev=refs/heads/v1.2.3&amp;dir=sub/dir</code>.</li>
+<li>etc.</li>
 </ul>
-<pre><code class="language-nix">let
-  # ...
-  # we use the full toolchain derivation here as using
-  # only the cargo / rustc derivation *does not* work.
-  toolchain = fenix.packages.${system}.minimal.toolchain;
-  # ...
-in
-{
-  # ...
-  packageOverrides = {
-    # for crane builder
-    &quot;^.*&quot;.set-toolchain.overrideRustToolchain = old: {cargo = toolchain};
-    # for build-rust-package builder
-    &quot;^.*&quot;.set-toolchain.overrideRustToolchain = old: {
-      cargo = toolchain;
-      rustc = toolchain;
-    };
-  };
-  # ...
-}
+<h2 id="indexer-inputs"><a class="header" href="#indexer-inputs">Indexer inputs</a></h2>
+<p>Indexers take input as a path to a JSON file, which contains information needed by that specific indexer.
+A common attribute for these inputs across indexers are <code>outputFile</code>, which should be the path to output the generated index to.
+Indexers can vary in functionality, so these JSON inputs should be specified under <code>src/specifications/indexers/</code>.</p>
+<h2 id="indexer-outputs"><a class="header" href="#indexer-outputs">Indexer outputs</a></h2>
+<p>Indexers should output their generated index to where <code>outputFile</code> specifies.
+This index should simply be a list of source shortcuts in JSON. Example:</p>
+<pre><code class="language-json">[
+  &quot;npm:execa/6.1.0&quot;,
+  &quot;npm:meow/10.1.3&quot;,
+  &quot;npm:npm-run/5.0.1&quot;
+]
 </code></pre>
+<h2 id="current-indexers"><a class="header" href="#current-indexers">Current indexers</a></h2>
+<p>Following are the current indexers implemented in dream2nix:</p>
 <ul>
-<li>Usage with <a href="https://github.com/oxalica/rust-overlay">oxalica's rust-overlay</a>:</li>
+<li>crates.io indexer (named <code>crates-io</code>)</li>
+<li>NPM indexer (named <code>npm</code>)</li>
 </ul>
-<pre><code class="language-nix">let
-  # ...
-  toolchain = rust-overlay.packages.${system}.rust;
-  # ...
-in
-{
-  # ...
-  packageOverrides = {
-    # for crane builder
-    &quot;^.*&quot;.set-toolchain.overrideRustToolchain = old: {cargo = toolchain};
-    # for build-rust-package builder
-    &quot;^.*&quot;.set-toolchain.overrideRustToolchain = old: {
-      cargo = toolchain;
-      rustc = toolchain;
-    };
-  };
-  # ...
-}
-</code></pre>
 
                     </main>
 
                     <nav class="nav-wrapper" aria-label="Page navigation">
                         <!-- Mobile navigation buttons -->
-                            <a rel="prev" href="../subsystems.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                            <a rel="prev" href="../intro/translators.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                                 <i class="fa fa-angle-left"></i>
                             </a>
-                            <a rel="next" href="../extending-dream2nix.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                            <a rel="next" href="../subsystems.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                                 <i class="fa fa-angle-right"></i>
                             </a>
                         <div style="clear: both"></div>
@@ -285,10 +181,10 @@ in
             </div>
 
             <nav class="nav-wide-wrapper" aria-label="Page navigation">
-                    <a rel="prev" href="../subsystems.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                    <a rel="prev" href="../intro/translators.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                         <i class="fa fa-angle-left"></i>
                     </a>
-                    <a rel="next" href="../extending-dream2nix.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                    <a rel="next" href="../subsystems.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                         <i class="fa fa-angle-right"></i>
                     </a>
             </nav>
