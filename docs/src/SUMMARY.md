@@ -5,6 +5,7 @@
   - [Nixpkgs improvements](./intro/nixpkgs-improvements.md)
   - [Override system](./intro/override-system.md)
   - [Translators](./intro/translators.md)
+  - [Indexers](./intro/indexers.md)
 - [Subsystems](./subsystems.md)
   - [Rust](./subsystems/rust.md)
 - [Extending dream2nix](./extending-dream2nix.md)

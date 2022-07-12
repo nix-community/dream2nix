@@ -4,16 +4,20 @@
 # use ./lib.nix instead.
 {
   pkgs ? import <nixpkgs> {},
-  dlib ? import ./lib {inherit config lib;},
+  dlib ?
+    import ./lib {
+      inherit lib;
+      config = (import ./utils/config.nix).loadConfig config;
+    },
   lib ? pkgs.lib,
   nix ? pkgs.nix,
   # default to empty dream2nix config
   config ?
   # if called via CLI, load config via env
   if builtins ? getEnv && builtins.getEnv "dream2nixConfig" != ""
-  then builtins.toPath (builtins.getEnv "dream2nixConfig")
+  then (import ./utils/config.nix).loadConfig (builtins.toPath (builtins.getEnv "dream2nixConfig"))
   # load from default directory
-  else {},
+  else (import ./utils/config.nix).loadConfig {},
   # dependencies of dream2nix
   externalSources ?
     lib.genAttrs
@@ -35,17 +39,19 @@
   # load from default directory
   else ./external,
 } @ args: let
+  argsConfig = config;
+in let
   b = builtins;
 
   l = lib // builtins;
 
-  config = (import ./utils/config.nix).loadConfig args.config or {};
+  config = (import ./utils/config.nix).loadConfig argsConfig;
 
   configFile = pkgs.writeText "dream2nix-config.json" (b.toJSON config);
 
   # like pkgs.callPackage, but includes all the dream2nix modules
-  callPackageDream = f: args:
-    pkgs.callPackage f (args
+  callPackageDream = f: fargs:
+    pkgs.callPackage f (fargs
       // {
         inherit apps;
         inherit callPackageDream;
@@ -55,10 +61,16 @@
         inherit externals;
         inherit externalSources;
         inherit fetchers;
+        inherit indexers;
         inherit dream2nixWithExternals;
         inherit utils;
         inherit nix;
         inherit subsystems;
+        dream2nixInterface = {
+          inherit
+            makeOutputsForDreamLock
+            ;
+        };
       });
 
   utils = callPackageDream ./utils {};
@@ -68,6 +80,9 @@
 
   # fetcher implementations
   fetchers = callPackageDream ./fetchers {};
+
+  # indexer implementations
+  indexers = callPackageDream ./indexers {};
 
   # updater modules to find newest package versions
   updaters = callPackageDream ./updaters {};
@@ -667,6 +682,7 @@ in {
     callPackageDream
     dream2nixWithExternals
     fetchers
+    indexers
     fetchSources
     realizeProjects
     translateProjects

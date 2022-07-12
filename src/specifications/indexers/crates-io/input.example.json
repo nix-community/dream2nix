@@ -1,0 +1,10 @@
+{
+  "outputFile": "index.json",
+  "sortBy": "downloads",
+  "maxPages": 1,
+  "verbose": false,
+  "modifications": {
+    "exclusions": ["ripgrep"],
+    "additions": ["linemd"]
+  }
+}

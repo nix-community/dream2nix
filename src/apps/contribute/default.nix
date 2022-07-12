@@ -1,13 +1,14 @@
 {
   # from nixpkgs
   python3,
-  writeScript,
+  writeScriptBin,
   ...
 }: let
   cliPython = python3.withPackages (ps: [ps.cleo]);
-in {
-  program = writeScript "contribute" ''
+in
+  writeScriptBin
+  "contribute"
+  ''
     dream2nixSrc=${../../.} \
       ${cliPython}/bin/python ${./contribute.py} contribute "$@"
-  '';
-}
+  ''
