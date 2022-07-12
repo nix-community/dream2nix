@@ -21,6 +21,8 @@
       ];
     })
     // {
-      checks = self.packages;
+      checks.x86_64-linux.cabal2json = self.packages.x86_64-linux.cabal2json.overrideAttrs (old: {
+        doCheck = false;
+      });
     };
 }
