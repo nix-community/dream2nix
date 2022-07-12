@@ -130,8 +130,7 @@ in
       projectTree = tree.getNodeFromPath project.relPath;
 
       # parse the json / toml etc.
-      projectJsonPath = "${projectSource}/project.json";
-      projectJson = (tree.getNodeFromPath projectJsonPath).jsonContent;
+      projectJson = (projectTree.getNodeFromPath "project.json").jsonContent;
 
     in
 

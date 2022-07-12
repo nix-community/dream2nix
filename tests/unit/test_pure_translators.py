@@ -152,6 +152,7 @@ def test_serializedRawObjects(p):
     ''',
   )
   assert isinstance(serializedRawObjects, list)
+  assert len(serializedRawObjects) > 0
   for raw_obj in serializedRawObjects:
     assert isinstance(raw_obj, dict)
 
@@ -277,7 +278,7 @@ def test_keys(p):
   assert isinstance(objectsByKey, dict)
   for key_name, objects in objectsByKey.items():
     for finalObj in objects.values():
-      assert set(finalObj.keys()) == \
-        {'name', 'version', 'sourceSpec', 'dependencies', 'rawObj'}
+      assert set(finalObj.keys()) - {'rawObj', 'key'} == \
+        {'name', 'version', 'sourceSpec', 'dependencies'}
       check_format_dependencies(finalObj['dependencies'])
       check_format_sourceSpec(finalObj['sourceSpec'])

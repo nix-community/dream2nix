@@ -15,10 +15,7 @@
   translatorsWithDiscoverFunc =
     l.filter (translator: translator ? discoverProject) allTranslators;
 
-  defaultDiscoverer.discover = {
-    tree,
-    dirName ? tree.relPath,
-  }: let
+  defaultDiscoverer.discover = {tree}: let
     translatorsCurrentDir =
       l.filter
       (t: t.discoverProject tree)
@@ -27,25 +24,45 @@
     projectsCurrentDir =
       l.map
       (t: {
-        name = "${dirName}-${t.name}";
+        name = "main";
         relPath = tree.relPath;
         translators = [t.name];
         subsystem = t.subsystem;
       })
       translatorsCurrentDir;
 
+    # If there are multiple projects detected for the same subsystem,
+    # merge them to a single one with translators = [...]
+    projectsCurrentDirMerged =
+      l.attrValues
+      (l.foldl
+        (all: curr:
+          all
+          // {
+            "${curr.subsystem}" =
+              all.${curr.subsystem}
+              or curr
+              // {
+                translators =
+                  l.unique (all.${curr.subsystem}.translators or [] ++ curr.translators);
+              };
+          })
+        {}
+        projectsCurrentDir);
+
     subdirProjects =
       l.flatten
       (l.mapAttrsToList
         (dirName: tree:
           defaultDiscoverer.discover {
-            inherit dirName tree;
+            inherit tree;
           })
         tree.directories or {});
-  in
+  in (
     if translatorsCurrentDir == []
     then subdirProjects
-    else projectsCurrentDir ++ subdirProjects;
+    else projectsCurrentDirMerged ++ subdirProjects
+  );
 
   discoverProjects = {
     source ? throw "Pass either `source` or `tree` to discoverProjects",
@@ -59,12 +76,12 @@
         allDiscoverers);
 
     discoveredProjectsSorted = let
-      toposorted =
-        l.toposort
+      sorted =
+        l.sort
         (p1: p2: l.hasPrefix p1.relPath p2.relPath)
         discoveredProjects;
     in
-      toposorted.result;
+      sorted;
 
     rootProject = l.head discoveredProjectsSorted;
 
