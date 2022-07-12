@@ -9,3 +9,4 @@
   - [Rust](./subsystems/rust.md)
 - [Extending dream2nix](./extending-dream2nix.md)
 - [Contributing](./contributing.md)
+- [Development Roundups](./development-roundups.md)
