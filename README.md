@@ -77,6 +77,7 @@ Extensive Example `flake.nix`:
         {
           filter = project: project.translator == "package-json";
           subsystemInfo.npmArgs = "--legacy-peer-deps";
+          subsystemInfo.nodejs = 18;
         }
       ];
 

@@ -17,6 +17,7 @@
       settings = [
         {
           subsystemInfo.noDev = true;
+          subsystemInfo.nodejs = 18;
         }
       ];
     })

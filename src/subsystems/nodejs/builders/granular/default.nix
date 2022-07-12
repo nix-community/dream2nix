@@ -62,7 +62,7 @@
           makePackage name version))
       packageVersions;
 
-    outputs = {
+    outputs = rec {
       # select only the packages listed in dreamLock as main packages
       packages =
         b.foldl'
@@ -73,6 +73,16 @@
             "${name}"."${version}" = allPackages."${name}"."${version}";
           })
           args.packages);
+
+      devShell = devShells.default;
+
+      devShells =
+        {default = devShells.${defaultPackageName};}
+        // (
+          l.mapAttrs
+          (name: version: allPackages.${name}.${version}.devShell)
+          args.packages
+        );
     };
 
     # This is only executed for electron based packages.
@@ -148,12 +158,43 @@
 
     # Generates a derivation for a specific package name + version
     makePackage = name: version: let
+      pname = lib.replaceStrings ["@" "/"] ["__at__" "__slash__"] name;
+
       deps = getDependencies name version;
 
       nodeDeps =
         lib.forEach
         deps
         (dep: allPackages."${dep.name}"."${dep.version}");
+
+      # Derivation building the ./node_modules directory in isolation.
+      # This is used for the devShell of the current package.
+      # We do not want to build the full package for the devShell.
+      nodeModulesDir = pkgs.runCommand "node_modules-${pname}" {} ''
+        # symlink direct dependencies to ./node_modules
+        mkdir $out
+        ${l.concatStringsSep "\n" (
+          l.forEach nodeDeps
+          (pkg: ''
+            for dir in $(ls ${pkg}/lib/node_modules/); do
+              if [[ $dir == @* ]]; then
+                mkdir -p $out/$dir
+                ln -s ${pkg}/lib/node_modules/$dir/* $out/$dir/
+              else
+                ln -s ${pkg}/lib/node_modules/$dir $out/
+              fi
+            done
+          '')
+        )}
+
+        # symlink transitive executables to ./node_modules/.bin
+        mkdir $out/.bin
+        for dep in ${l.toString nodeDeps}; do
+          for binDir in $(ls -d $dep/lib/node_modules/.bin 2>/dev/null ||:); do
+            ln -sf $binDir/* $out/.bin/
+          done
+        done
+      '';
 
       passthruDeps =
         l.listToAttrs
@@ -198,9 +239,26 @@
 
         packageName = name;
 
-        pname = lib.replaceStrings ["@" "/"] ["__at__" "__slash__"] name;
+        inherit pname;
 
         passthru.dependencies = passthruDeps;
+
+        passthru.devShell = pkgs.mkShell {
+          buildInputs = [
+            nodejs
+          ];
+          shellHook = ''
+            # create the ./node_modules directory
+            if [ -e ./node_modules ] && [ ! -L ./node_modules ]; then
+              echo -e "\nFailed creating the ./node_modules symlink to ${nodeModulesDir}"
+              echo -e "\n./node_modules already exists and is a directory, which means it is managed by another program. Please delete ./node_modules first and re-enter the dev shell."
+            else
+              rm -f ./node_modules
+              ln -s ${nodeModulesDir} ./node_modules
+              export PATH="$PATH:$(realpath ./node_modules)/.bin"
+            fi
+          '';
+        };
 
         installMethod = "symlink";
 
@@ -420,6 +478,17 @@
             chmod +x $nodeModules/.bin/*
             ln -s $nodeModules/.bin $out/bin
           fi
+
+          echo "Symlinking transitive executables to $nodeModules/.bin"
+          echo "node deps: ${l.toString nodeDeps}"
+          for dep in ${l.toString nodeDeps}; do
+            echo "bin dirs: $(ls -d $dep/lib/node_modules/.bin 2>/dev/null ||:)"
+            for binDir in $(ls -d $dep/lib/node_modules/.bin 2>/dev/null ||:); do
+              echo binDir $binDir
+              mkdir -p $nodeModules/.bin
+              ln -sf $binDir/* $nodeModules/.bin/
+            done
+          done
 
           echo "Symlinking manual pages"
           if [ -d "$nodeModules/$packageName/man" ]
