@@ -12,7 +12,16 @@ exampleDreamLock = dict(
   ),
   dependencies = {},
   cyclicDependencies = {},
-  sources = {},
+  sources = dict(
+    example = {
+      "1.2.3": dict(
+        type = "path",
+        rootName = None,
+        rootVersion = None,
+        relPath = "a/b/c",
+      ),
+    },
+  ),
 )
 
 def test_dream_lock_inject():
@@ -31,3 +40,18 @@ def test_dream_lock_inject():
     name="injected-package",
     version="1.0.0",
   )]
+
+def test_dream_lock_replace_root_sources():
+  result = nix_ffi.callNixFunction(
+    'utils.dreamLock.replaceRootSources',
+    dreamLock=exampleDreamLock,
+    newSourceRoot=dict(
+      type = "http",
+      url = "something",
+    ),
+  )
+  assert result['sources']['example']['1.2.3'] == dict(
+    type = "http",
+    url = "something",
+    dir = "a/b/c",
+  )
