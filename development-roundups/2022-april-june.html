@@ -3,7 +3,7 @@
     <head>
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
-        <title>Override system - dream2nix documentation</title>
+        <title>April - June 2022 - dream2nix documentation</title>
         <!-- Custom HTML head -->
         <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
         <meta name="description" content="">
@@ -75,7 +75,7 @@
 
         <nav id="sidebar" class="sidebar" aria-label="Table of contents">
             <div class="sidebar-scrollbox">
-                <ol class="chapter"><li class="chapter-item expanded "><a href="../intro.html"><strong aria-hidden="true">1.</strong> Introduction</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../intro/architectural-considerations.html"><strong aria-hidden="true">1.1.</strong> Architectural Considerations</a></li><li class="chapter-item expanded "><a href="../intro/nixpkgs-improvements.html"><strong aria-hidden="true">1.2.</strong> Nixpkgs improvements</a></li><li class="chapter-item expanded "><a href="../intro/override-system.html" class="active"><strong aria-hidden="true">1.3.</strong> Override system</a></li><li class="chapter-item expanded "><a href="../intro/translators.html"><strong aria-hidden="true">1.4.</strong> Translators</a></li><li class="chapter-item expanded "><a href="../intro/indexers.html"><strong aria-hidden="true">1.5.</strong> Indexers</a></li></ol></li><li class="chapter-item expanded "><a href="../subsystems.html"><strong aria-hidden="true">2.</strong> Subsystems</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../subsystems/rust.html"><strong aria-hidden="true">2.1.</strong> Rust</a></li></ol></li><li class="chapter-item expanded "><a href="../extending-dream2nix.html"><strong aria-hidden="true">3.</strong> Extending dream2nix</a></li><li class="chapter-item expanded "><a href="../contributing.html"><strong aria-hidden="true">4.</strong> Contributing</a></li><li class="chapter-item expanded "><a href="../development-roundups.html"><strong aria-hidden="true">5.</strong> Development Roundups</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../development-roundups/2022-april-june.html"><strong aria-hidden="true">5.1.</strong> April - June 2022</a></li></ol></li></ol>
+                <ol class="chapter"><li class="chapter-item expanded "><a href="../intro.html"><strong aria-hidden="true">1.</strong> Introduction</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../intro/architectural-considerations.html"><strong aria-hidden="true">1.1.</strong> Architectural Considerations</a></li><li class="chapter-item expanded "><a href="../intro/nixpkgs-improvements.html"><strong aria-hidden="true">1.2.</strong> Nixpkgs improvements</a></li><li class="chapter-item expanded "><a href="../intro/override-system.html"><strong aria-hidden="true">1.3.</strong> Override system</a></li><li class="chapter-item expanded "><a href="../intro/translators.html"><strong aria-hidden="true">1.4.</strong> Translators</a></li><li class="chapter-item expanded "><a href="../intro/indexers.html"><strong aria-hidden="true">1.5.</strong> Indexers</a></li></ol></li><li class="chapter-item expanded "><a href="../subsystems.html"><strong aria-hidden="true">2.</strong> Subsystems</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../subsystems/rust.html"><strong aria-hidden="true">2.1.</strong> Rust</a></li></ol></li><li class="chapter-item expanded "><a href="../extending-dream2nix.html"><strong aria-hidden="true">3.</strong> Extending dream2nix</a></li><li class="chapter-item expanded "><a href="../contributing.html"><strong aria-hidden="true">4.</strong> Contributing</a></li><li class="chapter-item expanded "><a href="../development-roundups.html"><strong aria-hidden="true">5.</strong> Development Roundups</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../development-roundups/2022-april-june.html" class="active"><strong aria-hidden="true">5.1.</strong> April - June 2022</a></li></ol></li></ol>
             </div>
             <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
         </nav>
@@ -134,71 +134,65 @@
 
                 <div id="content" class="content">
                     <main>
-                        <p>The override system plays an important role when packaging software with dream2nix. Overrides are the only way to express package specific logic in dream2nix. This serves the purpose of strictly separating:</p>
-<pre><code>  - generic logic     (builders)
-  - specific logic    (overrides)
-  - data              (dream-lock.json)
-</code></pre>
-<p>To optimize for scalalable workflows, the structure of dream2nix overrides differs from the ones seen in other projects.
-dream2nix overrides have the following properties:</p>
+                        <h1 id="development-roundup-april---june-2022"><a class="header" href="#development-roundup-april---june-2022">Development Roundup April - June 2022</a></h1>
+<p>In the period of 3 months, <a href="https://github.com/nix-community/dream2nix/pulls?page=1&amp;q=is%3Apr+sort%3Acreated-asc+merged%3A2022-06+merged%3A2022-05+merged%3A2022-04">40 pull requests were merged</a>.</p>
+<h2 id="most-notable-changes"><a class="header" href="#most-notable-changes">Most Notable Changes</a></h2>
+<h3 id="extension-interface-for-subsystem-modules"><a class="header" href="#extension-interface-for-subsystem-modules">Extension Interface for subsystem modules</a></h3>
+<p>Dream2nix now has an extension interface which allows users to add support for other ecosystems and lock file formats out of tree. This allows people to maintain private dream2nix extensions or publish their extensions on their own repositories. For the future it is planned to go one step further and use the nixos module system for dream2nix.</p>
+<h3 id="improved-handling-of-mono-repo-projects"><a class="header" href="#improved-handling-of-mono-repo-projects">Improved handling of mono-repo projects</a></h3>
+<p>Many software projects in the wild consist of several sub-project. The sub-projects could be of the same ecosystem, like a nodejs project managed by npm, declaring several workspaces, or they could be of completely different ecosystems, like a nodejs project, containing a rust and a go module within the same source tree. A goal for dream2nix is to handle all these constellations well, to provide the user with decent automation and interfaces in order to simplify working with these complex software projects as much as possible. Therefore a discovery mechanism has been established and improved over time to tackle mono-repo scenarios, detecting sub-projects of arbitrary type within a larger source tree, splitting the detected projects into reasonable chunks of work that can be processed by many different translator modules of dream2nix.</p>
+<h3 id="unit-tests-for-pure-translators"><a class="header" href="#unit-tests-for-pure-translators">Unit tests for pure translators</a></h3>
+<p>Pure translators are the parts of dream2nix which are able to read upstream lock files and other metadata and convert this data to the dream2nix internal dream-lock format. All of this in done in pure nix without calling to external programs. For example the cargo-lock translator allows dream2nix to just build any rust project on-the-fly, given just the source code of the project.
+In order for dream2nix to extend its support onto many more ecosystems, we rely on the community contributions adding pure translators. For this reason we want to make such contributions as simple as possible.
+This is why we established a unit testing suit for pure translators. This is realized by using python + pytest to define the unit tests which then call out to nix via our python nix-ffi. This allows people to implement new translators step by step while getting constant feedback if they are on the right track.</p>
+<h2 id="more-changes"><a class="header" href="#more-changes">More Changes</a></h2>
 <ul>
-<li><strong>referenceable</strong>: each override is assigned to a key through which it can be referenced. This allows for better inspection, selective debugging, replacing, etc.</li>
-<li><strong>conditional</strong>: each override can declare a condition, so that the override only applies when the condiiton evaluates positively.</li>
-<li><strong>attribute-oriented</strong>: The relevant parameters are attributes, not override functions. dream2nix will automatically figure out which underlying function (eg. override, overrideAttrs, ...) needs to be called to update each given attribute. The user is not confronted with this by default.</li>
+<li>
+<p>Reorganized internal code structure of <code>dream2nix</code> (<code>builders</code>, <code>translators</code>, <code>discoverers</code> moved to <code>subsystems</code>)</p>
+</li>
+<li>
+<p>New community overrides to fix some nodejs packages</p>
+</li>
+<li>
+<p>Improved usage examples in readme</p>
+</li>
+<li>
+<p>Improvements on several subsystems including nodejs and rust</p>
+</li>
+<li>
+<p>New documentation website:
+https://nix-community.github.io/dream2nix/</p>
+</li>
+<li>
+<p>Added subsystems:</p>
+<ul>
+<li>python</li>
+<li>haskell</li>
 </ul>
-<p>Each subsytem in dream2nix like <code>nodejs</code> or <code>python</code> manages its overrides in a separate directory to avoid package name collisions.</p>
-<p>dream2nix supports packaging different versions of the same package within one repository. Therefore conditions are used to make overrides apply only to certain package versions.</p>
-<p>Currently a collection of overrides is maintained at <a href="https://github.com/nix-community/dream2nix/tree/main/overrides">dream2nix/overrides</a></p>
-<p>Example for nodejs overrides:</p>
-<pre><code class="language-nix">{
-  # The name of a package.
-  # Contains all overrides which can apply to the package `enhanced-resolve`
-  enhanced-resolve = {
-
-    # first override for enhanced-resolve named `preserve-symlinks-v4`
-    preserve-symlinks-v4 = {
-
-      # override will apply for packages with major version 4
-      _condition = satisfiesSemver &quot;^4.0.0&quot;;
-
-      # this statement replaces exisiting patches
-      # (for appending see next example)
-      patches = [
-        ./enhanced-resolve/npm-preserve-symlinks-v4.patch
-      ];
-
-    };
-
-    # second override for enhanced-resolve
-    preserve-symlinks-v5 = {
-
-      # override will apply for packages with major version 5
-      _condition = satisfiesSemver &quot;^5.0.0&quot;;
-
-      # this statement adds a patch to the exsiting list of patches
-      patches = old: old ++ [
-        ./enhanced-resolve/npm-preserve-symlinks-v5.patch
-      ];
-    };
-
-  };
-
-  # another package name
-  webpack = {
-    # overrides for webpack
-  };
-}
-</code></pre>
+</li>
+<li>
+<p>Added support for translating formats:</p>
+<ul>
+<li>python: setup.py</li>
+<li>haskell: stack.yaml.lock (stack)</li>
+<li>haskell: plan.json (cabal)</li>
+<li>rust: Cargo.toml, Cargo.lock</li>
+</ul>
+</li>
+<li>
+<p>Added builders for:</p>
+<ul>
+<li>haskell: <code>default</code></li>
+</ul>
+</li>
+</ul>
 
                     </main>
 
                     <nav class="nav-wrapper" aria-label="Page navigation">
                         <!-- Mobile navigation buttons -->
-                            <a rel="prev" href="../intro/nixpkgs-improvements.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                            <a rel="prev" href="../development-roundups.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                                 <i class="fa fa-angle-left"></i>
-                            </a>
-                            <a rel="next" href="../intro/translators.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
-                                <i class="fa fa-angle-right"></i>
                             </a>
                         <div style="clear: both"></div>
                     </nav>
@@ -206,11 +200,8 @@ dream2nix overrides have the following properties:</p>
             </div>
 
             <nav class="nav-wide-wrapper" aria-label="Page navigation">
-                    <a rel="prev" href="../intro/nixpkgs-improvements.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                    <a rel="prev" href="../development-roundups.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                         <i class="fa fa-angle-left"></i>
-                    </a>
-                    <a rel="next" href="../intro/translators.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
-                        <i class="fa fa-angle-right"></i>
                     </a>
             </nav>
 
