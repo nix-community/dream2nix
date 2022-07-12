@@ -8,6 +8,25 @@
   b = builtins;
   l = lib // builtins;
 
+  replaceRootSources = {
+    dreamLock,
+    newSourceRoot,
+  }: let
+    patchVersion = version: source:
+      if source.rootName == null && source.rootVersion == null
+      then
+        newSourceRoot
+        // l.optionalAttrs (source ? relPath) {
+          dir = source.relPath;
+        }
+      else source;
+    patchedSources =
+      l.mapAttrs
+      (_: versions: l.mapAttrs patchVersion versions)
+      dreamLock.sources;
+  in
+    dreamLock // {sources = patchedSources;};
+
   subDreamLockNames = dreamLockFile: let
     dir = b.dirOf dreamLockFile;
 
@@ -301,6 +320,7 @@ in {
     getSource
     getSubDreamLock
     readDreamLock
+    replaceRootSources
     injectDependencies
     toJSON
     ;

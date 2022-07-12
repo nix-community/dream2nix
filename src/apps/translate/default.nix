@@ -15,9 +15,9 @@ utils.writePureShellScriptBin
 [
   jq
   coreutils
-  moreutils
   nix
   python3
+  moreutils
 ]
 ''
   cd $WORKDIR
@@ -58,9 +58,13 @@ utils.writePureShellScriptBin
             mkBashEnv = name: value:
               \"\''${name}=\" + \"'\" + value + \"'\";
           in
+            # skip this project if we don't want to resolve ones that can be resolved on the fly
             if \"$translateSkipResolved\" == \"1\" && resolve.passthru.project ? dreamLock
             then null
             else
+              # write a simple bash script for exporting the data we need
+              # this is better since we don't need to call jq multiple times
+              # to access the data we need
               l.concatStringsSep
               \";\"
               (
@@ -90,9 +94,6 @@ utils.writePureShellScriptBin
       l.unique (l.filter (i: i != null) data)
   " > $resolveDatas
 
-  # extract source info once here so we can use it later
-  sourceInfo="$(jq '.' -c -r "$sourceInfoPath")"
-
   # resolve the packages
   for resolveData in $(jq '.[]' -c -r $resolveDatas); do
     # extract project data so we can determine where the dream-lock.json will be
@@ -105,39 +106,13 @@ utils.writePureShellScriptBin
     $TMPDIR/resolve/bin/resolve
 
     # patch the dream-lock with our source info so the dream-lock works standalone
-    patchLockQuery="
-      .sources
-      | to_entries
-      | map(.value = (.value | to_entries))
-      | map(
-        .value =
-          (
-            .value
-            | map(
-                if (
-                  .value
-                  | .type == \"path\"
-                    and .rootName == null
-                    and .rootVersion == null
-                )
-                then (
-                  .value = (
-                    $sourceInfo
-                    | (
-                      if .value.relPath != null
-                      then .dir = .value.relPath
-                      else . end
-                    )
-                  )
-                )
-                else . end
-              )
-          )
-        )
-      | map(.value = (.value | from_entries))
-      | from_entries
-    "
-    jq ".sources = ($patchLockQuery)" -c -r "$dreamLockPath" \
+    ${callNixWithD2N} eval --json "
+      with dream2nix.utils.dreamLock;
+      replaceRootSources {
+        dreamLock = l.fromJSON (l.readFile \"$targetDir/$dreamLockPath\");
+        newSourceRoot = l.fromJSON (l.readFile \"$sourceInfoPath\");
+      }
+    " \
       | python3 ${../cli/format-dream-lock.py} \
       | sponge "$dreamLockPath"
 
