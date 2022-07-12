@@ -32,12 +32,6 @@
       flake = false;
     };
 
-    # required for builder nodejs/node2nix
-    node2nix = {
-      url = "github:svanderburg/node2nix";
-      flake = false;
-    };
-
     # required for utils.satisfiesSemver
     poetry2nix = {
       url = "github:nix-community/poetry2nix/1.21.0";
@@ -58,7 +52,6 @@
     gomod2nix,
     mach-nix,
     nixpkgs,
-    node2nix,
     poetry2nix,
     pre-commit-hooks,
     crane,
@@ -87,10 +80,6 @@
         "lib/extractor/default.nix"
         "lib/extractor/distutils.patch"
         "lib/extractor/setuptools.patch"
-        "LICENSE"
-      ];
-      node2nix = [
-        "nix/node-env.nix"
         "LICENSE"
       ];
       poetry2nix = [

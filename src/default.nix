@@ -75,10 +75,6 @@
   subsystems = callPackageDream ./subsystems {};
 
   externals = {
-    node2nix = nodejs:
-      pkgs.callPackage "${externalSources.node2nix}/nix/node-env.nix" {
-        inherit nodejs;
-      };
     crane = let
       importLibFile = name: import "${externalSources.crane}/lib/${name}.nix";
 
@@ -92,16 +88,19 @@
         cargoHostTarget,
         cargoBuildBuild,
       }: rec {
-        otherHooks = genHooks [
-          "configureCargoCommonVarsHook"
-          "configureCargoVendoredDepsHook"
-          "remapSourcePathPrefixHook"
-        ] {};
+        otherHooks =
+          genHooks [
+            "configureCargoCommonVarsHook"
+            "configureCargoVendoredDepsHook"
+            "remapSourcePathPrefixHook"
+          ]
+          {};
         installHooks =
           genHooks [
             "inheritCargoArtifactsHook"
             "installCargoArtifactsHook"
-          ] {
+          ]
+          {
             substitutions = {
               zstd = "${pkgs.pkgsBuildBuild.zstd}/bin/zstd";
             };
@@ -302,9 +301,7 @@
             allPackages;
 
           defaultPackage =
-            allPackages
-            ."${dreamLockInterface.defaultPackageName}"
-            ."${dreamLockInterface.defaultPackageVersion}";
+            allPackages."${dreamLockInterface.defaultPackageName}"."${dreamLockInterface.defaultPackageVersion}";
         in
           latestPackages // {default = defaultPackage;};
       };
@@ -412,23 +409,25 @@
     # list of projects extended with some information requried for processing
     projectsList =
       l.map
-      (project: (let
-        self =
-          project
-          // rec {
-            dreamLock =
-              (utils.readDreamLock {
-                dreamLock = "${config.projectRoot}/${project.dreamLockPath}";
-              })
-              .lock;
-            impure = isImpure project translator;
-            invalidationHash = getInvalidationHash project;
-            key = getProjectKey project;
-            resolved = isResolved self;
-            translator = project.translator or (l.head project.translators);
-          };
-      in
-        self))
+      (project: (
+        let
+          self =
+            project
+            // rec {
+              dreamLock =
+                (utils.readDreamLock {
+                  dreamLock = "${config.projectRoot}/${project.dreamLockPath}";
+                })
+                .lock;
+              impure = isImpure project translator;
+              invalidationHash = getInvalidationHash project;
+              key = getProjectKey project;
+              resolved = isResolved self;
+              translator = project.translator or (l.head project.translators);
+            };
+        in
+          self
+      ))
       discoveredProjects;
 
     # projects without existing valid dream-lock.json
@@ -596,11 +595,7 @@
     impureDiscoveredProjects =
       l.filter
       (proj:
-        subsystems
-        ."${proj.subsystem}"
-        .translators
-        ."${proj.translator}"
-        .type
+        subsystems."${proj.subsystem}".translators."${proj.translator}".type
         == "impure")
       discoveredProjects;
 
