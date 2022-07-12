@@ -617,6 +617,12 @@ in
       };
     };
 
+    puppeteer = {
+      skip-binary = {
+        PUPPETEER_SKIP_DOWNLOAD = 1;
+      };
+    };
+
     pngquant-bin = {
       add-binary = {
         buildScript = ''
