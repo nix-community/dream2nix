@@ -13,7 +13,11 @@
     newSourceRoot,
   }: let
     patchVersion = version: source:
-      if source.rootName == null && source.rootVersion == null
+      if
+        source.type
+        == "path"
+        && source.rootName == null
+        && source.rootVersion == null
       then
         newSourceRoot
         // l.optionalAttrs (source ? relPath) {
