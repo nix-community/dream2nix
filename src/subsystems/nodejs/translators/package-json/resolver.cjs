@@ -32,30 +32,26 @@ const resolveDep = (name, parts, isOptional) => {
   return { name, version: dep.version };
 };
 
+// Here we discover what NPM resolved each dependency to
+// The peer dependencies are treated as direct dependencies because the symlinking correctly
+// lets node treat them as only a single dependency, and npm already resolved everything
+// so peer dependencies are correctly shared.
 for (const [path, pkg] of Object.entries(pkgs)) {
+  const depmap = {};
   const parts = path.split(/\/?node_modules\//);
-  //   pkg.pname = parts.length === 1 ? pkg.name : parts.at(-1);
-  const dependencies = Object.keys(pkg.dependencies || {}).map(depName =>
-    resolveDep(depName, parts)
-  );
-  const peerDependencies = Object.keys(pkg.peerDependencies || {}).map(
-    depName => resolveDep(depName, parts, true)
-  );
-  const optionalDependencies = Object.keys(pkg.optionalDependencies || {}).map(
-    depName => resolveDep(depName, parts, true)
-  );
-  const devDependencies = Object.keys(pkg.devDependencies || {}).map(depName =>
-    resolveDep(depName, parts, true)
-  );
-  // The peer dependencies are treated as direct dependencies because the symlinking correctly
-  // lets node treat them as only a single dependency, and npm already resolved everything
-  // so peer dependencies are shared.
-  pkg.deps = [
-    ...dependencies,
-    ...peerDependencies,
-    ...optionalDependencies,
-    ...devDependencies,
-  ].filter(Boolean);
+  const handleDeps = (obj, isOptional) => {
+    if (obj)
+      for (const depName of Object.keys(obj))
+        if (!depmap[depName]) {
+          const resolved = resolveDep(depName, parts, isOptional);
+          if (resolved) depmap[depName] = resolved;
+        }
+  };
+  handleDeps(pkg.dependencies, false);
+  handleDeps(pkg.peerDependencies, true);
+  handleDeps(pkg.optionalDependencies, true);
+  handleDeps(pkg.devDependencies, true);
+  pkg.deps = Object.values(depmap);
 }
 
 lock.allDeps = [];
@@ -72,6 +68,10 @@ for (const [pname, versions] of Object.entries(deps))
       os,
       deps,
     } = dep;
+    if (!url)
+      throw new Error(
+        `Dependency ${pname}@${version} has no resolved property, package-lock is invalid`
+      );
     lock.allDeps.push({
       pname,
       version,

@@ -221,10 +221,9 @@
                   # special case for namespaced modules
                   if [[ $dir == @* ]]; then
                     mkdir -p $out/$dir
-                    ln -sf $pkg/lib/node_modules/$dir/* $out/$dir/
+                    ln -s $pkg/lib/node_modules/$dir/* $out/$dir/
                   else
-                    # TODO overwrites should not happen, there's a duplicate node-gyp in sqlite3 somehow
-                    ln -sf $pkg/lib/node_modules/$dir $out/
+                    ln -s $pkg/lib/node_modules/$dir $out/
                   fi
                 done
               fi
