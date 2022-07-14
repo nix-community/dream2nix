@@ -14,7 +14,7 @@ out = os.environ.get('out')
 
 changed = False
 
-# fail if platform incompatible
+# fail if platform incompatible - should not happen due to filters
 if 'os' in package_json:
   platform = sys.platform
   if platform not in package_json['os']\
@@ -39,7 +39,7 @@ if version not in ["unknown", package_json.get('version')]:
     f"{package_json.get('version')} -> {version}",
     file=sys.stderr
   )
-  changed = True
+  package_json['origVersion'] = package_json['version'] 
   package_json['version'] = version
 
 
@@ -48,6 +48,7 @@ if version not in ["unknown", package_json.get('version')]:
 # as NPM install will otherwise re-fetch these
 if 'dependencies' in package_json:
   dependencies = package_json['dependencies']
+  depsChanged = False
   # dependencies can be a list or dict
   for pname in dependencies:
     if 'bundledDependencies' in package_json\
@@ -58,17 +59,21 @@ if 'dependencies' in package_json:
         f"WARNING: Dependency {pname} wanted but not available. Ignoring.",
         file=sys.stderr
       )
+      depsChanged = True
       continue
     version =\
       'unknown' if isinstance(dependencies, list) else dependencies[pname]
     if available_deps[pname] != version:
-      version = available_deps[pname]
-      changed = True
+      depsChanged = True
       print(
         f"package.json: Pinning version '{version}' to '{available_deps[pname]}'"
         f" for dependency '{pname}'",
         file=sys.stderr
       )
+  if depsChanged:
+    changed = True
+    package_json['dependencies'] = available_deps
+    package_json['origDependencies'] = dependencies
 
 # create symlinks for executables (bin entries from package.json)
 def symlink_bin(bin_dir, package_json):

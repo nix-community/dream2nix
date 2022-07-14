@@ -394,7 +394,6 @@
           rm $nodeModules/$packageName/package.json.old
 
           # run python script (see comment above):
-          cp package.json package.json.bak
           python $fixPackage \
           || \
           # exit code 3 -> the package is incompatible to the current platform
