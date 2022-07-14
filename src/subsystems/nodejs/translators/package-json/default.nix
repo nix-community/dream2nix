@@ -42,7 +42,7 @@
       relPath=$(jq '.project.relPath' -c -r $jsonInput)
       npmArgs=$(jq '.project.subsystemInfo.npmArgs' -c -r $jsonInput)
 
-      # TODO: Do we really need to copy everything?
+      # TODO: Do we really need to copy everything? Just package*.json is enough, no?
       cp -r $source/* ./
       chmod -R +w ./
       newSource=$(pwd)
@@ -55,12 +55,6 @@
 
         # TODO: some easy way to add --offline, maybe separate flake run script? Speeds up enormously when cached.
         npm install --package-lock-only $npmArgs
-      fi
-
-      # enforce "resolutions" field if exists, used by yarn and pnpm
-      # npm 8 directly supports "overrides" field, which you should use instead
-      if jq -e '.resolutions' -r package.json >/dev/null; then
-        npx npm-force-resolutions
       fi
 
       # resolve packages - TODO move to RunCommandLocal

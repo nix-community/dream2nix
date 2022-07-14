@@ -506,18 +506,6 @@
         installPhase = ''
           runHook preInstall
 
-          # TODO remove - transitive executables should not be passed IMHO?
-          # echo "Symlinking transitive executables to $nodeModules/.bin"
-          # echo "node deps: ${l.toString nodeDeps}"
-          # for dep in ${l.toString nodeDeps}; do
-          #   echo "bin dirs: $(ls -d $dep/lib/node_modules/.bin 2>/dev/null ||:)"
-          #   for binDir in $(ls -d $dep/lib/node_modules/.bin 2>/dev/null ||:); do
-          #     echo binDir $binDir
-          #     mkdir -p $nodeModules/.bin
-          #     ln -sf $binDir/* $nodeModules/.bin/
-          #   done
-          # done
-
           echo "Symlinking manual pages"
           if [ -d "$nodeModules/$packageName/man" ]
           then
