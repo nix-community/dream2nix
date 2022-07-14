@@ -9,7 +9,7 @@
     subsystemAttrs,
     defaultPackageName,
     defaultPackageVersion,
-    getCyclicDependencies,
+    getCyclicHelpers,
     getDependencies,
     getSource,
     getSourceSpec,

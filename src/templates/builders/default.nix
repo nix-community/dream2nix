@@ -11,15 +11,22 @@
   }: {
     ### FUNCTIONS
     # AttrSet -> Bool) -> AttrSet -> [x]
-    getCyclicDependencies, # name: version: -> [ {name=; version=; } ]
-    getDependencies, # name: version: -> [ {name=; version=; } ]
-    getSource, # name: version: -> store-path
+    # name: version: -> helpers
+    getCyclicHelpers,
+    # name: version: -> [ {name=; version=; } ]
+    getDependencies,
+    # name: version: -> store-path
+    getSource,
     # to get information about the original source spec
-    getSourceSpec, # name: version: -> {type="git"; url=""; hash="";}
+    # name: version: -> {type="git"; url=""; hash="";}
+    getSourceSpec,
     ### ATTRIBUTES
-    subsystemAttrs, # attrset
-    defaultPackageName, # string
-    defaultPackageVersion, # string
+    # attrset
+    subsystemAttrs,
+    # string
+    defaultPackageName,
+    # string
+    defaultPackageVersion,
     # all exported (top-level) package names and versions
     # attrset of pname -> version,
     packages,

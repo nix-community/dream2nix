@@ -14,15 +14,23 @@
     ...
   }: {
     # Funcs
-    # AttrSet -> Bool) -> AttrSet -> [x]
-    getCyclicDependencies, # name: version: -> [ {name=; version=; } ]
-    getDependencies, # name: version: -> [ {name=; version=; } ]
-    getSource, # name: version: -> store-path
+    # name: version: -> helpers
+    getCyclicHelpers,
+    # name: version: -> [ {name=; version=; } ]
+    getDependencies,
+    # name: version: -> store-path
+    getSource,
+    # name: version: -> {type="git"; url=""; hash="";} + extra values from npm packages
+    getSourceSpec,
     # Attributes
-    subsystemAttrs, # attrset
-    defaultPackageName, # string
-    defaultPackageVersion, # string
-    packages, # list
+    # attrset
+    subsystemAttrs,
+    # string
+    defaultPackageName,
+    # string
+    defaultPackageVersion,
+    # list
+    packages,
     # attrset of pname -> versions,
     # where versions is a list of version strings
     packageVersions,
