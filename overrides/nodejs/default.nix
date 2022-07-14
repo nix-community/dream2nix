@@ -409,40 +409,40 @@ in
           '';
         };
       };
-      "add-binary-0.14" = let
-        version = "0.14.48";
-      in {
-        _condition = satisfiesSemver "~0.14";
-        ESBUILD_BINARY_PATH = let
-          esbuild = pkgs.buildGoModule {
-            pname = "esbuild";
-            inherit version;
+      # "add-binary-0.14" = let
+      #   version = "0.14.49";
+      # in {
+      #   _condition = satisfiesSemver "~0.14";
+      #   ESBUILD_BINARY_PATH = let
+      #     esbuild = pkgs.buildGoModule {
+      #       pname = "esbuild";
+      #       inherit version;
 
-            src = pkgs.fetchFromGitHub {
-              owner = "evanw";
-              repo = "esbuild";
-              rev = "v${version}";
-              sha256 = "sha256-ziZOIPBIUGyuS3SEKKAYDH7Tv1mLOegw9YqTpGV2plI=";
-            };
+      #       src = pkgs.fetchFromGitHub {
+      #         owner = "evanw";
+      #         repo = "esbuild";
+      #         rev = "v${version}";
+      #         sha256 = "sha256-bQt9dLkwvXT4pLxTwYp+5Bg6IgwBnB8uu1gdAmhPn0A=";
+      #       };
 
-            vendorSha256 = "sha256-QPkBR+FscUc3jOvH7olcGUhM6OW4vxawmNJuRQxPuGs=";
+      #       vendorSha256 = "sha256-QPkBR+FscUc3jOvH7olcGUhM6OW4vxawmNJuRQxPuGs=";
 
-            # there is a binary version check when running esbuild that prevents us from running
-            # a semver compatible binary
-            postPatch = ''
-              substituteInPlace cmd/esbuild/main.go --replace \
-                "hostVersion != esbuildVersion" \
-                "false"
-            '';
-          };
-        in "${esbuild}/bin/esbuild";
-        overrideAttrs = old: {
-          postPatch = ''
-            substituteInPlace lib/main.js --replace \
-              "${old.version}" "${version}"
-          '';
-        };
-      };
+      #       # there is a binary version check when running esbuild that prevents us from running
+      #       # a semver compatible binary
+      #       postPatch = ''
+      #         substituteInPlace cmd/esbuild/main.go --replace \
+      #           "hostVersion != esbuildVersion" \
+      #           "false"
+      #       '';
+      #     };
+      #   in "${esbuild}/bin/esbuild";
+      #   overrideAttrs = old: {
+      #     postPatch = ''
+      #       substituteInPlace lib/main.js --replace \
+      #         "${old.version}" "${version}"
+      #     '';
+      #   };
+      # };
     };
 
     fontmanager-redux = {

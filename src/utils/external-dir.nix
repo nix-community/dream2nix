@@ -4,7 +4,7 @@
   externalSources,
   externalPaths,
 }:
-pkgs.runCommand "dream2nix-external-dir" {}
+pkgs.runCommandLocal "dream2nix-external-dir" {}
 (lib.concatStringsSep "\n"
   (lib.mapAttrsToList
     (inputName: paths:

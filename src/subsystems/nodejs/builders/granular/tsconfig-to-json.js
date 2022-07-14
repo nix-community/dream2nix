@@ -1,19 +1,21 @@
 try {
-  console.log(require.resolve("typescript"));
-} catch(e) {
-  console.error("typescript is not found");
-  process.exit(e.code);
+  require.resolve("typescript");
+} catch (e) {
+  process.exit(0);
 }
 
-const ts = require("typescript")
-const fs = require('fs')
+const ts = require("typescript");
+const fs = require("fs");
 
 try {
-  const data = fs.readFileSync('tsconfig.json', 'utf8')
+  const data = fs.readFileSync("tsconfig.json", "utf8");
 } catch (err) {
-  console.error(err)
+  console.error(err);
 }
 
-config = ts.parseConfigFileTextToJson(data)
-newdata = JSON.stringify(config)
-fs.writeFileSync('tsconfig.json', newdata);
+config = ts.parseConfigFileTextToJson(data);
+
+// https://www.typescriptlang.org/tsconfig#preserveSymlinks
+config.compilerOptions.preserveSymlinks = true;
+
+fs.writeFileSync("tsconfig.json", JSON.stringify(config));

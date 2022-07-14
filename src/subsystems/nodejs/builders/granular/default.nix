@@ -7,21 +7,30 @@
     makeWrapper,
     pkgs,
     python3,
-    runCommand,
+    runCommandLocal,
     stdenv,
     writeText,
     ...
   }: {
     # Funcs
     # AttrSet -> Bool) -> AttrSet -> [x]
-    getCyclicDependencies, # name: version: -> [ {name=; version=; } ]
-    getDependencies, # name: version: -> [ {name=; version=; } ]
-    getSource, # name: version: -> store-path
+    # name: version: -> [ {name=; version=; } ]
+    getCyclicDependencies,
+    # name: version: -> [ {name=; version=; } ]
+    getDependencies,
+    # name: version: -> store-path
+    getSource,
+    # name: version: -> {type="git"; url=""; hash="";} + extra values from npm packages
+    getSourceSpec,
     # Attributes
-    subsystemAttrs, # attrset
-    defaultPackageName, # string
-    defaultPackageVersion, # string
-    packages, # list
+    # attrset
+    subsystemAttrs,
+    # string
+    defaultPackageName,
+    # string
+    defaultPackageVersion,
+    # list
+    packages,
     # attrset of pname -> versions,
     # where versions is a list of version strings
     packageVersions,
@@ -48,7 +57,7 @@
         pkgs."nodejs-${builtins.toString nodejsVersion}_x"
         or (throw "Could not find nodejs version '${nodejsVersion}' in pkgs");
 
-    nodeSources = runCommand "node-sources" {} ''
+    nodeSources = runCommandLocal "node-sources" {} ''
       tar --no-same-owner --no-same-permissions -xf ${nodejs.src}
       mv node-* $out
     '';
@@ -158,51 +167,89 @@
 
     # Generates a derivation for a specific package name + version
     makePackage = name: version: let
-      pname = lib.replaceStrings ["@" "/"] ["__at__" "__slash__"] name;
+      pname = name;
 
-      deps = getDependencies name version;
+      rawDeps = getDependencies name version;
+
+      # Keep only the deps we can install, assume it all works out
+      deps = let
+        myOS = with stdenv.targetPlatform;
+          if isLinux
+          then "linux"
+          else if isDarwin
+          then "darwin"
+          else "";
+      in
+        lib.filter (
+          dep: let
+            p = allPackages."${dep.name}"."${dep.version}";
+            s = p.sourceInfo;
+          in
+            !(s ? os) || lib.any (o: o == myOS) s.os
+        )
+        rawDeps;
 
       nodeDeps =
-        lib.forEach
-        deps
-        (dep: allPackages."${dep.name}"."${dep.version}");
+        builtins.map
+        (dep: allPackages."${dep.name}"."${dep.version}")
+        deps;
 
       # Derivation building the ./node_modules directory in isolation.
-      # This is used for the devShell of the current package.
-      # We do not want to build the full package for the devShell.
-      nodeModulesDir = pkgs.runCommand "node_modules-${pname}" {} ''
-        # symlink direct dependencies to ./node_modules
-        mkdir $out
-        ${l.concatStringsSep "\n" (
-          l.forEach nodeDeps
-          (pkg: ''
-            for dir in $(ls ${pkg}/lib/node_modules/); do
-              if [[ $dir == @* ]]; then
-                mkdir -p $out/$dir
-                ln -s ${pkg}/lib/node_modules/$dir/* $out/$dir/
-              else
-                ln -s ${pkg}/lib/node_modules/$dir $out/
+      makeModules = {
+        withDev ? false,
+        withOptionals ? true,
+      }: let
+        isMain = isMainPackage name version;
+        # These flags will only be present if true. Also, dev deps are required for non-main packages
+        myDeps = lib.filter (dep: let
+          s = dep.sourceInfo;
+        in
+          (withOptionals || !(s ? optional))
+          && (!isMain || (withDev || !(s ? dev))))
+        nodeDeps;
+      in
+        if lib.length myDeps == 0
+        then null
+        else
+          pkgs.runCommandLocal "node_modules-${pname}" {} ''
+            shopt -s nullglob
+            mkdir $out
+            for pkg in ${l.toString myDeps}; do
+              if [ -d $pkg/lib/node_modules/ ]; then
+                cd $pkg/lib/node_modules/
+                for dir in *; do
+                  # special case for namespaced modules
+                  if [[ $dir == @* ]]; then
+                    mkdir -p $out/$dir
+                    ln -sf $pkg/lib/node_modules/$dir/* $out/$dir/
+                  else
+                    # TODO overwrites should not happen, there's a duplicate node-gyp in sqlite3 somehow
+                    ln -sf $pkg/lib/node_modules/$dir $out/
+                  fi
+                done
               fi
             done
-          '')
-        )}
 
-        # symlink transitive executables to ./node_modules/.bin
-        mkdir $out/.bin
-        for dep in ${l.toString nodeDeps}; do
-          for binDir in $(ls -d $dep/lib/node_modules/.bin 2>/dev/null ||:); do
-            ln -sf $binDir/* $out/.bin/
-          done
-        done
-      '';
+            # symlink module executables to ./node_modules/.bin
+            mkdir $out/.bin
+            for dep in ${l.toString myDeps}; do
+              for b in $dep/bin/*; do
+                # these are all relative symlinks, make absolute; Nix post build will make relative
+                # last one wins (-f)
+                ln -sf $dep/bin/$(readlink $b) $out/.bin/$(basename $b)
+              done
+            done
+          '';
+      prodModules = makeModules {withDev = false;};
+      devModules = makeModules {withDev = true;};
 
-      passthruDeps =
-        l.listToAttrs
-        (l.forEach deps
-          (dep:
-            l.nameValuePair
-            dep.name
-            allPackages."${dep.name}"."${dep.version}"));
+      # passthruDeps =
+      #   l.listToAttrs
+      #   (l.forEach deps
+      #     (dep:
+      #       l.nameValuePair
+      #       dep.name
+      #       allPackages."${dep.name}"."${dep.version}"));
 
       dependenciesJson =
         b.toJSON
@@ -232,7 +279,6 @@
         inherit
           dependenciesJson
           electronHeaders
-          nodeDeps
           nodeSources
           version
           ;
@@ -241,26 +287,25 @@
 
         inherit pname;
 
-        passthru.dependencies = passthruDeps;
+        # passthru.dependencies = passthruDeps;
 
         passthru.devShell = pkgs.mkShell {
-          path = [
-            nodejs
-          ];
-          buildInputs = [
-            nodejs
-          ];
-          shellHook = ''
-            # create the ./node_modules directory
-            if [ -e ./node_modules ] && [ ! -L ./node_modules ]; then
-              echo -e "\nFailed creating the ./node_modules symlink to ${nodeModulesDir}"
-              echo -e "\n./node_modules already exists and is a directory, which means it is managed by anaother program. Please delete ./node_modules first and re-enter the dev shell."
-            else
-              rm -f ./node_modules
-              ln -s ${nodeModulesDir} ./node_modules
-              export PATH="$PATH:$(realpath ./node_modules)/.bin"
-            fi
-          '';
+          path = [nodejs];
+          buildInputs = [nodejs];
+          shellHook =
+            if devModules != null
+            then ''
+              # create the ./node_modules directory
+              if [ -e ./node_modules ] && [ ! -L ./node_modules ]; then
+                echo -e "\nFailed creating the ./node_modules symlink to '${devModules}'"
+                echo -e "\n./node_modules already exists and is a directory, which means it is managed by another program. Please delete ./node_modules first and re-enter the dev shell."
+              else
+                rm -f ./node_modules
+                ln -s ${devModules} ./node_modules
+                export PATH="$PATH:$(realpath ./node_modules)/.bin"
+              fi
+            ''
+            else "";
         };
 
         installMethod = "symlink";
@@ -277,7 +322,7 @@
         buildInputs = [jq nodejs python3];
 
         # prevents running into ulimits
-        passAsFile = ["dependenciesJson" "nodeDeps"];
+        passAsFile = ["dependenciesJson"];
 
         preConfigurePhases = ["d2nLoadFuncsPhase" "d2nPatchPhase"];
 
@@ -288,9 +333,6 @@
         # python script to modify some metadata to support installation
         # (see comments below on d2nPatchPhase)
         fixPackage = "${./fix-package.py}";
-
-        # script to install (symlink or copy) dependencies.
-        installDeps = "${./install-deps.py}";
 
         # costs performance and doesn't seem beneficial in most scenarios
         dontStrip = true;
@@ -374,11 +416,11 @@
         '';
 
         # The python script wich is executed in this phase:
-        #   - ensures that the package is compatible to the current system
+        #   - ensures that the package is compatible to the current system (but already filtered above with os)
         #   - ensures the main version in package.json matches the expected
         #   - pins dependency versions in package.json
         #     (some npm commands might otherwise trigger networking)
-        #   - creates symlinks for executables declared in package.json
+        #   - creates symlinks for executables declared in package.json in $out/bin
         # Apart from that:
         #   - Any usage of 'link:' in package.json is replaced with 'file:'
         #   - If package-lock.json exists, it is deleted, as it might conflict
@@ -388,12 +430,9 @@
           rm -f package-lock.json
 
           # repair 'link:' -> 'file:'
-          mv $nodeModules/$packageName/package.json $nodeModules/$packageName/package.json.old
-          cat $nodeModules/$packageName/package.json.old | sed 's!link:!file\:!g' > $nodeModules/$packageName/package.json
-          rm $nodeModules/$packageName/package.json.old
+          sed -i 's!link:!file\:!g' $nodeModules/$packageName/package.json
 
           # run python script (see comment above):
-          cp package.json package.json.bak
           python $fixPackage \
           || \
           # exit code 3 -> the package is incompatible to the current platform
@@ -406,33 +445,26 @@
             exit 1
           fi
 
-          # configure typescript
-          if [ -f ./tsconfig.json ] \
-              && node -e 'require("typescript")' &>/dev/null; then
+          # configure typescript to resolve symlinks locally
+          # TODO is this really needed? Node doens't use it
+          if [ -f ./tsconfig.json ]; then
             node ${./tsconfig-to-json.js}
-            ${pkgs.jq}/bin/jq ".compilerOptions.preserveSymlinks = true" tsconfig.json \
-                | ${pkgs.moreutils}/bin/sponge tsconfig.json
           fi
         '';
 
-        # - installs dependencies into the node_modules directory
-        # - adds executables of direct node module dependencies to PATH
-        # - adds the current node module to NODE_PATH
+        # - links dependencies into the node_modules directory + adds bin to PATH
         # - sets HOME=$TMPDIR, as this is required by some npm scripts
-        # TODO: don't install dev dependencies. Load into NODE_PATH instead
         configurePhase = ''
           runHook preConfigure
 
-          # symlink sub dependencies as well as this imitates npm better
-          python $installDeps
-
-          # add bin path entries collected by python script
-          if [ -e $TMP/ADD_BIN_PATH ]; then
-            export PATH="$PATH:$(cat $TMP/ADD_BIN_PATH)"
-          fi
-
-          # add dependencies to NODE_PATH
-          export NODE_PATH="$NODE_PATH:$nodeModules/$packageName/node_modules"
+          ${
+            if prodModules != null
+            then ''
+              ln -s ${prodModules} $sourceRoot/node_modules
+              export PATH="$PATH:$sourceRoot/node_modules/.bin"
+            ''
+            else ""
+          }
 
           export HOME=$TMPDIR
 
@@ -475,23 +507,17 @@
         installPhase = ''
           runHook preInstall
 
-          echo "Symlinking exectuables to /bin"
-          if [ -d "$nodeModules/.bin" ]
-          then
-            chmod +x $nodeModules/.bin/*
-            ln -s $nodeModules/.bin $out/bin
-          fi
-
-          echo "Symlinking transitive executables to $nodeModules/.bin"
-          echo "node deps: ${l.toString nodeDeps}"
-          for dep in ${l.toString nodeDeps}; do
-            echo "bin dirs: $(ls -d $dep/lib/node_modules/.bin 2>/dev/null ||:)"
-            for binDir in $(ls -d $dep/lib/node_modules/.bin 2>/dev/null ||:); do
-              echo binDir $binDir
-              mkdir -p $nodeModules/.bin
-              ln -sf $binDir/* $nodeModules/.bin/
-            done
-          done
+          # TODO remove - transitive executables should not be passed IMHO?
+          # echo "Symlinking transitive executables to $nodeModules/.bin"
+          # echo "node deps: ${l.toString nodeDeps}"
+          # for dep in ${l.toString nodeDeps}; do
+          #   echo "bin dirs: $(ls -d $dep/lib/node_modules/.bin 2>/dev/null ||:)"
+          #   for binDir in $(ls -d $dep/lib/node_modules/.bin 2>/dev/null ||:); do
+          #     echo binDir $binDir
+          #     mkdir -p $nodeModules/.bin
+          #     ln -sf $binDir/* $nodeModules/.bin/
+          #   done
+          # done
 
           echo "Symlinking manual pages"
           if [ -d "$nodeModules/$packageName/man" ]
@@ -517,7 +543,8 @@
         '';
       });
     in
-      pkg;
+      pkg
+      // {sourceInfo = getSourceSpec name version;};
   in
     outputs;
 }

@@ -16,7 +16,8 @@
     coreutils,
     git,
     jq,
-    nodePackages,
+    # We need npm >= 8
+    nodejs-18_x,
     openssh,
     writeScriptBin,
     ...
@@ -27,11 +28,12 @@
       coreutils
       git
       jq
-      nodePackages.npm
+      nodejs-18_x
+      # nodejs-18_x.pkgs.npm
       openssh
     ]
     ''
-      # accroding to the spec, the translator reads the input from a json file
+      # according to the spec, the translator reads the input from a json file
       jsonInput=$1
 
       # read the json input
@@ -40,26 +42,34 @@
       relPath=$(jq '.project.relPath' -c -r $jsonInput)
       npmArgs=$(jq '.project.subsystemInfo.npmArgs' -c -r $jsonInput)
 
+      # TODO: Do we really need to copy everything?
       cp -r $source/* ./
       chmod -R +w ./
       newSource=$(pwd)
 
       cd ./$relPath
-      rm -rf package-lock.json
 
-      if [ "$(jq '.project.subsystemInfo.noDev' -c -r $jsonInput)" == "true" ]; then
-        echo "excluding dev dependencies"
-        jq '.devDependencies = {}' ./package.json > package.json.mod
-        mv package.json.mod package.json
-        npm install --package-lock-only --production $npmArgs
-      else
+      # create package lock if missing or old
+      if ! [ -r package-lock.json ] || [ $(jq '.lockfileVersion' -r package-lock.json) != 2 ]; then
+        rm -f package-lock.json
+
+        # TODO: some easy way to add --offline, maybe separate flake run script? Speeds up enormously when cached.
         npm install --package-lock-only $npmArgs
       fi
+
+      # enforce "resolutions" field if exists, used by yarn and pnpm
+      # npm 8 directly supports "overrides" field, which you should use instead
+      if jq -e '.resolutions' -r package.json >/dev/null; then
+        npx npm-force-resolutions
+      fi
+
+      # resolve packages - TODO move to RunCommandLocal
+      node ${./resolver.cjs} package-lock.json resolved.json
 
       jq ".source = \"$newSource\"" -c -r $jsonInput > $TMPDIR/newJsonInput
 
       cd $WORKDIR
-      ${subsystems.nodejs.translators.package-lock.translateBin} $TMPDIR/newJsonInput
+      ${subsystems.nodejs.translators.resolved-json.translateBin} $TMPDIR/newJsonInput
     '';
 
   # inherit options from package-lock translator

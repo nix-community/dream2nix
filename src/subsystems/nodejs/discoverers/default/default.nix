@@ -47,8 +47,7 @@
         && (packageJson.workspaces or [] == [])
       then ["package-lock"]
       else
-        l.optionals (nodes ? "package-lock.json") ["package-lock"]
-        ++ l.optionals (nodes ? "yarn.lock") ["yarn-lock"]
+        l.optionals (nodes ? "yarn.lock") ["yarn-lock"]
         ++ ["package-json"];
   in
     translators;

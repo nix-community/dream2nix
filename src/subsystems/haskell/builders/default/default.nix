@@ -39,7 +39,7 @@ in {
   } @ args: let
     b = builtins;
 
-    all-cabal-hashes = pkgs.runCommand "all-cabal-hashes" {} ''
+    all-cabal-hashes = pkgs.runCommandLocal "all-cabal-hashes" {} ''
       mkdir $out
       cd $out
       tar --strip-components 1 -xf ${pkgs.all-cabal-hashes}
