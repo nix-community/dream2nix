@@ -13,7 +13,8 @@
     ...
   }: {
     # Funcs
-    # AttrSet -> Bool) -> AttrSet -> [x]
+    # [{name; version;}] -> [{name; version;}]
+    replaceCyclees,
     # name: version: -> [ {name=; version=; } ]
     getCyclicDependencies,
     # name: version: -> [ {name=; version=; } ]
@@ -170,6 +171,18 @@
       pname = name;
 
       rawDeps = getDependencies name version;
+      inherit (getCyclicDependencies name version) cycleeDeps cyclicParent isCyclee isThisCycleeFor;
+
+      # cycles
+      # for node, we need to copy any cycles into a single package together
+      # getCyclicDependencies already cut the cycles for us, into one cyclic (e.g. eslint) and many cyclee (e.g. eslint-util)
+      # when a package is cyclic:
+      # - the cyclee deps should not be in the node_modules folder
+      # - the cyclee deps need to be copied into the package so node can find them all together
+      # when a package is cyclee:
+      # - the cyclic dep should not be in the node_modules folder
+      # when a dep is cyclee:
+      # - the dep should be replaced with the cyclic parent
 
       # Keep only the deps we can install, assume it all works out
       deps = let
@@ -180,19 +193,27 @@
           then "darwin"
           else "";
       in
-        lib.filter (
-          dep: let
-            p = allPackages."${dep.name}"."${dep.version}";
-            s = p.sourceInfo;
-          in
-            !(s ? os) || lib.any (o: o == myOS) s.os
-        )
-        rawDeps;
+        replaceCyclees (lib.filter (
+            dep: let
+              p = allPackages."${dep.name}"."${dep.version}";
+              s = p.sourceInfo;
+            in
+              # this dep is a cyclee
+              !(isCyclee dep.name dep.version)
+              && (!(s ? os) || lib.any (o: o == myOS) s.os)
+              # this package is a cyclee
+              && !(isThisCycleeFor dep.name dep.version)
+          )
+          rawDeps);
 
-      nodeDeps =
-        builtins.map
+      nodePkgs =
+        l.map
         (dep: allPackages."${dep.name}"."${dep.version}")
         deps;
+      cycleePkgs =
+        l.map
+        (dep: allPackages."${dep.name}"."${dep.version}")
+        cycleeDeps;
 
       # Derivation building the ./node_modules directory in isolation.
       makeModules = {
@@ -206,7 +227,7 @@
         in
           (withOptionals || !(s ? optional))
           && (!isMain || (withDev || !(s ? dev))))
-        nodeDeps;
+        nodePkgs;
       in
         if lib.length myDeps == 0
         then null
@@ -461,6 +482,19 @@
             then ''
               ln -s ${prodModules} $sourceRoot/node_modules
               export PATH="$PATH:$sourceRoot/node_modules/.bin"
+            ''
+            else ""
+          }
+          ${
+            # Here we copy cyclee deps into the parent node_modules
+            # so the cyclic and cyclee can find each other
+            if cycleePkgs != []
+            then ''
+              for dep in ${l.toString cycleePkgs}; do
+                # TODO handle .bin
+                # TODO handle @namespace
+                cp -a $dep/lib/node_modules/* $nodeModules
+              done
             ''
             else ""
           }
