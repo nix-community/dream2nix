@@ -187,7 +187,7 @@ in let
     if b.pathExists (./. + "/external")
     then ./.
     else
-      pkgs.runCommand "dream2nix-full-src" {} ''
+      pkgs.runCommandLocal "dream2nix-full-src" {} ''
         cp -r ${./.} $out
         chmod +w $out
         mkdir $out/external

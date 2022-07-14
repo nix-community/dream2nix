@@ -5,7 +5,7 @@
 
   outputs = {
     fetchurl,
-    runCommand,
+    runCommandLocal,
     utils,
     ...
   }: {
@@ -29,7 +29,7 @@
         name = "download-${pname}-${version}";
       };
     in
-      runCommand "unpack-${pname}-${version}" {}
+      runCommandLocal "unpack-${pname}-${version}" {}
       ''
         mkdir -p $out
         tar --strip-components 1 -xzf ${fetched} -C $out

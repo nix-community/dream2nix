@@ -10,7 +10,7 @@
     sha256 = "1qc703yg0babixi6wshn5wm2kgl5y1drcswgszh4xxzbrwkk9sv7";
   });
 in rec {
-  all-cabal-hashes = pkgs.runCommand "all-cabal-hashes" {} ''
+  all-cabal-hashes = pkgs.runCommandLocal "all-cabal-hashes" {} ''
     mkdir $out
     cd $out
     tar --strip-components 1 -xf ${pkgs.all-cabal-hashes}
@@ -22,7 +22,7 @@ in rec {
   # parse cabal file via IFD
   fromCabal = file: name: let
     file' = l.path {path = file;};
-    jsonFile = pkgs.runCommand "${name}.cabal.json" {} ''
+    jsonFile = pkgs.runCommandLocal "${name}.cabal.json" {} ''
       ${cabal2json}/bin/cabal2json ${file'} > $out
     '';
   in
@@ -31,7 +31,7 @@ in rec {
   # fromYaml IFD implementation
   fromYaml = file: let
     file' = l.path {path = file;};
-    jsonFile = pkgs.runCommand "yaml.json" {} ''
+    jsonFile = pkgs.runCommandLocal "yaml.json" {} ''
       ${pkgs.yaml2json}/bin/yaml2json < ${file'} > $out
     '';
   in
@@ -54,7 +54,7 @@ in rec {
       fi
     '';
   in
-    pkgs.runCommand "cabal-json-files" {}
+    pkgs.runCommandLocal "cabal-json-files" {}
     (l.concatStringsSep "\n"
       (l.map (c: convertOne c.name c.version) candidates));
 

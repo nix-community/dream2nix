@@ -10,7 +10,7 @@
   nix,
   pkgs,
   python3,
-  runCommand,
+  runCommandLocal,
   stdenv,
   writeScript,
   writeScriptBin,
@@ -72,13 +72,13 @@ in
 
     inherit (dreamLockUtils) readDreamLock;
 
-    toDrv = path: runCommand "some-drv" {} "cp -r ${path} $out";
+    toDrv = path: runCommandLocal "some-drv" {} "cp -r ${path} $out";
 
     toTOML = import ./toTOML.nix {inherit lib;};
 
     # hash the contents of a path via `nix hash path`
     hashPath = algo: path: let
-      hashPath = runCommand "hash-${algo}" {} ''
+      hashPath = runCommandLocal "hash-${algo}" {} ''
         ${nix}/bin/nix --option experimental-features nix-command hash path ${path} | tr --delete '\n' > $out
       '';
     in
@@ -86,7 +86,7 @@ in
 
     # hash a file via `nix hash file`
     hashFile = algo: path: let
-      hashFile = runCommand "hash-${algo}" {} ''
+      hashFile = runCommandLocal "hash-${algo}" {} ''
         ${nix}/bin/nix --option experimental-features nix-command hash file ${path} | tr --delete '\n' > $out
       '';
     in
@@ -130,6 +130,7 @@ in
         ${coreutils}/bin/rm -rf $TMPDIR
       '';
 
+    # TODO is this really needed? Seems to make builds slower, why not unpack + build?
     extractSource = {
       source,
       dir ? "",
