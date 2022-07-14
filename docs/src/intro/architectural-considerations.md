@@ -22,7 +22,7 @@ Every Phase mentioned in the previous section should be customizable at a high d
   - customize the build/installation procedure
 
 ### Maintainability
-Due to the modular architecture with strict interfaces, contributers can add support for new lock-file formats or new strategies for fetching, building, installing more easily.
+Due to the modular architecture with strict interfaces, contributors can add support for new lock-file formats or new strategies for fetching, building, installing more easily.
 
 ### Compatibility
 Depending on where the nix code is used, different approaches are desired or discouraged. While IFD might be desired for some out of tree projects to achieve simplified UX, it is strictly prohibited in nixpkgs due to nix/hydra limitations.
@@ -39,7 +39,7 @@ Common problems that apply to many 2nix solutions can be solved once by the fram
 Essential components like package update scripts or fetching and override logic are provided by the dream2nix framework and are stored only once in the source tree instead of several times.
 
 ### Risk free opt-in FOD fetching
-Optionally, to save more storage space, individual hashes for source can be ommited and a single large FOD used instead.
+Optionally, to save more storage space, individual hashes for source can be omitted and a single large FOD used instead.
 Due to a unified minimalistic fetching layer the risk of FOD hash breakages should be very low.
 
 ### Common UI across many 2nix solutions
@@ -73,7 +73,7 @@ The general architecture should consist of these components:
 
 Input:
 - can consist of:
-  - requirement contstraints
+  - requirement constraints
   - requirement files
   - lock-files
   - project's source tree
@@ -110,7 +110,7 @@ Builder:
 ### Example (walk through the phases)
 #### python project with poetry.lock
 As an example we package a python project that uses poetry for dependency management.
-Potery uses `pyproject.toml` and `poetry.lock` to lock dependencies
+Poetry uses `pyproject.toml` and `poetry.lock` to lock dependencies
 - Input: pyproject.toml, poetry.lock (toml)
 - Translator: written in pure nix, reading the toml input and generating the generic lock format
 - Generic Lock (for explanatory purposes dumped to json and commented):
