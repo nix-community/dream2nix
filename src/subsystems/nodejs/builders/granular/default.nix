@@ -386,8 +386,6 @@
           if [ -f ./tsconfig.json ] \
               && node -e 'require("typescript")' &>/dev/null; then
             node ${./tsconfig-to-json.js}
-            ${pkgs.jq}/bin/jq ".compilerOptions.preserveSymlinks = true" tsconfig.json \
-                | ${pkgs.moreutils}/bin/sponge tsconfig.json
           fi
         '';
 
