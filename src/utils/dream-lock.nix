@@ -103,9 +103,55 @@
       (dep: ! b.elem dep cyclicDependencies."${pname}"."${version}" or [])
       dependencyGraph."${pname}"."${version}" or [];
 
-    getCyclicDependencies = pname: version:
-      cyclicDependencies."${pname}"."${version}" or [];
+    # inverted cyclicDependencies
+    cyclees = with l;
+      foldAttrs (c: acc: acc // (listToAttrs [(nameValuePair c.version c.cyclic)])) {} (flatten (mapAttrsToList (cyclicName: cyclicVersions:
+        mapAttrsToList (cyclicVersion: cycleeDeps:
+          map (cycleeDep: (listToAttrs [
+            (
+              nameValuePair cycleeDep.name
+              {
+                version = cycleeDep.version;
+                cyclic = {
+                  name = cyclicName;
+                  version = cyclicVersion;
+                };
+              }
+            )
+          ]))
+          cycleeDeps)
+        cyclicVersions)
+      cyclicDependencies));
 
+    # TODO convert to set and back to avoid O(n^2) of unique
+    replaceCyclees = deps: with l; unique (map (d: cyclees."${d.name}"."${d.version}" or d) deps);
+
+    getCyclicDependencies = name: version: let
+      # [ {name; version} ]
+      cycleeDeps = cyclicDependencies."${name}"."${version}" or [];
+
+      # {name: {version: true}}
+      cycleeMap = lib.foldAttrs (depVersion: acc:
+        acc
+        // (lib.listToAttrs [
+          {
+            name = depVersion;
+            value = true;
+          }
+        ])) {}
+      cycleeDeps;
+
+      cyclicParent = cyclees."${name}"."${version}" or null;
+      isCyclee = depName: depVersion: cycleeMap."${depName}"."${depVersion}" or false;
+      isThisCycleeFor = depName: depVersion:
+        cyclicParent
+        == {
+          name = depName;
+          version = depVersion;
+        };
+    in {
+      inherit cycleeDeps cyclicParent isCyclee isThisCycleeFor;
+    };
     getRoot = pname: version: let
       spec = getSourceSpec pname version;
     in
@@ -124,6 +170,7 @@
         defaultPackageName
         defaultPackageVersion
         subsystemAttrs
+        replaceCyclees
         getCyclicDependencies
         getDependencies
         getSourceSpec

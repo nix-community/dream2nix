@@ -267,6 +267,7 @@
           getSourceSpec
           getRoot
           getDependencies
+          replaceCyclees
           getCyclicDependencies
           defaultPackageName
           defaultPackageVersion
