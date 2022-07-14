@@ -160,7 +160,7 @@ The user should be able to freely choose between:</p>
 <li>customize the build/installation procedure</li>
 </ul>
 <h3 id="maintainability"><a class="header" href="#maintainability">Maintainability</a></h3>
-<p>Due to the modular architecture with strict interfaces, contributers can add support for new lock-file formats or new strategies for fetching, building, installing more easily.</p>
+<p>Due to the modular architecture with strict interfaces, contributors can add support for new lock-file formats or new strategies for fetching, building, installing more easily.</p>
 <h3 id="compatibility"><a class="header" href="#compatibility">Compatibility</a></h3>
 <p>Depending on where the nix code is used, different approaches are desired or discouraged. While IFD might be desired for some out of tree projects to achieve simplified UX, it is strictly prohibited in nixpkgs due to nix/hydra limitations.
 All solutions which follow the dream2nix specification will be compatible with both approaches without having to re-invent the tool.</p>
@@ -175,7 +175,7 @@ All solutions which follow the dream2nix specification will be compatible with b
 <h3 id="code-de-duplication-in-nixpkgs"><a class="header" href="#code-de-duplication-in-nixpkgs">Code de-duplication in nixpkgs</a></h3>
 <p>Essential components like package update scripts or fetching and override logic are provided by the dream2nix framework and are stored only once in the source tree instead of several times.</p>
 <h3 id="risk-free-opt-in-fod-fetching"><a class="header" href="#risk-free-opt-in-fod-fetching">Risk free opt-in FOD fetching</a></h3>
-<p>Optionally, to save more storage space, individual hashes for source can be ommited and a single large FOD used instead.
+<p>Optionally, to save more storage space, individual hashes for source can be omitted and a single large FOD used instead.
 Due to a unified minimalistic fetching layer the risk of FOD hash breakages should be very low.</p>
 <h3 id="common-ui-across-many-2nix-solutions"><a class="header" href="#common-ui-across-many-2nix-solutions">Common UI across many 2nix solutions</a></h3>
 <p>2nix solutions which follow the dream2nix framework will have a unified UI for workflows like project initialization or code generation. This will allow quicker onboarding of new users by providing familiar workflows across different build systems.</p>
@@ -205,7 +205,7 @@ Due to a unified minimalistic fetching layer the risk of FOD hash breakages shou
 <ul>
 <li>can consist of:
 <ul>
-<li>requirement contstraints</li>
+<li>requirement constraints</li>
 <li>requirement files</li>
 <li>lock-files</li>
 <li>project's source tree</li>
@@ -256,7 +256,7 @@ Due to a unified minimalistic fetching layer the risk of FOD hash breakages shou
 <h3 id="example-walk-through-the-phases"><a class="header" href="#example-walk-through-the-phases">Example (walk through the phases)</a></h3>
 <h4 id="python-project-with-poetrylock"><a class="header" href="#python-project-with-poetrylock">python project with poetry.lock</a></h4>
 <p>As an example we package a python project that uses poetry for dependency management.
-Potery uses <code>pyproject.toml</code> and <code>poetry.lock</code> to lock dependencies</p>
+Poetry uses <code>pyproject.toml</code> and <code>poetry.lock</code> to lock dependencies</p>
 <ul>
 <li>Input: pyproject.toml, poetry.lock (toml)</li>
 <li>Translator: written in pure nix, reading the toml input and generating the generic lock format</li>

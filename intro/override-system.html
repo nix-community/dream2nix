@@ -139,14 +139,14 @@
   - specific logic    (overrides)
   - data              (dream-lock.json)
 </code></pre>
-<p>To optimize for scalalable workflows, the structure of dream2nix overrides differs from the ones seen in other projects.
+<p>To optimize for scalable workflows, the structure of dream2nix overrides differs from the ones seen in other projects.
 dream2nix overrides have the following properties:</p>
 <ul>
 <li><strong>referenceable</strong>: each override is assigned to a key through which it can be referenced. This allows for better inspection, selective debugging, replacing, etc.</li>
-<li><strong>conditional</strong>: each override can declare a condition, so that the override only applies when the condiiton evaluates positively.</li>
+<li><strong>conditional</strong>: each override can declare a condition, so that the override only applies when the condition evaluates positively.</li>
 <li><strong>attribute-oriented</strong>: The relevant parameters are attributes, not override functions. dream2nix will automatically figure out which underlying function (eg. override, overrideAttrs, ...) needs to be called to update each given attribute. The user is not confronted with this by default.</li>
 </ul>
-<p>Each subsytem in dream2nix like <code>nodejs</code> or <code>python</code> manages its overrides in a separate directory to avoid package name collisions.</p>
+<p>Each subsystem in dream2nix like <code>nodejs</code> or <code>python</code> manages its overrides in a separate directory to avoid package name collisions.</p>
 <p>dream2nix supports packaging different versions of the same package within one repository. Therefore conditions are used to make overrides apply only to certain package versions.</p>
 <p>Currently a collection of overrides is maintained at <a href="https://github.com/nix-community/dream2nix/tree/main/overrides">dream2nix/overrides</a></p>
 <p>Example for nodejs overrides:</p>

@@ -185,7 +185,7 @@ The user should be able to freely choose between:</p>
 <li>customize the build/installation procedure</li>
 </ul>
 <h3 id="maintainability"><a class="header" href="#maintainability">Maintainability</a></h3>
-<p>Due to the modular architecture with strict interfaces, contributers can add support for new lock-file formats or new strategies for fetching, building, installing more easily.</p>
+<p>Due to the modular architecture with strict interfaces, contributors can add support for new lock-file formats or new strategies for fetching, building, installing more easily.</p>
 <h3 id="compatibility"><a class="header" href="#compatibility">Compatibility</a></h3>
 <p>Depending on where the nix code is used, different approaches are desired or discouraged. While IFD might be desired for some out of tree projects to achieve simplified UX, it is strictly prohibited in nixpkgs due to nix/hydra limitations.
 All solutions which follow the dream2nix specification will be compatible with both approaches without having to re-invent the tool.</p>
@@ -200,7 +200,7 @@ All solutions which follow the dream2nix specification will be compatible with b
 <h3 id="code-de-duplication-in-nixpkgs"><a class="header" href="#code-de-duplication-in-nixpkgs">Code de-duplication in nixpkgs</a></h3>
 <p>Essential components like package update scripts or fetching and override logic are provided by the dream2nix framework and are stored only once in the source tree instead of several times.</p>
 <h3 id="risk-free-opt-in-fod-fetching"><a class="header" href="#risk-free-opt-in-fod-fetching">Risk free opt-in FOD fetching</a></h3>
-<p>Optionally, to save more storage space, individual hashes for source can be ommited and a single large FOD used instead.
+<p>Optionally, to save more storage space, individual hashes for source can be omitted and a single large FOD used instead.
 Due to a unified minimalistic fetching layer the risk of FOD hash breakages should be very low.</p>
 <h3 id="common-ui-across-many-2nix-solutions"><a class="header" href="#common-ui-across-many-2nix-solutions">Common UI across many 2nix solutions</a></h3>
 <p>2nix solutions which follow the dream2nix framework will have a unified UI for workflows like project initialization or code generation. This will allow quicker onboarding of new users by providing familiar workflows across different build systems.</p>
@@ -230,7 +230,7 @@ Due to a unified minimalistic fetching layer the risk of FOD hash breakages shou
 <ul>
 <li>can consist of:
 <ul>
-<li>requirement contstraints</li>
+<li>requirement constraints</li>
 <li>requirement files</li>
 <li>lock-files</li>
 <li>project's source tree</li>
@@ -281,7 +281,7 @@ Due to a unified minimalistic fetching layer the risk of FOD hash breakages shou
 <h3 id="example-walk-through-the-phases"><a class="header" href="#example-walk-through-the-phases">Example (walk through the phases)</a></h3>
 <h4 id="python-project-with-poetrylock"><a class="header" href="#python-project-with-poetrylock">python project with poetry.lock</a></h4>
 <p>As an example we package a python project that uses poetry for dependency management.
-Potery uses <code>pyproject.toml</code> and <code>poetry.lock</code> to lock dependencies</p>
+Poetry uses <code>pyproject.toml</code> and <code>poetry.lock</code> to lock dependencies</p>
 <ul>
 <li>Input: pyproject.toml, poetry.lock (toml)</li>
 <li>Translator: written in pure nix, reading the toml input and generating the generic lock format</li>
@@ -401,11 +401,11 @@ Potery uses <code>pyproject.toml</code> and <code>poetry.lock</code> to lock dep
 <h4 id="problem-3"><a class="header" href="#problem-3">Problem</a></h4>
 <ul>
 <li>package update workflows can be complicated</li>
-<li>package update workflows vary significantly depending on the language/fragmework</li>
+<li>package update workflows vary significantly depending on the language/framework</li>
 </ul>
 <h4 id="solution-3"><a class="header" href="#solution-3">Solution</a></h4>
 <ul>
-<li>the workflow for updating packages will be unified and largely independenct of the underlying language/framework.</li>
+<li>the workflow for updating packages will be unified and largely independent of the underlying language/framework.</li>
 </ul>
 <h3 id="merge-conflicts-for-shared-dependencies"><a class="header" href="#merge-conflicts-for-shared-dependencies">Merge Conflicts for shared dependencies</a></h3>
 <h4 id="problem-4"><a class="header" href="#problem-4">Problem</a></h4>
@@ -445,14 +445,14 @@ Potery uses <code>pyproject.toml</code> and <code>poetry.lock</code> to lock dep
   - specific logic    (overrides)
   - data              (dream-lock.json)
 </code></pre>
-<p>To optimize for scalalable workflows, the structure of dream2nix overrides differs from the ones seen in other projects.
+<p>To optimize for scalable workflows, the structure of dream2nix overrides differs from the ones seen in other projects.
 dream2nix overrides have the following properties:</p>
 <ul>
 <li><strong>referenceable</strong>: each override is assigned to a key through which it can be referenced. This allows for better inspection, selective debugging, replacing, etc.</li>
-<li><strong>conditional</strong>: each override can declare a condition, so that the override only applies when the condiiton evaluates positively.</li>
+<li><strong>conditional</strong>: each override can declare a condition, so that the override only applies when the condition evaluates positively.</li>
 <li><strong>attribute-oriented</strong>: The relevant parameters are attributes, not override functions. dream2nix will automatically figure out which underlying function (eg. override, overrideAttrs, ...) needs to be called to update each given attribute. The user is not confronted with this by default.</li>
 </ul>
-<p>Each subsytem in dream2nix like <code>nodejs</code> or <code>python</code> manages its overrides in a separate directory to avoid package name collisions.</p>
+<p>Each subsystem in dream2nix like <code>nodejs</code> or <code>python</code> manages its overrides in a separate directory to avoid package name collisions.</p>
 <p>dream2nix supports packaging different versions of the same package within one repository. Therefore conditions are used to make overrides apply only to certain package versions.</p>
 <p>Currently a collection of overrides is maintained at <a href="https://github.com/nix-community/dream2nix/tree/main/overrides">dream2nix/overrides</a></p>
 <p>Example for nodejs overrides:</p>
@@ -605,7 +605,7 @@ This index should simply be a list of source shortcuts in JSON. Example:</p>
 <p>Builds a package using <code>buildRustPackage</code> from <code>nixpkgs</code>.</p>
 <h3 id="crane-ifd"><a class="header" href="#crane-ifd">crane (ifd)</a></h3>
 <p>Builds a package using <a href="https://github.com/ipetkov/crane"><code>crane</code></a>.
-This builder builds two seperate derivations, one for dependencies and the other for your crate.
+This builder builds two separate derivations, one for dependencies and the other for your crate.
 The dependencies derivation will be named <code>&lt;crate&gt;-deps</code> where <code>&lt;crate&gt;</code> is the name of the crate you are building.</p>
 <h4 id="override-gotchas"><a class="header" href="#override-gotchas">Override gotchas</a></h4>
 <p>This builder builds two separate derivations, one for your crate's dependencies and another for your crate.
@@ -728,7 +728,7 @@ in
 }
 </code></pre>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="extending-dream2nix-with-external-translators-builders-etc"><a class="header" href="#extending-dream2nix-with-external-translators-builders-etc">Extending dream2nix with external translators, builders etc.</a></h1>
-<p><code>dream2nix</code> can be extended while you are <code>init</code>ializing it.This can be done in a few ways.
+<p><code>dream2nix</code> can be extended while you are <code>init</code>ializing it. This can be done in a few ways.
 For extending, you need to utilize the <code>config.extra</code> option of the dream2nix config.</p>
 <h2 id="declare-extras-from-a-nix-file"><a class="header" href="#declare-extras-from-a-nix-file">Declare <code>extra</code>s from a nix file</a></h2>
 <pre><code class="language-nix">dream2nix.lib.init {
