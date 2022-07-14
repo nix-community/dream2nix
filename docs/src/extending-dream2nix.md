@@ -1,6 +1,6 @@
 # Extending dream2nix with external translators, builders etc.
 
-`dream2nix` can be extended while you are `init`ializing it.This can be done in a few ways.
+`dream2nix` can be extended while you are `init`ializing it. This can be done in a few ways.
 For extending, you need to utilize the `config.extra` option of the dream2nix config.
 
 ## Declare `extra`s from a nix file

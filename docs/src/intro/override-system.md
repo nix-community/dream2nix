@@ -5,13 +5,13 @@ The override system plays an important role when packaging software with dream2n
   - data              (dream-lock.json)
 ```
 
-To optimize for scalalable workflows, the structure of dream2nix overrides differs from the ones seen in other projects.
+To optimize for scalable workflows, the structure of dream2nix overrides differs from the ones seen in other projects.
 dream2nix overrides have the following properties:
   - **referenceable**: each override is assigned to a key through which it can be referenced. This allows for better inspection, selective debugging, replacing, etc.
-  - **conditional**: each override can declare a condition, so that the override only applies when the condiiton evaluates positively.
+  - **conditional**: each override can declare a condition, so that the override only applies when the condition evaluates positively.
   - **attribute-oriented**: The relevant parameters are attributes, not override functions. dream2nix will automatically figure out which underlying function (eg. override, overrideAttrs, ...) needs to be called to update each given attribute. The user is not confronted with this by default.
 
-Each subsytem in dream2nix like `nodejs` or `python` manages its overrides in a separate directory to avoid package name collisions.
+Each subsystem in dream2nix like `nodejs` or `python` manages its overrides in a separate directory to avoid package name collisions.
 
 dream2nix supports packaging different versions of the same package within one repository. Therefore conditions are used to make overrides apply only to certain package versions.
 

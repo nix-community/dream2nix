@@ -49,11 +49,11 @@
 #### Problem
 
 - package update workflows can be complicated
-- package update workflows vary significantly depending on the language/fragmework
+- package update workflows vary significantly depending on the language/framework
 
 #### Solution
 
-- the workflow for updating packages will be unified and largely independenct of the underlying language/framework.
+- the workflow for updating packages will be unified and largely independent of the underlying language/framework.
 
 ### Merge Conflicts for shared dependencies
 

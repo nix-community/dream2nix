@@ -21,7 +21,7 @@ Builds a package using `buildRustPackage` from `nixpkgs`.
 ### crane (ifd)
 
 Builds a package using [`crane`](https://github.com/ipetkov/crane).
-This builder builds two seperate derivations, one for dependencies and the other for your crate.
+This builder builds two separate derivations, one for dependencies and the other for your crate.
 The dependencies derivation will be named `<crate>-deps` where `<crate>` is the name of the crate you are building.
 
 #### Override gotchas
