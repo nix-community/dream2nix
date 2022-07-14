@@ -423,10 +423,24 @@
           # symlink sub dependencies as well as this imitates npm better
           python $installDeps
 
+          echo "Symlinking transitive executables to $nodeModules/.bin"
+          for dep in ${l.toString nodeDeps}; do
+            binDir=$dep/lib/node_modules/.bin
+            if [ -e $binDir ]; then
+              for bin in $(ls $binDir/); do
+                mkdir -p $nodeModules/.bin
+
+                # symlink might have been already created by install-deps.py
+                # if installMethod=copy was selected
+                if [ ! -e $nodeModules/.bin/$bin ]; then
+                  ln -s $binDir/$bin $nodeModules/.bin/$bin
+                fi
+              done
+            fi
+          done
+
           # add bin path entries collected by python script
-          if [ -e $TMP/ADD_BIN_PATH ]; then
-            export PATH="$PATH:$(cat $TMP/ADD_BIN_PATH)"
-          fi
+          export PATH="$PATH:$nodeModules/.bin"
 
           # add dependencies to NODE_PATH
           export NODE_PATH="$NODE_PATH:$nodeModules/$packageName/node_modules"
@@ -443,6 +457,7 @@
 
           # execute electron-rebuild
           if [ -n "$electronHeaders" ]; then
+            echo "executing electron-rebuild"
             ${electron-rebuild}
           fi
 
@@ -472,24 +487,6 @@
         installPhase = ''
           runHook preInstall
 
-          echo "Symlinking exectuables to /bin"
-          if [ -d "$nodeModules/.bin" ]
-          then
-            chmod +x $nodeModules/.bin/*
-            ln -s $nodeModules/.bin $out/bin
-          fi
-
-          echo "Symlinking transitive executables to $nodeModules/.bin"
-          echo "node deps: ${l.toString nodeDeps}"
-          for dep in ${l.toString nodeDeps}; do
-            echo "bin dirs: $(ls -d $dep/lib/node_modules/.bin 2>/dev/null ||:)"
-            for binDir in $(ls -d $dep/lib/node_modules/.bin 2>/dev/null ||:); do
-              echo binDir $binDir
-              mkdir -p $nodeModules/.bin
-              ln -sf $binDir/* $nodeModules/.bin/
-            done
-          done
-
           echo "Symlinking manual pages"
           if [ -d "$nodeModules/$packageName/man" ]
           then
@@ -505,8 +502,8 @@
           fi
 
           # wrap electron app
-          # execute electron-rebuild
           if [ -n "$electronHeaders" ]; then
+            echo "Wrapping electron app"
             ${electron-wrap}
           fi
 

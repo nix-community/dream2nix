@@ -9,6 +9,7 @@ import sys
 out = os.environ.get('out')
 pname = os.environ.get('packageName')
 version = os.environ.get('version')
+bin_dir = f"{os.path.abspath('..')}/.bin"
 root = f"{os.path.abspath('.')}/node_modules"
 package_json_cache = {}
 
@@ -104,6 +105,30 @@ def symlink_sub_dependencies():
     os.symlink(os.path.realpath(dep), path)
 
 
+# create symlinks for executables (bin entries from package.json)
+def symlink_bin(bin_dir, package_location, package_json):
+  if 'bin' in package_json and package_json['bin']:
+    bin = package_json['bin']
+
+    def link(name, relpath):
+      source = f'{bin_dir}/{name}'
+      sourceDir = os.path.dirname(source)
+      # create parent dir
+      pathlib.Path(sourceDir).mkdir(parents=True, exist_ok=True)
+      dest = os.path.relpath(f'{package_location}/{relpath}', sourceDir)
+      print(f"symlinking executable. dest: {dest}; source: {source}")
+      if not os.path.exists(source):
+        os.symlink(dest, source)
+
+    if isinstance(bin, str):
+      name = package_json['name'].split('/')[-1]
+      link(name, bin)
+
+    else:
+      for name, relpath in bin.items():
+        link(name, relpath)
+
+
 # checks if dependency is already installed in the current or parent dir.
 def dependency_satisfied(root, pname, version):
   if root == "/nix/store":
@@ -121,9 +146,9 @@ def dependency_satisfied(root, pname, version):
 
 
 # transforms symlinked dependencies into real copies
-def symlinks_to_copies(root):
-  sp.run(f"chmod +wx {root}".split())
-  for dep in collect_dependencies(root, 0):
+def symlinks_to_copies(node_modules):
+  sp.run(f"chmod +wx {node_modules}".split())
+  for dep in collect_dependencies(node_modules, 0):
 
     # only handle symlinks to directories
     if not os.path.islink(dep) or os.path.isfile(dep):
@@ -132,14 +157,14 @@ def symlinks_to_copies(root):
     d1, d2 = dep.split('/')[-2:]
     if d1[0] == '@':
       pname = f"{d1}/{d2}"
-      sp.run(f"chmod +wx {root}/{d1}".split())
+      sp.run(f"chmod +wx {node_modules}/{d1}".split())
     else:
       pname = d2
 
     package_json = get_package_json(dep)
     if package_json is not None:
-      version = get_package_json(dep)['version']
-      if dependency_satisfied(os.path.dirname(root), pname, version):
+      version = package_json['version']
+      if dependency_satisfied(os.path.dirname(node_modules), pname, version):
         os.remove(dep)
         continue
 
@@ -156,6 +181,7 @@ def symlinks_to_copies(root):
         else:
           shutil.copy(f"{dep}.bac/{node}", f"{dep}/{node}")
     os.remove(f"{dep}.bac")
+    symlink_bin(f"{bin_dir}", dep, package_json)
 
 
 # install direct deps
