@@ -234,7 +234,25 @@
         else
           pkgs.runCommandLocal "node_modules-${pname}" {} ''
             shopt -s nullglob
+            set -e
+
             mkdir $out
+
+            function doLink() {
+              local n=$(basename $1)
+              local t="$2/$n"
+              if [ -e "$t" ]; then
+                local tl=$(readlink $t)
+                if [ "$tl" = $1 ]; then
+                  # cyclic dep, all ok
+                  return
+                fi
+                echo "Cannot overwrite $tl with $1 - incorrect cycle! Versions issue?" >&2
+                exit 1
+              fi
+              ln -s $1 $t
+            }
+
             for pkg in ${l.toString myDeps}; do
               if [ -d $pkg/lib/node_modules/ ]; then
                 cd $pkg/lib/node_modules/
@@ -242,9 +260,11 @@
                   # special case for namespaced modules
                   if [[ $dir == @* ]]; then
                     mkdir -p $out/$dir
-                    ln -s $pkg/lib/node_modules/$dir/* $out/$dir/
+                    for sub in $pkg/lib/node_modules/$dir/*; do
+                      doLink $sub $out/$dir
+                    done
                   else
-                    ln -s $pkg/lib/node_modules/$dir $out/
+                    doLink $pkg/lib/node_modules/$dir $out
                   fi
                 done
               fi
@@ -466,10 +486,10 @@
           fi
 
           # configure typescript to resolve symlinks locally
-          # TODO is this really needed? Node doens't use it
-          if [ -f ./tsconfig.json ]; then
-            node ${./tsconfig-to-json.js}
-          fi
+          # disabled since it should just work
+          # if [ -f ./tsconfig.json ]; then
+          #   node ${./tsconfig-to-json.js}
+          # fi
         '';
 
         # - links dependencies into the node_modules directory + adds bin to PATH
@@ -480,6 +500,10 @@
           ${
             if prodModules != null
             then ''
+              if [ -L $sourceRoot/node_modules ] || [ -e $sourceRoot/node_modules ]; then
+                echo Warning: The source $sourceRoot includes a node_modules directory. Replacing. >&2
+                rm -rf $sourceRoot/node_modules
+              fi
               ln -s ${prodModules} $sourceRoot/node_modules
               export PATH="$PATH:$sourceRoot/node_modules/.bin"
             ''
