@@ -99,16 +99,41 @@
       pname
       (buildPackageWithToolchain defaultToolchain buildArgs);
 
-    mkShellForPkg = pkg:
+    # TODO: this does not carry over environment variables from the
+    # dependencies derivation. this could cause confusion for users.
+    mkShellForPkg = pkg: let
+      pkgDeps = pkg.passthru.dependencies;
+    in
       pkg.overrideAttrs (old: {
-        buildInputs =
+        # we have to set these to empty because crane uses the phases
+        # to compile & test. buildRustPackage uses hooks instead so that's
+        # why build-rust-package doesn't need to do this.
+        buildPhase = "";
+        checkPhase = "";
+        # we have to have some output, so we just record the build inputs
+        # to a file (like mkShell does). this makes the derivation buildable.
+        # see https://github.com/NixOS/nixpkgs/pull/153194.
+        installPhase = "echo >> $out && export >> $out";
+
+        # set cargo artifacts to empty string so that dependencies
+        # derivation doesn't get built when entering devshell.
+        cargoArtifacts = "";
+
+        # merge build inputs from main drv and dependencies drv.
+        buildInputs = l.unique (
           (old.buildInputs or [])
+          ++ (pkgDeps.buildInputs or [])
           ++ [
             (
               pkg.passthru.rustToolchain.cargoHostTarget
               or pkg.passthru.rustToolchain.cargo
             )
-          ];
+          ]
+        );
+        nativeBuildInputs = l.unique (
+          (old.nativeBuildInputs or [])
+          ++ (pkgDeps.nativeBuildInputs or [])
+        );
       });
 
     allPackages =
