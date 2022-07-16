@@ -2,7 +2,9 @@
 <img width="400" src="https://gist.githubusercontent.com/DavHau/755fed3774e89c0b9b8953a0a25309fa/raw/e2a12a60ae49aa5eb11b42775abdd1652dbe63c0/dream2nix-01.png">
 </p>
 
-## [WIP] dream2nix - A framework for automated nix packaging
+## dream2nix - A framework for automated nix packaging
+
+!!! Warning: dream2nix is unstable software. While simple UX is one of our main focus points, the APIs  are still under development. Do expect changes that will break your setup.
 
 dream2nix is a framework for automatically converting packages from other build systems to nix.
 

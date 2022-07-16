@@ -3,7 +3,7 @@
   outputs = inp:
     inp.dream2nix.lib.makeFlakeOutputs {
       # modify according to your supported systems
-      systems = ["x86_64-linux"];
+      systems = inp.dream2nix.lib.systemsFromFile ./nix_systems;
       config.projectRoot = ./.;
       source = ./.;
     };

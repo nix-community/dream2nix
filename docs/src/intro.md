@@ -1,8 +1,10 @@
 # dream2nix
 
+{{#include ./warning.md}}
+
 dream2nix is a framework for automatically converting packages from other build systems to nix.
 
-It focuses on the following aspects:
+dream2nix focuses on the following aspects:
 
 - Modularity
 - Customizability

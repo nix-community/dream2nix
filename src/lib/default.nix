@@ -30,6 +30,7 @@
       sanitizePath
       sanitizeRelativePath
       subsystems
+      systemsFromFile
       traceJ
       modules
       warnIfIfd
@@ -294,6 +295,17 @@
     if absolute
     then "/${sanitizedRelPath}"
     else sanitizedRelPath;
+
+  systemsFromFile = file:
+    if ! l.pathExists file
+    then
+      throw ''
+        The system for your flake.nix is not initialized yet.
+        Please execute the following command to initialize it:
+
+        nix eval --impure --raw --expr 'builtins.currentSystem' > ./${l.baseNameOf file} && git add ./${l.baseNameOf file}
+      ''
+    else l.filter (l: l != "") (l.splitString "\n" (l.readFile file));
 
   traceJ = toTrace: eval: l.trace (l.toJSON toTrace) eval;
 

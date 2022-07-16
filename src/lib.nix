@@ -177,8 +177,9 @@
       flakifiedOutputsList;
   in
     flakeOutputs;
-in {
+in rec {
   inherit init makeFlakeOutputs makeFlakeOutputsForIndexes;
+  inherit (dlib) systemsFromFile;
   dlib = import ./lib {
     inherit lib;
     config = (import ./utils/config.nix).loadConfig {};
