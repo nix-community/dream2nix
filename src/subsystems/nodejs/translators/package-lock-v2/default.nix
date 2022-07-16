@@ -130,5 +130,17 @@ in rec {
       default = "{automatic}";
       type = "argument";
     };
+
+    # TODO: this should either be removed or only used to select
+    # the nodejs version for translating, not for building.
+    nodejs = {
+      description = "nodejs version to use for building";
+      default = "14";
+      examples = [
+        "14"
+        "16"
+      ];
+      type = "argument";
+    };
   };
 }
