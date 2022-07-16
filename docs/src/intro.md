@@ -26,6 +26,5 @@ The intention is to integrate many existing 2nix converters into this framework,
 
 - [Architectural Considerations](./intro/architectural-considerations.md)
 - [Potential impact on nixpkgs](./intro/nixpkgs-improvements.md)
-- [Development Roundups](./development-roundups.md)
 
 [glossary]: https://nixos.wiki/wiki/Glossary "glossary"

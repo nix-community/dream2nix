@@ -298,12 +298,15 @@
 
   systemsFromFile = file:
     if ! l.pathExists file
-    then
+    then let
+      relPathFile =
+        l.removePrefix (l.toString config.projectRoot) (l.toString file);
+    in
       throw ''
         The system for your flake.nix is not initialized yet.
         Please execute the following command to initialize it:
 
-        nix eval --impure --raw --expr 'builtins.currentSystem' > ./${l.baseNameOf file} && git add ./${l.baseNameOf file}
+        nix eval --impure --raw --expr 'builtins.currentSystem' > .${relPathFile} && git add .${relPathFile}
       ''
     else l.filter (l: l != "") (l.splitString "\n" (l.readFile file));
 
