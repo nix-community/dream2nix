@@ -70,6 +70,7 @@
     source,
     pkgs ? null,
     systems ? [],
+    systemsFromFile ? null,
     config ? {},
     inject ? {},
     pname ? throw "Please pass `pname` to makeFlakeOutputs",
@@ -77,6 +78,11 @@
     settings ? [],
     sourceOverrides ? oldSources: {},
   } @ args: let
+    systems =
+      if systemsFromFile == null
+      then args.systems or []
+      else dlib.systemsFromFile systemsFromFile;
+
     allPkgs = makeNixpkgs pkgs systems;
 
     config = loadConfig (args.config or {});
@@ -177,7 +183,7 @@
       flakifiedOutputsList;
   in
     flakeOutputs;
-in {
+in rec {
   inherit init makeFlakeOutputs makeFlakeOutputsForIndexes;
   dlib = import ./lib {
     inherit lib;

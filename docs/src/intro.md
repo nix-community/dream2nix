@@ -1,8 +1,10 @@
 # dream2nix
 
+{{#include ./warning.md}}
+
 dream2nix is a framework for automatically converting packages from other build systems to nix.
 
-It focuses on the following aspects:
+dream2nix focuses on the following aspects:
 
 - Modularity
 - Customizability
@@ -24,6 +26,5 @@ The intention is to integrate many existing 2nix converters into this framework,
 
 - [Architectural Considerations](./intro/architectural-considerations.md)
 - [Potential impact on nixpkgs](./intro/nixpkgs-improvements.md)
-- [Development Roundups](./development-roundups.md)
 
 [glossary]: https://nixos.wiki/wiki/Glossary "glossary"

@@ -70,6 +70,7 @@ in {
       $python -m pip download \
         --dest $tmp \
         --progress-bar off \
+        -r __extra_setup_reqs.txt \
         -r __setup_reqs.txt
 
       # download files according to requirements
@@ -91,32 +92,5 @@ in {
     '';
 
   # define special args and provide defaults
-  extraArgs = {
-    # the python attribute
-    pythonAttr = {
-      default = "python3";
-      description = "python version to translate for";
-      examples = [
-        "python27"
-        "python39"
-        "python310"
-      ];
-      type = "argument";
-    };
-
-    extraSetupDeps = {
-      default = [];
-      description = "a list of extra requirements to add";
-      examples = [
-        "cython"
-        "numpy"
-      ];
-      type = "argument";
-    };
-
-    application = {
-      description = "build application instead of package";
-      type = "flag";
-    };
-  };
+  extraArgs = import ./args.nix;
 }

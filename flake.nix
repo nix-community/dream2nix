@@ -339,8 +339,7 @@
         "dream2nix-docs"
         {nativeBuildInputs = [pkgs.mdbook];}
         ''
-          cp -r ${./docs}/* .
-          mdbook build -d $out
+          mdbook build -d $out ${./.}/docs
         '';
     });
 
