@@ -7,33 +7,36 @@
   l = lib // builtins;
   nodejsUtils = import ../utils.nix {inherit lib;};
 
-  getResolved = tree: project:
-    nodejsUtils.getWorkspaceLockFile tree project "resolved.json";
-
   translate = {
     translatorName,
     utils,
+    pkgs,
     ...
   }: {
     project,
     source,
     tree,
     # translator args
-    noDev,
-    nodejs,
+    name ? project.name or "untitled",
     ...
   } @ args: let
     b = builtins;
 
-    # TODO only dev for devShell
-    dev = ! noDev;
-    name = project.name;
     tree = args.tree.getNodeFromPath project.relPath;
     relPath = project.relPath;
     source = "${args.source}/${relPath}";
     workspaces = project.subsystemInfo.workspaces or [];
 
-    lock = (getResolved args.tree project).jsonContent or null;
+    getResolved = tree: project: let
+      lock =
+        nodejsUtils.getWorkspaceLockFile tree project "package-lock.json";
+      resolved = pkgs.runCommandLocal "resolved.json" {} ''
+        ${pkgs.nodejs}/bin/node ${./resolver.cjs} ${lock.fullPath} $out
+      '';
+    in
+      l.fromJSON (l.readFile resolved);
+
+    lock = getResolved args.tree project;
 
     packageVersion = lock.version or "unknown";
 
@@ -113,7 +116,7 @@
 in rec {
   version = 2;
 
-  type = "pure";
+  type = "ifd";
 
   inherit translate;
 
@@ -125,18 +128,6 @@ in rec {
         "@babel/code-frame"
       ];
       default = "{automatic}";
-      type = "argument";
-    };
-
-    # TODO: this should either be removed or only used to select
-    # the nodejs version for translating, not for building.
-    nodejs = {
-      description = "nodejs version to use for building";
-      default = "14";
-      examples = [
-        "14"
-        "16"
-      ];
       type = "argument";
     };
   };

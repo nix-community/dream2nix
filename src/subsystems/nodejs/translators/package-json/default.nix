@@ -29,7 +29,6 @@
       git
       jq
       nodejs-18_x
-      # nodejs-18_x.pkgs.npm
       openssh
     ]
     ''
@@ -49,16 +48,10 @@
 
       cd ./$relPath
 
-      # create package lock if missing or old
-      if ! [ -r package-lock.json ] || [ $(jq '.lockfileVersion' -r package-lock.json) != 2 ]; then
-        rm -f package-lock.json
+      rm -f package-lock.json
+      echo Generating temporary package-lock.json with npm
 
-        # TODO: some easy way to add --offline, maybe separate flake run script? Speeds up enormously when cached.
-        npm install --package-lock-only $npmArgs
-      fi
-
-      # resolve packages - TODO move to RunCommandLocal
-      node ${./resolver.cjs} package-lock.json resolved.json
+      npm install --package-lock-only $npmArgs
 
       jq ".source = \"$newSource\"" -c -r $jsonInput > $TMPDIR/newJsonInput
 

@@ -37,7 +37,7 @@
 
   getTranslatorNames = path: let
     nodes = l.readDir path;
-    packageJson = l.fromJSON (l.readFile "${path}/package.json");
+    packageJson = getPackageJson path;
     translators =
       # if the package has no dependencies we use the
       # package-lock translator with `packageLock = null`
@@ -46,6 +46,17 @@
         && (packageJson.devDependencies or {} == {})
         && (packageJson.workspaces or [] == [])
       then ["package-lock"]
+      else if nodes ? "package-lock.json"
+      then let
+        # Wish there was a way to get the version without reading a 2MB file
+        lockJson = getLockJson path;
+        lockVersion = lockJson.lockfileVersion or 0;
+      in
+        if lockVersion == 1
+        then ["package-lock"]
+        else if lockVersion == 2
+        then ["resolved-json"]
+        else ["package-json"]
       else
         l.optionals (nodes ? "yarn.lock") ["yarn-lock"]
         ++ ["package-json"];
@@ -53,8 +64,9 @@
     translators;
 
   # returns the parsed package.json of a given directory
-  getPackageJson = dirPath:
-    l.fromJSON (l.readFile "${dirPath}/package.json");
+  getJson = jsonPath: l.fromJSON (l.readFile jsonPath);
+  getPackageJson = dirPath: getJson "${dirPath}/package.json";
+  getLockJson = dirPath: getJson "${dirPath}/package-lock.json";
 
   # returns all relative paths to workspaces defined by a glob
   getWorkspacePaths = glob: tree:
