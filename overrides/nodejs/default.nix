@@ -104,6 +104,7 @@ in
       };
     };
 
+    # TODO not sure if this works
     edex-ui = {
       build = {
         electronAppDir = "src";
@@ -428,31 +429,6 @@ in
       };
     };
 
-    enhanced-resolve = {
-      fix-resolution-v4 = {
-        _condition = satisfiesSemver "^4.0.0";
-
-        # respect node path
-        postPatch = ''
-          ${ensureFileModified} lib/ResolverFactory.js \
-            sed -zi 's/const symlinks =.*options.symlinks : true;/const symlinks = false;/g' lib/ResolverFactory.js
-
-          substituteInPlace lib/ResolverFactory.js --replace \
-            'let modules = options.modules || ["node_modules"];' \
-            'let modules = (options.modules || ["node_modules"]).concat(process.env.NODE_PATH.split( /[;:]/ ));'
-        '';
-      };
-
-      fix-resolution-v5 = {
-        _condition = satisfiesSemver "^5.0.0";
-
-        patches = [
-          ./enhanced-resolve/npm-preserve-symlinks-v5.patch
-          ./enhanced-resolve/respect-node-path-v5.patch
-        ];
-      };
-    };
-
     gifsicle = {
       add-binary = {
         buildScript = ''
@@ -600,15 +576,6 @@ in
       };
     };
 
-    rollup = {
-      preserve-symlinks = {
-        postPatch = ''
-          find -name '*.js' -exec \
-            ${ensureFileModified} {} sed -i "s/preserveSymlinks: .*/preserveSymlinks: true,/g" {} \;
-        '';
-      };
-    };
-
     simple-git-hooks = {
       dont-postinstall = {
         buildScript = "true";
@@ -702,16 +669,6 @@ in
               chmod -R +w $dir
             fi
           done
-        '';
-      };
-    };
-
-    # TODO: confirm this is actually working
-    typescript = {
-      preserve-symlinks = {
-        postPatch = ''
-          find -name '*.js' -exec \
-            ${ensureFileModified} {} sed -i "s/options.preserveSymlinks/true/g; s/compilerOptions.preserveSymlinks/true/g" {} \;
         '';
       };
     };
@@ -838,21 +795,6 @@ in
         # -> incleasing max memory
         buildScript = ''
           NODE_ENV=production node --max-old-space-size=8192 ./node_modules/webpack/bin/webpack.js
-        '';
-      };
-    };
-
-    # This should not be necessary, as this plugin claims to
-    # respect the `preserveSymlinks` option of rollup.
-    # Adding the NODE_PATH to the module directories fixes it for now.
-    "@rollup/plugin-node-resolve" = {
-      respect-node-path = {
-        postPatch = ''
-          for f in $(find -name '*.js'); do
-            substituteInPlace $f --replace \
-              "moduleDirectories: ['node_modules']," \
-              "moduleDirectories: ['node_modules'].concat(process.env.NODE_PATH.split( /[;:]/ )),"
-          done
         '';
       };
     };

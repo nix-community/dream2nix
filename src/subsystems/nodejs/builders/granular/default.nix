@@ -484,12 +484,6 @@
           else
             exit 1
           fi
-
-          # configure typescript to resolve symlinks locally
-          # disabled since it should just work
-          # if [ -f ./tsconfig.json ]; then
-          #   node ${./tsconfig-to-json.js}
-          # fi
         '';
 
         # - links dependencies into the node_modules directory + adds bin to PATH
@@ -592,4 +586,16 @@
       // {sourceInfo = getSourceSpec name version;};
   in
     outputs;
+
+  extraArgs = {
+    nodejs = {
+      description = "nodejs version to use for building";
+      default = "14";
+      examples = [
+        "14"
+        "16"
+      ];
+      type = "argument";
+    };
+  };
 }
