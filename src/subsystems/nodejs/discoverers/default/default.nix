@@ -55,7 +55,7 @@
         if lockVersion == 1
         then ["package-lock"]
         else if lockVersion == 2
-        then ["resolved-json"]
+        then ["package-lock-v2"]
         else ["package-json"]
       else
         l.optionals (nodes ? "yarn.lock") ["yarn-lock"]

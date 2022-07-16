@@ -49,14 +49,15 @@
       cd ./$relPath
 
       rm -f package-lock.json
-      echo Generating temporary package-lock.json with npm
+      echo Generating temporary package-lock.json with npm.
+      echo You can avoid this by adding your own package-lock.json file.
 
       npm install --package-lock-only $npmArgs
 
       jq ".source = \"$newSource\"" -c -r $jsonInput > $TMPDIR/newJsonInput
 
       cd $WORKDIR
-      ${subsystems.nodejs.translators.resolved-json.translateBin} $TMPDIR/newJsonInput
+      ${subsystems.nodejs.translators.package-lock-v2.translateBin} $TMPDIR/newJsonInput
     '';
 
   # inherit options from package-lock translator
