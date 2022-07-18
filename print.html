@@ -76,7 +76,7 @@
 
         <nav id="sidebar" class="sidebar" aria-label="Table of contents">
             <div class="sidebar-scrollbox">
-                <ol class="chapter"><li class="chapter-item expanded "><a href="intro.html"><strong aria-hidden="true">1.</strong> Introduction</a></li><li class="chapter-item expanded affix "><li class="part-title">Guides</li><li class="chapter-item expanded "><a href="guides/quick-start.html"><strong aria-hidden="true">2.</strong> Quick Start</a></li><li class="chapter-item expanded "><a href="guides/getting-started-python.html"><strong aria-hidden="true">3.</strong> Python: getting started in 10 minutes</a></li><li class="chapter-item expanded affix "><li class="part-title">Subsystems</li><li class="chapter-item expanded "><a href="subsystems/rust.html"><strong aria-hidden="true">4.</strong> Rust</a></li><li class="chapter-item expanded "><a href="subsystems/python.html"><strong aria-hidden="true">5.</strong> Python</a></li><li class="chapter-item expanded affix "><li class="part-title">Concept</li><li class="chapter-item expanded "><a href="intro/architectural-considerations.html"><strong aria-hidden="true">6.</strong> Architectural Considerations</a></li><li class="chapter-item expanded "><a href="intro/nixpkgs-improvements.html"><strong aria-hidden="true">7.</strong> Nixpkgs improvements</a></li><li class="chapter-item expanded "><a href="intro/override-system.html"><strong aria-hidden="true">8.</strong> Override system</a></li><li class="chapter-item expanded "><a href="intro/translators.html"><strong aria-hidden="true">9.</strong> Translators</a></li><li class="chapter-item expanded "><a href="intro/indexers.html"><strong aria-hidden="true">10.</strong> Indexers</a></li><li class="chapter-item expanded "><a href="intro/presentation-oct-2021.html"><strong aria-hidden="true">11.</strong> Presentation Oct. 2021</a></li><li class="chapter-item expanded affix "><li class="part-title">Contributing</li><li class="chapter-item expanded "><a href="extending-dream2nix.html"><strong aria-hidden="true">12.</strong> Extending dream2nix</a></li><li class="chapter-item expanded "><a href="contributing.html"><strong aria-hidden="true">13.</strong> Contributing</a></li><li class="chapter-item expanded affix "><li class="part-title">Development Roundups</li><li class="chapter-item expanded "><a href="development-roundups/2022-april-june.html"><strong aria-hidden="true">14.</strong> April - June 2022</a></li></ol>
+                <ol class="chapter"><li class="chapter-item expanded "><a href="intro.html"><strong aria-hidden="true">1.</strong> Introduction</a></li><li class="chapter-item expanded affix "><li class="part-title">Guides</li><li class="chapter-item expanded "><a href="guides/getting-started-python.html"><strong aria-hidden="true">2.</strong> Python: getting started in 10 minutes</a></li><li class="chapter-item expanded affix "><li class="part-title">Subsystems</li><li class="chapter-item expanded "><a href="subsystems/rust.html"><strong aria-hidden="true">3.</strong> Rust</a></li><li class="chapter-item expanded "><a href="subsystems/python.html"><strong aria-hidden="true">4.</strong> Python</a></li><li class="chapter-item expanded affix "><li class="part-title">Concept</li><li class="chapter-item expanded "><a href="intro/architectural-considerations.html"><strong aria-hidden="true">5.</strong> Architectural Considerations</a></li><li class="chapter-item expanded "><a href="intro/nixpkgs-improvements.html"><strong aria-hidden="true">6.</strong> Nixpkgs improvements</a></li><li class="chapter-item expanded "><a href="intro/override-system.html"><strong aria-hidden="true">7.</strong> Override system</a></li><li class="chapter-item expanded "><a href="intro/translators.html"><strong aria-hidden="true">8.</strong> Translators</a></li><li class="chapter-item expanded "><a href="intro/indexers.html"><strong aria-hidden="true">9.</strong> Indexers</a></li><li class="chapter-item expanded affix "><li class="part-title">Contributing</li><li class="chapter-item expanded "><a href="extending-dream2nix.html"><strong aria-hidden="true">10.</strong> Extending dream2nix</a></li><li class="chapter-item expanded "><a href="contributing.html"><strong aria-hidden="true">11.</strong> Contributing</a></li><li class="chapter-item expanded affix "><li class="part-title">Development Roundups</li><li class="chapter-item expanded "><a href="development-roundups/2022-april-june.html"><strong aria-hidden="true">12.</strong> April - June 2022</a></li></ol>
             </div>
             <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
         </nav>
@@ -159,98 +159,6 @@
 <li><a href="./intro/architectural-considerations.html">Architectural Considerations</a></li>
 <li><a href="./intro/nixpkgs-improvements.html">Potential impact on nixpkgs</a></li>
 </ul>
-<div style="break-before: page; page-break-before: always;"></div><h2 id="test-the-experimental-version-of-dream2nix"><a class="header" href="#test-the-experimental-version-of-dream2nix">Test the experimental version of dream2nix</a></h2>
-<p>(Currently only nodejs, python and rust packaging is supported)</p>
-<ol>
-<li>Make sure you use a nix version &gt;= 2.4 and have <code>experimental-features = &quot;nix-command flakes&quot;</code> set.</li>
-<li>Navigate to to the project intended to be packaged and initialize a dream2nix flake:
-<pre><code class="language-command">  cd ./my-project
-  nix flake init -t github:nix-community/dream2nix#simple
-</code></pre>
-</li>
-<li>List the packages that can be built
-<pre><code class="language-command">  nix flake show
-</code></pre>
-</li>
-</ol>
-<p>Minimal Example <code>flake.nix</code>:</p>
-<pre><code class="language-nix">{
-  inputs.dream2nix.url = &quot;github:nix-community/dream2nix&quot;;
-  outputs = { self, dream2nix }:
-    dream2nix.lib.makeFlakeOutputs {
-      systems = [&quot;x86_64-linux&quot;];
-      config.projectRoot = ./.;
-      source = ./.;
-    };
-}
-</code></pre>
-<p>Extensive Example <code>flake.nix</code>:</p>
-<pre><code class="language-nix">{
-  inputs.dream2nix.url = &quot;github:nix-community/dream2nix&quot;;
-  outputs = { self, dream2nix }:
-    dream2nix.lib.makeFlakeOutputs {
-      systems = [&quot;x86_64-linux&quot;];
-      config.projectRoot = ./.;
-
-      source = ./.;
-
-      # Configure the behavior of dream2nix when translating projects.
-      # A setting applies to all discovered projects if `filter` is unset,
-      # or just to a subset or projects if `filter` is used.
-      settings = [
-        # prefer aggregated source fetching (large FODs)
-        {
-          aggregate = true;
-        }
-        # for all impure nodejs projects with just a `package.json`,
-        # add arguments for the `package-json` translator
-        {
-          filter = project: project.translator == &quot;package-json&quot;;
-          subsystemInfo.npmArgs = &quot;--legacy-peer-deps&quot;;
-          subsystemInfo.nodejs = 18;
-        }
-      ];
-
-      # configure package builds via overrides
-      # (see docs for override system below)
-      packageOverrides = {
-        # name of the package
-        package-name = {
-          # name the override
-          add-pre-build-steps = {
-            # override attributes
-            preBuild = &quot;...&quot;;
-            # update attributes
-            buildInputs = old: old ++ [pkgs.hello];
-          };
-        };
-      };
-
-      # Inject missing dependencies
-      inject = {
-        # Make foo depend on bar and baz
-        # from
-        foo.&quot;6.4.1&quot; = [
-          # to
-          [&quot;bar&quot; &quot;13.2.0&quot;]
-          [&quot;baz&quot; &quot;1.0.0&quot;]
-        ];
-        # dependencies with @ and slash require quoting
-        # the format is the one that is in the lockfile
-        &quot;@tiptap/extension-code&quot;.&quot;2.0.0-beta.26&quot; = [
-           [&quot;@tiptap/core&quot; &quot;2.0.0-beta.174&quot;]
-         ];
-      };
-
-      # add sources for `bar` and `baz`
-      sourceOverrides = oldSources: {
-        bar.&quot;13.2.0&quot; = builtins.fetchTarball {url = &quot;&quot;; sha256 = &quot;&quot;;};
-        baz.&quot;1.0.0&quot; = builtins.fetchTarball {url = &quot;&quot;; sha256 = &quot;&quot;;};
-      };
-    };
-}
-</code></pre>
-<p>An example for instancing dream2nix per pkgs and using it to create outputs can be found at <a href="guides/./examples/d2n-init-pkgs/flake.nix"><code>examples/d2n-init-pkgs</code></a>.</p>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="build-your-python-project-with-nix-in-10-minutes"><a class="header" href="#build-your-python-project-with-nix-in-10-minutes">Build your python project with nix in 10 minutes</a></h1>
 <p>!!! Warning: dream2nix is unstable software. While simple UX is one of our main focus points, the APIs  are still under development. Do expect changes that will break your setup.</p>
 <p>This guide walks you through the process of setting up nix for your project using dream2nix. This will allow your project's build and dev-environment to be reproduced by machines of other developers or CI systems with high accuracy.</p>
@@ -970,9 +878,6 @@ This index should simply be a list of source shortcuts in JSON. Example:</p>
 <li>crates.io indexer (named <code>crates-io</code>)</li>
 <li>NPM indexer (named <code>npm</code>)</li>
 </ul>
-<div style="break-before: page; page-break-before: always;"></div><h3 id="watch-the-presentation"><a class="header" href="#watch-the-presentation">Watch the presentation</a></h3>
-<p>(The code examples of the presentation are outdated)
-<a href="https://www.youtube.com/watch?v=jqCfHMvCsfQ"><img src="https://gist.githubusercontent.com/DavHau/755fed3774e89c0b9b8953a0a25309fa/raw/3c8b2c56f5fca3bf5c343ffc179136eef39d4d6a/dream2nix-youtube-talk.png" alt="dream2nix - A generic framework for 2nix tools" /></a></p>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="extending-dream2nix-with-external-translators-builders-etc"><a class="header" href="#extending-dream2nix-with-external-translators-builders-etc">Extending dream2nix with external translators, builders etc.</a></h1>
 <p><code>dream2nix</code> can be extended while you are <code>init</code>ializing it. This can be done in a few ways.
 For extending, you need to utilize the <code>config.extra</code> option of the dream2nix config.</p>
