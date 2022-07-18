@@ -2,7 +2,6 @@
 - [Introduction](./intro.md)
 
 # Guides
-- [Quick Start](./guides/quick-start.md)
 - [Python: getting started in 10 minutes](./guides/getting-started-python.md)
 # Subsystems
 - [Rust](./subsystems/rust.md)
@@ -14,7 +13,6 @@
 - [Override system](./intro/override-system.md)
 - [Translators](./intro/translators.md)
 - [Indexers](./intro/indexers.md)
-- [Presentation Oct. 2021](./intro/presentation-oct-2021.md)
 
 
 # Contributing
