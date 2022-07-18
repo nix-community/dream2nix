@@ -3,7 +3,7 @@
     <head>
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
-        <title>April - June 2022 - dream2nix documentation</title>
+        <title>Quick Start - dream2nix documentation</title>
         <!-- Custom HTML head -->
         <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
         <meta name="description" content="">
@@ -75,7 +75,7 @@
 
         <nav id="sidebar" class="sidebar" aria-label="Table of contents">
             <div class="sidebar-scrollbox">
-                <ol class="chapter"><li class="chapter-item expanded "><a href="../intro.html"><strong aria-hidden="true">1.</strong> Introduction</a></li><li class="chapter-item expanded affix "><li class="part-title">Guides</li><li class="chapter-item expanded "><a href="../guides/quick-start.html"><strong aria-hidden="true">2.</strong> Quick Start</a></li><li class="chapter-item expanded "><a href="../guides/getting-started-python.html"><strong aria-hidden="true">3.</strong> Python: getting started in 10 minutes</a></li><li class="chapter-item expanded affix "><li class="part-title">Subsystems</li><li class="chapter-item expanded "><a href="../subsystems/rust.html"><strong aria-hidden="true">4.</strong> Rust</a></li><li class="chapter-item expanded "><a href="../subsystems/python.html"><strong aria-hidden="true">5.</strong> Python</a></li><li class="chapter-item expanded affix "><li class="part-title">Concept</li><li class="chapter-item expanded "><a href="../intro/architectural-considerations.html"><strong aria-hidden="true">6.</strong> Architectural Considerations</a></li><li class="chapter-item expanded "><a href="../intro/nixpkgs-improvements.html"><strong aria-hidden="true">7.</strong> Nixpkgs improvements</a></li><li class="chapter-item expanded "><a href="../intro/override-system.html"><strong aria-hidden="true">8.</strong> Override system</a></li><li class="chapter-item expanded "><a href="../intro/translators.html"><strong aria-hidden="true">9.</strong> Translators</a></li><li class="chapter-item expanded "><a href="../intro/indexers.html"><strong aria-hidden="true">10.</strong> Indexers</a></li><li class="chapter-item expanded "><a href="../intro/presentation-oct-2021.html"><strong aria-hidden="true">11.</strong> Presentation Oct. 2021</a></li><li class="chapter-item expanded affix "><li class="part-title">Contributing</li><li class="chapter-item expanded "><a href="../extending-dream2nix.html"><strong aria-hidden="true">12.</strong> Extending dream2nix</a></li><li class="chapter-item expanded "><a href="../contributing.html"><strong aria-hidden="true">13.</strong> Contributing</a></li><li class="chapter-item expanded affix "><li class="part-title">Development Roundups</li><li class="chapter-item expanded "><a href="../development-roundups/2022-april-june.html" class="active"><strong aria-hidden="true">14.</strong> April - June 2022</a></li></ol>
+                <ol class="chapter"><li class="chapter-item expanded "><a href="../intro.html"><strong aria-hidden="true">1.</strong> Introduction</a></li><li class="chapter-item expanded affix "><li class="part-title">Guides</li><li class="chapter-item expanded "><a href="../guides/quick-start.html" class="active"><strong aria-hidden="true">2.</strong> Quick Start</a></li><li class="chapter-item expanded "><a href="../guides/getting-started-python.html"><strong aria-hidden="true">3.</strong> Python: getting started in 10 minutes</a></li><li class="chapter-item expanded affix "><li class="part-title">Subsystems</li><li class="chapter-item expanded "><a href="../subsystems/rust.html"><strong aria-hidden="true">4.</strong> Rust</a></li><li class="chapter-item expanded "><a href="../subsystems/python.html"><strong aria-hidden="true">5.</strong> Python</a></li><li class="chapter-item expanded affix "><li class="part-title">Concept</li><li class="chapter-item expanded "><a href="../intro/architectural-considerations.html"><strong aria-hidden="true">6.</strong> Architectural Considerations</a></li><li class="chapter-item expanded "><a href="../intro/nixpkgs-improvements.html"><strong aria-hidden="true">7.</strong> Nixpkgs improvements</a></li><li class="chapter-item expanded "><a href="../intro/override-system.html"><strong aria-hidden="true">8.</strong> Override system</a></li><li class="chapter-item expanded "><a href="../intro/translators.html"><strong aria-hidden="true">9.</strong> Translators</a></li><li class="chapter-item expanded "><a href="../intro/indexers.html"><strong aria-hidden="true">10.</strong> Indexers</a></li><li class="chapter-item expanded "><a href="../intro/presentation-oct-2021.html"><strong aria-hidden="true">11.</strong> Presentation Oct. 2021</a></li><li class="chapter-item expanded affix "><li class="part-title">Contributing</li><li class="chapter-item expanded "><a href="../extending-dream2nix.html"><strong aria-hidden="true">12.</strong> Extending dream2nix</a></li><li class="chapter-item expanded "><a href="../contributing.html"><strong aria-hidden="true">13.</strong> Contributing</a></li><li class="chapter-item expanded affix "><li class="part-title">Development Roundups</li><li class="chapter-item expanded "><a href="../development-roundups/2022-april-june.html"><strong aria-hidden="true">14.</strong> April - June 2022</a></li></ol>
             </div>
             <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
         </nav>
@@ -134,65 +134,108 @@
 
                 <div id="content" class="content">
                     <main>
-                        <h1 id="development-roundup-april---june-2022"><a class="header" href="#development-roundup-april---june-2022">Development Roundup April - June 2022</a></h1>
-<p>In the period of 3 months, <a href="https://github.com/nix-community/dream2nix/pulls?page=1&amp;q=is%3Apr+sort%3Acreated-asc+merged%3A2022-06+merged%3A2022-05+merged%3A2022-04">40 pull requests were merged</a>.</p>
-<h2 id="most-notable-changes"><a class="header" href="#most-notable-changes">Most Notable Changes</a></h2>
-<h3 id="extension-interface-for-subsystem-modules"><a class="header" href="#extension-interface-for-subsystem-modules">Extension Interface for subsystem modules</a></h3>
-<p>Dream2nix now has an extension interface which allows users to add support for other ecosystems and lock file formats out of tree. This allows people to maintain private dream2nix extensions or publish their extensions on their own repositories. For the future it is planned to go one step further and use the nixos module system for dream2nix.</p>
-<h3 id="improved-handling-of-mono-repo-projects"><a class="header" href="#improved-handling-of-mono-repo-projects">Improved handling of mono-repo projects</a></h3>
-<p>Many software projects in the wild consist of several sub-project. The sub-projects could be of the same ecosystem, like a nodejs project managed by npm, declaring several workspaces, or they could be of completely different ecosystems, like a nodejs project, containing a rust and a go module within the same source tree. A goal for dream2nix is to handle all these constellations well, to provide the user with decent automation and interfaces in order to simplify working with these complex software projects as much as possible. Therefore a discovery mechanism has been established and improved over time to tackle mono-repo scenarios, detecting sub-projects of arbitrary type within a larger source tree, splitting the detected projects into reasonable chunks of work that can be processed by many different translator modules of dream2nix.</p>
-<h3 id="unit-tests-for-pure-translators"><a class="header" href="#unit-tests-for-pure-translators">Unit tests for pure translators</a></h3>
-<p>Pure translators are the parts of dream2nix which are able to read upstream lock files and other metadata and convert this data to the dream2nix internal dream-lock format. All of this in done in pure nix without calling to external programs. For example the cargo-lock translator allows dream2nix to just build any rust project on-the-fly, given just the source code of the project.
-In order for dream2nix to extend its support onto many more ecosystems, we rely on the community contributions adding pure translators. For this reason we want to make such contributions as simple as possible.
-This is why we established a unit testing suit for pure translators. This is realized by using python + pytest to define the unit tests which then call out to nix via our python nix-ffi. This allows people to implement new translators step by step while getting constant feedback if they are on the right track.</p>
-<h2 id="more-changes"><a class="header" href="#more-changes">More Changes</a></h2>
-<ul>
-<li>
-<p>Reorganized internal code structure of <code>dream2nix</code> (<code>builders</code>, <code>translators</code>, <code>discoverers</code> moved to <code>subsystems</code>)</p>
+                        <h2 id="test-the-experimental-version-of-dream2nix"><a class="header" href="#test-the-experimental-version-of-dream2nix">Test the experimental version of dream2nix</a></h2>
+<p>(Currently only nodejs, python and rust packaging is supported)</p>
+<ol>
+<li>Make sure you use a nix version &gt;= 2.4 and have <code>experimental-features = &quot;nix-command flakes&quot;</code> set.</li>
+<li>Navigate to to the project intended to be packaged and initialize a dream2nix flake:
+<pre><code class="language-command">  cd ./my-project
+  nix flake init -t github:nix-community/dream2nix#simple
+</code></pre>
 </li>
-<li>
-<p>New community overrides to fix some nodejs packages</p>
+<li>List the packages that can be built
+<pre><code class="language-command">  nix flake show
+</code></pre>
 </li>
-<li>
-<p>Improved usage examples in readme</p>
-</li>
-<li>
-<p>Improvements on several subsystems including nodejs and rust</p>
-</li>
-<li>
-<p>New documentation website:
-https://nix-community.github.io/dream2nix/</p>
-</li>
-<li>
-<p>Added subsystems:</p>
-<ul>
-<li>python</li>
-<li>haskell</li>
-</ul>
-</li>
-<li>
-<p>Added support for translating formats:</p>
-<ul>
-<li>python: setup.py</li>
-<li>haskell: stack.yaml.lock (stack)</li>
-<li>haskell: plan.json (cabal)</li>
-<li>rust: Cargo.toml, Cargo.lock</li>
-</ul>
-</li>
-<li>
-<p>Added builders for:</p>
-<ul>
-<li>haskell: <code>default</code></li>
-</ul>
-</li>
-</ul>
+</ol>
+<p>Minimal Example <code>flake.nix</code>:</p>
+<pre><code class="language-nix">{
+  inputs.dream2nix.url = &quot;github:nix-community/dream2nix&quot;;
+  outputs = { self, dream2nix }:
+    dream2nix.lib.makeFlakeOutputs {
+      systems = [&quot;x86_64-linux&quot;];
+      config.projectRoot = ./.;
+      source = ./.;
+    };
+}
+</code></pre>
+<p>Extensive Example <code>flake.nix</code>:</p>
+<pre><code class="language-nix">{
+  inputs.dream2nix.url = &quot;github:nix-community/dream2nix&quot;;
+  outputs = { self, dream2nix }:
+    dream2nix.lib.makeFlakeOutputs {
+      systems = [&quot;x86_64-linux&quot;];
+      config.projectRoot = ./.;
+
+      source = ./.;
+
+      # Configure the behavior of dream2nix when translating projects.
+      # A setting applies to all discovered projects if `filter` is unset,
+      # or just to a subset or projects if `filter` is used.
+      settings = [
+        # prefer aggregated source fetching (large FODs)
+        {
+          aggregate = true;
+        }
+        # for all impure nodejs projects with just a `package.json`,
+        # add arguments for the `package-json` translator
+        {
+          filter = project: project.translator == &quot;package-json&quot;;
+          subsystemInfo.npmArgs = &quot;--legacy-peer-deps&quot;;
+          subsystemInfo.nodejs = 18;
+        }
+      ];
+
+      # configure package builds via overrides
+      # (see docs for override system below)
+      packageOverrides = {
+        # name of the package
+        package-name = {
+          # name the override
+          add-pre-build-steps = {
+            # override attributes
+            preBuild = &quot;...&quot;;
+            # update attributes
+            buildInputs = old: old ++ [pkgs.hello];
+          };
+        };
+      };
+
+      # Inject missing dependencies
+      inject = {
+        # Make foo depend on bar and baz
+        # from
+        foo.&quot;6.4.1&quot; = [
+          # to
+          [&quot;bar&quot; &quot;13.2.0&quot;]
+          [&quot;baz&quot; &quot;1.0.0&quot;]
+        ];
+        # dependencies with @ and slash require quoting
+        # the format is the one that is in the lockfile
+        &quot;@tiptap/extension-code&quot;.&quot;2.0.0-beta.26&quot; = [
+           [&quot;@tiptap/core&quot; &quot;2.0.0-beta.174&quot;]
+         ];
+      };
+
+      # add sources for `bar` and `baz`
+      sourceOverrides = oldSources: {
+        bar.&quot;13.2.0&quot; = builtins.fetchTarball {url = &quot;&quot;; sha256 = &quot;&quot;;};
+        baz.&quot;1.0.0&quot; = builtins.fetchTarball {url = &quot;&quot;; sha256 = &quot;&quot;;};
+      };
+    };
+}
+</code></pre>
+<p>An example for instancing dream2nix per pkgs and using it to create outputs can be found at <a href="./examples/d2n-init-pkgs/flake.nix"><code>examples/d2n-init-pkgs</code></a>.</p>
 
                     </main>
 
                     <nav class="nav-wrapper" aria-label="Page navigation">
                         <!-- Mobile navigation buttons -->
-                            <a rel="prev" href="../contributing.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                            <a rel="prev" href="../intro.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                                 <i class="fa fa-angle-left"></i>
+                            </a>
+                            <a rel="next" href="../guides/getting-started-python.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
                             </a>
                         <div style="clear: both"></div>
                     </nav>
@@ -200,8 +243,11 @@ https://nix-community.github.io/dream2nix/</p>
             </div>
 
             <nav class="nav-wide-wrapper" aria-label="Page navigation">
-                    <a rel="prev" href="../contributing.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                    <a rel="prev" href="../intro.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                         <i class="fa fa-angle-left"></i>
+                    </a>
+                    <a rel="next" href="../guides/getting-started-python.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
                     </a>
             </nav>
 
