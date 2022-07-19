@@ -197,7 +197,7 @@ in
             outputFile = project.dreamLockPath;
           }
           // (dlib.translators.getextraArgsDefaults translator.extraArgs or {})
-          // args.project.subsystemInfo
+          // args.project.subsystemInfo or {}
         ));
       script =
         writePureShellScriptBin "resolve"
