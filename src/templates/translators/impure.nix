@@ -4,6 +4,8 @@
   ...
 }: {
 
+  l = lib // builtins;
+
   type = "impure";
 
   /*
@@ -59,8 +61,8 @@
       jsonInput=$1
 
       # read the json input
-      outputFile=$(${jq}/bin/jq '.outputFile' -c -r $jsonInput)
-      source=$(${jq}/bin/jq '.source' -c -r $jsonInput)
+      outputFile=$WORKDIR/$(jq '.outputFile' -c -r $jsonInput)
+      source=$(jq '.source' -c -r $jsonInput)
       relPath=$(jq '.project.relPath' -c -r $jsonInput)
 
       # TODO:

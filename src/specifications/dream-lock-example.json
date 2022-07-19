@@ -1,11 +1,12 @@
 {
   "_generic": {
-    "subsystem": "python",
     "defaultPackage": "requests",
-    "translatorArgs": "",
+    "location": "",
     "packages": {
       "requests": "1.2.3"
-    }
+    },
+    "subsystem": "python",
+    "sourcesAggregatedHash": null
   },
 
   "_subsystem": {
