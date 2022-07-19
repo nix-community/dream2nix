@@ -410,7 +410,7 @@ in
         };
       };
       "add-binary-0.14" = let
-        version = "0.14.38";
+        version = "0.14.48";
       in {
         _condition = satisfiesSemver "~0.14";
         ESBUILD_BINARY_PATH = let
@@ -422,7 +422,7 @@ in
               owner = "evanw";
               repo = "esbuild";
               rev = "v${version}";
-              sha256 = "sha256-rvMi1oC7qGidvi4zrm9KCMMntu6LJGVOGN6VmU2ivQE=";
+              sha256 = "sha256-ziZOIPBIUGyuS3SEKKAYDH7Tv1mLOegw9YqTpGV2plI=";
             };
 
             vendorSha256 = "sha256-QPkBR+FscUc3jOvH7olcGUhM6OW4vxawmNJuRQxPuGs=";
