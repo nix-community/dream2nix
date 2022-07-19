@@ -2,9 +2,9 @@
   dlib,
   lib,
   ...
-}: {
-
+}: let
   l = lib // builtins;
+in {
 
   type = "impure";
 
@@ -45,7 +45,9 @@
     utils,
     # nixpkgs dependenies
     bash,
+    coreutils,
     jq,
+    nix,
     writeScriptBin,
     ...
   }:
