@@ -6,6 +6,7 @@
 # Subsystems
 - [Rust](./subsystems/rust.md)
 - [Python](./subsystems/python.md)
+- [Haskell](./subsystems/haskell.md)
 
 # Concept
 - [Architectural Considerations](./intro/architectural-considerations.md)
