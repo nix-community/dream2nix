@@ -123,7 +123,7 @@ Extensive Example `flake.nix`:
 }
 ```
 
-An example for instancing dream2nix per pkgs and using it to create outputs can be found at [`examples/d2n-init-pkgs`](./examples/d2n-init-pkgs/flake.nix).
+An example for instancing dream2nix per pkgs and using it to create outputs can be found at [`examples_d2n-init-pkgs`](./examples/_d2n-init-pkgs/flake.nix).
 
 ### Documentation
 
