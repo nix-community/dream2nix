@@ -14,11 +14,7 @@
       pkgs = dream2nix.inputs.nixpkgs.legacyPackages.x86_64-linux;
       source = src;
       config.projectRoot = ./.;
-      settings = [
-        {
-          subsystemInfo.noDev = true;
-        }
-      ];
+      settings = [];
     })
     // {
       # checks = self.packages;
