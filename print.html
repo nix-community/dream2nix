@@ -76,7 +76,7 @@
 
         <nav id="sidebar" class="sidebar" aria-label="Table of contents">
             <div class="sidebar-scrollbox">
-                <ol class="chapter"><li class="chapter-item expanded "><a href="intro.html"><strong aria-hidden="true">1.</strong> Introduction</a></li><li class="chapter-item expanded affix "><li class="part-title">Guides</li><li class="chapter-item expanded "><a href="guides/getting-started-python.html"><strong aria-hidden="true">2.</strong> Python: getting started in 10 minutes</a></li><li class="chapter-item expanded affix "><li class="part-title">Subsystems</li><li class="chapter-item expanded "><a href="subsystems/rust.html"><strong aria-hidden="true">3.</strong> Rust</a></li><li class="chapter-item expanded "><a href="subsystems/python.html"><strong aria-hidden="true">4.</strong> Python</a></li><li class="chapter-item expanded affix "><li class="part-title">Concept</li><li class="chapter-item expanded "><a href="intro/architectural-considerations.html"><strong aria-hidden="true">5.</strong> Architectural Considerations</a></li><li class="chapter-item expanded "><a href="intro/nixpkgs-improvements.html"><strong aria-hidden="true">6.</strong> Nixpkgs improvements</a></li><li class="chapter-item expanded "><a href="intro/override-system.html"><strong aria-hidden="true">7.</strong> Override system</a></li><li class="chapter-item expanded "><a href="intro/translators.html"><strong aria-hidden="true">8.</strong> Translators</a></li><li class="chapter-item expanded "><a href="intro/indexers.html"><strong aria-hidden="true">9.</strong> Indexers</a></li><li class="chapter-item expanded affix "><li class="part-title">Contributing</li><li class="chapter-item expanded "><a href="extending-dream2nix.html"><strong aria-hidden="true">10.</strong> Extending dream2nix</a></li><li class="chapter-item expanded "><a href="contributing.html"><strong aria-hidden="true">11.</strong> Contributing</a></li><li class="chapter-item expanded affix "><li class="part-title">Development Roundups</li><li class="chapter-item expanded "><a href="development-roundups/2022-april-june.html"><strong aria-hidden="true">12.</strong> April - June 2022</a></li></ol>
+                <ol class="chapter"><li class="chapter-item expanded "><a href="intro.html"><strong aria-hidden="true">1.</strong> Introduction</a></li><li class="chapter-item expanded affix "><li class="part-title">Guides</li><li class="chapter-item expanded "><a href="guides/getting-started-python.html"><strong aria-hidden="true">2.</strong> Python: getting started in 10 minutes</a></li><li class="chapter-item expanded affix "><li class="part-title">Subsystems</li><li class="chapter-item expanded "><a href="subsystems/rust.html"><strong aria-hidden="true">3.</strong> Rust</a></li><li class="chapter-item expanded "><a href="subsystems/python.html"><strong aria-hidden="true">4.</strong> Python</a></li><li class="chapter-item expanded "><a href="subsystems/haskell.html"><strong aria-hidden="true">5.</strong> Haskell</a></li><li class="chapter-item expanded affix "><li class="part-title">Concept</li><li class="chapter-item expanded "><a href="intro/architectural-considerations.html"><strong aria-hidden="true">6.</strong> Architectural Considerations</a></li><li class="chapter-item expanded "><a href="intro/nixpkgs-improvements.html"><strong aria-hidden="true">7.</strong> Nixpkgs improvements</a></li><li class="chapter-item expanded "><a href="intro/override-system.html"><strong aria-hidden="true">8.</strong> Override system</a></li><li class="chapter-item expanded "><a href="intro/translators.html"><strong aria-hidden="true">9.</strong> Translators</a></li><li class="chapter-item expanded "><a href="intro/indexers.html"><strong aria-hidden="true">10.</strong> Indexers</a></li><li class="chapter-item expanded affix "><li class="part-title">Contributing</li><li class="chapter-item expanded "><a href="extending-dream2nix.html"><strong aria-hidden="true">11.</strong> Extending dream2nix</a></li><li class="chapter-item expanded "><a href="contributing.html"><strong aria-hidden="true">12.</strong> Contributing</a></li><li class="chapter-item expanded affix "><li class="part-title">Development Roundups</li><li class="chapter-item expanded "><a href="development-roundups/2022-april-june.html"><strong aria-hidden="true">13.</strong> April - June 2022</a></li></ol>
             </div>
             <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
         </nav>
@@ -454,6 +454,64 @@ The downside of this approach is, that this translator cannot be used with a gra
 <h2 id="builders-1"><a class="header" href="#builders-1">Builders</a></h2>
 <h3 id="simple-builder-pure-default"><a class="header" href="#simple-builder-pure-default">simple-builder (pure) (default)</a></h3>
 <p>Builds a package including all its dependencies in a single derivation.</p>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="haskell-subsystem"><a class="header" href="#haskell-subsystem">Haskell subsystem</a></h1>
+<p>This section documents the Haskell subsystem.</p>
+<p>Get involved:</p>
+<ul>
+<li><a href="subsystems/../intro/architectural-considerations.html#architecture">understand dream2nix architecture</a></li>
+<li><a href="subsystems/../intro/translators.html">understand dream2nix translator types</a></li>
+<li><a href="https://github.com/nix-community/dream2nix/tree/main/examples">try out examples</a></li>
+<li><a href="https://github.com/nix-community/dream2nix/issues?q=is%3Aissue+is%3Aopen+label%3Ahaskell">find Issues</a></li>
+<li><a href="https://sourcegraph.com/search?q=context:global+repo:%5Egithub%5C.com/nix-community/dream2nix%24+file:haskell/+TODO&amp;patternType=literal">find TODOs</a></li>
+</ul>
+<h2 id="status"><a class="header" href="#status">Status</a></h2>
+<p>The Haskell subsystems is currently work in progress.
+It is in a state where it can be used, but will potentially fail on many projects, because some important features are missing.
+Currently we have a builder for haskell and several translators (see table below).</p>
+<p>The main elements which are missing:</p>
+<ul>
+<li>a pure translator for cabal.project.freeze</li>
+<li>an impure cabal translator, that works with any cabal based project by generating a cabal.project.freeze file. This should be fairly simple. Once we have the pure cabal.project.freeze translator, the impure translator can just execute <code>cabal freeze</code> and then call out to the existing pure translator.</li>
+<li>detecting which GHC version must be used for a project</li>
+<li>source different GHC versions. For now we should probably just support all ghc versions from nixpkgs because those are cached on nixos.org. If the translated project requires a different ghc version, the user should be allowed to override this, or pick a different nixpkgs.</li>
+<li>add an indexer for stackage/hackage. That should allow us to build a repository with the most common haskell libraries equivalent to dream2nix-crates-io or dream2nix-npm. This will allow us to improve our builders and translators based on the errors we get.</li>
+</ul>
+<h2 id="examples-2"><a class="header" href="#examples-2">Examples</a></h2>
+<p>flake.nix</p>
+<pre><code class="language-nix">{
+  inputs = {
+    dream2nix.url = &quot;github:nix-community/dream2nix&quot;;
+    src.url = &quot;github:NorfairKing/cabal2json&quot;;
+    src.flake = false;
+  };
+
+  outputs = {
+    self,
+    dream2nix,
+    src,
+  } @ inp:
+    (dream2nix.lib.makeFlakeOutputs {
+      pkgs = dream2nix.inputs.nixpkgs.legacyPackages.x86_64-linux;
+      source = src;
+      config.projectRoot = ./.;
+      settings = [
+        {
+          subsystemInfo.noDev = true;
+        }
+      ];
+    })
+    // {
+      # checks = self.packages;
+    };
+}
+</code></pre>
+<p>see more examples under: <a href="https://github.com/nix-community/dream2nix/tree/main/examples">/examples</a></p>
+<h2 id="translators-2"><a class="header" href="#translators-2">Translators</a></h2>
+<p>The source code of the implementations can be found <a href="https://github.com/nix-community/dream2nix/tree/main/src/subsystems/haskell/translators">here</a>.</p>
+<table><thead><tr><th><strong>translator</strong></th><th>stack-lock</th><th>cabal-plan</th><th>cabal-freeze</th></tr></thead><tbody>
+<tr><td><strong>file name</strong></td><td>stack.yaml.lock</td><td>plan.json</td><td>cabal.project.freeze</td></tr>
+<tr><td><strong>status</strong></td><td>implemented</td><td>implemented</td><td>missing</td></tr>
+</tbody></table>
 <div style="break-before: page; page-break-before: always;"></div><h3 id="modularity"><a class="header" href="#modularity">Modularity:</a></h3>
 <p>The following phases which are generic to basically all existing 2nix solutions:</p>
 <ul>
@@ -790,7 +848,7 @@ dream2nix overrides have the following properties:</p>
   };
 }
 </code></pre>
-<div style="break-before: page; page-break-before: always;"></div><h1 id="translators-2"><a class="header" href="#translators-2">Translators</a></h1>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="translators-3"><a class="header" href="#translators-3">Translators</a></h1>
 <p>This document classifies different methods for translating requirement/lock
 files to the generic lock format and describes how the resulting packages
 can be integrated into nix builds inside and outside of nixpkgs.</p>
@@ -896,7 +954,7 @@ For extending, you need to utilize the <code>config.extra</code> option of the d
   fetchers.ipfs = {...}: {/* fetcher attrs */};
 }
 </code></pre>
-<p>See the <a href="https://github.com/nix-community/dream2nix/tree/main/examples/d2n-extended-new-subsystem"><code>d2n-extended-new-subsystem</code> example</a> for a basic example.</p>
+<p>See the <a href="https://github.com/nix-community/dream2nix/tree/main/examples/_d2n-extended-new-subsystem"><code>d2n-extended-new-subsystem</code> example</a> for a basic example.</p>
 <h2 id="declare-extras-as-an-attribute-set"><a class="header" href="#declare-extras-as-an-attribute-set">Declare <code>extra</code>s as an attribute set</a></h2>
 <pre><code class="language-nix">dream2nix.lib.init {
   config.extra = {
@@ -917,7 +975,7 @@ For extending, you need to utilize the <code>config.extra</code> option of the d
 </code></pre>
 <p>note: you can't declare modules using functions here.
 This is because the <code>config</code> may need to be serialized to JSON and passed around in impure situations (mostly impure translators).</p>
-<p>See the <a href="https://github.com/nix-community/dream2nix/tree/main/examples/d2n-extended/flake.nix"><code>d2n-extended</code> example</a> for a basic example.</p>
+<p>See the <a href="https://github.com/nix-community/dream2nix/tree/main/examples/_d2n-extended/flake.nix"><code>d2n-extended</code> example</a> for a basic example.</p>
 <h2 id="compose-multiple-different-extras"><a class="header" href="#compose-multiple-different-extras">Compose multiple different <code>extra</code>s</a></h2>
 <p>This allows one to compose multiple <code>extra</code>s together with ease.
 The <code>dream2nixExtras</code> flake output in this case can be any of the approaches explained in this document for declaring <code>config.extra</code>.</p>
