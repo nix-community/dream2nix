@@ -5,6 +5,7 @@
     jq,
     lib,
     makeWrapper,
+    mkShell,
     pkgs,
     python3,
     runCommand,
@@ -243,24 +244,24 @@
 
         passthru.dependencies = passthruDeps;
 
-        passthru.devShell = pkgs.mkShell {
-          buildInputs = [
+        passthru.devShell = import ./devShell.nix {
+          inherit
+            mkShell
             nodejs
-          ];
-          shellHook = ''
-            # create the ./node_modules directory
-            if [ -e ./node_modules ] && [ ! -L ./node_modules ]; then
-              echo -e "\nFailed creating the ./node_modules symlink to ${nodeModulesDir}"
-              echo -e "\n./node_modules already exists and is a directory, which means it is managed by another program. Please delete ./node_modules first and re-enter the dev shell."
-            else
-              rm -f ./node_modules
-              ln -s ${nodeModulesDir} ./node_modules
-              export PATH="$PATH:$(realpath ./node_modules)/.bin"
-            fi
-          '';
+            packageName
+            pkg
+            ;
         };
 
-        installMethod = "symlink";
+        /*
+         For top-level packages install dependencies as full copies, as this
+         reduces errors with build tooling that doesn't cope well with
+         symlinking.
+         */
+        installMethod =
+          if isMainPackage name version
+          then "copy"
+          else "symlink";
 
         electronAppDir = ".";
 
