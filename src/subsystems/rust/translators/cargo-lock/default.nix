@@ -256,10 +256,10 @@ in {
       defaultPackage = package.name;
 
       /*
-       List the package candidates which should be exposed to the user.
-       Only top-level packages should be listed here.
-       Users will not be interested in all individual dependencies.
-       */
+      List the package candidates which should be exposed to the user.
+      Only top-level packages should be listed here.
+      Users will not be interested in all individual dependencies.
+      */
       exportedPackages = let
         makePair = p: let
           pkg = p.value.package;
@@ -269,20 +269,20 @@ in {
         l.listToAttrs (l.map makePair cargoPackages);
 
       /*
-       a list of raw package objects
-       If the upstream format is a deep attrset, this list should contain
-       a flattened representation of all entries.
-       */
+      a list of raw package objects
+      If the upstream format is a deep attrset, this list should contain
+      a flattened representation of all entries.
+      */
       serializedRawObjects = parsedDeps;
 
       /*
-       Define extractor functions which each extract one property from
-       a given raw object.
-       (Each rawObj comes from serializedRawObjects).
-       
-       Extractors can access the fields extracted by other extractors
-       by accessing finalObj.
-       */
+      Define extractor functions which each extract one property from
+      a given raw object.
+      (Each rawObj comes from serializedRawObjects).
+
+      Extractors can access the fields extracted by other extractors
+      by accessing finalObj.
+      */
       extractors = {
         name = rawObj: finalObj: rawObj.name;
 

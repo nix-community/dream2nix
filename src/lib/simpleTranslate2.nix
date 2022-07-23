@@ -66,13 +66,13 @@
     };
 
   /*
-   format:
-   {
-     foo = {
-       "1.0.0" = finalObj
-     }
-   }
-   */
+  format:
+  {
+    foo = {
+      "1.0.0" = finalObj
+    }
+  }
+  */
   makeDependencies = finalObjects:
     l.foldl'
     (result: finalObj:

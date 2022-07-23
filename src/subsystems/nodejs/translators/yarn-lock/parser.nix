@@ -1,8 +1,8 @@
 /*
- This is a yarn.lock v1 & v2 to attrs parser.
- It regexes the yarn file line by line and replaces characters in order to
- make it a valid json, then parses the json.
- */
+This is a yarn.lock v1 & v2 to attrs parser.
+It regexes the yarn file line by line and replaces characters in order to
+make it a valid json, then parses the json.
+*/
 {lib ? (import <nixpkgs> {}).lib, ...}: let
   l = lib // builtins;
 

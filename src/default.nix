@@ -469,9 +469,9 @@ in let
         };
 
         /*
-         simpleTranslate2 exposes result via `.result` in order to allow for
-         unit testing via `.inputs`.
-         */
+        simpleTranslate2 exposes result via `.result` in order to allow for
+        unit testing via `.inputs`.
+        */
         dreamLock' = dreamLock''.result or dreamLock'';
 
         dreamLock =

@@ -100,11 +100,11 @@ in {
           # TODO: Implement build phases
         }
         /*
-         For all transitive dependencies, overwrite cabal file with the one
-         from all-cabal-hashes.
-         We want to ensure that the cabal file is the latest revision.
-         See: https://github.com/haskell-infra/hackage-trustees/blob/master/revisions-information.md
-         */
+        For all transitive dependencies, overwrite cabal file with the one
+        from all-cabal-hashes.
+        We want to ensure that the cabal file is the latest revision.
+        See: https://github.com/haskell-infra/hackage-trustees/blob/master/revisions-information.md
+        */
         // (l.optionalAttrs (name != defaultPackageName) {
           preConfigure = ''
             cp ${all-cabal-hashes}/${name}/${version}/${name}.cabal ./

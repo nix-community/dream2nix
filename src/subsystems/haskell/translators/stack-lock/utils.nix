@@ -59,9 +59,9 @@ in rec {
       (l.map (c: convertOne c.name c.version) candidates));
 
   /*
-   Converts all cabal files for a given list of candiates to an attrset.
-   access like: ${name}.${version}.${some_cabal_attr}
-   */
+  Converts all cabal files for a given list of candiates to an attrset.
+  access like: ${name}.${version}.${some_cabal_attr}
+  */
   batchCabalData = candidates: let
     batchJson = batchCabal2Json candidates;
   in

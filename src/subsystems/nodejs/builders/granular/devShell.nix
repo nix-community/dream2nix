@@ -1,19 +1,19 @@
 /*
- devShell allowing for good interop with npm
- 
- The shellHook always overwrites existing ./node_modules with a full
- flat copy of all transitive dependencies produced by dream2nix from
- the lock file.
- 
- This allows good interop with npm. npm is still needed to update or
- add dependencies. npm can write to the ./node_modules without
- any issues and add or replace dependencies.
- 
- If npm modifies ./node_modules, then its contents will be a mix of
- dream2nix installed packages and npm installed packages until the
- devShell is re-entered and dream2nix overwrites the ./node_modules
- with a fully reproducible copy again.
- */
+devShell allowing for good interop with npm
+
+The shellHook always overwrites existing ./node_modules with a full
+flat copy of all transitive dependencies produced by dream2nix from
+the lock file.
+
+This allows good interop with npm. npm is still needed to update or
+add dependencies. npm can write to the ./node_modules without
+any issues and add or replace dependencies.
+
+If npm modifies ./node_modules, then its contents will be a mix of
+dream2nix installed packages and npm installed packages until the
+devShell is re-entered and dream2nix overwrites the ./node_modules
+with a fully reproducible copy again.
+*/
 {
   mkShell,
   nodejs,
@@ -26,16 +26,16 @@ mkShell {
   ];
   shellHook = let
     /*
-     This uses the existig package derivation, and modifies it, to
-     disable all phases but the one which creates the ./node_modules.
-     
-     The result is a derivation only generating the node_modules and
-     .bin directories.
-     
-     TODO: This is be a bit hacky and could be abstracted better
-     TODO: Don't always delete all of ./node_modules. Only overwrite
-           missing or changed modules.
-     */
+    This uses the existig package derivation, and modifies it, to
+    disable all phases but the one which creates the ./node_modules.
+
+    The result is a derivation only generating the node_modules and
+    .bin directories.
+
+    TODO: This is be a bit hacky and could be abstracted better
+    TODO: Don't always delete all of ./node_modules. Only overwrite
+          missing or changed modules.
+    */
     nodeModulesDrv = pkg.overrideAttrs (old: {
       buildPhase = ":";
       installMethod = "copy";

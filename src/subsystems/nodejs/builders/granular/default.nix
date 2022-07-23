@@ -254,10 +254,10 @@
         };
 
         /*
-         For top-level packages install dependencies as full copies, as this
-         reduces errors with build tooling that doesn't cope well with
-         symlinking.
-         */
+        For top-level packages install dependencies as full copies, as this
+        reduces errors with build tooling that doesn't cope well with
+        symlinking.
+        */
         installMethod =
           if isMainPackage name version
           then "copy"

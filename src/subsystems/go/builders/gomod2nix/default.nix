@@ -14,10 +14,10 @@
     ...
   }: let
     /*
-     gomod2nixTOML =
-     fetchedSources.mapAttrs
-     dependencyObject.goName;
-     */
+    gomod2nixTOML =
+    fetchedSources.mapAttrs
+    dependencyObject.goName;
+    */
   in
     externals.gomod2nixBuilder rec {
       pname = dreamLock.generic.mainPackage;

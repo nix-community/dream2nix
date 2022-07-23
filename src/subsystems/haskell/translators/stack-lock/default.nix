@@ -55,9 +55,9 @@ in {
   type = "ifd";
 
   /*
-   Automatically generate unit tests for this translator using project sources
-   from the specified list.
-   */
+  Automatically generate unit tests for this translator using project sources
+  from the specified list.
+  */
   generateUnitTestsForProjects = [
     (builtins.fetchTarball {
       url = "https://github.com/NorfairKing/cabal2json/tarball/8b864d93e3e99eb547a0d377da213a1fae644902";
@@ -244,30 +244,30 @@ in {
         defaultPackage = cabal.description.package.name;
 
         /*
-         List the package candidates which should be exposed to the user.
-         Only top-level packages should be listed here.
-         Users will not be interested in all individual dependencies.
-         */
+        List the package candidates which should be exposed to the user.
+        Only top-level packages should be listed here.
+        Users will not be interested in all individual dependencies.
+        */
         exportedPackages = {
           "${defaultPackage}" = defaultPackageVersion;
         };
 
         /*
-         a list of raw package objects
-         */
+        a list of raw package objects
+        */
         serializedRawObjects =
           l.map
           parseStackLockEntry
           (stackLock.packages ++ snapshot.packages);
 
         /*
-         Define extractor functions which each extract one property from
-         a given raw object.
-         (Each rawObj comes from serializedRawObjects).
-         
-         Extractors can access the fields extracted by other extractors
-         by accessing finalObj.
-         */
+        Define extractor functions which each extract one property from
+        a given raw object.
+        (Each rawObj comes from serializedRawObjects).
+
+        Extractors can access the fields extracted by other extractors
+        by accessing finalObj.
+        */
         extractors = {
           name = rawObj: finalObj:
             rawObj.name;
@@ -296,19 +296,19 @@ in {
         };
 
         /*
-         Define extra extractors which will be used to key all
-         final objects, so objects can be accessed via:
-         `objectsByKey.${keyName}.${value}`
-         */
+        Define extra extractors which will be used to key all
+        final objects, so objects can be accessed via:
+        `objectsByKey.${keyName}.${value}`
+        */
         keys = {
           name = rawObj: finalObj:
             finalObj.name;
         };
 
         /*
-         Add extra objects (list of `finalObj`) to be added to
-         the dream-lock.
-         */
+        Add extra objects (list of `finalObj`) to be added to
+        the dream-lock.
+        */
         extraObjects = [
           {
             name = defaultPackage;
