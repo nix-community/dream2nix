@@ -29,6 +29,7 @@
       cp -r ${examples}/$dir/* .
       chmod -R +w .
       nix flake lock --override-input dream2nix ${../../.}
+      nix eval --read-only --no-allow-import-from-derivation .#default.name
       nix run .#resolveImpure || echo "no resolveImpure probably?"
       nix flake check "$@"
     '';
