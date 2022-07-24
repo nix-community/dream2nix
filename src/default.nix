@@ -433,7 +433,7 @@ in let
           // rec {
             dreamLock =
               (utils.readDreamLock {
-                dreamLock = "${config.projectRoot}/${project.dreamLockPath}";
+                dreamLock = "${toString config.projectRoot}/${project.dreamLockPath}";
               })
               .lock;
             impure = isImpure project translator;
