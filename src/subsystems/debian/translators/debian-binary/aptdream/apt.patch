@@ -1,0 +1,13 @@
+diff --git a/apt-pkg/deb/debsystem.cc b/apt-pkg/deb/debsystem.cc
+index c9c6a7e..0c7fb03 100644
+--- a/apt-pkg/deb/debsystem.cc
++++ b/apt-pkg/deb/debsystem.cc
+@@ -320,7 +320,7 @@ APT_PURE bool debSystem::ArchiveSupported(const char *Type)
+    System.. */
+ signed debSystem::Score(Configuration const &Cnf)
+ {
+-   signed Score = 0;
++   signed Score = 10;
+    if (FileExists(Cnf.FindFile("Dir::State::status",getDpkgStatusLocation(Cnf).c_str())) == true)
+        Score += 10;
+    if (FileExists(Cnf.Find("Dir::Bin::dpkg",BIN_DIR"/dpkg")) == true)
