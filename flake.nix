@@ -139,7 +139,7 @@
       (lib.attrNames externalPaths)
       (inputName: inp."${inputName}");
 
-    overridesDirs = ["${./overrides}"];
+    overridesDirs = [(toString ./overrides)];
 
     # system specific dream2nix api
     dream2nixFor = forAllSystems (system: pkgs:

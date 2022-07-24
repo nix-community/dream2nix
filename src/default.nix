@@ -413,7 +413,7 @@ in let
 
     isResolved = project: let
       dreamLockExists =
-        l.pathExists "${config.projectRoot}/${project.dreamLockPath}";
+        l.pathExists "${toString config.projectRoot}/${project.dreamLockPath}";
 
       dreamLockValid =
         project.dreamLock._generic.invalidationHash
@@ -433,7 +433,7 @@ in let
           // rec {
             dreamLock =
               (utils.readDreamLock {
-                dreamLock = "${config.projectRoot}/${project.dreamLockPath}";
+                dreamLock = "${toString config.projectRoot}/${project.dreamLockPath}";
               })
               .lock;
             impure = isImpure project translator;

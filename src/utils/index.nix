@@ -117,15 +117,14 @@ in rec {
         ''
       );
 
-    mkIndexOutputs = name:
-      if l.pathExists "${source}/${name}/locks"
+    mkIndexOutputs = name: let
+      src = "${toString source}/${name}/locks";
+    in
+      if l.pathExists src
       then
         l.removeAttrs
         (generatePackagesFromLocksTree {
-          source = l.path {
-            name = "${name}";
-            path = "${source}/${name}/locks";
-          };
+          source = src;
           inherit
             settings
             inject

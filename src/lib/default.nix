@@ -107,7 +107,7 @@
   # }
   prepareSourceTreeInternal = sourceRoot: relPath: name: depth: let
     relPath' = relPath;
-    fullPath' = "${sourceRoot}/${relPath}";
+    fullPath' = "${toString sourceRoot}/${relPath}";
     current = l.readDir fullPath';
 
     fileNames =
@@ -135,10 +135,7 @@
       l.mapAttrs
       (fname: _: rec {
         name = fname;
-        fullPath = l.path {
-          path = "${fullPath'}/${fname}";
-          name = l.strings.sanitizeDerivationName fname;
-        };
+        fullPath = "${fullPath'}/${fname}";
         relPath = makeNewPath relPath' fname;
         content = readTextFile fullPath;
         jsonContent = l.fromJSON content;
