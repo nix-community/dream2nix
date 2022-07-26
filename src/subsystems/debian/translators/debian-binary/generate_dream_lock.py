@@ -12,7 +12,7 @@ def main():
         dream_lock = dict(
             sources={},
             _generic={
-                "subsystem": "debian-binary",
+                "subsystem": "debian",
                 "defaultPackage": os.environ.get("NAME"),
                 "packages": {
                     os.environ.get("NAME"): os.environ.get("VERSION"),
@@ -40,7 +40,7 @@ def main():
                 dream_lock["sources"][name] = {
                     version: dict(
                         type="http",
-                        url="uri",
+                        url=uri.replace("http:", "https:").replace("'", ""),
                         sha256=sha256,
                     )
                 }
