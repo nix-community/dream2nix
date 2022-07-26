@@ -29,15 +29,12 @@ def main():
             if len(split_lines) == 4:
                 (uri, deb, _, _) = split_lines
                 with open(f"./download/archives/{deb}", "rb") as f:
-                    # print(f"decode {deb}")
                     bin = f.read()
                     hash = hashlib.sha256(bin)
                     digest = hash.digest()
                     base = base64.b64encode(digest)
-                    print(base)
                     decode = base.decode()
-                    print(decode)
-                    sha256 = f"sha256-{base64.b64encode(hashlib.sha256(f.read()).digest()).decode()}"
+                    sha256 = f"sha256-{decode}"
                 print(f"uri {uri}, deb: {deb}")
                 (name, version, _) = deb.split("_")
                 dream_lock["sources"][name] = {
