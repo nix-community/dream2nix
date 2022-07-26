@@ -40,7 +40,7 @@ def main():
                 dream_lock["sources"][name] = {
                     version: dict(
                         type="http",
-                        url="uri",
+                        url=uri.replace("http:", "https:"),
                         sha256=sha256,
                     )
                 }
