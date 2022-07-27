@@ -30,6 +30,12 @@
       chmod -R +w .
       nix flake lock --override-input dream2nix ${../../.}
       nix run .#resolveImpure || echo "no resolveImpure probably?"
+      # disable --read-only check for these because they do IFD so they will
+      # write to store at eval time
+      evalBlockList=("haskell_cabal-plan" "haskell_stack-lock")
+      if [[ ! ((''${evalBlockList[*]} =~ "$dir")) ]]; then
+        nix eval --read-only --no-allow-import-from-derivation .#default.name
+      fi
       nix flake check "$@"
     '';
 in

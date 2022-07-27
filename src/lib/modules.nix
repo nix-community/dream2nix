@@ -143,7 +143,7 @@
       l.map
       (
         subsystem: let
-          dir = ../subsystems + "/${subsystem}/${modulesCategory}";
+          dir = "${toString ../subsystems}/${subsystem}/${modulesCategory}";
           moduleNames =
             if l.pathExists dir
             then dlib.dirNames dir
