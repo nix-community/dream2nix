@@ -59,21 +59,23 @@ in {
       cp -r $source ./source
       chmod +w -R ./source
 
-      # install setup dependencies from extraSetupDeps
+      echo "reading setup requirements from pyproject.toml"
+      toml2json ./source/pyproject.toml | jq '."build-system".requires[]' -r > __setup_reqs.txt || :
+
+      echo "install setup dependencies from extraSetupDeps"
       echo "$(jq '.extraSetupDeps[]' -c -r $jsonInput)" > __extra_setup_reqs.txt
       $python -m pip install \
         --prefix ./install \
         -r __extra_setup_reqs.txt
 
-      # download setup dependencies from pyproject.toml
-      toml2json ./source/pyproject.toml | jq '."build-system".requires[]' -r > __setup_reqs.txt || :
+      echo "download setup dependencies from pyproject.toml"
       $python -m pip download \
         --dest $tmp \
         --progress-bar off \
         -r __extra_setup_reqs.txt \
         -r __setup_reqs.txt
 
-      # download files according to requirements
+      echo "download files according to requirements"
       PYTHONPATH=$(realpath ./install/$sitePackages) \
         $python -m pip download \
           --dest $tmp \
