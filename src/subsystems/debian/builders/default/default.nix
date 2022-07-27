@@ -47,7 +47,7 @@
 
     allDependencySources =
       l.map
-      (src: l.trace (l.toJSON src) l.trace (l.toJSON src.original) src.original)
+      (src: src.original or src)
       allDependencySources';
 
     package = produceDerivation defaultPackageName (stdenv.mkDerivation {
@@ -61,23 +61,32 @@
       buildPhase = ''
         runHook preBuild
 
-        mkdir $out/bin
-        mkdir $out/share
-        mkdir $out/lib
-        mkdir $out/etc
+        mkdir -p $out/bin
+        mkdir -p $out/share
+        mkdir -p $out/lib
+        mkdir -p $out/etc
 
         for file in ${toString allDependencySources};do
-          mkdir $TMP/unpack
-          unzip -d $TMP/unpack file
+          mkdir -p $TMP/unpack
+          # unzip -d $TMP/unpack $file
           cd $TMP/unpack
-          tar -xf $TMP/unpack/data.tar.xz
-          cp $TMP/unpack/usr/bin/* $out/bin
-          cp $TMP/unpack/usr/sbin/* $out/bin
-          cp -r $TMP/unpack/usr/share/* $out/share
-          cp -r $TMP/unpack/etc/* $out/etc
+          ar vx $file
+          tar xvf $TMP/unpack/data.tar.xz
+          mkdir -p $TMP/unpack/usr/bin
+          cp -r $TMP/unpack/usr/bin $out
+          mkdir -p $TMP/unpack/usr/sbin
+          cp -r $TMP/unpack/usr/sbin $out
+          mkdir -p $TMP/unpack/usr/share
+          cp -r $TMP/unpack/usr/share $out
+          mkdir -p $TMP/unpack/etc
+          cp -r $TMP/unpack/etc $out
+          rm -rf $TMP/unpack
+        done
 
         runHook postBuild
       '';
+      installPhase = ":";
+      autoPatchelfIgnoreMissingDeps = true;
     });
   in {
     packages.${defaultPackageName}.${defaultPackageVersion} = package;
