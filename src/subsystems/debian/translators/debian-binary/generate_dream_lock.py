@@ -37,17 +37,18 @@ def main():
                     sha256 = f"sha256-{decode}"
                 print(f"uri {uri}, deb: {deb}")
                 (name, version, _) = deb.split("_")
-                dream_lock["sources"][name] = {
+                dream_lock["sources"][f"{name}"] = {
                     version: dict(
                         type="http",
                         url=uri.replace("http:", "https:").replace("'", ""),
-                        sha256=sha256,
+                        hash=sha256,
+                        version=version,
                     )
                 }
 
     # add the version of the root package
     dream_lock["_generic"]["packages"][os.environ.get("NAME")] = list(
-        dream_lock["sources"]["htop"].keys()
+        dream_lock["sources"][os.environ.get("NAME")].keys()
     )[0]
 
     # dump dream lock to $ouputFile
