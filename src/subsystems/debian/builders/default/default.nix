@@ -40,7 +40,11 @@
       l.flatten
       (l.mapAttrsToList
         (name: versions:
-          if l.elem name [defaultPackageName]
+          if
+            l.elem name [
+              defaultPackageName
+              "libc6"
+            ]
           then []
           else l.map (ver: getSource name ver) versions)
         packageVersions);
@@ -74,10 +78,20 @@
           tar xvf $TMP/unpack/data.tar.xz
           mkdir -p $TMP/unpack/usr/bin
           cp -r $TMP/unpack/usr/bin $out
-          mkdir -p $TMP/unpack/usr/sbin
-          cp -r $TMP/unpack/usr/sbin $out
+
+          if [ -d $TMP/unpack/usr/sbin ]; then
+          cp $TMP/unpack/usr/sbin/* $out/bin
+          fi
+
           mkdir -p $TMP/unpack/usr/share
           cp -r $TMP/unpack/usr/share $out
+
+          for variant in "/usr/lib" "/usr/lib64" "/lib" "/lib64"; do
+            for file in $(find $TMP/unpack/$variant -type f -or -type l);do
+              cp -r $file $out/lib
+            done
+          done
+
           mkdir -p $TMP/unpack/etc
           cp -r $TMP/unpack/etc $out
           rm -rf $TMP/unpack
@@ -86,7 +100,7 @@
         runHook postBuild
       '';
       installPhase = ":";
-      autoPatchelfIgnoreMissingDeps = true;
+      # autoPatchelfIgnoreMissingDeps = true;
     });
   in {
     packages.${defaultPackageName}.${defaultPackageVersion} = package;

@@ -1,11 +1,51 @@
+import base64
+import hashlib
 import json
 import os
 import pathlib
-import base64
-import hashlib
+import subprocess
 
+# for initialization
+def update_apt():
+    subprocess.run(
+        ["apt",
+        "-o", "Acquire::AllowInsecureRepositories=1",
+            "-o", "Dir::State::status=./status",
+            "-o", "Dir::Etc=./etc/apt",
+            "-o" ,"Dir::State=./state",
+            "update"
+        ])
+
+def get_package_info_apt(name):
+    result = subprocess.run(
+        ["apt",
+        "-o Acquire::AllowInsecureRepositories=1",
+            "-o", "Dir::State::status=./status",
+            "-o", "Dir::Etc=./etc/apt",
+            "-o" "Dir::State=./state",
+            "install", f"{name}", "--print-uris",
+        ],
+        stdout=subprocess.PIPE,
+        text=True,
+    )
+    print(f"result {result.stdout}")
+    with open('./deb-uris', 'w') as f:
+        f.write(result.stdout)
+
+    subprocess.run(
+        ["apt",
+        "-o", "Acquire::AllowInsecureRepositories=1",
+            "-o", "Dir::State::status=./status",
+            "-o", "Dir::Etc=./etc/apt",
+            "-o", "Dir::Cache=./download",
+            "-o", "Dir::State=./state",
+            "install", f"{name}", "--download-only", "-y" ,"--allow-unauthenticated",
+        ])
 
 def main():
+    update_apt()
+    get_package_info_apt(os.environ.get("NAME"))
+
     with open("./deb-uris") as f:
         uris = f.readlines()
 
