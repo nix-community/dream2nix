@@ -46,6 +46,8 @@ def main():
     update_apt()
     get_package_info_apt(os.environ.get("NAME"))
 
+    default_package_src_name = f"{os.environ.get('NAME')}-binary"
+
     with open("./deb-uris") as f:
         uris = f.readlines()
 
@@ -77,7 +79,10 @@ def main():
                     sha256 = f"sha256-{decode}"
                 print(f"uri {uri}, deb: {deb}")
                 (name, version, _) = deb.split("_")
-                dream_lock["sources"][f"{name}"] = {
+
+                if name == os.environ.get("NAME"):
+                    name = default_package_src_name
+                dream_lock["sources"][name] = {
                     version: dict(
                         type="http",
                         url=uri.replace("http:", "https:").replace("'", ""),
@@ -88,7 +93,7 @@ def main():
 
     # add the version of the root package
     dream_lock["_generic"]["packages"][os.environ.get("NAME")] = list(
-        dream_lock["sources"][os.environ.get("NAME")].keys()
+        dream_lock["sources"][default_package_src_name].keys()
     )[0]
 
     # dump dream lock to $ouputFile
@@ -100,7 +105,7 @@ def main():
     dirPath.mkdir(parents=True, exist_ok=True)
     with open(outputFile, "w") as lock:
         json.dump(dream_lock, lock, indent=2)
-    print(list(dream_lock["sources"]["htop"].keys())[0])
+    # print(list(dream_lock["sources"]["htop"].keys())[0])
 
 
 if __name__ == "__main__":

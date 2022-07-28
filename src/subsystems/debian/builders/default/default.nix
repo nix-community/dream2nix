@@ -76,15 +76,21 @@
           cd $TMP/unpack
           ar vx $file
           tar xvf $TMP/unpack/data.tar.xz
-          mkdir -p $TMP/unpack/usr/bin
-          cp -r $TMP/unpack/usr/bin $out
 
-          if [ -d $TMP/unpack/usr/sbin ]; then
-          cp $TMP/unpack/usr/sbin/* $out/bin
+          echo $file
+
+          for variant in "bin" "sbin" "games"; do
+            if [[ -d $TMP/unpack/usr/$variant && -n "$(ls -A $TMP/unpack/usr/$variant)" ]]; then
+            echo "Copying usr/$variant"
+            cp -r $TMP/unpack/usr/$variant/* $out/bin
+            fi
+          done
+
+          echo "Copying usr/share"
+          if [ -d $TMP/unpack/usr/share ]; then
+          cp -r $TMP/unpack/usr/share/* $out/share
           fi
 
-          mkdir -p $TMP/unpack/usr/share
-          cp -r $TMP/unpack/usr/share $out
 
           for variant in "/usr/lib" "/usr/lib64" "/lib" "/lib64"; do
             for file in $(find $TMP/unpack/$variant -type f -or -type l);do

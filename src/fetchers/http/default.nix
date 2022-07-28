@@ -36,6 +36,6 @@
         source = drvSanitized;
       };
     in
-      b.trace drvSanitized.outputHashAlgo extracted;
+      extracted;
   };
 }
