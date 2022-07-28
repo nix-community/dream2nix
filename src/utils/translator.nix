@@ -167,75 +167,7 @@
       allSources =
         lib.recursiveUpdate sources generatedSources;
 
-      cyclicDependencies =
-        # TODO: inefficient! Implement some kind of early cutoff
-        let
-          findCycles = node: prevNodes: cycles: let
-            children = dependencyGraph."${node.name}"."${node.version}";
-
-            cyclicChildren =
-              lib.filter
-              (child: prevNodes ? "${child.name}#${child.version}")
-              children;
-
-            nonCyclicChildren =
-              lib.filter
-              (child: ! prevNodes ? "${child.name}#${child.version}")
-              children;
-
-            cycles' =
-              cycles
-              ++ (b.map (child: {
-                  from = node;
-                  to = child;
-                })
-                cyclicChildren);
-
-            # use set for efficient lookups
-            prevNodes' =
-              prevNodes
-              // {"${node.name}#${node.version}" = null;};
-          in
-            if nonCyclicChildren == []
-            then cycles'
-            else
-              lib.flatten
-              (b.map
-                (child: findCycles child prevNodes' cycles')
-                nonCyclicChildren);
-
-          cyclesList =
-            findCycles
-            (dlib.nameVersionPair defaultPackage packages."${defaultPackage}")
-            {}
-            [];
-        in
-          b.foldl'
-          (cycles: cycle: (
-            let
-              existing =
-                cycles."${cycle.from.name}"."${cycle.from.version}"
-                or [];
-
-              reverse =
-                cycles."${cycle.to.name}"."${cycle.to.version}"
-                or [];
-            in
-              # if edge or reverse edge already in cycles, do nothing
-              if
-                b.elem cycle.from reverse
-                || b.elem cycle.to existing
-              then cycles
-              else
-                lib.recursiveUpdate
-                cycles
-                {
-                  "${cycle.from.name}"."${cycle.from.version}" =
-                    existing ++ [cycle.to];
-                }
-          ))
-          {}
-          cyclesList;
+      cyclicDependencies = import ../lib/getCycles.nix {inherit lib dependencyGraph;};
     in
       {
         decompressed = true;
