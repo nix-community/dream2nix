@@ -60,6 +60,8 @@
         :
       fi
 
+      echo "translating in temp dir: $(pwd)"
+
       if [ "$hasInstallScript" == "false" ]; then
         echo "package.json does not define an [pre|post]install script -> omitting dev dependencies"
       fi

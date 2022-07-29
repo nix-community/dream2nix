@@ -39,7 +39,12 @@ in rec {
     dreamLocks = findDreamLocks tree;
     makePackagesForDreamLock = dreamLock:
       (dream2nixInterface.makeOutputsForDreamLock {
-        inherit dreamLock;
+        inherit
+          dreamLock
+          inject
+          packageOverrides
+          sourceOverrides
+          ;
       })
       .packages;
   in
