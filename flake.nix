@@ -318,6 +318,17 @@
               ${pkgs.treefmt}/bin/treefmt --clear-cache --fail-on-change
             '');
           };
+          cleanup = {
+            enable = true;
+            name = "cleaned";
+            entry = l.toString (pkgs.writeScript "cleaned" ''
+              #!${pkgs.bash}/bin/bash
+              for badFile in  $(find ./examples | grep 'flake.lock\|dream2nix-packages'); do
+                rm -rf $badFile
+                git add $badFile || :
+              done
+            '');
+          };
           is-cleaned = {
             enable = true;
             name = "is-cleaned";
