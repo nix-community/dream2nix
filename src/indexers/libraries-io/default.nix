@@ -39,7 +39,13 @@ libraries.io also supports other interesting popularity metrics:
 
       outFile=$(jq '.outputFile' -c -r $input)
 
-      apiKey=$(jq '.apiKey' -c -r $input)
+      echo "loadein api key"
+      if [ -z ''${API_KEY+x} ]; then
+        echo "Please define env variable API_KEY for libaries.io api key"
+        exit 1
+      fi
+      apiKey="$API_KEY"
+
       platform=$(jq '.platform' -c -r $input)
       number=$(jq '.number' -c -r $input)
 
