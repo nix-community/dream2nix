@@ -235,7 +235,7 @@ in
           # add dream-lock.json to git
           if git rev-parse --show-toplevel &>/dev/null; then
             echo "adding file to git: $dreamLockPath"
-            git add $dreamLockPath
+            git add $dreamLockPath || :
           fi
         '';
     in
