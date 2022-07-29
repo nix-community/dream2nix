@@ -25,7 +25,15 @@
   } @ args: let
     b = builtins;
 
-    dev = ! noDev;
+    hasInstallScript =
+      (packageJson ? scripts.preinstall)
+      || (packageJson ? scripts.install)
+      || (packageJson ? scripts.postinstall);
+
+    noDev =
+      if ! hasInstallScript
+      then true
+      else args.noDev;
     name = project.name;
     tree = args.tree.getNodeFromPath project.relPath;
     relPath = project.relPath;
@@ -70,11 +78,23 @@
       then let
         path = getPath dependencyObject;
       in
-        (
-          b.fromJSON
-          (b.readFile "${source}/${path}/package.json")
-        )
-        .version
+        if ! (l.pathExists "${source}/${path}/package.json")
+        then
+          throw ''
+            The lock file references a sub-package residing at '${source}/${path}',
+            but that directory doesn't exist or doesn't contain a package.json
+
+            The reason might be that devDependencies are not included in this package release.
+            Possible solutions:
+              - get full package source via git and translate from there
+              - disable devDependencies by passing `noDev` to the translator
+          ''
+        else
+          (
+            b.fromJSON
+            (b.readFile "${source}/${path}/package.json")
+          )
+          .version
       else if lib.hasPrefix "https://" dependencyObject.version
       then "unknown"
       else dependencyObject.version;
@@ -153,7 +173,7 @@
           version = getVersion pdata;
         })
         (lib.filterAttrs
-          (pname: pdata: ! (pdata.dev or false) || dev)
+          (pname: pdata: ! (pdata.dev or false) || ! noDev)
           parsedDependencies);
 
       subsystemName = "nodejs";
@@ -186,7 +206,7 @@
       in
         lib.filter
         (pdata:
-          dev || ! (pdata.dev or false))
+          ! noDev || ! (pdata.dev or false))
         (lib.flatten (serialize inputData));
 
       getName = dependencyObject: dependencyObject.pname;

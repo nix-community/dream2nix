@@ -47,11 +47,29 @@
       cd ./$relPath
       rm -rf package-lock.json
 
-      if [ "$(jq '.project.subsystemInfo.noDev' -c -r $jsonInput)" == "true" ]; then
+      hasInstallScript=false
+      if [ "$(jq 'has("scripts")' -c -r package.json)" == "false" ]; then
+        :
+      elif [ "$(jq '.scripts | has("preinstall")' -c -r package.json)" == "true" ]; then
+        hasInstallScript=true
+      elif [ "$(jq '.scripts | has("install")' -c -r package.json)" == "true" ]; then
+        hasInstallScript=true
+      elif [ "$(jq '.scripts | has("postinstall")' -c -r package.json)" == "true" ]; then
+        hasInstallScript=true
+      else
+        :
+      fi
+
+      if [ "$hasInstallScript" == "false" ]; then
+        echo "package.json does not define an [pre|post]install script -> omitting dev dependencies"
+      fi
+
+      if [ "$hasInstallScript" == "false" ] \
+          || [ "$(jq '.project.subsystemInfo.noDev' -c -r $jsonInput)" == "true" ]; then
         echo "excluding dev dependencies"
         jq '.devDependencies = {}' ./package.json > package.json.mod
         mv package.json.mod package.json
-        npm install --package-lock-only --production $npmArgs
+        npm install --package-lock-only --omit=dev $npmArgs
       else
         npm install --package-lock-only $npmArgs
       fi
