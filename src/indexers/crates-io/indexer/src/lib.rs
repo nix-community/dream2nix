@@ -81,7 +81,7 @@ mod indexer {
         #[serde(default)]
         pub verbose: bool,
         /// Amount of pages to fetch from crates.io. Minimum is `1`.
-        #[serde(rename = "maxPackagesCount")]
+        #[serde(rename = "maxPages")]
         #[serde(default = "default_max_pages")]
         pub max_pages: u32,
         /// What to sort by. This is passed to the crates.io API as is.
