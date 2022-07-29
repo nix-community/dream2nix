@@ -46,8 +46,8 @@
             source =
               source
               // {
-                pname = name;
-                inherit version;
+                pname = source.pname or name;
+                version = source.version or version;
               };
           }
         else throw "unsupported source type '${source.type}'")
