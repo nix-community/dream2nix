@@ -2,8 +2,7 @@
   l = lib // builtins;
 in rec {
   getPackageJsonDeps = packageJson: noDev:
-    packageJson.dependencies
-    or {}
+    (packageJson.dependencies or {})
     // (lib.optionalAttrs (! noDev) (packageJson.devDependencies or {}));
 
   getWorkspaceLockFile = tree: project: fname: let
@@ -17,9 +16,9 @@ in rec {
       (tree.getNodeFromPath "${dirRelPath}/package.json").jsonContent;
 
     hasNoDependencies =
-      ! packageJson ? dependencies
-      && ! packageJson ? devDependencies
-      && ! packageJson ? workspaces;
+      ((packageJson.dependencies or {}) == {})
+      && ((packageJson.devDependencies or {}) == {})
+      && (! packageJson ? workspaces);
   in
     if hasNoDependencies
     then null

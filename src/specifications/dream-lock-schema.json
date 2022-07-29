@@ -97,8 +97,8 @@
                   },
                   "then": {
                     "properties": {
-                      "rootName": { "type": "string" },
-                      "rootVersion": { "type": "string" },
+                      "rootName": { "type": ["string", "null"] },
+                      "rootVersion": { "type": ["string", "null"] },
                       "path": { "type": "string" },
                       "type": { "type": "string" },
                       "dir": { "type": "string" }

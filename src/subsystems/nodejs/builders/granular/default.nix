@@ -473,6 +473,9 @@
           elif [ -n "$runBuild" ] && [ "$(jq '.scripts.build' ./package.json)" != "null" ]; then
             npm run build
           else
+            if [ "$(jq '.scripts.preinstall' ./package.json)" != "null" ]; then
+              npm --production --offline --nodedir=$nodeSources run preinstall
+            fi
             if [ "$(jq '.scripts.install' ./package.json)" != "null" ]; then
               npm --production --offline --nodedir=$nodeSources run install
             fi
