@@ -39,7 +39,7 @@ libraries.io also supports other interesting popularity metrics:
 
       outFile=$(jq '.outputFile' -c -r $input)
 
-      echo "loadein api key"
+      echo "loading api key"
       if [ -z ''${API_KEY+x} ]; then
         echo "Please define env variable API_KEY for libaries.io api key"
         exit 1
@@ -62,6 +62,7 @@ libraries.io also supports other interesting popularity metrics:
 
       rm -f $outFile
       for page in $(seq 1 $numPages); do
+        echo "requesting page $page"
         url="https://libraries.io/api/search?page=$page&sort=dependents_count&per_page=100&platforms=$platformQuery&api_key=$apiKey"
         curl -k "$url" | jq "$jqQuery" -r >> $outFile
       done
