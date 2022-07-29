@@ -11,7 +11,9 @@
   replaceRootSources = {
     dreamLock,
     newSourceRoot,
-  }: let
+  } @ args: let
+    dreamLockLoaded = utils.readDreamLock {dreamLock = args.dreamLock;};
+    iface = dreamLockLoaded.interface;
     patchVersion = version: source:
       if
         source.type
@@ -24,10 +26,18 @@
           dir = source.relPath;
         }
       else source;
+
     patchedSources =
-      l.mapAttrs
-      (_: versions: l.mapAttrs patchVersion versions)
-      dreamLock.sources;
+      l.recursiveUpdate
+      {
+        "${iface.defaultPackageName}"."${iface.defaultPackageVersion}" =
+          newSourceRoot;
+      }
+      (
+        l.mapAttrs
+        (_: versions: l.mapAttrs patchVersion versions)
+        dreamLock.sources
+      );
   in
     dreamLock // {sources = patchedSources;};
 
