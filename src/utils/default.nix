@@ -232,6 +232,12 @@ in
             | python3 ${../apps/cli/format-dream-lock.py} \
             | sponge $dreamLockPath
 
+          # validate dream-lock.json against jsonschema
+          ${python3.pkgs.jsonschema}/bin/jsonschema \
+            --instance $dreamLockPath \
+            --output pretty \
+            ${../specifications/dream-lock-schema.json}
+
           # add dream-lock.json to git
           if git rev-parse --show-toplevel &>/dev/null; then
             echo "adding file to git: $dreamLockPath"
