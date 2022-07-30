@@ -26,9 +26,17 @@ in {
     hasGitRef = inp.ref or null != null;
   in
     if isRevGitRef == null && isGitRev rev == null
-    then throw ''rev must either be a sha1 revision or "refs/heads/branch-name" or "refs/tags/tag-name"''
+    then
+      throw ''
+        invalid git rev: ${rev}
+        rev must either be a sha1 revision or "refs/heads/branch-name" or "refs/tags/tag-name"
+      ''
     else if hasGitRef && isGitRef inp.ref == null
-    then throw ''ref must be in either "refs/heads/branch-name" or "refs/tags/tag-name" format''
+    then
+      throw ''
+        invalid git ref: ${inp.ref or null}
+        ref must be in either "refs/heads/branch-name" or "refs/tags/tag-name" format
+      ''
     else let
       b = builtins;
 
