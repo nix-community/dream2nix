@@ -45,7 +45,7 @@
       newSource=$(pwd)
 
       cd ./$relPath
-      rm -rf package-lock.json
+      rm -rf package-lock.json yarn.lock
 
       hasInstallScript=false
       if [ "$(jq 'has("scripts")' -c -r package.json)" == "false" ]; then
