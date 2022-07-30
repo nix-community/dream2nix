@@ -284,9 +284,28 @@ in
           aarch64-darwin = "65b9b3235efdb681e3a4db85068dc9fe6dfbcb7fbb146053c0a534e4b44a2f7a";
           headers = "1xnbzskvf8p5a07bha41qqnw1hb68f019qrda3z2jn96m3qnj46r";
         };
+        "17.4.10" = {
+          armv7l-linux = "b3e4e44ef4014cd34f8fa1c06fe714d600e0e42e95a152255fa48d7246a47bf8";
+          aarch64-linux = "3186b7ac800f421286157c0550a923e5dfc8b0209c0d1ed037a7cd837136113c";
+          x86_64-linux = "065fdd554993d9b1e52ad8093e6341d001c219f49d81f32f3dd457f544375380";
+          i686-linux = "4b3c6a82a53499a2fecf683d1aa225ba39cebec19f8d65fccf53a53c53ad7d9c";
+          x86_64-darwin = "54a773193c479a48f4094e8295dea48f2bc38759d19ce58466f3584797c504d7";
+          aarch64-darwin = "f8fbb8f2247e349bdd4b6e991443074c8342da4ca61dcad38c236c6ab52b6055";
+          headers = "1308wd86cfnnmj4idw3y96brsjix9pb8hw7y8wrxfh7ml6w1g9x7";
+        };
+        "18.3.6" = {
+          armv7l-linux = "78c95b7405c5d49de99c85f39a940e2d2409fa5f0a1c5c6e1fc908188f1180d8";
+          aarch64-linux = "359a1682f8d2f083215a8ff6ae3aab0889de4b78a44a8e8ce3095044820b78f1";
+          x86_64-linux = "81a04cf093980c36d99df2369d95ab7ed64b496a22125620478ac5d2b2989a28";
+          i686-linux = "902e89e40a32c7e6c49d3004a8ddf5e4c4015d0499bfba4827bdfa21280ef7c3";
+          x86_64-darwin = "db330f23f1e75c568c0e44e2fc07faa3a4f9fc6a7d3bf29feeb7f624608cb29c";
+          aarch64-darwin = "5a62d46c3c45b6e416bf77affccc94e26b7a21ff8bced466036fbe74ff59799a";
+          headers = "0wdw9xaxyn7zk6b4x4ldzallggxlxs293fwp6af4fa5a1c295gkn";
+        };
       };
     in {
       add-binary = {
+        _condition = pkg: (l.toInt (l.versions.major pkg.version)) > 2;
         overrideAttrs = old: {
           postPatch =
             if pkgs.stdenv.isLinux
