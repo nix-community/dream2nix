@@ -216,7 +216,12 @@
       getSourceType = dependencyObject:
         if identifyGitSource dependencyObject
         then "git"
-        else if lib.hasPrefix "file:" dependencyObject.version
+        else if
+          (lib.hasPrefix "file:" dependencyObject.version)
+          || (
+            (! lib.hasPrefix "https://" dependencyObject.version)
+            && (! dependencyObject ? resolved)
+          )
         then "path"
         else "http";
 
@@ -245,11 +250,23 @@
           };
 
         path = dependencyObject:
-          dlib.construct.pathSource {
-            path = getPath dependencyObject;
-            rootName = project.name;
-            rootVersion = packageVersion;
-          };
+        # in case of an entry with missing resolved field
+          if ! lib.hasPrefix "file:" dependencyObject.version
+          then
+            dlib.construct.pathSource {
+              path = let
+                module = l.elemAt (l.splitString "/" dependencyObject.pname) 0;
+              in "node_modules/${module}";
+              rootName = project.name;
+              rootVersion = packageVersion;
+            }
+          # in case of a "file:" entry
+          else
+            dlib.construct.pathSource {
+              path = getPath dependencyObject;
+              rootName = project.name;
+              rootVersion = packageVersion;
+            };
       };
 
       getDependencies = dependencyObject:

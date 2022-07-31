@@ -8,7 +8,7 @@
   ...
 }: let
   script = writeScript "run-translate" ''
-    ${translate}/bin/translate $1 $targetDir
+    ${translate}/bin/translate $1 $targetDir || echo "Failed to translate $1"
   '';
 in
   utils.writePureShellScriptBin

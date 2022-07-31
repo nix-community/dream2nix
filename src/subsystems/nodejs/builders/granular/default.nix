@@ -225,7 +225,10 @@
         lib.versions.major electronDep.version;
 
       electronHeaders =
-        if electronDep == null
+        if
+          (electronDep == null)
+          # hashes seem unavailable for electron < 4
+          || ((l.toInt electronVersionMajor) <= 2)
         then null
         else pkgs."electron_${electronVersionMajor}".headers;
 
