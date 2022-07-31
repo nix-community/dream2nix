@@ -2,6 +2,7 @@
   pkgs,
   utils,
   externals,
+  inputs,
   lib,
   ...
 }: let
@@ -142,15 +143,16 @@ in {
         specified in the dream-lock
         */
         // (
-          l.optionalAttrs
-          (
-            (name != defaultPackageName)
-            && cabalFiles ? "${name}#${version}"
-          )
+          l.optionalAttrs (name != defaultPackageName)
           {
-            preConfigure = ''
-              cp ${cabalFiles."${name}#${version}"} ./${name}.cabal
-            '';
+            preConfigure =
+              if cabalFiles ? "${name}#${version}"
+              then ''
+                cp ${cabalFiles."${name}#${version}"} ./${name}.cabal
+              ''
+              else ''
+                cp ${inputs.all-cabal-json}/${name}/${version}/${name}.cabal ./
+              '';
           }
         )
         # enable tests only for the top-level package
