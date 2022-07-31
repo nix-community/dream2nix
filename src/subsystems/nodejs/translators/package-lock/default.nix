@@ -251,9 +251,7 @@
 
         path = dependencyObject:
         # in case of an entry with missing resolved field
-          if
-            (! lib.hasPrefix "https://" dependencyObject.version)
-            && (! dependencyObject ? resolved)
+          if ! lib.hasPrefix "file:" dependencyObject.version
           then
             dlib.construct.pathSource {
               path = let
