@@ -44,9 +44,9 @@
     };
 
     buildPackage = pname: version: let
-      replacePaths = utils.replaceRelativePathsWithAbsolute {
-        paths = subsystemAttrs.relPathReplacements.${pname}.${version};
-      };
+      replacePaths =
+        utils.replaceRelativePathsWithAbsolute
+        subsystemAttrs.relPathReplacements.${pname}.${version};
       writeGitVendorEntries = vendoring.writeGitVendorEntries "nix-sources";
 
       # common args we use for both buildDepsOnly and buildPackage

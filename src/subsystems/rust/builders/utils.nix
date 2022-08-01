@@ -2,6 +2,7 @@
   getSourceSpec,
   getSource,
   getRoot,
+  sourceRoot,
   dreamLock,
   lib,
   dlib,
@@ -20,20 +21,25 @@ in rec {
 
   # Generates a script that replaces relative path dependency paths with absolute
   # ones, if the path dependency isn't in the source dream2nix provides
-  replaceRelativePathsWithAbsolute = {paths}: let
-    replacements =
+  replaceRelativePathsWithAbsolute = replacements: let
+    replace =
       l.concatStringsSep
       " \\\n"
       (
         l.mapAttrsToList
         (
-          from: rel: ''--replace "\"${from}\"" "\"$TEMPDIR/$sourceRoot/${rel}\""''
+          # TODO: this is not great, because it forces us to include the entire
+          # sourceRoot here, which could possibly cause more rebuilds than necessary
+          # when source is changed (although this mostly depends on how the project
+          # repository is structured). doing this properly is pretty complex, but
+          # it should still be done later.
+          from: relPath: ''--replace "\"${from}\"" "\"${sourceRoot}/${relPath}\""''
         )
-        paths
+        replacements
       );
   in ''
     substituteInPlace ./Cargo.toml \
-      ${replacements}
+      ${replace}
   '';
 
   mkBuildWithToolchain = mkBuildFunc: let

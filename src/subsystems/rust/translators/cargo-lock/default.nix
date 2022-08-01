@@ -25,14 +25,15 @@ in {
     ...
   } @ args: let
     # get the root source and project source
-    rootSource = tree.fullPath;
+    rootTree = tree;
+    rootSource = rootTree.fullPath;
     projectSource = dlib.sanitizePath "${rootSource}/${project.relPath}";
-    projectTree = tree.getNodeFromPath project.relPath;
+    projectTree = rootTree.getNodeFromPath project.relPath;
     subsystemInfo = project.subsystemInfo;
 
     # Get the root toml
     rootToml = {
-      relPath = "";
+      relPath = project.relPath;
       value = projectTree.files."Cargo.toml".tomlContent;
     };
 
@@ -52,7 +53,7 @@ in {
               if l.last components == "*"
               then let
                 parentDirRel = l.concatStringsSep "/" (l.init components);
-                dirs = (tree.getNodeFromPath parentDirRel).directories;
+                dirs = (rootTree.getNodeFromPath parentDirRel).directories;
               in
                 l.mapAttrsToList
                 (name: _: "${parentDirRel}/${name}")
@@ -215,12 +216,9 @@ in {
               );
             # We only need to patch path dependencies
             pathDeps = l.filter (dep: dep ? path) tomlDeps;
-            # filter out path dependencies whose path are same as in
-            # workspace members.
-            # this is because otherwise workspace.members paths will also
-            # get replaced in the build.
-            # and there is no reason to replace these anyways
-            # since they are in the source.
+            # filter out path dependencies whose path are same as in workspace members.
+            # this is because otherwise workspace.members paths will also get replaced in the build.
+            # and there is no reason to replace these anyways since they are in the source.
             outsideDeps =
               l.filter
               (
