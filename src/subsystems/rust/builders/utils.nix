@@ -95,29 +95,52 @@ in rec {
       version,
       dependencies,
     }: let
-      sourceSpec = getSourceSpec name version;
-      source =
+      getSource = name: version: let
+        sourceSpec = getSourceSpec name version;
+        source =
+          if sourceSpec.type == "crates-io"
+          then "registry+https://github.com/rust-lang/crates.io-index"
+          else if sourceSpec.type == "git"
+          then let
+            gitSpec =
+              l.findFirst
+              (src: src.url == sourceSpec.url && src.sha == sourceSpec.rev)
+              (throw "no git source: ${sourceSpec.url}#${sourceSpec.rev}")
+              (subsystemAttrs.gitSources or {});
+            refPart =
+              l.optionalString
+              (gitSpec ? type)
+              "?${gitSpec.type}=${gitSpec.value}";
+          in "git+${sourceSpec.url}${refPart}#${sourceSpec.rev}"
+          else null;
+      in
+        source;
+      getDepSource = name: version: let
+        sourceSpec = getSourceSpec name version;
+      in
         if sourceSpec.type == "crates-io"
-        then "registry+https://github.com/rust-lang/crates.io-index"
+        then null
         else if sourceSpec.type == "git"
-        then let
-          gitSpec =
-            l.findFirst
-            (src: src.url == sourceSpec.url && src.sha == sourceSpec.rev)
-            (throw "no git source: ${sourceSpec.url}#${sourceSpec.rev}")
-            (subsystemAttrs.gitSources or {});
-          refPart =
-            l.optionalString
-            (gitSpec ? type)
-            "?${gitSpec.type}=${gitSpec.value}";
-        in "git+${sourceSpec.url}${refPart}#${sourceSpec.rev}"
-        else throw "source type '${sourceSpec.type}' not supported";
+        then l.head (l.splitString "#" (getSource name version))
+        else null;
+      sourceSpec = getSourceSpec name version;
+      source = let
+        src = getSource name version;
+      in
+        if src == null
+        then throw "source type '${sourceSpec.type}' not supported"
+        else src;
     in
       {
         inherit name version;
         dependencies =
           l.map
-          (dep: "${dep.name} ${dep.version}")
+          (
+            dep: let
+              src = getDepSource dep.name dep.version;
+              srcString = l.optionalString (src != null) " (${src})";
+            in "${dep.name} ${dep.version}${srcString}"
+          )
           dependencies;
       }
       // (
