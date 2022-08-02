@@ -25,15 +25,7 @@
   } @ args: let
     b = builtins;
 
-    hasInstallScript =
-      (packageJson ? scripts.preinstall)
-      || (packageJson ? scripts.install)
-      || (packageJson ? scripts.postinstall);
-
-    noDev =
-      if ! hasInstallScript
-      then true
-      else args.noDev;
+    noDev = args.noDev;
     name = project.name;
     tree = args.tree.getNodeFromPath project.relPath;
     relPath = project.relPath;
