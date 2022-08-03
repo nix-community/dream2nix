@@ -426,6 +426,7 @@
 
           # symlink sub dependencies as well as this imitates npm better
           python $installDeps
+          ADD_BIN_PATH=$(cat $TMP/ADD_BIN_PATH)
 
           echo "Symlinking transitive executables to $nodeModules/.bin"
           for dep in ${l.toString nodeDeps}; do
@@ -444,7 +445,7 @@
           done
 
           # add bin path entries collected by python script
-          export PATH="$PATH:$nodeModules/.bin"
+          export PATH="$PATH:$ADD_BIN_PATH:$nodeModules/.bin"
 
           # add dependencies to NODE_PATH
           export NODE_PATH="$NODE_PATH:$nodeModules/$packageName/node_modules"
