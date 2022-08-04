@@ -1,0 +1,8 @@
+{
+  "outputFile": "index.json",
+  "maxPackages": 200,
+  "modifications": {
+    "exclusions": ["apt"],
+    "additions": ["htop"]
+  }
+}
