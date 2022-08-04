@@ -8,7 +8,7 @@
     mkShell,
     pkgs,
     python3,
-    runCommand,
+    runCommandLocal,
     stdenv,
     writeText,
     ...
@@ -49,7 +49,7 @@
         pkgs."nodejs-${builtins.toString nodejsVersion}_x"
         or (throw "Could not find nodejs version '${nodejsVersion}' in pkgs");
 
-    nodeSources = runCommand "node-sources" {} ''
+    nodeSources = runCommandLocal "node-sources" {} ''
       tar --no-same-owner --no-same-permissions -xf ${nodejs.src}
       mv node-* $out
     '';
@@ -171,7 +171,7 @@
       # Derivation building the ./node_modules directory in isolation.
       # This is used for the devShell of the current package.
       # We do not want to build the full package for the devShell.
-      nodeModulesDir = pkgs.runCommand "node_modules-${pname}" {} ''
+      nodeModulesDir = pkgs.runCommandLocal "node_modules-${pname}" {} ''
         # symlink direct dependencies to ./node_modules
         mkdir $out
         ${l.concatStringsSep "\n" (

@@ -90,10 +90,6 @@ in let
   subsystems = callPackageDream ./subsystems {};
 
   externals = {
-    node2nix = nodejs:
-      pkgs.callPackage "${externalSources.node2nix}/nix/node-env.nix" {
-        inherit nodejs;
-      };
     crane = let
       importLibFile = name: import "${externalSources.crane}/lib/${name}.nix";
 
@@ -107,16 +103,19 @@ in let
         cargoHostTarget,
         cargoBuildBuild,
       }: rec {
-        otherHooks = genHooks [
-          "configureCargoCommonVarsHook"
-          "configureCargoVendoredDepsHook"
-          "remapSourcePathPrefixHook"
-        ] {};
+        otherHooks =
+          genHooks [
+            "configureCargoCommonVarsHook"
+            "configureCargoVendoredDepsHook"
+            "remapSourcePathPrefixHook"
+          ]
+          {};
         installHooks =
           genHooks [
             "inheritCargoArtifactsHook"
             "installCargoArtifactsHook"
-          ] {
+          ]
+          {
             substitutions = {
               zstd = "${pkgs.pkgsBuildBuild.zstd}/bin/zstd";
             };
@@ -188,7 +187,7 @@ in let
     if b.pathExists (./. + "/external")
     then ./.
     else
-      pkgs.runCommand "dream2nix-full-src" {} ''
+      pkgs.runCommandLocal "dream2nix-full-src" {} ''
         cp -r ${./.} $out
         chmod +w $out
         mkdir $out/external
@@ -611,11 +610,7 @@ in let
     impureDiscoveredProjects =
       l.filter
       (proj:
-        subsystems
-        ."${proj.subsystem}"
-        .translators
-        ."${proj.translator}"
-        .type
+        subsystems."${proj.subsystem}".translators."${proj.translator}".type
         == "impure")
       discoveredProjects;
 

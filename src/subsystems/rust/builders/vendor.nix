@@ -85,7 +85,7 @@ in rec {
         ${l.optionalString isGit "printf '{\"files\":{},\"package\":null}' > \"$out/${source.name}/.cargo-checksum.json\""}
       '';
   in
-    pkgs.runCommand "vendor" {} ''
+    pkgs.runCommandLocal "vendor" {} ''
       mkdir -p $out
 
       ${
