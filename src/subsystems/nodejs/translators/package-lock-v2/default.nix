@@ -36,18 +36,16 @@
 
     getResolved = tree: project: let
       lock =
-        nodejsUtils.getWorkspaceLockFile tree project "package-lock.json";
-      resolved = pkgs.runCommandLocal "resolved.json" {} ''
-        ${pkgs.nodejs}/bin/node ${./resolver.cjs} ${lock.fullPath} $out
-      '';
+        (nodejsUtils.getWorkspaceLockFile tree project "package-lock.json").jsonContent;
+      resolved = import ./v2-parse.nix {inherit lib lock source;};
     in
-      l.fromJSON (l.readFile resolved);
+      resolved;
 
-    lock = getResolved args.tree project;
+    resolved = getResolved args.tree project;
 
-    packageVersion = lock.version or "unknown";
+    packageVersion = resolved.self.version or "unknown";
 
-    rootDependencies = lock.self.deps;
+    rootDependencies = resolved.self.deps;
 
     identifyGitSource = dependencyObject:
     # TODO: when integrity is there, and git url is github then use tarball instead
@@ -71,7 +69,7 @@
       location = relPath;
 
       # values
-      inputData = lock.allDeps;
+      inputData = resolved.allDeps;
 
       defaultPackage = name;
 
@@ -79,8 +77,7 @@
         {"${defaultPackage}" = packageVersion;}
         // (nodejsUtils.getWorkspacePackages tree workspaces);
 
-      # Also add devDeps for devShell
-      mainPackageDependencies = lock.self.deps;
+      mainPackageDependencies = resolved.self.deps;
 
       subsystemName = "nodejs";
 
@@ -93,8 +90,7 @@
 
       inherit getVersion;
 
-      # TODO handle link maybe?
-      # TODO handle inBundle?
+      # TODO handle npm link maybe?
       getSourceType = dependencyObject:
         if identifyGitSource dependencyObject
         then "git"
@@ -123,7 +119,7 @@
 in rec {
   version = 2;
 
-  type = "ifd";
+  type = "pure";
 
   inherit translate;
 
