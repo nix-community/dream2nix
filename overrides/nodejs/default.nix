@@ -428,40 +428,7 @@ in
           '';
         };
       };
-      "add-binary-0.14" = let
-        version = "0.14.38";
-      in {
-        _condition = satisfiesSemver "~0.14";
-        ESBUILD_BINARY_PATH = let
-          esbuild = pkgs.buildGoModule {
-            pname = "esbuild";
-            inherit version;
-
-            src = pkgs.fetchFromGitHub {
-              owner = "evanw";
-              repo = "esbuild";
-              rev = "v${version}";
-              sha256 = "sha256-rvMi1oC7qGidvi4zrm9KCMMntu6LJGVOGN6VmU2ivQE=";
-            };
-
-            vendorSha256 = "sha256-QPkBR+FscUc3jOvH7olcGUhM6OW4vxawmNJuRQxPuGs=";
-
-            # there is a binary version check when running esbuild that prevents us from running
-            # a semver compatible binary
-            postPatch = ''
-              substituteInPlace cmd/esbuild/main.go --replace \
-                "hostVersion != esbuildVersion" \
-                "false"
-            '';
-          };
-        in "${esbuild}/bin/esbuild";
-        overrideAttrs = old: {
-          postPatch = ''
-            substituteInPlace lib/main.js --replace \
-              "${old.version}" "${version}"
-          '';
-        };
-      };
+      # Version 0.14 uses optionals to download the correct binary, no override needed
     };
 
     fontmanager-redux = {
