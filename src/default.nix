@@ -49,29 +49,55 @@ in let
 
   configFile = pkgs.writeText "dream2nix-config.json" (b.toJSON config);
 
+  evaledModules = lib.evalModules {
+    modules = [
+      ./modules/top-level.nix
+    ];
+    specialArgs = {
+      inherit
+        callPackageDream
+        dlib
+        ;
+    };
+  };
+
+  framework = evaledModules.config;
+
+  /*
+  The nixos module system seems to break pkgs.callPackage.
+  Therefore we always need to pass all of pkgs with callPackageDream.
+  */
+  callPackageDreamArgs =
+    pkgs
+    // {
+      inherit apps;
+      inherit callPackageDream;
+      inherit config;
+      inherit configFile;
+      inherit dlib;
+      inherit externals;
+      inherit externalSources;
+      inherit fetchers;
+      inherit framework;
+      inherit indexers;
+      inherit dream2nixWithExternals;
+      inherit utils;
+      inherit nix;
+      inherit subsystems;
+      dream2nixInterface = {
+        inherit
+          makeOutputsForDreamLock
+          ;
+      };
+    };
+
   # like pkgs.callPackage, but includes all the dream2nix modules
   callPackageDream = f: fargs:
-    pkgs.callPackage f (fargs
-      // {
-        inherit apps;
-        inherit callPackageDream;
-        inherit config;
-        inherit configFile;
-        inherit dlib;
-        inherit externals;
-        inherit externalSources;
-        inherit fetchers;
-        inherit indexers;
-        inherit dream2nixWithExternals;
-        inherit utils;
-        inherit nix;
-        inherit subsystems;
-        dream2nixInterface = {
-          inherit
-            makeOutputsForDreamLock
-            ;
-        };
-      });
+    (
+      if l.isFunction f
+      then f
+      else import f
+    ) (fargs // callPackageDreamArgs);
 
   utils = callPackageDream ./utils {};
 
