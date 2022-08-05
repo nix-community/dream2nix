@@ -153,10 +153,10 @@ in {
         (rawObj: dlib.nameVersionPair rawObj.name rawObj.version)
         serializedRawObjects;
 
-      haskellUtils = import ../utils.nix {inherit lib;};
+      haskellUtils = import ../utils.nix {inherit lib pkgs;};
 
       cabalData =
-        stackLockUtils.batchCabalData
+        haskellUtils.batchFindJsonFromCabalCandidates
         allCandidates;
 
       parseStackLockEntry = entry:
