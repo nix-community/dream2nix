@@ -77,7 +77,7 @@ in {
     utils,
     ...
   }: let
-    haskellUtils = import ./utils.nix {inherit dlib lib pkgs;};
+    stackLockUtils = import ./utils.nix {inherit dlib lib pkgs;};
     all-cabal-hashes = let
       all-cabal-hashes' = pkgs.runCommandLocal "all-cabal-hashes" {} ''
         mkdir $out
@@ -114,14 +114,14 @@ in {
         (l.attrNames projectTree.files);
 
       cabalFile = projectTree.getNodeFromPath (l.head cabalFiles);
-      cabal = haskellUtils.fromCabal cabalFile.fullPath project.name;
+      cabal = stackLockUtils.fromCabal cabalFile.fullPath project.name;
       defaultPackageVersion =
         l.concatStringsSep
         "."
         (l.map l.toString cabal.description.package.version);
 
       stackLock =
-        haskellUtils.fromYaml
+        stackLockUtils.fromYaml
         (projectTree.getNodeFromPath "stack.yaml.lock").fullPath;
 
       snapshotEntry = l.head (stackLock.snapshots);
@@ -131,7 +131,7 @@ in {
         sha256 = snapshotEntry.completed.sha256;
       };
 
-      snapshot = haskellUtils.fromYaml snapshotYamlFile;
+      snapshot = stackLockUtils.fromYaml snapshotYamlFile;
 
       hidden =
         hiddenPackagesDefault;
@@ -153,8 +153,10 @@ in {
         (rawObj: dlib.nameVersionPair rawObj.name rawObj.version)
         serializedRawObjects;
 
+      haskellUtils = import ../utils.nix {inherit lib;};
+
       cabalData =
-        haskellUtils.batchCabalData
+        stackLockUtils.batchCabalData
         allCandidates;
 
       parseStackLockEntry = entry:
@@ -181,8 +183,6 @@ in {
       in {
         inherit name version hash;
       };
-
-      getHackageUrl = finalObj: "https://hackage.haskell.org/package/${finalObj.name}-${finalObj.version}.tar.gz";
 
       getDependencyNames = finalObj: objectsByName: let
         cabal = with finalObj;
@@ -290,7 +290,7 @@ in {
           # https://hackage.haskell.org/package/AC-Angle-1.0/AC-Angle-1.0.tar.gz
           {
             type = "http";
-            url = getHackageUrl finalObj;
+            url = haskellUtils.getHackageUrl finalObj;
             hash = with finalObj; "sha256:${all-cabal-hashes.${name}.${version}.SHA256}";
           };
         };
