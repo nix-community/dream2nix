@@ -660,6 +660,20 @@ in
       };
     };
 
+    sqlite3 = {
+      build = {
+        # See its README for build instructions
+        # It needs different flags for electron, not sure how to do that
+        buildScript = ''
+          node-pre-gyp install --build-from-source --nodedir=$nodeSources --offline --runtime=node --sqlite=${pkgs.sqlite}
+        '';
+        nativeBuildInputs = old: old ++ [pkgs.sqlite];
+        # # TODO overrides should get correct nodejs version
+        # pkgs.nodejs-16_x.pkgs.node-gyp]
+        # ;
+      };
+    };
+
     tabby = {
       inherit cntr;
       fix-build = {
