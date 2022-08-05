@@ -6,7 +6,6 @@ import subprocess as sp
 import sys
 
 
-out = os.environ.get('out')
 pname = os.environ.get('packageName')
 version = os.environ.get('version')
 bin_dir = f"{os.path.abspath('..')}/.bin"
@@ -26,15 +25,11 @@ def get_package_json(path):
   return package_json_cache[path]
 
 def install_direct_dependencies():
-  add_to_bin_path = []
   if not os.path.isdir(root):
     os.mkdir(root)
   with open(os.environ.get('nodeDepsPath')) as f:
     deps = f.read().split()
   for dep in deps:
-    # check for bin directory
-    if os.path.isdir(f"{dep}/bin"):
-      add_to_bin_path.append(f"{dep}/bin")
     if os.path.isdir(f"{dep}/lib/node_modules"):
       for module in os.listdir(f"{dep}/lib/node_modules"):
         # ignore hidden directories
@@ -55,8 +50,6 @@ def install_direct_dependencies():
             os.symlink(origin, f"{root}/{module}")
           else:
             print(f"already exists: {root}/{module}")
-
-  return add_to_bin_path
 
 
 def collect_dependencies(root, depth):
@@ -206,11 +199,7 @@ def symlink_direct_bins():
 
 
 # install direct deps
-add_to_bin_path = install_direct_dependencies()
-
-# dump bin paths
-with open(f"{os.environ.get('TMP')}/ADD_BIN_PATH", 'w') as f:
-  f.write(':'.join(add_to_bin_path))
+install_direct_dependencies()
 
 # symlink non-colliding deps
 symlink_sub_dependencies()
@@ -219,4 +208,5 @@ symlink_sub_dependencies()
 if os.environ.get('installMethod') == 'copy':
   symlinks_to_copies(root)
 
+# symlink direct deps bins
 symlink_direct_bins()
