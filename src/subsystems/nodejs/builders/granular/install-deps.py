@@ -106,8 +106,8 @@ def symlink_sub_dependencies():
 
 
 # create symlinks for executables (bin entries from package.json)
-def symlink_bin(bin_dir, package_location, package_json):
-  if 'bin' in package_json and package_json['bin']:
+def symlink_bin(bin_dir, package_location, package_json, force=False):
+  if package_json and 'bin' in package_json and package_json['bin']:
     bin = package_json['bin']
 
     def link(name, relpath):
@@ -117,6 +117,8 @@ def symlink_bin(bin_dir, package_location, package_json):
       pathlib.Path(sourceDir).mkdir(parents=True, exist_ok=True)
       dest = os.path.relpath(f'{package_location}/{relpath}', sourceDir)
       print(f"symlinking executable. dest: {dest}; source: {source}")
+      if force and os.path.exists(source):
+        os.remove(source)
       if not os.path.exists(source):
         os.symlink(dest, source)
 
@@ -184,6 +186,24 @@ def symlinks_to_copies(node_modules):
     symlink_bin(f"{bin_dir}", dep, package_json)
 
 
+def symlink_direct_bins():
+  deps = []
+  package_json_file = get_package_json(f"{os.path.abspath('.')}")
+
+  if package_json_file:
+    if 'devDependencies' in package_json_file and package_json_file['devDependencies']:
+      for dep,_ in package_json_file['devDependencies'].items():
+        deps.append(dep)
+    if 'dependencies' in package_json_file and package_json_file['dependencies']:
+      for dep,_ in package_json_file['dependencies'].items():
+        deps.append(dep)
+
+  for name in deps:
+    package_location = f"{root}/{name}"
+    package_json = get_package_json(package_location)
+    symlink_bin(f"{bin_dir}", package_location, package_json, force=True)
+
+
 # install direct deps
 add_to_bin_path = install_direct_dependencies()
 
@@ -197,3 +217,5 @@ symlink_sub_dependencies()
 # symlinks to copies
 if os.environ.get('installMethod') == 'copy':
   symlinks_to_copies(root)
+
+symlink_direct_bins()
