@@ -46,7 +46,8 @@ def install_direct_dependencies():
             print(f"installing: {module}/{submodule}")
             origin =\
               os.path.realpath(f"{dep}/lib/node_modules/{module}/{submodule}")
-            os.symlink(origin, f"{root}/{module}/{submodule}")
+            if not os.path.exists(f"{root}/{module}/{submodule}"):
+              os.symlink(origin, f"{root}/{module}/{submodule}")
         else:
           print(f"installing: {module}")
           origin = os.path.realpath(f"{dep}/lib/node_modules/{module}")
