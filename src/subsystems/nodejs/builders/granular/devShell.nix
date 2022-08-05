@@ -39,8 +39,6 @@ mkShell {
     nodeModulesDrv = pkg.overrideAttrs (old: {
       buildPhase = ":";
       installMethod = "copy";
-      src = "";
-      dontUnpack = true;
       dontPatch = true;
       dontBuild = true;
       dontInstall = true;
