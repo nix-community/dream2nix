@@ -3,20 +3,8 @@
 {{#include ../warning.md}}
 
 This guide walks you through the process of setting up nix for your project using dream2nix. This will allow your project's build and dev-environment to be reproduced by machines of other developers or CI systems with high accuracy.
- 
-## Install nix
-If you don't have nix already, check out [nixos.org/download.html](https://nixos.org/download.html) on how to install it.
 
-## Enable the nix flakes feature
-For internal dependency management dream2nix requires the experimental nix feature `flakes` being enabled.
-```
-export NIX_CONFIG="extras-experimental-features = flakes nix-command"
-```
-
-If you find yourself using dream2nix regularly, you can permanently save these settings by adding the following line to your `/etc/nix/nix.conf`:
-```
-experimental-features = flakes nix-command
-```
+{{#include ../install-nix.md}}
 
 ## Navigate to your python project
 In this example I will clone the python project [`httpie`](https://github.com/httpie/httpie) to `/tmp/my_project` as an example.
