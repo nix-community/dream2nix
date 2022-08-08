@@ -578,6 +578,12 @@ in
       };
     };
 
+    # Teach node-gyp to use nodejs headers locally
+    # rather that download them from https://nodejs.org.
+    node-gyp.build.postInstall = ''
+      wrapProgram "$out/bin/node-gyp" --set npm_config_nodedir $nodeSources
+    '';
+
     node-hid = {
       build = {
         nativeBuildInputs = old:
@@ -588,6 +594,10 @@ in
           ];
       };
     };
+
+    nodegit.build.buildInputs = with pkgs;
+      old:
+        old ++ [pkg-config libkrb5 e2fsprogs];
 
     npm = {
       dont-install-deps = {
@@ -641,6 +651,10 @@ in
         '';
       };
     };
+
+    sharp.build.buildInputs = with pkgs;
+      old:
+        old ++ [vips.dev glib.dev pkg-config];
 
     simple-git-hooks = {
       dont-postinstall = {
