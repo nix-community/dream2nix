@@ -578,6 +578,18 @@ in
       };
     };
 
+    node-gyp = {
+      build = {
+        nativeBuildInputs = [pkgs.makeWrapper];
+        # Teach node-gyp to use nodejs headers locally rather that download them from https://nodejs.org.
+        # TODO inherit the nodejs version from the translator somehow
+        postInstall = ''
+          wrapProgram "$out/bin/node-gyp" \
+            --set npm_config_nodedir ${pkgs.nodejs-16_x}
+        '';
+      };
+    };
+
     node-hid = {
       build = {
         nativeBuildInputs = old:
@@ -639,6 +651,13 @@ in
           find -name '*.js' -exec \
             ${ensureFileModified} {} sed -i "s/preserveSymlinks: .*/preserveSymlinks: true,/g" {} \;
         '';
+      };
+    };
+
+    sharp = {
+      # TODO inject node-gyp
+      build = {
+        buildInputs = old: old ++ (with pkgs; [vips.dev glib.dev pkg-config]);
       };
     };
 
