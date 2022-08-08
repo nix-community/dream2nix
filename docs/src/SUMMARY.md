@@ -3,6 +3,8 @@
 
 # Guides
 - [Python: getting started in 10 minutes](./guides/getting-started-python.md)
+- [Node.js: quickstart](./guides/getting-started-nodejs.md)
+
 # Subsystems
 - [Rust](./subsystems/rust.md)
 - [Python](./subsystems/python.md)
