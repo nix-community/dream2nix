@@ -73,6 +73,8 @@ assert lock.lockfileVersion == 2; let
       optional ? false,
       # this is an optional dev dependency
       devOptional ? false,
+      # set of binary scripts { name = relativePath }
+      bin ? {},
       # pkg needs to run install scripts
       hasInstallScript ? false,
       dependencies ? null,
@@ -90,7 +92,7 @@ assert lock.lockfileVersion == 2; let
           ++ (resolveDeps peerDependencies parts true)
           ++ (resolveDeps peerDependenciesMeta parts true));
     in {
-      inherit pname version deps os dev optional devOptional;
+      inherit pname version deps os dev optional devOptional bin;
       url = resolved;
       hash = integrity;
       # Storing negation so other translators don't have to have this feature
