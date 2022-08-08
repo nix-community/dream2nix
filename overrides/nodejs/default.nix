@@ -302,6 +302,14 @@ in
           aarch64-darwin = "5a62d46c3c45b6e416bf77affccc94e26b7a21ff8bced466036fbe74ff59799a";
           headers = "0wdw9xaxyn7zk6b4x4ldzallggxlxs293fwp6af4fa5a1c295gkn";
         };
+        "20.0.1" = {
+          armv7l-linux = "6e1f216d0680fd1116ab378846ef9204bcd27916fa0f9bb510623a01c32bef9b";
+          aarch64-linux = "60ebe86847b47d98ec16d259ee58a9dbd5fa7d84df6e23888ac1a340c9b9b467";
+          x86_64-linux = "db6b9a6dd1d609fbf46cc7e2fd0f3ff317e59da85d037bce018cfc6810580c32";
+          x86_64-darwin = "2ceea21ba4f79e1e9bea6d01e31a6339288a3d98adf23ac52a728bb22e55794c";
+          aarch64-darwin = "42f251973d4ae90941f82898d4a2e21d7e4c899e920bc671aba03eedb871ee10";
+          headers = "1xvi3w8x1knc103cxk4mkqb8xw4bp6if8lra527a8x2xan4syiq1";
+        };
       };
     in {
       add-binary = {
