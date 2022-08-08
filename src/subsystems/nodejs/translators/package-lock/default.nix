@@ -291,7 +291,7 @@ in rec {
     # the nodejs version for translating, not for building.
     nodejs = {
       description = "nodejs version to use for building";
-      default = "14";
+      default = null;
       examples = [
         "14"
         "16"
