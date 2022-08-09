@@ -10,13 +10,12 @@
 - [Python](./subsystems/python.md)
 - [Haskell](./subsystems/haskell.md)
 
-# Concept
+# Concepts
 - [Architectural Considerations](./intro/architectural-considerations.md)
 - [Nixpkgs improvements](./intro/nixpkgs-improvements.md)
 - [Override system](./intro/override-system.md)
 - [Translators](./intro/translators.md)
 - [Indexers](./intro/indexers.md)
-
 
 # Contributing
 - [Extending dream2nix](./extending-dream2nix.md)
