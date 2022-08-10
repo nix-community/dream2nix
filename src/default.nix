@@ -282,7 +282,7 @@ in let
           getSourceSpec
           getRoot
           getDependencies
-          getCyclicDependencies
+          getCyclicHelpers
           defaultPackageName
           defaultPackageVersion
           packages

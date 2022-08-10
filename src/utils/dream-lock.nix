@@ -136,9 +136,68 @@
       (dep: ! b.elem dep cyclicDependencies."${pname}"."${version}" or [])
       dependencyGraph."${pname}"."${version}" or [];
 
-    getCyclicDependencies = pname: version:
-      cyclicDependencies."${pname}"."${version}" or [];
+    # inverted cyclicDependencies { name.version = parent }
+    cyclicParents = with l;
+      foldAttrs (c: acc: acc // (listToAttrs [(nameValuePair c.version c.cyclic)])) {} (flatten (mapAttrsToList (cyclicName: cyclicVersions:
+        mapAttrsToList (cyclicVersion: cycleeDeps:
+          map (cycleeDep: (listToAttrs [
+            (
+              nameValuePair cycleeDep.name
+              {
+                version = cycleeDep.version;
+                cyclic = {
+                  name = cyclicName;
+                  version = cyclicVersion;
+                };
+              }
+            )
+          ]))
+          cycleeDeps)
+        cyclicVersions)
+      cyclicDependencies));
 
+    getCyclicHelpers = name: version: let
+      # [ {name; version} ]
+      cycleeDeps = cyclicDependencies."${name}"."${version}" or [];
+
+      # {name: {version: true}}
+      cycleeMap = lib.foldAttrs (depVersion: acc:
+        acc
+        // (lib.listToAttrs [
+          {
+            name = depVersion;
+            value = true;
+          }
+        ])) {}
+      cycleeDeps;
+
+      cyclicParent = cyclicParents."${name}"."${version}" or null;
+      isCyclee = depName: depVersion: cycleeMap."${depName}"."${depVersion}" or false;
+      isThisCycleeFor = depName: depVersion:
+        cyclicParent
+        == {
+          name = depName;
+          version = depVersion;
+        };
+
+      replaceCyclees = deps:
+        with l;
+          filter (d: d != null)
+          (map (d: let
+            parent = cyclicParents."${d.name}"."${d.version}" or null;
+          in
+            if parent != null
+            then
+              if parent == cyclicParent
+              # These packages will be part of their parent package
+              then null
+              else parent // {replaces = d;}
+            else d)
+          deps);
+      # TODO better name
+    in {
+      inherit cycleeDeps cyclicParent isCyclee isThisCycleeFor replaceCyclees;
+    };
     getRoot = pname: version: let
       spec = getSourceSpec pname version;
     in
@@ -157,7 +216,7 @@
         defaultPackageName
         defaultPackageVersion
         subsystemAttrs
-        getCyclicDependencies
+        getCyclicHelpers
         getDependencies
         getSourceSpec
         getRoot
