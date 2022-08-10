@@ -533,6 +533,9 @@
               ln -s ${prodModules} $sourceRoot/node_modules
               if [ -d ${prodModules}/.bin ]; then
                 export PATH="$PATH:$sourceRoot/node_modules/.bin"
+                # pass down transitive binaries, like npm does
+                # all links are absolute so we can just copy
+                cp -af --no-preserve=mode ${prodModules}/.bin/. $out/bin/.
               fi
             ''
             else ""
