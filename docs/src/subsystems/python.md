@@ -17,7 +17,7 @@ This translator simply executes `pip download` on the given source and observes 
 The downside of this approach is, that this translator cannot be used with a granular builder. It does not understand the exact relation between the dependencies, and therefore it only allows to build all dependencies in one large derivation.
 
 #### **pip** optional translator arguments
-```
+```nix
 {{#include ../../../src/subsystems/python/translators/pip/args.nix}}
 ```
 

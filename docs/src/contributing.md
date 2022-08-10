@@ -48,7 +48,7 @@ Unit tests can be executed via `nix run .#tests-unit`
 
 Add an example flake under `./examples/name-of-example`.
 The flake can be tested via:
-```command
+```shell
 nix run .#tests-examples name-of-example --show-trace
 ```
 The flake will be tested in the CI-pipeline as well.
@@ -72,7 +72,7 @@ Further instructions are contained in the template in form of code comments.
 
 Add an example flake under `./examples/name-of-example`.
 The flake can be tested via:
-```command
+```shell
 nix run .#tests-examples name-of-example --show-trace
 ```
 The flake will be tested in the CI-pipeline as well.
