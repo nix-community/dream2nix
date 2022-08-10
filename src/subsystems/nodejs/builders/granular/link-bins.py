@@ -22,6 +22,9 @@ def symlink_bin(bin_dir, package_json):
       pathlib.Path(sourceDir).mkdir(parents=True, exist_ok=True)
       dest = os.path.relpath(relpath, sourceDir)
       print(f"symlinking executable. dest: {dest}; source: {source}")
+      # if a bin with this name exists, overwrite
+      if os.path.exists(source):
+        os.remove(source)
       os.symlink(dest, source)
 
     if isinstance(bin, str):
