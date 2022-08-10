@@ -165,6 +165,7 @@
       '';
 
     # Generates a derivation for a specific package name + version
+    # TODO if noInstall return derivation with minimal build deps, less rebuilds
     makePackage = name: version: let
       pname = name;
 
@@ -336,6 +337,16 @@
         then null
         else pkgs."electron_${electronVersionMajor}".headers;
 
+      sourceInfo = let
+        e = getSourceSpec name version;
+        try = builtins.tryEval (builtins.deepSeq e e);
+      in
+        if try.success
+        then try.value
+        else {};
+      hasInstall = !(sourceInfo.noInstall or false);
+      isMain = isMainPackage name version;
+
       pkg = produceDerivation name (stdenv.mkDerivation rec {
         inherit
           dependenciesJson
@@ -362,14 +373,14 @@
         */
         # TODO implement copy and make configurable
         # installMethod =
-        #   if isMainPackage name version
+        #   if isMain
         #   then "copy"
         #   else "symlink";
 
         electronAppDir = ".";
 
         # only run build on the main package
-        runBuild = isMainPackage name version;
+        runBuild = isMain;
 
         src = getSource name version;
 
@@ -383,8 +394,9 @@
         preConfigurePhases = ["d2nLoadFuncsPhase" "d2nPatchPhase"];
 
         # can be overridden to define alternative install command
-        # (defaults to 'npm run postinstall')
+        # (defaults to npm install steps)
         buildScript = null;
+        shouldBuild = hasInstall || buildScript != null || electronHeaders != null;
 
         # python script to modify some metadata to support installation
         # (see comments below on d2nPatchPhase)
@@ -485,6 +497,10 @@
         #   - If package-lock.json exists, it is deleted, as it might conflict
         #     with the parent package-lock.json.
         d2nPatchPhase = ''
+          if [ -z "$shouldBuild" ] && [ -n "$runBuild" ] && [ "$(jq '.scripts.build' ./package.json)" != "null" ]; then
+            shouldBuild=1
+          fi
+
           # delete package-lock.json as it can lead to conflicts
           rm -f package-lock.json
 
@@ -554,26 +570,28 @@
         buildPhase = ''
           runHook preBuild
 
-          # execute electron-rebuild
-          if [ -n "$electronHeaders" ]; then
-            echo "executing electron-rebuild"
-            ${electron-rebuild}
-          fi
-
-          # execute install command
-          if [ -n "$buildScript" ]; then
-            if [ -f "$buildScript" ]; then
-              $buildScript
-            else
-              eval "$buildScript"
+          if [ -n "$shouldBuild" ]; then
+            # execute electron-rebuild
+            if [ -n "$electronHeaders" ]; then
+              echo "executing electron-rebuild"
+              ${electron-rebuild}
             fi
-          # by default, only for top level packages, `npm run build` is executed
-          elif [ -n "$runBuild" ] && [ "$(jq '.scripts.build' ./package.json)" != "null" ]; then
-            npm run build
-          else
-            npm --omit=dev --offline --nodedir=$nodeSources run --if-present preinstall
-            npm --omit=dev --offline --nodedir=$nodeSources run --if-present install
-            npm --omit=dev --offline --nodedir=$nodeSources run --if-present postinstall
+
+            # execute install command
+            if [ -n "$buildScript" ]; then
+              if [ -f "$buildScript" ]; then
+                $buildScript
+              else
+                eval "$buildScript"
+              fi
+            elif [ -n "$runBuild" ]; then
+              # by default, only for top level packages, `npm run build` is executed
+              npm run --if-present build
+            else
+              npm --omit=dev --offline --nodedir=$nodeSources run --if-present preinstall
+              npm --omit=dev --offline --nodedir=$nodeSources run --if-present install
+              npm --omit=dev --offline --nodedir=$nodeSources run --if-present postinstall
+            fi
           fi
 
           runHook postBuild
@@ -617,7 +635,7 @@
       });
     in
       pkg
-      // {sourceInfo = getSourceSpec name version;};
+      // {inherit sourceInfo;};
   in
     outputs;
 }
