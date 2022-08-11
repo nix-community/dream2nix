@@ -30,9 +30,8 @@
       chmod -R +w .
       nix flake lock --override-input dream2nix ${../../.}
       nix run .#resolveImpure || echo "no resolveImpure probably?"
-      nix eval --read-only --no-allow-import-from-derivation .#default.name
       nix build
-      nix flake check "$@"
+      nix flake check
     '';
 in
   utils.writePureShellScript
