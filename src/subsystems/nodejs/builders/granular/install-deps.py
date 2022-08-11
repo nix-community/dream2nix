@@ -6,7 +6,6 @@ import subprocess as sp
 import sys
 
 
-out = os.environ.get('out')
 pname = os.environ.get('packageName')
 version = os.environ.get('version')
 bin_dir = f"{os.path.abspath('..')}/.bin"
@@ -26,15 +25,11 @@ def get_package_json(path):
   return package_json_cache[path]
 
 def install_direct_dependencies():
-  add_to_bin_path = []
   if not os.path.isdir(root):
     os.mkdir(root)
   with open(os.environ.get('nodeDepsPath')) as f:
     deps = f.read().split()
   for dep in deps:
-    # check for bin directory
-    if os.path.isdir(f"{dep}/bin"):
-      add_to_bin_path.append(f"{dep}/bin")
     if os.path.isdir(f"{dep}/lib/node_modules"):
       for module in os.listdir(f"{dep}/lib/node_modules"):
         # ignore hidden directories
@@ -46,7 +41,8 @@ def install_direct_dependencies():
             print(f"installing: {module}/{submodule}")
             origin =\
               os.path.realpath(f"{dep}/lib/node_modules/{module}/{submodule}")
-            os.symlink(origin, f"{root}/{module}/{submodule}")
+            if not os.path.exists(f"{root}/{module}/{submodule}"):
+              os.symlink(origin, f"{root}/{module}/{submodule}")
         else:
           print(f"installing: {module}")
           origin = os.path.realpath(f"{dep}/lib/node_modules/{module}")
@@ -54,8 +50,6 @@ def install_direct_dependencies():
             os.symlink(origin, f"{root}/{module}")
           else:
             print(f"already exists: {root}/{module}")
-
-  return add_to_bin_path
 
 
 def collect_dependencies(root, depth):
@@ -106,8 +100,8 @@ def symlink_sub_dependencies():
 
 
 # create symlinks for executables (bin entries from package.json)
-def symlink_bin(bin_dir, package_location, package_json):
-  if 'bin' in package_json and package_json['bin']:
+def symlink_bin(bin_dir, package_location, package_json, force=False):
+  if package_json and 'bin' in package_json and package_json['bin']:
     bin = package_json['bin']
 
     def link(name, relpath):
@@ -117,6 +111,8 @@ def symlink_bin(bin_dir, package_location, package_json):
       pathlib.Path(sourceDir).mkdir(parents=True, exist_ok=True)
       dest = os.path.relpath(f'{package_location}/{relpath}', sourceDir)
       print(f"symlinking executable. dest: {dest}; source: {source}")
+      if force and os.path.exists(source):
+        os.remove(source)
       if not os.path.exists(source):
         os.symlink(dest, source)
 
@@ -184,12 +180,26 @@ def symlinks_to_copies(node_modules):
     symlink_bin(f"{bin_dir}", dep, package_json)
 
 
-# install direct deps
-add_to_bin_path = install_direct_dependencies()
+def symlink_direct_bins():
+  deps = []
+  package_json_file = get_package_json(f"{os.path.abspath('.')}")
 
-# dump bin paths
-with open(f"{os.environ.get('TMP')}/ADD_BIN_PATH", 'w') as f:
-  f.write(':'.join(add_to_bin_path))
+  if package_json_file:
+    if 'devDependencies' in package_json_file and package_json_file['devDependencies']:
+      for dep,_ in package_json_file['devDependencies'].items():
+        deps.append(dep)
+    if 'dependencies' in package_json_file and package_json_file['dependencies']:
+      for dep,_ in package_json_file['dependencies'].items():
+        deps.append(dep)
+
+  for name in deps:
+    package_location = f"{root}/{name}"
+    package_json = get_package_json(package_location)
+    symlink_bin(f"{bin_dir}", package_location, package_json, force=True)
+
+
+# install direct deps
+install_direct_dependencies()
 
 # symlink non-colliding deps
 symlink_sub_dependencies()
@@ -197,3 +207,6 @@ symlink_sub_dependencies()
 # symlinks to copies
 if os.environ.get('installMethod') == 'copy':
   symlinks_to_copies(root)
+
+# symlink direct deps bins
+symlink_direct_bins()

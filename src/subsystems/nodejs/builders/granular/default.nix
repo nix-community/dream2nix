@@ -168,35 +168,6 @@
         deps
         (dep: allPackages."${dep.name}"."${dep.version}");
 
-      # Derivation building the ./node_modules directory in isolation.
-      # This is used for the devShell of the current package.
-      # We do not want to build the full package for the devShell.
-      nodeModulesDir = pkgs.runCommandLocal "node_modules-${pname}" {} ''
-        # symlink direct dependencies to ./node_modules
-        mkdir $out
-        ${l.concatStringsSep "\n" (
-          l.forEach nodeDeps
-          (pkg: ''
-            for dir in $(ls ${pkg}/lib/node_modules/); do
-              if [[ $dir == @* ]]; then
-                mkdir -p $out/$dir
-                ln -s ${pkg}/lib/node_modules/$dir/* $out/$dir/
-              else
-                ln -s ${pkg}/lib/node_modules/$dir $out/
-              fi
-            done
-          '')
-        )}
-
-        # symlink transitive executables to ./node_modules/.bin
-        mkdir $out/.bin
-        for dep in ${l.toString nodeDeps}; do
-          for binDir in $(ls -d $dep/lib/node_modules/.bin 2>/dev/null ||:); do
-            ln -sf $binDir/* $out/.bin/
-          done
-        done
-      '';
-
       passthruDeps =
         l.listToAttrs
         (l.forEach deps
