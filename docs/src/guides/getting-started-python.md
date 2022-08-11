@@ -3,20 +3,8 @@
 {{#include ../warning.md}}
 
 This guide walks you through the process of setting up nix for your project using dream2nix. This will allow your project's build and dev-environment to be reproduced by machines of other developers or CI systems with high accuracy.
- 
-## Install nix
-If you don't have nix already, check out [nixos.org/download.html](https://nixos.org/download.html) on how to install it.
 
-## Enable the nix flakes feature
-For internal dependency management dream2nix requires the experimental nix feature `flakes` being enabled.
-```
-export NIX_CONFIG="extras-experimental-features = flakes nix-command"
-```
-
-If you find yourself using dream2nix regularly, you can permanently save these settings by adding the following line to your `/etc/nix/nix.conf`:
-```
-experimental-features = flakes nix-command
-```
+{{#include ../install-nix.md}}
 
 ## Navigate to your python project
 In this example I will clone the python project [`httpie`](https://github.com/httpie/httpie) to `/tmp/my_project` as an example.
@@ -30,16 +18,18 @@ In this example I will clone the python project [`httpie`](https://github.com/ht
 > nix flake init -t github:nix-community/dream2nix#simple
 wrote: /tmp/my_project/flake.nix
 ```
-Great, this created a new file `flake.nix` which is like a recipe that tells nix how to build our python project or how to assemble a development environment for it.  
+Great, this created a new file `flake.nix` which is like a recipe that tells nix how to build our python project or how to assemble a development environment for it.
 By modifying this file, we can tweak settings and change the way our package gets built by nix. But for now we just go with the defaults.
 
 ## Define the target platform
-Before we can start, we need to tell dream2nix which platform we want to build software for. dream2nix will read these platforms from the file `./nix_systems`. To get started we will jsut add our current platform to it with the following command.
+Before we can start, we need to tell dream2nix which platform we want to build software for.
+Dream2nix will read these platforms from the file `./nix_systems`.
+To get started we will just add our current platform to it with the following command.
 ```command
 > nix eval --impure --raw --expr 'builtins.currentSystem' > ./nix_systems
 > git add ./nix_systems
 ```
-Don't forget to add the file `./nix_systems` to git, otherwise it will be ignored.  
+Don't forget to add the file `./nix_systems` to git, otherwise it will be ignored.
 If you want to support more platforms later, just add more lines to that file.
 
 ## List the available packages
@@ -58,9 +48,9 @@ git+file:///tmp/my_project
 ```
 
 What we can observe here:
-1. ```warning: Git tree '/tmp/my_project' is dirty```  
+1. ```warning: Git tree '/tmp/my_project' is dirty```
 Nix warns us that the current git repo has uncommited changes. Thats fine, because we like to experiment for now. This warning will go away as soon as we commit our changes.
-1. `warning: creating lock file '/tmp/my_project/flake.lock'`  
+1. `warning: creating lock file '/tmp/my_project/flake.lock'`
 Our flake.nix imported external libraries. The versions of these libraries have now been locked inside a new file `flake.lock`. We should later commit this file to the repo, in order to allow others to reproduce our build exactly.
 1.
     ```
@@ -71,16 +61,16 @@ Our flake.nix imported external libraries. The versions of these libraries have 
       │       └───resolveImpure: package 'resolve'
       └───projectsJson: unknown
     ```
-    Similar like a .json file defines a structure of data, our flake.nix defines a structure of `nix attributes` which are things that we can build or run with nix.  
+    Similar like a .json file defines a structure of data, our flake.nix defines a structure of `nix attributes` which are things that we can build or run with nix.
     We can see that it contains packages for my current platform `x86_64-linux`.
-    
-    The packages which we can see here is my python package and a package called`resolveImpure`, which is a special package provided by dream2nix which we will learn more about later.
+
+    The packages which we can see here is my python package and a package called `resolveImpure`, which is a special package provided by dream2nix which we will learn more about later.
 
 ## Build the Project
 Let's try building our project.
 If you get an error about `unresolved impurities`, see [Resolve Impurities](#resolve-impurities)
-```
-nix build .#default
+```command
+> nix build .#default
 ```
 Congratulations, your build artifacts will now be accessible via the `./result` directory. If your project contains executables, you can run these via `./result/bin/executable-name`.
 If you want to develop on your python project, see [Create a development shell](#create-a-development-shell)
@@ -89,13 +79,13 @@ If you want to develop on your python project, see [Create a development shell](
 Nix can provide you with a development shell containing all your project's dependencies.
 First, ensure that your project [is resolved](#resolve-impurities), then execute the following command.
 ```command
-nix develop -c $SHELL
+> nix develop -c $SHELL
 ```
 The `-c $SHELL` part is only necessary if you use a different shell than bash and would like to bring that shell with you into the dev environment.
 
 ## Resolve Impurities
 If you try to build, you might run into the following error.
-```
+```command
 > nix build .#default
 error: The python package main contains unresolved impurities.
        Resolve by running the .resolve attribute of this derivation
@@ -103,7 +93,7 @@ error: The python package main contains unresolved impurities.
 ```
 Oops. It seems like our project does not contain enough information for dream2nix to construct a reproducible build. But this is not a problem as we can fix this by using the `resolveImpure` package that dream2nix provides.
 ```command
-nix run .#resolveImpure
+> nix run .#resolveImpure
 ...
 adding file to git: dream2nix-packages/main/dream-lock.json
 ```
