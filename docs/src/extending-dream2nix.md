@@ -14,7 +14,7 @@ dream2nix.lib.init {
 ```
 this file should look like this:
 ```nix
-{dlib, lib, config, ...}:
+{ dlib, lib, config, ... }:
 {
   subsystems.rust.translators.example-translator = ./rust-translator.nix;
   # you can declare modules using functions here

@@ -114,7 +114,7 @@ Poetry uses `pyproject.toml` and `poetry.lock` to lock dependencies
 - Input: pyproject.toml, poetry.lock (toml)
 - Translator: written in pure nix, reading the toml input and generating the generic lock format
 - Generic Lock (for explanatory purposes dumped to json and commented):
-    ```json5
+    ```json
     {
       // generic lock format version
       "version": 1,
