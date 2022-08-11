@@ -36,39 +36,4 @@ in rec {
     '';
   in
     l.fromJSON (l.readFile jsonFile);
-
-  # converts all cabal files for a given list of candidates to json files
-  batchCabal2Json = candidates: let
-    candidatesJsonStr = l.toJSON candidates;
-    convertOne = name: version: ''
-      cabalFile=${all-cabal-hashes}/${name}/${version}/${name}.cabal
-      if [ -e $cabalFile ]; then
-        echo "converting cabal to json: ${name}-${version}"
-        mkdir -p $out/${name}/${version}
-        ${cabal2json}/bin/cabal2json \
-          $cabalFile \
-          > $out/${name}/${version}/cabal.json
-      else
-        echo "all-cabal-hashes" seems to be outdated
-        exit 1
-      fi
-    '';
-  in
-    pkgs.runCommandLocal "cabal-json-files" {}
-    (l.concatStringsSep "\n"
-      (l.map (c: convertOne c.name c.version) candidates));
-
-  /*
-  Converts all cabal files for a given list of candiates to an attrset.
-  access like: ${name}.${version}.${some_cabal_attr}
-  */
-  batchCabalData = candidates: let
-    batchJson = batchCabal2Json candidates;
-  in
-    l.mapAttrs
-    (name: _:
-      l.mapAttrs
-      (version: _: l.fromJSON (l.readFile "${batchJson}/${name}/${version}/cabal.json"))
-      (l.readDir "${batchJson}/${name}"))
-    (l.readDir batchJson);
 }
