@@ -578,6 +578,18 @@ in
       };
     };
 
+    node-gyp = {
+      build = {
+        nativeBuildInputs = [pkgs.makeWrapper];
+        # Teach node-gyp to use nodejs headers locally rather that download them from https://nodejs.org.
+        # TODO inherit the nodejs version from the translator somehow
+        postInstall = ''
+          wrapProgram "$out/bin/node-gyp" \
+            --set npm_config_nodedir ${pkgs.nodejs-16_x}
+        '';
+      };
+    };
+
     node-hid = {
       build = {
         nativeBuildInputs = old:
@@ -642,6 +654,13 @@ in
       };
     };
 
+    sharp = {
+      # TODO inject node-gyp
+      build = {
+        buildInputs = old: old ++ (with pkgs; [vips.dev glib.dev pkg-config]);
+      };
+    };
+
     simple-git-hooks = {
       dont-postinstall = {
         buildScript = "true";
@@ -657,6 +676,20 @@ in
             pkgs.automake
             pkgs.libtool
           ];
+      };
+    };
+
+    sqlite3 = {
+      build = {
+        # See its README for build instructions
+        # It needs different flags for electron, not sure how to do that
+        buildScript = ''
+          node-pre-gyp install --build-from-source --nodedir=$nodeSources --offline --runtime=node --sqlite=${pkgs.sqlite}
+        '';
+        nativeBuildInputs = old: old ++ [pkgs.sqlite];
+        # # TODO overrides should get correct nodejs version
+        # pkgs.nodejs-16_x.pkgs.node-gyp]
+        # ;
       };
     };
 
