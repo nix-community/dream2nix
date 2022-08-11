@@ -75,7 +75,7 @@
 
         <nav id="sidebar" class="sidebar" aria-label="Table of contents">
             <div class="sidebar-scrollbox">
-                <ol class="chapter"><li class="chapter-item expanded "><a href="../intro.html"><strong aria-hidden="true">1.</strong> Introduction</a></li><li class="chapter-item expanded affix "><li class="part-title">Guides</li><li class="chapter-item expanded "><a href="../guides/getting-started-python.html" class="active"><strong aria-hidden="true">2.</strong> Python: getting started in 10 minutes</a></li><li class="chapter-item expanded affix "><li class="part-title">Subsystems</li><li class="chapter-item expanded "><a href="../subsystems/rust.html"><strong aria-hidden="true">3.</strong> Rust</a></li><li class="chapter-item expanded "><a href="../subsystems/python.html"><strong aria-hidden="true">4.</strong> Python</a></li><li class="chapter-item expanded "><a href="../subsystems/haskell.html"><strong aria-hidden="true">5.</strong> Haskell</a></li><li class="chapter-item expanded affix "><li class="part-title">Concept</li><li class="chapter-item expanded "><a href="../intro/architectural-considerations.html"><strong aria-hidden="true">6.</strong> Architectural Considerations</a></li><li class="chapter-item expanded "><a href="../intro/nixpkgs-improvements.html"><strong aria-hidden="true">7.</strong> Nixpkgs improvements</a></li><li class="chapter-item expanded "><a href="../intro/override-system.html"><strong aria-hidden="true">8.</strong> Override system</a></li><li class="chapter-item expanded "><a href="../intro/translators.html"><strong aria-hidden="true">9.</strong> Translators</a></li><li class="chapter-item expanded "><a href="../intro/indexers.html"><strong aria-hidden="true">10.</strong> Indexers</a></li><li class="chapter-item expanded affix "><li class="part-title">Contributing</li><li class="chapter-item expanded "><a href="../extending-dream2nix.html"><strong aria-hidden="true">11.</strong> Extending dream2nix</a></li><li class="chapter-item expanded "><a href="../contributing.html"><strong aria-hidden="true">12.</strong> Contributing</a></li><li class="chapter-item expanded affix "><li class="part-title">Development Roundups</li><li class="chapter-item expanded "><a href="../development-roundups/2022-april-june.html"><strong aria-hidden="true">13.</strong> April - June 2022</a></li></ol>
+                <ol class="chapter"><li class="chapter-item expanded "><a href="../intro.html"><strong aria-hidden="true">1.</strong> Introduction</a></li><li class="chapter-item expanded affix "><li class="part-title">Guides</li><li class="chapter-item expanded "><a href="../guides/getting-started-python.html" class="active"><strong aria-hidden="true">2.</strong> Python: getting started in 10 minutes</a></li><li class="chapter-item expanded "><a href="../guides/getting-started-nodejs.html"><strong aria-hidden="true">3.</strong> Node.js: quickstart</a></li><li class="chapter-item expanded affix "><li class="part-title">Subsystems</li><li class="chapter-item expanded "><a href="../subsystems/rust.html"><strong aria-hidden="true">4.</strong> Rust</a></li><li class="chapter-item expanded "><a href="../subsystems/python.html"><strong aria-hidden="true">5.</strong> Python</a></li><li class="chapter-item expanded "><a href="../subsystems/haskell.html"><strong aria-hidden="true">6.</strong> Haskell</a></li><li class="chapter-item expanded affix "><li class="part-title">Concepts</li><li class="chapter-item expanded "><a href="../intro/architectural-considerations.html"><strong aria-hidden="true">7.</strong> Architectural Considerations</a></li><li class="chapter-item expanded "><a href="../intro/nixpkgs-improvements.html"><strong aria-hidden="true">8.</strong> Nixpkgs improvements</a></li><li class="chapter-item expanded "><a href="../intro/override-system.html"><strong aria-hidden="true">9.</strong> Override system</a></li><li class="chapter-item expanded "><a href="../intro/translators.html"><strong aria-hidden="true">10.</strong> Translators</a></li><li class="chapter-item expanded "><a href="../intro/indexers.html"><strong aria-hidden="true">11.</strong> Indexers</a></li><li class="chapter-item expanded affix "><li class="part-title">Contributing</li><li class="chapter-item expanded "><a href="../extending-dream2nix.html"><strong aria-hidden="true">12.</strong> Extending dream2nix</a></li><li class="chapter-item expanded "><a href="../contributing.html"><strong aria-hidden="true">13.</strong> Contributing</a></li><li class="chapter-item expanded affix "><li class="part-title">Development Roundups</li><li class="chapter-item expanded "><a href="../development-roundups/2022-april-june.html"><strong aria-hidden="true">14.</strong> April - June 2022</a></li></ol>
             </div>
             <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
         </nav>
@@ -155,14 +155,16 @@
 <pre><code class="language-command">&gt; nix flake init -t github:nix-community/dream2nix#simple
 wrote: /tmp/my_project/flake.nix
 </code></pre>
-<p>Great, this created a new file <code>flake.nix</code> which is like a recipe that tells nix how to build our python project or how to assemble a development environment for it.<br />
+<p>Great, this created a new file <code>flake.nix</code> which is like a recipe that tells nix how to build our python project or how to assemble a development environment for it.
 By modifying this file, we can tweak settings and change the way our package gets built by nix. But for now we just go with the defaults.</p>
 <h2 id="define-the-target-platform"><a class="header" href="#define-the-target-platform">Define the target platform</a></h2>
-<p>Before we can start, we need to tell dream2nix which platform we want to build software for. dream2nix will read these platforms from the file <code>./nix_systems</code>. To get started we will jsut add our current platform to it with the following command.</p>
+<p>Before we can start, we need to tell dream2nix which platform we want to build software for.
+Dream2nix will read these platforms from the file <code>./nix_systems</code>.
+To get started we will just add our current platform to it with the following command.</p>
 <pre><code class="language-command">&gt; nix eval --impure --raw --expr 'builtins.currentSystem' &gt; ./nix_systems
 &gt; git add ./nix_systems
 </code></pre>
-<p>Don't forget to add the file <code>./nix_systems</code> to git, otherwise it will be ignored.<br />
+<p>Don't forget to add the file <code>./nix_systems</code> to git, otherwise it will be ignored.
 If you want to support more platforms later, just add more lines to that file.</p>
 <h2 id="list-the-available-packages"><a class="header" href="#list-the-available-packages">List the available packages</a></h2>
 <p>Let's get an overview of what the <code>flake.nix</code> allows us to do with our project.</p>
@@ -180,11 +182,11 @@ git+file:///tmp/my_project
 <p>What we can observe here:</p>
 <ol>
 <li>
-<p><code>warning: Git tree '/tmp/my_project' is dirty</code><br />
+<p><code>warning: Git tree '/tmp/my_project' is dirty</code>
 Nix warns us that the current git repo has uncommited changes. Thats fine, because we like to experiment for now. This warning will go away as soon as we commit our changes.</p>
 </li>
 <li>
-<p><code>warning: creating lock file '/tmp/my_project/flake.lock'</code><br />
+<p><code>warning: creating lock file '/tmp/my_project/flake.lock'</code>
 Our flake.nix imported external libraries. The versions of these libraries have now been locked inside a new file <code>flake.lock</code>. We should later commit this file to the repo, in order to allow others to reproduce our build exactly.</p>
 </li>
 <li>
@@ -195,33 +197,33 @@ Our flake.nix imported external libraries. The versions of these libraries have 
   │       └───resolveImpure: package 'resolve'
   └───projectsJson: unknown
 </code></pre>
-<p>Similar like a .json file defines a structure of data, our flake.nix defines a structure of <code>nix attributes</code> which are things that we can build or run with nix.<br />
+<p>Similar like a .json file defines a structure of data, our flake.nix defines a structure of <code>nix attributes</code> which are things that we can build or run with nix.
 We can see that it contains packages for my current platform <code>x86_64-linux</code>.</p>
-<p>The packages which we can see here is my python package and a package called<code>resolveImpure</code>, which is a special package provided by dream2nix which we will learn more about later.</p>
+<p>The packages which we can see here is my python package and a package called <code>resolveImpure</code>, which is a special package provided by dream2nix which we will learn more about later.</p>
 </li>
 </ol>
 <h2 id="build-the-project"><a class="header" href="#build-the-project">Build the Project</a></h2>
 <p>Let's try building our project.
 If you get an error about <code>unresolved impurities</code>, see <a href="#resolve-impurities">Resolve Impurities</a></p>
-<pre><code>nix build .#default
+<pre><code class="language-command">&gt; nix build .#default
 </code></pre>
 <p>Congratulations, your build artifacts will now be accessible via the <code>./result</code> directory. If your project contains executables, you can run these via <code>./result/bin/executable-name</code>.
 If you want to develop on your python project, see <a href="#create-a-development-shell">Create a development shell</a></p>
 <h2 id="create-a-development-shell"><a class="header" href="#create-a-development-shell">Create a development shell</a></h2>
 <p>Nix can provide you with a development shell containing all your project's dependencies.
 First, ensure that your project <a href="#resolve-impurities">is resolved</a>, then execute the following command.</p>
-<pre><code class="language-command">nix develop -c $SHELL
+<pre><code class="language-command">&gt; nix develop -c $SHELL
 </code></pre>
 <p>The <code>-c $SHELL</code> part is only necessary if you use a different shell than bash and would like to bring that shell with you into the dev environment.</p>
 <h2 id="resolve-impurities"><a class="header" href="#resolve-impurities">Resolve Impurities</a></h2>
 <p>If you try to build, you might run into the following error.</p>
-<pre><code>&gt; nix build .#default
+<pre><code class="language-command">&gt; nix build .#default
 error: The python package main contains unresolved impurities.
        Resolve by running the .resolve attribute of this derivation
        or by resolving all impure projects by running the `resolveImpure` package
 </code></pre>
 <p>Oops. It seems like our project does not contain enough information for dream2nix to construct a reproducible build. But this is not a problem as we can fix this by using the <code>resolveImpure</code> package that dream2nix provides.</p>
-<pre><code class="language-command">nix run .#resolveImpure
+<pre><code class="language-command">&gt; nix run .#resolveImpure
 ...
 adding file to git: dream2nix-packages/main/dream-lock.json
 </code></pre>
@@ -235,7 +237,7 @@ adding file to git: dream2nix-packages/main/dream-lock.json
                             <a rel="prev" href="../intro.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                                 <i class="fa fa-angle-left"></i>
                             </a>
-                            <a rel="next" href="../subsystems/rust.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                            <a rel="next" href="../guides/getting-started-nodejs.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                                 <i class="fa fa-angle-right"></i>
                             </a>
                         <div style="clear: both"></div>
@@ -247,7 +249,7 @@ adding file to git: dream2nix-packages/main/dream-lock.json
                     <a rel="prev" href="../intro.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                         <i class="fa fa-angle-left"></i>
                     </a>
-                    <a rel="next" href="../subsystems/rust.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                    <a rel="next" href="../guides/getting-started-nodejs.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                         <i class="fa fa-angle-right"></i>
                     </a>
             </nav>

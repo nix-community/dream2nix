@@ -76,7 +76,7 @@
 
         <nav id="sidebar" class="sidebar" aria-label="Table of contents">
             <div class="sidebar-scrollbox">
-                <ol class="chapter"><li class="chapter-item expanded "><a href="intro.html"><strong aria-hidden="true">1.</strong> Introduction</a></li><li class="chapter-item expanded affix "><li class="part-title">Guides</li><li class="chapter-item expanded "><a href="guides/getting-started-python.html"><strong aria-hidden="true">2.</strong> Python: getting started in 10 minutes</a></li><li class="chapter-item expanded affix "><li class="part-title">Subsystems</li><li class="chapter-item expanded "><a href="subsystems/rust.html"><strong aria-hidden="true">3.</strong> Rust</a></li><li class="chapter-item expanded "><a href="subsystems/python.html"><strong aria-hidden="true">4.</strong> Python</a></li><li class="chapter-item expanded "><a href="subsystems/haskell.html"><strong aria-hidden="true">5.</strong> Haskell</a></li><li class="chapter-item expanded affix "><li class="part-title">Concept</li><li class="chapter-item expanded "><a href="intro/architectural-considerations.html"><strong aria-hidden="true">6.</strong> Architectural Considerations</a></li><li class="chapter-item expanded "><a href="intro/nixpkgs-improvements.html"><strong aria-hidden="true">7.</strong> Nixpkgs improvements</a></li><li class="chapter-item expanded "><a href="intro/override-system.html"><strong aria-hidden="true">8.</strong> Override system</a></li><li class="chapter-item expanded "><a href="intro/translators.html"><strong aria-hidden="true">9.</strong> Translators</a></li><li class="chapter-item expanded "><a href="intro/indexers.html"><strong aria-hidden="true">10.</strong> Indexers</a></li><li class="chapter-item expanded affix "><li class="part-title">Contributing</li><li class="chapter-item expanded "><a href="extending-dream2nix.html"><strong aria-hidden="true">11.</strong> Extending dream2nix</a></li><li class="chapter-item expanded "><a href="contributing.html"><strong aria-hidden="true">12.</strong> Contributing</a></li><li class="chapter-item expanded affix "><li class="part-title">Development Roundups</li><li class="chapter-item expanded "><a href="development-roundups/2022-april-june.html"><strong aria-hidden="true">13.</strong> April - June 2022</a></li></ol>
+                <ol class="chapter"><li class="chapter-item expanded "><a href="intro.html"><strong aria-hidden="true">1.</strong> Introduction</a></li><li class="chapter-item expanded affix "><li class="part-title">Guides</li><li class="chapter-item expanded "><a href="guides/getting-started-python.html"><strong aria-hidden="true">2.</strong> Python: getting started in 10 minutes</a></li><li class="chapter-item expanded "><a href="guides/getting-started-nodejs.html"><strong aria-hidden="true">3.</strong> Node.js: quickstart</a></li><li class="chapter-item expanded affix "><li class="part-title">Subsystems</li><li class="chapter-item expanded "><a href="subsystems/rust.html"><strong aria-hidden="true">4.</strong> Rust</a></li><li class="chapter-item expanded "><a href="subsystems/python.html"><strong aria-hidden="true">5.</strong> Python</a></li><li class="chapter-item expanded "><a href="subsystems/haskell.html"><strong aria-hidden="true">6.</strong> Haskell</a></li><li class="chapter-item expanded affix "><li class="part-title">Concepts</li><li class="chapter-item expanded "><a href="intro/architectural-considerations.html"><strong aria-hidden="true">7.</strong> Architectural Considerations</a></li><li class="chapter-item expanded "><a href="intro/nixpkgs-improvements.html"><strong aria-hidden="true">8.</strong> Nixpkgs improvements</a></li><li class="chapter-item expanded "><a href="intro/override-system.html"><strong aria-hidden="true">9.</strong> Override system</a></li><li class="chapter-item expanded "><a href="intro/translators.html"><strong aria-hidden="true">10.</strong> Translators</a></li><li class="chapter-item expanded "><a href="intro/indexers.html"><strong aria-hidden="true">11.</strong> Indexers</a></li><li class="chapter-item expanded affix "><li class="part-title">Contributing</li><li class="chapter-item expanded "><a href="extending-dream2nix.html"><strong aria-hidden="true">12.</strong> Extending dream2nix</a></li><li class="chapter-item expanded "><a href="contributing.html"><strong aria-hidden="true">13.</strong> Contributing</a></li><li class="chapter-item expanded affix "><li class="part-title">Development Roundups</li><li class="chapter-item expanded "><a href="development-roundups/2022-april-june.html"><strong aria-hidden="true">14.</strong> April - June 2022</a></li></ol>
             </div>
             <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
         </nav>
@@ -180,14 +180,16 @@
 <pre><code class="language-command">&gt; nix flake init -t github:nix-community/dream2nix#simple
 wrote: /tmp/my_project/flake.nix
 </code></pre>
-<p>Great, this created a new file <code>flake.nix</code> which is like a recipe that tells nix how to build our python project or how to assemble a development environment for it.<br />
+<p>Great, this created a new file <code>flake.nix</code> which is like a recipe that tells nix how to build our python project or how to assemble a development environment for it.
 By modifying this file, we can tweak settings and change the way our package gets built by nix. But for now we just go with the defaults.</p>
 <h2 id="define-the-target-platform"><a class="header" href="#define-the-target-platform">Define the target platform</a></h2>
-<p>Before we can start, we need to tell dream2nix which platform we want to build software for. dream2nix will read these platforms from the file <code>./nix_systems</code>. To get started we will jsut add our current platform to it with the following command.</p>
+<p>Before we can start, we need to tell dream2nix which platform we want to build software for.
+Dream2nix will read these platforms from the file <code>./nix_systems</code>.
+To get started we will just add our current platform to it with the following command.</p>
 <pre><code class="language-command">&gt; nix eval --impure --raw --expr 'builtins.currentSystem' &gt; ./nix_systems
 &gt; git add ./nix_systems
 </code></pre>
-<p>Don't forget to add the file <code>./nix_systems</code> to git, otherwise it will be ignored.<br />
+<p>Don't forget to add the file <code>./nix_systems</code> to git, otherwise it will be ignored.
 If you want to support more platforms later, just add more lines to that file.</p>
 <h2 id="list-the-available-packages"><a class="header" href="#list-the-available-packages">List the available packages</a></h2>
 <p>Let's get an overview of what the <code>flake.nix</code> allows us to do with our project.</p>
@@ -205,11 +207,11 @@ git+file:///tmp/my_project
 <p>What we can observe here:</p>
 <ol>
 <li>
-<p><code>warning: Git tree '/tmp/my_project' is dirty</code><br />
+<p><code>warning: Git tree '/tmp/my_project' is dirty</code>
 Nix warns us that the current git repo has uncommited changes. Thats fine, because we like to experiment for now. This warning will go away as soon as we commit our changes.</p>
 </li>
 <li>
-<p><code>warning: creating lock file '/tmp/my_project/flake.lock'</code><br />
+<p><code>warning: creating lock file '/tmp/my_project/flake.lock'</code>
 Our flake.nix imported external libraries. The versions of these libraries have now been locked inside a new file <code>flake.lock</code>. We should later commit this file to the repo, in order to allow others to reproduce our build exactly.</p>
 </li>
 <li>
@@ -220,38 +222,293 @@ Our flake.nix imported external libraries. The versions of these libraries have 
   │       └───resolveImpure: package 'resolve'
   └───projectsJson: unknown
 </code></pre>
-<p>Similar like a .json file defines a structure of data, our flake.nix defines a structure of <code>nix attributes</code> which are things that we can build or run with nix.<br />
+<p>Similar like a .json file defines a structure of data, our flake.nix defines a structure of <code>nix attributes</code> which are things that we can build or run with nix.
 We can see that it contains packages for my current platform <code>x86_64-linux</code>.</p>
-<p>The packages which we can see here is my python package and a package called<code>resolveImpure</code>, which is a special package provided by dream2nix which we will learn more about later.</p>
+<p>The packages which we can see here is my python package and a package called <code>resolveImpure</code>, which is a special package provided by dream2nix which we will learn more about later.</p>
 </li>
 </ol>
 <h2 id="build-the-project"><a class="header" href="#build-the-project">Build the Project</a></h2>
 <p>Let's try building our project.
 If you get an error about <code>unresolved impurities</code>, see <a href="guides/getting-started-python.html#resolve-impurities">Resolve Impurities</a></p>
-<pre><code>nix build .#default
+<pre><code class="language-command">&gt; nix build .#default
 </code></pre>
 <p>Congratulations, your build artifacts will now be accessible via the <code>./result</code> directory. If your project contains executables, you can run these via <code>./result/bin/executable-name</code>.
 If you want to develop on your python project, see <a href="guides/getting-started-python.html#create-a-development-shell">Create a development shell</a></p>
 <h2 id="create-a-development-shell"><a class="header" href="#create-a-development-shell">Create a development shell</a></h2>
 <p>Nix can provide you with a development shell containing all your project's dependencies.
 First, ensure that your project <a href="guides/getting-started-python.html#resolve-impurities">is resolved</a>, then execute the following command.</p>
-<pre><code class="language-command">nix develop -c $SHELL
+<pre><code class="language-command">&gt; nix develop -c $SHELL
 </code></pre>
 <p>The <code>-c $SHELL</code> part is only necessary if you use a different shell than bash and would like to bring that shell with you into the dev environment.</p>
 <h2 id="resolve-impurities"><a class="header" href="#resolve-impurities">Resolve Impurities</a></h2>
 <p>If you try to build, you might run into the following error.</p>
-<pre><code>&gt; nix build .#default
+<pre><code class="language-command">&gt; nix build .#default
 error: The python package main contains unresolved impurities.
        Resolve by running the .resolve attribute of this derivation
        or by resolving all impure projects by running the `resolveImpure` package
 </code></pre>
 <p>Oops. It seems like our project does not contain enough information for dream2nix to construct a reproducible build. But this is not a problem as we can fix this by using the <code>resolveImpure</code> package that dream2nix provides.</p>
-<pre><code class="language-command">nix run .#resolveImpure
+<pre><code class="language-command">&gt; nix run .#resolveImpure
 ...
 adding file to git: dream2nix-packages/main/dream-lock.json
 </code></pre>
 <p>Fine, that created a new file <code>dream-lock.json</code> which is a lock file specifically for our python project. If we later add any dependencies, we will have to re-run <code>resolveImpure</code> to update this lock file.</p>
 <p>Now everything should be ready to <a href="guides/getting-started-python.html#build-the-project">Build the Project</a></p>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="build-your-nodejs-project-with-nix-in-10-minutes-or-less"><a class="header" href="#build-your-nodejs-project-with-nix-in-10-minutes-or-less">Build your nodejs project with nix in 10 minutes or less</a></h1>
+<p>!!! Warning: dream2nix is unstable software. While simple UX is one of our main focus points, the APIs  are still under development. Do expect changes that will break your setup.</p>
+<p>This guide takes you step-by-step through setting up a nodejs
+reproducible build and development environment using nix (the build
+system) and dream2nix (bridge between external package managers and nix).</p>
+<p>This setup will allow for the same environment to be reproduced on
+different machines and CI systems with high accuracy - thus avoiding
+many pitfalls of distributed software development.</p>
+<h2 id="outline"><a class="header" href="#outline">Outline</a></h2>
+<ol start="0">
+<li>Install nix with flakes enabled</li>
+<li>Navigate to your nodejs project</li>
+<li>Initialize the dream2nix flake</li>
+<li>Define target platform(s)</li>
+<li>Explore the outputs</li>
+<li>Build the project</li>
+<li>Development shell</li>
+<li>FAQ</li>
+</ol>
+<h2 id="install-nix-1"><a class="header" href="#install-nix-1">Install nix</a></h2>
+<p>If you don't have nix already, check out <a href="https://nixos.org/download.html">nixos.org/download.html</a> on how to install it.</p>
+<h2 id="enable-the-nix-flakes-feature-1"><a class="header" href="#enable-the-nix-flakes-feature-1">Enable the nix flakes feature</a></h2>
+<p>For internal dependency management dream2nix requires the experimental nix feature <code>flakes</code> being enabled.</p>
+<pre><code>export NIX_CONFIG=&quot;extras-experimental-features = flakes nix-command&quot;
+</code></pre>
+<p>If you find yourself using dream2nix regularly, you can permanently save these settings by adding the following line to your <code>/etc/nix/nix.conf</code>:</p>
+<pre><code>experimental-features = flakes nix-command
+</code></pre>
+<h2 id="navigate-to-your-nodejs-project"><a class="header" href="#navigate-to-your-nodejs-project">Navigate to your nodejs project</a></h2>
+<p>For this guide we will use the fun
+<a href="https://github.com/piuccio/cowsay"><code>cowsay</code></a> nodejs project.
+It is simply a talking cow for your console. This project is a nodejs
+port from the original perl version.
+Feel free to use any other project, if you do and hit a roadblock,
+please consult the <a href="guides/getting-started-nodejs.html#FAQ">FAQ</a> at the end of this article for solutions
+to some common issues.</p>
+<p>We start by cloning the project:</p>
+<pre><code class="language-command">&gt; git clone https://github.com/piuccio/cowsay /tmp/my_project
+&gt; cd ./my_project
+</code></pre>
+<h2 id="initialize-the-dream2nix-flake"><a class="header" href="#initialize-the-dream2nix-flake">Initialize the dream2nix flake</a></h2>
+<p>We have our repository cloned and ready. Now we will create the flake.</p>
+<p>The flake is a standalone description of the project, it will define the
+inputs and outputs of our project, the build steps - in this case
+handled by dream2nix, and the development environment.
+The flake is a fully standalone and complete configuration for nix to
+build a software package.</p>
+<p>We use a dream2nix flake template:</p>
+<pre><code class="language-command">&gt; nix flake init -t github:nix-community/dream2nix#simple
+wrote: /tmp/my_project/flake.nix
+</code></pre>
+<p>to create a <code>flake.nix</code>:</p>
+<pre><code class="language-nix">{
+  inputs.dream2nix.url = &quot;github:nix-community/dream2nix&quot;;
+  outputs = inp:
+    inp.dream2nix.lib.makeFlakeOutputs {
+      systemsFromFile = ./nix_systems;
+      config.projectRoot = ./.;
+      source = ./.;
+    };
+}
+</code></pre>
+<p>This file configures our build and development environment using the
+dream2nix framework to bridge the nodejs ecosystem into nix. This let's
+nix read and understand <code>package.json</code> and how to install and link
+nodejs packages - to avoid duplication of dependency definitions and
+build steps.</p>
+<h2 id="define-the-target-platforms"><a class="header" href="#define-the-target-platforms">Define the target platform(s)</a></h2>
+<p>We have the flake setup, now we need to define the supported systems,
+this is necessary because nix can do multi platform and cross-platform
+builds so we need to tell it what can be built and where.</p>
+<pre><code class="language-command">&gt; nix eval --impure --raw --expr 'builtins.currentSystem' &gt; ./nix_systems
+&gt; git add ./nix_systems
+</code></pre>
+<p>Remember to add the file <code>./nix_systems</code> to git, or it will be ignored.
+If you want to support more platforms later,
+just add more lines to that file.</p>
+<h2 id="explore-the-outputs"><a class="header" href="#explore-the-outputs">Explore the outputs</a></h2>
+<p>We have setup the flake, defined our target system(s), now we are ready
+to use it. Let's start by listing out what is available to us (actual
+output may be different, this is a shortened version):</p>
+<pre><code class="language-command">&gt; nix flake show
+warning: Git tree '/tmp/my_project' is dirty
+warning: creating lock file '/tmp/my_project/flake.lock'
+warning: Git tree '/tmp/my_project' is dirty
+git+file:///tmp/my_project
+├───devShell
+│   └───x86_64-linux: development environment 'nix-shell'
+├───devShells
+│   └───x86_64-linux
+│       ├───cowsay: development environment 'nix-shell'
+│       └───default: development environment 'nix-shell'
+├───packages
+│   └───x86_64-linux
+│       ├───cowsay: package 'cowsay-1.5.0'
+│       ├───default: package 'cowsay-1.5.0'
+│       └───resolveImpure: package 'resolve'
+└───projectsJson: unknown
+</code></pre>
+<p>We can see that:</p>
+<ol>
+<li><code>warning: Git tree '/tmp/my_project' is dirty</code>
+Our repository has uncommitted changes.
+Nix uses git commit hashes to version build artifacts,
+so this can result in some extra rebuilds.
+Since we are just setting up the project now, this is alright.</li>
+<li><code>warning: creating lock file '/tmp/my_project/flake.lock'</code>
+Our flake itself has an input (external dependency), the <code>dream2nix</code>
+framework. When we first use the flake, like we just did, nix created a
+lock file with the exact version of the input (and its inputs). Commit
+this file to version control to ensure reproducible builds.</li>
+<li>Finally, we see the outputs of our flake.
+We see it outputs <code>packages</code> for the <code>x86_64-linux</code> systems:
+the <code>cowsay</code> package (our nodejs project) and a <code>resolveImpure</code> package
+(more about that in the next section). It also sets out <code>cowsay</code> package
+as the <code>default</code> package of this flake.</li>
+</ol>
+<h2 id="build-the-project-1"><a class="header" href="#build-the-project-1">Build the project</a></h2>
+<p>We have setup our flake for the nodejs project and identified the
+output we want to build.</p>
+<p>To build the output, we run:</p>
+<pre><code class="language-command">&gt; nix build .#cowsay
+</code></pre>
+<p>(The <code>.</code> means the flake in the current directory, <code>#</code> is a special
+character separating the flake name and the package name, and <code>cowsay</code> is
+the name of the package we want to build. Since we want to <code>build</code>, nix
+will look under <code>packages</code> first, and it knows our current platform
+(<code>x86_64-linux</code> in this case), so it will actually build the output
+<code>.#packages.x86_64-linux.cowsay</code>.)</p>
+<p>Since, <code>cowsay</code> is the <code>default</code> package, we could also simply run:</p>
+<pre><code class="language-command">&gt; nix build
+</code></pre>
+<p>To build the <code>.#packages.x86_64-linux.default</code> output. (In our case
+these are the same.)</p>
+<p>This creates our <code>./result</code> directory with all our final build
+artifacts.</p>
+<pre><code class="language-command">&gt; ./result/bin/cowsay 'hello dream2nix'
+ _________________
+&lt; hello dream2nix &gt;
+ -----------------
+        \   ^__^
+         \  (oo)\_______
+            (__)\       )\/\
+                ||----w |
+                ||     ||
+</code></pre>
+<p>Nix was able to build this project, because it has a <code>package-lock.json</code>
+file pinning the exact dependency versions. If we did not have this
+file, the <code>nix build</code> would fail with <code>error: unresolved impurities</code>.</p>
+<pre><code class="language-command">&gt; git rm package-lock.json
+&gt; nix build .#cowsay
+warning: Git tree '/tmp/my_project' is dirty
+error: The nodejs package cowsay contains unresolved impurities.
+       Resolve by running the .resolve attribute of this derivation
+       or by resolving all impure projects by running the `resolveImpure` package
+</code></pre>
+<p>We can fix this by generating a language specific lockfile
+(<code>package-lock.json</code> or <code>yarn.lock</code> for nodejs), or let dream2nix
+generate a universal <code>dream-lock.json</code>.</p>
+<pre><code class="language-command">&gt; nix run .#resolveImpure
+warning: Git tree '/tmp/my_project' is dirty
+Resolving:: Name: cowsay; Subsystem: nodejs; relPath:
+translating in temp dir: /tmp/tmp.SwBFt0WcH4
+
+up to date, audited 172 packages in 9s
+
+57 packages are looking for funding
+  run `npm fund` for details
+
+3 high severity vulnerabilities
+
+To address all issues (including breaking changes), run:
+  npm audit fix --force
+
+Run `npm audit` for details.
+===[SUCCESS]===(dream2nix-packages/cowsay/dream-lock.json)===
+adding file to git: dream2nix-packages/cowsay/dream-lock.json
+</code></pre>
+<p>This runs <code>npm</code> behind the scenes and resolves dependencies for all
+packages inside the flake.</p>
+<p>There is no difference between using an external lockfile or
+<code>dream-lock.json</code>, all they do is pin dependency version and are
+completely interchangeable.</p>
+<h2 id="development-shell"><a class="header" href="#development-shell">Development shell</a></h2>
+<p>We were able to build our nodejs project with nix, however our build
+artifacts under <code>./result</code> are read-only and we do not have <code>node</code> and
+<code>npm</code> in <code>PATH</code>. To be able to work in this project we will need those.</p>
+<p>Nix provides us with <code>devShells</code> for exactly this.</p>
+<pre><code class="language-command">&gt; nix flake show
+warning: Git tree '/tmp/my_project' is dirty
+warning: creating lock file '/tmp/my_project/flake.lock'
+warning: Git tree '/tmp/my_project' is dirty
+git+file:///tmp/my_project
+├───devShell
+│   └───x86_64-linux: development environment 'nix-shell'
+├───devShells
+│   └───x86_64-linux
+│       ├───cowsay: development environment 'nix-shell'
+│       └───default: development environment 'nix-shell'
+├───packages
+│   └───x86_64-linux
+│       ├───cowsay: package 'cowsay-1.5.0'
+│       ├───default: package 'cowsay-1.5.0'
+│       └───resolveImpure: package 'resolve'
+└───projectsJson: unknown
+</code></pre>
+<p>When we enter the <code>cowsay</code> development shell, we will get <code>node</code> in our
+<code>PATH</code>, together with all the binaries from our dependencies packages.
+And nix will copy over <code>node_modules</code> for us to save us from having to
+<code>npm install</code> everything over again.
+To get in the shell, simply run:</p>
+<pre><code class="language-command">&gt; nix develop -c $SHELL
+</code></pre>
+<p>(The <code>-c $SHELL</code> part is only necessary if you use a different shell than bash
+and would like to bring that shell with you into the dev environment.)</p>
+<p>From here on it's the same as using a normal installation of nodejs.
+However, if we do imperative changes to <code>node_modules</code> and later
+re-enter the nix development shell, nix will overwrite the
+<code>node_modules</code> with the pinned versions of the dependencies from our
+lockfile.</p>
+<h2 id="faq"><a class="header" href="#faq">FAQ</a></h2>
+<blockquote>
+<p>Refusing to overwrite existing file on <code>flake init</code>.
+When initializing a flake it needs to write some files, if these already
+exists, the initialization will fail. Since our repository is under
+version control, we can delete the conflicting files, let <code>flake init</code>
+create them and then check the diff and merge the changes manually.</p>
+</blockquote>
+<blockquote>
+<p>Getting status of <code>flake.nix</code>: no such file or directory.
+The flake build does not happen inside the directory. Nix copies your
+repository to a temporary location and builds there; only files under
+version control are used. To resolve this run <code>git add flake.nix</code> and
+all other missing files.</p>
+</blockquote>
+<blockquote>
+<p>warning: Git tree is dirty
+This is just a warning, nix is using the git revision for build artifact
+versioning. Having a dirty git tree - meaning uncommitted changes - can
+lead to some extra rebuilds, for simple projects this should not be a
+major concern.</p>
+</blockquote>
+<blockquote>
+<p>error: The package contains unresolved impurities. Resolve all impure
+projects by running the <code>resolveImpure</code> package.
+This happens when dream2nix cannot resolve exact package versions. We
+can define a dependency like <code>something@^2.1</code>, but it is not obvious if
+we actually want <code>2.1.1</code> or <code>2.1.2</code> or maybe <code>2.1.1-alpha</code>.
+There are 2 ways to resolve this error: either by running
+<code>nix run .#resolveImpure</code> and letting dream2nix resolve the most
+up-to-date versions of all dependencies, or using an external package
+manager to generate a lock file, which can be later read by dream2nix.
+(In case of Node.js, both <code>package-lock.json</code> and <code>yarn.lock</code> are
+supported.)</p>
+</blockquote>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="rust-subsystem"><a class="header" href="#rust-subsystem">Rust subsystem</a></h1>
 <p>This section documents the Rust subsystem.</p>
 <h2 id="translators"><a class="header" href="#translators">Translators</a></h2>
