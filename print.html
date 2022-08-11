@@ -683,7 +683,7 @@ in
 <p>This translator simply executes <code>pip download</code> on the given source and observes which sources are downloaded by pip.
 The downside of this approach is, that this translator cannot be used with a granular builder. It does not understand the exact relation between the dependencies, and therefore it only allows to build all dependencies in one large derivation.</p>
 <h4 id="pip-optional-translator-arguments"><a class="header" href="#pip-optional-translator-arguments"><strong>pip</strong> optional translator arguments</a></h4>
-<pre><code>{
+<pre><code class="language-nix">{
   pythonAttr = {
     description = &quot;python version to translate for&quot;;
     default = &quot;python3&quot;;
@@ -892,7 +892,7 @@ Poetry uses <code>pyproject.toml</code> and <code>poetry.lock</code> to lock dep
 <li>Input: pyproject.toml, poetry.lock (toml)</li>
 <li>Translator: written in pure nix, reading the toml input and generating the generic lock format</li>
 <li>Generic Lock (for explanatory purposes dumped to json and commented):
-<pre><code class="language-json5">{
+<pre><code class="language-json">{
   // generic lock format version
   &quot;version&quot;: 1,
 
@@ -1200,7 +1200,7 @@ For extending, you need to utilize the <code>config.extra</code> option of the d
 }
 </code></pre>
 <p>this file should look like this:</p>
-<pre><code class="language-nix">{dlib, lib, config, ...}:
+<pre><code class="language-nix">{ dlib, lib, config, ... }:
 {
   subsystems.rust.translators.example-translator = ./rust-translator.nix;
   # you can declare modules using functions here
@@ -1289,7 +1289,7 @@ Unit tests can be executed via <code>nix run .#tests-unit</code></p>
 <h3 id="tested-example-flake"><a class="header" href="#tested-example-flake">Tested example flake</a></h3>
 <p>Add an example flake under <code>./examples/name-of-example</code>.
 The flake can be tested via:</p>
-<pre><code class="language-command">nix run .#tests-examples name-of-example --show-trace
+<pre><code class="language-shell">nix run .#tests-examples name-of-example --show-trace
 </code></pre>
 <p>The flake will be tested in the CI-pipeline as well.</p>
 <hr />
@@ -1303,7 +1303,7 @@ The flake can be tested via:</p>
 <h3 id="tested-example-flake-1"><a class="header" href="#tested-example-flake-1">Tested example flake</a></h3>
 <p>Add an example flake under <code>./examples/name-of-example</code>.
 The flake can be tested via:</p>
-<pre><code class="language-command">nix run .#tests-examples name-of-example --show-trace
+<pre><code class="language-shell">nix run .#tests-examples name-of-example --show-trace
 </code></pre>
 <p>The flake will be tested in the CI-pipeline as well.</p>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="development-roundup-april---june-2022"><a class="header" href="#development-roundup-april---june-2022">Development Roundup April - June 2022</a></h1>

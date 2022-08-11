@@ -145,7 +145,7 @@ For extending, you need to utilize the <code>config.extra</code> option of the d
 }
 </code></pre>
 <p>this file should look like this:</p>
-<pre><code class="language-nix">{dlib, lib, config, ...}:
+<pre><code class="language-nix">{ dlib, lib, config, ... }:
 {
   subsystems.rust.translators.example-translator = ./rust-translator.nix;
   # you can declare modules using functions here

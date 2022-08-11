@@ -174,7 +174,7 @@
 <p>This translator simply executes <code>pip download</code> on the given source and observes which sources are downloaded by pip.
 The downside of this approach is, that this translator cannot be used with a granular builder. It does not understand the exact relation between the dependencies, and therefore it only allows to build all dependencies in one large derivation.</p>
 <h4 id="pip-optional-translator-arguments"><a class="header" href="#pip-optional-translator-arguments"><strong>pip</strong> optional translator arguments</a></h4>
-<pre><code>{
+<pre><code class="language-nix">{
   pythonAttr = {
     description = &quot;python version to translate for&quot;;
     default = &quot;python3&quot;;
