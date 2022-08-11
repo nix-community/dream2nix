@@ -266,7 +266,7 @@
             then
               if lib.hasInfix "@link:" rawObj.yarnName
               then
-                dlib.contruct.pathSource {
+                dlib.construct.pathSource {
                   path =
                     lib.last (lib.splitString "@link:" rawObj.yarnName);
                   rootName = project.name;
