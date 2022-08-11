@@ -250,6 +250,7 @@ in let
     builder,
     builderArgs,
     fetchedSources,
+    sourceRoot,
     dreamLock,
     inject,
     sourceOverrides,
@@ -274,6 +275,7 @@ in let
         inherit
           produceDerivation
           dreamLock
+          sourceRoot
           ;
 
         inherit
@@ -369,6 +371,7 @@ in let
         fetchedSources
         allOutputs
         sourceOverrides
+        sourceRoot
         ;
 
       builder = builder';
