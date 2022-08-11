@@ -274,7 +274,7 @@
                 }
               else if lib.hasInfix "@file:" rawObj.yarnName
               then
-                dlib.contruct.pathSource {
+                dlib.construct.pathSource {
                   path =
                     lib.last (lib.splitString "@file:" rawObj.yarnName);
                   rootName = project.name;
