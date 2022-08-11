@@ -1,0 +1,11 @@
+{
+  "name": "test",
+  "version": "1.0.0",
+  "scripts": {
+    "get-version": "svgo --version > VERSION"
+  },
+  "devDependencies": {
+    "svgo": "2.8.0",
+    "cssnano": "4.1.10"
+  }
+}
