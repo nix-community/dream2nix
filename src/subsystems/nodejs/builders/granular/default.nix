@@ -264,6 +264,9 @@
         # script to install (symlink or copy) dependencies.
         installDeps = "${./install-deps.py}";
 
+        # python script to link bin entries from package.json
+        linkBins = "${./link-bins.py}";
+
         # costs performance and doesn't seem beneficial in most scenarios
         dontStrip = true;
 
@@ -464,6 +467,9 @@
         # Symlinks executables and manual pages to correct directories
         installPhase = ''
           runHook preInstall
+
+          echo "Symlinking bin entries from package.json"
+          python $linkBins
 
           echo "Symlinking manual pages"
           if [ -d "$nodeModules/$packageName/man" ]
