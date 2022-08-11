@@ -9,7 +9,7 @@
   lock,
   source,
 }:
-assert lock.lockfileVersion == 2; let
+assert (lib.elem lock.lockfileVersion [2 3]); let
   b = builtins;
   # { "node_modules/@foo/bar/node_modules/meep": pkg; ... }
   pkgs = lock.packages;
