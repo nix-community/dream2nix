@@ -112,7 +112,7 @@
       local ver
       ver="v$(cat $electronDist/version | tr -d '\n')"
       mkdir $TMP/$ver
-      cp $electronHeaders $TMP/$ver/node-$ver-headers.tar.gz
+      cp --no-preserve=mode $electronHeaders $TMP/$ver/node-$ver-headers.tar.gz
 
       # calc checksums
       cd $TMP/$ver
@@ -123,18 +123,11 @@
       python -m http.server 45034 --directory $TMP &
 
       # copy electron distribution
-      cp -r $electronDist $TMP/electron
-      chmod -R +w $TMP/electron
+      cp -r --no-preserve=mode $electronDist $TMP/electron
 
       # configure electron toolchain
-      ${pkgs.jq}/bin/jq ".build.electronDist = \"$TMP/electron\"" package.json \
-          | ${pkgs.moreutils}/bin/sponge package.json
-
-      ${pkgs.jq}/bin/jq ".build.linux.target = \"dir\"" package.json \
-          | ${pkgs.moreutils}/bin/sponge package.json
-
-      ${pkgs.jq}/bin/jq ".build.npmRebuild = false" package.json \
-          | ${pkgs.moreutils}/bin/sponge package.json
+      jq ".build.electronDist = \"$TMP/electron\" | .build.linux.target = \"dir\" | .build.npmRebuild = false" package.json > package.json.tmp
+      mv package.json.tmp package.json
 
       # execute electron-rebuild if available
       export headers=http://localhost:45034/
@@ -148,22 +141,10 @@
 
     # Only executed for electron based packages.
     # Creates an executable script under /bin starting the electron app
-    electron-wrap =
+    electronBin =
       if pkgs.stdenv.isLinux
-      then ''
-        mkdir -p $out/bin
-        makeWrapper \
-          $electronDist/electron \
-          $out/bin/$(basename "$packageName") \
-          --add-flags "$(realpath $electronAppDir)"
-      ''
-      else ''
-        mkdir -p $out/bin
-        makeWrapper \
-          $electronDist/Electron.app/Contents/MacOS/Electron \
-          $out/bin/$(basename "$packageName") \
-          --add-flags "$(realpath $electronAppDir)"
-      '';
+      then "$electronDist/electron"
+      else "$electronDist/Electron.app/Contents/MacOS/Electron";
 
     # Generates a derivation for a specific package name + version
     makePackage = name: version: let
@@ -290,25 +271,17 @@
                 continue
               fi
               echo "copying $f"
-              chmod +wx $(dirname "$f")
-              mv "$f" "$f.bak"
-              mkdir "$f"
-              if [ -n "$(ls -A "$f.bak/")" ]; then
-                cp -r "$f.bak"/* "$f/"
-                chmod -R +w $f
-              fi
-              rm "$f.bak"
+              l=$(readlink -f $f)
+              rm -f "$f"
+              cp -r --no-preserve=mode "$l" "$f"
             done
           }
         '';
 
-        # TODO: upstream fix to nixpkgs
+        # https://github.com/NixOS/nixpkgs/pull/50961#issuecomment-449638192
         # example which requires this:
         #   https://registry.npmjs.org/react-window-infinite-loader/-/react-window-infinite-loader-1.0.7.tgz
-        unpackCmd =
-          if lib.hasSuffix ".tgz" src
-          then "tar --delay-directory-restore -xf $src"
-          else null;
+        TAR_OPTIONS = "--delay-directory-restore";
 
         unpackPhase = ''
           runHook preUnpack
@@ -336,9 +309,8 @@
               # Figure out what directory has been unpacked
               export packageDir="$(find . -maxdepth 1 -type d | tail -1)"
 
-              # Restore write permissions
-              find "$packageDir" -type d -exec chmod u+x {} \;
-              chmod -R u+w -- "$packageDir"
+              # Ensure write + directory execute permissions
+              chmod -R u+w,a+X -- "$packageDir"
 
               # Move the extracted tarball into the output folder
               mv -- "$packageDir" "$sourceRoot"
@@ -346,8 +318,8 @@
           then
               export strippedName="$(stripHash $src)"
 
-              # Restore write permissions
-              chmod -R u+w -- "$strippedName"
+              # Ensure write + directory execute permissions
+              chmod -R u+w,a+X -- "$strippedName"
 
               # Move the extracted directory into the output folder
               mv -- "$strippedName" "$sourceRoot"
@@ -495,7 +467,11 @@
           # wrap electron app
           if [ -n "$electronHeaders" ]; then
             echo "Wrapping electron app"
-            ${electron-wrap}
+            mkdir -p $out/bin
+            makeWrapper \
+              ${electronBin} \
+              $out/bin/$(basename "$packageName") \
+              --add-flags "$(realpath $electronAppDir)"
           fi
 
           runHook postInstall
