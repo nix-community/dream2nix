@@ -183,45 +183,6 @@ in {
       in {
         inherit name version hash;
       };
-
-      getDependencyNames = finalObj: objectsByName: let
-        cabal = cabalData.${finalObj.name}.${finalObj.version};
-
-        targetBuildDepends =
-          cabal.library.condTreeData.build-info.targetBuildDepends or [];
-
-        buildToolDepends =
-          cabal.library.condTreeData.build-info.buildToolDepends or [];
-
-        defaultFlags = l.filter (flag: flag.default) cabal.package-flags;
-
-        defaultFlagNames = l.map (flag: flag.name) defaultFlags;
-
-        collectBuildDepends = condTreeComponent:
-          l.concatMap
-          (attrs: attrs.targetBuildDepends)
-          (l.collect
-            (x: x ? targetBuildDepends)
-            condTreeComponent);
-
-        # TODO: use flags to determine which conditional deps are required
-        condBuildDepends =
-          l.concatMap
-          (component: collectBuildDepends component)
-          cabal.library.condTreeComponents or [];
-
-        depNames =
-          l.map
-          (dep: dep.package-name)
-          (targetBuildDepends ++ buildToolDepends ++ condBuildDepends);
-      in
-        l.filter
-        (name:
-          # ensure package is not a hidden package
-            (! hidden ? ${name})
-            # ignore packages which are not part of the snapshot or lock file
-            && (objectsByName ? ${name}))
-        depNames;
     in
       dlib.simpleTranslate2.translate
       ({objectsByKey, ...}: rec {
@@ -288,7 +249,17 @@ in {
             rawObj.version;
 
           dependencies = rawObj: finalObj: let
-            depNames = getDependencyNames finalObj objectsByKey.name;
+            depNames =
+              l.pipe cabalData
+              [
+                (haskellUtils.getDependencyNames finalObj)
+                (l.filter
+                  (name:
+                    # ensure package is not a hidden package
+                      (! hidden ? ${name})
+                      # ignore packages which are not part of the snapshot or lock file
+                      && (objectsByKey.name ? ${name})))
+              ];
           in
             l.map
             (depName: {

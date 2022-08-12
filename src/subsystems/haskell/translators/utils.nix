@@ -45,4 +45,38 @@ in {
     version,
     ...
   }: "https://hackage.haskell.org/package/${name}-${version}.tar.gz";
+
+  getDependencyNames = finalObj: cabalDataAsJson: let
+    cabal = with finalObj;
+      cabalDataAsJson.${name}.${version};
+
+    targetBuildDepends =
+      cabal.library.condTreeData.build-info.targetBuildDepends or [];
+
+    buildToolDepends =
+      cabal.library.condTreeData.build-info.buildToolDepends or [];
+
+    defaultFlags = l.filter (flag: flag.default) cabal.package-flags;
+
+    defaultFlagNames = l.map (flag: flag.name) defaultFlags;
+
+    collectBuildDepends = condTreeComponent:
+      l.concatMap
+      (attrs: attrs.targetBuildDepends)
+      (l.collect
+        (x: x ? targetBuildDepends)
+        condTreeComponent);
+
+    # TODO: use flags to determine which conditional deps are required
+    condBuildDepends =
+      l.concatMap
+      (component: collectBuildDepends component)
+      cabal.library.condTreeComponents or [];
+
+    depNames =
+      l.map
+      (dep: dep.package-name)
+      (targetBuildDepends ++ buildToolDepends ++ condBuildDepends);
+  in
+    depNames;
 }
