@@ -14,7 +14,7 @@ modules:
 }: let
   lib = config.lib;
   t = lib.types;
-  subsystemsDir = lib.toString ../../../subsystems;
+  subsystemsDir = lib.toString ../../subsystems;
   subsystems = dlib.dirNames subsystemsDir;
 
   /*

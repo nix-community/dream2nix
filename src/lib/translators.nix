@@ -24,15 +24,4 @@
 in {
   inherit translators mapTranslators;
   callTranslator = modules.callModule;
-
-  # pupulates a translators special args with defaults
-  getextraArgsDefaults = extraArgsDef:
-    l.mapAttrs
-    (
-      name: def:
-        if def.type == "flag"
-        then false
-        else def.default or null
-    )
-    extraArgsDef;
 }

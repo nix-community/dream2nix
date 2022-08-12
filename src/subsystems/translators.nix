@@ -86,7 +86,7 @@
           args:
             translateOriginal
             (
-              (dlib.translators.getextraArgsDefaults
+              (framework.functions.translators.makeTranslatorDefaultArgs
                 (translatorModule.extraArgs or {}))
               // args
               // (args.project.subsystemInfo or {})

@@ -6,7 +6,8 @@
   t = lib.types;
 in {
   imports = [
-    ./functions
+    ./functions.subsystem-loading
+    ./functions.translators
     ./translators
   ];
   options = {

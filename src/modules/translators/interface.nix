@@ -12,7 +12,7 @@ in {
         Translator module definitions
       '';
     };
-    translators = lib.mkOption {
+    translatorInstances = lib.mkOption {
       type = t.attrsOf t.anything;
     };
     translatorsBySubsystem = lib.mkOption {
