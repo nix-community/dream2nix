@@ -29,7 +29,7 @@
       cp -r ${examples}/$dir/* .
       chmod -R +w .
       nix flake lock --override-input dream2nix ${../../.}
-      nix run .#resolveImpure || echo "no resolveImpure probably?"
+      nix run .#resolveImpure
       # disable --read-only check for these because they do IFD so they will
       # write to store at eval time
       evalBlockList=("haskell_cabal-plan" "haskell_stack-lock")
