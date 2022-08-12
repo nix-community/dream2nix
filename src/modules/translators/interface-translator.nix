@@ -6,6 +6,12 @@
   t = lib.types;
 in {
   options = {
+    name = lib.mkOption {
+      type = t.str;
+    };
+    subsystem = lib.mkOption {
+      type = t.str;
+    };
     disabled = lib.mkOption {
       type = t.bool;
       default = false;

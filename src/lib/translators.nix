@@ -14,7 +14,11 @@
 
   translators =
     dlib.modules.mapSubsystemModules
-    (t: t // {translate = dlib.warnIfIfd t t.translate;})
+    (t:
+      t
+      // (lib.optionalAttrs (t.translate or null != null) {
+        translate = l.trace t dlib.warnIfIfd t t.translate;
+      }))
     modules.modules;
   mapTranslators = f: dlib.modules.mapSubsystemModules f translators;
 in {

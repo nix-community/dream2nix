@@ -13,7 +13,7 @@
     dlib.modules.collectSubsystemModules dlib.translators.translators;
 
   translatorsWithDiscoverFunc =
-    l.filter (translator: translator ? discoverProject) allTranslators;
+    l.filter (translator: translator.discoverProject or null != null) allTranslators;
 
   defaultDiscoverer.discover = {tree}: let
     translatorsCurrentDir =
