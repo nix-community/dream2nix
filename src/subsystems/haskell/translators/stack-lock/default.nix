@@ -248,25 +248,22 @@ in {
           version = rawObj: finalObj:
             rawObj.version;
 
-          dependencies = rawObj: finalObj: let
-            depNames =
-              l.pipe cabalData
-              [
-                (haskellUtils.getDependencyNames finalObj)
-                (l.filter
-                  (name:
-                    # ensure package is not a hidden package
-                      (! hidden ? ${name})
-                      # ignore packages which are not part of the snapshot or lock file
-                      && (objectsByKey.name ? ${name})))
-              ];
-          in
-            l.map
-            (depName: {
-              name = depName;
-              version = objectsByKey.name.${depName}.version;
-            })
-            depNames;
+          dependencies = rawObj: finalObj:
+            l.pipe cabalData
+            [
+              (haskellUtils.getDependencyNames finalObj)
+              (l.filter
+                (name:
+                  # ensure package is not a hidden package
+                    (! hidden ? ${name})
+                    # ignore packages which are not part of the snapshot or lock file
+                    && (objectsByKey.name ? ${name})))
+              (l.map
+                (depName: {
+                  name = depName;
+                  version = objectsByKey.name.${depName}.version;
+                }))
+            ];
 
           sourceSpec = rawObj: finalObj:
           # example
