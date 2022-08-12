@@ -53,6 +53,7 @@ in let
     modules = [
       ./modules/top-level.nix
     ];
+    # TODO: remove specialArgs once all functionality is moved to /src/modules
     specialArgs = {
       inherit
         callPackageDream
@@ -66,6 +67,8 @@ in let
   /*
   The nixos module system seems to break pkgs.callPackage.
   Therefore we always need to pass all of pkgs with callPackageDream.
+  callPackageDream should also be deprecated once all functionality is moved to
+  the module system.
   */
   callPackageDreamArgs =
     pkgs
