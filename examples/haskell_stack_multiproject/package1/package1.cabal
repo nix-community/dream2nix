@@ -1,0 +1,34 @@
+cabal-version: 3.0
+name:          package1
+version:       1.0.0
+description:   Package 1
+build-type:    Simple
+
+executable executable1
+    ghc-options:      -Wall -fhide-source-paths -threaded -O2
+    hs-source-dirs:   executable
+    default-language: Haskell2010
+    main-is:          Main.hs
+    build-depends:
+        , base
+        , optparse-applicative
+        , package1
+
+library
+    ghc-options:      -Wall -fhide-source-paths
+    hs-source-dirs:   src/
+    default-language: Haskell2010
+    exposed-modules:  LibraryModule
+    build-depends:    base
+
+test-suite package1-tests
+    type:             exitcode-stdio-1.0
+    ghc-options:      -Wall -fhide-source-paths
+    hs-source-dirs:   unit-test
+    default-language: Haskell2010
+    main-is:          Spec.hs
+    other-modules:    LibraryModuleSpec
+    build-depends:
+        , base
+        , hspec
+        , package1

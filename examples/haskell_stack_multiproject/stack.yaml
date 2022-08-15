@@ -1,0 +1,9 @@
+packages:
+- package1
+- package2
+
+resolver: lts-19.17
+allow-newer: true
+
+ghc-options:
+   "$locals": -fhide-source-paths -Wall -Werror
