@@ -44,6 +44,7 @@ in {
       default = null;
     };
     extraArgs = lib.mkOption {
+      default = {};
       type = t.attrsOf (t.submodule {
         options = {
           description = lib.mkOption {

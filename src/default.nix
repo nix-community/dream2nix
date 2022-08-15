@@ -49,17 +49,22 @@ in let
 
   configFile = pkgs.writeText "dream2nix-config.json" (b.toJSON config);
 
+  # pass spacialArgs itself in specialArgs in order to forward it to submodules.
+  specialModuleArgs = l.fix (self: {
+    specialArgs = self;
+    inherit
+      callPackageDream
+      dlib
+      ;
+  });
+
   evaledModules = lib.evalModules {
-    modules = [
-      ./modules/top-level.nix
-    ];
+    modules =
+      [./modules/top-level.nix]
+      ++ (config.modules or []);
+
     # TODO: remove specialArgs once all functionality is moved to /src/modules
-    specialArgs = {
-      inherit
-        callPackageDream
-        dlib
-        ;
-    };
+    specialArgs = specialModuleArgs;
   };
 
   framework = evaledModules.config;
@@ -709,6 +714,7 @@ in {
     callPackageDream
     dream2nixWithExternals
     fetchers
+    framework
     indexers
     fetchSources
     realizeProjects

@@ -17,10 +17,6 @@ modules:
   subsystemsDir = lib.toString ../../subsystems;
   subsystems = dlib.dirNames subsystemsDir;
 
-  /*
-  Discover modules in:
-    /src/subsystems/{subsystem}/{module-type}/{module-name}
-  */
   collect = moduleDirName:
     lib.concatMap
     (subsystem: let
@@ -43,10 +39,6 @@ modules:
         names)
     subsystems;
 
-  /*
-  Imports discovered module files.
-  Adds name and subsystem attributes to each module derived from the path.
-  */
   import_ = collectedModules:
     lib.mapAttrs
     (name: description:
@@ -54,12 +46,6 @@ modules:
       // {inherit (description) name subsystem;})
     (lib.listToAttrs collectedModules);
 
-  /*
-  To keep module implementations simpler, additional generic logic is added
-  by a loader.
-
-  The loader is subsytem specific and needs to be passed as an argument.
-  */
   instantiate = importedModules: loader:
     lib.mapAttrs
     (name: module:
@@ -67,10 +53,6 @@ modules:
       // {inherit (module) name subsystem;})
     importedModules;
 
-  /*
-  re-structures the instantiated instances into a deeper attrset like:
-    {subsytem}.{module-name} = ...
-  */
   structureBySubsystem = instances:
     lib.foldl
     lib.recursiveUpdate

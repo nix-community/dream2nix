@@ -1,13 +1,17 @@
 {
   config,
   lib,
+  specialArgs,
   ...
 }: let
   t = lib.types;
 in {
   options = {
     translators = lib.mkOption {
-      type = t.attrsOf (t.submodule ./interface-translator.nix);
+      type = t.attrsOf (t.submoduleWith {
+        modules = [./interface-translator.nix];
+        inherit specialArgs;
+      });
       description = ''
         Translator module definitions
       '';

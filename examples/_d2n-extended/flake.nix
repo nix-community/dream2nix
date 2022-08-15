@@ -13,10 +13,20 @@
     (dream2nix.lib.makeFlakeOutputs {
       systems = ["x86_64-linux"];
       config.projectRoot = ./.;
+      config.modules = [
+        (builtins.toFile "cargo-toml-new.nix" ''
+          {
+            translators.cargo-toml-new = {
+              imports = ["${inp.dream2nix}/src/subsystems/rust/translators/cargo-toml"];
+              name = "cargo-toml-new";
+              subsystem = "rust";
+            };
+          }
+        '')
+      ];
       config.extra = {
         subsystems.rust = {
           builders.brp-new = "${inp.dream2nix}/src/subsystems/rust/builders/build-rust-package";
-          translators.cargo-toml-new = "${inp.dream2nix}/src/subsystems/rust/translators/cargo-toml";
           discoverers.default = "${inp.dream2nix}/src/subsystems/rust/discoverers/default";
         };
         fetchers.crates-io = "${inp.dream2nix}/src/fetchers/crates-io";
