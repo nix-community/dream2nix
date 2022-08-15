@@ -231,8 +231,18 @@ in {
               value = dlib.sanitizeRelativePath "${package.relPath}/${dep.path}";
             };
             replacements = l.listToAttrs (l.map makeReplacement outsideDeps);
+            # filter out replacements which won't replace anything
+            # this means that the path doesn't need to be replaced because it's
+            # already in the source that we are building
+            filtered =
+              l.filterAttrs
+              (
+                n: v:
+                  (l.removeSuffix "/" (l.removePrefix "./" n)) != v
+              )
+              replacements;
           in
-            replacements;
+            filtered;
           # find replacements for all packages we export
           allPackageReplacements =
             l.map
