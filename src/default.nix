@@ -49,29 +49,63 @@ in let
 
   configFile = pkgs.writeText "dream2nix-config.json" (b.toJSON config);
 
+  # pass spacialArgs itself in specialArgs in order to forward it to submodules.
+  specialModuleArgs = l.fix (self: {
+    specialArgs = self;
+    inherit
+      callPackageDream
+      dlib
+      ;
+  });
+
+  evaledModules = lib.evalModules {
+    modules =
+      [./modules/top-level.nix]
+      ++ (config.modules or []);
+
+    # TODO: remove specialArgs once all functionality is moved to /src/modules
+    specialArgs = specialModuleArgs;
+  };
+
+  framework = evaledModules.config;
+
+  /*
+  The nixos module system seems to break pkgs.callPackage.
+  Therefore we always need to pass all of pkgs with callPackageDream.
+  callPackageDream should also be deprecated once all functionality is moved to
+  the module system.
+  */
+  callPackageDreamArgs =
+    pkgs
+    // {
+      inherit apps;
+      inherit callPackageDream;
+      inherit config;
+      inherit configFile;
+      inherit dlib;
+      inherit externals;
+      inherit externalSources;
+      inherit fetchers;
+      inherit framework;
+      inherit indexers;
+      inherit dream2nixWithExternals;
+      inherit utils;
+      inherit nix;
+      inherit subsystems;
+      dream2nixInterface = {
+        inherit
+          makeOutputsForDreamLock
+          ;
+      };
+    };
+
   # like pkgs.callPackage, but includes all the dream2nix modules
   callPackageDream = f: fargs:
-    pkgs.callPackage f (fargs
-      // {
-        inherit apps;
-        inherit callPackageDream;
-        inherit config;
-        inherit configFile;
-        inherit dlib;
-        inherit externals;
-        inherit externalSources;
-        inherit fetchers;
-        inherit indexers;
-        inherit dream2nixWithExternals;
-        inherit utils;
-        inherit nix;
-        inherit subsystems;
-        dream2nixInterface = {
-          inherit
-            makeOutputsForDreamLock
-            ;
-        };
-      });
+    (
+      if l.isFunction f
+      then f
+      else import f
+    ) (callPackageDreamArgs // fargs);
 
   utils = callPackageDream ./utils {};
 
@@ -680,6 +714,7 @@ in {
     callPackageDream
     dream2nixWithExternals
     fetchers
+    framework
     indexers
     fetchSources
     realizeProjects

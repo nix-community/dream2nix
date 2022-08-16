@@ -22,6 +22,7 @@
   subsystems,
   config,
   configFile,
+  framework,
   ...
 }: let
   b = builtins;
@@ -197,7 +198,7 @@ in
             project = l.removeAttrs args.project ["dreamLock"];
             outputFile = project.dreamLockPath;
           }
-          // (dlib.translators.getextraArgsDefaults translator.extraArgs or {})
+          // (framework.functions.translators.makeTranslatorDefaultArgs translator.extraArgs or {})
           // args.project.subsystemInfo or {}
         ));
       script =

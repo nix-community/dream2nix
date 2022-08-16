@@ -3,6 +3,11 @@
 `dream2nix` can be extended while you are `init`ializing it. This can be done in a few ways.
 For extending, you need to utilize the `config.extra` option of the dream2nix config.
 
+## Module System Transition
+The dream2nix architecture is currently in the process of being refactored into nixos modules. The actual APIs can deviate from what is described in this document.
+For up-to-date examples see `/examples/_d2n-extended` and `/examples/_d2n-extended-new-subsystem`
+Once the transition is completed we will update this document and remove this notice.
+
 ## Declare `extra`s from a nix file
 
 ```nix

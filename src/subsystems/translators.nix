@@ -12,6 +12,7 @@
   utils,
   config,
   configFile,
+  framework,
   ...
 }: let
   b = builtins;
@@ -76,7 +77,7 @@
       # for pure translators
       #   - import the `translate` function
       #   - generate `translateBin`
-      // (lib.optionalAttrs (translatorModule ? translate) {
+      // (lib.optionalAttrs (translatorModule.translate or null != null) {
         translate = let
           translateOriginal = callPackageDream translatorModule.translate {
             translatorName = translatorModule.name;
@@ -85,7 +86,7 @@
           args:
             translateOriginal
             (
-              (dlib.translators.getextraArgsDefaults
+              (framework.functions.translators.makeTranslatorDefaultArgs
                 (translatorModule.extraArgs or {}))
               // args
               // (args.project.subsystemInfo or {})
@@ -100,7 +101,7 @@
       })
       # for impure translators:
       #   - import the `translateBin` function
-      // (lib.optionalAttrs (translatorModule ? translateBin) {
+      // (lib.optionalAttrs (translatorModule.translateBin or null != null) {
         translateBin =
           callPackageDream translatorModule.translateBin
           {
@@ -110,7 +111,7 @@
   in
     translator;
 
-  translators = dlib.translators.mapTranslators makeTranslator;
+  translators = framework.translatorsBySubsystem;
 in {
   inherit
     translators
