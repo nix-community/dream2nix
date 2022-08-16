@@ -137,6 +137,10 @@
                         <h1 id="extending-dream2nix-with-external-translators-builders-etc"><a class="header" href="#extending-dream2nix-with-external-translators-builders-etc">Extending dream2nix with external translators, builders etc.</a></h1>
 <p><code>dream2nix</code> can be extended while you are <code>init</code>ializing it. This can be done in a few ways.
 For extending, you need to utilize the <code>config.extra</code> option of the dream2nix config.</p>
+<h2 id="module-system-transition"><a class="header" href="#module-system-transition">Module System Transition</a></h2>
+<p>The dream2nix architecture is currently in the process of being refactored into nixos modules. The actual APIs can deviate from what is described in this document.
+For up-to-date examples see <code>/examples/_d2n-extended</code> and <code>/examples/_d2n-extended-new-subsystem</code>
+Once the transition is completed we will update this document and remove this notice.</p>
 <h2 id="declare-extras-from-a-nix-file"><a class="header" href="#declare-extras-from-a-nix-file">Declare <code>extra</code>s from a nix file</a></h2>
 <pre><code class="language-nix">dream2nix.lib.init {
   # this also works around errors with function modules
