@@ -105,7 +105,7 @@ in let
       if l.isFunction f
       then f
       else import f
-    ) (fargs // callPackageDreamArgs);
+    ) (callPackageDreamArgs // fargs);
 
   utils = callPackageDream ./utils {};
 
