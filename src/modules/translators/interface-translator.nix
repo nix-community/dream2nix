@@ -6,41 +6,12 @@
   t = lib.types;
 in {
   options = {
-    name = lib.mkOption {
-      type = t.str;
-    };
-    subsystem = lib.mkOption {
-      type = t.str;
-    };
     disabled = lib.mkOption {
       type = t.bool;
       default = false;
     };
-    version = lib.mkOption {
-      type = t.int;
-      default = 2;
-    };
     discoverProject = lib.mkOption {
       type = t.nullOr (t.functionTo (t.anything));
-      default = null;
-    };
-    generateUnitTestsForProjects = lib.mkOption {
-      type = t.listOf t.anything;
-      default = [];
-    };
-    type = lib.mkOption {
-      type = t.enum [
-        "ifd"
-        "impure"
-        "pure"
-      ];
-    };
-    translate = lib.mkOption {
-      type = t.nullOr (t.functionTo (t.functionTo (t.attrs)));
-      default = null;
-    };
-    translateBin = lib.mkOption {
-      type = t.nullOr (t.functionTo t.package);
       default = null;
     };
     extraArgs = lib.mkOption {
@@ -63,6 +34,35 @@ in {
           };
         };
       });
+    };
+    generateUnitTestsForProjects = lib.mkOption {
+      type = t.listOf t.anything;
+      default = [];
+    };
+    name = lib.mkOption {
+      type = t.str;
+    };
+    subsystem = lib.mkOption {
+      type = t.str;
+    };
+    translate = lib.mkOption {
+      type = t.nullOr (t.functionTo (t.functionTo (t.attrs)));
+      default = null;
+    };
+    translateBin = lib.mkOption {
+      type = t.nullOr (t.functionTo t.package);
+      default = null;
+    };
+    type = lib.mkOption {
+      type = t.enum [
+        "ifd"
+        "impure"
+        "pure"
+      ];
+    };
+    version = lib.mkOption {
+      type = t.int;
+      default = 2;
     };
   };
 }
