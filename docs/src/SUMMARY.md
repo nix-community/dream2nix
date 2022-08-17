@@ -8,6 +8,7 @@
 # Subsystems
 - [Rust](./subsystems/rust.md)
 - [Python](./subsystems/python.md)
+- [Node.js](./subsystems/node.md)
 - [Haskell](./subsystems/haskell.md)
 
 # Concepts
