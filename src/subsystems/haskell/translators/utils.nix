@@ -11,7 +11,7 @@
     jsonCabalFile = "${all-cabal-json}/${name}/${version}/${name}.json";
   in
     if (! (l.pathExists jsonCabalFile))
-    then throw ''"all-cabal-json" seems to be outdated''
+    then throw ''Cannot find JSON for version ${version} of package ${name}. "all-cabal-json" may be outdated.''
     else l.fromJSON (l.readFile jsonCabalFile);
 in {
   inherit findJsonFromCabalCandidate;
@@ -20,7 +20,7 @@ in {
     hashFile = "${all-cabal-json}/${name}/${version}/${name}.hashes.json";
   in
     if (! (l.pathExists hashFile))
-    then throw ''"all-cabal-json" seems to be outdated''
+    then throw ''Cannot find JSON for version ${version} of package ${name}. "all-cabal-json" may be outdated.''
     else (l.fromJSON (l.readFile hashFile)).package-hashes.SHA256;
 
   /*
