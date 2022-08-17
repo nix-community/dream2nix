@@ -145,7 +145,7 @@ Or by entering the development shell (`nix develop`) and running `mdbook build d
 
 ### Funding
 
-This project receives financial support by [NLNet](https://nlnet.nl/) as part of the [NGI Assure Programme](https://nlnet.nl/assure/) funded by the European Commission.
+This project receives financial support by [NLNet](https://nlnet.nl/) as part of the [NGI Assure Programme](https://nlnet.nl/assure/) funded by the European Commission; as well as private funding and support from [<img src="https://platonic.systems/logo.svg" height="25" width="25" alt=""> Platonic.Systems](https://platonic.systems).
 
 If your organization wants to support the project with extra funding in order to add support for more languages or new features, please contact one of the maintainers.
 
