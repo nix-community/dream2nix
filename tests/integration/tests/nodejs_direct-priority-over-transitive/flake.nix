@@ -1,3 +1,17 @@
+# test: node.js direct dep priority over transitive dep
+#
+# Detecting regressions for #221.
+#
+# Node.js builder was linking the wrong version of a binary,
+# if there was another dependency transitivelly depending on another version,
+# this one would be resolved instead of the direct dependency.
+#
+# Dependencies: svgo@2, cssnano@4 (cssnano@4 -> svgo@1)
+#
+# 1. Dream2Nix normal build.
+# 2. Get version of svgo in node.js path. (npm run get-version = svgo --version)
+# 3. Check if this is the same version as the direct dependency.
+#
 {
   inputs = {
     dream2nix.url = "github:nix-community/dream2nix";
