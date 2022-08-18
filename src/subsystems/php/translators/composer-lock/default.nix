@@ -37,11 +37,8 @@ in {
   If a fully featured discoverer exists, do not define `discoverProject`.
   */
   discoverProject = tree:
-  # Example
-  # Returns true if given directory contains a file ending with .cabal
-    l.any
-    (filename: l.hasSuffix ".cabal" filename)
-    (l.attrNames tree.files);
+    (l.pathExists "${tree.fullPath}/composer.json")
+    && (l.pathExists "${tree.fullPath}/composer.lock");
 
   # translate from a given source and a project specification to a dream-lock.
   translate = {translatorName, ...}: {
@@ -108,8 +105,6 @@ in {
     */
     tree,
     # arguments defined in `extraArgs` (see below) specified by user
-    noDev,
-    theAnswer,
     ...
   } @ args: let
     # get the root source and project source
@@ -117,8 +112,8 @@ in {
     projectSource = "${tree.fullPath}/${project.relPath}";
     projectTree = tree.getNodeFromPath project.relPath;
 
-    # parse the json / toml etc.
-    projectJson = (projectTree.getNodeFromPath "project.json").jsonContent;
+    composerJson = (projectTree.getNodeFromPath "composer.json").jsonContent;
+    composerLock = (projectTree.getNodeFromPath "composer.lock").jsonContent;
   in
     dlib.simpleTranslate2.translate
     ({objectsByKey, ...}: rec {
@@ -128,15 +123,15 @@ in {
       location = project.relPath;
 
       # the name of the subsystem
-      subsystemName = "nodejs";
+      subsystemName = "php";
 
       # Extract subsystem specific attributes.
       # The structure of this should be defined in:
       #   ./src/specifications/{subsystem}
-      subsystemAttrs = {theAnswer = args.theAnswer;};
+      subsystemAttrs = {};
 
       # name of the default package
-      defaultPackage = "name-of-the-default-package";
+      defaultPackage = composerJson.name;
 
       /*
       List the package candidates which should be exposed to the user.
@@ -144,8 +139,7 @@ in {
       Users will not be interested in all individual dependencies.
       */
       exportedPackages = {
-        foo = "1.1.0";
-        bar = "1.2.0";
+        "${defaultPackage}" = composerJson.version;
       };
 
       /*
@@ -153,7 +147,22 @@ in {
       If the upstream format is a deep attrset, this list should contain
       a flattened representation of all entries.
       */
-      serializedRawObjects = [];
+      serializedRawObjects =
+        composerLock.packages
+        ++ [
+          # Add the top-level package, this is not written in composer.lock
+          {
+            name = defaultPackage;
+            inherit (composerJson) version;
+            source = {
+              type = "path";
+              path = projectSource;
+            };
+            require = {
+              # TODO
+            };
+          }
+        ];
 
       /*
       Define extractor functions which each extract one property from
@@ -165,24 +174,25 @@ in {
       */
       extractors = {
         name = rawObj: finalObj:
-        # example
-        "foo";
+          rawObj.name;
 
         version = rawObj: finalObj:
-        # example
-        "1.2.3";
+          rawObj.version;
 
         dependencies = rawObj: finalObj:
-        # example
-        [];
+          lib.attrsets.mapAttrsToList
+          (name: version: {inherit name version;})
+          rawObj.require;
 
         sourceSpec = rawObj: finalObj:
-        # example
-        {
-          type = "http";
-          url = "https://registry.npmjs.org/${finalObj.name}/-/${finalObj.name}-${finalObj.version}.tgz";
-          hash = "sha1-4h3xCtbCBTKVvLuNq0Cwnb6ofk0=";
-        };
+          if rawObj.source.type == "path"
+          then {
+            inherit (rawObj.source) type path;
+          }
+          else {
+            inherit (rawObj.source) type url;
+            rev = rawObj.source.reference;
+          };
       };
 
       /*
@@ -191,12 +201,6 @@ in {
       `objectsByKey.${keyName}.${value}`
       */
       keys = {
-        /*
-        This is an example. Remove this completely or replace in case you
-        need a key.
-        */
-        sanitizedName = rawObj: finalObj:
-          l.strings.sanitizeDerivationName rawObj.name;
       };
 
       /*
@@ -204,21 +208,21 @@ in {
       the dream-lock.
       */
       extraObjects = [
-        {
-          name = "foo2";
-          version = "1.0";
-          dependencies = [
-            {
-              name = "bar2";
-              version = "1.1";
-            }
-          ];
-          sourceSpec = {
-            type = "git";
-            url = "https://...";
-            rev = "...";
-          };
-        }
+        # {
+        #   name = "foo2";
+        #   version = "1.0";
+        #   dependencies = [
+        #     {
+        #       name = "bar2";
+        #       version = "1.1";
+        #     }
+        #   ];
+        #   sourceSpec = {
+        #     type = "git";
+        #     url = "https://...";
+        #     rev = "...";
+        #   };
+        # }
       ];
     });
 
@@ -230,22 +234,5 @@ in {
   # String arguments contain a default value and examples. Flags do not.
   # Flags are false by default.
   extraArgs = {
-    # Example: boolean option
-    # Flags always default to 'false' if not specified by the user
-    noDev = {
-      description = "Exclude dev dependencies";
-      type = "flag";
-    };
-
-    # Example: string option
-    theAnswer = {
-      default = "42";
-      description = "The Answer to the Ultimate Question of Life";
-      examples = [
-        "0"
-        "1234"
-      ];
-      type = "argument";
-    };
   };
 }
