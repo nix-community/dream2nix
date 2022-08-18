@@ -35,9 +35,17 @@ in {
     # Example:
     #   produceDerivation name (mkDerivation {...})
     produceDerivation,
+    compiler ? null,
     ...
   } @ args: let
     b = builtins;
+
+    compiler =
+      if args ? compiler
+      then args.compiler
+      else
+        pkgs.haskell.packages."${subsystemAttrs.compiler}"
+        or (throw "Could not find ${subsystemAttrs.compiler} in pkgs");
 
     all-cabal-hashes = pkgs.runCommandLocal "all-cabal-hashes" {} ''
       mkdir $out
@@ -67,7 +75,7 @@ in {
 
     # Generates a derivation for a specific package name + version
     makeOnePackage = name: version: let
-      pkg = pkgs.haskell.packages.ghc8107.mkDerivation (rec {
+      pkg = compiler.mkDerivation (rec {
           pname = utils.sanitizeDerivationName name;
           inherit version;
           license = null;
@@ -85,8 +93,7 @@ in {
           testToolDepends = libraryHaskellDepends;
 
           libraryHaskellDepends =
-            # TODO: use ghc version from subsystemAttrs
-            (with pkgs.haskell.packages.ghc8107; [
+            (with compiler; [
               # TODO: remove these deps / find out why they were missing
               hspec
               QuickCheck

@@ -199,11 +199,11 @@ in {
       # Extract subsystem specific attributes.
       # The structure of this should be defined in:
       #   ./src/specifications/{subsystem}
-      subsystemAttrs = let
-        compilerSplit = l.splitString "-" buildPlan.compiler-id;
-      in {
-        compilerName = l.elemAt compilerSplit 0;
-        compilerVersion = l.elemAt compilerSplit 1;
+      subsystemAttrs = {
+        compiler = l.stringAsChars (c:
+          if c == "." || c == "-"
+          then ""
+          else c) (buildPlan.compiler-id);
       };
 
       # name of the default package

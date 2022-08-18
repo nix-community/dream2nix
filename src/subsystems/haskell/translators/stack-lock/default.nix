@@ -237,8 +237,9 @@ in {
         # Extract subsystem specific attributes.
         # The structure of this should be defined in:
         #   ./src/specifications/{subsystem}
-        # TODO: put ghc version here
-        subsystemAttrs = {};
+        subsystemAttrs = {
+          compiler = "ghc${toString args.ghcVersion}";
+        };
 
         # name of the default package
         defaultPackage = cabal.description.package.name;

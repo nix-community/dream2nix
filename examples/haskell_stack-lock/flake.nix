@@ -14,7 +14,12 @@
       pkgs = dream2nix.inputs.nixpkgs.legacyPackages.x86_64-linux;
       source = src;
       config.projectRoot = ./.;
-      settings = [];
+      settings = [
+        {
+          # A ghc version must be specified for stack lock based builds
+          subsystemInfo.ghcVersion = 8107;
+        }
+      ];
     })
     // {
       # checks = self.packages;
