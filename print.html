@@ -76,7 +76,7 @@
 
         <nav id="sidebar" class="sidebar" aria-label="Table of contents">
             <div class="sidebar-scrollbox">
-                <ol class="chapter"><li class="chapter-item expanded "><a href="intro.html"><strong aria-hidden="true">1.</strong> Introduction</a></li><li class="chapter-item expanded affix "><li class="part-title">Guides</li><li class="chapter-item expanded "><a href="guides/getting-started-python.html"><strong aria-hidden="true">2.</strong> Python: getting started in 10 minutes</a></li><li class="chapter-item expanded "><a href="guides/getting-started-nodejs.html"><strong aria-hidden="true">3.</strong> Node.js: quickstart</a></li><li class="chapter-item expanded affix "><li class="part-title">Subsystems</li><li class="chapter-item expanded "><a href="subsystems/rust.html"><strong aria-hidden="true">4.</strong> Rust</a></li><li class="chapter-item expanded "><a href="subsystems/python.html"><strong aria-hidden="true">5.</strong> Python</a></li><li class="chapter-item expanded "><a href="subsystems/haskell.html"><strong aria-hidden="true">6.</strong> Haskell</a></li><li class="chapter-item expanded affix "><li class="part-title">Concepts</li><li class="chapter-item expanded "><a href="intro/architectural-considerations.html"><strong aria-hidden="true">7.</strong> Architectural Considerations</a></li><li class="chapter-item expanded "><a href="intro/nixpkgs-improvements.html"><strong aria-hidden="true">8.</strong> Nixpkgs improvements</a></li><li class="chapter-item expanded "><a href="intro/override-system.html"><strong aria-hidden="true">9.</strong> Override system</a></li><li class="chapter-item expanded "><a href="intro/translators.html"><strong aria-hidden="true">10.</strong> Translators</a></li><li class="chapter-item expanded "><a href="intro/indexers.html"><strong aria-hidden="true">11.</strong> Indexers</a></li><li class="chapter-item expanded affix "><li class="part-title">Contributing</li><li class="chapter-item expanded "><a href="extending-dream2nix.html"><strong aria-hidden="true">12.</strong> Extending dream2nix</a></li><li class="chapter-item expanded "><a href="contributing.html"><strong aria-hidden="true">13.</strong> Contributing</a></li><li class="chapter-item expanded affix "><li class="part-title">Development Roundups</li><li class="chapter-item expanded "><a href="development-roundups/2022-april-june.html"><strong aria-hidden="true">14.</strong> April - June 2022</a></li></ol>
+                <ol class="chapter"><li class="chapter-item expanded "><a href="intro.html"><strong aria-hidden="true">1.</strong> Introduction</a></li><li class="chapter-item expanded affix "><li class="part-title">Guides</li><li class="chapter-item expanded "><a href="guides/getting-started-python.html"><strong aria-hidden="true">2.</strong> Python: getting started in 10 minutes</a></li><li class="chapter-item expanded "><a href="guides/getting-started-nodejs.html"><strong aria-hidden="true">3.</strong> Node.js: quickstart</a></li><li class="chapter-item expanded affix "><li class="part-title">Subsystems</li><li class="chapter-item expanded "><a href="subsystems/rust.html"><strong aria-hidden="true">4.</strong> Rust</a></li><li class="chapter-item expanded "><a href="subsystems/python.html"><strong aria-hidden="true">5.</strong> Python</a></li><li class="chapter-item expanded "><a href="subsystems/node.html"><strong aria-hidden="true">6.</strong> Node.js</a></li><li class="chapter-item expanded "><a href="subsystems/haskell.html"><strong aria-hidden="true">7.</strong> Haskell</a></li><li class="chapter-item expanded affix "><li class="part-title">Concepts</li><li class="chapter-item expanded "><a href="intro/architectural-considerations.html"><strong aria-hidden="true">8.</strong> Architectural Considerations</a></li><li class="chapter-item expanded "><a href="intro/nixpkgs-improvements.html"><strong aria-hidden="true">9.</strong> Nixpkgs improvements</a></li><li class="chapter-item expanded "><a href="intro/override-system.html"><strong aria-hidden="true">10.</strong> Override system</a></li><li class="chapter-item expanded "><a href="intro/translators.html"><strong aria-hidden="true">11.</strong> Translators</a></li><li class="chapter-item expanded "><a href="intro/indexers.html"><strong aria-hidden="true">12.</strong> Indexers</a></li><li class="chapter-item expanded affix "><li class="part-title">Contributing</li><li class="chapter-item expanded "><a href="extending-dream2nix.html"><strong aria-hidden="true">13.</strong> Extending dream2nix</a></li><li class="chapter-item expanded "><a href="contributing.html"><strong aria-hidden="true">14.</strong> Contributing</a></li><li class="chapter-item expanded affix "><li class="part-title">Development Roundups</li><li class="chapter-item expanded "><a href="development-roundups/2022-april-june.html"><strong aria-hidden="true">15.</strong> April - June 2022</a></li></ol>
             </div>
             <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
         </nav>
@@ -711,6 +711,52 @@ The downside of this approach is, that this translator cannot be used with a gra
 <h2 id="builders-1"><a class="header" href="#builders-1">Builders</a></h2>
 <h3 id="simple-builder-pure-default"><a class="header" href="#simple-builder-pure-default">simple-builder (pure) (default)</a></h3>
 <p>Builds a package including all its dependencies in a single derivation.</p>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="nodejs-subsystem"><a class="header" href="#nodejs-subsystem">Node.js subsystem</a></h1>
+<p>This section documents the Node.js subsystem.</p>
+<h2 id="example"><a class="header" href="#example">Example</a></h2>
+<pre><code class="language-nix">{
+  inputs = {
+    dream2nix.url = &quot;github:nix-community/dream2nix&quot;;
+    src.url = &quot;https://registry.npmjs.org/eslint/-/eslint-8.4.1.tgz&quot;;
+    src.flake = false;
+  };
+
+  outputs = {
+    self,
+    dream2nix,
+    src,
+  } @ inp:
+    (dream2nix.lib.makeFlakeOutputs {
+      systems = [&quot;x86_64-linux&quot;];
+      config.projectRoot = ./.;
+      source = src;
+      settings = [
+        {
+          subsystemInfo.noDev = true;
+          subsystemInfo.nodejs = 18;
+        }
+      ];
+    })
+    // {
+      checks = self.packages;
+    };
+}
+</code></pre>
+<h2 id="translators-2"><a class="header" href="#translators-2">Translators</a></h2>
+<h3 id="package-lock-pure"><a class="header" href="#package-lock-pure">package-lock (pure)</a></h3>
+<p>Translates <code>package-lock.json</code> into a dream2nix lockfile.</p>
+<h3 id="package-json-impure"><a class="header" href="#package-json-impure">package-json (impure)</a></h3>
+<p>Resolves dependencies from <code>package.json</code> using <code>npm</code> to generate a
+<code>package-lock.json</code>, then uses <code>package-lock</code> translator to generate the
+dream2nix lockfile.</p>
+<h3 id="yarn-lock-pure"><a class="header" href="#yarn-lock-pure">yarn-lock (pure)</a></h3>
+<p>Translates <code>yarn.lock</code> into a dream2nix lockfile.</p>
+<h2 id="builders-2"><a class="header" href="#builders-2">Builders</a></h2>
+<h3 id="granular-pure-default"><a class="header" href="#granular-pure-default">granular (pure) (default)</a></h3>
+<p>Builds all the dependencies in isolation, moving upwards to the top
+package.
+At the end copies over all dependencies into <code>node_modules</code> and writes
+symlinks for the bins into <code>node_modules/.bin</code>.</p>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="haskell-subsystem"><a class="header" href="#haskell-subsystem">Haskell subsystem</a></h1>
 <p>This section documents the Haskell subsystem.</p>
 <p>Get involved:</p>
@@ -759,7 +805,7 @@ Currently we have a builder for haskell and several translators (see table below
 }
 </code></pre>
 <p>see more examples under: <a href="https://github.com/nix-community/dream2nix/tree/main/examples">/examples</a></p>
-<h2 id="translators-2"><a class="header" href="#translators-2">Translators</a></h2>
+<h2 id="translators-3"><a class="header" href="#translators-3">Translators</a></h2>
 <p>The source code of the implementations can be found <a href="https://github.com/nix-community/dream2nix/tree/main/src/subsystems/haskell/translators">here</a>.</p>
 <table><thead><tr><th><strong>translator</strong></th><th>stack-lock</th><th>cabal-plan</th><th>cabal-freeze</th></tr></thead><tbody>
 <tr><td><strong>file name</strong></td><td>stack.yaml.lock</td><td>plan.json</td><td>cabal.project.freeze</td></tr>
@@ -1101,7 +1147,7 @@ dream2nix overrides have the following properties:</p>
   };
 }
 </code></pre>
-<div style="break-before: page; page-break-before: always;"></div><h1 id="translators-3"><a class="header" href="#translators-3">Translators</a></h1>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="translators-4"><a class="header" href="#translators-4">Translators</a></h1>
 <p>This document classifies different methods for translating requirement/lock
 files to the generic lock format and describes how the resulting packages
 can be integrated into nix builds inside and outside of nixpkgs.</p>
