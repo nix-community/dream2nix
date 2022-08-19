@@ -41,7 +41,11 @@ in {
     && (l.pathExists "${tree.fullPath}/composer.lock");
 
   # translate from a given source and a project specification to a dream-lock.
-  translate = {translatorName, ...}: {
+  translate = {
+    translatorName,
+    utils,
+    ...
+  }: {
     /*
     A list of projects returned by `discoverProjects`
     Example:
@@ -114,6 +118,43 @@ in {
 
     composerJson = (projectTree.getNodeFromPath "composer.json").jsonContent;
     composerLock = (projectTree.getNodeFromPath "composer.lock").jsonContent;
+
+    # all the requires (dependencies)
+    allRequires = composerLock.packages;
+
+    # get the requierements without php version pin & without php extensions
+    cleanRequire = requires:
+      l.filterAttrs
+      (name: _: (name != "php") && !(l.strings.hasPrefix "ext-" name))
+      requires;
+
+    # composer.lock uses a less strict semver interpretation
+    # ~1.2 -> >=1.2 <2.0.0 (instead of >=1.2.0 <1.3.0)
+    # this is identical with ^1.2 in the semver standard
+    satisfiesSemver = version: constraint: let
+      minorTilde = l.match "^[~]([[:d:]]+[.][[:d:]]+)$" constraint;
+      cleanConstraint =
+        if minorTilde != null && l.length minorTilde >= 0
+        then "^${l.head minorTilde}"
+        else constraint;
+      cleanVersion = l.removePrefix "v" version;
+    in
+      utils.satisfiesSemver cleanVersion cleanConstraint;
+
+    # resolve semvers into exact versions
+    pinRequires = dep: let
+      pin = name: semver:
+        (l.head
+          (l.filter (dep: satisfiesSemver dep.version semver)
+            (l.filter (dep: dep.name == name)
+              allRequires)))
+        .version;
+      pinnedRequires =
+        if "require" ? dep
+        then l.mapAttrs pin dep.require
+        else {};
+    in
+      dep // {require = pinnedRequires;};
   in
     dlib.simpleTranslate2.translate
     ({objectsByKey, ...}: rec {
@@ -148,7 +189,7 @@ in {
       a flattened representation of all entries.
       */
       serializedRawObjects =
-        composerLock.packages
+        (map pinRequires composerLock.packages)
         ++ [
           # Add the top-level package, this is not written in composer.lock
           {
@@ -158,9 +199,7 @@ in {
               type = "path";
               path = projectSource;
             };
-            require = {
-              # TODO
-            };
+            require = (pinRequires composerJson).require;
           }
         ];
 
@@ -182,7 +221,7 @@ in {
         dependencies = rawObj: finalObj:
           lib.attrsets.mapAttrsToList
           (name: version: {inherit name version;})
-          rawObj.require;
+          (cleanRequire rawObj.require);
 
         sourceSpec = rawObj: finalObj:
           if rawObj.source.type == "path"
