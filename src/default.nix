@@ -4,11 +4,6 @@
 # use ./lib.nix instead.
 {
   pkgs ? import <nixpkgs> {},
-  dlib ?
-    import ./lib {
-      inherit lib;
-      config = (import ./utils/config.nix).loadConfig config;
-    },
   lib ? pkgs.lib,
   nix ? pkgs.nix,
   # default to empty dream2nix config
@@ -49,14 +44,11 @@ in let
 
   configFile = pkgs.writeText "dream2nix-config.json" (b.toJSON config);
 
-  # pass spacialArgs itself in specialArgs in order to forward it to submodules.
-  specialModuleArgs = l.fix (self: {
-    specialArgs = self;
-    inherit
-      callPackageDream
-      dlib
-      ;
-  });
+  dlib = import ./lib {
+    inherit lib;
+    config = (import ./utils/config.nix).loadConfig config;
+    inherit framework;
+  };
 
   evaledModules = lib.evalModules {
     modules =
@@ -64,7 +56,12 @@ in let
       ++ (config.modules or []);
 
     # TODO: remove specialArgs once all functionality is moved to /src/modules
-    specialArgs = specialModuleArgs;
+    specialArgs = {
+      inherit
+        callPackageDream
+        dlib
+        ;
+    };
   };
 
   framework = evaledModules.config;
