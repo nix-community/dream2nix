@@ -119,11 +119,18 @@ in {
     composerJson = (projectTree.getNodeFromPath "composer.json").jsonContent;
     composerLock = (projectTree.getNodeFromPath "composer.lock").jsonContent;
 
+    # all the pinned packages
+    packages = composerLock.packages;
+
     # toplevel php semver
     phpSemver = composerJson.require."php";
-
-    # all the requires (dependencies)
-    allRequires = composerLock.packages;
+    # all the php extensions
+    phpExtensions = let
+      all = map (pkg: l.attrsets.attrNames (pkg.require or {})) packages;
+      flat = l.lists.flatten all;
+      extensions = l.filter (l.strings.hasPrefix "ext-") flat;
+    in
+      l.lists.unique extensions;
 
     # get the requierements without php version pin & without php extensions
     cleanRequire = requires:
@@ -150,7 +157,7 @@ in {
         (l.head
           (l.filter (dep: satisfiesSemver dep.version semver)
             (l.filter (dep: dep.name == name)
-              allRequires)))
+              packages)))
         .version;
       pinnedRequires =
         if "require" ? dep
@@ -173,7 +180,7 @@ in {
       # The structure of this should be defined in:
       #   ./src/specifications/{subsystem}
       subsystemAttrs = {
-        inherit satisfiesSemver phpSemver;
+        inherit satisfiesSemver phpSemver phpExtensions;
       };
 
       # name of the default package
