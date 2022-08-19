@@ -119,6 +119,9 @@ in {
     composerJson = (projectTree.getNodeFromPath "composer.json").jsonContent;
     composerLock = (projectTree.getNodeFromPath "composer.lock").jsonContent;
 
+    # toplevel php semver
+    phpSemver = composerJson.require."php";
+
     # all the requires (dependencies)
     allRequires = composerLock.packages;
 
@@ -169,7 +172,9 @@ in {
       # Extract subsystem specific attributes.
       # The structure of this should be defined in:
       #   ./src/specifications/{subsystem}
-      subsystemAttrs = {};
+      subsystemAttrs = {
+        inherit satisfiesSemver phpSemver;
+      };
 
       # name of the default package
       defaultPackage = composerJson.name;
