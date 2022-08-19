@@ -188,7 +188,7 @@ in
       aggregate = project.aggregate or false;
 
       translator =
-        subsystems."${project.subsystem}".translators."${project.translator}";
+        framework.translatorInstances."${project.translator}";
 
       argsJsonFile =
         pkgs.writeText "translator-args.json"
