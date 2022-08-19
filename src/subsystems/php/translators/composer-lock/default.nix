@@ -194,7 +194,7 @@ in {
           # Add the top-level package, this is not written in composer.lock
           {
             name = defaultPackage;
-            inherit (composerJson) version;
+            version = exportedPackages."${defaultPackage}";
             source = {
               type = "path";
               path = projectSource;
@@ -219,7 +219,7 @@ in {
           rawObj.version;
 
         dependencies = rawObj: finalObj:
-          lib.attrsets.mapAttrsToList
+          l.attrsets.mapAttrsToList
           (name: version: {inherit name version;})
           (cleanRequire rawObj.require);
 
