@@ -31,7 +31,7 @@
       openssh
     ]
     ''
-      # accroding to the spec, the translator reads the input from a json file
+      # according to the spec, the translator reads the input from a json file
       jsonInput=$1
 
       # read the json input
@@ -40,6 +40,8 @@
       relPath=$(jq '.project.relPath' -c -r $jsonInput)
       npmArgs=$(jq '.project.subsystemInfo.npmArgs' -c -r $jsonInput)
 
+      # TODO: Do we really need to copy everything? Just package.json + .npmrc
+      # is enough, no? And then pass the lock file to translate separately?
       cp -r $source/* ./
       chmod -R +w ./
       newSource=$(pwd)
@@ -47,7 +49,8 @@
       cd ./$relPath
       rm -rf package-lock.json yarn.lock
 
-      echo "translating in temp dir: $(pwd)"
+      echo "Translating with npm in temp dir: $(pwd)"
+      echo "You can avoid this by adding your own package-lock.json file"
 
       if [ "$(jq '.project.subsystemInfo.noDev' -c -r $jsonInput)" == "true" ]; then
         echo "excluding dev dependencies"
@@ -61,7 +64,7 @@
       jq ".source = \"$newSource\"" -c -r $jsonInput > $TMPDIR/newJsonInput
 
       cd $WORKDIR
-      ${subsystems.nodejs.translators.package-lock.translateBin} $TMPDIR/newJsonInput
+      ${subsystems.nodejs.translators.package-lock-v2.translateBin} $TMPDIR/newJsonInput
     '';
 
   # inherit options from package-lock translator
