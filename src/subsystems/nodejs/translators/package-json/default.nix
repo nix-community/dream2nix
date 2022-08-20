@@ -35,11 +35,12 @@
       jsonInput=$1
 
       # read the json input
-      outputFile=$(jq '.outputFile' -c -r $jsonInput)
+      outputFile=$(realpath -m $(jq '.outputFile' -c -r $jsonInput))
       source=$(jq '.source' -c -r $jsonInput)
       relPath=$(jq '.project.relPath' -c -r $jsonInput)
       npmArgs=$(jq '.project.subsystemInfo.npmArgs' -c -r $jsonInput)
 
+      pushd $TMPDIR
       cp -r $source/* ./
       chmod -R +w ./
       newSource=$(pwd)
@@ -60,7 +61,7 @@
 
       jq ".source = \"$newSource\"" -c -r $jsonInput > $TMPDIR/newJsonInput
 
-      cd $WORKDIR
+      popd
       ${subsystems.nodejs.translators.package-lock.translateBin} $TMPDIR/newJsonInput
     '';
 

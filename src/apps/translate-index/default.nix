@@ -15,8 +15,6 @@ in
   "translate-index"
   [coreutils translate jq parallel]
   ''
-    cd $WORKDIR
-
     usage="usage:
       $0 INDEX_PATH TARGET_DIR"
 

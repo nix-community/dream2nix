@@ -200,6 +200,8 @@
               ]
               ''
                 echo "check for correct formatting"
+                WORKDIR=$(realpath ./.)
+                cd $TMPDIR
                 cp -r $WORKDIR ./repo
                 cd ./repo
                 ${self.apps.${system}.format.program} --fail-on-change

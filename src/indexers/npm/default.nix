@@ -9,8 +9,6 @@
     utils.writePureShellScript
     [coreutils curl jq]
     ''
-      cd $WORKDIR
-
       input=''${1:?"please provide an input as a JSON file"}
 
       outFile=$(jq '.outputFile' -c -r $input)

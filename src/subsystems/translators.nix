@@ -34,7 +34,9 @@
       ]
       ''
         jsonInputFile=$(realpath $1)
-        outputFile=$WORKDIR/$(jq '.outputFile' -c -r $jsonInputFile)
+        outputFile=$(realpath -m $(jq '.outputFile' -c -r $jsonInputFile))
+
+        pushd $TMPDIR
 
         nix eval \
           --option experimental-features "nix-command flakes"\
@@ -62,7 +64,7 @@
         " | python3 ${../apps/cli/format-dream-lock.py} > out
 
         tmpOut=$(realpath out)
-        cd $WORKDIR
+        popd
         mkdir -p $(dirname $outputFile)
         cp $tmpOut $outputFile
       '';

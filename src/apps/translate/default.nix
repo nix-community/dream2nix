@@ -20,8 +20,6 @@ utils.writePureShellScriptBin
   moreutils
 ]
 ''
-  cd $WORKDIR
-
   usage="usage:
     $0 SOURCE_SHORTCUT TARGET_DIR"
 

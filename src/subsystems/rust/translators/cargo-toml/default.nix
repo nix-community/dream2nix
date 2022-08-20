@@ -28,11 +28,12 @@
       jsonInput=$1
 
       # read the json input
-      outputFile=$(jq '.outputFile' -c -r $jsonInput)
+      outputFile=$(realpath -m $(jq '.outputFile' -c -r $jsonInput))
       source=$(jq '.source' -c -r $jsonInput)
       relPath=$(jq '.project.relPath' -c -r $jsonInput)
       cargoArgs=$(jq '.project.subsystemInfo.cargoArgs | select (.!=null)' -c -r $jsonInput)
 
+      pushd $TMPDIR
       cp -r $source/* ./
       chmod -R +w ./
       newSource=$(pwd)
@@ -43,7 +44,7 @@
       cargoResult=$?
 
       jq ".source = \"$newSource\"" -c -r $jsonInput > $TMPDIR/newJsonInput
-      cd $WORKDIR
+      popd
 
       if [ $cargoResult -eq 0 ]; then
         ${subsystems.rust.translators.cargo-lock.translateBin} $TMPDIR/newJsonInput

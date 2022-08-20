@@ -8,8 +8,6 @@ utils.writePureShellScriptBin
 "index"
 [coreutils]
 ''
-  cd $WORKDIR
-
   usage="usage:
     $0 INDEXER_NAME INDEXER_INPUT"
 

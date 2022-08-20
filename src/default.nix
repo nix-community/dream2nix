@@ -621,7 +621,6 @@ in let
       "resolve"
       []
       ''
-        cd $WORKDIR
         ${l.concatStringsSep "\n"
           (l.mapAttrsToList
             (title: script: ''

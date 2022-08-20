@@ -101,10 +101,8 @@ in
 
         export PATH="${lib.makeBinPath availablePrograms}"
         export NIX_PATH=nixpkgs=${pkgs.path}
-        export WORKDIR="$PWD"
 
         TMPDIR=$(${coreutils}/bin/mktemp -d)
-        cd $TMPDIR
 
         ${script}
 
@@ -120,10 +118,8 @@ in
 
         export PATH="${lib.makeBinPath availablePrograms}"
         export NIX_PATH=nixpkgs=${pkgs.path}
-        export WORKDIR="$PWD"
 
         TMPDIR=$(${coreutils}/bin/mktemp -d)
-        cd $TMPDIR
 
         ${script}
 
@@ -214,7 +210,6 @@ in
         ''
           dreamLockPath="${project.dreamLockPath}"
 
-          cd $WORKDIR
           ${translator.translateBin} ${argsJsonFile}
 
           # aggregate source hashes

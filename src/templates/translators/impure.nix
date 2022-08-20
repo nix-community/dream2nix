@@ -63,10 +63,11 @@ in {
       jsonInput=$1
 
       # read the json input
-      outputFile=$WORKDIR/$(jq '.outputFile' -c -r $jsonInput)
+      outputFile=$(realpath -m $(jq '.outputFile' -c -r $jsonInput))
       source=$(jq '.source' -c -r $jsonInput)
       relPath=$(jq '.project.relPath' -c -r $jsonInput)
 
+      cd $TMPDIR
       # TODO:
       # read input files/dirs and produce a json file at $outputFile
       # containing the dream lock similar to /src/specifications/dream-lock-example.json
