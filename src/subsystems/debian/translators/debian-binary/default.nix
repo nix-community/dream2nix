@@ -67,9 +67,11 @@ in {
       jsonInput=$1
 
       # read the json input
-      export outputFile=$WORKDIR/$(jq '.outputFile' -c -r $jsonInput)
+      export outputFile=$(realpath -m $(jq '.outputFile' -c -r $jsonInput))
 
       pkgsName=$(jq '.project.name' -c -r $jsonInput)
+
+      cd $TMPDIR
 
       mkdir ./state
       touch ./status
@@ -78,35 +80,6 @@ in {
       mkdir -p ./etc/apt
       echo "deb http://deb.debian.org/debian bullseye main" >> ./etc/apt/sources.list
 
-      # apt -o Acquire::AllowInsecureRepositories=1 \
-      # -o Dir::State::status=./status \
-      # -o Dir::Etc=./etc/apt \
-      # -o Dir::State=./state \
-      # update
-
-      # apt -o Acquire::AllowInsecureRepositories=1 \
-      # -o Dir::State::status=./status \
-      # -o Dir::Etc=./etc/apt \
-      # -o Dir::State=./state \
-      # install $pkgsName --print-uris > ./deb-uris
-      #
-      # apt -o Acquire::AllowInsecureRepositories=1 \
-      # -o Dir::State::status=./status \
-      # -o Dir::Etc=./etc/apt \
-      # -o Dir::Cache=./download \
-      # -o Dir::State=./state \
-      # install $pkgsName --download-only -y --allow-unauthenticated
-
-      # cat ./deb-uris
-      # ls ./download/archives
-      # ls ./download
-      # ls ./download/archives
-
-      # TODO:
-      # read input files/dirs and produce a json file at $outputFile
-      # containing the dream lock similar to /src/specifications/dream-lock-example.json
-
-      # # generate the dream lock from the downloaded list of files
       export NAME=$pkgsName
       python3 ${./generate_dream_lock.py}
     '';
