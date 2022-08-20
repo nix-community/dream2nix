@@ -10,5 +10,11 @@
     systems = ["x86_64-linux"];
     config.projectRoot = ./.;
     source = ./.;
+    projects = {
+      htop = {
+        name = "htop";
+        translator = "debian-binary";
+      };
+    };
   });
 }

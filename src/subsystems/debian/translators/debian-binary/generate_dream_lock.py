@@ -87,7 +87,6 @@ def main():
                         type="http",
                         url=uri.replace("http:", "https:").replace("'", ""),
                         hash=sha256,
-                        version=version,
                     )
                 }
 
