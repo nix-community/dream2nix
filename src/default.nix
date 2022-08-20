@@ -424,17 +424,18 @@ in let
   translateProjects = {
     discoveredProjects ?
       dlib.discoverers.discoverProjects
-      {inherit settings tree;},
+      {inherit projects settings tree;},
+    projects ? {},
     source ? throw "Pass either `source` or `tree` to translateProjects",
     tree ? dlib.prepareSourceTree {inherit source;},
     pname,
     settings ? [],
   } @ args: let
-    getTranslator = subsystem: translatorName:
-      subsystems."${subsystem}".translators."${translatorName}";
+    getTranslator = translatorName:
+      framework.translatorInstances.${translatorName};
 
     isImpure = project: translatorName:
-      (getTranslator project.subsystem translatorName).type == "impure";
+      (getTranslator translatorName).type == "impure";
 
     getInvalidationHash = project:
       dlib.calcInvalidationHash {
@@ -495,7 +496,7 @@ in let
     projectsResolvedOnTheFly =
       l.forEach projectsPureUnresolved
       (proj: let
-        translator = getTranslator proj.subsystem proj.translator;
+        translator = getTranslator proj.translator;
         dreamLock'' = translator.translate {
           inherit source tree discoveredProjects;
           project = proj;
@@ -609,7 +610,7 @@ in let
         (
           project:
             l.nameValuePair
-            "Name: ${project.name}; Subsystem: ${project.subsystem}; relPath: ${project.relPath}"
+            "Name: ${project.name}; Subsystem: ${project.subsystem or "?"}; relPath: ${project.relPath}"
             (utils.makeTranslateScript {inherit project source;})
         )
         impureDiscoveredProjects
@@ -634,8 +635,12 @@ in let
 
   makeOutputs = {
     source ? throw "pass a 'source' to 'makeOutputs'",
-    discoveredProjects ? dlib.discoverers.discoverProjects {inherit settings source;},
+    discoveredProjects ?
+      dlib.discoverers.discoverProjects {
+        inherit projects settings source;
+      },
     pname ? null,
+    projects ? {},
     settings ? [],
     packageOverrides ? {},
     sourceOverrides ? old: {},
@@ -644,7 +649,7 @@ in let
     impureDiscoveredProjects =
       l.filter
       (proj:
-        subsystems."${proj.subsystem}".translators."${proj.translator}".type
+        framework.translatorInstances."${proj.translator}".type
         == "impure")
       discoveredProjects;
 
