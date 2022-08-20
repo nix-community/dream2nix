@@ -23,15 +23,21 @@
       nix
     ]
     ''
+      cd $TMPDIR
       dir=$1
       shift
       echo -e "\nrunning test $dir"
+      start_time=$(date +%s)
       cp -r ${tests}/$dir/* .
       chmod -R +w .
       nix flake lock --override-input dream2nix ${../../.}
       nix run .#resolveImpure || echo "no resolveImpure probably?"
       nix build
       nix flake check
+      end_time=$(date +%s)
+      elapsed=$(( end_time - start_time ))
+      echo -e "testing example for $dir took $elapsed seconds"
+      echo "$elapsed sec: $dir" >> $STATS_FILE
     '';
 in
   utils.writePureShellScript
@@ -40,6 +46,7 @@ in
     parallel
   ]
   ''
+    export STATS_FILE=$(mktemp)
     if [ -z ''${1+x} ]; then
       parallel --halt now,fail=1 -j$(nproc) -a <(ls ${tests}) ${testScript}
     else
@@ -48,4 +55,7 @@ in
       ${testScript} $arg1 "$@"
     fi
     echo "done running integration tests"
+    echo -e "\nExecution times:"
+    cat $STATS_FILE | sort --numeric-sort
+    rm $STATS_FILE
   ''

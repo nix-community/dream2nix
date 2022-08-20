@@ -23,9 +23,11 @@
       nix
     ]
     ''
+      cd $TMPDIR
       dir=$1
       shift
       echo -e "\ntesting example for $dir"
+      start_time=$(date +%s)
       cp -r ${examples}/$dir/* .
       chmod -R +w .
       nix flake lock --override-input dream2nix ${../../.}
@@ -37,6 +39,10 @@
         nix eval --read-only --no-allow-import-from-derivation .#default.name
       fi
       nix flake check "$@"
+      end_time=$(date +%s)
+      elapsed=$(( end_time - start_time ))
+      echo -e "testing example for $dir took $elapsed seconds"
+      echo "$elapsed sec: $dir" >> $STATS_FILE
     '';
 in
   utils.writePureShellScript
@@ -45,6 +51,7 @@ in
     parallel
   ]
   ''
+    export STATS_FILE=$(mktemp)
     if [ -z ''${1+x} ]; then
       parallel --halt now,fail=1 -j$(nproc) -a <(ls ${examples}) ${testScript}
     else
@@ -52,4 +59,7 @@ in
       shift
       ${testScript} $arg1 "$@"
     fi
+    echo -e "\nExecution times:"
+    cat $STATS_FILE | sort --numeric-sort
+    rm $STATS_FILE
   ''
