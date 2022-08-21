@@ -109,6 +109,7 @@ in {
     */
     tree,
     # arguments defined in `extraArgs` (see below) specified by user
+    noDev,
     ...
   } @ args: let
     # get the root source and project source
@@ -122,23 +123,37 @@ in {
     inherit (callPackageDream ../../utils.nix {}) satisfiesSemver;
 
     # all the pinned packages
-    packages = composerLock.packages;
+    packages =
+      composerLock.packages
+      ++ (
+        if noDev
+        then []
+        else composerLock."packages-dev"
+      );
 
     # toplevel php semver
     phpSemver = composerJson.require."php";
     # all the php extensions
     phpExtensions = let
-      all = map (pkg: l.attrsets.attrNames (pkg.require or {})) packages;
+      all = map (pkg: l.attrsets.attrNames (getRequire pkg)) packages;
       flat = l.lists.flatten all;
       extensions = l.filter (l.strings.hasPrefix "ext-") flat;
     in
       l.lists.unique extensions;
 
-    # get the requierements without php version pin & without php extensions
-    cleanRequire = requires:
+    # get require (and require-dev)
+    getRequire = pkg:
+      (
+        if noDev
+        then []
+        else (pkg."require-dev" or {})
+      )
+      // (pkg.require or {});
+    # strip php version & php extensions
+    cleanRequire = deps:
       l.filterAttrs
       (name: _: (name != "php") && !(l.strings.hasPrefix "ext-" name))
-      requires;
+      deps;
 
     # resolve semvers into exact versions
     pinRequires = dep: let
@@ -148,12 +163,16 @@ in {
             (l.filter (dep: dep.name == name)
               packages)))
         .version;
-      pinnedRequires =
-        if "require" ? dep
-        then l.mapAttrs pin dep.require
+      pinAttr = attr:
+        if attr ? dep
+        then l.mapAttrs pin dep."${attr}"
         else {};
     in
-      dep // {require = pinnedRequires;};
+      dep
+      // {
+        require = pinAttr "require";
+        "require-dev" = pinAttr "require-dev";
+      };
   in
     dlib.simpleTranslate2.translate
     ({objectsByKey, ...}: rec {
@@ -201,6 +220,7 @@ in {
               path = projectSource;
             };
             require = (pinRequires composerJson).require;
+            "require-dev" = (pinRequires composerJson)."require-dev";
           }
         ];
 
@@ -222,7 +242,7 @@ in {
         dependencies = rawObj: finalObj:
           l.attrsets.mapAttrsToList
           (name: version: {inherit name version;})
-          (cleanRequire rawObj.require);
+          (cleanRequire (getRequire rawObj));
 
         sourceSpec = rawObj: finalObj:
           if rawObj.source.type == "path"
@@ -248,21 +268,6 @@ in {
       the dream-lock.
       */
       extraObjects = [
-        # {
-        #   name = "foo2";
-        #   version = "1.0";
-        #   dependencies = [
-        #     {
-        #       name = "bar2";
-        #       version = "1.1";
-        #     }
-        #   ];
-        #   sourceSpec = {
-        #     type = "git";
-        #     url = "https://...";
-        #     rev = "...";
-        #   };
-        # }
       ];
     });
 
@@ -274,5 +279,9 @@ in {
   # String arguments contain a default value and examples. Flags do not.
   # Flags are false by default.
   extraArgs = {
+    noDev = {
+      description = "Exclude development dependencies";
+      type = "flag";
+    };
   };
 }
