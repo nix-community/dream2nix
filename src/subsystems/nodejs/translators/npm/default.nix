@@ -55,8 +55,7 @@
 
       npm install $candidate --package-lock-only $npmArgs
 
-      jq ".source = \"$newSource\"" -c -r $jsonInput > $TMPDIR/newJsonInput
-      jq ".project.relPath = \"\"" -c -r $TMPDIR/newJsonInput | sponge $TMPDIR/newJsonInput
+      jq ".source = \"$newSource\" | .project.relPath = \"\"" -c -r $jsonInput > $TMPDIR/newJsonInput
 
       popd
 
