@@ -154,7 +154,9 @@ in {
     pinPackages = pkgs: let
       clean = requires:
         l.filterAttrs
-        (name: _: (name != "php") && !(l.strings.hasPrefix "ext-" name))
+        (name: _:
+          (l.all (x: name != x) ["php" "composer/composer" "composer-runtime-api"])
+          && !(l.strings.hasPrefix "ext-" name))
         requires;
       doPin = name: semver:
         (l.head
