@@ -193,7 +193,9 @@
 
           findCycles = node: prevNodes: cycles: let
             children =
-              depGraphWithFakeRoot."${node.name}"."${node.version}";
+              if l.hasAttr "${node.name}" depGraphWithFakeRoot
+              then depGraphWithFakeRoot."${node.name}"."${node.version}"
+              else [];
 
             cyclicChildren =
               lib.filter
