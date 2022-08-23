@@ -132,7 +132,7 @@ in {
       );
 
     # toplevel php semver
-    phpSemver = composerJson.require."php";
+    phpSemver = composerJson.require."php" or "*";
     # all the php extensions
     phpExtensions = let
       all = map (pkg: l.attrsets.attrNames (getRequire pkg)) packages;
@@ -200,7 +200,7 @@ in {
       Users will not be interested in all individual dependencies.
       */
       exportedPackages = {
-        "${defaultPackage}" = composerJson.version;
+        "${defaultPackage}" = composerJson.version or "0.0.0";
       };
 
       /*
