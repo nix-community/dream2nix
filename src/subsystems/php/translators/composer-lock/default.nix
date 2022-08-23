@@ -138,8 +138,7 @@ in {
       all = map (pkg: l.attrsets.attrNames (getRequire pkg)) packages;
       flat = l.lists.flatten all;
       extensions = l.filter (l.strings.hasPrefix "ext-") flat;
-    in
-      l.lists.unique extensions;
+    in (map (l.strings.removePrefix "ext-") (l.lists.unique extensions));
 
     # get require (and require-dev)
     getRequire = pkg:
