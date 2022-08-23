@@ -128,50 +128,48 @@ in {
       ++ (
         if noDev
         then []
-        else composerLock."packages-dev"
+        else composerLock.packages-dev
       );
 
     # toplevel php semver
     phpSemver = composerJson.require."php" or "*";
     # all the php extensions
     phpExtensions = let
-      all = map (pkg: l.attrsets.attrNames (getRequire pkg)) packages;
+      all = map (pkg: l.attrsets.attrNames (getDependencies pkg)) resolvedPackages;
       flat = l.lists.flatten all;
       extensions = l.filter (l.strings.hasPrefix "ext-") flat;
-    in (map (l.strings.removePrefix "ext-") (l.lists.unique extensions));
+    in
+      map (l.strings.removePrefix "ext-") (l.lists.unique extensions);
 
     # get require (and require-dev)
-    getRequire = pkg:
+    getDependencies = pkg:
       (
         if noDev
         then []
-        else (pkg."require-dev" or {})
+        else (pkg.require-dev or {})
       )
       // (pkg.require or {});
-    # strip php version & php extensions
-    cleanRequire = deps:
-      l.filterAttrs
-      (name: _: (name != "php") && !(l.strings.hasPrefix "ext-" name))
-      deps;
 
     # resolve semvers into exact versions
-    pinRequires = dep: let
-      pin = name: semver:
+    pinPackages = pkgs: let
+      clean = requires:
+        l.filterAttrs
+        (name: _: (name != "php") && !(l.strings.hasPrefix "ext-" name))
+        requires;
+      doPin = name: semver:
         (l.head
           (l.filter (dep: satisfiesSemver dep.version semver)
             (l.filter (dep: dep.name == name)
               packages)))
         .version;
-      pinAttr = attr:
-        if attr ? dep
-        then l.mapAttrs pin dep."${attr}"
-        else {};
+      doPins = pkg:
+        pkg
+        // {
+          require = l.mapAttrs doPin (clean pkg.require);
+          require-dev = l.mapAttrs doPin (clean pkg.require-dev);
+        };
     in
-      dep
-      // {
-        require = pinAttr "require";
-        "require-dev" = pinAttr "require-dev";
-      };
+      map doPins pkgs;
   in
     dlib.simpleTranslate2.translate
     ({objectsByKey, ...}: rec {
@@ -207,9 +205,8 @@ in {
       If the upstream format is a deep attrset, this list should contain
       a flattened representation of all entries.
       */
-      serializedRawObjects =
-        (map pinRequires composerLock.packages)
-        ++ [
+      serializedRawObjects = pinPackages (
+        [
           # Add the top-level package, this is not written in composer.lock
           {
             name = defaultPackage;
@@ -218,10 +215,11 @@ in {
               type = "path";
               path = projectSource;
             };
-            require = (pinRequires composerJson).require;
-            "require-dev" = (pinRequires composerJson)."require-dev";
+            inherit (composerJson) require require-dev;
           }
-        ];
+        ]
+        ++ packages
+      );
 
       /*
       Define extractor functions which each extract one property from
@@ -241,7 +239,7 @@ in {
         dependencies = rawObj: finalObj:
           l.attrsets.mapAttrsToList
           (name: version: {inherit name version;})
-          (cleanRequire (getRequire rawObj));
+          (getDependencies rawObj);
 
         sourceSpec = rawObj: finalObj:
           if rawObj.source.type == "path"
