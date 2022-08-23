@@ -88,16 +88,6 @@ in {
       ${subsystems.php.translators.composer-lock.translateBin} $TMPDIR/newJsonInput
     '';
 
-  # If the translator requires additional arguments, specify them here.
-  # When users run the CLI, they will be asked to specify these arguments.
-  # There are only two types of arguments:
-  #   - string argument (type = "argument")
-  #   - boolean flag (type = "flag")
-  # String arguments contain a default value and examples. Flags do not.
-  extraArgs = {
-    noDev = {
-      description = "Exclude development dependencies";
-      type = "flag";
-    };
-  };
+  # inherit options from composer-lock translator
+  extraArgs = dlib.translators.translators.php.composer-lock.extraArgs;
 }
