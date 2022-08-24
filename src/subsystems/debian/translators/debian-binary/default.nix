@@ -68,23 +68,5 @@ in {
   #   - string argument (type = "argument")
   #   - boolean flag (type = "flag")
   # String arguments contain a default value and examples. Flags do not.
-  extraArgs = {
-    # Example: boolean option
-    # Flags always default to 'false' if not specified by the user
-    noDev = {
-      description = "Exclude dev dependencies";
-      type = "flag";
-    };
-
-    # Example: string option
-    theAnswer = {
-      default = "42";
-      description = "The Answer to the Ultimate Question of Life";
-      examples = [
-        "0"
-        "1234"
-      ];
-      type = "argument";
-    };
-  };
+  extraArgs = {};
 }

@@ -95,16 +95,12 @@ def main():
         dream_lock["sources"][default_package_src_name].keys()
     )[0]
 
-    # dump dream lock to $ouputFile
-    outputFile = (os.environ.get("outputFile"),)
-    # FIXME: Why is this a tuple?
-    outputFile = outputFile[0]
-    # print(f"outputFile: {outputFile}")
+    # dump dream lock to $outputFile
+    outputFile = (os.environ.get("outputFile"))
     dirPath = pathlib.Path(os.path.dirname(outputFile))
     dirPath.mkdir(parents=True, exist_ok=True)
     with open(outputFile, "w") as lock:
         json.dump(dream_lock, lock, indent=2)
-    # print(list(dream_lock["sources"]["htop"].keys())[0])
 
 
 if __name__ == "__main__":
