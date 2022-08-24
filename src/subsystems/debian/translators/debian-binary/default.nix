@@ -7,28 +7,6 @@
 in {
   type = "impure";
 
-  /*
-  Allow dream2nix to detect if a given directory contains a project
-  which can be translated with this translator.
-  Usually this can be done by checking for the existence of specific
-  file names or file endings.
-
-  Alternatively a fully featured discoverer can be implemented under
-  `src/subsystems/{subsystem}/discoverers`.
-  This is recommended if more complex project structures need to be
-  discovered like, for example, workspace projects spanning over multiple
-  sub-directories
-
-  If a fully featured discoverer exists, do not define `discoverProject`.
-  */
-  discoverProject = tree:
-  # Example
-  # Returns true if given directory contains a file ending with .cabal
-    l.any # is this working?
-    
-    (filename: l.hasSuffix "deb-spec" filename)
-    (l.attrNames tree.files);
-
   # A derivation which outputs a single executable at `$out`.
   # The executable will be called by dream2nix for translation
   # The input format is specified in /specifications/translator-call-example.json.
