@@ -20,7 +20,7 @@ jobs:
         name: nix-community
         signingKey: '${{ secrets.CACHIX_SIGNING_KEY }}'
 
-    - run: nix run .#tests-examples
+    - run: JOBS=10 nix run .#tests-examples
 
   tests-pure:
     runs-on: ubuntu-latest
@@ -54,7 +54,7 @@ jobs:
         name: nix-community
         signingKey: '${{ secrets.CACHIX_SIGNING_KEY }}'
 
-    - run: nix run .#tests-integration
+    - run: JOBS=10 nix run .#tests-integration
 
   tests-unit-nix:
     runs-on: ubuntu-latest
@@ -66,6 +66,10 @@ jobs:
         install_options: '--tarball-url-prefix https://nixos-nix-install-tests.cachix.org/serve'
         extra_nix_config: |
           access-tokens = github.com=${{ secrets.GITHUB_TOKEN }}
+    - uses: cachix/cachix-action@v10
+      with:
+        name: nix-community
+        signingKey: '${{ secrets.CACHIX_SIGNING_KEY }}'
 
     - run: nix run .#tests-unit
 

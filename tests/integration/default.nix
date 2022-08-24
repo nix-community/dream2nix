@@ -48,7 +48,8 @@ in
   ''
     export STATS_FILE=$(mktemp)
     if [ -z ''${1+x} ]; then
-      parallel --halt now,fail=1 -j$(nproc) -a <(ls ${tests}) ${testScript}
+      JOBS=''${JOBS:-$(nproc)}
+      parallel --halt now,fail=1 -j$JOBS -a <(ls ${tests}) ${testScript}
     else
       arg1=$1
       shift
