@@ -17,8 +17,8 @@ in {
   */
   generateUnitTestsForProjects = [
     (builtins.fetchTarball {
-      url = "https://code.castopod.org/adaures/castopod/-/archive/v1.0.0-alpha.80/castopod-v1.0.0-alpha.80.tar.gz";
-      sha256 = "sha256:0lv75pxzhs6q9w22czbgbnc48n6zhaajw9bag2sscaqnvfvfhcsf";
+      url = "https://github.com/tinybeachthor/dream2nix-php-composer-lock/archive/refs/tags/simple.tar.gz";
+      sha256 = "sha256:0yg3f943l5sgikw0pg6jggik5z2gwcwf9brndysszzfhiv3dl289";
     })
   ];
 
