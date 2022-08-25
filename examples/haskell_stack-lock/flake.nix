@@ -16,8 +16,11 @@
       config.projectRoot = ./.;
       settings = [
         {
-          # A ghc version must be specified for stack lock based builds
-          subsystemInfo.ghcVersion = 8107;
+          # A compiler must be specified for stack lock based builds
+          subsystemInfo.compiler = {
+            name = "ghc";
+            version = "8.10.7";
+          };
         }
       ];
     })

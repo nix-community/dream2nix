@@ -238,7 +238,13 @@ in {
         # The structure of this should be defined in:
         #   ./src/specifications/{subsystem}
         subsystemAttrs = {
-          compiler = "ghc${toString args.ghcVersion}";
+          compiler = "${args.compiler.name}${
+            l.stringAsChars (c:
+              if c == "."
+              then ""
+              else c)
+            args.compiler.version
+          }";
         };
 
         # name of the default package

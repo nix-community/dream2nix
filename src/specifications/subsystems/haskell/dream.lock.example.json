@@ -1,5 +1,8 @@
 {
   "_subsystem": {
-    "ghcVersion": 8107
+    "compiler": {
+      name = "ghc",
+      version = "8.10.7"
+    }
   }
 }
