@@ -179,6 +179,11 @@
         relevantDependencies;
 
       cyclicDependencies =
+        if dependencyGraph == {}
+        then {}
+        else cyclicDependencies';
+
+      cyclicDependencies' =
         # TODO: inefficient! Implement some kind of early cutoff
         let
           depGraphWithFakeRoot =
