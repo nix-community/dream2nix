@@ -17,8 +17,8 @@ in {
   */
   generateUnitTestsForProjects = [
     (builtins.fetchTarball {
-      url = "https://github.com/tinybeachthor/dream2nix-php-composer-lock/archive/refs/tags/simple.tar.gz";
-      sha256 = "sha256:0yg3f943l5sgikw0pg6jggik5z2gwcwf9brndysszzfhiv3dl289";
+      url = "https://github.com/tinybeachthor/dream2nix-php-composer-lock/archive/refs/tags/complex.tar.gz";
+      sha256 = "sha256:1xa5paafhwv4bcn2jsmbp1v2afh729r2h153g871zxdmsxsgwrn1";
     })
   ];
 
