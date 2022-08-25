@@ -120,7 +120,11 @@ in {
     composerJson = (projectTree.getNodeFromPath "composer.json").jsonContent;
     composerLock = (projectTree.getNodeFromPath "composer.lock").jsonContent;
 
-    inherit (callPackageDream ../../utils.nix {}) satisfiesSemver;
+    inherit
+      (callPackageDream ../../utils.nix {})
+      satisfiesSemver
+      multiSatisfiesSemver
+      ;
 
     # all the packages
     packages =
@@ -133,6 +137,7 @@ in {
 
     # packages with replacements applied
     resolvedPackages = let
+      getProvide = pkg: (pkg.provide or {});
       getReplace = pkg: let
         resolveVersion = _: version:
           if version == "self.version"
@@ -140,6 +145,27 @@ in {
           else version;
       in
         l.mapAttrs resolveVersion (pkg.replace or {});
+      provide = pkg: dep: let
+        requirements = getDependencies pkg;
+        providements = getProvide dep;
+        cleanRequirements =
+          l.filterAttrs (
+            name: semver:
+              !((providements ? "${name}")
+                && (multiSatisfiesSemver providements."${name}" semver))
+          )
+          requirements;
+      in
+        pkg
+        // {
+          require =
+            cleanRequirements
+            // (
+              if requirements != cleanRequirements
+              then {"${dep.name}" = "${dep.version}";}
+              else {}
+            );
+        };
       replace = pkg: dep: let
         requirements = getDependencies pkg;
         replacements = getReplace dep;
@@ -161,8 +187,9 @@ in {
               else {}
             );
         };
-      doReplacements = pkg: l.foldl replace pkg packages;
-      resolve = pkg: doReplacements pkg;
+      doReplace = pkg: l.foldl replace pkg packages;
+      doProvide = pkg: l.foldl provide pkg packages;
+      resolve = pkg: doProvide (doReplace pkg);
     in
       map resolve packages;
 

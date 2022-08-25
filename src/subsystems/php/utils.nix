@@ -49,12 +49,25 @@
       cleanVersion
       cleanConstraint
     );
-in {
-  satisfiesSemver = version: constraint: let
+
+  splitAlternatives = v: let
     # handle version alternatives: ^1.2 || ^2.0
     trim = s: l.head (l.match "^[[:space:]]*([^[:space:]]*)[[:space:]]*$" s);
-    clean = l.replaceStrings ["||"] ["|"] constraint;
-    alternatives = map trim (l.splitString "|" clean);
+    clean = l.replaceStrings ["||"] ["|"] v;
   in
-    l.any (satisfiesSemverSingle version) alternatives;
+    map trim (l.splitString "|" clean);
+in {
+  # 1.0.2 ~1.0.1
+  # matching a version with semver
+  satisfiesSemver = version: constraint:
+    l.any (satisfiesSemverSingle version) (splitAlternatives constraint);
+
+  # 1.0|2.0 ^2.0
+  # matching multiversion like the one in `provide` with semver
+  multiSatisfiesSemver = multiversion: constraint: let
+    satisfies = v: c: (v == "") || (v == "*") || (satisfiesSemverSingle v c);
+  in
+    l.any
+    (c: l.any (v: satisfies v c) (splitAlternatives multiversion))
+    (splitAlternatives constraint);
 }
