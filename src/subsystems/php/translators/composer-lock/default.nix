@@ -122,7 +122,7 @@ in {
 
     inherit (callPackageDream ../../utils.nix {}) satisfiesSemver;
 
-    # all the pinned packages
+    # all the packages
     packages =
       composerLock.packages
       ++ (
@@ -130,6 +130,41 @@ in {
         then []
         else composerLock.packages-dev
       );
+
+    # packages with replacements applied
+    resolvedPackages = let
+      getReplace = pkg: let
+        resolveVersion = _: version:
+          if version == "self.version"
+          then pkg.version
+          else version;
+      in
+        l.mapAttrs resolveVersion (pkg.replace or {});
+      replace = pkg: dep: let
+        requirements = getDependencies pkg;
+        replacements = getReplace dep;
+        cleanRequirements =
+          l.filterAttrs (
+            name: semver:
+              !((replacements ? "${name}")
+                && (satisfiesSemver replacements."${name}" semver))
+          )
+          requirements;
+      in
+        pkg
+        // {
+          require =
+            cleanRequirements
+            // (
+              if requirements != cleanRequirements
+              then {"${dep.name}" = "${dep.version}";}
+              else {}
+            );
+        };
+      doReplacements = pkg: l.foldl replace pkg packages;
+      resolve = pkg: doReplacements pkg;
+    in
+      map resolve packages;
 
     # toplevel php semver
     phpSemver = composerJson.require."php" or "*";
@@ -162,7 +197,7 @@ in {
         (l.head
           (l.filter (dep: satisfiesSemver dep.version semver)
             (l.filter (dep: dep.name == name)
-              packages)))
+              resolvedPackages)))
         .version;
       doPins = pkg:
         pkg
@@ -220,7 +255,7 @@ in {
             inherit (composerJson) require require-dev;
           }
         ]
-        ++ packages
+        ++ resolvedPackages
       );
 
       /*
