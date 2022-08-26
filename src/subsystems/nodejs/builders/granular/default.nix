@@ -45,9 +45,11 @@
     nodejs =
       if args ? nodejs
       then args.nodejs
-      else
+      else if nodejsVersion != null
+      then
         pkgs."nodejs-${builtins.toString nodejsVersion}_x"
-        or (throw "Could not find nodejs version '${nodejsVersion}' in pkgs");
+        or (throw "Could not find nodejs version '${nodejsVersion}' in pkgs")
+      else pkgs.nodejs;
 
     nodeSources = runCommandLocal "node-sources" {} ''
       tar --no-same-owner --no-same-permissions -xf ${nodejs.src}
@@ -368,7 +370,6 @@
           rm $nodeModules/$packageName/package.json.old
 
           # run python script (see comment above):
-          cp package.json package.json.bak
           python $fixPackage \
           || \
           # exit code 3 -> the package is incompatible to the current platform
@@ -385,8 +386,6 @@
           if [ -f ./tsconfig.json ] \
               && node -e 'require("typescript")' &>/dev/null; then
             node ${./tsconfig-to-json.js}
-            ${pkgs.jq}/bin/jq ".compilerOptions.preserveSymlinks = true" tsconfig.json \
-                | ${pkgs.moreutils}/bin/sponge tsconfig.json
           fi
         '';
 

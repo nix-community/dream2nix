@@ -165,7 +165,13 @@
       currentProjectInfo = dlib.construct.discoveredProject {
         inherit subsystem;
         inherit (tree) relPath;
-        name = tree.files."package.json".jsonContent.name or tree.relPath;
+        name =
+          tree.files."package.json".jsonContent.name
+          or (
+            if tree.relPath == ""
+            then "noname"
+            else tree.relPath
+          );
         translators = getTranslatorNames tree.fullPath;
         subsystemInfo = l.optionalAttrs (workspaces != []) {
           workspaces =
