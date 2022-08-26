@@ -226,6 +226,7 @@
 
     # a dev shell for working on dream2nix
     # use via 'nix develop . -c $SHELL'
+    # TODO only for the current system?
     devShells = forAllSystems (system: pkgs: let
       makeDevshell = import "${inp.devshell}/modules" pkgs;
       mkShell = config:

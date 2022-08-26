@@ -35,9 +35,10 @@
   in
     childrenRemoved;
 
-  getTranslatorNames = path: let
-    nodes = l.readDir path;
-    packageJson = l.fromJSON (l.readFile "${path}/package.json");
+  getTranslatorNames = subTree: let
+    # TODO use nodejsUtils.getWorkspaceLockFile
+    packageJson = subTree.files."package.json".jsonContent;
+    lockJson = subTree.files."package-lock.json".jsonContent or null;
     translators =
       # if the package has no dependencies we use the
       # package-lock translator with `packageLock = null`
@@ -46,16 +47,20 @@
         && (packageJson.devDependencies or {} == {})
         && (packageJson.workspaces or [] == [])
       then ["package-lock"]
+      else if lockJson != null
+      then let
+        lockVersion = lockJson.lockfileVersion or 0;
+      in
+        if lockVersion == 1
+        then ["package-lock"]
+        else if lockVersion == 2 || lockVersion == 3
+        then ["package-lock-v2"]
+        else ["package-json"]
       else
-        l.optionals (nodes ? "package-lock.json") ["package-lock"]
-        ++ l.optionals (nodes ? "yarn.lock") ["yarn-lock"]
+        l.optionals (subTree.files ? "yarn.lock") ["yarn-lock"]
         ++ ["package-json"];
   in
     translators;
-
-  # returns the parsed package.json of a given directory
-  getPackageJson = dirPath:
-    l.fromJSON (l.readFile "${dirPath}/package.json");
 
   # returns all relative paths to workspaces defined by a glob
   getWorkspacePaths = glob: tree:
@@ -121,15 +126,13 @@
   makeWorkspaceProjectInfo = tree: wsRelPath: parentInfo:
     dlib.construct.discoveredProject {
       inherit subsystem;
-      name =
-        (getPackageJson "${tree.fullPath}/${wsRelPath}").name
-        or "${parentInfo.name}/${wsRelPath}";
+      name = (tree.getNodeFromPath wsRelPath).files."package.json".jsonContent.name or "${parentInfo.name}/${wsRelPath}";
       relPath = dlib.sanitizeRelativePath "${tree.relPath}/${wsRelPath}";
       translators =
         l.unique
         (
-          (lib.filter (trans: l.elem trans ["package-lock" "yarn-lock"]) parentInfo.translators)
-          ++ (getTranslatorNames "${tree.fullPath}/${wsRelPath}")
+          (lib.filter (trans: l.elem trans ["package-lock" "package-lock-v2" "yarn-lock"]) parentInfo.translators)
+          ++ (getTranslatorNames (tree.getNodeFromPath wsRelPath))
         );
       subsystemInfo = {
         workspaceParent = tree.relPath;
@@ -152,7 +155,7 @@
           })
         (tree.directories or {}));
   in
-    # skip if not a nodajs project
+    # skip if not a nodejs project
     if
       alreadyDiscovered
       ? "${tree.relPath}"
@@ -172,7 +175,7 @@
             then "noname"
             else tree.relPath
           );
-        translators = getTranslatorNames tree.fullPath;
+        translators = getTranslatorNames tree;
         subsystemInfo = l.optionalAttrs (workspaces != []) {
           workspaces =
             l.map
