@@ -458,6 +458,16 @@ in let
 
     getProjectKey = project: "${project.name}_|_${project.subsystem}_|_${project.relPath}";
 
+    # Remove projects whose translator's do not match with the translator
+    # specified by the user
+    discoveredProjectsStrict =
+      if b.hasAttr "translator" (b.elemAt settings 0)
+      then
+        l.filter
+        (project: b.elem (b.elemAt settings 0).translator project.translators)
+        discoveredProjects
+      else discoveredProjects;
+
     # list of projects extended with some information requried for processing
     projectsList =
       l.map
@@ -478,7 +488,7 @@ in let
           };
       in
         self))
-      discoveredProjects;
+      discoveredProjectsStrict;
 
     # projects without existing valid dream-lock.json
     projectsPureUnresolved =
@@ -498,7 +508,7 @@ in let
       (proj: let
         translator = getTranslator proj.translator;
         dreamLock'' = translator.translate {
-          inherit source tree discoveredProjects;
+          inherit source tree discoveredProjectsStrict;
           project = proj;
         };
 
