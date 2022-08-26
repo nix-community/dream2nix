@@ -203,14 +203,8 @@ in {
     in
       map (l.strings.removePrefix "ext-") (l.lists.unique extensions);
 
-    # get require (and require-dev)
-    getDependencies = pkg:
-      (
-        if noDev
-        then []
-        else (pkg.require-dev or {})
-      )
-      // (pkg.require or {});
+    # get dependencies
+    getDependencies = pkg: (pkg.require or {});
 
     # resolve semvers into exact versions
     pinPackages = pkgs: let
@@ -230,7 +224,6 @@ in {
         pkg
         // {
           require = l.mapAttrs doPin (clean pkg.require);
-          require-dev = l.mapAttrs doPin (clean pkg.require-dev);
         };
     in
       map doPins pkgs;
@@ -279,7 +272,13 @@ in {
               type = "path";
               path = projectSource;
             };
-            inherit (composerJson) require require-dev;
+            require =
+              (
+                if noDev
+                then {}
+                else composerJson.require-dev
+              )
+              // composerJson.require;
           }
         ]
         ++ resolvedPackages
