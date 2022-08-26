@@ -17,6 +17,7 @@
 - [Override system](./intro/override-system.md)
 - [Translators](./intro/translators.md)
 - [Indexers](./intro/indexers.md)
+- [Fetchers](./intro/fetchers.md)
 
 # Contributing
 - [Extending dream2nix](./extending-dream2nix.md)
