@@ -14,7 +14,7 @@ out = os.environ.get('out')
 
 changed = False
 
-# fail if platform incompatible
+# fail if platform incompatible - should not happen due to filters
 if 'os' in package_json:
   platform = sys.platform
   if platform not in package_json['os']\

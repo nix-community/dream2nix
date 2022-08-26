@@ -35,7 +35,5 @@ def symlink_bin(bin_dir, package_json):
       for name, relpath in bin.items():
         link(name, relpath)
 
-# symlink current packages executables to $nodeModules/.bin
-symlink_bin(f'{out}/lib/node_modules/.bin/', package_json)
 # symlink current packages executables to $out/bin
 symlink_bin(f'{out}/bin/', package_json)

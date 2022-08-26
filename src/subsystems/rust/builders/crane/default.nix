@@ -9,7 +9,7 @@
     subsystemAttrs,
     defaultPackageName,
     defaultPackageVersion,
-    getCyclicDependencies,
+    getCyclicHelpers,
     getDependencies,
     getSource,
     getSourceSpec,
@@ -27,7 +27,8 @@
       then externals.crane toolchain
       else if toolchain ? cargo
       then
-        externals.crane {
+        externals.crane
+        {
           cargoHostTarget = toolchain.cargo;
           cargoBuildBuild = toolchain.cargo;
         }
