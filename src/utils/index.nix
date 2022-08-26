@@ -77,6 +77,7 @@ in rec {
         set -e
         inputJson="$(${pkgs.coreutils}/bin/mktemp)"
         echo '${l.toJSON input}' > $inputJson
+        mkdir -p $(dirname ${input.outputFile})
         ${apps.index}/bin/index ${indexerName} $inputJson
       '';
     in
