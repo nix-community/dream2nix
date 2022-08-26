@@ -477,7 +477,10 @@ in let
             translator =
               if
                 (project ? translator)
-                && l.any (t: project.translator == t) project.translators
+                && (
+                  (! project ? translators)
+                  || (l.any (t: project.translator == t) project.translators)
+                )
               then project.translator
               else l.head project.translators;
           };
