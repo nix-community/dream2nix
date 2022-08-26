@@ -1,8 +1,15 @@
 #![deny(rust_2018_idioms)]
+use serde::{Serialize, Deserialize};
 
-use std::collections::BTreeMap;
+#[derive(Serialize, Deserialize)]
+struct Project {
+    id: String,
+    name: String,
+    version: String,
+    translator: String,
+}
 
-pub type Index = Vec<String>;
+pub type Index = Vec<Project>;
 
 #[cfg(feature = "gen")]
 pub use self::indexer::{Indexer, Modifications, Settings};
@@ -60,15 +67,15 @@ mod indexer {
             self.exclusions.iter().any(|n| n == name)
         }
     }
-    
+
     fn default_max_pages() -> u32 {
         1
     }
-    
+
     fn default_sort_by() -> String {
         "downloads".to_string()
     }
-    
+
     fn default_output_file() -> String {
         "./index.json".to_string()
     }
@@ -127,7 +134,7 @@ mod indexer {
             self.page_callback = f;
             self
         }
-        
+
         pub fn write_info(&mut self) {
             let infos = self.generate_info();
             let file =
@@ -199,9 +206,13 @@ mod indexer {
 
                 let pname = summary.name();
                 let version = summary.version().to_string();
-                let hash = summary.checksum().unwrap().to_string();
 
-                let entry = format!("crates-io:{pname}/{version}?hash={hash}");
+                let entry = Project {
+                    id: format!("{pname}-{version}"),
+                    name: pname.to_string(),
+                    version: version,
+                    translator: "crates-io".to_string(),
+                };
 
                 index.push(entry);
             }

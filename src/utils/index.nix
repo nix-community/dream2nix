@@ -5,6 +5,7 @@
   pkgs,
   apps,
   callPackageDream,
+  utils,
   ...
 } @ topArgs: let
   l = lib // builtins;
@@ -54,31 +55,28 @@ in rec {
     (l.map makePackagesForDreamLock dreamLocks);
   makeOutputsForIndexes = {
     source,
-    indexNames,
-    overrideOutputs ? args: {},
+    indexes,
     settings ? [],
     inject ? {},
     packageOverrides ? {},
     sourceOverrides ? {},
   }: let
     l = lib // builtins;
+    indexNames = l.attrNames indexes;
+
     mkApp = script: {
       type = "app";
       program = toString script;
     };
 
-    mkIndexApp = {
-      name,
-      indexerName ? name,
-      input,
-    } @ args: let
-      input = {outputFile = "${name}/index.json";} // args.input;
+    mkIndexApp = name: input: let
+      inputFinal = {outputFile = "${name}/index.json";} // input;
       script = pkgs.writers.writeBash "index" ''
         set -e
         inputJson="$(${pkgs.coreutils}/bin/mktemp)"
-        echo '${l.toJSON input}' > $inputJson
-        mkdir -p $(dirname ${input.outputFile})
-        ${apps.index}/bin/index ${indexerName} $inputJson
+        echo '${l.toJSON inputFinal}' > $inputJson
+        mkdir -p $(dirname ${inputFinal.outputFile})
+        ${apps.index}/bin/index ${name} $inputJson
       '';
     in
       mkApp script;
@@ -88,6 +86,27 @@ in rec {
           set -e
           ${apps.translate-index}/bin/translate-index \
             ${name}/index.json ${name}/locks
+        ''
+      );
+    mkCiJobApp = name: input:
+      mkApp (
+        utils.writePureShellScript
+        (with pkgs; [
+          coreutils
+          git
+          gnugrep
+        ])
+        ''
+          mainBranch=$(git branch | grep -E '(master)|(main)')
+          git branch data || :
+          git checkout data
+          # the flake should always be the one from the current main branch
+          git checkout $mainBranch flake.nix
+          git checkout $mainBranch flake.lock
+          ${(mkIndexApp name input).program}
+          ${(mkTranslateApp name).program}
+          git add .
+          git commit "automatic update - $(date --rfc-3339=seconds)"
         ''
       );
     translateApps = l.listToAttrs (
@@ -100,28 +119,26 @@ in rec {
       )
       indexNames
     );
-    translateAllApp = let
-      allTranslators =
-        l.concatStringsSep
-        "\n"
-        (
-          l.mapAttrsToList
-          (
-            name: translator: ''
-              echo "::translating with ${name}::"
-              ${translator.program}
-              echo "::translated with ${name}::"
-            ''
-          )
-          translateApps
-        );
-    in
-      mkApp (
-        pkgs.writers.writeBash "translate-all" ''
-          set -e
-          ${allTranslators}
-        ''
-      );
+    indexApps = l.listToAttrs (
+      l.mapAttrsToList
+      (
+        name: input:
+          l.nameValuePair
+          "index-${name}"
+          (mkIndexApp name input)
+      )
+      indexes
+    );
+    ciJobApps = l.listToAttrs (
+      l.mapAttrsToList
+      (
+        name: input:
+          l.nameValuePair
+          "ci-job-${name}"
+          (mkCiJobApp name input)
+      )
+      indexes
+    );
 
     mkIndexOutputs = name: let
       src = "${toString source}/${name}/locks";
@@ -150,15 +167,10 @@ in rec {
     outputs = {
       packages = allPackages;
       apps =
-        translateApps
-        // {
-          translate = translateAllApp;
-        };
+        indexApps
+        // translateApps
+        // ciJobApps;
     };
   in
-    outputs
-    // (callPackageDream overrideOutputs {
-      inherit mkIndexApp;
-      prevOutputs = outputs;
-    });
+    outputs;
 }

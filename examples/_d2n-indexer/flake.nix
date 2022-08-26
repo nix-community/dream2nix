@@ -7,28 +7,17 @@
     (inp.dream2nix.lib.makeFlakeOutputsForIndexes {
       source = ./.;
       systems = ["x86_64-linux"];
-      indexNames = ["libraries-io"];
+      indexes = {
+        libraries-io = {
+          platform = "npm";
+          number = 5;
+        };
+        crates-io = {};
+      };
       packageOverrides = {
         "^.*$".disable-build = {
           buildScript = ":";
         };
-      };
-      overrideOutputs = {
-        mkIndexApp,
-        prevOutputs,
-        ...
-      }: {
-        apps =
-          prevOutputs.apps
-          // {
-            libraries-io = mkIndexApp {
-              name = "libraries-io";
-              input = {
-                platform = "npm";
-                number = 5;
-              };
-            };
-          };
       };
     })
     // {
