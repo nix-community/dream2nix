@@ -69,19 +69,7 @@ nix read and understand `package.json` and how to install and link
 nodejs packages - to avoid duplication of dependency definitions and
 build steps.
 
-## Define the target platform(s)
-We have the flake setup, now we need to define the supported systems,
-this is necessary because nix can do multi platform and cross-platform
-builds so we need to tell it what can be built and where.
-
-```command
-> nix eval --impure --raw --expr 'builtins.currentSystem' > ./nix_systems
-> git add ./nix_systems
-```
-
-Remember to add the file `./nix_systems` to git, or it will be ignored.
-If you want to support more platforms later,
-just add more lines to that file.
+{{#include ../define-targets.md}}
 
 ## Explore the outputs
 We have setup the flake, defined our target system(s), now we are ready

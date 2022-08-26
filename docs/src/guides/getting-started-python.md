@@ -21,16 +21,7 @@ wrote: /tmp/my_project/flake.nix
 Great, this created a new file `flake.nix` which is like a recipe that tells nix how to build our python project or how to assemble a development environment for it.
 By modifying this file, we can tweak settings and change the way our package gets built by nix. But for now we just go with the defaults.
 
-## Define the target platform
-Before we can start, we need to tell dream2nix which platform we want to build software for.
-Dream2nix will read these platforms from the file `./nix_systems`.
-To get started we will just add our current platform to it with the following command.
-```command
-> nix eval --impure --raw --expr 'builtins.currentSystem' > ./nix_systems
-> git add ./nix_systems
-```
-Don't forget to add the file `./nix_systems` to git, otherwise it will be ignored.
-If you want to support more platforms later, just add more lines to that file.
+{{#include ../define-targets.md}}
 
 ## List the available packages
 Let's get an overview of what the `flake.nix` allows us to do with our project.
