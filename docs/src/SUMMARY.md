@@ -10,6 +10,7 @@
 - [Python](./subsystems/python.md)
 - [Node.js](./subsystems/node.md)
 - [Haskell](./subsystems/haskell.md)
+- [PHP](./subsystems/php.md)
 
 # Concepts
 - [Architectural Considerations](./intro/architectural-considerations.md)

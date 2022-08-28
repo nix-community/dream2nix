@@ -17,8 +17,8 @@ in {
   */
   generateUnitTestsForProjects = [
     (builtins.fetchTarball {
-      url = "https://code.castopod.org/adaures/castopod/-/archive/v1.0.0-alpha.80/castopod-v1.0.0-alpha.80.tar.gz";
-      sha256 = "sha256:0lv75pxzhs6q9w22czbgbnc48n6zhaajw9bag2sscaqnvfvfhcsf";
+      url = "https://github.com/tinybeachthor/dream2nix-php-composer-lock/archive/refs/tags/complex.tar.gz";
+      sha256 = "sha256:1xa5paafhwv4bcn2jsmbp1v2afh729r2h153g871zxdmsxsgwrn1";
     })
   ];
 
@@ -120,59 +120,113 @@ in {
     composerJson = (projectTree.getNodeFromPath "composer.json").jsonContent;
     composerLock = (projectTree.getNodeFromPath "composer.lock").jsonContent;
 
-    inherit (callPackageDream ../../utils.nix {}) satisfiesSemver;
+    inherit
+      (callPackageDream ../../utils.nix {})
+      satisfiesSemver
+      multiSatisfiesSemver
+      ;
 
-    # all the pinned packages
+    # all the packages
     packages =
       composerLock.packages
       ++ (
         if noDev
         then []
-        else composerLock."packages-dev"
+        else composerLock.packages-dev
       );
 
+    # packages with replacements applied
+    resolvedPackages = let
+      getProvide = pkg: (pkg.provide or {});
+      getReplace = pkg: let
+        resolveVersion = _: version:
+          if version == "self.version"
+          then pkg.version
+          else version;
+      in
+        l.mapAttrs resolveVersion (pkg.replace or {});
+      provide = pkg: dep: let
+        requirements = getDependencies pkg;
+        providements = getProvide dep;
+        cleanRequirements =
+          l.filterAttrs (
+            name: semver:
+              !((providements ? "${name}")
+                && (multiSatisfiesSemver providements."${name}" semver))
+          )
+          requirements;
+      in
+        pkg
+        // {
+          require =
+            cleanRequirements
+            // (
+              if requirements != cleanRequirements
+              then {"${dep.name}" = "${dep.version}";}
+              else {}
+            );
+        };
+      replace = pkg: dep: let
+        requirements = getDependencies pkg;
+        replacements = getReplace dep;
+        cleanRequirements =
+          l.filterAttrs (
+            name: semver:
+              !((replacements ? "${name}")
+                && (satisfiesSemver replacements."${name}" semver))
+          )
+          requirements;
+      in
+        pkg
+        // {
+          require =
+            cleanRequirements
+            // (
+              if requirements != cleanRequirements
+              then {"${dep.name}" = "${dep.version}";}
+              else {}
+            );
+        };
+      doReplace = pkg: l.foldl replace pkg packages;
+      doProvide = pkg: l.foldl provide pkg packages;
+      resolve = pkg: doProvide (doReplace pkg);
+    in
+      map resolve packages;
+
     # toplevel php semver
-    phpSemver = composerJson.require."php";
+    phpSemver = composerJson.require."php" or "*";
     # all the php extensions
     phpExtensions = let
-      all = map (pkg: l.attrsets.attrNames (getRequire pkg)) packages;
+      all = map (pkg: l.attrsets.attrNames (getDependencies pkg)) resolvedPackages;
       flat = l.lists.flatten all;
       extensions = l.filter (l.strings.hasPrefix "ext-") flat;
     in
-      l.lists.unique extensions;
+      map (l.strings.removePrefix "ext-") (l.lists.unique extensions);
 
-    # get require (and require-dev)
-    getRequire = pkg:
-      (
-        if noDev
-        then []
-        else (pkg."require-dev" or {})
-      )
-      // (pkg.require or {});
-    # strip php version & php extensions
-    cleanRequire = deps:
-      l.filterAttrs
-      (name: _: (name != "php") && !(l.strings.hasPrefix "ext-" name))
-      deps;
+    # get dependencies
+    getDependencies = pkg: (pkg.require or {});
 
     # resolve semvers into exact versions
-    pinRequires = dep: let
-      pin = name: semver:
+    pinPackages = pkgs: let
+      clean = requires:
+        l.filterAttrs
+        (name: _:
+          (l.all (x: name != x) ["php" "composer/composer" "composer-runtime-api"])
+          && !(l.strings.hasPrefix "ext-" name))
+        requires;
+      doPin = name: semver:
         (l.head
           (l.filter (dep: satisfiesSemver dep.version semver)
             (l.filter (dep: dep.name == name)
-              packages)))
+              resolvedPackages)))
         .version;
-      pinAttr = attr:
-        if attr ? dep
-        then l.mapAttrs pin dep."${attr}"
-        else {};
+      doPins = pkg:
+        pkg
+        // {
+          require = l.mapAttrs doPin (clean pkg.require);
+        };
     in
-      dep
-      // {
-        require = pinAttr "require";
-        "require-dev" = pinAttr "require-dev";
-      };
+      map doPins pkgs;
   in
     dlib.simpleTranslate2.translate
     ({objectsByKey, ...}: rec {
@@ -200,7 +254,7 @@ in {
       Users will not be interested in all individual dependencies.
       */
       exportedPackages = {
-        "${defaultPackage}" = composerJson.version;
+        "${defaultPackage}" = composerJson.version or "0.0.0";
       };
 
       /*
@@ -208,9 +262,8 @@ in {
       If the upstream format is a deep attrset, this list should contain
       a flattened representation of all entries.
       */
-      serializedRawObjects =
-        (map pinRequires composerLock.packages)
-        ++ [
+      serializedRawObjects = pinPackages (
+        [
           # Add the top-level package, this is not written in composer.lock
           {
             name = defaultPackage;
@@ -219,10 +272,17 @@ in {
               type = "path";
               path = projectSource;
             };
-            require = (pinRequires composerJson).require;
-            "require-dev" = (pinRequires composerJson)."require-dev";
+            require =
+              (
+                if noDev
+                then {}
+                else composerJson.require-dev
+              )
+              // composerJson.require;
           }
-        ];
+        ]
+        ++ resolvedPackages
+      );
 
       /*
       Define extractor functions which each extract one property from
@@ -242,7 +302,7 @@ in {
         dependencies = rawObj: finalObj:
           l.attrsets.mapAttrsToList
           (name: version: {inherit name version;})
-          (cleanRequire (getRequire rawObj));
+          (getDependencies rawObj);
 
         sourceSpec = rawObj: finalObj:
           if rawObj.source.type == "path"
