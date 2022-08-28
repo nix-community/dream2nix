@@ -76,7 +76,7 @@
 
         <nav id="sidebar" class="sidebar" aria-label="Table of contents">
             <div class="sidebar-scrollbox">
-                <ol class="chapter"><li class="chapter-item expanded "><a href="intro.html"><strong aria-hidden="true">1.</strong> Introduction</a></li><li class="chapter-item expanded affix "><li class="part-title">Guides</li><li class="chapter-item expanded "><a href="guides/getting-started-python.html"><strong aria-hidden="true">2.</strong> Python: getting started in 10 minutes</a></li><li class="chapter-item expanded "><a href="guides/getting-started-nodejs.html"><strong aria-hidden="true">3.</strong> Node.js: quickstart</a></li><li class="chapter-item expanded affix "><li class="part-title">Subsystems</li><li class="chapter-item expanded "><a href="subsystems/rust.html"><strong aria-hidden="true">4.</strong> Rust</a></li><li class="chapter-item expanded "><a href="subsystems/python.html"><strong aria-hidden="true">5.</strong> Python</a></li><li class="chapter-item expanded "><a href="subsystems/node.html"><strong aria-hidden="true">6.</strong> Node.js</a></li><li class="chapter-item expanded "><a href="subsystems/haskell.html"><strong aria-hidden="true">7.</strong> Haskell</a></li><li class="chapter-item expanded affix "><li class="part-title">Concepts</li><li class="chapter-item expanded "><a href="intro/architectural-considerations.html"><strong aria-hidden="true">8.</strong> Architectural Considerations</a></li><li class="chapter-item expanded "><a href="intro/nixpkgs-improvements.html"><strong aria-hidden="true">9.</strong> Nixpkgs improvements</a></li><li class="chapter-item expanded "><a href="intro/override-system.html"><strong aria-hidden="true">10.</strong> Override system</a></li><li class="chapter-item expanded "><a href="intro/translators.html"><strong aria-hidden="true">11.</strong> Translators</a></li><li class="chapter-item expanded "><a href="intro/indexers.html"><strong aria-hidden="true">12.</strong> Indexers</a></li><li class="chapter-item expanded affix "><li class="part-title">Contributing</li><li class="chapter-item expanded "><a href="extending-dream2nix.html"><strong aria-hidden="true">13.</strong> Extending dream2nix</a></li><li class="chapter-item expanded "><a href="contributing.html"><strong aria-hidden="true">14.</strong> Contributing</a></li><li class="chapter-item expanded affix "><li class="part-title">Development Roundups</li><li class="chapter-item expanded "><a href="development-roundups/2022-april-june.html"><strong aria-hidden="true">15.</strong> April - June 2022</a></li></ol>
+                <ol class="chapter"><li class="chapter-item expanded "><a href="intro.html"><strong aria-hidden="true">1.</strong> Introduction</a></li><li class="chapter-item expanded affix "><li class="part-title">Guides</li><li class="chapter-item expanded "><a href="guides/getting-started-python.html"><strong aria-hidden="true">2.</strong> Python: getting started in 10 minutes</a></li><li class="chapter-item expanded "><a href="guides/getting-started-nodejs.html"><strong aria-hidden="true">3.</strong> Node.js: quickstart</a></li><li class="chapter-item expanded affix "><li class="part-title">Subsystems</li><li class="chapter-item expanded "><a href="subsystems/rust.html"><strong aria-hidden="true">4.</strong> Rust</a></li><li class="chapter-item expanded "><a href="subsystems/python.html"><strong aria-hidden="true">5.</strong> Python</a></li><li class="chapter-item expanded "><a href="subsystems/node.html"><strong aria-hidden="true">6.</strong> Node.js</a></li><li class="chapter-item expanded "><a href="subsystems/haskell.html"><strong aria-hidden="true">7.</strong> Haskell</a></li><li class="chapter-item expanded "><a href="subsystems/php.html"><strong aria-hidden="true">8.</strong> PHP</a></li><li class="chapter-item expanded affix "><li class="part-title">Concepts</li><li class="chapter-item expanded "><a href="intro/architectural-considerations.html"><strong aria-hidden="true">9.</strong> Architectural Considerations</a></li><li class="chapter-item expanded "><a href="intro/nixpkgs-improvements.html"><strong aria-hidden="true">10.</strong> Nixpkgs improvements</a></li><li class="chapter-item expanded "><a href="intro/override-system.html"><strong aria-hidden="true">11.</strong> Override system</a></li><li class="chapter-item expanded "><a href="intro/translators.html"><strong aria-hidden="true">12.</strong> Translators</a></li><li class="chapter-item expanded "><a href="intro/indexers.html"><strong aria-hidden="true">13.</strong> Indexers</a></li><li class="chapter-item expanded affix "><li class="part-title">Contributing</li><li class="chapter-item expanded "><a href="extending-dream2nix.html"><strong aria-hidden="true">14.</strong> Extending dream2nix</a></li><li class="chapter-item expanded "><a href="contributing.html"><strong aria-hidden="true">15.</strong> Contributing</a></li><li class="chapter-item expanded affix "><li class="part-title">Development Roundups</li><li class="chapter-item expanded "><a href="development-roundups/2022-april-june.html"><strong aria-hidden="true">16.</strong> April - June 2022</a></li></ol>
             </div>
             <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
         </nav>
@@ -811,6 +811,22 @@ Currently we have a builder for haskell and several translators (see table below
 <tr><td><strong>file name</strong></td><td>stack.yaml.lock</td><td>plan.json</td><td>cabal.project.freeze</td></tr>
 <tr><td><strong>status</strong></td><td>implemented</td><td>implemented</td><td>missing</td></tr>
 </tbody></table>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="php-subsystem"><a class="header" href="#php-subsystem">PHP subsystem</a></h1>
+<blockquote>
+<p>!!! PHP support is a work in progress, and it is not yet usable (a
+builder is missing). You can track the progress in
+<a href="https://github.com/nix-community/dream2nix/issues/240">nix-community/dream2nix#240</a>.</p>
+</blockquote>
+<p>This section documents the PHP subsystem.</p>
+<h2 id="translators-4"><a class="header" href="#translators-4">Translators</a></h2>
+<h3 id="composer-lock-pure"><a class="header" href="#composer-lock-pure">composer-lock (pure)</a></h3>
+<p>Translates <code>composer.lock</code> into a dream2nix lockfile.</p>
+<h3 id="composer-json-impure"><a class="header" href="#composer-json-impure">composer-json (impure)</a></h3>
+<p>Resolves dependencies in <code>composer.json</code> using <code>composer</code> to generate a
+<code>composer.lock</code> lockfile, then invokes the <code>composer-lock</code> translator to
+generate a dream2nix lockfile.</p>
+<h2 id="builders-3"><a class="header" href="#builders-3">Builders</a></h2>
+<p>None so far.</p>
 <div style="break-before: page; page-break-before: always;"></div><h3 id="modularity"><a class="header" href="#modularity">Modularity:</a></h3>
 <p>The following phases which are generic to basically all existing 2nix solutions:</p>
 <ul>
@@ -1147,7 +1163,7 @@ dream2nix overrides have the following properties:</p>
   };
 }
 </code></pre>
-<div style="break-before: page; page-break-before: always;"></div><h1 id="translators-4"><a class="header" href="#translators-4">Translators</a></h1>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="translators-5"><a class="header" href="#translators-5">Translators</a></h1>
 <p>This document classifies different methods for translating requirement/lock
 files to the generic lock format and describes how the resulting packages
 can be integrated into nix builds inside and outside of nixpkgs.</p>

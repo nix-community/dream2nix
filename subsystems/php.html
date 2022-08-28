@@ -3,7 +3,7 @@
     <head>
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
-        <title>Translators - dream2nix documentation</title>
+        <title>PHP - dream2nix documentation</title>
         <!-- Custom HTML head -->
         <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
         <meta name="description" content="">
@@ -75,7 +75,7 @@
 
         <nav id="sidebar" class="sidebar" aria-label="Table of contents">
             <div class="sidebar-scrollbox">
-                <ol class="chapter"><li class="chapter-item expanded "><a href="../intro.html"><strong aria-hidden="true">1.</strong> Introduction</a></li><li class="chapter-item expanded affix "><li class="part-title">Guides</li><li class="chapter-item expanded "><a href="../guides/getting-started-python.html"><strong aria-hidden="true">2.</strong> Python: getting started in 10 minutes</a></li><li class="chapter-item expanded "><a href="../guides/getting-started-nodejs.html"><strong aria-hidden="true">3.</strong> Node.js: quickstart</a></li><li class="chapter-item expanded affix "><li class="part-title">Subsystems</li><li class="chapter-item expanded "><a href="../subsystems/rust.html"><strong aria-hidden="true">4.</strong> Rust</a></li><li class="chapter-item expanded "><a href="../subsystems/python.html"><strong aria-hidden="true">5.</strong> Python</a></li><li class="chapter-item expanded "><a href="../subsystems/node.html"><strong aria-hidden="true">6.</strong> Node.js</a></li><li class="chapter-item expanded "><a href="../subsystems/haskell.html"><strong aria-hidden="true">7.</strong> Haskell</a></li><li class="chapter-item expanded "><a href="../subsystems/php.html"><strong aria-hidden="true">8.</strong> PHP</a></li><li class="chapter-item expanded affix "><li class="part-title">Concepts</li><li class="chapter-item expanded "><a href="../intro/architectural-considerations.html"><strong aria-hidden="true">9.</strong> Architectural Considerations</a></li><li class="chapter-item expanded "><a href="../intro/nixpkgs-improvements.html"><strong aria-hidden="true">10.</strong> Nixpkgs improvements</a></li><li class="chapter-item expanded "><a href="../intro/override-system.html"><strong aria-hidden="true">11.</strong> Override system</a></li><li class="chapter-item expanded "><a href="../intro/translators.html" class="active"><strong aria-hidden="true">12.</strong> Translators</a></li><li class="chapter-item expanded "><a href="../intro/indexers.html"><strong aria-hidden="true">13.</strong> Indexers</a></li><li class="chapter-item expanded affix "><li class="part-title">Contributing</li><li class="chapter-item expanded "><a href="../extending-dream2nix.html"><strong aria-hidden="true">14.</strong> Extending dream2nix</a></li><li class="chapter-item expanded "><a href="../contributing.html"><strong aria-hidden="true">15.</strong> Contributing</a></li><li class="chapter-item expanded affix "><li class="part-title">Development Roundups</li><li class="chapter-item expanded "><a href="../development-roundups/2022-april-june.html"><strong aria-hidden="true">16.</strong> April - June 2022</a></li></ol>
+                <ol class="chapter"><li class="chapter-item expanded "><a href="../intro.html"><strong aria-hidden="true">1.</strong> Introduction</a></li><li class="chapter-item expanded affix "><li class="part-title">Guides</li><li class="chapter-item expanded "><a href="../guides/getting-started-python.html"><strong aria-hidden="true">2.</strong> Python: getting started in 10 minutes</a></li><li class="chapter-item expanded "><a href="../guides/getting-started-nodejs.html"><strong aria-hidden="true">3.</strong> Node.js: quickstart</a></li><li class="chapter-item expanded affix "><li class="part-title">Subsystems</li><li class="chapter-item expanded "><a href="../subsystems/rust.html"><strong aria-hidden="true">4.</strong> Rust</a></li><li class="chapter-item expanded "><a href="../subsystems/python.html"><strong aria-hidden="true">5.</strong> Python</a></li><li class="chapter-item expanded "><a href="../subsystems/node.html"><strong aria-hidden="true">6.</strong> Node.js</a></li><li class="chapter-item expanded "><a href="../subsystems/haskell.html"><strong aria-hidden="true">7.</strong> Haskell</a></li><li class="chapter-item expanded "><a href="../subsystems/php.html" class="active"><strong aria-hidden="true">8.</strong> PHP</a></li><li class="chapter-item expanded affix "><li class="part-title">Concepts</li><li class="chapter-item expanded "><a href="../intro/architectural-considerations.html"><strong aria-hidden="true">9.</strong> Architectural Considerations</a></li><li class="chapter-item expanded "><a href="../intro/nixpkgs-improvements.html"><strong aria-hidden="true">10.</strong> Nixpkgs improvements</a></li><li class="chapter-item expanded "><a href="../intro/override-system.html"><strong aria-hidden="true">11.</strong> Override system</a></li><li class="chapter-item expanded "><a href="../intro/translators.html"><strong aria-hidden="true">12.</strong> Translators</a></li><li class="chapter-item expanded "><a href="../intro/indexers.html"><strong aria-hidden="true">13.</strong> Indexers</a></li><li class="chapter-item expanded affix "><li class="part-title">Contributing</li><li class="chapter-item expanded "><a href="../extending-dream2nix.html"><strong aria-hidden="true">14.</strong> Extending dream2nix</a></li><li class="chapter-item expanded "><a href="../contributing.html"><strong aria-hidden="true">15.</strong> Contributing</a></li><li class="chapter-item expanded affix "><li class="part-title">Development Roundups</li><li class="chapter-item expanded "><a href="../development-roundups/2022-april-june.html"><strong aria-hidden="true">16.</strong> April - June 2022</a></li></ol>
             </div>
             <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
         </nav>
@@ -134,73 +134,31 @@
 
                 <div id="content" class="content">
                     <main>
-                        <h1 id="translators"><a class="header" href="#translators">Translators</a></h1>
-<p>This document classifies different methods for translating requirement/lock
-files to the generic lock format and describes how the resulting packages
-can be integrated into nix builds inside and outside of nixpkgs.</p>
-<h2 id="pure-nix-preferred"><a class="header" href="#pure-nix-preferred">pure-nix (preferred)</a></h2>
-<p>Suitable if:</p>
-<ul>
-<li>the input contains information like URLs and hashes</li>
-<li>nix supports the hashing algorithm</li>
-<li>the input can be processed with the nix language directly</li>
-</ul>
-<p>Usage outside of nixpkgs:</p>
-<ul>
-<li>The input + translator are enough, not requiring any pre-processing.</li>
-</ul>
-<p>Usage inside nixpkgs:</p>
-<ul>
-<li>The input + translator are enough, not requiring any pre-processing.</li>
-</ul>
-<h2 id="ifdrecursive-compatible-with-import-from-derivation-or-recursive-nix"><a class="header" href="#ifdrecursive-compatible-with-import-from-derivation-or-recursive-nix">IFD/recursive (compatible with import from derivation or recursive nix)</a></h2>
-<p>Suitable if:</p>
-<ul>
-<li>the input contains information like URLs and hashes</li>
-<li>nix understands the hashing algorithm</li>
-<li>to process the input, a nix build is required, because for example:
-<ul>
-<li>the format cannot be parsed with the nix language (yaml etc.)</li>
-<li>processing the input is too complex and therefore inefficient in nix language</li>
-</ul>
-</li>
-</ul>
-<p>Usage outside of nixpkgs:</p>
-<ul>
-<li>The input + translator are enough. The generic lock file is generated via IFD</li>
-</ul>
-<p>Usage inside nixpkgs:</p>
-<ul>
-<li>generic lock file must be pre-generated using dream2nix cli</li>
-</ul>
-<h2 id="impure-running-outside-of-nix-build"><a class="header" href="#impure-running-outside-of-nix-build">impure (running outside of nix build)</a></h2>
-<p>Suitable if:</p>
-<ul>
-<li>the input is missing URLs or hashes</li>
-<li>the method used to process the input contains impurities, like for example:
-<ul>
-<li>queries to an online index with varying responses</li>
-<li>packages must be downloaded to discover important meta data like dependencies.</li>
-</ul>
-</li>
-</ul>
-<p>Usage outside of nixpkgs:</p>
-<ul>
-<li>generic lock file must be pre-generated using dream2nix cli</li>
-</ul>
-<p>Usage inside nixpkgs:</p>
-<ul>
-<li>generic lock file must be pre-generated using dream2nix cli</li>
-</ul>
+                        <h1 id="php-subsystem"><a class="header" href="#php-subsystem">PHP subsystem</a></h1>
+<blockquote>
+<p>!!! PHP support is a work in progress, and it is not yet usable (a
+builder is missing). You can track the progress in
+<a href="https://github.com/nix-community/dream2nix/issues/240">nix-community/dream2nix#240</a>.</p>
+</blockquote>
+<p>This section documents the PHP subsystem.</p>
+<h2 id="translators"><a class="header" href="#translators">Translators</a></h2>
+<h3 id="composer-lock-pure"><a class="header" href="#composer-lock-pure">composer-lock (pure)</a></h3>
+<p>Translates <code>composer.lock</code> into a dream2nix lockfile.</p>
+<h3 id="composer-json-impure"><a class="header" href="#composer-json-impure">composer-json (impure)</a></h3>
+<p>Resolves dependencies in <code>composer.json</code> using <code>composer</code> to generate a
+<code>composer.lock</code> lockfile, then invokes the <code>composer-lock</code> translator to
+generate a dream2nix lockfile.</p>
+<h2 id="builders"><a class="header" href="#builders">Builders</a></h2>
+<p>None so far.</p>
 
                     </main>
 
                     <nav class="nav-wrapper" aria-label="Page navigation">
                         <!-- Mobile navigation buttons -->
-                            <a rel="prev" href="../intro/override-system.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                            <a rel="prev" href="../subsystems/haskell.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                                 <i class="fa fa-angle-left"></i>
                             </a>
-                            <a rel="next" href="../intro/indexers.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                            <a rel="next" href="../intro/architectural-considerations.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                                 <i class="fa fa-angle-right"></i>
                             </a>
                         <div style="clear: both"></div>
@@ -209,10 +167,10 @@ can be integrated into nix builds inside and outside of nixpkgs.</p>
             </div>
 
             <nav class="nav-wide-wrapper" aria-label="Page navigation">
-                    <a rel="prev" href="../intro/override-system.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                    <a rel="prev" href="../subsystems/haskell.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                         <i class="fa fa-angle-left"></i>
                     </a>
-                    <a rel="next" href="../intro/indexers.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                    <a rel="next" href="../intro/architectural-considerations.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                         <i class="fa fa-angle-right"></i>
                     </a>
             </nav>
