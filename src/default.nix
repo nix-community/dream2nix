@@ -461,7 +461,7 @@ in let
     # Remove projects whose translator's do not match with the translator
     # specified by the user
     discoveredProjectsStrict =
-      if b.hasAttr "translator" (b.elemAt settings 0)
+      if l.length settings != 0 && b.hasAttr "translator" (b.elemAt settings 0)
       then
         l.filter
         (project: b.elem (b.elemAt settings 0).translator project.translators)
