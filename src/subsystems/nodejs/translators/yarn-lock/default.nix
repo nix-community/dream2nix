@@ -168,14 +168,7 @@
             else lib.head split;
 
         version = rawObj: finalObj:
-          if l.hasInfix "@git+" rawObj.yarnName
-          then let
-            split = l.splitString "@git+" rawObj.yarnName;
-            gitUrl = l.last split;
-          in
-            l.strings.sanitizeDerivationName
-            "${rawObj.version}@git+${gitUrl}"
-          else if l.hasInfix "@npm:" rawObj.yarnName
+          if l.hasInfix "@npm:" rawObj.yarnName
           then let
             split = l.splitString "@" rawObj.version;
             version = l.last split;
