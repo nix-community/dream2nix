@@ -36,7 +36,7 @@ in {
       });
     };
     generateUnitTestsForProjects = lib.mkOption {
-      type = t.listOf t.anything;
+      type = t.listOf t.unspecified;
       default = [];
     };
     name = lib.mkOption {
