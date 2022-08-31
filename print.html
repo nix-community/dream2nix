@@ -76,7 +76,7 @@
 
         <nav id="sidebar" class="sidebar" aria-label="Table of contents">
             <div class="sidebar-scrollbox">
-                <ol class="chapter"><li class="chapter-item expanded "><a href="intro.html"><strong aria-hidden="true">1.</strong> Introduction</a></li><li class="chapter-item expanded affix "><li class="part-title">Guides</li><li class="chapter-item expanded "><a href="guides/getting-started-python.html"><strong aria-hidden="true">2.</strong> Python: getting started in 10 minutes</a></li><li class="chapter-item expanded "><a href="guides/getting-started-nodejs.html"><strong aria-hidden="true">3.</strong> Node.js: quickstart</a></li><li class="chapter-item expanded affix "><li class="part-title">Subsystems</li><li class="chapter-item expanded "><a href="subsystems/rust.html"><strong aria-hidden="true">4.</strong> Rust</a></li><li class="chapter-item expanded "><a href="subsystems/python.html"><strong aria-hidden="true">5.</strong> Python</a></li><li class="chapter-item expanded "><a href="subsystems/node.html"><strong aria-hidden="true">6.</strong> Node.js</a></li><li class="chapter-item expanded "><a href="subsystems/haskell.html"><strong aria-hidden="true">7.</strong> Haskell</a></li><li class="chapter-item expanded "><a href="subsystems/php.html"><strong aria-hidden="true">8.</strong> PHP</a></li><li class="chapter-item expanded affix "><li class="part-title">Concepts</li><li class="chapter-item expanded "><a href="intro/architectural-considerations.html"><strong aria-hidden="true">9.</strong> Architectural Considerations</a></li><li class="chapter-item expanded "><a href="intro/nixpkgs-improvements.html"><strong aria-hidden="true">10.</strong> Nixpkgs improvements</a></li><li class="chapter-item expanded "><a href="intro/override-system.html"><strong aria-hidden="true">11.</strong> Override system</a></li><li class="chapter-item expanded "><a href="intro/translators.html"><strong aria-hidden="true">12.</strong> Translators</a></li><li class="chapter-item expanded "><a href="intro/indexers.html"><strong aria-hidden="true">13.</strong> Indexers</a></li><li class="chapter-item expanded affix "><li class="part-title">Contributing</li><li class="chapter-item expanded "><a href="extending-dream2nix.html"><strong aria-hidden="true">14.</strong> Extending dream2nix</a></li><li class="chapter-item expanded "><a href="contributing.html"><strong aria-hidden="true">15.</strong> Contributing</a></li><li class="chapter-item expanded affix "><li class="part-title">Development Roundups</li><li class="chapter-item expanded "><a href="development-roundups/2022-april-june.html"><strong aria-hidden="true">16.</strong> April - June 2022</a></li></ol>
+                <ol class="chapter"><li class="chapter-item expanded "><a href="intro.html"><strong aria-hidden="true">1.</strong> Introduction</a></li><li class="chapter-item expanded affix "><li class="part-title">Guides</li><li class="chapter-item expanded "><a href="guides/getting-started-python.html"><strong aria-hidden="true">2.</strong> Python: getting started in 10 minutes</a></li><li class="chapter-item expanded "><a href="guides/getting-started-nodejs.html"><strong aria-hidden="true">3.</strong> Node.js: quickstart</a></li><li class="chapter-item expanded affix "><li class="part-title">Subsystems</li><li class="chapter-item expanded "><a href="subsystems/rust.html"><strong aria-hidden="true">4.</strong> Rust</a></li><li class="chapter-item expanded "><a href="subsystems/python.html"><strong aria-hidden="true">5.</strong> Python</a></li><li class="chapter-item expanded "><a href="subsystems/node.html"><strong aria-hidden="true">6.</strong> Node.js</a></li><li class="chapter-item expanded "><a href="subsystems/haskell.html"><strong aria-hidden="true">7.</strong> Haskell</a></li><li class="chapter-item expanded "><a href="subsystems/php.html"><strong aria-hidden="true">8.</strong> PHP</a></li><li class="chapter-item expanded affix "><li class="part-title">Concepts</li><li class="chapter-item expanded "><a href="intro/architectural-considerations.html"><strong aria-hidden="true">9.</strong> Architectural Considerations</a></li><li class="chapter-item expanded "><a href="intro/nixpkgs-improvements.html"><strong aria-hidden="true">10.</strong> Nixpkgs improvements</a></li><li class="chapter-item expanded "><a href="intro/override-system.html"><strong aria-hidden="true">11.</strong> Override system</a></li><li class="chapter-item expanded "><a href="intro/translators.html"><strong aria-hidden="true">12.</strong> Translators</a></li><li class="chapter-item expanded "><a href="intro/indexers.html"><strong aria-hidden="true">13.</strong> Indexers</a></li><li class="chapter-item expanded "><a href="intro/fetchers.html"><strong aria-hidden="true">14.</strong> Fetchers</a></li><li class="chapter-item expanded affix "><li class="part-title">Contributing</li><li class="chapter-item expanded "><a href="extending-dream2nix.html"><strong aria-hidden="true">15.</strong> Extending dream2nix</a></li><li class="chapter-item expanded "><a href="contributing.html"><strong aria-hidden="true">16.</strong> Contributing</a></li><li class="chapter-item expanded affix "><li class="part-title">Development Roundups</li><li class="chapter-item expanded "><a href="development-roundups/2022-april-june.html"><strong aria-hidden="true">17.</strong> April - June 2022</a></li></ol>
             </div>
             <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
         </nav>
@@ -162,9 +162,20 @@
 <div style="break-before: page; page-break-before: always;"></div><h1 id="build-your-python-project-with-nix-in-10-minutes"><a class="header" href="#build-your-python-project-with-nix-in-10-minutes">Build your python project with nix in 10 minutes</a></h1>
 <p>!!! Warning: dream2nix is unstable software. While simple UX is one of our main focus points, the APIs  are still under development. Do expect changes that will break your setup.</p>
 <p>This guide walks you through the process of setting up nix for your project using dream2nix. This will allow your project's build and dev-environment to be reproduced by machines of other developers or CI systems with high accuracy.</p>
+<h2 id="outline"><a class="header" href="#outline">Outline</a></h2>
+<ol start="0">
+<li>Install nix</li>
+<li>Navigate to your python project</li>
+<li>Initialize the dream2nix flake</li>
+<li>Define target platform(s)</li>
+<li>List the available packages</li>
+<li>Build the project</li>
+<li>Create a development shell</li>
+<li>Resolve impurities</li>
+</ol>
 <h2 id="install-nix"><a class="header" href="#install-nix">Install nix</a></h2>
 <p>If you don't have nix already, check out <a href="https://nixos.org/download.html">nixos.org/download.html</a> on how to install it.</p>
-<h2 id="enable-the-nix-flakes-feature"><a class="header" href="#enable-the-nix-flakes-feature">Enable the nix flakes feature</a></h2>
+<h3 id="enable-the-nix-flakes-feature"><a class="header" href="#enable-the-nix-flakes-feature">Enable the nix flakes feature</a></h3>
 <p>For internal dependency management dream2nix requires the experimental nix feature <code>flakes</code> being enabled.</p>
 <pre><code>export NIX_CONFIG=&quot;extras-experimental-features = flakes nix-command&quot;
 </code></pre>
@@ -182,15 +193,35 @@ wrote: /tmp/my_project/flake.nix
 </code></pre>
 <p>Great, this created a new file <code>flake.nix</code> which is like a recipe that tells nix how to build our python project or how to assemble a development environment for it.
 By modifying this file, we can tweak settings and change the way our package gets built by nix. But for now we just go with the defaults.</p>
-<h2 id="define-the-target-platform"><a class="header" href="#define-the-target-platform">Define the target platform</a></h2>
-<p>Before we can start, we need to tell dream2nix which platform we want to build software for.
-Dream2nix will read these platforms from the file <code>./nix_systems</code>.
-To get started we will just add our current platform to it with the following command.</p>
+<h2 id="define-target-platforms"><a class="header" href="#define-target-platforms">Define target platform(s)</a></h2>
+<p>We have the flake setup, now we need to define the supported systems,
+this is necessary because nix can do multi platform and cross-platform
+builds so we need to tell it what can be built and where.</p>
+<p>There are 2 ways to do this, either with a <code>nix_systems</code> file,
+or we can write the target platforms inline to our <code>flake.nix</code>.</p>
+<h3 id="nix_systems"><a class="header" href="#nix_systems">nix_systems</a></h3>
+<p>We can create a <code>nix_systems</code> file with the current system:</p>
 <pre><code class="language-command">&gt; nix eval --impure --raw --expr 'builtins.currentSystem' &gt; ./nix_systems
 &gt; git add ./nix_systems
 </code></pre>
-<p>Don't forget to add the file <code>./nix_systems</code> to git, otherwise it will be ignored.
+<p>The <code>nix_systems</code> file is simply a list of the supported systems, for example:</p>
+<pre><code>x86_64-linux
+</code></pre>
+<p>Remember to add the file <code>./nix_systems</code> to git, or it won't be picked up by nix.
 If you want to support more platforms later, just add more lines to that file.</p>
+<h3 id="inline"><a class="header" href="#inline">inline</a></h3>
+<p>Alternatively, we can define the targets in the <code>flake.nix</code> like so:</p>
+<pre><code class="language-nix">{
+  inputs.dream2nix.url = &quot;github:nix-community/dream2nix&quot;;
+  outputs = inp:
+    inp.dream2nix.lib.makeFlakeOutputs {
+      systems = [&quot;x86_64-linux&quot;];         # &lt;- This line.
+      config.projectRoot = ./.;
+      source = ./.;
+    };
+}
+</code></pre>
+<p>This has the advantage of keeping all the configuration in a single file.</p>
 <h2 id="list-the-available-packages"><a class="header" href="#list-the-available-packages">List the available packages</a></h2>
 <p>Let's get an overview of what the <code>flake.nix</code> allows us to do with our project.</p>
 <pre><code class="language-command">&gt; nix flake show
@@ -227,7 +258,7 @@ We can see that it contains packages for my current platform <code>x86_64-linux<
 <p>The packages which we can see here is my python package and a package called <code>resolveImpure</code>, which is a special package provided by dream2nix which we will learn more about later.</p>
 </li>
 </ol>
-<h2 id="build-the-project"><a class="header" href="#build-the-project">Build the Project</a></h2>
+<h2 id="build-the-project"><a class="header" href="#build-the-project">Build the project</a></h2>
 <p>Let's try building our project.
 If you get an error about <code>unresolved impurities</code>, see <a href="guides/getting-started-python.html#resolve-impurities">Resolve Impurities</a></p>
 <pre><code class="language-command">&gt; nix build .#default
@@ -240,7 +271,7 @@ First, ensure that your project <a href="guides/getting-started-python.html#reso
 <pre><code class="language-command">&gt; nix develop -c $SHELL
 </code></pre>
 <p>The <code>-c $SHELL</code> part is only necessary if you use a different shell than bash and would like to bring that shell with you into the dev environment.</p>
-<h2 id="resolve-impurities"><a class="header" href="#resolve-impurities">Resolve Impurities</a></h2>
+<h2 id="resolve-impurities"><a class="header" href="#resolve-impurities">Resolve impurities</a></h2>
 <p>If you try to build, you might run into the following error.</p>
 <pre><code class="language-command">&gt; nix build .#default
 error: The python package main contains unresolved impurities.
@@ -262,7 +293,7 @@ system) and dream2nix (bridge between external package managers and nix).</p>
 <p>This setup will allow for the same environment to be reproduced on
 different machines and CI systems with high accuracy - thus avoiding
 many pitfalls of distributed software development.</p>
-<h2 id="outline"><a class="header" href="#outline">Outline</a></h2>
+<h2 id="outline-1"><a class="header" href="#outline-1">Outline</a></h2>
 <ol start="0">
 <li>Install nix with flakes enabled</li>
 <li>Navigate to your nodejs project</li>
@@ -275,7 +306,7 @@ many pitfalls of distributed software development.</p>
 </ol>
 <h2 id="install-nix-1"><a class="header" href="#install-nix-1">Install nix</a></h2>
 <p>If you don't have nix already, check out <a href="https://nixos.org/download.html">nixos.org/download.html</a> on how to install it.</p>
-<h2 id="enable-the-nix-flakes-feature-1"><a class="header" href="#enable-the-nix-flakes-feature-1">Enable the nix flakes feature</a></h2>
+<h3 id="enable-the-nix-flakes-feature-1"><a class="header" href="#enable-the-nix-flakes-feature-1">Enable the nix flakes feature</a></h3>
 <p>For internal dependency management dream2nix requires the experimental nix feature <code>flakes</code> being enabled.</p>
 <pre><code>export NIX_CONFIG=&quot;extras-experimental-features = flakes nix-command&quot;
 </code></pre>
@@ -321,16 +352,35 @@ dream2nix framework to bridge the nodejs ecosystem into nix. This let's
 nix read and understand <code>package.json</code> and how to install and link
 nodejs packages - to avoid duplication of dependency definitions and
 build steps.</p>
-<h2 id="define-the-target-platforms"><a class="header" href="#define-the-target-platforms">Define the target platform(s)</a></h2>
+<h2 id="define-target-platforms-1"><a class="header" href="#define-target-platforms-1">Define target platform(s)</a></h2>
 <p>We have the flake setup, now we need to define the supported systems,
 this is necessary because nix can do multi platform and cross-platform
 builds so we need to tell it what can be built and where.</p>
+<p>There are 2 ways to do this, either with a <code>nix_systems</code> file,
+or we can write the target platforms inline to our <code>flake.nix</code>.</p>
+<h3 id="nix_systems-1"><a class="header" href="#nix_systems-1">nix_systems</a></h3>
+<p>We can create a <code>nix_systems</code> file with the current system:</p>
 <pre><code class="language-command">&gt; nix eval --impure --raw --expr 'builtins.currentSystem' &gt; ./nix_systems
 &gt; git add ./nix_systems
 </code></pre>
-<p>Remember to add the file <code>./nix_systems</code> to git, or it will be ignored.
-If you want to support more platforms later,
-just add more lines to that file.</p>
+<p>The <code>nix_systems</code> file is simply a list of the supported systems, for example:</p>
+<pre><code>x86_64-linux
+</code></pre>
+<p>Remember to add the file <code>./nix_systems</code> to git, or it won't be picked up by nix.
+If you want to support more platforms later, just add more lines to that file.</p>
+<h3 id="inline-1"><a class="header" href="#inline-1">inline</a></h3>
+<p>Alternatively, we can define the targets in the <code>flake.nix</code> like so:</p>
+<pre><code class="language-nix">{
+  inputs.dream2nix.url = &quot;github:nix-community/dream2nix&quot;;
+  outputs = inp:
+    inp.dream2nix.lib.makeFlakeOutputs {
+      systems = [&quot;x86_64-linux&quot;];         # &lt;- This line.
+      config.projectRoot = ./.;
+      source = ./.;
+    };
+}
+</code></pre>
+<p>This has the advantage of keeping all the configuration in a single file.</p>
 <h2 id="explore-the-outputs"><a class="header" href="#explore-the-outputs">Explore the outputs</a></h2>
 <p>We have setup the flake, defined our target system(s), now we are ready
 to use it. Let's start by listing out what is available to us (actual
@@ -475,31 +525,23 @@ re-enter the nix development shell, nix will overwrite the
 <code>node_modules</code> with the pinned versions of the dependencies from our
 lockfile.</p>
 <h2 id="faq"><a class="header" href="#faq">FAQ</a></h2>
-<blockquote>
-<p>Refusing to overwrite existing file on <code>flake init</code>.
-When initializing a flake it needs to write some files, if these already
+<h3 id="refusing-to-overwrite-existing-file-on-flake-init"><a class="header" href="#refusing-to-overwrite-existing-file-on-flake-init">Refusing to overwrite existing file on <code>flake init</code>.</a></h3>
+<p>When initializing a flake it needs to write some files, if these already
 exists, the initialization will fail. Since our repository is under
 version control, we can delete the conflicting files, let <code>flake init</code>
 create them and then check the diff and merge the changes manually.</p>
-</blockquote>
-<blockquote>
-<p>Getting status of <code>flake.nix</code>: no such file or directory.
-The flake build does not happen inside the directory. Nix copies your
+<h3 id="getting-status-of-flakenix-no-such-file-or-directory"><a class="header" href="#getting-status-of-flakenix-no-such-file-or-directory">Getting status of <code>flake.nix</code>: no such file or directory.</a></h3>
+<p>The flake build does not happen inside the directory. Nix copies your
 repository to a temporary location and builds there; only files under
 version control are used. To resolve this run <code>git add flake.nix</code> and
 all other missing files.</p>
-</blockquote>
-<blockquote>
-<p>warning: Git tree is dirty
-This is just a warning, nix is using the git revision for build artifact
+<h3 id="warning-git-tree-is-dirty"><a class="header" href="#warning-git-tree-is-dirty">Warning: Git tree is dirty</a></h3>
+<p>This is just a warning, nix is using the git revision for build artifact
 versioning. Having a dirty git tree - meaning uncommitted changes - can
 lead to some extra rebuilds, for simple projects this should not be a
 major concern.</p>
-</blockquote>
-<blockquote>
-<p>error: The package contains unresolved impurities. Resolve all impure
-projects by running the <code>resolveImpure</code> package.
-This happens when dream2nix cannot resolve exact package versions. We
+<h3 id="error-the-package-contains-unresolved-impurities-resolve-all-impure-projects-by-running-the-resolveimpure-package"><a class="header" href="#error-the-package-contains-unresolved-impurities-resolve-all-impure-projects-by-running-the-resolveimpure-package">error: The package contains unresolved impurities. Resolve all impure projects by running the <code>resolveImpure</code> package.</a></h3>
+<p>This happens when dream2nix cannot resolve exact package versions. We
 can define a dependency like <code>something@^2.1</code>, but it is not obvious if
 we actually want <code>2.1.1</code> or <code>2.1.2</code> or maybe <code>2.1.1-alpha</code>.
 There are 2 ways to resolve this error: either by running
@@ -508,7 +550,6 @@ up-to-date versions of all dependencies, or using an external package
 manager to generate a lock file, which can be later read by dream2nix.
 (In case of Node.js, both <code>package-lock.json</code> and <code>yarn.lock</code> are
 supported.)</p>
-</blockquote>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="rust-subsystem"><a class="header" href="#rust-subsystem">Rust subsystem</a></h1>
 <p>This section documents the Rust subsystem.</p>
 <h2 id="translators"><a class="header" href="#translators">Translators</a></h2>
@@ -1250,6 +1291,131 @@ This index should simply be a list of source shortcuts in JSON. Example:</p>
 <ul>
 <li>crates.io indexer (named <code>crates-io</code>)</li>
 <li>NPM indexer (named <code>npm</code>)</li>
+</ul>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="fetchers"><a class="header" href="#fetchers">Fetchers</a></h1>
+<p>This section describes the available source code fetchers.</p>
+<h2 id="what-are-fetchers"><a class="header" href="#what-are-fetchers">What are fetchers</a></h2>
+<p>When dream2nix reads project dependencies and translates them into
+a dream2nix lockfile, it writes down the sources for all the
+dependencies: so it can fetch them later during building.</p>
+<p>Below are some examples of the sources written in the dream-lock file
+(at the end, under <code>sources</code>).</p>
+<pre><code class="language-json">&quot;symfony/process&quot;: {
+  &quot;v6.1.3&quot;: {
+    &quot;rev&quot;: &quot;a6506e99cfad7059b1ab5cab395854a0a0c21292&quot;,
+    &quot;type&quot;: &quot;git&quot;,
+    &quot;url&quot;: &quot;https://github.com/symfony/process.git&quot;
+  }
+}
+</code></pre>
+<pre><code class="language-json">&quot;fast-glob&quot;: {
+  &quot;3.2.11&quot;: {
+    &quot;hash&quot;: &quot;sha512-xrO3+1bxSo3ZVHAnqzyuewYT6aMFHRAd4Kcs92MAonjwQZLsK9d0SF1IyQ3k5PoirxTW0Oe/RqFgMQ6TcNE5Ew==&quot;,
+    &quot;type&quot;: &quot;http&quot;,
+    &quot;url&quot;: &quot;https://registry.npmjs.org/fast-glob/-/fast-glob-3.2.11.tgz&quot;
+  }
+}
+</code></pre>
+<p>The <code>type</code> field tells dream2nix what fetchers to invoke to get this
+source, the rest of the attributes are simply passed to the fetcher.</p>
+<h2 id="fetcher-structure"><a class="header" href="#fetcher-structure">Fetcher structure</a></h2>
+<p>Here is the implementation of the simple <code>path</code> fetcher:</p>
+<pre><code class="language-nix">{...}: {
+  inputs = [
+    &quot;path&quot;
+  ];
+
+  outputs = {utils, ...}: {path, ...} @ inp: let
+    b = builtins;
+  in {
+    calcHash = algo: utils.hashPath &quot;${path}&quot;;
+
+    fetched = hash: &quot;${path}&quot;;
+  };
+}
+</code></pre>
+<p>It defines <code>inputs</code> which are the required arguments it expects to
+receive when invoked.
+Under <code>outputs</code> is a function that returns an object with <code>calcHash</code> and
+<code>fetched</code> function attributes.</p>
+<ul>
+<li><code>calcHash</code>: receives an algorithm and outputs the source hash, it
+is used while generating the dream-lock file.</li>
+<li><code>fetched</code>: receives a <code>hash</code> and returns the fetched source.</li>
+</ul>
+<p>It is important to remember that nix enforces reproducibility, to
+download something from nix we need to be sure it is exactly what we
+expect: usually enforced by comparing hashes. And you will see that
+almost all fetchers need to be supplied with a <code>hash</code> of the source being
+fetched.</p>
+<h2 id="implemented-fetchers"><a class="header" href="#implemented-fetchers">Implemented fetchers</a></h2>
+<p>The fetcher name corresponds to the source <code>type</code> used to invoke it.</p>
+<p>You can inspect the implementation of all the builders
+<a href="https://github.com/nix-community/dream2nix/tree/main/src/fetchers">here</a>.</p>
+<h3 id="path"><a class="header" href="#path">path</a></h3>
+<p>Fetches from a path. Useful when we already have the source.</p>
+<p>Inputs:</p>
+<ul>
+<li>path</li>
+</ul>
+<p><em>Does not require a <code>hash</code> since nix can check integrity of paths.</em></p>
+<h3 id="http"><a class="header" href="#http">http</a></h3>
+<p>Fetches from a http address.</p>
+<p>Inputs:</p>
+<ul>
+<li>url</li>
+<li>hash</li>
+</ul>
+<h3 id="git"><a class="header" href="#git">git</a></h3>
+<p>Fetches from a git commit.</p>
+<p>Inputs:</p>
+<ul>
+<li>url</li>
+<li>rev</li>
+</ul>
+<p><em>Does not require a <code>hash</code> since nix can use the <code>rev</code> to check for
+integrity instead.</em></p>
+<h3 id="github"><a class="header" href="#github">github</a></h3>
+<p>Fetches from a GitHub repository commit.</p>
+<p>Inputs:</p>
+<ul>
+<li>owner</li>
+<li>repo</li>
+<li>rev</li>
+<li>hash</li>
+</ul>
+<h3 id="gitlab"><a class="header" href="#gitlab">gitlab</a></h3>
+<p>Fetches from a GitLab repository commit.</p>
+<p>Inputs:</p>
+<ul>
+<li>owner</li>
+<li>repo</li>
+<li>rev</li>
+<li>hash</li>
+</ul>
+<h3 id="npm"><a class="header" href="#npm">npm</a></h3>
+<p>Fetches from npm registry.</p>
+<p>Inputs:</p>
+<ul>
+<li>pname</li>
+<li>version</li>
+<li>hash</li>
+</ul>
+<h3 id="pypi-sdist"><a class="header" href="#pypi-sdist">pypi-sdist</a></h3>
+<p>Fetches from pypi registry.</p>
+<p>Inputs:</p>
+<ul>
+<li>pname</li>
+<li>version</li>
+<li>hash</li>
+</ul>
+<h3 id="crates-io"><a class="header" href="#crates-io">crates-io</a></h3>
+<p>Fetches from crates.io registry.</p>
+<p>Inputs:</p>
+<ul>
+<li>pname</li>
+<li>version</li>
+<li>hash</li>
 </ul>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="extending-dream2nix-with-external-translators-builders-etc"><a class="header" href="#extending-dream2nix-with-external-translators-builders-etc">Extending dream2nix with external translators, builders etc.</a></h1>
 <p><code>dream2nix</code> can be extended while you are <code>init</code>ializing it. This can be done in a few ways.

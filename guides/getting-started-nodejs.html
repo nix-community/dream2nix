@@ -75,7 +75,7 @@
 
         <nav id="sidebar" class="sidebar" aria-label="Table of contents">
             <div class="sidebar-scrollbox">
-                <ol class="chapter"><li class="chapter-item expanded "><a href="../intro.html"><strong aria-hidden="true">1.</strong> Introduction</a></li><li class="chapter-item expanded affix "><li class="part-title">Guides</li><li class="chapter-item expanded "><a href="../guides/getting-started-python.html"><strong aria-hidden="true">2.</strong> Python: getting started in 10 minutes</a></li><li class="chapter-item expanded "><a href="../guides/getting-started-nodejs.html" class="active"><strong aria-hidden="true">3.</strong> Node.js: quickstart</a></li><li class="chapter-item expanded affix "><li class="part-title">Subsystems</li><li class="chapter-item expanded "><a href="../subsystems/rust.html"><strong aria-hidden="true">4.</strong> Rust</a></li><li class="chapter-item expanded "><a href="../subsystems/python.html"><strong aria-hidden="true">5.</strong> Python</a></li><li class="chapter-item expanded "><a href="../subsystems/node.html"><strong aria-hidden="true">6.</strong> Node.js</a></li><li class="chapter-item expanded "><a href="../subsystems/haskell.html"><strong aria-hidden="true">7.</strong> Haskell</a></li><li class="chapter-item expanded "><a href="../subsystems/php.html"><strong aria-hidden="true">8.</strong> PHP</a></li><li class="chapter-item expanded affix "><li class="part-title">Concepts</li><li class="chapter-item expanded "><a href="../intro/architectural-considerations.html"><strong aria-hidden="true">9.</strong> Architectural Considerations</a></li><li class="chapter-item expanded "><a href="../intro/nixpkgs-improvements.html"><strong aria-hidden="true">10.</strong> Nixpkgs improvements</a></li><li class="chapter-item expanded "><a href="../intro/override-system.html"><strong aria-hidden="true">11.</strong> Override system</a></li><li class="chapter-item expanded "><a href="../intro/translators.html"><strong aria-hidden="true">12.</strong> Translators</a></li><li class="chapter-item expanded "><a href="../intro/indexers.html"><strong aria-hidden="true">13.</strong> Indexers</a></li><li class="chapter-item expanded affix "><li class="part-title">Contributing</li><li class="chapter-item expanded "><a href="../extending-dream2nix.html"><strong aria-hidden="true">14.</strong> Extending dream2nix</a></li><li class="chapter-item expanded "><a href="../contributing.html"><strong aria-hidden="true">15.</strong> Contributing</a></li><li class="chapter-item expanded affix "><li class="part-title">Development Roundups</li><li class="chapter-item expanded "><a href="../development-roundups/2022-april-june.html"><strong aria-hidden="true">16.</strong> April - June 2022</a></li></ol>
+                <ol class="chapter"><li class="chapter-item expanded "><a href="../intro.html"><strong aria-hidden="true">1.</strong> Introduction</a></li><li class="chapter-item expanded affix "><li class="part-title">Guides</li><li class="chapter-item expanded "><a href="../guides/getting-started-python.html"><strong aria-hidden="true">2.</strong> Python: getting started in 10 minutes</a></li><li class="chapter-item expanded "><a href="../guides/getting-started-nodejs.html" class="active"><strong aria-hidden="true">3.</strong> Node.js: quickstart</a></li><li class="chapter-item expanded affix "><li class="part-title">Subsystems</li><li class="chapter-item expanded "><a href="../subsystems/rust.html"><strong aria-hidden="true">4.</strong> Rust</a></li><li class="chapter-item expanded "><a href="../subsystems/python.html"><strong aria-hidden="true">5.</strong> Python</a></li><li class="chapter-item expanded "><a href="../subsystems/node.html"><strong aria-hidden="true">6.</strong> Node.js</a></li><li class="chapter-item expanded "><a href="../subsystems/haskell.html"><strong aria-hidden="true">7.</strong> Haskell</a></li><li class="chapter-item expanded "><a href="../subsystems/php.html"><strong aria-hidden="true">8.</strong> PHP</a></li><li class="chapter-item expanded affix "><li class="part-title">Concepts</li><li class="chapter-item expanded "><a href="../intro/architectural-considerations.html"><strong aria-hidden="true">9.</strong> Architectural Considerations</a></li><li class="chapter-item expanded "><a href="../intro/nixpkgs-improvements.html"><strong aria-hidden="true">10.</strong> Nixpkgs improvements</a></li><li class="chapter-item expanded "><a href="../intro/override-system.html"><strong aria-hidden="true">11.</strong> Override system</a></li><li class="chapter-item expanded "><a href="../intro/translators.html"><strong aria-hidden="true">12.</strong> Translators</a></li><li class="chapter-item expanded "><a href="../intro/indexers.html"><strong aria-hidden="true">13.</strong> Indexers</a></li><li class="chapter-item expanded "><a href="../intro/fetchers.html"><strong aria-hidden="true">14.</strong> Fetchers</a></li><li class="chapter-item expanded affix "><li class="part-title">Contributing</li><li class="chapter-item expanded "><a href="../extending-dream2nix.html"><strong aria-hidden="true">15.</strong> Extending dream2nix</a></li><li class="chapter-item expanded "><a href="../contributing.html"><strong aria-hidden="true">16.</strong> Contributing</a></li><li class="chapter-item expanded affix "><li class="part-title">Development Roundups</li><li class="chapter-item expanded "><a href="../development-roundups/2022-april-june.html"><strong aria-hidden="true">17.</strong> April - June 2022</a></li></ol>
             </div>
             <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
         </nav>
@@ -155,7 +155,7 @@ many pitfalls of distributed software development.</p>
 </ol>
 <h2 id="install-nix"><a class="header" href="#install-nix">Install nix</a></h2>
 <p>If you don't have nix already, check out <a href="https://nixos.org/download.html">nixos.org/download.html</a> on how to install it.</p>
-<h2 id="enable-the-nix-flakes-feature"><a class="header" href="#enable-the-nix-flakes-feature">Enable the nix flakes feature</a></h2>
+<h3 id="enable-the-nix-flakes-feature"><a class="header" href="#enable-the-nix-flakes-feature">Enable the nix flakes feature</a></h3>
 <p>For internal dependency management dream2nix requires the experimental nix feature <code>flakes</code> being enabled.</p>
 <pre><code>export NIX_CONFIG=&quot;extras-experimental-features = flakes nix-command&quot;
 </code></pre>
@@ -201,16 +201,35 @@ dream2nix framework to bridge the nodejs ecosystem into nix. This let's
 nix read and understand <code>package.json</code> and how to install and link
 nodejs packages - to avoid duplication of dependency definitions and
 build steps.</p>
-<h2 id="define-the-target-platforms"><a class="header" href="#define-the-target-platforms">Define the target platform(s)</a></h2>
+<h2 id="define-target-platforms"><a class="header" href="#define-target-platforms">Define target platform(s)</a></h2>
 <p>We have the flake setup, now we need to define the supported systems,
 this is necessary because nix can do multi platform and cross-platform
 builds so we need to tell it what can be built and where.</p>
+<p>There are 2 ways to do this, either with a <code>nix_systems</code> file,
+or we can write the target platforms inline to our <code>flake.nix</code>.</p>
+<h3 id="nix_systems"><a class="header" href="#nix_systems">nix_systems</a></h3>
+<p>We can create a <code>nix_systems</code> file with the current system:</p>
 <pre><code class="language-command">&gt; nix eval --impure --raw --expr 'builtins.currentSystem' &gt; ./nix_systems
 &gt; git add ./nix_systems
 </code></pre>
-<p>Remember to add the file <code>./nix_systems</code> to git, or it will be ignored.
-If you want to support more platforms later,
-just add more lines to that file.</p>
+<p>The <code>nix_systems</code> file is simply a list of the supported systems, for example:</p>
+<pre><code>x86_64-linux
+</code></pre>
+<p>Remember to add the file <code>./nix_systems</code> to git, or it won't be picked up by nix.
+If you want to support more platforms later, just add more lines to that file.</p>
+<h3 id="inline"><a class="header" href="#inline">inline</a></h3>
+<p>Alternatively, we can define the targets in the <code>flake.nix</code> like so:</p>
+<pre><code class="language-nix">{
+  inputs.dream2nix.url = &quot;github:nix-community/dream2nix&quot;;
+  outputs = inp:
+    inp.dream2nix.lib.makeFlakeOutputs {
+      systems = [&quot;x86_64-linux&quot;];         # &lt;- This line.
+      config.projectRoot = ./.;
+      source = ./.;
+    };
+}
+</code></pre>
+<p>This has the advantage of keeping all the configuration in a single file.</p>
 <h2 id="explore-the-outputs"><a class="header" href="#explore-the-outputs">Explore the outputs</a></h2>
 <p>We have setup the flake, defined our target system(s), now we are ready
 to use it. Let's start by listing out what is available to us (actual
@@ -355,31 +374,23 @@ re-enter the nix development shell, nix will overwrite the
 <code>node_modules</code> with the pinned versions of the dependencies from our
 lockfile.</p>
 <h2 id="faq"><a class="header" href="#faq">FAQ</a></h2>
-<blockquote>
-<p>Refusing to overwrite existing file on <code>flake init</code>.
-When initializing a flake it needs to write some files, if these already
+<h3 id="refusing-to-overwrite-existing-file-on-flake-init"><a class="header" href="#refusing-to-overwrite-existing-file-on-flake-init">Refusing to overwrite existing file on <code>flake init</code>.</a></h3>
+<p>When initializing a flake it needs to write some files, if these already
 exists, the initialization will fail. Since our repository is under
 version control, we can delete the conflicting files, let <code>flake init</code>
 create them and then check the diff and merge the changes manually.</p>
-</blockquote>
-<blockquote>
-<p>Getting status of <code>flake.nix</code>: no such file or directory.
-The flake build does not happen inside the directory. Nix copies your
+<h3 id="getting-status-of-flakenix-no-such-file-or-directory"><a class="header" href="#getting-status-of-flakenix-no-such-file-or-directory">Getting status of <code>flake.nix</code>: no such file or directory.</a></h3>
+<p>The flake build does not happen inside the directory. Nix copies your
 repository to a temporary location and builds there; only files under
 version control are used. To resolve this run <code>git add flake.nix</code> and
 all other missing files.</p>
-</blockquote>
-<blockquote>
-<p>warning: Git tree is dirty
-This is just a warning, nix is using the git revision for build artifact
+<h3 id="warning-git-tree-is-dirty"><a class="header" href="#warning-git-tree-is-dirty">Warning: Git tree is dirty</a></h3>
+<p>This is just a warning, nix is using the git revision for build artifact
 versioning. Having a dirty git tree - meaning uncommitted changes - can
 lead to some extra rebuilds, for simple projects this should not be a
 major concern.</p>
-</blockquote>
-<blockquote>
-<p>error: The package contains unresolved impurities. Resolve all impure
-projects by running the <code>resolveImpure</code> package.
-This happens when dream2nix cannot resolve exact package versions. We
+<h3 id="error-the-package-contains-unresolved-impurities-resolve-all-impure-projects-by-running-the-resolveimpure-package"><a class="header" href="#error-the-package-contains-unresolved-impurities-resolve-all-impure-projects-by-running-the-resolveimpure-package">error: The package contains unresolved impurities. Resolve all impure projects by running the <code>resolveImpure</code> package.</a></h3>
+<p>This happens when dream2nix cannot resolve exact package versions. We
 can define a dependency like <code>something@^2.1</code>, but it is not obvious if
 we actually want <code>2.1.1</code> or <code>2.1.2</code> or maybe <code>2.1.1-alpha</code>.
 There are 2 ways to resolve this error: either by running
@@ -388,7 +399,6 @@ up-to-date versions of all dependencies, or using an external package
 manager to generate a lock file, which can be later read by dream2nix.
 (In case of Node.js, both <code>package-lock.json</code> and <code>yarn.lock</code> are
 supported.)</p>
-</blockquote>
 
                     </main>
 
