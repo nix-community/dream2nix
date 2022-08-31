@@ -709,17 +709,6 @@ in let
         // (realizedProjects.packages or {})
         // {resolveImpure = resolveImpureScript;}
         // {default = l.elemAt (map (key: l.getAttr key impureFakeDerivations) (l.attrNames impureFakeDerivations)) 0;};
-
-      devShells =
-        l.warnIf
-        (realizeProjects.packages.resolveImpure or null != null)
-        ''
-          a builder outputted a package named 'resolveImpure'
-          this will be overridden by dream2nix!
-        ''
-        impureFakeDerivations
-        // (realizedProjects.packages or {})
-        // {resolveImpure = resolveImpureScript;};
     };
 in {
   inherit
