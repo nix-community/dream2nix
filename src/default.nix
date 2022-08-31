@@ -708,6 +708,17 @@ in let
         impureFakeDerivations
         // (realizedProjects.packages or {})
         // {resolveImpure = resolveImpureScript;};
+
+      devShells =
+        l.warnIf
+        (realizeProjects.packages.resolveImpure or null != null)
+        ''
+          a builder outputted a package named 'resolveImpure'
+          this will be overridden by dream2nix!
+        ''
+        impureFakeDerivations
+        // (realizedProjects.packages or {})
+        // {resolveImpure = resolveImpureScript;};
     };
 in {
   inherit
