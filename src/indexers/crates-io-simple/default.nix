@@ -4,10 +4,11 @@
     coreutils,
     curl,
     jq,
+    python3,
     ...
   }:
     utils.writePureShellScript
-    [coreutils curl jq]
+    [coreutils curl jq python3]
     ''
       input=''${1:?"please provide an input as a JSON file"}
 
@@ -19,9 +20,8 @@
       maxPages=$(jq '.maxPages' -c -r $input)
 
       for currentPage in $(seq 1 $maxPages); do
-        jqQuery="$(jq '.' -c -r "$tmpFile") + (.crates | map(\"crates-io:\" + .name + \"\/\" + .max_stable_version))"
         url="https://crates.io/api/v1/crates?page=$currentPage&per_page=100&sort=$sortBy"
-        curl -k "$url" | jq "$jqQuery" -r > "$tmpFile"
+        curl -k "$url" | python3 ${./process-result.py} > "$tmpFile"
       done
 
       mv "$tmpFile" "$(realpath $outFile)"

@@ -13,6 +13,10 @@
           number = 5;
         };
         crates-io = {};
+        crates-io-simple = {
+          sortBy = "name";
+          maxPages = 1;
+        };
       };
       packageOverrides = {
         "^.*$".disable-build = {
