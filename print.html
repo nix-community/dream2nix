@@ -1265,32 +1265,39 @@ can be integrated into nix builds inside and outside of nixpkgs.</p>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="indexers"><a class="header" href="#indexers">Indexers</a></h1>
 <p>Indexers are programs that can query a package repository (think of npm, or crates.io) for package information.
 This information mainly consists of the package name, the package version, and anything extra that might be useful / needed to fetch / translate it.
-The information is stored as a &quot;source shortcut&quot;, which basically follows the format <code>proto1+proto2:pname/version?key=value&amp;key2=value2</code>.</p>
-<p>Examples:</p>
-<ul>
-<li><code>npm:execa/6.1.0</code></li>
-<li><code>crates-io:ripgrep/13.0.0?hash=somehash</code></li>
-<li><code>git+ssh://github.com/owner/repo?rev=refs/heads/v1.2.3&amp;dir=sub/dir</code>.</li>
-<li>etc.</li>
-</ul>
+The information is stored as JSON (see below).</p>
 <h2 id="indexer-inputs"><a class="header" href="#indexer-inputs">Indexer inputs</a></h2>
-<p>Indexers take input as a path to a JSON file, which contains information needed by that specific indexer.
+<p>Indexers take input as a path to a JSON file, which contains custom arguments for the indexer.
 A common attribute for these inputs across indexers are <code>outputFile</code>, which should be the path to output the generated index to.
 Indexers can vary in functionality, so these JSON inputs should be specified under <code>src/specifications/indexers/</code>.</p>
 <h2 id="indexer-outputs"><a class="header" href="#indexer-outputs">Indexer outputs</a></h2>
 <p>Indexers should output their generated index to where <code>outputFile</code> specifies.
-This index should simply be a list of source shortcuts in JSON. Example:</p>
+This index should simply be a list of project specifications in JSON. Example:</p>
 <pre><code class="language-json">[
-  &quot;npm:execa/6.1.0&quot;,
-  &quot;npm:meow/10.1.3&quot;,
-  &quot;npm:npm-run/5.0.1&quot;
+  {
+    &quot;name&quot;: &quot;execa&quot;,
+    &quot;version&quot;: &quot;6.1.0&quot;,
+    &quot;translator&quot;: [&quot;npm&quot;]
+  },
+  {
+    &quot;name&quot;: &quot;meow&quot;,
+    &quot;version&quot;: &quot;10.1.3&quot;,
+    &quot;translator&quot;: [&quot;npm&quot;]
+  },
+  {
+    &quot;name&quot;: &quot;npm-run&quot;,
+    &quot;version&quot;: &quot;5.0.1&quot;,
+    &quot;translator&quot;: [&quot;npm&quot;]
+  }
 ]
 </code></pre>
 <h2 id="current-indexers"><a class="header" href="#current-indexers">Current indexers</a></h2>
 <p>Following are the current indexers implemented in dream2nix:</p>
 <ul>
-<li>crates.io indexer (named <code>crates-io</code>)</li>
-<li>NPM indexer (named <code>npm</code>)</li>
+<li><strong>crates-io-simple</strong>: crates.io indexer</li>
+<li><strong>crates-io</strong>: crates.io indexer written in rust with more options</li>
+<li><strong>libraries-io</strong>: multi ecosystem indexer utilizing libraries.io (requires API key)</li>
+<li><strong>npm</strong>: simple indexer using npm's registry</li>
 </ul>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="fetchers"><a class="header" href="#fetchers">Fetchers</a></h1>
 <p>This section describes the available source code fetchers.</p>
