@@ -104,10 +104,9 @@ in
 
         TMPDIR=$(${coreutils}/bin/mktemp -d)
 
-        ${script}
+        trap '${coreutils}/bin/rm -rf "$TMPDIR"' EXIT
 
-        cd
-        ${coreutils}/bin/rm -rf $TMPDIR
+        ${script}
       '';
 
     # builder to create a shell script that has it's own PATH
@@ -121,10 +120,9 @@ in
 
         TMPDIR=$(${coreutils}/bin/mktemp -d)
 
-        ${script}
+        trap '${coreutils}/bin/rm -rf "$TMPDIR"' EXIT
 
-        cd
-        ${coreutils}/bin/rm -rf $TMPDIR
+        ${script}
       '';
 
     # TODO is this really needed? Seems to make builds slower, why not unpack + build?

@@ -138,8 +138,7 @@
     pkgs ? null,
     config ? {},
     source,
-    indexNames,
-    overrideOutputs ? args: {},
+    indexes,
     inject ? {},
     packageOverrides ? {},
     settings ? [],
@@ -160,8 +159,7 @@
         allOutputs = dream2nix.utils.makeOutputsForIndexes {
           inherit
             source
-            indexNames
-            overrideOutputs
+            indexes
             inject
             packageOverrides
             settings

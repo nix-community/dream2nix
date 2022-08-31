@@ -4,6 +4,7 @@
     coreutils,
     curl,
     jq,
+    python3,
     ...
   }:
     utils.writePureShellScript
@@ -17,8 +18,7 @@
       size=$(jq '.maxPackageCount' -c -r $input)
 
       url="https://registry.npmjs.org/-/v1/search?text=$text&popularity=1.0&quality=0.0&maintenance=0.0&size=$size"
-      jqQuery="[.objects[].package | [(\"npm:\" + .name + \"/\" + .version)]] | add"
 
-      curl -k "$url" | jq "$jqQuery" -r > $(realpath $outFile)
+      curl -k "$url" | ${python3}/bin/python ${./process-result.py} > $(realpath $outFile)
     '';
 }
