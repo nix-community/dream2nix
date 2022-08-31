@@ -1,4 +1,3 @@
-
 # test: yarn-lock evaluation with @git+ in versions
 #
 # Detecting regressions of #275.
@@ -16,7 +15,10 @@
     dream2nix.url = "github:nix-community/dream2nix";
   };
 
-  outputs = {self, dream2nix }:
+  outputs = {
+    self,
+    dream2nix,
+  }:
     dream2nix.lib.makeFlakeOutputs {
       systems = ["x86_64-linux"];
       config.projectRoot = ./.;
