@@ -707,7 +707,8 @@ in let
         ''
         impureFakeDerivations
         // (realizedProjects.packages or {})
-        // {resolveImpure = resolveImpureScript;};
+        // {resolveImpure = resolveImpureScript;}
+        // {default = l.elemAt (map (key: l.getAttr key impureFakeDerivations) (l.attrNames impureFakeDerivations)) 0;};
 
       devShells =
         l.warnIf
