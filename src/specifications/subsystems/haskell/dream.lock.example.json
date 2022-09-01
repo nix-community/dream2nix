@@ -1,8 +1,8 @@
 {
   "_subsystem": {
     "compiler": {
-      name = "ghc",
-      version = "8.10.7"
+    "name" = "ghc",
+    "version" = "8.10.7"
     }
   }
 }
