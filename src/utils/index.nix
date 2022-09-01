@@ -97,16 +97,20 @@ in rec {
           gnugrep
         ])
         ''
-          mainBranch=$(git branch | grep -E '(master)|(main)')
-          git branch data || :
-          git checkout data
+          flake=$(cat flake.nix)
+          flakeLock=$(cat flake.lock)
+          set -x
+          git fetch origin data
+          git checkout origin/data
+          git checkout -b data
           # the flake should always be the one from the current main branch
-          git checkout $mainBranch flake.nix
-          git checkout $mainBranch flake.lock
+          rm -rf ./*
+          echo "$flake" > flake.nix
+          echo "$flakeLock" > flake.lock
           ${(mkIndexApp name input).program}
           ${(mkTranslateApp name).program}
           git add .
-          git commit "automatic update - $(date --rfc-3339=seconds)"
+          git commit -m "automatic update - $(date --rfc-3339=seconds)"
         ''
       );
     translateApps = l.listToAttrs (
@@ -139,6 +143,30 @@ in rec {
       )
       indexes
     );
+    ciJobAllApp = mkApp (
+      utils.writePureShellScript
+      (with pkgs; [
+        coreutils
+        git
+        gnugrep
+      ])
+      ''
+        flake=$(cat flake.nix)
+        flakeLock=$(cat flake.lock)
+        set -x
+        git fetch origin data
+        git checkout origin/data
+        git checkout -b data
+        # the flake should always be the one from the current main branch
+        rm -rf ./*
+        echo "$flake" > flake.nix
+        echo "$flakeLock" > flake.lock
+        ${lib.concatStringsSep "\n" (l.mapAttrsToList (_: app: app.program) indexApps)}
+        ${lib.concatStringsSep "\n" (l.mapAttrsToList (_: app: app.program) translateApps)}
+        git add .
+        git commit -m "automatic update - $(date --rfc-3339=seconds)"
+      ''
+    );
 
     mkIndexOutputs = name: let
       src = "${toString source}/${name}/locks";
@@ -167,7 +195,8 @@ in rec {
     outputs = {
       packages = allPackages;
       apps =
-        indexApps
+        {ci-job-all = ciJobAllApp;}
+        // indexApps
         // translateApps
         // ciJobApps;
     };
