@@ -140,7 +140,7 @@
 
       subsystemName = "nodejs";
 
-      subsystemAttrs = {nodejsVersion = args.nodejs;};
+      subsystemAttrs = {nodejsVersion = b.toString args.nodejs;};
 
       keys = {
         yarnName = rawObj: finalObj:

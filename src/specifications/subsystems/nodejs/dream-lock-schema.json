@@ -7,7 +7,7 @@
       "type": "object",
       "properties": {
         "nodejsVersion": {
-          "type": "integer"
+          "type": "string"
         }
       }
     }
