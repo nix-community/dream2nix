@@ -196,7 +196,7 @@ in let
             ;
         };
         buildPackage = importLibFile "buildPackage" {
-          inherit (pkgs) lib;
+          inherit (pkgs) removeReferencesTo lib;
           inherit (installLogHook) installFromCargoBuildLogHook;
           inherit cargoBuild;
         };
