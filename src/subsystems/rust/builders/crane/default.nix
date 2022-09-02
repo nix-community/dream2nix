@@ -53,8 +53,9 @@
       common = {
         inherit pname version;
         src = utils.getRootSource pname version;
-        cargoVendorDir = vendoring.vendoredDependencies;
+        cargoVendorDir = "./nix-vendor";
         postUnpack = ''
+          ${vendoring.copyVendorDir "./nix-vendor"}
           export CARGO_HOME=$(pwd)/.cargo_home
         '';
         preConfigure = ''
