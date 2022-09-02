@@ -52,15 +52,25 @@
       # common args we use for both buildDepsOnly and buildPackage
       common = {
         inherit pname version;
+
         src = utils.getRootSource pname version;
-        cargoVendorDir = vendoring.vendoredDependencies;
+        cargoVendorDir = "./nix-vendor";
+
+        # this is needed because remove-references-to doesn't work on non nix-store paths
+        doNotRemoveReferencesToVendorDir = true;
+
         postUnpack = ''
+          ${vendoring.copyVendorDir "./nix-vendor"}
           export CARGO_HOME=$(pwd)/.cargo_home
         '';
         preConfigure = ''
           ${writeGitVendorEntries}
           ${replacePaths}
         '';
+
+        # Make sure cargo only builds & tests the package we want
+        cargoBuildCommand = "cargo build --release --package ${pname}";
+        cargoTestCommand = "cargo test --release --package ${pname}";
       };
 
       # The deps-only derivation will use this as a prefix to the `pname`
@@ -72,6 +82,8 @@
           # so that crane's mkDummySrc adds it to the dummy source
           inherit (utils) cargoLock;
           pnameSuffix = depsNameSuffix;
+          # Make sure cargo only checks the package we want
+          cargoCheckCommand = "cargo check --release --package ${pname}";
         };
       deps =
         produceDerivation
@@ -82,9 +94,6 @@
         common
         // {
           cargoArtifacts = deps;
-          # Make sure cargo only builds & tests the package we want
-          cargoBuildCommand = "cargo build --release --package ${pname}";
-          cargoTestCommand = "cargo test --release --package ${pname}";
           # write our cargo lock
           # note: we don't do this in buildDepsOnly since
           # that uses a cargoLock argument instead

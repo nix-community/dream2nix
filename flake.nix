@@ -100,12 +100,12 @@
         "lib/mkCargoDerivation.nix"
         "lib/mkDummySrc.nix"
         "lib/writeTOML.nix"
+        "pkgs/cargoHelperFunctions.sh"
         "pkgs/configureCargoCommonVarsHook.sh"
         "pkgs/configureCargoVendoredDepsHook.sh"
         "pkgs/installFromCargoBuildLogHook.sh"
         "pkgs/inheritCargoArtifactsHook.sh"
         "pkgs/installCargoArtifactsHook.sh"
-        "pkgs/remapSourcePathPrefixHook.sh"
         "LICENSE"
       ];
     };

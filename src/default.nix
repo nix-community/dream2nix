@@ -136,9 +136,9 @@ in let
       }: rec {
         otherHooks =
           genHooks [
+            "cargoHelperFunctions"
             "configureCargoCommonVarsHook"
             "configureCargoVendoredDepsHook"
-            "remapSourcePathPrefixHook"
           ]
           {};
         installHooks =
@@ -174,12 +174,21 @@ in let
           inherit writeTOML cleanCargoToml findCargoFiles;
         };
 
-        mkCargoDerivation = importLibFile "mkCargoDerivation" ({
-            cargo = cargoHostTarget;
-            inherit (pkgs) stdenv lib;
-          }
-          // installHooks
-          // otherHooks);
+        mkCargoDerivation = importLibFile "mkCargoDerivation" {
+          cargo = cargoHostTarget;
+          inherit (pkgs) stdenv lib;
+          inherit
+            (installHooks)
+            inheritCargoArtifactsHook
+            installCargoArtifactsHook
+            ;
+          inherit
+            (otherHooks)
+            configureCargoCommonVarsHook
+            configureCargoVendoredDepsHook
+            ;
+          cargoHelperFunctionsHook = otherHooks.cargoHelperFunctions;
+        };
         buildDepsOnly = importLibFile "buildDepsOnly" {
           inherit
             mkCargoDerivation
@@ -197,7 +206,7 @@ in let
             ;
         };
         buildPackage = importLibFile "buildPackage" {
-          inherit (pkgs) lib;
+          inherit (pkgs) removeReferencesTo lib;
           inherit (installLogHook) installFromCargoBuildLogHook;
           inherit cargoBuild;
         };
