@@ -136,7 +136,7 @@ in let
       }: rec {
         otherHooks =
           genHooks [
-            "cargoHelperFunctionsHook"
+            "cargoHelperFunctions"
             "configureCargoCommonVarsHook"
             "configureCargoVendoredDepsHook"
           ]
