@@ -5,6 +5,7 @@
   "properties": {
     "_subsystem": {
       "type": "object",
+      "required": ["nodejsVersion"],
       "properties": {
         "nodejsVersion": {
           "type": "string"
