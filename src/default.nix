@@ -174,12 +174,21 @@ in let
           inherit writeTOML cleanCargoToml findCargoFiles;
         };
 
-        mkCargoDerivation = importLibFile "mkCargoDerivation" ({
-            cargo = cargoHostTarget;
-            inherit (pkgs) stdenv lib;
-          }
-          // installHooks
-          // otherHooks);
+        mkCargoDerivation = importLibFile "mkCargoDerivation" {
+          cargo = cargoHostTarget;
+          inherit (pkgs) stdenv lib;
+          inherit
+            (installHooks)
+            inheritCargoArtifactsHook
+            installCargoArtifactsHook
+            ;
+          inherit
+            (otherHooks)
+            configureCargoCommonVarsHook
+            configureCargoVendoredDepsHook
+            ;
+          cargoHelperFunctionsHook = otherHooks.cargoHelperFunctions;
+        };
         buildDepsOnly = importLibFile "buildDepsOnly" {
           inherit
             mkCargoDerivation
