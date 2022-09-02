@@ -138,7 +138,6 @@ in let
           genHooks [
             "configureCargoCommonVarsHook"
             "configureCargoVendoredDepsHook"
-            "remapSourcePathPrefixHook"
           ]
           {};
         installHooks =

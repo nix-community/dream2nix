@@ -105,7 +105,6 @@
         "pkgs/installFromCargoBuildLogHook.sh"
         "pkgs/inheritCargoArtifactsHook.sh"
         "pkgs/installCargoArtifactsHook.sh"
-        "pkgs/remapSourcePathPrefixHook.sh"
         "LICENSE"
       ];
     };
