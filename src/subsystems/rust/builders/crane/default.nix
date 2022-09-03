@@ -60,7 +60,6 @@
         doNotRemoveReferencesToVendorDir = true;
 
         postUnpack = ''
-          ${vendoring.copyVendorDir "./nix-vendor"}
           export CARGO_HOME=$(pwd)/.cargo_home
         '';
         preConfigure = ''
@@ -84,6 +83,13 @@
           pnameSuffix = depsNameSuffix;
           # Make sure cargo only checks the package we want
           cargoCheckCommand = "cargo check --release --package ${pname}";
+          preUnpack = ''
+            ${vendoring.copyVendorDir "$cargoVendorDir"}
+          '';
+          # move the vendored dependencies folder to $out for main derivation to use
+          postInstall = ''
+            mv $TMPDIR/nix-vendor $out/nix-vendor
+          '';
         };
       deps =
         produceDerivation
@@ -94,6 +100,10 @@
         common
         // {
           cargoArtifacts = deps;
+          # link the vendor dir we used earlier to the correct place
+          preUnpack = ''
+            ln -sf ${deps}/nix-vendor $cargoVendorDir
+          '';
           # write our cargo lock
           # note: we don't do this in buildDepsOnly since
           # that uses a cargoLock argument instead
