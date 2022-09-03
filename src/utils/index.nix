@@ -95,13 +95,15 @@ in rec {
           coreutils
           git
           gnugrep
+          openssh
         ])
         ''
           flake=$(cat flake.nix)
           flakeLock=$(cat flake.lock)
           set -x
-          git fetch origin data
-          git checkout origin/data
+          git fetch origin data || :
+          git checkout origin/data || :
+          git branch -D data || :
           git checkout -b data
           # the flake should always be the one from the current main branch
           rm -rf ./*
@@ -149,13 +151,15 @@ in rec {
         coreutils
         git
         gnugrep
+        openssh
       ])
       ''
         flake=$(cat flake.nix)
         flakeLock=$(cat flake.lock)
         set -x
-        git fetch origin data
-        git checkout origin/data
+        git fetch origin data || :
+        git checkout origin/data || :
+        git branch -D data || :
         git checkout -b data
         # the flake should always be the one from the current main branch
         rm -rf ./*
