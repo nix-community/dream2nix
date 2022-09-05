@@ -1,0 +1,54 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema",
+  "title": "manifest",
+  "type": "object",
+  "properties": {
+    "_subsystem": {
+      "type": "object",
+      "required": ["gitSources"],
+      "properties": {
+        "gitSources": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "url": {
+                "type": "string"
+              },
+              "sha": {
+                "type": "string"
+              },
+              "type": {
+                "type": "string"
+              },
+              "value": {
+                "type": "string"
+              }
+            },
+            "required": ["url", "sha", "type", "value"],
+            "additionalProperties": false
+          }
+        },
+        "relPathReplacements": {
+          "type": "object",
+          "properties": {
+            "^.*$": {
+              "type": "object",
+              "properties": {
+                "^.*$": {
+                  "type": "object",
+                  "properties": {
+                    "^.*$": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            },
+            "additionalProperties": false
+          }
+        }
+      }
+    }
+  }
+}
