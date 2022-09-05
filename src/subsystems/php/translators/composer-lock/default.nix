@@ -257,7 +257,7 @@ in {
       };
 
       # name of the default package
-      defaultPackage = composerJson.name;
+      defaultPackage = composerJson.name or "unknown";
 
       /*
       List the package candidates which should be exposed to the user.
@@ -287,7 +287,7 @@ in {
               (
                 if noDev
                 then {}
-                else composerJson.require-dev
+                else composerJson.require-dev or {}
               )
               // composerJson.require;
           }
