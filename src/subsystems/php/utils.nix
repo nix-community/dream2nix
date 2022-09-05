@@ -50,12 +50,12 @@
       cleanConstraint
     );
 
-  splitAlternatives = v: let
+  splitAlternatives = v: (let
     # handle version alternatives: ^1.2 || ^2.0
-    trim = s: l.head (l.match "^[[:space:]]*([^[:space:]]*)[[:space:]]*$" s);
+    trim = s: l.head (l.match "^[[:space:]]*(.*[^[:space:]])[[:space:]]*$" s);
     clean = l.replaceStrings ["||"] ["|"] v;
   in
-    map trim (l.splitString "|" clean);
+    map trim (l.splitString "|" clean));
 in {
   # 1.0.2 ~1.0.1
   # matching a version with semver
