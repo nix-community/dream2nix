@@ -189,9 +189,20 @@ in {
         };
       doReplace = pkg: l.foldl replace pkg packages;
       doProvide = pkg: l.foldl provide pkg packages;
-      resolve = pkg: doProvide (doReplace pkg);
+      dropMissing = pkgs: let
+        doDropMissing = pkg:
+          pkg
+          // {
+            require =
+              l.filterAttrs
+              (name: semver: l.any (pkg: (pkg.name == name) && (satisfiesSemver pkg.version semver)) pkgs)
+              (getDependencies pkg);
+          };
+      in
+        map doDropMissing pkgs;
+      resolve = pkg: (doProvide (doReplace pkg));
     in
-      map resolve packages;
+      dropMissing (map resolve packages);
 
     # toplevel php semver
     phpSemver = composerJson.require."php" or "*";
