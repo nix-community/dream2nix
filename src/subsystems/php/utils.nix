@@ -43,7 +43,8 @@
     cleanConstraint = removeV (wildcard (tilde (removeSuffix constraint)));
     cleanVersion = removeX (l.removePrefix "v" (removeSuffix version));
   in
-    (version == constraint)
+    (l.any (x: constraint == x) ["*" "@dev" "@master" "@dev-master"])
+    || (version == constraint)
     || (
       utils.satisfiesSemver
       cleanVersion
