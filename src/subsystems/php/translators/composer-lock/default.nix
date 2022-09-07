@@ -215,7 +215,13 @@ in {
       map (l.strings.removePrefix "ext-") (l.lists.unique extensions);
 
     # get dependencies
-    getDependencies = pkg: (pkg.require or {});
+    getDependencies = pkg:
+      l.mapAttrs
+      (name: version:
+        if version == "self.version"
+        then pkg.version
+        else version)
+      (pkg.require or {});
 
     # resolve semvers into exact versions
     pinPackages = pkgs: let
