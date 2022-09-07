@@ -80,6 +80,7 @@ in rec {
       '';
     in
       mkApp script;
+
     mkTranslateApp = name:
       mkApp (
         pkgs.writers.writeBash "translate-${name}" ''
@@ -88,7 +89,8 @@ in rec {
             ${name}/index.json ${name}/locks
         ''
       );
-    mkCiJobApp = name: input:
+
+    mkCiAppWith = commands:
       mkApp (
         utils.writePureShellScript
         (with pkgs; [
@@ -109,12 +111,19 @@ in rec {
           rm -rf ./*
           echo "$flake" > flake.nix
           echo "$flakeLock" > flake.lock
-          ${(mkIndexApp name input).program}
-          ${(mkTranslateApp name).program}
+          ${commands}
           git add .
           git commit -m "automatic update - $(date --rfc-3339=seconds)"
         ''
       );
+
+    mkCiJobApp = name: input:
+      mkCiAppWith
+      ''
+        ${(mkIndexApp name input).program}
+        ${(mkTranslateApp name).program}
+      '';
+
     translateApps = l.listToAttrs (
       l.map
       (
@@ -125,6 +134,7 @@ in rec {
       )
       indexNames
     );
+
     indexApps = l.listToAttrs (
       l.mapAttrsToList
       (
@@ -135,6 +145,7 @@ in rec {
       )
       indexes
     );
+
     ciJobApps = l.listToAttrs (
       l.mapAttrsToList
       (
@@ -145,32 +156,65 @@ in rec {
       )
       indexes
     );
-    ciJobAllApp = mkApp (
-      utils.writePureShellScript
-      (with pkgs; [
-        coreutils
-        git
-        gnugrep
-        openssh
-      ])
+
+    ciJobAllApp =
+      mkCiAppWith
       ''
-        flake=$(cat flake.nix)
-        flakeLock=$(cat flake.lock)
-        set -x
-        git fetch origin data || :
-        git checkout origin/data || :
-        git branch -D data || :
-        git checkout -b data
-        # the flake should always be the one from the current main branch
-        rm -rf ./*
-        echo "$flake" > flake.nix
-        echo "$flakeLock" > flake.lock
         ${lib.concatStringsSep "\n" (l.mapAttrsToList (_: app: app.program) indexApps)}
         ${lib.concatStringsSep "\n" (l.mapAttrsToList (_: app: app.program) translateApps)}
-        git add .
-        git commit -m "automatic update - $(date --rfc-3339=seconds)"
-      ''
-    );
+      '';
+
+    buildAllApp = let
+      buildScript =
+        pkgs.writers.writePython3 "build-job" {}
+        ''
+          import sys
+          import subprocess as sp
+          from pathlib import path
+
+          input = json.load(open(sys.argv[1]))
+          attr = input['attr']
+          attrPath = '.'.join(input['attrPath'])
+          if "error" in input:
+            print(
+              f"Evaluation failed. attr: {attr} attrPath: {attrPath}\nError:\n{error}",
+              file=sys.stderr
+            )
+          else:
+            name = input['name']
+            drvPath = input['drvPath']
+            print(
+              f"Building {name}. attr: {attr} attrPath: {attrPath}\nError:\n{error}",
+              file=sys.stderr
+            )
+            try:
+              proc = sp.run(
+                ['nix', 'build', drvPath],
+                capture_output = true,
+                check=True,
+              )
+            except sp.CalledProcessError as error:
+              Path('errors').mkdir(exist_ok=True)
+              with open(f'errors/{name}') as f:
+                f.write(error.stderr)
+        '';
+    in
+      mkApp (
+        utils.writePureShellScript
+        (with pkgs; [
+          coreutils
+          git
+          parallel
+          nix
+          nix-eval-jobs
+        ])
+        ''
+          JOBS=''${JOBS:-$(nproc)}
+          parallel --halt now,fail=1 -j$JOBS --link \
+            -a <(nix-eval-jobs --gc-roots-dir $(pwd)/gcroot --flake $(realpath .)#packages.x86_64-linux --workers $JOBS) \
+            ${buildScript}
+        ''
+      );
 
     mkIndexOutputs = name: let
       src = "${toString source}/${name}/locks";
@@ -200,6 +244,7 @@ in rec {
       packages = allPackages;
       apps =
         {ci-job-all = ciJobAllApp;}
+        // {build-all = buildAllApp;}
         // indexApps
         // translateApps
         // ciJobApps;
