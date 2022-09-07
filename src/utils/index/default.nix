@@ -167,37 +167,10 @@ in rec {
     buildAllApp = let
       buildScript =
         pkgs.writers.writePython3 "build-job" {}
-        ''
-          import sys
-          import subprocess as sp
-          from pathlib import path
-
-          input = json.load(open(sys.argv[1]))
-          attr = input['attr']
-          attrPath = '.'.join(input['attrPath'])
-          if "error" in input:
-            print(
-              f"Evaluation failed. attr: {attr} attrPath: {attrPath}\nError:\n{error}",
-              file=sys.stderr
-            )
-          else:
-            name = input['name']
-            drvPath = input['drvPath']
-            print(
-              f"Building {name}. attr: {attr} attrPath: {attrPath}\nError:\n{error}",
-              file=sys.stderr
-            )
-            try:
-              proc = sp.run(
-                ['nix', 'build', drvPath],
-                capture_output = true,
-                check=True,
-              )
-            except sp.CalledProcessError as error:
-              Path('errors').mkdir(exist_ok=True)
-              with open(f'errors/{name}') as f:
-                f.write(error.stderr)
-        '';
+        ./build-script.py;
+      statsScript =
+        pkgs.writers.writePython3 "build-job" {}
+        ./make-stats.py;
     in
       mkApp (
         utils.writePureShellScript
@@ -209,10 +182,22 @@ in rec {
           nix-eval-jobs
         ])
         ''
+          rm -rf ./errors
+          mkdir -p ./errors
           JOBS=''${JOBS:-$(nproc)}
+          EVAL_JOBS=''${EVAL_JOBS:-1}
+          LIMIT=''${LIMIT:-0}
+          if [ "$LIMIT" -gt "0" ]; then
+            limit="head -n $LIMIT"
+          else
+            limit="cat"
+          fi
+          echo "settings: JOBS $JOBS; EVAL_JOBS: $EVAL_JOBS; LIMIT $LIMIT"
           parallel --halt now,fail=1 -j$JOBS --link \
-            -a <(nix-eval-jobs --gc-roots-dir $(pwd)/gcroot --flake $(realpath .)#packages.x86_64-linux --workers $JOBS) \
+            -a <(nix-eval-jobs --gc-roots-dir $TMPDIR/gcroot --flake "$(realpath .)#packages.x86_64-linux" --workers $EVAL_JOBS --max-memory-size 3000 | $limit) \
             ${buildScript}
+          ${statsScript}
+          rm -r ./errors
         ''
       );
 
