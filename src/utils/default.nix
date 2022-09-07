@@ -34,7 +34,7 @@
 
   translatorUtils = callPackageDream ./translator.nix {};
 
-  indexUtils = callPackageDream ./index.nix {};
+  indexUtils = callPackageDream ./index {};
 
   poetry2nixSemver = import "${externalSources.poetry2nix}/semver.nix" {
     inherit lib;
