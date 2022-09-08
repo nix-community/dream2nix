@@ -36,9 +36,6 @@
   } @ args: let
     l = lib // builtins;
 
-    # the main package
-    defaultPackage = packages."${defaultPackageName}"."${defaultPackageVersion}";
-
     # packages to export
     packages =
       lib.mapAttrs
@@ -130,6 +127,6 @@
       # apply packageOverrides to current derivation
       produceDerivation name pkg;
   in {
-    inherit defaultPackage packages;
+    inherit packages;
   };
 }
