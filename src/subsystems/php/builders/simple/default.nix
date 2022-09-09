@@ -73,6 +73,11 @@
         l.toJSON
         (repositories ++ [{packagist = false;}]);
 
+      versionString =
+        if version == "unknown"
+        then "0.0.0"
+        else version;
+
       pkg = stdenv.mkDerivation rec {
         pname = l.strings.sanitizeDerivationName name;
         inherit version;
@@ -109,7 +114,7 @@
           jq \
             --slurpfile repositories $out/repositories.json \
             "(.repositories = \$repositories[0]) | \
-             (.version = \"${version}\")" \
+             (.version = \"${versionString}\")" \
             composer.json.orig > composer.json
 
           # build

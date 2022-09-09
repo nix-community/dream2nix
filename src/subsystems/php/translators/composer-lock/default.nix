@@ -253,7 +253,7 @@ in {
       Users will not be interested in all individual dependencies.
       */
       exportedPackages = {
-        "${defaultPackage}" = composerJson.version or "0.0.0";
+        "${defaultPackage}" = composerJson.version or "unknown";
       };
 
       /*
