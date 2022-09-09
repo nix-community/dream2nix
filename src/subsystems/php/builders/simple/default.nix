@@ -38,11 +38,12 @@
 
     # packages to export
     packages =
-      lib.mapAttrs
-      (name: version: {
-        "${version}" = makePackage name version;
-      })
-      args.packages;
+      {default = packages.${defaultPackageName};}
+      // (
+        l.mapAttrs
+        (name: version: {"${version}" = makePackage name version;})
+        args.packages
+      );
 
     # Generates a derivation for a specific package name + version
     makePackage = name: version: let
