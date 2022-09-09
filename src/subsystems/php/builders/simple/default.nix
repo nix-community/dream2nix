@@ -44,6 +44,13 @@
         (name: version: {"${version}" = makePackage name version;})
         args.packages
       );
+    devShells =
+      {default = devShells.${defaultPackageName};}
+      // (
+        l.mapAttrs
+        (name: version: packages.${name}.${version}.devShell)
+        args.packages
+      );
 
     # Generates a derivation for a specific package name + version
     makePackage = name: version: let
@@ -135,11 +142,20 @@
             done
           fi
         '';
+
+        passthru.devShell = import ./devShell.nix {
+          inherit
+            name
+            pkg
+            ;
+          inherit (pkgs) mkShell;
+          php = pkgs.php81;
+        };
       };
     in
       # apply packageOverrides to current derivation
       produceDerivation name pkg;
   in {
-    inherit packages;
+    inherit packages devShells;
   };
 }
