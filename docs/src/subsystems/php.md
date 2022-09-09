@@ -20,4 +20,6 @@ generate a dream2nix lockfile.
 
 ## Builders
 
-None so far.
+### simple (pure) (default)
+
+Builds the package including all its dependencies in a single derivation.
