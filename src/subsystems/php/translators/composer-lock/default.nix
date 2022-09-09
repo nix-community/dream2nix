@@ -22,24 +22,6 @@ in {
     })
   ];
 
-  /*
-  Allow dream2nix to detect if a given directory contains a project
-  which can be translated with this translator.
-  Usually this can be done by checking for the existence of specific
-  file names or file endings.
-
-  Alternatively a fully featured discoverer can be implemented under
-  `src/subsystems/{subsystem}/discoverers`.
-  This is recommended if more complex project structures need to be
-  discovered like, for example, workspace projects spanning over multiple
-  sub-directories
-
-  If a fully featured discoverer exists, do not define `discoverProject`.
-  */
-  discoverProject = tree:
-    (l.pathExists "${tree.fullPath}/composer.json")
-    && (l.pathExists "${tree.fullPath}/composer.lock");
-
   # translate from a given source and a project specification to a dream-lock.
   translate = {
     translatorName,
