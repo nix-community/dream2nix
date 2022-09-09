@@ -125,7 +125,14 @@
           popd
         '';
         installPhase = ''
-          true
+          if [ -d $PKG_OUT/bin ]
+          then
+            mkdir -p $out/bin
+            for bin in $(ls $PKG_OUT/bin)
+            do
+              ln -s $PKG_OUT/bin/$bin $out/bin/$bin
+            done
+          fi
         '';
       };
     in
