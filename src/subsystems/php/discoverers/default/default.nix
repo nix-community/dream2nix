@@ -10,7 +10,7 @@
   getTranslators = path: let
     nodes = l.readDir path;
   in
-    l.optionals (nodes ? "composer.lock") ["composer-lock"]
+    l.optional (nodes ? "composer.lock") "composer-lock"
     ++ ["composer-json"];
 
   # discover php projects
