@@ -56,15 +56,12 @@
     makePackage = name: version: let
       dependencies = getDependencies name version;
       allDependencies = let
-        getAllDependencies = deps: let
-          getSubdependencies = dep: let
-            subdeps = getDependencies dep.name dep.version;
-          in
-            getAllDependencies subdeps;
-        in
-          deps ++ (l.flatten (map getSubdependencies deps));
+        withKey = x: x // {key = "${x.name} ${x.version}";};
       in
-        getAllDependencies dependencies;
+        l.genericClosure {
+          startSet = map withKey dependencies;
+          operator = dep: map withKey (getDependencies dep.name dep.version);
+        };
 
       intoRepository = dep: {
         type = "path";
