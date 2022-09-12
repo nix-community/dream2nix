@@ -80,6 +80,7 @@ in rec {
       '';
     in
       mkApp script;
+
     mkTranslateApp = name:
       mkApp (
         pkgs.writers.writeBash "translate-${name}" ''
@@ -88,27 +89,41 @@ in rec {
             ${name}/index.json ${name}/locks
         ''
       );
-    mkCiJobApp = name: input:
+
+    mkCiAppWith = commands:
       mkApp (
         utils.writePureShellScript
         (with pkgs; [
           coreutils
           git
           gnugrep
+          openssh
         ])
         ''
-          mainBranch=$(git branch | grep -E '(master)|(main)')
-          git branch data || :
-          git checkout data
+          flake=$(cat flake.nix)
+          flakeLock=$(cat flake.lock)
+          set -x
+          git fetch origin data || :
+          git checkout origin/data || :
+          git branch -D data || :
+          git checkout -b data
           # the flake should always be the one from the current main branch
-          git checkout $mainBranch flake.nix
-          git checkout $mainBranch flake.lock
-          ${(mkIndexApp name input).program}
-          ${(mkTranslateApp name).program}
+          rm -rf ./*
+          echo "$flake" > flake.nix
+          echo "$flakeLock" > flake.lock
+          ${commands}
           git add .
-          git commit "automatic update - $(date --rfc-3339=seconds)"
+          git commit -m "automatic update - $(date --rfc-3339=seconds)"
         ''
       );
+
+    mkCiJobApp = name: input:
+      mkCiAppWith
+      ''
+        ${(mkIndexApp name input).program}
+        ${(mkTranslateApp name).program}
+      '';
+
     translateApps = l.listToAttrs (
       l.map
       (
@@ -119,6 +134,7 @@ in rec {
       )
       indexNames
     );
+
     indexApps = l.listToAttrs (
       l.mapAttrsToList
       (
@@ -129,6 +145,7 @@ in rec {
       )
       indexes
     );
+
     ciJobApps = l.listToAttrs (
       l.mapAttrsToList
       (
@@ -139,6 +156,50 @@ in rec {
       )
       indexes
     );
+
+    ciJobAllApp =
+      mkCiAppWith
+      ''
+        ${lib.concatStringsSep "\n" (l.mapAttrsToList (_: app: app.program) indexApps)}
+        ${lib.concatStringsSep "\n" (l.mapAttrsToList (_: app: app.program) translateApps)}
+      '';
+
+    buildAllApp = let
+      buildScript =
+        pkgs.writers.writePython3 "build-job" {}
+        ./build-script.py;
+      statsScript =
+        pkgs.writers.writePython3 "build-job" {}
+        ./make-stats.py;
+    in
+      mkApp (
+        utils.writePureShellScript
+        (with pkgs; [
+          coreutils
+          git
+          parallel
+          nix
+          nix-eval-jobs
+        ])
+        ''
+          rm -rf ./errors
+          mkdir -p ./errors
+          JOBS=''${JOBS:-$(nproc)}
+          EVAL_JOBS=''${EVAL_JOBS:-1}
+          LIMIT=''${LIMIT:-0}
+          if [ "$LIMIT" -gt "0" ]; then
+            limit="head -n $LIMIT"
+          else
+            limit="cat"
+          fi
+          echo "settings: JOBS $JOBS; EVAL_JOBS: $EVAL_JOBS; LIMIT $LIMIT"
+          parallel --halt now,fail=1 -j$JOBS --link \
+            -a <(nix-eval-jobs --gc-roots-dir $TMPDIR/gcroot --flake "$(realpath .)#packages.x86_64-linux" --workers $EVAL_JOBS --max-memory-size 3000 | $limit) \
+            ${buildScript}
+          ${statsScript}
+          rm -r ./errors
+        ''
+      );
 
     mkIndexOutputs = name: let
       src = "${toString source}/${name}/locks";
@@ -167,7 +228,9 @@ in rec {
     outputs = {
       packages = allPackages;
       apps =
-        indexApps
+        {ci-job-all = ciJobAllApp;}
+        // {build-all = buildAllApp;}
+        // indexApps
         // translateApps
         // ciJobApps;
     };
