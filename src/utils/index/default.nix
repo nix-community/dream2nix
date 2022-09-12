@@ -104,7 +104,7 @@ in rec {
           flakeLock=$(cat flake.lock)
           set -x
           git fetch origin data || :
-          git checkout origin/data || :
+          git checkout -f origin/data || :
           git branch -D data || :
           git checkout -b data
           # the flake should always be the one from the current main branch
