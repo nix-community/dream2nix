@@ -245,7 +245,7 @@ in {
       };
 
       # name of the default package
-      defaultPackage = composerJson.name or "unknown";
+      defaultPackage = project.name;
 
       /*
       List the package candidates which should be exposed to the user.
