@@ -136,11 +136,36 @@
                     <main>
                         <h1 id="php-subsystem"><a class="header" href="#php-subsystem">PHP subsystem</a></h1>
 <blockquote>
-<p>!!! PHP support is a work in progress, and it is not yet usable (a
-builder is missing). You can track the progress in
+<p>!!! PHP support is experimental. <br />
+!!! You can track the progress in
 <a href="https://github.com/nix-community/dream2nix/issues/240">nix-community/dream2nix#240</a>.</p>
 </blockquote>
 <p>This section documents the PHP subsystem.</p>
+<h2 id="example"><a class="header" href="#example">Example</a></h2>
+<p>An example of building <a href="https://github.com/composer/composer">composer</a> using dream2nix.</p>
+<pre><code class="language-nix">{
+  inputs = {
+    dream2nix.url = &quot;github:nix-community/dream2nix&quot;;
+    src.url = &quot;github:composer/composer&quot;;
+    src.flake = false;
+  };
+
+  outputs = {
+    self,
+    dream2nix,
+    src,
+  } @ inp:
+    (dream2nix.lib.makeFlakeOutputs {
+      systems = [&quot;x86_64-linux&quot;];
+      config.projectRoot = ./.;
+      source = src;
+      settings = [];
+    })
+    // {
+      # checks = self.packages;
+    };
+}
+</code></pre>
 <h2 id="translators"><a class="header" href="#translators">Translators</a></h2>
 <h3 id="composer-lock-pure"><a class="header" href="#composer-lock-pure">composer-lock (pure)</a></h3>
 <p>Translates <code>composer.lock</code> into a dream2nix lockfile.</p>
@@ -149,7 +174,8 @@ builder is missing). You can track the progress in
 <code>composer.lock</code> lockfile, then invokes the <code>composer-lock</code> translator to
 generate a dream2nix lockfile.</p>
 <h2 id="builders"><a class="header" href="#builders">Builders</a></h2>
-<p>None so far.</p>
+<h3 id="simple-pure-default"><a class="header" href="#simple-pure-default">simple (pure) (default)</a></h3>
+<p>Builds the package including all its dependencies in a single derivation.</p>
 
                     </main>
 
