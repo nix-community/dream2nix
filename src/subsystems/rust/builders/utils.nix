@@ -18,7 +18,7 @@ in rec {
   in
     meta
     // {
-      licenses = l.map (name: l.licenses.${name}) meta.licenses;
+      license = l.map (name: l.licenses.${name}) meta.license;
     };
 
   # Gets the root source for a package

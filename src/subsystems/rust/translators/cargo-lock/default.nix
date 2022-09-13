@@ -258,7 +258,7 @@ in {
               pkg = package.value.package;
             in {
               ${pkg.name}.${pkg.version} =
-                {licenses = dlib.parseSpdxId (pkg.license or "");}
+                {license = dlib.parseSpdxId (pkg.license or "");}
                 // (
                   l.filterAttrs
                   (n: v: l.any (on: n == on) ["description" "homepage"])

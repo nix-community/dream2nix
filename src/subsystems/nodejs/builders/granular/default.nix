@@ -221,7 +221,7 @@
         in
           meta
           // {
-            licenses = l.map (name: l.licenses.${name}) meta.licenses;
+            license = l.map (name: l.licenses.${name}) meta.license;
           };
 
         passthru.dependencies = passthruDeps;

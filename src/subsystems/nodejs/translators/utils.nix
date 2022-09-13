@@ -5,7 +5,7 @@
   l = lib // builtins;
 in rec {
   getMetaFromPackageJson = packageJson:
-    {licenses = dlib.parseSpdxId (packageJson.license or "");}
+    {license = dlib.parseSpdxId (packageJson.license or "");}
     // (
       l.filterAttrs
       (n: v: l.any (on: n == on) ["description" "homepage"])
