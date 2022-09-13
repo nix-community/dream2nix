@@ -112,6 +112,12 @@
             ${utils.writeCargoLock}
           '';
           passthru = {dependencies = deps;};
+          meta = {
+            licenses =
+              l.map
+              (name: l.licenses.${name})
+              subsystemAttrs.licenses.${pname}.${version};
+          };
         };
     in
       produceDerivation

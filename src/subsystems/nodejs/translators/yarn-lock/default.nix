@@ -140,7 +140,10 @@
 
       subsystemName = "nodejs";
 
-      subsystemAttrs = {nodejsVersion = b.toString args.nodejs;};
+      subsystemAttrs = {
+        nodejsVersion = b.toString args.nodejs;
+        licenses = dlib.parseSpdxId (packageJson.license or "");
+      };
 
       keys = {
         yarnName = rawObj: finalObj:

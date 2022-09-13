@@ -251,6 +251,16 @@ in {
           gitDeps = l.filter (dep: (getSourceTypeFrom dep) == "git") parsedDeps;
         in
           l.unique (l.map (dep: parseGitSource dep) gitDeps);
+        licenses = l.foldl' l.recursiveUpdate {} (
+          l.map
+          (
+            package: let
+              pkg = package.value.package;
+              licenses = dlib.parseSpdxId (pkg.license or "");
+            in {${pkg.name}.${pkg.version} = licenses;}
+          )
+          cargoPackages
+        );
       };
 
       defaultPackage = package.name;

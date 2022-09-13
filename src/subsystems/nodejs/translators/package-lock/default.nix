@@ -170,7 +170,10 @@
 
       subsystemName = "nodejs";
 
-      subsystemAttrs = {nodejsVersion = b.toString args.nodejs;};
+      subsystemAttrs = {
+        nodejsVersion = b.toString args.nodejs;
+        licenses = dlib.parseSpdxId (packageJson.license or "");
+      };
 
       # functions
       serializePackages = inputData: let
