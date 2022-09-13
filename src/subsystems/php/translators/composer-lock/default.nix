@@ -22,24 +22,6 @@ in {
     })
   ];
 
-  /*
-  Allow dream2nix to detect if a given directory contains a project
-  which can be translated with this translator.
-  Usually this can be done by checking for the existence of specific
-  file names or file endings.
-
-  Alternatively a fully featured discoverer can be implemented under
-  `src/subsystems/{subsystem}/discoverers`.
-  This is recommended if more complex project structures need to be
-  discovered like, for example, workspace projects spanning over multiple
-  sub-directories
-
-  If a fully featured discoverer exists, do not define `discoverProject`.
-  */
-  discoverProject = tree:
-    (l.pathExists "${tree.fullPath}/composer.json")
-    && (l.pathExists "${tree.fullPath}/composer.lock");
-
   # translate from a given source and a project specification to a dream-lock.
   translate = {
     translatorName,
@@ -189,9 +171,20 @@ in {
         };
       doReplace = pkg: l.foldl replace pkg packages;
       doProvide = pkg: l.foldl provide pkg packages;
-      resolve = pkg: doProvide (doReplace pkg);
+      dropMissing = pkgs: let
+        doDropMissing = pkg:
+          pkg
+          // {
+            require =
+              l.filterAttrs
+              (name: semver: l.any (pkg: (pkg.name == name) && (satisfiesSemver pkg.version semver)) pkgs)
+              (getDependencies pkg);
+          };
+      in
+        map doDropMissing pkgs;
+      resolve = pkg: (doProvide (doReplace pkg));
     in
-      map resolve packages;
+      dropMissing (map resolve packages);
 
     # toplevel php semver
     phpSemver = composerJson.require."php" or "*";
@@ -204,7 +197,13 @@ in {
       map (l.strings.removePrefix "ext-") (l.lists.unique extensions);
 
     # get dependencies
-    getDependencies = pkg: (pkg.require or {});
+    getDependencies = pkg:
+      l.mapAttrs
+      (name: version:
+        if version == "self.version"
+        then pkg.version
+        else version)
+      (pkg.require or {});
 
     # resolve semvers into exact versions
     pinPackages = pkgs: let
@@ -246,7 +245,7 @@ in {
       };
 
       # name of the default package
-      defaultPackage = composerJson.name;
+      defaultPackage = project.name;
 
       /*
       List the package candidates which should be exposed to the user.
@@ -254,7 +253,7 @@ in {
       Users will not be interested in all individual dependencies.
       */
       exportedPackages = {
-        "${defaultPackage}" = composerJson.version or "0.0.0";
+        "${defaultPackage}" = composerJson.version or "unknown";
       };
 
       /*
@@ -276,7 +275,7 @@ in {
               (
                 if noDev
                 then {}
-                else composerJson.require-dev
+                else composerJson.require-dev or {}
               )
               // composerJson.require;
           }

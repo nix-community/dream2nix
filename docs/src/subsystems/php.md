@@ -1,10 +1,18 @@
 # PHP subsystem
 
-> !!! PHP support is a work in progress, and it is not yet usable (a
-> builder is missing). You can track the progress in
+> !!! PHP support is experimental. \
+> !!! You can track the progress in
 > [nix-community/dream2nix#240](https://github.com/nix-community/dream2nix/issues/240).
 
 This section documents the PHP subsystem.
+
+## Example
+
+An example of building [composer](https://github.com/composer/composer) using dream2nix.
+
+```nix
+{{#include ../../../examples/php_composer/flake.nix}}
+```
 
 ## Translators
 
@@ -20,4 +28,6 @@ generate a dream2nix lockfile.
 
 ## Builders
 
-None so far.
+### simple (pure) (default)
+
+Builds the package including all its dependencies in a single derivation.
