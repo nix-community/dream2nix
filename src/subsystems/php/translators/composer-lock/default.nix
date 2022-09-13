@@ -103,9 +103,9 @@ in {
     composerLock = (projectTree.getNodeFromPath "composer.lock").jsonContent;
 
     inherit
-      (callPackageDream ../../utils.nix {})
-      satisfiesSemver
-      multiSatisfiesSemver
+      (callPackageDream ../../semver.nix {})
+      satisfies
+      multiSatisfies
       ;
 
     # all the packages
@@ -134,7 +134,7 @@ in {
           l.filterAttrs (
             name: semver:
               !((providements ? "${name}")
-                && (multiSatisfiesSemver providements."${name}" semver))
+                && (multiSatisfies providements."${name}" semver))
           )
           requirements;
       in
@@ -155,7 +155,7 @@ in {
           l.filterAttrs (
             name: semver:
               !((replacements ? "${name}")
-                && (satisfiesSemver replacements."${name}" semver))
+                && (satisfies replacements."${name}" semver))
           )
           requirements;
       in
@@ -177,7 +177,7 @@ in {
           // {
             require =
               l.filterAttrs
-              (name: semver: l.any (pkg: (pkg.name == name) && (satisfiesSemver pkg.version semver)) pkgs)
+              (name: semver: l.any (pkg: (pkg.name == name) && (satisfies pkg.version semver)) pkgs)
               (getDependencies pkg);
           };
       in
@@ -215,7 +215,7 @@ in {
         requires;
       doPin = name: semver:
         (l.head
-          (l.filter (dep: satisfiesSemver dep.version semver)
+          (l.filter (dep: satisfies dep.version semver)
             (l.filter (dep: dep.name == name)
               resolvedPackages)))
         .version;
