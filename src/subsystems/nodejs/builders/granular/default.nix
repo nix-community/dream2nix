@@ -216,9 +216,13 @@
 
         inherit pname;
 
-        meta = {
-          licenses = l.map (name: l.licenses.${name}) subsystemAttrs.licenses;
-        };
+        meta = let
+          meta = subsystemAttrs.meta;
+        in
+          meta
+          // {
+            licenses = l.map (name: l.licenses.${name}) meta.licenses;
+          };
 
         passthru.dependencies = passthruDeps;
 

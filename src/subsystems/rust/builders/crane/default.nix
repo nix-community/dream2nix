@@ -99,6 +99,7 @@
       buildArgs =
         common
         // {
+          meta = utils.getMeta pname version;
           cargoArtifacts = deps;
           # link the vendor dir we used earlier to the correct place
           preUnpack = ''
@@ -112,12 +113,6 @@
             ${utils.writeCargoLock}
           '';
           passthru = {dependencies = deps;};
-          meta = {
-            licenses =
-              l.map
-              (name: l.licenses.${name})
-              subsystemAttrs.licenses.${pname}.${version};
-          };
         };
     in
       produceDerivation

@@ -42,6 +42,8 @@
       produceDerivation pname (buildWithToolchain defaultToolchain {
         inherit pname version src;
 
+        meta = utils.getMeta pname version;
+
         cargoBuildFlags = cargoBuildFlags;
         cargoTestFlags = cargoBuildFlags;
 
@@ -61,13 +63,6 @@
           ${replacePaths}
           ${utils.writeCargoLock}
         '';
-
-        meta = {
-          licenses =
-            l.map
-            (name: l.licenses.${name})
-            subsystemAttrs.licenses.${pname}.${version};
-        };
       });
 
     mkShellForPkg = pkg:

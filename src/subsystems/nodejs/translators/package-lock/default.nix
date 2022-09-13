@@ -5,7 +5,7 @@
 }: let
   b = builtins;
   l = lib // builtins;
-  nodejsUtils = import ../utils.nix {inherit lib;};
+  nodejsUtils = import ../utils.nix {inherit dlib lib;};
 
   getPackageLock = tree: project:
     nodejsUtils.getWorkspaceLockFile tree project "package-lock.json";
@@ -172,7 +172,7 @@
 
       subsystemAttrs = {
         nodejsVersion = b.toString args.nodejs;
-        licenses = dlib.parseSpdxId (packageJson.license or "");
+        meta = nodejsUtils.getMetaFromPackageJson packageJson;
       };
 
       # functions

@@ -4,7 +4,7 @@
   ...
 }: let
   l = lib // builtins;
-  nodejsUtils = import ../utils.nix {inherit lib;};
+  nodejsUtils = import ../utils.nix {inherit dlib lib;};
   parser = import ./parser.nix {inherit lib;};
 
   getYarnLock = tree: project:
@@ -142,7 +142,7 @@
 
       subsystemAttrs = {
         nodejsVersion = b.toString args.nodejs;
-        licenses = dlib.parseSpdxId (packageJson.license or "");
+        meta = nodejsUtils.getMetaFromPackageJson packageJson;
       };
 
       keys = {
