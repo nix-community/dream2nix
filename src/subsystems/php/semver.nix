@@ -20,8 +20,7 @@
     mkCaretComparison = version: v: let
       ver = builtins.splitVersion v;
       major = l.toInt (l.head ver);
-      minor = builtins.toString (l.toInt (l.head ver) + 1);
-      upper = builtins.concatStringsSep "." (ireplace 0 minor ver);
+      upper = builtins.toString (l.toInt (l.head ver) + 1);
     in
       if major == 0
       then mkTildeComparison version v
