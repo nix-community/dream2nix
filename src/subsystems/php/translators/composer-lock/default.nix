@@ -112,8 +112,7 @@ in {
     phpSemver = composerJson.require."php" or "*";
     # all the php extensions
     phpExtensions = let
-      getDependenciesNames = pkg: l.attrNames (getRequire pkg);
-      allDepNames = l.flatten (map getDependenciesNames resolvedPackages);
+      allDepNames = l.flatten (map (x: l.attrNames (getRequire x)) packages);
       extensions = l.unique (l.filter (l.hasPrefix "ext-") allDepNames);
     in
       map (l.removePrefix "ext-") extensions;
@@ -137,9 +136,23 @@ in {
       then pkg.version
       else version;
 
+    # project package
+    toplevelPackage = {
+      name = project.name;
+      version = composerJson.version or "unknown";
+      source = {
+        type = "path";
+        path = projectSource;
+      };
+      require =
+        (l.optionalAttrs (!noDev) (composerJson.require-dev or {}))
+        // composerJson.require;
+    };
     # all the packages
     packages =
-      composerLock.packages
+      # Add the top-level package, this is not written in composer.lock
+      [toplevelPackage]
+      ++ composerLock.packages
       ++ (l.optionals (!noDev) (composerLock.packages-dev or []));
     # packages with replace/provide applied
     resolvedPackages = let
@@ -191,7 +204,7 @@ in {
       clean = requires:
         l.filterAttrs
         (name: _:
-          (l.all (x: name != x) ["php" "composer/composer" "composer-runtime-api"])
+          !(l.elem name ["php" "composer/composer" "composer-runtime-api"])
           && !(l.strings.hasPrefix "ext-" name))
         requires;
       doPin = name: semver:
@@ -226,7 +239,7 @@ in {
       };
 
       # name of the default package
-      defaultPackage = project.name;
+      defaultPackage = toplevelPackage.name;
 
       /*
       List the package candidates which should be exposed to the user.
@@ -234,7 +247,7 @@ in {
       Users will not be interested in all individual dependencies.
       */
       exportedPackages = {
-        "${defaultPackage}" = composerJson.version or "unknown";
+        "${defaultPackage}" = toplevelPackage.version;
       };
 
       /*
@@ -242,27 +255,7 @@ in {
       If the upstream format is a deep attrset, this list should contain
       a flattened representation of all entries.
       */
-      serializedRawObjects = pinPackages (
-        [
-          # Add the top-level package, this is not written in composer.lock
-          {
-            name = defaultPackage;
-            version = exportedPackages."${defaultPackage}";
-            source = {
-              type = "path";
-              path = projectSource;
-            };
-            require =
-              (
-                if noDev
-                then {}
-                else composerJson.require-dev or {}
-              )
-              // composerJson.require;
-          }
-        ]
-        ++ resolvedPackages
-      );
+      serializedRawObjects = pinPackages resolvedPackages;
 
       /*
       Define extractor functions which each extract one property from

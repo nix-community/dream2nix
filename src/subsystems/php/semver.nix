@@ -142,7 +142,7 @@
     cleanConstraint = removeV (wildcard (removeSuffix constraint));
     cleanVersion = l.removePrefix "v" (wildcard (removeSuffix version));
   in
-    (l.any (x: constraint == x) ["" "*" "@dev" "@master" "@dev-master"])
+    (l.elem constraint ["" "*" "@dev" "@master" "@dev-master"])
     || (version == constraint)
     || (satisfiesSingleInternal cleanVersion cleanConstraint);
 
