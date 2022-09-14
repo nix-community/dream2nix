@@ -153,9 +153,19 @@
   in
     map trim (l.splitString "|" clean);
   splitConjunctives = v: let
-    clean = l.replaceStrings ["," " - " " -" "- "] [" " "-" "-" "-"] v;
+    clean =
+      l.replaceStrings
+      ["," " - " " -" "- " " as "]
+      [" " "-" "-" "-" "##"]
+      v;
+    cleanInlineAlias = v: let
+      m = l.match "^(.*)[#][#](.*)$" v;
+    in
+      if m != null && l.length m > 0
+      then l.head m
+      else v;
   in
-    map trim (l.splitString " " clean);
+    map (x: trim (cleanInlineAlias x)) (l.splitString " " clean);
 in rec {
   # matching a version with semver
   # 1.0.2 (~1.0.1 || >=2.1 <2.4)
