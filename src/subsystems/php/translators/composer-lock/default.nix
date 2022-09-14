@@ -94,6 +94,12 @@ in {
     noDev,
     ...
   } @ args: let
+    inherit
+      (callPackageDream ../../semver.nix {})
+      satisfies
+      multiSatisfies
+      ;
+
     # get the root source and project source
     rootSource = tree.fullPath;
     projectSource = "${tree.fullPath}/${project.relPath}";
@@ -102,75 +108,60 @@ in {
     composerJson = (projectTree.getNodeFromPath "composer.json").jsonContent;
     composerLock = (projectTree.getNodeFromPath "composer.lock").jsonContent;
 
-    inherit
-      (callPackageDream ../../semver.nix {})
-      satisfies
-      multiSatisfies
-      ;
+    # toplevel php semver
+    phpSemver = composerJson.require."php" or "*";
+    # all the php extensions
+    phpExtensions = let
+      getDependenciesNames = pkg: l.attrNames (getRequire pkg);
+      allDepNames = l.flatten (map getDependenciesNames resolvedPackages);
+      extensions = l.unique (l.filter (l.hasPrefix "ext-") allDepNames);
+    in
+      map (l.removePrefix "ext-") extensions;
+
+    # get cleaned pkg attributes
+    getRequire = pkg:
+      l.mapAttrs
+      (_: version: resolvePkgVersion pkg version)
+      (pkg.require or {});
+    getProvide = pkg:
+      l.mapAttrs
+      (_: version: resolvePkgVersion pkg version)
+      (pkg.provide or {});
+    getReplace = pkg:
+      l.mapAttrs
+      (_: version: resolvePkgVersion pkg version)
+      (pkg.replace or {});
+
+    resolvePkgVersion = pkg: version:
+      if version == "self.version"
+      then pkg.version
+      else version;
 
     # all the packages
     packages =
       composerLock.packages
-      ++ (
-        if noDev
-        then []
-        else composerLock.packages-dev
-      );
-
-    # packages with replacements applied
+      ++ (l.optionals (!noDev) (composerLock.packages-dev or []));
+    # packages with replace/provide applied
     resolvedPackages = let
-      getProvide = pkg: (pkg.provide or {});
-      getReplace = pkg: let
-        resolveVersion = _: version:
-          if version == "self.version"
-          then pkg.version
-          else version;
-      in
-        l.mapAttrs resolveVersion (pkg.replace or {});
-      provide = pkg: dep: let
-        requirements = getDependencies pkg;
-        providements = getProvide dep;
-        cleanRequirements =
+      apply = pkg: dep: candidates: let
+        original = getRequire pkg;
+        applied =
           l.filterAttrs (
             name: semver:
-              !((providements ? "${name}")
-                && (multiSatisfies providements."${name}" semver))
+              !((candidates ? "${name}") && (multiSatisfies candidates."${name}" semver))
           )
-          requirements;
+          original;
       in
         pkg
         // {
           require =
-            cleanRequirements
+            applied
             // (
-              if requirements != cleanRequirements
-              then {"${dep.name}" = "${dep.version}";}
-              else {}
+              l.optionalAttrs
+              (applied != original)
+              {"${dep.name}" = "${dep.version}";}
             );
         };
-      replace = pkg: dep: let
-        requirements = getDependencies pkg;
-        replacements = getReplace dep;
-        cleanRequirements =
-          l.filterAttrs (
-            name: semver:
-              !((replacements ? "${name}")
-                && (satisfies replacements."${name}" semver))
-          )
-          requirements;
-      in
-        pkg
-        // {
-          require =
-            cleanRequirements
-            // (
-              if requirements != cleanRequirements
-              then {"${dep.name}" = "${dep.version}";}
-              else {}
-            );
-        };
-      doReplace = pkg: l.foldl replace pkg packages;
-      doProvide = pkg: l.foldl provide pkg packages;
       dropMissing = pkgs: let
         doDropMissing = pkg:
           pkg
@@ -178,32 +169,22 @@ in {
             require =
               l.filterAttrs
               (name: semver: l.any (pkg: (pkg.name == name) && (satisfies pkg.version semver)) pkgs)
-              (getDependencies pkg);
+              (getRequire pkg);
           };
       in
         map doDropMissing pkgs;
-      resolve = pkg: (doProvide (doReplace pkg));
+      doReplace = pkg:
+        l.foldl
+        (pkg: dep: apply pkg dep (getProvide dep))
+        pkg
+        packages;
+      doProvide = pkg:
+        l.foldl
+        (pkg: dep: apply pkg dep (getReplace dep))
+        pkg
+        packages;
     in
-      dropMissing (map resolve packages);
-
-    # toplevel php semver
-    phpSemver = composerJson.require."php" or "*";
-    # all the php extensions
-    phpExtensions = let
-      all = map (pkg: l.attrsets.attrNames (getDependencies pkg)) resolvedPackages;
-      flat = l.lists.flatten all;
-      extensions = l.filter (l.strings.hasPrefix "ext-") flat;
-    in
-      map (l.strings.removePrefix "ext-") (l.lists.unique extensions);
-
-    # get dependencies
-    getDependencies = pkg:
-      l.mapAttrs
-      (name: version:
-        if version == "self.version"
-        then pkg.version
-        else version)
-      (pkg.require or {});
+      dropMissing (map (pkg: (doProvide (doReplace pkg))) packages);
 
     # resolve semvers into exact versions
     pinPackages = pkgs: let
@@ -301,7 +282,7 @@ in {
         dependencies = rawObj: finalObj:
           l.attrsets.mapAttrsToList
           (name: version: {inherit name version;})
-          (getDependencies rawObj);
+          (getRequire rawObj);
 
         sourceSpec = rawObj: finalObj:
           if rawObj.source.type == "path"

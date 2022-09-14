@@ -2,9 +2,7 @@
   dlib,
   lib,
   ...
-}: let
-  l = lib // builtins;
-in {
+}: {
   type = "impure";
 
   # A derivation which outputs a single executable at `$out`.
@@ -27,7 +25,6 @@ in {
     coreutils,
     jq,
     phpPackages,
-    writeScriptBin,
     ...
   }:
     utils.writePureShellScript
