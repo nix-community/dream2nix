@@ -141,14 +141,18 @@
           popd
         '';
         installPhase = ''
-          if [ -d $PKG_OUT/bin ]
-          then
+          pushd $PKG_OUT
+
+          BINS=$(jq -rcM "(.bin // [])[]" composer.json)
+          for bin in $BINS
+          do
             mkdir -p $out/bin
-            for bin in $(ls $PKG_OUT/bin)
-            do
-              ln -s $PKG_OUT/bin/$bin $out/bin/$bin
-            done
-          fi
+            pushd $out/bin
+            ln -s $PKG_OUT/$bin
+            popd
+          done
+
+          popd
         '';
 
         passthru.devShell = import ./devShell.nix {
