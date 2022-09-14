@@ -36,6 +36,17 @@
   } @ args: let
     l = lib // builtins;
 
+    # php with required extensions
+    php = pkgs.php81.withExtensions (
+      {
+        all,
+        enabled,
+      }:
+        l.unique (enabled
+          ++ (l.attrValues (l.filterAttrs (e: _: l.elem e subsystemAttrs.phpExtensions) all)))
+    );
+    composer = php.packages.composer;
+
     # packages to export
     packages =
       {default = packages.${defaultPackageName};}
@@ -91,11 +102,11 @@
 
         nativeBuildInputs = with pkgs; [
           jq
-          php81Packages.composer
+          composer
         ];
         buildInputs = with pkgs; [
-          php81
-          php81Packages.composer
+          php
+          composer
         ];
 
         dontConfigure = true;
@@ -144,9 +155,9 @@
           inherit
             name
             pkg
+            php
             ;
           inherit (pkgs) mkShell;
-          php = pkgs.php81;
         };
       };
     in
