@@ -65,7 +65,12 @@
 
       popd
 
-      ${subsystems.rust.translators.cargo-toml.translateBin} $TMPDIR/newJsonInput
+      # we don't need to run cargo-toml translator if Cargo.lock exists
+      if [ -f "$TMPDIR/source/Cargo.lock" ]; then
+        ${subsystems.rust.translators.cargo-lock.translateBin} $TMPDIR/newJsonInput
+      else
+        ${subsystems.rust.translators.cargo-toml.translateBin} $TMPDIR/newJsonInput
+      fi
 
       # add main package source info to dream-lock.json
       echo "
