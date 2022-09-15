@@ -138,12 +138,16 @@
       if m != null && l.length m > 0
       then l.concatStrings m
       else c;
-    cleanConstraint = removeV (wildcard (removeSuffix constraint));
+    isVersionLike = c: let
+      m = l.match "^([0-9><=!-^~*]*)$" c;
+    in
+      m != null && l.length m > 0;
+    cleanConstraint = removeV (wildcard (removeSuffix (l.removePrefix "dev-" constraint)));
     cleanVersion = l.removePrefix "v" (wildcard (removeSuffix version));
   in
     (l.elem constraint ["" "*" "@dev" "@master" "@dev-master"])
     || (version == constraint)
-    || (satisfiesSingleInternal cleanVersion cleanConstraint);
+    || ((isVersionLike cleanConstraint) && (satisfiesSingleInternal cleanVersion cleanConstraint));
 
   trim = s: l.head (l.match "^[[:space:]]*(.*[^[:space:]])[[:space:]]*$" s);
   splitAlternatives = v: let
