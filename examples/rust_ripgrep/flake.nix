@@ -1,6 +1,6 @@
 {
   inputs = {
-    dream2nix.url = "path:../..";
+    dream2nix.url = "github:nix-community/dream2nix";
     src.url = "github:BurntSushi/ripgrep/13.0.0";
     src.flake = false;
   };

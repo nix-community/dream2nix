@@ -1,6 +1,6 @@
 {
   inputs = {
-    dream2nix.url = "path:../..";
+    dream2nix.url = "github:nix-community/dream2nix";
     src.url = "github:prettier/prettier/2.4.1";
     src.flake = false;
   };
