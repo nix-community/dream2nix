@@ -99,6 +99,7 @@
       buildArgs =
         common
         // {
+          meta = utils.getMeta pname version;
           cargoArtifacts = deps;
           # link the vendor dir we used earlier to the correct place
           preUnpack = ''

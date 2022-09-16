@@ -3,6 +3,7 @@
 
   build = {
     lib,
+    dlib,
     pkgs,
     ...
   } @ topArgs: {
@@ -40,6 +41,8 @@
     in
       produceDerivation pname (buildWithToolchain defaultToolchain {
         inherit pname version src;
+
+        meta = utils.getMeta pname version;
 
         cargoBuildFlags = cargoBuildFlags;
         cargoTestFlags = cargoBuildFlags;

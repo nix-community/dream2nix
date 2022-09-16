@@ -4,7 +4,7 @@
   ...
 }: let
   l = lib // builtins;
-  nodejsUtils = import ../utils.nix {inherit lib;};
+  nodejsUtils = import ../utils.nix {inherit dlib lib;};
   parser = import ./parser.nix {inherit lib;};
 
   getYarnLock = tree: project:
@@ -140,7 +140,10 @@
 
       subsystemName = "nodejs";
 
-      subsystemAttrs = {nodejsVersion = b.toString args.nodejs;};
+      subsystemAttrs = {
+        nodejsVersion = b.toString args.nodejs;
+        meta = nodejsUtils.getMetaFromPackageJson packageJson;
+      };
 
       keys = {
         yarnName = rawObj: finalObj:

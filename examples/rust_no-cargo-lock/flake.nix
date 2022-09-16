@@ -1,6 +1,6 @@
 {
   inputs = {
-    dream2nix.url = "path:../../.";
+    dream2nix.url = "github:nix-community/dream2nix";
     src.url = "github:rust-random/rand";
     src.flake = false;
   };

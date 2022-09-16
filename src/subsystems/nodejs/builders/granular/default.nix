@@ -216,6 +216,14 @@
 
         inherit pname;
 
+        meta = let
+          meta = subsystemAttrs.meta;
+        in
+          meta
+          // {
+            license = l.map (name: l.licenses.${name}) meta.license;
+          };
+
         passthru.dependencies = passthruDeps;
 
         passthru.devShell = import ./devShell.nix {

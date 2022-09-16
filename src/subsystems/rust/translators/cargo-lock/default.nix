@@ -251,6 +251,23 @@ in {
           gitDeps = l.filter (dep: (getSourceTypeFrom dep) == "git") parsedDeps;
         in
           l.unique (l.map (dep: parseGitSource dep) gitDeps);
+        meta = l.foldl' l.recursiveUpdate {} (
+          l.map
+          (
+            package: let
+              pkg = package.value.package;
+            in {
+              ${pkg.name}.${pkg.version} =
+                {license = dlib.parseSpdxId (pkg.license or "");}
+                // (
+                  l.filterAttrs
+                  (n: v: l.any (on: n == on) ["description" "homepage"])
+                  pkg
+                );
+            }
+          )
+          cargoPackages
+        );
       };
 
       defaultPackage = package.name;
