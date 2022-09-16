@@ -10,7 +10,7 @@ mkShell {
   ];
   shellHook = let
     vendorDir =
-      pkg.overrideAttrs (old: {
+      pkg.overrideAttrs (_: {
         dontInstall = true;
       })
       + "/lib/vendor/${name}/vendor";

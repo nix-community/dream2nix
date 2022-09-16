@@ -7,6 +7,7 @@
     stdenv,
     # dream2nix inputs
     externals,
+    callPackageDream,
     ...
   }: {
     ### FUNCTIONS
@@ -35,6 +36,29 @@
     ...
   } @ args: let
     l = lib // builtins;
+
+    inherit (callPackageDream ../../semver.nix {}) satisfies;
+
+    # php with required extensions
+    php =
+      if satisfies pkgs.php81.version subsystemAttrs.phpSemver
+      then
+        pkgs.php81.withExtensions (
+          {
+            all,
+            enabled,
+          }:
+            l.unique (enabled
+              ++ (l.attrValues (l.filterAttrs (e: _: l.elem e subsystemAttrs.phpExtensions) all)))
+        )
+      else
+        l.abort ''
+          Error: incompatible php versions.
+          Package "${defaultPackageName}" defines required php version:
+            "php": "${subsystemAttrs.phpSemver}"
+          Using php version "${pkgs.php81.version}" from attribute "pkgs.php81".
+        '';
+    composer = php.packages.composer;
 
     # packages to export
     packages =
@@ -91,11 +115,11 @@
 
         nativeBuildInputs = with pkgs; [
           jq
-          php81Packages.composer
+          composer
         ];
         buildInputs = with pkgs; [
-          php81
-          php81Packages.composer
+          php
+          composer
         ];
 
         dontConfigure = true;
@@ -130,23 +154,27 @@
           popd
         '';
         installPhase = ''
-          if [ -d $PKG_OUT/bin ]
-          then
+          pushd $PKG_OUT
+
+          BINS=$(jq -rcM "(.bin // [])[]" composer.json)
+          for bin in $BINS
+          do
             mkdir -p $out/bin
-            for bin in $(ls $PKG_OUT/bin)
-            do
-              ln -s $PKG_OUT/bin/$bin $out/bin/$bin
-            done
-          fi
+            pushd $out/bin
+            ln -s $PKG_OUT/$bin
+            popd
+          done
+
+          popd
         '';
 
         passthru.devShell = import ./devShell.nix {
           inherit
             name
             pkg
+            php
             ;
           inherit (pkgs) mkShell;
-          php = pkgs.php81;
         };
       };
     in

@@ -1,4 +1,4 @@
-{lib}: let
+{lib, ...}: let
   l = lib // builtins;
 
   # Replace a list entry at defined index with set value
@@ -20,8 +20,7 @@
     mkCaretComparison = version: v: let
       ver = builtins.splitVersion v;
       major = l.toInt (l.head ver);
-      minor = builtins.toString (l.toInt (l.head ver) + 1);
-      upper = builtins.concatStringsSep "." (ireplace 0 minor ver);
+      upper = builtins.toString (l.toInt (l.head ver) + 1);
     in
       if major == 0
       then mkTildeComparison version v
@@ -111,12 +110,80 @@
     else throw ''Constraint "${constraintStr}" could not be parsed''
   );
 
-  satisfies = version: constraint: let
+  satisfiesSingleInternal = version: constraint: let
     inherit (parseConstraint constraint) ops v;
   in
     if ops.t == "-"
     then (operators."${ops.l}" version v.vl && operators."${ops.u}" version v.vu)
     else operators."${ops.t}" version v;
-in {
-  inherit satisfies;
+
+  # remove v from version strings: ^v1.2.3 -> ^1.2.3
+  # remove branch suffix: ^1.2.x-dev -> ^1.2
+  satisfiesSingle = version: constraint: let
+    removeSuffix = c: let
+      m = l.match "^(.*)[-][[:alpha:]]+$" c;
+    in
+      if m != null && l.length m >= 0
+      then l.head m
+      else c;
+    wildcard = c: let
+      m = l.match "^([[:d:]]+.*)[.][*x]$" c;
+    in
+      if m != null && l.length m >= 0
+      then "^${l.head m}"
+      else c;
+    removeV = c: let
+      m = l.match "^(.)*v([[:d:]]+[.].*)$" c;
+    in
+      if m != null && l.length m > 0
+      then l.concatStrings m
+      else c;
+    isVersionLike = c: let
+      m = l.match "^([0-9><=!-^~*]*)$" c;
+    in
+      m != null && l.length m > 0;
+    cleanConstraint = removeV (wildcard (removeSuffix (l.removePrefix "dev-" constraint)));
+    cleanVersion = l.removePrefix "v" (wildcard (removeSuffix version));
+  in
+    (l.elem constraint ["" "*" "@dev" "@master" "@dev-master"])
+    || (version == constraint)
+    || ((isVersionLike cleanConstraint) && (satisfiesSingleInternal cleanVersion cleanConstraint));
+
+  trim = s: l.head (l.match "^[[:space:]]*(.*[^[:space:]])[[:space:]]*$" s);
+  splitAlternatives = v: let
+    # handle version alternatives: ^1.2 || ^2.0
+    clean = l.replaceStrings ["||"] ["|"] v;
+  in
+    map trim (l.splitString "|" clean);
+  splitConjunctives = v: let
+    clean =
+      l.replaceStrings
+      ["," " - " " -" "- " " as "]
+      [" " "-" "-" "-" "##"]
+      v;
+    cleanInlineAlias = v: let
+      m = l.match "^(.*)[#][#](.*)$" v;
+    in
+      if m != null && l.length m > 0
+      then l.head m
+      else v;
+  in
+    map (x: trim (cleanInlineAlias x)) (l.splitString " " clean);
+in rec {
+  # matching a version with semver
+  # 1.0.2 (~1.0.1 || >=2.1 <2.4)
+  satisfies = version: constraint:
+    l.any
+    (c:
+      l.all
+      (satisfiesSingle version)
+      (splitConjunctives c))
+    (splitAlternatives constraint);
+
+  # matching multiversion like the one in `provide` with semver
+  # (1.0|2.0) (^2.0 || 3.2 - 3.6)
+  multiSatisfies = multiversion: constraint:
+    l.any
+    (version: satisfies version constraint)
+    (splitAlternatives multiversion);
 }
