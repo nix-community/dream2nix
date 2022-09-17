@@ -70,6 +70,13 @@
         })
         args.packages
       );
+    devShells =
+      {default = devShells.${defaultPackageName};}
+      // (
+        l.mapAttrs
+        (name: version: packages.${name}.${version}.devShell)
+        args.packages
+      );
 
     # manage packages in attrset to prevent duplicated evaluation
     allPackages =
@@ -200,11 +207,20 @@
 
           popd
         '';
+
+        passthru.devShell = import ./devShell.nix {
+          inherit
+            name
+            pkg
+            php
+            ;
+          inherit (pkgs) mkShell;
+        };
       };
     in
       # apply packageOverrides to current derivation
       produceDerivation name pkg;
   in {
-    inherit packages;
+    inherit packages devShells;
   };
 }
