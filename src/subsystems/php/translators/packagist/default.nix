@@ -52,6 +52,8 @@
       git remote add origin $SOURCE_URL
       git fetch --depth 1 origin $SOURCE_REV
       git checkout FETCH_HEAD
+      mv composer.json composer.json.orig
+      jq ".version = \"$version\"" composer.json.orig > composer.json
       popd
 
       # generate arguments for package-lock translator
