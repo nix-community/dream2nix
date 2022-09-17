@@ -10,14 +10,15 @@ input = json.load(sys.stdin)
 projects = []
 for package in input:
   versions = package['versions']
-  latest_version =\
-    (sorted(versions, key=lambda v: v['published_at'])[-1])['number']
-  projects.append(dict(
-    id=f"{package['name']}-{latest_version}",
-    name=package['name'],
-    version=latest_version,
-    translator=platform,
-  ))
+  versions = sorted(versions, key=lambda v: v['published_at'], reverse=True)
+  if versions:
+    latest_version = versions[0]['number']
+    projects.append(dict(
+        id=f"{package['name']}-{latest_version}",
+        name=package['name'],
+        version=latest_version,
+        translator=platform,
+    ))
 
 with open(out_file) as f:
   existing_projects = json.load(f)
