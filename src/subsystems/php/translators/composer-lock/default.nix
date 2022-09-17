@@ -142,7 +142,7 @@ in {
       version = composerJson.version or "unknown";
       source = {
         type = "path";
-        path = projectSource;
+        path = rootSource;
       };
       require =
         (l.optionalAttrs (!noDev) (composerJson.require-dev or {}))
@@ -281,6 +281,8 @@ in {
           if rawObj.source.type == "path"
           then {
             inherit (rawObj.source) type path;
+            rootName = null;
+            rootVersion = null;
           }
           else {
             inherit (rawObj.source) type url;
