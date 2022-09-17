@@ -213,6 +213,7 @@
             name
             pkg
             php
+            composer
             ;
           inherit (pkgs) mkShell;
         };

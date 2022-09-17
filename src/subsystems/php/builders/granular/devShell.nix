@@ -3,10 +3,12 @@
   pkg,
   mkShell,
   php,
+  composer,
 }:
 mkShell {
   buildInputs = [
     php
+    composer
   ];
   shellHook = let
     vendorDir =
