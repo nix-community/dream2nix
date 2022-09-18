@@ -46,7 +46,9 @@
           && [ "$(nix flake show --json | jq 'select(.packages."x86_64-linux".default.name)')" != "" ]; then
         nix eval --read-only --no-allow-import-from-derivation .#default.name
       fi
-      nix flake check "$@"
+      if [ "$(nix flake show --json | jq 'select(.packages."x86_64-linux".resolveImpure)')" == "" ]; then
+         nix flake check "$@"
+      fi
       end_time=$(date +%s)
       elapsed=$(( end_time - start_time ))
       echo -e "testing example for $dir took $elapsed seconds"
