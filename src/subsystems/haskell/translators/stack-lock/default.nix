@@ -238,13 +238,7 @@ in {
         # The structure of this should be defined in:
         #   ./src/specifications/{subsystem}
         subsystemAttrs = {
-          compiler = "${args.compiler.name}${
-            l.stringAsChars (c:
-              if c == "."
-              then ""
-              else c)
-            args.compiler.version
-          }";
+          compiler = args.compiler;
         };
 
         # name of the default package

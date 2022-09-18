@@ -35,17 +35,22 @@ in {
     # Example:
     #   produceDerivation name (mkDerivation {...})
     produceDerivation,
-    compiler ? null,
     ...
   } @ args: let
     b = builtins;
 
     compiler =
-      if args ? compiler
-      then args.compiler
-      else
-        pkgs.haskell.packages."${subsystemAttrs.compiler}"
-        or (throw "Could not find ${subsystemAttrs.compiler} in pkgs");
+      pkgs
+      .haskell
+      .packages
+      ."${subsystemAttrs.compiler.name}${
+        l.stringAsChars (c:
+          if c == "."
+          then ""
+          else c)
+        subsystemAttrs.compiler.version
+      }"
+      or (throw "Could not find ${subsystemAttrs.compiler.name} version ${subsystemAttrs.compiler.version} in pkgs");
 
     all-cabal-hashes = pkgs.runCommandLocal "all-cabal-hashes" {} ''
       mkdir $out
