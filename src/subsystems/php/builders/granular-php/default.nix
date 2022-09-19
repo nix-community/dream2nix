@@ -176,6 +176,12 @@
             echo {\"name\":\"${name}\"} > composer.json
           fi
 
+          # create composer.json if does not exist
+          if [ ! -f composer.json ]
+          then
+            echo {\"name\":\"${name}\"} > composer.json
+          fi
+
           # remove composer.lock if exists
           rm -f composer.lock
 
