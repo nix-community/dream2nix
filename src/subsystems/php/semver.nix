@@ -120,6 +120,12 @@
   # remove v from version strings: ^v1.2.3 -> ^1.2.3
   # remove branch suffix: ^1.2.x-dev -> ^1.2
   satisfiesSingle = version: constraint: let
+    removeStability = c: let
+      m = l.match "^(.*)[@][[:alpha:]]+$" c;
+    in
+      if m != null && l.length m >= 0
+      then l.head m
+      else c;
     removeSuffix = c: let
       m = l.match "^(.*)[-][[:alpha:]]+$" c;
     in
@@ -130,7 +136,7 @@
       m = l.match "^([[:d:]]+.*)[.][*x]$" c;
     in
       if m != null && l.length m >= 0
-      then "^${l.head m}"
+      then "~${l.head m}.0"
       else c;
     removeV = c: let
       m = l.match "^(.)*v([[:d:]]+[.].*)$" c;
@@ -142,10 +148,10 @@
       m = l.match "^([0-9><=!-^~*]*)$" c;
     in
       m != null && l.length m > 0;
-    cleanConstraint = removeV (wildcard (removeSuffix (l.removePrefix "dev-" constraint)));
+    cleanConstraint = removeV (wildcard (removeSuffix (removeStability (l.removePrefix "dev-" constraint))));
     cleanVersion = l.removePrefix "v" (wildcard (removeSuffix version));
   in
-    (l.elem constraint ["" "*" "@dev" "@master" "@dev-master"])
+    (l.elem (removeStability constraint) ["" "*"])
     || (version == constraint)
     || ((isVersionLike cleanConstraint) && (satisfiesSingleInternal cleanVersion cleanConstraint));
 
