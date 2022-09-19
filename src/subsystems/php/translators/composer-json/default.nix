@@ -58,9 +58,9 @@
         echo "excluding dev dependencies"
         jq '.require-dev = {}' ./composer.json > composer.json.mod
         mv composer.json.mod composer.json
-        composer update --no-install --no-dev
+        composer update --ignore-platform-reqs --no-scripts --no-plugins --no-install --no-dev
       else
-        composer update --no-install
+        composer update --ignore-platform-reqs --no-scripts --no-plugins --no-install
       fi
 
       jq ".source = \"$newSource\"" -c -r $jsonInput > $TMPDIR/newJsonInput
