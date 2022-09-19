@@ -56,15 +56,12 @@
       # create lockfile
       if [ "$(jq '.project.subsystemInfo.noDev' -c -r $jsonInput)" == "true" ]; then
         echo "excluding dev dependencies"
-        jq '.require-dev = {}' ./composer.json > composer.json.mod
-        mv composer.json.mod composer.json
-        composer update --ignore-platform-reqs --no-scripts --no-plugins --no-install --no-dev
-      else
-        composer update --ignore-platform-reqs --no-scripts --no-plugins --no-install
+        mv composer.json composer.json.orig
+        jq '.require-dev = {}' ./composer.json.orig > composer.json
       fi
+      composer update --ignore-platform-reqs --no-scripts --no-plugins --no-install
 
       jq ".source = \"$newSource\"" -c -r $jsonInput > $TMPDIR/newJsonInput
-
       popd
       ${subsystems.php.translators.composer-lock.translateBin} $TMPDIR/newJsonInput
     '';

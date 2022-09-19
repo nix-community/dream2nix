@@ -68,10 +68,12 @@
 
       popd
 
-      if [ -e $TMPDIR/source/composer.lock ]
+      if [ -f $TMPDIR/source/composer.lock ]
       then
+        echo 'Translating with composer-lock'
         ${subsystems.php.translators.composer-lock.translateBin} $TMPDIR/newJsonInput
       else
+        echo 'Translating with composer-json'
         ${subsystems.php.translators.composer-json.translateBin} $TMPDIR/newJsonInput
       fi
 
