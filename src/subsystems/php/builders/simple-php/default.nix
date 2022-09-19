@@ -76,6 +76,25 @@
         args.packages
       );
 
+    # Unpack dependency
+    cleanDependency = name: version:
+      stdenv.mkDerivation rec {
+        pname = "${l.strings.sanitizeDerivationName name}-source";
+        inherit version;
+        src = getSource name version;
+        dontConfigure = true;
+        buildPhase = ''
+          mkdir $out
+          cp -r ${src} $out
+          if [ ! -f $out/composer.json ]
+          then
+            echo {\"name\":\"${name}\"} > $out/composer.json
+          fi
+        '';
+        dontInstall = true;
+        dontFixup = true;
+      };
+
     # Generates a derivation for a specific package name + version
     makePackage = name: version: let
       dependencies = getDependencies name version;
@@ -89,7 +108,7 @@
 
       intoRepository = dep: {
         type = "path";
-        url = "${getSource dep.name dep.version}";
+        url = "${cleanDependency dep.name dep.version}";
         options = {
           versions = {
             "${dep.name}" = "${dep.version}";
@@ -101,6 +120,14 @@
       repositoriesString =
         l.toJSON
         (repositories ++ [{packagist = false;}]);
+
+      dependenciesString = l.toJSON (l.listToAttrs (
+        map (dep: {
+          inherit (dep) name;
+          value = dep.version;
+        })
+        dependencies
+      ));
 
       versionString =
         if version == "unknown"
@@ -136,13 +163,19 @@
           # disable packagist, set path repositories
           mv composer.json composer.json.orig
 
-          cat <<EOF >> $out/repositories.json
+          cat <<EOF > $out/repositories.json
           ${repositoriesString}
+          EOF
+          cat <<EOF > $out/dependencies.json
+          ${dependenciesString}
           EOF
 
           jq \
             --slurpfile repositories $out/repositories.json \
+            --slurpfile dependencies $out/dependencies.json \
             "(.repositories = \$repositories[0]) | \
+             (.require = \$dependencies[0]) | \
+             (.\"require-dev\" = {}) | \
              (.version = \"${versionString}\")" \
             composer.json.orig > composer.json
 
@@ -151,6 +184,7 @@
 
           # cleanup
           rm $out/repositories.json
+          rm $out/dependencies.json
           popd
         '';
         installPhase = ''

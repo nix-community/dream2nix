@@ -161,6 +161,12 @@
           pushd $PKG_OUT
           cp -r ${src}/* .
 
+          # create composer.json if does not exist
+          if [ ! -f composer.json ]
+          then
+            echo {\"name\":\"${name}\"} > composer.json
+          fi
+
           # remove composer.lock if exists
           rm -f composer.lock
 
