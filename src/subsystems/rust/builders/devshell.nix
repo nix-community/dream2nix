@@ -26,7 +26,12 @@
         packages = l.unique (c.packages ++ oc.packages);
         commands = l.unique (c.commands ++ oc.commands);
         env = l.unique (c.env ++ oc.env);
-        startup = (c.startup or {}) // (oc.startup or {});
+        devshell =
+          (c.devshell or {})
+          // (oc.devshell or {})
+          // {
+            startup = (c.devshell.startup or {}) // (oc.devshell.startup or {});
+          };
       }
       // l.optionalAttrs (hasCConfig c || hasCConfig oc) {
         language.c = let
