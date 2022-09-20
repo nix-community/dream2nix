@@ -174,7 +174,15 @@ Currently we have a builder for haskell and several translators (see table below
       pkgs = dream2nix.inputs.nixpkgs.legacyPackages.x86_64-linux;
       source = src;
       config.projectRoot = ./.;
-      settings = [];
+      settings = [
+        {
+          # Optionally, override the compiler version
+          subsystemInfo.compiler = {
+            name = &quot;ghc&quot;;
+            version = &quot;8.10.7&quot;;
+          };
+        }
+      ];
     })
     // {
       # checks = self.packages;
