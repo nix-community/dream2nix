@@ -9,7 +9,7 @@
     rust = "build-rust-package";
     nodejs = "granular";
     python = "simple-builder";
-    php = "simple";
+    php = "granular";
   };
 
   # TODO

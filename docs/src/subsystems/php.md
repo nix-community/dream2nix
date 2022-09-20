@@ -28,6 +28,10 @@ generate a dream2nix lockfile.
 
 ## Builders
 
-### simple (pure) (default)
+### granular (pure) (default)
+
+Builds all dependencies in isolation, moving upwards to the top-level package.
+
+### simple (pure)
 
 Builds the package including all its dependencies in a single derivation.

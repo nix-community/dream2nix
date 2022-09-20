@@ -64,8 +64,10 @@
     packages =
       {default = packages.${defaultPackageName};}
       // (
-        l.mapAttrs
-        (name: version: {"${version}" = makePackage name version;})
+        lib.mapAttrs
+        (name: version: {
+          "${version}" = allPackages.${name}.${version};
+        })
         args.packages
       );
     devShells =
@@ -76,31 +78,57 @@
         args.packages
       );
 
-    # Generates a derivation for a specific package name + version
-    makePackage = name: version: let
-      dependencies = getDependencies name version;
-      allDependencies = let
-        withKey = x: x // {key = "${x.name} ${x.version}";};
-      in
-        l.genericClosure {
-          startSet = map withKey dependencies;
-          operator = dep: map withKey (getDependencies dep.name dep.version);
-        };
+    # manage packages in attrset to prevent duplicated evaluation
+    allPackages =
+      lib.mapAttrs
+      (name: versions:
+        lib.genAttrs
+        versions
+        (version: makeOnePackage name version))
+      packageVersions;
 
-      intoRepository = dep: {
-        type = "path";
-        url = "${getSource dep.name dep.version}";
-        options = {
-          versions = {
-            "${dep.name}" = "${dep.version}";
+    # Generates a derivation for a specific package name + version
+    makeOnePackage = name: version: let
+      dependencies = getDependencies name version;
+      repositories = let
+        transform = dep: let
+          intoRepository = name: version: root: {
+            type = "path";
+            url = "${root}/vendor/${name}";
+            options = {
+              versions = {
+                "${name}" = "${version}";
+              };
+              symlink = false;
+            };
           };
-          symlink = false;
-        };
-      };
-      repositories = l.flatten (map intoRepository allDependencies);
+          getAllSubdependencies = deps: let
+            getSubdependencies = dep: let
+              subdeps = getDependencies dep.name dep.version;
+            in
+              l.flatten ([dep] ++ (getAllSubdependencies subdeps));
+          in
+            l.flatten (map getSubdependencies deps);
+          depRoot = allPackages."${dep.name}"."${dep.version}";
+          direct = intoRepository dep.name dep.version "${depRoot}/lib";
+          transitive =
+            map
+            (subdep: intoRepository subdep.name subdep.version "${depRoot}/lib/vendor/${dep.name}")
+            (getAllSubdependencies (getDependencies dep.name dep.version));
+        in
+          [direct] ++ transitive;
+      in
+        l.flatten (map transform dependencies);
       repositoriesString =
         l.toJSON
         (repositories ++ [{packagist = false;}]);
+      dependenciesString = l.toJSON (l.listToAttrs (
+        map (dep: {
+          inherit (dep) name;
+          value = dep.version;
+        })
+        dependencies
+      ));
 
       versionString =
         if version == "unknown"
@@ -117,10 +145,13 @@
           jq
           composer
         ];
-        buildInputs = with pkgs; [
-          php
-          composer
-        ];
+        buildInputs = with pkgs;
+          [
+            php
+            composer
+          ]
+          ++ map (dep: allPackages."${dep.name}"."${dep.version}")
+          dependencies;
 
         dontConfigure = true;
         buildPhase = ''
@@ -139,19 +170,28 @@
           cat <<EOF >> $out/repositories.json
           ${repositoriesString}
           EOF
+          cat <<EOF >> $out/dependencies.json
+          ${dependenciesString}
+          EOF
 
           jq \
             --slurpfile repositories $out/repositories.json \
+            --slurpfile dependencies $out/dependencies.json \
             "(.repositories = \$repositories[0]) | \
+             (.require = \$dependencies[0]) | \
+             (.\"require-dev\" = {}) | \
              (.version = \"${versionString}\")" \
             composer.json.orig > composer.json
 
           # build
           composer install --no-scripts
 
+          rm -rfv vendor/*/*/vendor
+
           # cleanup
-          rm $out/repositories.json
           popd
+          rm $out/repositories.json
+          rm $out/dependencies.json
         '';
         installPhase = ''
           pushd $PKG_OUT
