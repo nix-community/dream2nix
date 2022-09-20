@@ -174,7 +174,9 @@
 <code>composer.lock</code> lockfile, then invokes the <code>composer-lock</code> translator to
 generate a dream2nix lockfile.</p>
 <h2 id="builders"><a class="header" href="#builders">Builders</a></h2>
-<h3 id="simple-pure-default"><a class="header" href="#simple-pure-default">simple (pure) (default)</a></h3>
+<h3 id="granular-pure-default"><a class="header" href="#granular-pure-default">granular (pure) (default)</a></h3>
+<p>Builds all dependencies in isolation, moving upwards to the top-level package.</p>
+<h3 id="simple-pure"><a class="header" href="#simple-pure">simple (pure)</a></h3>
 <p>Builds the package including all its dependencies in a single derivation.</p>
 
                     </main>
