@@ -10,6 +10,8 @@
   ...
 }: let
   l = lib // builtins;
+
+  # function to merge two devshells
   mergeShellConfig = base: other: let
     c = base.config;
     oc = other.config;
@@ -39,6 +41,7 @@
       };
     imports = l.unique (i ++ oi);
   };
+  # creates a shell from a config
   mkShell = config: let
     shell = (externals.devshell.makeShell {configuration = config;}).shell;
   in
@@ -48,6 +51,8 @@
       combineWith = other:
         mkShell (mergeShellConfig config other.passthru.config);
     };
+  # convenience utils for converting a nix attribute to a shell env
+  # TODO: we could probably replace this with something from nixpkgs?
   toStr = v:
     if l.isBool v
     then l.boolToString v
@@ -56,6 +61,7 @@
     if l.isList v
     then "( ${l.concatStringsSep " " (l.map (v: ''"${toStr v}"'') v)} )"
     else l.toString v;
+  # illegal env names to be removed and not be added to the devshell
   illegalEnvNames = [
     "all"
     "args"
@@ -69,6 +75,7 @@
   isIllegalEnv = name: l.any (oname: name == oname) illegalEnvNames;
   inputs = (drv.buildInputs or []) ++ (drv.nativeBuildInputs or []);
   rustToolchain = drv.passthru.rustToolchain;
+  # the config we will use
   conf = {
     config =
       {
@@ -82,6 +89,7 @@
           }
         ];
         env =
+          # filter out attrsets, functions and illegal environment vars
           l.filter
           (env: (env != null) && (! isIllegalEnv env.name))
           (
@@ -98,6 +106,8 @@
             drv
           );
       }
+      # only add c stuff *if* the stdenv has a c compiler
+      # if the user wants to use stdenvNoCC this allows them to do it easily
       // l.optionalAttrs (drv.stdenv ? cc) {
         language.c = {
           compiler = drv.stdenv.cc;
