@@ -185,6 +185,7 @@ in {
       l.filter
       (rawObj: rawObj.style or null == "local")
       rawObjectsNonBuiltin;
+    compilerInfo = l.splitString "-" buildPlan.compiler-id;
   in
     dlib.simpleTranslate2.translate
     ({objectsByKey, ...}: rec {
@@ -199,11 +200,11 @@ in {
       # Extract subsystem specific attributes.
       # The structure of this should be defined in:
       #   ./src/specifications/{subsystem}
-      subsystemAttrs = let
-        compilerSplit = l.splitString "-" buildPlan.compiler-id;
-      in {
-        compilerName = l.elemAt compilerSplit 0;
-        compilerVersion = l.elemAt compilerSplit 1;
+      subsystemAttrs = {
+        compiler = {
+          name = l.head compilerInfo;
+          version = l.last compilerInfo;
+        };
       };
 
       # name of the default package
