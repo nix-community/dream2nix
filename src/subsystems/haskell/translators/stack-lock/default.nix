@@ -133,6 +133,11 @@ in {
 
       snapshot = stackLockUtils.fromYaml snapshotYamlFile;
 
+      compiler = snapshot.resolver.compiler;
+      compilerSplit = l.splitString "-" snapshot.resolver.compiler;
+      compilerName = l.head compilerSplit;
+      compilerVersion = l.last compilerSplit;
+
       hidden =
         hiddenPackagesDefault;
       # TODO: find out what to do with the hidden packages from the snapshot
@@ -238,7 +243,10 @@ in {
         # The structure of this should be defined in:
         #   ./src/specifications/{subsystem}
         subsystemAttrs = {
-          compiler = args.compiler;
+          compiler = {
+            name = compilerName;
+            version = compilerVersion;
+          };
         };
 
         # name of the default package
