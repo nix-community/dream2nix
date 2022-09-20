@@ -98,5 +98,5 @@ in rec {
   # All dependencies in the Cargo.lock file, vendored
   vendoredDependencies = vendorDependencies allDependencies;
 
-  copyVendorDir = path: ''cp -rs --no-preserve=mode,ownership ${vendoredDependencies} ${path}'';
+  copyVendorDir = from: to: ''cp -rs --no-preserve=mode,ownership ${from} ${to}'';
 }
