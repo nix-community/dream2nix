@@ -139,7 +139,6 @@
         inherit version;
 
         src = getSource name version;
-
         nativeBuildInputs = with pkgs; [
           jq
           composer
@@ -148,6 +147,9 @@
           php
           composer
         ];
+
+        inherit repositoriesString dependenciesString;
+        passAsFile = ["repositoriesString" "dependenciesString"];
 
         dontConfigure = true;
         buildPhase = ''
@@ -163,16 +165,9 @@
           # disable packagist, set path repositories
           mv composer.json composer.json.orig
 
-          cat <<EOF > $out/repositories.json
-          ${repositoriesString}
-          EOF
-          cat <<EOF > $out/dependencies.json
-          ${dependenciesString}
-          EOF
-
           jq \
-            --slurpfile repositories $out/repositories.json \
-            --slurpfile dependencies $out/dependencies.json \
+            --slurpfile repositories $repositoriesStringPath \
+            --slurpfile dependencies $dependenciesStringPath \
             "(.repositories = \$repositories[0]) | \
              (.require = \$dependencies[0]) | \
              (.\"require-dev\" = {}) | \
@@ -182,9 +177,6 @@
           # build
           composer install --no-scripts
 
-          # cleanup
-          rm $out/repositories.json
-          rm $out/dependencies.json
           popd
         '';
         installPhase = ''
