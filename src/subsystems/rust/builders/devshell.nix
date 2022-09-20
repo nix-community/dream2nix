@@ -81,11 +81,11 @@
       {
         packages = inputs;
         commands = [
-          rec {
+          {
             package = rustToolchain.cargoHostTarget or rustToolchain.cargo;
             name = "cargo";
             category = "rust";
-            help = package.meta.description;
+            help = "Rust build tool";
           }
         ];
         env =
