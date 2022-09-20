@@ -146,7 +146,7 @@ in {
       };
       require =
         (l.optionalAttrs (!noDev) (composerJson.require-dev or {}))
-        // composerJson.require;
+        // (composerJson.require or {});
     };
     # all the packages
     packages =
