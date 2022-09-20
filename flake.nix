@@ -108,6 +108,22 @@
         "pkgs/installCargoArtifactsHook.sh"
         "LICENSE"
       ];
+      devshell = [
+        "modules/back-compat.nix"
+        "modules/commands.nix"
+        "modules/default.nix"
+        "modules/devshell.nix"
+        "modules/env.nix"
+        "modules/modules.nix"
+        "modules/modules-docs.nix"
+        "nix/ansi.nix"
+        "nix/mkNakedShell.nix"
+        "nix/source.nix"
+        "nix/strOrPackage.nix"
+        "nix/writeDefaultShellScript.nix"
+        "extra/language/c.nix"
+        "LICENSE"
+      ];
     };
 
     # create a directory containing the files listed in externalPaths

@@ -121,6 +121,10 @@ in let
   subsystems = callPackageDream ./subsystems {};
 
   externals = {
+    devshell = {
+      makeShell = import "${externalSources.devshell}/modules" pkgs;
+      imports.c = "${externalSources.devshell}/extra/language/c.nix";
+    };
     crane = let
       importLibFile = name: import "${externalSources.crane}/lib/${name}.nix";
 
