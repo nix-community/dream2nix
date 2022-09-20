@@ -23,6 +23,7 @@
     # nixpkgs dependenies
     bash,
     coreutils,
+    moreutils,
     jq,
     phpPackages,
     ...
@@ -31,6 +32,7 @@
     [
       bash
       coreutils
+      moreutils
       jq
       phpPackages.composer
     ]
@@ -54,10 +56,18 @@
       echo "translating in temp dir: $(pwd)"
 
       # create lockfile
+      mv composer.json composer.json.orig
+
+      jq \
+        "(.config.lock = true) | \
+         (.config.\"platform-check\" = false)" \
+        composer.json.orig > composer.json
+
       if [ "$(jq '.project.subsystemInfo.noDev' -c -r $jsonInput)" == "true" ]; then
         echo "excluding dev dependencies"
-        mv composer.json composer.json.orig
-        jq '.require-dev = {}' ./composer.json.orig > composer.json
+        jq \
+          '.require-dev = {}' \
+          composer.json | sponge composer.json
       fi
       composer update --ignore-platform-reqs --no-scripts --no-plugins --no-install
 
