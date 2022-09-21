@@ -98,7 +98,7 @@
             url = "${root}/vendor/${name}";
             options = {
               versions = {
-                "${name}" = "${version}";
+                "${l.strings.toLower name}" = "${version}";
               };
               symlink = false;
             };
@@ -125,7 +125,7 @@
         (repositories ++ [{packagist = false;}]);
       dependenciesString = l.toJSON (l.listToAttrs (
         map (dep: {
-          inherit (dep) name;
+          name = l.strings.toLower dep.name;
           value = dep.version;
         })
         (dependencies

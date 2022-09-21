@@ -111,7 +111,7 @@
         url = "${cleanDependency dep.name dep.version}";
         options = {
           versions = {
-            "${dep.name}" = "${dep.version}";
+            "${l.strings.toLower dep.name}" = "${dep.version}";
           };
           symlink = false;
         };
@@ -123,7 +123,7 @@
 
       dependenciesString = l.toJSON (l.listToAttrs (
         map (dep: {
-          inherit (dep) name;
+          name = l.strings.toLower dep.name;
           value = dep.version;
         })
         dependencies
