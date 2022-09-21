@@ -117,6 +117,19 @@ in {
     in
       map (l.removePrefix "ext-") extensions;
 
+    composerPluginApiSemver = l.listToAttrs (l.flatten (map
+      (
+        pkg: let
+          requires = getRequire pkg;
+        in
+          l.optional (requires ? "composer-plugin-api")
+          {
+            name = "${pkg.name}@${pkg.version}";
+            value = requires."composer-plugin-api";
+          }
+      )
+      packages));
+
     # get cleaned pkg attributes
     getRequire = pkg:
       l.mapAttrs
@@ -204,7 +217,7 @@ in {
       clean = requires:
         l.filterAttrs
         (name: _:
-          !(l.elem name ["php" "composer/composer" "composer-runtime-api"])
+          !(l.elem name ["php" "composer-plugin-api" "composer-runtime-api"])
           && !(l.strings.hasPrefix "ext-" name))
         requires;
       doPin = name: semver:
@@ -236,6 +249,7 @@ in {
       #   ./src/specifications/{subsystem}
       subsystemAttrs = {
         inherit phpSemver phpExtensions;
+        inherit composerPluginApiSemver;
       };
 
       # name of the default package

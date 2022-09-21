@@ -89,6 +89,7 @@
 
     # Generates a derivation for a specific package name + version
     makeOnePackage = name: version: let
+      packageType = subsystemAttrs.phpPackageType."${name}@${version}";
       dependencies = getDependencies name version;
       repositories = let
         transform = dep: let
@@ -127,7 +128,12 @@
           inherit (dep) name;
           value = dep.version;
         })
-        dependencies
+        (dependencies
+          ++ l.optional (subsystemAttrs.composerPluginApiSemver ? "${name}@${version}")
+          {
+            name = "composer-plugin-api";
+            version = subsystemAttrs.composerPluginApiSemver."${name}@${version}";
+          })
       ));
 
       versionString =
