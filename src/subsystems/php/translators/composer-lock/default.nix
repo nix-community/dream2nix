@@ -278,16 +278,29 @@ in {
           (getRequire rawObj);
 
         sourceSpec = rawObj: finalObj:
-          if rawObj.source.type == "path"
+          if rawObj ? "source" && rawObj.source.type == "path"
           then {
             inherit (rawObj.source) type path;
             rootName = null;
             rootVersion = null;
           }
-          else {
+          else if rawObj ? "source" && rawObj.source.type == "git"
+          then {
             inherit (rawObj.source) type url;
             rev = rawObj.source.reference;
-          };
+          }
+          else if rawObj ? "dist" && rawObj.dist.type == "path"
+          then {
+            inherit (rawObj.dist) type;
+            path = rawObj.dist.url;
+            rootName = null;
+            rootVersion = null;
+          }
+          else
+            l.abort ''
+              Cannot find source for ${finalObj.name}@${finalObj.version},
+              rawObj: ${l.toJSON rawObj}
+            '';
       };
 
       /*
