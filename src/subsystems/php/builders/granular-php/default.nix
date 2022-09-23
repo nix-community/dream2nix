@@ -89,7 +89,6 @@
 
     # Generates a derivation for a specific package name + version
     makeOnePackage = name: version: let
-      packageType = subsystemAttrs.phpPackageType."${name}@${version}";
       dependencies = getDependencies name version;
       repositories = let
         transform = dep: let
@@ -169,12 +168,6 @@
           cp -r * $PKG_OUT
 
           pushd $PKG_OUT
-
-          # create composer.json if does not exist
-          if [ ! -f composer.json ]
-          then
-            echo {\"name\":\"${name}\"} > composer.json
-          fi
 
           # create composer.json if does not exist
           if [ ! -f composer.json ]
