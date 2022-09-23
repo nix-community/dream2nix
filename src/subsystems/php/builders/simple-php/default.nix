@@ -156,8 +156,9 @@
           # copy source
           PKG_OUT=$out/lib/vendor/${name}
           mkdir -p $PKG_OUT
+          cp -r * $PKG_OUT
+
           pushd $PKG_OUT
-          cp -r ${src}/* .
 
           # remove composer.lock if exists
           rm -f composer.lock

@@ -166,8 +166,9 @@
           # copy source
           PKG_OUT=$out/lib/vendor/${name}
           mkdir -p $PKG_OUT
+          cp -r * $PKG_OUT
+
           pushd $PKG_OUT
-          cp -r ${src}/* .
 
           # create composer.json if does not exist
           if [ ! -f composer.json ]

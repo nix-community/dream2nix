@@ -61,6 +61,7 @@
       jq \
         "(.config.lock = true) | \
          (.config.\"platform-check\" = false) | \
+         (.authors = []) | \
          (.require = ((.require // {}) | with_entries(.key |= ascii_downcase))) | \
          (.\"require-dev\" = ((.\"require-dev\" // {}) | with_entries(.key |= ascii_downcase)))" \
         composer.json.orig > composer.json
