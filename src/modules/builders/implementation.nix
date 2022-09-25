@@ -10,6 +10,7 @@
     python = "simple-python";
     php = "granular-php";
     haskell = "simple-haskell";
+    debian = "simple-debian";
   };
   loader = b: b // {build = callPackageDream b.build {};};
   funcs = config.functions.subsystem-loading;
