@@ -1,8 +1,15 @@
 {
   config,
   callPackageDream,
+  lib,
   ...
 }: let
+  defaults = {
+    rust = "build-rust-package";
+    nodejs = "granular-nodejs";
+    python = "simple-python";
+    php = "granular-php";
+  };
   loader = b: b // {build = callPackageDream b.build {};};
   funcs = config.functions.subsystem-loading;
   collectedModules = funcs.collect "builders";
@@ -17,6 +24,15 @@ in {
     */
     builderInstances = funcs.instantiate config.builders loader;
 
-    buildersBySubsystem = funcs.structureBySubsystem config.builderInstances;
+    buildersBySubsystem =
+      lib.mapAttrs
+      (
+        subsystem: builders:
+          builders
+          // lib.optionalAttrs (lib.hasAttr subsystem defaults) {
+            default = builders.${defaults.${subsystem}};
+          }
+      )
+      (funcs.structureBySubsystem config.builderInstances);
   };
 }
