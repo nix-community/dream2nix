@@ -295,8 +295,8 @@ in {
           if rawObj ? "source" && rawObj.source.type == "path"
           then {
             inherit (rawObj.source) type path;
-            rootName = null;
-            rootVersion = null;
+            rootName = finalObj.name;
+            rootVersion = finalObj.version;
           }
           else if rawObj ? "source" && rawObj.source.type == "git"
           then {
@@ -307,8 +307,8 @@ in {
           then {
             inherit (rawObj.dist) type;
             path = rawObj.dist.url;
-            rootName = null;
-            rootVersion = null;
+            rootName = finalObj.name;
+            rootVersion = finalObj.version;
           }
           else
             l.abort ''
