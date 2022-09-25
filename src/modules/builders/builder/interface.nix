@@ -20,7 +20,7 @@ in {
       description = "Subsystem of the builder.";
     };
     build = lib.mkOption {
-      type = t.function (t.functionTo t.attrs);
+      type = t.functionTo (t.functionTo t.attrs);
       default = _: _: {};
     };
     type = lib.mkOption {
