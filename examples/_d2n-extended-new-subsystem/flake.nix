@@ -13,6 +13,7 @@
       config.extra = ./extra.nix;
       config.modules = [
         ./translators.nix
+        ./builders.nix
       ];
       source = ./.;
       settings = [

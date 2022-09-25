@@ -11,12 +11,5 @@
         })
       ];
     };
-    builders.dummy = {...}: {
-      type = "pure";
-      build = {hello, ...}: {...}: {
-        packages.${hello.pname}.${hello.version} =
-          hello;
-      };
-    };
   };
 }
