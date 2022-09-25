@@ -3,7 +3,7 @@
   callPackageDream,
   ...
 }: let
-  loader = b: b // {build = callPackageDream b.build;};
+  loader = b: b // {build = callPackageDream b.build {};};
   funcs = config.functions.subsystem-loading;
   collectedModules = funcs.collect "builders";
 in {
