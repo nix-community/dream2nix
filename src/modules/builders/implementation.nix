@@ -9,6 +9,7 @@
     nodejs = "granular-nodejs";
     python = "simple-python";
     php = "granular-php";
+    haskell = "simple-haskell";
   };
   loader = b: b // {build = callPackageDream b.build {};};
   funcs = config.functions.subsystem-loading;

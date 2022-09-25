@@ -242,7 +242,7 @@ in let
   findBuilder = dreamLock: let
     subsystem = dreamLock._generic.subsystem;
   in
-    if ! framework.buildersBySubsystem.${subsystem} ? default
+    if ! framework.buildersBySubsystem ? ${subsystem}
     then throw "Could not find any builder for subsystem '${subsystem}'"
     else framework.buildersBySubsystem.${subsystem}.default;
 
