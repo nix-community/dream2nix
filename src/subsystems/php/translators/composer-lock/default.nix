@@ -302,6 +302,7 @@ in {
           then {
             inherit (rawObj.source) type url;
             rev = rawObj.source.reference;
+            submodules = false;
           }
           else if rawObj ? "dist" && rawObj.dist.type == "path"
           then {
