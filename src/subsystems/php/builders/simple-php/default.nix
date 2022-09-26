@@ -4,7 +4,7 @@
   build = {
     lib,
     pkgs,
-    stdenv,
+    stdenvNoCC,
     # dream2nix inputs
     externals,
     callPackageDream,
@@ -78,7 +78,7 @@
 
     # Unpack dependency
     cleanDependency = name: version:
-      stdenv.mkDerivation rec {
+      stdenvNoCC.mkDerivation rec {
         pname = "${l.strings.sanitizeDerivationName name}-source";
         inherit version;
         versionString =
@@ -140,7 +140,7 @@
         then "0.0.0"
         else version;
 
-      pkg = stdenv.mkDerivation rec {
+      pkg = stdenvNoCC.mkDerivation rec {
         pname = l.strings.sanitizeDerivationName name;
         inherit version;
 
@@ -158,19 +158,24 @@
         inherit repositoriesString dependenciesString;
         passAsFile = ["repositoriesString" "dependenciesString"];
 
-        dontConfigure = true;
-        buildPhase = ''
-          # copy source
-          PKG_OUT=$out/lib/vendor/${name}
-          mkdir -p $PKG_OUT
-          cp -r * $PKG_OUT
+        unpackPhase = ''
+          runHook preUnpack
 
-          pushd $PKG_OUT
+          mkdir -p $out/lib/vendor/${name}
+          cd $out/lib/vendor/${name}
 
-          if [ ! -f composer.json ]
-          then
+          cp -r ${src}/* .
+          chmod -R +w .
+
+          runHook postUnpack
+        '';
+        patchPhase = ''
+          runHook prePatch
+
+          if [ ! -f composer.json ]; then
             echo "{}" > composer.json
           fi
+
           cp composer.json composer.json.orig
 
           # fixup composer.json
@@ -179,6 +184,11 @@
              (.version = \"${versionString}\") | \
              (.extra.patches = {})" \
              composer.json | sponge composer.json
+
+          runHook postPatch
+        '';
+        configurePhase = ''
+          runHook preConfigure
 
           # disable packagist, set path repositories
           jq \
@@ -189,27 +199,33 @@
              (.\"require-dev\" = {})" \
             composer.json | sponge composer.json
 
+          runHook postConfigure
+        '';
+        composerInstallFlags = "--no-scripts --no-plugins";
+        buildPhase = ''
+          runHook preBuild
+
           # remove composer.lock if exists
           rm -f composer.lock
 
           # build
-          composer install --no-scripts
+          composer install $composerInstallFlags
 
-          popd
+          runHook postBuild
         '';
         installPhase = ''
-          pushd $PKG_OUT
+          runHook preInstall
 
           BINS=$(jq -rcM "(.bin // [])[]" composer.json)
           for bin in $BINS
           do
             mkdir -p $out/bin
             pushd $out/bin
-            ln -s $PKG_OUT/$bin
+            ln -s $out/lib/vendor/${name}/$bin
             popd
           done
 
-          popd
+          runHook postInstall
         '';
 
         passthru.devShell = import ./devShell.nix {
