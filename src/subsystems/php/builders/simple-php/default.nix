@@ -81,6 +81,10 @@
       stdenv.mkDerivation rec {
         pname = "${l.strings.sanitizeDerivationName name}-source";
         inherit version;
+        versionString =
+          if version == "unknown"
+          then "0.0.0"
+          else version;
         src = getSource name version;
         dontConfigure = true;
         buildPhase = ''
@@ -88,7 +92,9 @@
           cp -r ${src} $out
           if [ ! -f $out/composer.json ]
           then
-            echo {\"name\":\"${name}\"} > $out/composer.json
+            echo \
+              {\"name\":\"${name}\",\"version\":\"${versionString}\"} \
+              > $out/composer.json
           fi
         '';
         dontInstall = true;
@@ -142,6 +148,7 @@
         nativeBuildInputs = with pkgs; [
           jq
           composer
+          moreutils
         ];
         buildInputs = with pkgs; [
           php
@@ -160,20 +167,29 @@
 
           pushd $PKG_OUT
 
-          # remove composer.lock if exists
-          rm -f composer.lock
+          if [ ! -f composer.json ]
+          then
+            echo "{}" > composer.json
+          fi
+          cp composer.json composer.json.orig
+
+          # fixup composer.json
+          jq \
+            "(.name = \"${name}\") | \
+             (.version = \"${versionString}\")" \
+             composer.json | sponge composer.json
 
           # disable packagist, set path repositories
-          mv composer.json composer.json.orig
-
           jq \
             --slurpfile repositories $repositoriesStringPath \
             --slurpfile dependencies $dependenciesStringPath \
             "(.repositories = \$repositories[0]) | \
              (.require = \$dependencies[0]) | \
-             (.\"require-dev\" = {}) | \
-             (.version = \"${versionString}\")" \
-            composer.json.orig > composer.json
+             (.\"require-dev\" = {})" \
+            composer.json | sponge composer.json
+
+          # remove composer.lock if exists
+          rm -f composer.lock
 
           # build
           composer install --no-scripts

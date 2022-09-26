@@ -148,6 +148,7 @@
         nativeBuildInputs = with pkgs; [
           jq
           composer
+          moreutils
         ];
         buildInputs = with pkgs;
           [
@@ -169,26 +170,29 @@
 
           pushd $PKG_OUT
 
-          # create composer.json if does not exist
           if [ ! -f composer.json ]
           then
-            echo {\"name\":\"${name}\"} > composer.json
+            echo "{}" > composer.json
           fi
+          cp composer.json composer.json.orig
 
-          # remove composer.lock if exists
-          rm -f composer.lock
+          # fixup composer.json
+          jq \
+            "(.name = \"${name}\") | \
+             (.version = \"${versionString}\")" \
+             composer.json | sponge composer.json
 
           # disable packagist, set path repositories
-          mv composer.json composer.json.orig
-
           jq \
             --slurpfile repositories $repositoriesStringPath \
             --slurpfile dependencies $dependenciesStringPath \
             "(.repositories = \$repositories[0]) | \
              (.require = \$dependencies[0]) | \
-             (.\"require-dev\" = {}) | \
-             (.version = \"${versionString}\")" \
-            composer.json.orig > composer.json
+             (.\"require-dev\" = {})" \
+            composer.json | sponge composer.json
+
+          # remove composer.lock if exists
+          rm -f composer.lock
 
           # build
           composer install --no-scripts
