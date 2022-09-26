@@ -176,7 +176,8 @@
           # fixup composer.json
           jq \
             "(.name = \"${name}\") | \
-             (.version = \"${versionString}\")" \
+             (.version = \"${versionString}\") | \
+             (.extra.patches = {})" \
              composer.json | sponge composer.json
 
           # disable packagist, set path repositories
