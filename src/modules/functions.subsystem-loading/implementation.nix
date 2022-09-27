@@ -42,12 +42,7 @@ modules:
   import_ = collectedModules:
     lib.mapAttrs
     (name: description:
-      (
-        import description.path {
-          inherit dlib lib;
-          inherit (description) name subsystem;
-        }
-      )
+      (import description.path {inherit dlib lib;})
       // {inherit (description) name subsystem;})
     (
       lib.foldl'

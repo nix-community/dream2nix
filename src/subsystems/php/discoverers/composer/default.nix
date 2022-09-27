@@ -1,7 +1,6 @@
 {
   dlib,
   lib,
-  subsystem,
   ...
 }: let
   l = lib // builtins;
@@ -14,7 +13,6 @@
   # discover php projects
   discover = {tree}: let
     currentProjectInfo = dlib.construct.discoveredProject {
-      inherit subsystem;
       inherit (tree) relPath;
       name =
         tree.files."composer.json".jsonContent.name
@@ -23,6 +21,7 @@
           then tree.relPath
           else "unknown"
         );
+      subsystem = "php";
       translators = getTranslators tree;
       subsystemInfo = {};
     };
