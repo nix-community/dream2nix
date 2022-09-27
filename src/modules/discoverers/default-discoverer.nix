@@ -8,7 +8,7 @@
   translatorsWithDiscoverFunc =
     l.filter
     (translator: translator.discoverProject or null != null)
-    config.translators;
+    (l.attrValues config.translators);
 
   defaultDiscoverer.discover = {tree}: let
     translatorsCurrentDir =
@@ -60,6 +60,6 @@
   );
 in {
   config = {
-    inherit defaultDiscoverer;
+    discoverers.default = defaultDiscoverer;
   };
 }

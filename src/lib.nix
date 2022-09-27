@@ -92,7 +92,8 @@
     framework = import ./modules/framework.nix {
       inherit lib dlib;
       dream2nixConfig = config;
-      callPackageDream = func: args: func args;
+      callPackageDream =
+        throw "callPackageDream is not available before nixpkgs is imported";
     };
 
     initD2N = initDream2nix config;

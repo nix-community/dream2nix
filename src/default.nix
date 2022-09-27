@@ -637,10 +637,9 @@ in let
   makeOutputs = {
     source ? throw "pass a 'source' to 'makeOutputs'",
     discoveredProjects ?
-      l.debug.traceValSeqN 2
-      (framework.functions.discoverers.discoverProjects {
+      framework.functions.discoverers.discoverProjects {
         inherit projects settings source;
-      }),
+      },
     pname ? null,
     projects ? {},
     settings ? [],
