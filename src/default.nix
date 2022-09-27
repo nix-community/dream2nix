@@ -436,7 +436,7 @@ in let
 
   translateProjects = {
     discoveredProjects ?
-      dlib.discoverers.discoverProjects
+      framework.functions.discoverers.discoverProjects
       {inherit projects settings tree;},
     projects ? {},
     source ? throw "Pass either `source` or `tree` to translateProjects",
@@ -648,7 +648,7 @@ in let
   makeOutputs = {
     source ? throw "pass a 'source' to 'makeOutputs'",
     discoveredProjects ?
-      dlib.discoverers.discoverProjects {
+      framework.functions.discoverers.discoverProjects {
         inherit projects settings source;
       },
     pname ? null,
