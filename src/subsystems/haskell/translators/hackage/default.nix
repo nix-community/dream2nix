@@ -5,29 +5,7 @@
 }: let
   l = lib // builtins;
 in {
-
   type = "impure";
-
-  /*
-    Allow dream2nix to detect if a given directory contains a project
-    which can be translated with this translator.
-    Usually this can be done by checking for the existence of specific
-    file names or file endings.
-
-    Alternatively a fully featured discoverer can be implemented under
-    `src/subsystems/{subsystem}/discoverers`.
-    This is recommended if more complex project structures need to be
-    discovered like, for example, workspace projects spanning over multiple
-    sub-directories
-
-    If a fully featured discoverer exists, do not define `discoverProject`.
-  */
-  discoverProject = tree:
-    # Example
-    # Returns true if given directory contains a file ending with .cabal
-    l.any
-    (filename: l.hasSuffix ".cabal" filename)
-    (l.attrNames tree.files);
 
   # A derivation which outputs a single executable at `$out`.
   # The executable will be called by dream2nix for translation
@@ -42,12 +20,19 @@ in {
   # See /src/specifications/dream-lock-example.json
   translateBin = {
     # dream2nix utils
+    subsystems,
     utils,
     # nixpkgs dependenies
     bash,
     coreutils,
+    curl,
+    gnutar,
+    gzip,
+    haskellPackages,
     jq,
+    moreutils,
     nix,
+    python3,
     writeScriptBin,
     ...
   }:
@@ -55,8 +40,15 @@ in {
     [
       bash
       coreutils
+      curl
+      gnutar
+      gzip
+      haskellPackages.cabal-install
+      haskellPackages.ghc
       jq
+      moreutils
       nix
+      python3
     ]
     ''
       # accroding to the spec, the translator reads the input from a json file
@@ -64,13 +56,46 @@ in {
 
       # read the json input
       outputFile=$(realpath -m $(jq '.outputFile' -c -r $jsonInput))
+      name=$(jq '.project.name' -c -r $jsonInput)
+      version=$(jq '.project.version' -c -r $jsonInput)
       source=$(jq '.source' -c -r $jsonInput)
       relPath=$(jq '.project.relPath' -c -r $jsonInput)
 
       pushd $TMPDIR
-      # TODO:
-      # read input files/dirs and produce a json file at $outputFile
-      # containing the dream lock similar to /src/specifications/dream-lock-example.json
+
+      # download and unpack package source
+      mkdir source
+      curl -L https://hackage.haskell.org/package/$name-$version/$name-$version.tar.gz > $TMPDIR/tarball
+      cd source
+      cat $TMPDIR/tarball | tar xz --strip-components 1
+      # trigger creation of `dist-newstyle` directory
+      cabal update
+      cabal freeze
+      cd -
+
+      # generate arguments for cabal-plan translator
+      echo "{
+        \"source\": \"$TMPDIR/source\",
+        \"outputFile\": \"$outputFile\",
+        \"project\": {
+          \"relPath\": \"\",
+          \"subsystemInfo\": {}
+        }
+      }" > $TMPDIR/newJsonInput
+
+      popd
+
+      # execute cabal-plan translator
+      ${subsystems.haskell.translators.cabal-plan.translateBin} $TMPDIR/newJsonInput
+
+      # finalize dream-lock. Add source and export default package
+      # set correct package version under `packages`
+      export version
+      export hash=$(sha256sum $TMPDIR/tarball | cut -d " " -f 1)
+      cat $outputFile \
+        | python3 ${./fixup-dream-lock.py} $TMPDIR/sourceInfo.json \
+        | sponge $outputFile
+
     '';
 
   # If the translator requires additional arguments, specify them here.

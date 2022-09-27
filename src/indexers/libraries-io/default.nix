@@ -55,6 +55,9 @@ libraries.io also supports other interesting popularity metrics:
 
       # get platform
       platformQuery=$(jq ".\"$platform\"" -c -r ${l.toFile "platform-map.json" (l.toJSON platformMap)})
+      if [ "$platformQuery" == "null" ]; then
+        platformQuery=$platform
+      fi
 
       echo "Starting to query $numPages pages..."
 

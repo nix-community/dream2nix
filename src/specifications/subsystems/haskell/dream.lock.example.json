@@ -3,6 +3,14 @@
     "compiler": {
       "name": "ghc",
       "version": "8.10.7"
+    },
+    "cabal-files": {
+      "aeson": {
+        "1.2.2.0": {
+          "url": "https://hackage.haskell.org/package/aeson-1.2.2.0/revision/2.cabal",
+          "hash": "sha256:57a8f61df46d5ac6aeb33f01a26267aaf853c82ac9d99dda0f8f3c93a9f740de"
+        }
+      }
     }
   }
 }
