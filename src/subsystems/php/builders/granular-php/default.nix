@@ -89,6 +89,8 @@
 
     # Generates a derivation for a specific package name + version
     makeOnePackage = name: version: let
+      isTopLevel = packages ? name && packages.name == version;
+
       dependencies = getDependencies name version;
       repositories = let
         transform = dep: let
@@ -167,25 +169,32 @@
           mkdir -p $out/lib/vendor/${name}
           cd $out/lib/vendor/${name}
 
+          # copy source
           cp -r ${src}/* .
           chmod -R +w .
+
+          # create composer.json if does not exist
+          if [ ! -f composer.json ]; then
+            echo "{}" > composer.json
+          fi
+
+          # save the original composer.json for reference
+          cp composer.json composer.json.orig
+
+          # set name & version
+          jq \
+            "(.name = \"${name}\") | \
+             (.version = \"${versionString}\")" \
+             composer.json | sponge composer.json
 
           runHook postUnpack
         '';
         patchPhase = ''
           runHook prePatch
 
-          if [ ! -f composer.json ]; then
-            echo "{}" > composer.json
-          fi
-
-          cp composer.json composer.json.orig
-
           # fixup composer.json
           jq \
-            "(.name = \"${name}\") | \
-             (.version = \"${versionString}\") | \
-             (.extra.patches = {})" \
+             "(.extra.patches = {})" \
              composer.json | sponge composer.json
 
           runHook postPatch
@@ -204,7 +213,12 @@
 
           runHook postConfigure
         '';
-        composerInstallFlags = "--no-scripts --no-plugins";
+        composerInstallFlags =
+          [
+            "--no-scripts"
+            "--no-plugins"
+          ]
+          ++ l.optional (subsystemAttrs.noDev || !isTopLevel) "--no-dev";
         buildPhase = ''
           runHook preBuild
 
@@ -212,7 +226,7 @@
           rm -f composer.lock
 
           # build
-          composer install $composerInstallFlags
+          composer install ${l.strings.concatStringsSep " " composerInstallFlags}
 
           runHook postBuild
 

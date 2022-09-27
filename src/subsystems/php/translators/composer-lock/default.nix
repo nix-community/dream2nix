@@ -248,6 +248,7 @@ in {
       # The structure of this should be defined in:
       #   ./src/specifications/{subsystem}
       subsystemAttrs = {
+        inherit noDev;
         inherit phpSemver phpExtensions;
         inherit composerPluginApiSemver;
       };
