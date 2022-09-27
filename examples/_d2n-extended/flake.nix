@@ -23,10 +23,18 @@
             };
           }
         '')
+        (builtins.toFile "brp-new.nix" ''
+          {
+            builders.brp-new = {
+              imports = ["${inp.dream2nix}/src/subsystems/rust/builders/build-rust-package"];
+              name = "brp-new";
+              subsystem = "rust";
+            };
+          }
+        '')
       ];
       config.extra = {
         subsystems.rust = {
-          builders.brp-new = "${inp.dream2nix}/src/subsystems/rust/builders/build-rust-package";
           discoverers.default = "${inp.dream2nix}/src/subsystems/rust/discoverers/default";
         };
         fetchers.crates-io = "${inp.dream2nix}/src/fetchers/crates-io";

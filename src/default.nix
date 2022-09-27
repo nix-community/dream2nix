@@ -242,9 +242,9 @@ in let
   findBuilder = dreamLock: let
     subsystem = dreamLock._generic.subsystem;
   in
-    if ! subsystems."${subsystem}" ? builders
+    if ! framework.buildersBySubsystem ? ${subsystem}
     then throw "Could not find any builder for subsystem '${subsystem}'"
-    else subsystems."${subsystem}".builders.default;
+    else framework.buildersBySubsystem.${subsystem}.default;
 
   # detect if granular or combined fetching must be used
   findFetcher = dreamLock:
@@ -394,7 +394,7 @@ in let
       if builder == null
       then findBuilder dreamLock
       else if l.isString builder
-      then subsystems.${dreamLock._generic.subsystem}.builders.${builder}
+      then framework.buildersBySubsystem.${dreamLock._generic.subsystem}.${builder}
       else builder;
 
     fetcher' =

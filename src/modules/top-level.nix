@@ -9,6 +9,7 @@ in {
     ./functions.subsystem-loading
     ./functions.translators
     ./translators
+    ./builders
   ];
   options = {
     lib = lib.mkOption {

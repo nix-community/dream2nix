@@ -44,7 +44,21 @@ modules:
     (name: description:
       (import description.path {inherit dlib lib;})
       // {inherit (description) name subsystem;})
-    (lib.listToAttrs collectedModules);
+    (
+      lib.foldl'
+      (
+        all: el:
+          if lib.hasAttr el.name all
+          then
+            throw ''
+              module named ${el.name} in subsystem ${el.value.subsystem} conflicts
+              with a module with the same name from subsystem ${all.${el.name}.subsystem}
+            ''
+          else all // {${el.name} = el.value;}
+      )
+      {}
+      collectedModules
+    );
 
   instantiate = importedModules: loader:
     lib.mapAttrs
