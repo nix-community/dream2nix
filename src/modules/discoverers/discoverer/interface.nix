@@ -20,7 +20,7 @@ in {
       description = "Subsystem of the discoverer.";
     };
     discover = lib.mkOption {
-      type = t.functionTo t.attrs;
+      type = t.functionTo (t.listOf t.attrs);
       default = _: {};
     };
   };

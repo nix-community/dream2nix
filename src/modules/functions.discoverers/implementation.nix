@@ -1,5 +1,6 @@
 {
   config,
+  dream2nixConfig,
   dlib,
   lib,
   ...
@@ -46,7 +47,7 @@
 
   getDreamLockPath = project: rootProject:
     dlib.sanitizeRelativePath
-    "${config.packagesDir}/${rootProject.name}/${project.relPath or ""}/dream-lock.json";
+    "${dream2nixConfig.packagesDir}/${rootProject.name}/${project.relPath or ""}/dream-lock.json";
 
   applyProjectSettings = projects: settingsList: let
     settingsListForProject = project:

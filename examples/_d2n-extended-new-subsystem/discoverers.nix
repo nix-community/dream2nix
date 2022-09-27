@@ -1,10 +1,11 @@
 {dlib, ...}: {
-  discoverers.default = {subsystem, ...}: {
+  discoverers.dummy = rec {
+    name = "dummy";
+    subsystem = "hello";
     discover = {tree}: [
       (dlib.construct.discoveredProject {
-        inherit subsystem;
+        inherit subsystem name;
         inherit (tree) relPath;
-        name = "hello";
         translators = ["dummy"];
         subsystemInfo = {};
       })
