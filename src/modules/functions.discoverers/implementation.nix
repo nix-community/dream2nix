@@ -17,7 +17,7 @@
       (
         l.map
         (discoverer: discoverer.discover {inherit tree;})
-        config.discoverers
+        (l.attrValues config.discoverers)
       );
 
     discoveredProjectsSorted = let
