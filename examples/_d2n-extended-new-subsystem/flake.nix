@@ -12,6 +12,7 @@
       config.projectRoot = ./.;
       config.extra = ./extra.nix;
       config.modules = [
+        ./discoverers.nix
         ./translators.nix
         ./builders.nix
       ];
