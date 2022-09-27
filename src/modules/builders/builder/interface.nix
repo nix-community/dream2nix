@@ -29,9 +29,5 @@ in {
         "ifd"
       ];
     };
-    version = lib.mkOption {
-      type = t.int;
-      default = 2;
-    };
   };
 }
