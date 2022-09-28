@@ -80,6 +80,5 @@
   in {
     packages.${defaultPackageName}.${defaultPackageVersion} = package;
     devShells.${defaultPackageName} = devShell;
-    inherit devShell;
   };
 }

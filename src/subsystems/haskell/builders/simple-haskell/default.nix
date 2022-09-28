@@ -58,16 +58,14 @@ in {
       tar --strip-components 1 -xf ${pkgs.all-cabal-hashes}
     '';
 
-    # the main package
-    defaultPackage = allPackages."${defaultPackageName}"."${defaultPackageVersion}";
-
     # packages to export
     packages =
-      lib.mapAttrs
-      (name: version: {
-        "${version}" = allPackages.${name}.${version};
-      })
-      args.packages;
+      {default = packages.${defaultPackageName};}
+      // (
+        lib.mapAttrs
+        (name: version: {"${version}" = allPackages.${name}.${version};})
+        args.packages
+      );
 
     # manage packages in attrset to prevent duplicated evaluation
     allPackages =
@@ -130,6 +128,6 @@ in {
       # apply packageOverrides to current derivation
       produceDerivation name pkg;
   in {
-    inherit defaultPackage packages;
+    inherit packages;
   };
 }
