@@ -201,6 +201,18 @@ in {
       # The structure of this should be defined in:
       #   ./src/specifications/{subsystem}
       subsystemAttrs = {
+        cabalHashes =
+          l.listToAttrs
+          (
+            l.map
+            (
+              rawObj:
+                l.nameValuePair
+                "${rawObj.pkg-name}#${rawObj.pkg-version}"
+                rawObj.pkg-cabal-sha256
+            )
+            (l.filter (rawObj: rawObj ? pkg-cabal-sha256) serializedRawObjects)
+          );
         compiler = {
           name = l.head compilerInfo;
           version = l.last compilerInfo;

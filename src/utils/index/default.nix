@@ -166,10 +166,10 @@ in rec {
 
     buildAllApp = let
       buildScript =
-        pkgs.writers.writePython3 "build-job" {}
+        pkgs.writers.writePython3 "build-script" {}
         ./build-script.py;
       statsScript =
-        pkgs.writers.writePython3 "build-job" {}
+        pkgs.writers.writePython3 "make-stats" {}
         ./make-stats.py;
     in
       mkApp (

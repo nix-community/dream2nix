@@ -71,7 +71,7 @@
 
       # set correct package version under `packages`
       cat $outputFile \
-        | python3 ${./fixup-dream-lock.py} $TMPDIR/sourceInfo.json \
+        | python3 ${./fixup-dream-lock.py} \
         | sponge $outputFile
 
     '';

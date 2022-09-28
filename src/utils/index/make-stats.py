@@ -7,7 +7,7 @@ build_errors = 0
 all_errors = {}
 
 for file in error_files:
-    with open(file) as f:
+    with open(f"errors/{file}") as f:
         error = json.load(f)
     # add error to all_errors
     all_errors[error['attrPath']] = error

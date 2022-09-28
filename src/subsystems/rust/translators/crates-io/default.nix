@@ -43,9 +43,9 @@
       version=$(jq '.project.version' -c -r $jsonInput)
 
       pushd $TMPDIR
-      mkdir source
 
       # download and unpack package source
+      mkdir source
       curl -L https://crates.io/api/v1/crates/$name/$version/download > $TMPDIR/tarball
       cd source
       cat $TMPDIR/tarball | tar xz --strip-components 1
