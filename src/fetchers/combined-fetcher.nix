@@ -53,7 +53,7 @@
                 // {
                   isOriginal = false;
                   outPath = let
-                    sanitizedName = utils.sanitizeDerivationName name;
+                    sanitizedName = l.strings.sanitizeDerivationName name;
                   in "${sanitizedName}/${version}/${fetched.name}";
                 }
               # handle already extracted sources
@@ -63,7 +63,7 @@
                 // {
                   isOriginal = true;
                   outPath = let
-                    sanitizedName = utils.sanitizeDerivationName name;
+                    sanitizedName = l.strings.sanitizeDerivationName name;
                   in "${sanitizedName}/${version}/${fetched.original.name}";
                 }
               # handle path sources
@@ -219,7 +219,7 @@ in {
           then
             utils.extractSource {
               source = "${FODAllSources}/${FODArgsAll."${name}"."${version}".outPath}";
-              name = dlib.sanitizeDerivationName name;
+              name = l.strings.sanitizeDerivationName name;
             }
           else "${FODAllSources}/${FODArgsAll."${name}"."${version}".outPath}"
         else defaultFetched."${name}"."${version}")
