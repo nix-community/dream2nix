@@ -32,6 +32,8 @@
 
     writeFlakeD2N = callPackageDream ./writeFlakeD2N {};
 
+    replaceRootSources = callPackageDream ./replaceRootSources {};
+
     flakeApps =
       b.mapAttrs (
         appName: app: {
