@@ -9,7 +9,7 @@ def store_error(attrPath, category, text, name=None):
         json.dump(
             dict(
                 attrPath=attrPath,
-                during=category,
+                category=category,
                 error=text,
                 name=name,
             ),
