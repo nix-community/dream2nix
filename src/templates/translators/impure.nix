@@ -43,7 +43,7 @@ in {
   translateBin = {
     # dream2nix utils
     utils,
-    # nixpkgs dependenies
+    # nixpkgs dependencies
     bash,
     coreutils,
     jq,

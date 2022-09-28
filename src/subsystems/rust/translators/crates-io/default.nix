@@ -12,7 +12,7 @@
     apps,
     subsystems,
     utils,
-    # nixpkgs dependenies
+    # nixpkgs dependencies
     coreutils,
     curl,
     gnutar,
