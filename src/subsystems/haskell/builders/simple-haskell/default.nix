@@ -79,7 +79,7 @@ in {
     # Generates a derivation for a specific package name + version
     makeOnePackage = name: version: let
       pkg = compiler.mkDerivation (rec {
-          pname = utils.sanitizeDerivationName name;
+          pname = l.strings.sanitizeDerivationName name;
           inherit version;
           license = null;
 
