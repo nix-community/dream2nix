@@ -243,6 +243,18 @@ in {
         # The structure of this should be defined in:
         #   ./src/specifications/{subsystem}
         subsystemAttrs = {
+          cabalHashes =
+            l.listToAttrs
+            (
+              l.map
+              (
+                rawObj:
+                  l.nameValuePair
+                  "${rawObj.name}#${rawObj.version}"
+                  rawObj.hash
+              )
+              serializedRawObjects
+            );
           compiler = {
             name = compilerName;
             version = compilerVersion;
@@ -264,10 +276,7 @@ in {
         /*
         a list of raw package objects
         */
-        serializedRawObjects =
-          l.map
-          parseStackLockEntry
-          (stackLock.packages ++ snapshot.packages);
+        inherit serializedRawObjects;
 
         /*
         Define extractor functions which each extract one property from

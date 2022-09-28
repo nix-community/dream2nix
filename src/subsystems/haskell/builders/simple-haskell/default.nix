@@ -52,11 +52,17 @@ in {
       }"
       or (throw "Could not find ${subsystemAttrs.compiler.name} version ${subsystemAttrs.compiler.version} in pkgs");
 
-    all-cabal-hashes = pkgs.runCommandLocal "all-cabal-hashes" {} ''
-      mkdir $out
-      cd $out
-      tar --strip-components 1 -xf ${pkgs.all-cabal-hashes}
-    '';
+    cabalFiles =
+      l.mapAttrs
+      (key: hash: let
+        split = l.splitString "#" key;
+      in
+        fetchCabalFile {
+          inherit hash;
+          pname = l.head split;
+          version = l.last split;
+        })
+      subsystemAttrs.cabalHashes or {};
 
     # the main package
     defaultPackage = allPackages."${defaultPackageName}"."${defaultPackageVersion}";
@@ -77,6 +83,38 @@ in {
         versions
         (version: makeOnePackage name version))
       packageVersions;
+
+    # fetches a cabal file for a given candidate and cabal-file-hash
+    fetchCabalFile = {
+      hash,
+      pname,
+      version,
+    }:
+      pkgs.runCommand
+      "${pname}.cabal"
+      {
+        buildInputs = [
+          pkgs.curl
+          pkgs.cacert
+        ];
+        outputHash = hash;
+        outputHashAlgo = "sha256";
+        outputHashMode = "flat";
+      }
+      ''
+        revision=0
+        while true; do
+          # will fail if revision does not exist
+          curl -f https://hackage.haskell.org/package/${pname}-${version}/revision/$revision.cabal > cabal
+          hash=$(sha256sum cabal | cut -d " " -f 1)
+          echo "revision $revision: hash $hash; wanted hash: ${hash}"
+          if [ "$hash" == "${hash}" ]; then
+            mv cabal $out
+            break
+          fi
+          revision=$(($revision + 1))
+        done
+      '';
 
     # Generates a derivation for a specific package name + version
     makeOnePackage = name: version: let
@@ -108,8 +146,6 @@ in {
               (dep: allPackages."${dep.name}"."${dep.version}")
               (getDependencies name version)
             );
-
-          # TODO: Implement build phases
         }
         /*
         For all transitive dependencies, overwrite cabal file with the one
@@ -117,11 +153,18 @@ in {
         We want to ensure that the cabal file is the latest revision.
         See: https://github.com/haskell-infra/hackage-trustees/blob/master/revisions-information.md
         */
-        // (l.optionalAttrs (name != defaultPackageName) {
-          preConfigure = ''
-            cp ${all-cabal-hashes}/${name}/${version}/${name}.cabal ./
-          '';
-        })
+        // (
+          l.optionalAttrs
+          (
+            (name != defaultPackageName)
+            && cabalFiles ? "${name}#${version}"
+          )
+          {
+            preConfigure = ''
+              cp ${cabalFiles."${name}#${version}"} ./${name}.cabal
+            '';
+          }
+        )
         # enable tests only for the top-level package
         // (l.optionalAttrs (name == defaultPackageName) {
           doCheck = true;
