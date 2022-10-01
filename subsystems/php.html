@@ -173,6 +173,10 @@
 <p>Resolves dependencies in <code>composer.json</code> using <code>composer</code> to generate a
 <code>composer.lock</code> lockfile, then invokes the <code>composer-lock</code> translator to
 generate a dream2nix lockfile.</p>
+<h3 id="packagist-impure"><a class="header" href="#packagist-impure">packagist (impure)</a></h3>
+<p>Downloads a package version from <a href="https://packagist.org/">Packagist</a>.
+Then uses <code>composer-lock</code> if a <code>composer.lock</code> file is present,
+or <code>composer-json</code> otherwise to translate the package.</p>
 <h2 id="builders"><a class="header" href="#builders">Builders</a></h2>
 <h3 id="granular-pure-default"><a class="header" href="#granular-pure-default">granular (pure) (default)</a></h3>
 <p>Builds all dependencies in isolation, moving upwards to the top-level package.</p>
