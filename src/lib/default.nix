@@ -26,7 +26,6 @@
       recursiveUpdateUntilDepth
       simpleTranslate2
       translators
-      sanitizeDerivationName
       sanitizePath
       sanitizeRelativePath
       subsystems
@@ -279,9 +278,6 @@
   # like nixpkgs recursiveUpdateUntil, but with the depth as a stop condition
   recursiveUpdateUntilDepth = depth: lhs: rhs:
     lib.recursiveUpdateUntil (path: _: _: (l.length path) > depth) lhs rhs;
-
-  sanitizeDerivationName = name:
-    lib.replaceStrings ["@" "/"] ["__at__" "__slash__"] name;
 
   sanitizeRelativePath = path:
     l.removePrefix "/" (l.toString (l.toPath "/${path}"));

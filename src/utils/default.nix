@@ -65,7 +65,6 @@ in
       parseGitUrl
       readTextFile
       recursiveUpdateUntilDepth
-      sanitizeDerivationName
       traceJ
       ;
 

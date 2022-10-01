@@ -12,7 +12,7 @@
     apps,
     subsystems,
     utils,
-    # nixpkgs dependenies
+    # nixpkgs dependencies
     bash,
     coreutils,
     git,

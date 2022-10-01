@@ -35,9 +35,8 @@
   in
     childrenRemoved;
 
-  getTranslatorNames = path: let
-    nodes = l.readDir path;
-    packageJson = l.fromJSON (l.readFile "${path}/package.json");
+  getTranslatorNames = tree: let
+    packageJson = tree.files."package.json".jsonContent;
     translators =
       # if the package has no dependencies we use the
       # package-lock translator with `packageLock = null`
@@ -47,8 +46,8 @@
         && (packageJson.workspaces or [] == [])
       then ["package-lock"]
       else
-        l.optionals (nodes ? "package-lock.json") ["package-lock"]
-        ++ l.optionals (nodes ? "yarn.lock") ["yarn-lock"]
+        l.optionals (tree.files ? "package-lock.json") ["package-lock"]
+        ++ l.optionals (tree.files ? "yarn.lock") ["yarn-lock"]
         ++ ["package-json"];
   in
     translators;
@@ -166,7 +165,7 @@
         inherit subsystem;
         inherit (tree) relPath;
         name = tree.files."package.json".jsonContent.name or tree.relPath;
-        translators = getTranslatorNames tree.fullPath;
+        translators = getTranslatorNames tree;
         subsystemInfo = l.optionalAttrs (workspaces != []) {
           workspaces =
             l.map

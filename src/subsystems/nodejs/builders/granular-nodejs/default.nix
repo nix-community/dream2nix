@@ -75,8 +75,6 @@
           })
           args.packages);
 
-      devShell = devShells.default;
-
       devShells =
         {default = devShells.${defaultPackageName};}
         // (
