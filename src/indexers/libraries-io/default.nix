@@ -29,6 +29,7 @@ libraries.io also supports other interesting popularity metrics:
       npm = "npm";
       crates-io = "cargo";
       pypi = "pypi";
+      packagist = "packagist";
     };
   in
     utils.writePureShellScript

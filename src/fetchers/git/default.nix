@@ -20,6 +20,7 @@ in {
   }: {
     url,
     rev,
+    submodules ? true,
     ...
   } @ inp: let
     isRevGitRef = isGitRef rev;
@@ -58,7 +59,7 @@ in {
               inherit url;
               # disable fetching all refs if the source specifies a ref
               allRefs = ! hasGitRef;
-              submodules = true;
+              inherit submodules;
             }));
 
       # git can either be verified via revision or hash.
@@ -74,14 +75,14 @@ in {
               // {
                 inherit url;
                 allRefs = true;
-                submodules = true;
+                inherit submodules;
               })
         else
           fetchgit
           (refAndRev
             // {
               inherit url;
-              fetchSubmodules = true;
+              fetchSubmodules = submodules;
               sha256 = hash;
             });
     };

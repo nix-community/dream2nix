@@ -117,6 +117,19 @@ in {
     in
       map (l.removePrefix "ext-") extensions;
 
+    composerPluginApiSemver = l.listToAttrs (l.flatten (map
+      (
+        pkg: let
+          requires = getRequire pkg;
+        in
+          l.optional (requires ? "composer-plugin-api")
+          {
+            name = "${pkg.name}@${pkg.version}";
+            value = requires."composer-plugin-api";
+          }
+      )
+      packages));
+
     # get cleaned pkg attributes
     getRequire = pkg:
       l.mapAttrs
@@ -142,11 +155,11 @@ in {
       version = composerJson.version or "unknown";
       source = {
         type = "path";
-        path = projectSource;
+        path = rootSource;
       };
       require =
         (l.optionalAttrs (!noDev) (composerJson.require-dev or {}))
-        // composerJson.require;
+        // (composerJson.require or {});
     };
     # all the packages
     packages =
@@ -204,7 +217,7 @@ in {
       clean = requires:
         l.filterAttrs
         (name: _:
-          !(l.elem name ["php" "composer/composer" "composer-runtime-api"])
+          !(l.elem name ["php" "composer-plugin-api" "composer-runtime-api"])
           && !(l.strings.hasPrefix "ext-" name))
         requires;
       doPin = name: semver:
@@ -235,7 +248,9 @@ in {
       # The structure of this should be defined in:
       #   ./src/specifications/{subsystem}
       subsystemAttrs = {
+        inherit noDev;
         inherit phpSemver phpExtensions;
+        inherit composerPluginApiSemver;
       };
 
       # name of the default package
@@ -278,14 +293,30 @@ in {
           (getRequire rawObj);
 
         sourceSpec = rawObj: finalObj:
-          if rawObj.source.type == "path"
+          if rawObj ? "source" && rawObj.source.type == "path"
           then {
             inherit (rawObj.source) type path;
+            rootName = finalObj.name;
+            rootVersion = finalObj.version;
           }
-          else {
+          else if rawObj ? "source" && rawObj.source.type == "git"
+          then {
             inherit (rawObj.source) type url;
             rev = rawObj.source.reference;
-          };
+            submodules = false;
+          }
+          else if rawObj ? "dist" && rawObj.dist.type == "path"
+          then {
+            inherit (rawObj.dist) type;
+            path = rawObj.dist.url;
+            rootName = finalObj.name;
+            rootVersion = finalObj.version;
+          }
+          else
+            l.abort ''
+              Cannot find source for ${finalObj.name}@${finalObj.version},
+              rawObj: ${l.toJSON rawObj}
+            '';
       };
 
       /*

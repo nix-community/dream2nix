@@ -4,7 +4,7 @@
   build = {
     lib,
     pkgs,
-    stdenv,
+    stdenvNoCC,
     # dream2nix inputs
     externals,
     callPackageDream,
@@ -76,6 +76,31 @@
         args.packages
       );
 
+    # Unpack dependency
+    cleanDependency = name: version:
+      stdenvNoCC.mkDerivation rec {
+        pname = "${l.strings.sanitizeDerivationName name}-source";
+        inherit version;
+        versionString =
+          if version == "unknown"
+          then "0.0.0"
+          else version;
+        src = getSource name version;
+        dontConfigure = true;
+        buildPhase = ''
+          mkdir $out
+          cp -r ${src} $out
+          if [ ! -f $out/composer.json ]
+          then
+            echo \
+              {\"name\":\"${name}\",\"version\":\"${versionString}\"} \
+              > $out/composer.json
+          fi
+        '';
+        dontInstall = true;
+        dontFixup = true;
+      };
+
     # Generates a derivation for a specific package name + version
     makePackage = name: version: let
       dependencies = getDependencies name version;
@@ -89,10 +114,10 @@
 
       intoRepository = dep: {
         type = "path";
-        url = "${getSource dep.name dep.version}";
+        url = "${cleanDependency dep.name dep.version}";
         options = {
           versions = {
-            "${dep.name}" = "${dep.version}";
+            "${l.strings.toLower dep.name}" = "${dep.version}";
           };
           symlink = false;
         };
@@ -102,70 +127,117 @@
         l.toJSON
         (repositories ++ [{packagist = false;}]);
 
+      dependenciesString = l.toJSON (l.listToAttrs (
+        map (dep: {
+          name = l.strings.toLower dep.name;
+          value = dep.version;
+        })
+        dependencies
+      ));
+
       versionString =
         if version == "unknown"
         then "0.0.0"
         else version;
 
-      pkg = stdenv.mkDerivation rec {
+      pkg = stdenvNoCC.mkDerivation rec {
         pname = l.strings.sanitizeDerivationName name;
         inherit version;
 
         src = getSource name version;
-
         nativeBuildInputs = with pkgs; [
           jq
           composer
+          moreutils
         ];
         buildInputs = with pkgs; [
           php
           composer
         ];
 
-        dontConfigure = true;
-        buildPhase = ''
+        inherit repositoriesString dependenciesString;
+        passAsFile = ["repositoriesString" "dependenciesString"];
+
+        unpackPhase = ''
+          runHook preUnpack
+
+          mkdir -p $out/lib/vendor/${name}
+          cd $out/lib/vendor/${name}
+
           # copy source
-          PKG_OUT=$out/lib/vendor/${name}
-          mkdir -p $PKG_OUT
-          pushd $PKG_OUT
           cp -r ${src}/* .
+          chmod -R +w .
+
+          # create composer.json if does not exist
+          if [ ! -f composer.json ]; then
+            echo "{}" > composer.json
+          fi
+
+          # save the original composer.json for reference
+          cp composer.json composer.json.orig
+
+          # set name & version
+          jq \
+            "(.name = \"${name}\") | \
+             (.version = \"${versionString}\")" \
+             composer.json | sponge composer.json
+
+          runHook postUnpack
+        '';
+        patchPhase = ''
+          runHook prePatch
+
+          # fixup composer.json
+          jq \
+             "(.extra.patches = {})" \
+             composer.json | sponge composer.json
+
+          runHook postPatch
+        '';
+        configurePhase = ''
+          runHook preConfigure
+
+          # disable packagist, set path repositories
+          jq \
+            --slurpfile repositories $repositoriesStringPath \
+            --slurpfile dependencies $dependenciesStringPath \
+            "(.repositories = \$repositories[0]) | \
+             (.require = \$dependencies[0]) | \
+             (.\"require-dev\" = {})" \
+            composer.json | sponge composer.json
+
+          runHook postConfigure
+        '';
+        composerInstallFlags =
+          [
+            "--no-scripts"
+            "--no-plugins"
+          ]
+          ++ l.optional (subsystemAttrs.noDev) "--no-dev";
+        buildPhase = ''
+          runHook preBuild
 
           # remove composer.lock if exists
           rm -f composer.lock
 
-          # disable packagist, set path repositories
-          mv composer.json composer.json.orig
-
-          cat <<EOF >> $out/repositories.json
-          ${repositoriesString}
-          EOF
-
-          jq \
-            --slurpfile repositories $out/repositories.json \
-            "(.repositories = \$repositories[0]) | \
-             (.version = \"${versionString}\")" \
-            composer.json.orig > composer.json
-
           # build
-          composer install --no-scripts
+          composer install ${l.strings.concatStringsSep " " composerInstallFlags}
 
-          # cleanup
-          rm $out/repositories.json
-          popd
+          runHook postBuild
         '';
         installPhase = ''
-          pushd $PKG_OUT
+          runHook preInstall
 
           BINS=$(jq -rcM "(.bin // [])[]" composer.json)
           for bin in $BINS
           do
             mkdir -p $out/bin
             pushd $out/bin
-            ln -s $PKG_OUT/$bin
+            ln -s $out/lib/vendor/${name}/$bin
             popd
           done
 
-          popd
+          runHook postInstall
         '';
 
         passthru.devShell = import ./devShell.nix {

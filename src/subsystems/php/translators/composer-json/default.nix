@@ -23,6 +23,7 @@
     # nixpkgs dependenies
     bash,
     coreutils,
+    moreutils,
     jq,
     phpPackages,
     ...
@@ -31,6 +32,7 @@
     [
       bash
       coreutils
+      moreutils
       jq
       phpPackages.composer
     ]
@@ -54,17 +56,25 @@
       echo "translating in temp dir: $(pwd)"
 
       # create lockfile
+      mv composer.json composer.json.orig
+
+      jq \
+        "(.config.lock = true) | \
+         (.config.\"platform-check\" = false) | \
+         (.authors = []) | \
+         (.require = ((.require // {}) | with_entries(.key |= ascii_downcase))) | \
+         (.\"require-dev\" = ((.\"require-dev\" // {}) | with_entries(.key |= ascii_downcase)))" \
+        composer.json.orig > composer.json
+
       if [ "$(jq '.project.subsystemInfo.noDev' -c -r $jsonInput)" == "true" ]; then
         echo "excluding dev dependencies"
-        jq '.require-dev = {}' ./composer.json > composer.json.mod
-        mv composer.json.mod composer.json
-        composer update --no-install --no-dev
-      else
-        composer update --no-install
+        jq \
+          '.require-dev = {}' \
+          composer.json | sponge composer.json
       fi
+      composer update --ignore-platform-reqs --no-scripts --no-plugins --no-install
 
       jq ".source = \"$newSource\"" -c -r $jsonInput > $TMPDIR/newJsonInput
-
       popd
       ${subsystems.php.translators.composer-lock.translateBin} $TMPDIR/newJsonInput
     '';

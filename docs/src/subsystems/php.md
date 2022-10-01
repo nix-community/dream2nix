@@ -26,6 +26,12 @@ Resolves dependencies in `composer.json` using `composer` to generate a
 `composer.lock` lockfile, then invokes the `composer-lock` translator to
 generate a dream2nix lockfile.
 
+### packagist (impure)
+
+Downloads a package version from [Packagist](https://packagist.org/).
+Then uses `composer-lock` if a `composer.lock` file is present,
+or `composer-json` otherwise to translate the package.
+
 ## Builders
 
 ### granular (pure) (default)
