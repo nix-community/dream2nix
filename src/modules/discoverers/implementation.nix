@@ -1,9 +1,4 @@
-{
-  config,
-  callPackageDream,
-  lib,
-  ...
-}: let
+{config, ...}: let
   funcs = config.functions.subsystem-loading;
   collectedModules = funcs.collect "discoverers";
 in {
