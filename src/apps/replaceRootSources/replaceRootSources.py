@@ -14,8 +14,6 @@ def replace_root_sources(lock, newSource):
 
         if 'dir' in original:
             fixed['dir'] = original['dir']
-        elif 'relPath' in original:
-            fixed['dir'] = original['relPath']
 
         sources[name][version] = fixed
 
