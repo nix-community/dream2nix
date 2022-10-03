@@ -12,6 +12,7 @@ in {
     ./translators
     ./builders
     ./discoverers
+    ./discoverers.default-discoverer
   ];
   options = {
     lib = lib.mkOption {

@@ -8,7 +8,7 @@ in {
   options = {
     discoverers = lib.mkOption {
       type = t.attrsOf (t.submoduleWith {
-        modules = [./discoverer/default.nix];
+        modules = [../interfaces.discoverer];
         inherit specialArgs;
       });
       description = ''
