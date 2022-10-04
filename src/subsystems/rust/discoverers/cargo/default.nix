@@ -1,7 +1,6 @@
 {
   dlib,
   lib,
-  subsystem,
   ...
 }: let
   l = lib // builtins;
@@ -95,7 +94,8 @@
     then
       [
         (dlib.construct.discoveredProject {
-          inherit subsystem translators;
+          inherit translators;
+          subsystem = "rust";
           relPath = tree.relPath;
           name = cargoToml.package.name or tree.relPath;
           subsystemInfo = {inherit crates workspaceMembers;};

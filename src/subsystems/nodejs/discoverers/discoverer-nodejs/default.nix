@@ -1,7 +1,6 @@
 {
   dlib,
   lib,
-  subsystem,
   ...
 }: let
   l = lib // builtins;
@@ -119,10 +118,10 @@
 
   makeWorkspaceProjectInfo = tree: wsRelPath: parentInfo:
     dlib.construct.discoveredProject {
-      inherit subsystem;
       name =
         (getPackageJson "${tree.fullPath}/${wsRelPath}").name
         or "${parentInfo.name}/${wsRelPath}";
+      subsystem = "nodejs";
       relPath = dlib.sanitizeRelativePath "${tree.relPath}/${wsRelPath}";
       translators =
         l.unique
@@ -162,9 +161,9 @@
     else let
       # project info of current directory
       currentProjectInfo = dlib.construct.discoveredProject {
-        inherit subsystem;
         inherit (tree) relPath;
         name = tree.files."package.json".jsonContent.name or tree.relPath;
+        subsystem = "nodejs";
         translators = getTranslatorNames tree;
         subsystemInfo = l.optionalAttrs (workspaces != []) {
           workspaces =

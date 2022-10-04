@@ -89,10 +89,17 @@
     config = loadConfig (args.config or {});
     dlib = import ./lib {inherit lib config;};
 
+    framework = import ./modules/framework.nix {
+      inherit lib dlib;
+      dream2nixConfig = config;
+      callPackageDream =
+        throw "callPackageDream is not available before nixpkgs is imported";
+    };
+
     initD2N = initDream2nix config;
     dream2nixFor = l.mapAttrs (_: pkgs: initD2N pkgs) allPkgs;
 
-    discoveredProjects = dlib.discoverers.discoverProjects {
+    discoveredProjects = framework.functions.discoverers.discoverProjects {
       inherit projects settings;
       tree = dlib.prepareSourceTree {inherit source;};
     };
@@ -147,7 +154,6 @@
     allPkgs = makeNixpkgs pkgs systems;
 
     config = loadConfig (args.config or {});
-    dlib = import ./lib {inherit lib config;};
 
     initD2N = initDream2nix config;
     dream2nixFor = l.mapAttrs (_: pkgs: initD2N pkgs) allPkgs;
@@ -182,7 +188,7 @@
       flakifiedOutputsList;
   in
     flakeOutputs;
-in rec {
+in {
   inherit init makeFlakeOutputs makeFlakeOutputsForIndexes;
   dlib = import ./lib {
     inherit lib;

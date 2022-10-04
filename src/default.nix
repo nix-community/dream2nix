@@ -50,21 +50,10 @@ in let
     inherit framework;
   };
 
-  evaledModules = lib.evalModules {
-    modules =
-      [./modules/top-level.nix]
-      ++ (config.modules or []);
-
-    # TODO: remove specialArgs once all functionality is moved to /src/modules
-    specialArgs = {
-      inherit
-        callPackageDream
-        dlib
-        ;
-    };
+  framework = import ./modules/framework.nix {
+    inherit lib dlib callPackageDream;
+    dream2nixConfig = config;
   };
-
-  framework = evaledModules.config;
 
   /*
   The nixos module system seems to break pkgs.callPackage.
@@ -436,7 +425,7 @@ in let
 
   translateProjects = {
     discoveredProjects ?
-      dlib.discoverers.discoverProjects
+      framework.functions.discoverers.discoverProjects
       {inherit projects settings tree;},
     projects ? {},
     source ? throw "Pass either `source` or `tree` to translateProjects",
@@ -648,7 +637,7 @@ in let
   makeOutputs = {
     source ? throw "pass a 'source' to 'makeOutputs'",
     discoveredProjects ?
-      dlib.discoverers.discoverProjects {
+      framework.functions.discoverers.discoverProjects {
         inherit projects settings source;
       },
     pname ? null,

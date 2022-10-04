@@ -1,7 +1,6 @@
 {
   dlib,
   lib,
-  subsystem,
   ...
 }: let
   l = lib // builtins;
@@ -24,7 +23,6 @@
     then
       [
         (dlib.construct.discoveredProject {
-          inherit subsystem;
           relPath = tree.relPath;
           name =
             if topLevel
@@ -33,6 +31,7 @@
               l.unsafeDiscardStringContext
               (l.last
                 (l.splitString "/" (l.removeSuffix "/" "${tree.fullPath}")));
+          subsystem = "python";
           translators = ["pip"];
           subsystemInfo.pythonAttr = "python3";
         })

@@ -32,11 +32,17 @@
             };
           }
         '')
+        (builtins.toFile "cargo-new.nix" ''
+          {
+            discoverers.cargo-new = {
+              imports = ["${inp.dream2nix}/src/subsystems/rust/discoverers/cargo"];
+              name = "cargo-new";
+              subsystem = "rust";
+            };
+          }
+        '')
       ];
       config.extra = {
-        subsystems.rust = {
-          discoverers.default = "${inp.dream2nix}/src/subsystems/rust/discoverers/default";
-        };
         fetchers.crates-io = "${inp.dream2nix}/src/fetchers/crates-io";
       };
       source = src;
