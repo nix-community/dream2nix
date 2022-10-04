@@ -1,7 +1,6 @@
 {
   dlib,
   lib,
-  subsystem,
   ...
 }: let
   l = lib // builtins;
@@ -13,7 +12,7 @@
     if (tree ? files."info.rkt")
     then [
       (dlib.construct.discoveredProject {
-        inherit subsystem;
+        subsystem = "racket";
         relPath = tree.relPath;
         name =
           if topLevel
