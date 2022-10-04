@@ -41,7 +41,7 @@
               inherit path;
               name = l.strings.sanitizeDerivationName "${name}-${version}-source";
             }
-          else if fetchers.fetchers ? "${source.type}"
+          else if fetchers ? "${source.type}"
           then
             fetchSource {
               source =
