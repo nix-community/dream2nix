@@ -18,8 +18,8 @@
     then ""
     else "?" + asStr;
 in {
-  config = rec {
-    functions.fetchers = {
+  config = {
+    functions.fetchers = rec {
       constructSource = {
         type,
         reComputeHash ? false,
