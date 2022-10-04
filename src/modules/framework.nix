@@ -1,8 +1,10 @@
 {
   dream2nixConfig,
   callPackageDream,
+  pkgs,
   dlib,
   lib,
+  utils,
 }: let
   evaledModules = lib.evalModules {
     modules = [./top-level.nix] ++ (dream2nixConfig.modules or []);
@@ -12,7 +14,9 @@
       inherit
         dream2nixConfig
         callPackageDream
+        pkgs
         dlib
+        utils
         ;
     };
   };

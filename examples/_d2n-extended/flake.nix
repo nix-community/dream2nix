@@ -41,10 +41,14 @@
             };
           }
         '')
+        (builtins.toFile "crates-io-new.nix" ''
+          {
+            fetchers.crates-io = {
+              imports = ["${inp.dream2nix}/src/fetchers/crates-io"];
+            };
+          }
+        '')
       ];
-      config.extra = {
-        fetchers.crates-io = "${inp.dream2nix}/src/fetchers/crates-io";
-      };
       source = src;
       settings = [
         {
