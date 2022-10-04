@@ -69,7 +69,6 @@ in {
       cd source
       cat $TMPDIR/tarball | tar xz --strip-components 1
       # trigger creation of `dist-newstyle` directory
-      cabal update
       cabal freeze
       cd -
 

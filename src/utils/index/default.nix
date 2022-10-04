@@ -62,7 +62,7 @@ in rec {
     sourceOverrides ? {},
   }: let
     l = lib // builtins;
-    indexNames = l.attrNames indexes;
+    indexNames = l.map (index: index.name) indexes;
 
     mkApp = script: {
       type = "app";
@@ -70,13 +70,14 @@ in rec {
     };
 
     mkIndexApp = name: input: let
-      inputFinal = {outputFile = "${name}/index.json";} // input;
+      input' = l.removeAttrs input ["indexer"];
+      inputFinal = {outputFile = "${name}/index.json";} // input';
       script = pkgs.writers.writeBash "index" ''
         set -e
         inputJson="$(${pkgs.coreutils}/bin/mktemp)"
         echo '${l.toJSON inputFinal}' > $inputJson
         mkdir -p $(dirname ${inputFinal.outputFile})
-        ${apps.index}/bin/index ${name} $inputJson
+        ${apps.index}/bin/index ${input.indexer} $inputJson
       '';
     in
       mkApp script;
@@ -90,7 +91,7 @@ in rec {
         ''
       );
 
-    mkCiAppWith = commands:
+    mkCiAppWith = branchname: commands:
       mkApp (
         utils.writePureShellScript
         (with pkgs; [
@@ -100,17 +101,17 @@ in rec {
           openssh
         ])
         ''
-          flake=$(cat flake.nix)
-          flakeLock=$(cat flake.lock)
+          set -e
+          mkdir -p /tmp/flake
+          cp -r ./* /tmp/flake
           set -x
-          git fetch origin data || :
-          git checkout -f origin/data || :
-          git branch -D data || :
-          git checkout -b data
+          git fetch origin ${branchname} || :
+          git checkout -f origin/${branchname} || :
+          git branch -D ${branchname} || :
+          git checkout -b ${branchname}
           # the flake should always be the one from the current main branch
           rm -rf ./*
-          echo "$flake" > flake.nix
-          echo "$flakeLock" > flake.lock
+          cp -r /tmp/flake/. ./
           ${commands}
           git add .
           git commit -m "automatic update - $(date --rfc-3339=seconds)"
@@ -119,6 +120,7 @@ in rec {
 
     mkCiJobApp = name: input:
       mkCiAppWith
+      name
       ''
         ${(mkIndexApp name input).program}
         ${(mkTranslateApp name).program}
@@ -136,29 +138,30 @@ in rec {
     );
 
     indexApps = l.listToAttrs (
-      l.mapAttrsToList
+      l.map
       (
-        name: input:
+        input:
           l.nameValuePair
-          "index-${name}"
-          (mkIndexApp name input)
+          "index-${input.name}"
+          (mkIndexApp input.name input)
       )
       indexes
     );
 
     ciJobApps = l.listToAttrs (
-      l.mapAttrsToList
+      l.map
       (
-        name: input:
+        input:
           l.nameValuePair
-          "ci-job-${name}"
-          (mkCiJobApp name input)
+          "ci-job-${input.name}"
+          (mkCiJobApp input.name input)
       )
       indexes
     );
 
     ciJobAllApp =
       mkCiAppWith
+      "pkgs-all"
       ''
         ${lib.concatStringsSep "\n" (l.mapAttrsToList (_: app: app.program) indexApps)}
         ${lib.concatStringsSep "\n" (l.mapAttrsToList (_: app: app.program) translateApps)}

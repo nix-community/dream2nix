@@ -26,6 +26,7 @@ in
   "translate-index"
   [coreutils translate jq parallel]
   ''
+    set -e
     usage="usage:
       $0 INDEX_PATH TARGET_DIR"
 
@@ -49,7 +50,7 @@ in
 
     # build translator executables
     export TRANSLATOR_DIR=$TMPDIR/translators
-    for translator in $(jq '.[] | .translator' -c -r libraries-io/index.json); do
+    for translator in $(jq '.[] | .translator' -c -r $index); do
       bin="$TRANSLATOR_DIR/$translator"
       if [ ! -e "$bin" ]; then
         echo "building executable for translator $translator"
