@@ -14,13 +14,13 @@ in {
         '';
       };
       fetchSource = l.mkOption {
-        type = t.functionTo t.package;
+        type = t.functionTo t.path;
         description = ''
           fetch a source defined via a dream lock source spec
         '';
       };
       fetchShortcut = l.mkOption {
-        type = t.functionTo t.package;
+        type = t.functionTo t.path;
         description = ''
           fetch a source defined by a shortcut
         '';
