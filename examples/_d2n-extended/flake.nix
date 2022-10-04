@@ -42,8 +42,8 @@
           }
         '')
         (builtins.toFile "crates-io-new.nix" ''
-          {
-            fetchers.crates-io-new = {
+          {lib, ...}: {
+            fetchers.crates-io = lib.mkForce {
               imports = ["${inp.dream2nix}/src/fetchers/crates-io"];
             };
           }
