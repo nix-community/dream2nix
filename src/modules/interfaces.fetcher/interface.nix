@@ -34,12 +34,29 @@ in {
         This can be semantic versioning, a git revision, etc.
       '';
     };
+    defaultUpdater = l.mkOption {
+      type = t.str;
+      description = ''
+        The default updater to use when updating a source fetched with this fetcher.
+      '';
+    };
+    parseParams = l.mkOption {
+      type = t.functionTo t.attrs;
+    };
     outputs = l.mkOption {
       type = t.functionTo (t.functionTo (
         t.submoduleWith {
           modules = [outputsOptions];
         }
       ));
+    };
+    outputsInstanced = l.mkOption {
+      type = t.functionTo (
+        t.submoduleWith {
+          modules = [outputsOptions];
+        }
+      );
+      readOnly = true;
     };
   };
 }

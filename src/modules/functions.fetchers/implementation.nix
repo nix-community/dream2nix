@@ -28,7 +28,7 @@ in {
         fetcher = fetchers."${type}";
         argsKeep = b.removeAttrs args ["reComputeHash"];
         fetcherOutputs =
-          fetcher.outputs
+          fetcher.outputsInstanced
           (b.removeAttrs argsKeep ["dir" "hash" "type"]);
       in
         argsKeep
@@ -58,7 +58,7 @@ in {
       }: let
         fetcher = fetchers."${source.type}";
         fetcherArgs = b.removeAttrs source ["dir" "hash" "type"];
-        fetcherOutputs = fetcher.outputs fetcherArgs;
+        fetcherOutputs = fetcher.outputsInstanced fetcherArgs;
         maybeArchive = fetcherOutputs.fetched (source.hash or null);
       in
         if source ? dir
@@ -136,7 +136,7 @@ in {
 
           url = with parsed; "${proto2}://${path}${urlArgsFinal}";
 
-          fetcherOutputs = fetchers.http.outputs {
+          fetcherOutputs = fetcher.outputsInstanced {
             inherit url;
           };
         in
@@ -165,7 +165,7 @@ in {
 
           args = parsed.kwargs // {inherit url;};
 
-          fetcherOutputs = fetcher.outputs (checkArgs fetcherName args);
+          fetcherOutputs = fetcher.outputsInstanced (checkArgs fetcherName args);
         in
           constructSource
           (parsed.kwargs
@@ -209,7 +209,7 @@ in {
                     (lib.elemAt params idx)
                 ));
 
-          fetcherOutputs = fetcher.outputs (args // parsed.kwargs);
+          fetcherOutputs = fetcher.outputsInstanced (args // parsed.kwargs);
         in
           constructSource (args
             // parsed.kwargs

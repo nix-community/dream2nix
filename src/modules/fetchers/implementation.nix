@@ -20,13 +20,8 @@
           inherit dlib lib;
         }
     );
-  load = fetcher:
-    fetcher
-    // {
-      outputs = callPackageDream fetcher.outputs {};
-    };
 in {
   config = {
-    fetchers = l.mapAttrs (_: fetcher: load fetcher) fetcherModules;
+    fetchers = fetcherModules;
   };
 }
