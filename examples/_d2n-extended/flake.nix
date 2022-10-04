@@ -43,7 +43,7 @@
         '')
         (builtins.toFile "crates-io-new.nix" ''
           {
-            fetchers.crates-io = {
+            fetchers.crates-io-new = {
               imports = ["${inp.dream2nix}/src/fetchers/crates-io"];
             };
           }
