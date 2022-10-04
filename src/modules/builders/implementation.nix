@@ -11,6 +11,7 @@
     php = "granular-php";
     haskell = "simple-haskell";
     debian = "simple-debian";
+    racket = "simple-racket";
   };
   loader = b: b // {build = callPackageDream b.build {};};
   funcs = config.functions.subsystem-loading;

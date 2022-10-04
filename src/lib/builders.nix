@@ -10,6 +10,7 @@
     nodejs = "granular";
     python = "simple-builder";
     php = "granular";
+    racket = "simple";
   };
 
   # TODO
