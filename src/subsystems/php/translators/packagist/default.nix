@@ -86,14 +86,8 @@
         }
       " > $TMPDIR/sourceInfo.json
 
-      ${apps.callNixWithD2N} eval --json "
-        with dream2nix.utils.dreamLock;
-        replaceRootSources {
-          dreamLock = l.fromJSON (l.readFile \"$outputFile\");
-          newSourceRoot = l.fromJSON (l.readFile \"$TMPDIR/sourceInfo.json\");
-        }
-      " \
-        | sponge "$outputFile"
+      ${apps.replaceRootSources}/bin/replaceRootSources \
+        $outputFile $TMPDIR/sourceInfo.json
     '';
 
   # inherit options from composer-json translator
