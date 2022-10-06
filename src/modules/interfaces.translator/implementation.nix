@@ -17,7 +17,10 @@
         }
       );
     translateBin =
-      framework.functions.translators.wrapPureTranslator
-      {inherit (config) subsystem name;};
+      if config.translate != null
+      then
+        framework.functions.translators.wrapPureTranslator
+        {inherit (config) subsystem name;}
+      else framework.lib.mkForce config.translateBin;
   };
 }
