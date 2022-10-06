@@ -1,9 +1,6 @@
-{
-  lib,
-  dlib,
-  config,
-  ...
-}: let
+{config, ...}: let
+  inherit (config) lib;
+
   fetchers = config.fetchers;
   fetchSource = config.functions.fetchers.fetchSource;
   func = {

@@ -51,7 +51,7 @@ in let
   };
 
   framework = import ./modules/framework.nix {
-    inherit lib dlib callPackageDream pkgs utils;
+    inherit apps lib dlib pkgs utils;
     dream2nixConfig = config;
   };
 
@@ -77,7 +77,6 @@ in let
       inherit dream2nixWithExternals;
       inherit utils;
       inherit nix;
-      inherit subsystems;
       dream2nixInterface = {
         inherit
           makeOutputsForDreamLock
@@ -106,8 +105,6 @@ in let
 
   # updater modules to find newest package versions
   updaters = callPackageDream ./updaters {};
-
-  subsystems = callPackageDream ./subsystems {};
 
   externals = {
     devshell = {
@@ -434,7 +431,7 @@ in let
     settings ? [],
   } @ args: let
     getTranslator = translatorName:
-      framework.translatorInstances.${translatorName};
+      framework.translators.${translatorName};
 
     isImpure = project: translatorName:
       (getTranslator translatorName).type == "impure";
@@ -499,7 +496,7 @@ in let
       l.forEach projectsPureUnresolved
       (proj: let
         translator = getTranslator proj.translator;
-        dreamLock'' = translator.translate {
+        dreamLock'' = translator.translateInstanced {
           inherit source tree discoveredProjects;
           project = proj;
         };
@@ -650,7 +647,7 @@ in let
     impureDiscoveredProjects =
       l.filter
       (proj:
-        framework.translatorInstances."${proj.translator}".type
+        framework.translators."${proj.translator}".type
         == "impure")
       discoveredProjects;
 
@@ -727,6 +724,5 @@ in {
     utils
     makeOutputsForDreamLock
     makeOutputs
-    subsystems
     ;
 }

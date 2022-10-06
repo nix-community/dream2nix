@@ -1,24 +1,16 @@
 {
   dream2nixConfig,
-  callPackageDream,
   pkgs,
   dlib,
   lib,
   utils,
+  apps,
 }: let
+  topLevel = import ./top-level.nix {
+    inherit apps lib dlib utils pkgs dream2nixConfig;
+  };
   evaledModules = lib.evalModules {
-    modules = [./top-level.nix] ++ (dream2nixConfig.modules or []);
-
-    # TODO: remove specialArgs once all functionality is moved to /src/modules
-    specialArgs = {
-      inherit
-        dream2nixConfig
-        callPackageDream
-        pkgs
-        dlib
-        utils
-        ;
-    };
+    modules = [topLevel] ++ (dream2nixConfig.modules or []);
   };
 
   framework = evaledModules.config;

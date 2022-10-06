@@ -1,8 +1,5 @@
-{
-  config,
-  lib,
-  ...
-}: let
+{framework, ...}: let
+  lib = framework.lib;
   t = lib.types;
 in {
   options = {

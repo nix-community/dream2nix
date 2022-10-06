@@ -18,7 +18,7 @@ in {
     })
   ];
 
-  translate = {translatorName, ...}: {
+  translate = {
     project,
     tree,
     ...
@@ -180,8 +180,6 @@ in {
   in
     dlib.simpleTranslate2.translate
     ({...}: {
-      inherit translatorName;
-
       # relative path of the project within the source tree.
       location = project.relPath;
 

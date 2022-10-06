@@ -1,8 +1,5 @@
-{
-  config,
-  lib,
-  ...
-}: let
+{framework, ...}: let
+  lib = framework.lib;
   t = lib.types;
 in {
   options = {
@@ -46,11 +43,15 @@ in {
       type = t.str;
     };
     translate = lib.mkOption {
-      type = t.nullOr (t.functionTo (t.functionTo (t.attrs)));
+      type = t.nullOr (t.functionTo t.attrs);
       default = null;
     };
+    translateInstanced = lib.mkOption {
+      type = t.nullOr (t.functionTo t.attrs);
+      readOnly = true;
+    };
     translateBin = lib.mkOption {
-      type = t.nullOr (t.functionTo t.package);
+      type = t.nullOr t.package;
       default = null;
     };
     type = lib.mkOption {

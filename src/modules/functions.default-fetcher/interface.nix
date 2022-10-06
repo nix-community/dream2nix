@@ -1,5 +1,5 @@
-{lib, ...}: let
-  l = lib // builtins;
+{config, ...}: let
+  l = config.lib // builtins;
   t = l.types;
 in {
   options = {

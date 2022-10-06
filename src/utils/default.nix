@@ -19,7 +19,6 @@
   callPackageDream,
   dream2nixWithExternals,
   externalSources,
-  subsystems,
   config,
   configFile,
   framework,

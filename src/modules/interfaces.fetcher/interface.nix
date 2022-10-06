@@ -1,5 +1,5 @@
-{lib, ...}: let
-  l = lib // builtins;
+{framework, ...}: let
+  l = framework.lib // builtins;
   t = l.types;
 
   outputsOptions = {
@@ -44,19 +44,11 @@ in {
       type = t.functionTo t.attrs;
     };
     outputs = l.mkOption {
-      type = t.functionTo (t.functionTo (
-        t.submoduleWith {
-          modules = [outputsOptions];
-        }
-      ));
-    };
-    outputsInstanced = l.mkOption {
       type = t.functionTo (
         t.submoduleWith {
           modules = [outputsOptions];
         }
       );
-      readOnly = true;
     };
   };
 }

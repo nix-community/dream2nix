@@ -1,8 +1,5 @@
-{
-  config,
-  lib,
-  ...
-}: let
+{framework, ...}: let
+  lib = framework.lib;
   t = lib.types;
 in {
   options = {
@@ -20,8 +17,8 @@ in {
       description = "Subsystem of the builder.";
     };
     build = lib.mkOption {
-      type = t.functionTo (t.functionTo t.attrs);
-      default = _: _: {};
+      type = t.functionTo t.attrs;
+      default = _: {};
     };
     type = lib.mkOption {
       type = t.enum [

@@ -1,27 +1,26 @@
 {
-  dlib,
-  lib,
+  pkgs,
+  apps,
+  utils,
+  translators,
   ...
 }: {
   type = "impure";
 
   # the input format is specified in /specifications/translator-call-example.json
   # this script receives a json file including the input paths and specialArgs
-  translateBin = {
-    # dream2nix utils
-    apps,
-    subsystems,
-    utils,
-    # nixpkgs dependencies
-    coreutils,
-    curl,
-    gnutar,
-    gzip,
-    jq,
-    moreutils,
-    rustPlatform,
-    ...
-  }:
+  translateBin = let
+    inherit
+      (pkgs)
+      coreutils
+      curl
+      gnutar
+      gzip
+      jq
+      moreutils
+      rustPlatform
+      ;
+  in
     utils.writePureShellScript
     [
       coreutils
@@ -67,9 +66,9 @@
 
       # we don't need to run cargo-toml translator if Cargo.lock exists
       if [ -f "$TMPDIR/source/Cargo.lock" ]; then
-        ${subsystems.rust.translators.cargo-lock.translateBin} $TMPDIR/newJsonInput
+        ${translators.cargo-lock.translateBin} $TMPDIR/newJsonInput
       else
-        ${subsystems.rust.translators.cargo-toml.translateBin} $TMPDIR/newJsonInput
+        ${translators.cargo-toml.translateBin} $TMPDIR/newJsonInput
       fi
 
       # add main package source info to dream-lock.json
@@ -85,16 +84,5 @@
     '';
 
   # inherit options from cargo-lock translator
-  extraArgs =
-    dlib.translators.translators.rust.cargo-lock.extraArgs
-    // {
-      cargoArgs = {
-        description = "Additional arguments for Cargo";
-        type = "argument";
-        default = "";
-        examples = [
-          "--verbose"
-        ];
-      };
-    };
+  extraArgs = translators.cargo-toml.extraArgs;
 }

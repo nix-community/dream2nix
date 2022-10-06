@@ -6,14 +6,8 @@ This recurses through the following directory structure to discover and load
 modules:
   /src/subsystems/{subsystem}/{module-type}/{module-name}
 */
-{
-  config,
-  dlib,
-  callPackageDream,
-  ...
-}: let
-  lib = config.lib;
-  t = lib.types;
+{config, ...}: let
+  inherit (config) dlib lib;
   subsystemsDir = lib.toString ../../subsystems;
   subsystems = dlib.dirNames subsystemsDir;
 
@@ -42,7 +36,7 @@ modules:
   import_ = collectedModules:
     lib.mapAttrs
     (name: description:
-      (import description.path {inherit dlib lib;})
+      (import description.path config)
       // {inherit (description) name subsystem;})
     (
       lib.foldl'
