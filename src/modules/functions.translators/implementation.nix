@@ -22,7 +22,7 @@
       utils
       pkgs
       dream2nixWithExternals
-      configFile
+      dream2nixConfigFile
       ;
     bin =
       utils.writePureShellScript
@@ -41,7 +41,7 @@
           --show-trace --impure --raw --expr "
           let
             dream2nix = import ${dream2nixWithExternals} {
-              config = ${configFile};
+              config = ${dream2nixConfigFile};
             };
             translatorArgs =
               (builtins.fromJSON
