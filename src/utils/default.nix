@@ -180,7 +180,7 @@ in
       aggregate = project.aggregate or false;
 
       translator =
-        framework.translatorInstances."${project.translator}";
+        framework.translators."${project.translator}";
 
       argsJsonFile =
         pkgs.writeText "translator-args.json"
