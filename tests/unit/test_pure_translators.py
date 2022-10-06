@@ -81,7 +81,7 @@ def test_packageName(p):
 @pytest.mark.parametrize("p", projects)
 def test_exportedPackages(p):
   exportedPackages = nix_ffi.eval(
-    f"framework.translatorsBySubsystem.{p['subsystem']}.{p['translator']}.translateınstanced",
+    f"framework.translatorsBySubsystem.{p['subsystem']}.{p['translator']}.translateInstanced",
     params=dict(
       project=p['project'],
       source=p['source'],
