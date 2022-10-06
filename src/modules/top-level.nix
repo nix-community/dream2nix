@@ -6,13 +6,17 @@
   t = lib.types;
 in {
   imports = [
-    ./functions.subsystem-loading
-    ./functions.translators
     ./functions.discoverers
-    ./translators
+    ./functions.fetchers
+    ./functions.default-fetcher
+    ./functions.combined-fetcher
+    ./functions.translators
+    ./functions.subsystem-loading
     ./builders
     ./discoverers
     ./discoverers.default-discoverer
+    ./fetchers
+    ./translators
   ];
   options = {
     lib = lib.mkOption {
