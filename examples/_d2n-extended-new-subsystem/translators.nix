@@ -1,9 +1,11 @@
-{
+{config, ...}: let
+  inherit (config.pkgs) hello;
+in {
   translators.dummy = {...}: {
     type = "pure";
     name = "dummy";
     subsystem = "hello";
-    translate = {hello, ...}: {...}: {
+    translate = {...}: {
       result = {
         _generic = {
           subsystem = "hello";
