@@ -10,9 +10,17 @@
   config ?
   # if called via CLI, load config via env
   if builtins ? getEnv && builtins.getEnv "dream2nixConfig" != ""
-  then (import ./utils/config.nix).loadConfig (builtins.toPath (builtins.getEnv "dream2nixConfig"))
+  then
+    import ./modules/config.nix {
+      configRaw = builtins.toPath (builtins.getEnv "dream2nixConfig");
+      inherit lib;
+    }
   # load from default directory
-  else (import ./utils/config.nix).loadConfig {},
+  else
+    import ./modules/config.nix {
+      configRaw = {};
+      inherit lib;
+    },
   /*
   Inputs that are not required for building, and therefore not need to be
   copied alongside a dream2nix installation.
@@ -50,13 +58,15 @@ in let
 
   l = lib // builtins;
 
-  config = (import ./utils/config.nix).loadConfig argsConfig;
+  config = import ./modules/config.nix {
+    configRaw = argsConfig;
+    inherit lib;
+  };
 
   configFile = pkgs.writeText "dream2nix-config.json" (b.toJSON config);
 
   dlib = import ./lib {
-    inherit lib;
-    config = (import ./utils/config.nix).loadConfig config;
+    inherit lib config;
     inherit framework;
   };
 
