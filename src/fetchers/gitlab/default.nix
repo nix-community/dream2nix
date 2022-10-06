@@ -1,4 +1,8 @@
-{...}: {
+{
+  pkgs,
+  utils,
+  ...
+}: {
   inputs = [
     "owner"
     "repo"
@@ -8,15 +12,11 @@
   versionField = "rev";
 
   outputs = {
-    fetchFromGitLab,
-    utils,
-    ...
-  }: {
     owner,
     repo,
     rev,
     ...
-  } @ inp: let
+  }: let
     b = builtins;
   in {
     calcHash = algo:
@@ -25,7 +25,7 @@
       });
 
     fetched = hash:
-      fetchFromGitLab {
+      pkgs.fetchFromGitLab {
         inherit owner repo rev hash;
       };
   };

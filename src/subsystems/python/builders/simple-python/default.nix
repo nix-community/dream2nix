@@ -1,12 +1,12 @@
 # A very simple single derivation python builder
-{...}: {
+{
+  pkgs,
+  lib,
+  ...
+}: {
   type = "pure";
 
   build = {
-    lib,
-    pkgs,
-    ...
-  }: {
     defaultPackageName,
     defaultPackageVersion,
     getSource,

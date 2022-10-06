@@ -1,4 +1,8 @@
-{...}: {
+{
+  pkgs,
+  utils,
+  ...
+}: {
   inputs = ["pname" "version"];
 
   versionField = "version";
@@ -6,15 +10,10 @@
   defaultUpdater = "pypiNewestReleaseVersion";
 
   outputs = {
-    fetchurl,
-    python3,
-    utils,
-    ...
-  }: {
     pname,
     version,
     extension ? "tar.gz",
-  } @ inp: let
+  }: let
     b = builtins;
 
     firstChar = builtins.substring 0 1 pname;
@@ -29,7 +28,7 @@
 
     fetched = hash: let
       source =
-        (fetchurl {
+        (pkgs.fetchurl {
           inherit url;
           sha256 = hash;
         })

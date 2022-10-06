@@ -1,6 +1,9 @@
 {
   dlib,
   lib,
+  pkgs,
+  utils,
+  name,
   ...
 }: let
   l = lib // builtins;
@@ -71,12 +74,7 @@ in {
     (l.attrNames tree.files);
 
   # translate from a given source and a project specification to a dream-lock.
-  translate = {
-    translatorName,
-    pkgs,
-    utils,
-    ...
-  }: let
+  translate = let
     stackLockUtils = import ./utils.nix {inherit dlib lib pkgs;};
     all-cabal-hashes = let
       all-cabal-hashes' = pkgs.runCommandLocal "all-cabal-hashes" {} ''
@@ -231,7 +229,7 @@ in {
     in
       dlib.simpleTranslate2.translate
       ({objectsByKey, ...}: rec {
-        inherit translatorName;
+        translatorName = name;
 
         # relative path of the project within the source tree.
         location = project.relPath;

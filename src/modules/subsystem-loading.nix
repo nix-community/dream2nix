@@ -5,10 +5,12 @@ translators and builders.
 This recurses through the following directory structure to discover and load
 modules:
   /src/subsystems/{subsystem}/{module-type}/{module-name}
+
+This is not included in `config.functions` because it causes infinite recursion.
 */
-{config, ...}: let
+config: let
   inherit (config) dlib lib;
-  subsystemsDir = lib.toString ../../subsystems;
+  subsystemsDir = lib.toString ../subsystems;
   subsystems = dlib.dirNames subsystemsDir;
 
   collect = moduleDirName:
@@ -35,9 +37,12 @@ modules:
 
   import_ = collectedModules:
     lib.mapAttrs
-    (name: description:
-      (import description.path config)
-      // {inherit (description) name subsystem;})
+    (
+      name: description: let
+        attrs = {inherit (description) name subsystem;};
+      in
+        (import description.path (config // attrs)) // attrs
+    )
     (
       lib.foldl'
       (
@@ -54,13 +59,6 @@ modules:
       collectedModules
     );
 
-  instantiate = importedModules: loader:
-    lib.mapAttrs
-    (name: module:
-      (loader module)
-      // {inherit (module) name subsystem;})
-    importedModules;
-
   structureBySubsystem = instances:
     lib.foldl
     lib.recursiveUpdate
@@ -69,15 +67,9 @@ modules:
       (tName: t: {"${t.subsystem}"."${tName}" = t;})
       instances);
 in {
-  /*
-  Expose the functions via via the modules system.
-  */
-  config.functions.subsystem-loading = {
-    inherit
-      collect
-      import_
-      instantiate
-      structureBySubsystem
-      ;
-  };
+  inherit
+    collect
+    import_
+    structureBySubsystem
+    ;
 }

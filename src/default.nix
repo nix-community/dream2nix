@@ -51,7 +51,7 @@ in let
   };
 
   framework = import ./modules/framework.nix {
-    inherit apps lib dlib pkgs utils;
+    inherit apps lib dlib pkgs utils externals externalSources;
     dream2nixConfig = config;
   };
 

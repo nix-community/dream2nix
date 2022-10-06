@@ -9,7 +9,7 @@
     debian = "simple-debian";
     racket = "simple-racket";
   };
-  funcs = config.functions.subsystem-loading;
+  funcs = import ../subsystem-loading.nix config;
   collectedModules = funcs.collect "builders";
 in {
   config = {

@@ -1,10 +1,8 @@
 {
-  dlib,
-  lib,
+  utils,
+  pkgs,
   ...
-}: let
-  l = lib // builtins;
-in {
+}: {
   type = "impure";
 
   # A derivation which outputs a single executable at `$out`.
@@ -18,20 +16,18 @@ in {
   # by the input parameter `outFile`.
   # The output file must contain the dream lock data encoded as json.
   # See /src/specifications/dream-lock-example.json
-  translateBin = {
-    # dream2nix utils
-    utils,
-    # nixpkgs dependencies
-    bash,
-    coreutils,
-    fetchurl,
-    jq,
-    nix,
-    racket,
-    runCommandLocal,
-    writeScriptBin,
-    ...
-  }: let
+  translateBin = let
+    inherit
+      (pkgs)
+      bash
+      coreutils
+      fetchurl
+      jq
+      nix
+      racket
+      runCommandLocal
+      ;
+
     pruned-racket-catalog = let
       src = fetchurl {
         url = "https://github.com/nix-community/pruned-racket-catalog/tarball/9f11e5ea5765c8a732c5e3129ca2b71237ae2bac";

@@ -1,27 +1,24 @@
 {
-  dlib,
-  lib,
+  externalSources,
+  utils,
+  pkgs,
   ...
-}: let
-  b = builtins;
-in {
+}: {
   type = "impure";
 
   # the input format is specified in /specifications/translator-call-example.json
   # this script receives a json file including the input paths and extraArgs
-  translateBin = {
-    externalSources,
-    utils,
-    bash,
-    coreutils,
-    jq,
-    nix,
-    python3,
-    remarshal,
-    toml2json,
-    writeScriptBin,
-    ...
-  }:
+  translateBin = let
+    inherit
+      (pkgs)
+      bash
+      coreutils
+      jq
+      nix
+      remarshal
+      toml2json
+      ;
+  in
     utils.writePureShellScript
     [
       bash

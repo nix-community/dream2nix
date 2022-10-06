@@ -1,11 +1,9 @@
-{...}: {
+{utils, ...}: {
   inputs = [
     "path"
   ];
 
-  outputs = {utils, ...}: {path, ...} @ inp: let
-    b = builtins;
-  in {
+  outputs = {path, ...}: {
     calcHash = algo: utils.hashPath "${path}";
 
     fetched = hash: "${path}";

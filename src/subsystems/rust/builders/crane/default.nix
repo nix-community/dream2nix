@@ -1,12 +1,12 @@
-{...}: {
+{
+  lib,
+  pkgs,
+  externals,
+  ...
+} @ topArgs: {
   type = "ifd";
+
   build = {
-    lib,
-    pkgs,
-    externals,
-    callPackageDream,
-    ...
-  } @ topArgs: {
     subsystemAttrs,
     defaultPackageName,
     defaultPackageVersion,
@@ -121,12 +121,16 @@
       pname
       (buildPackageWithToolchain defaultToolchain buildArgs);
 
-    # TODO: this does not carry over environment variables from the
-    # dependencies derivation. this could cause confusion for users.
     mkShellForPkg = pkg: let
       pkgDeps = pkg.passthru.dependencies;
-      depsShell = callPackageDream ../devshell.nix {drv = pkgDeps;};
-      mainShell = callPackageDream ../devshell.nix {drv = pkg;};
+      depsShell = pkgs.callPackage ../devshell.nix {
+        inherit externals;
+        drv = pkgDeps;
+      };
+      mainShell = pkgs.callPackage ../devshell.nix {
+        inherit externals;
+        drv = pkg;
+      };
       shell = depsShell.combineWith mainShell;
     in
       shell;

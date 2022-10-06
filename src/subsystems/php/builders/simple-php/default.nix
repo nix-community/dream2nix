@@ -1,15 +1,12 @@
-{...}: {
+{
+  lib,
+  pkgs,
+  externals,
+  ...
+}: {
   type = "pure";
 
   build = {
-    lib,
-    pkgs,
-    stdenvNoCC,
-    # dream2nix inputs
-    externals,
-    callPackageDream,
-    ...
-  }: {
     ### FUNCTIONS
     # AttrSet -> Bool) -> AttrSet -> [x]
     getCyclicDependencies, # name: version: -> [ {name=; version=; } ]
@@ -37,7 +34,7 @@
   } @ args: let
     l = lib // builtins;
 
-    inherit (callPackageDream ../../semver.nix {}) satisfies;
+    inherit (pkgs.callPackage ../../semver.nix {}) satisfies;
 
     # php with required extensions
     php =
@@ -78,7 +75,7 @@
 
     # Unpack dependency
     cleanDependency = name: version:
-      stdenvNoCC.mkDerivation rec {
+      pkgs.stdenvNoCC.mkDerivation rec {
         pname = "${l.strings.sanitizeDerivationName name}-source";
         inherit version;
         versionString =
@@ -140,7 +137,7 @@
         then "0.0.0"
         else version;
 
-      pkg = stdenvNoCC.mkDerivation rec {
+      pkg = pkgs.stdenvNoCC.mkDerivation rec {
         pname = l.strings.sanitizeDerivationName name;
         inherit version;
 

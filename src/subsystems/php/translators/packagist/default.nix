@@ -1,25 +1,24 @@
 {
-  dlib,
-  lib,
+  apps,
+  utils,
+  translators,
+  pkgs,
   ...
 }: {
   type = "impure";
 
   # the input format is specified in /specifications/translator-call-example.json
   # this script receives a json file including the input paths and specialArgs
-  translateBin = {
-    # dream2nix utils
-    apps,
-    subsystems,
-    utils,
-    # nixpkgs dependencies
-    coreutils,
-    curl,
-    jq,
-    git,
-    moreutils,
-    ...
-  }:
+  translateBin = let
+    inherit
+      (pkgs)
+      coreutils
+      curl
+      jq
+      git
+      moreutils
+      ;
+  in
     utils.writePureShellScript
     [
       coreutils
@@ -71,10 +70,10 @@
       if [ -f $TMPDIR/source/composer.lock ]
       then
         echo 'Translating with composer-lock'
-        ${subsystems.php.translators.composer-lock.translateBin} $TMPDIR/newJsonInput
+        ${translators.composer-lock.translateBin} $TMPDIR/newJsonInput
       else
         echo 'Translating with composer-json'
-        ${subsystems.php.translators.composer-json.translateBin} $TMPDIR/newJsonInput
+        ${translators.composer-json.translateBin} $TMPDIR/newJsonInput
       fi
 
       # add main package source info to dream-lock.json
@@ -91,5 +90,5 @@
     '';
 
   # inherit options from composer-json translator
-  extraArgs = dlib.translators.translators.php.composer-json.extraArgs;
+  extraArgs = translators.composer-json.extraArgs;
 }

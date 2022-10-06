@@ -1,6 +1,8 @@
 {
   apps,
   dlib,
+  externals,
+  externalSources,
   lib,
   pkgs,
   utils,
@@ -14,7 +16,6 @@ in {
     ./functions.default-fetcher
     ./functions.combined-fetcher
     ./functions.translators
-    ./functions.subsystem-loading
     ./builders
     ./discoverers
     ./discoverers.default-discoverer
@@ -31,6 +32,12 @@ in {
     dlib = lib.mkOption {
       type = t.raw;
     };
+    externals = lib.mkOption {
+      type = t.raw;
+    };
+    externalSources = lib.mkOption {
+      type = t.raw;
+    };
     pkgs = lib.mkOption {
       type = t.raw;
     };
@@ -42,7 +49,7 @@ in {
     };
   };
   config = {
-    inherit apps dlib pkgs utils dream2nixConfig;
+    inherit apps dlib externals externalSources pkgs utils dream2nixConfig;
     lib = lib // builtins;
   };
 }

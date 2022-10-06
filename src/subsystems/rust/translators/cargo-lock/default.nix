@@ -1,4 +1,5 @@
 {
+  name,
   dlib,
   lib,
   ...
@@ -180,6 +181,7 @@ in {
   in
     dlib.simpleTranslate2.translate
     ({...}: {
+      translatorName = name;
       # relative path of the project within the source tree.
       location = project.relPath;
 

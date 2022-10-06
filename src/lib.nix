@@ -90,11 +90,12 @@
     dlib = import ./lib {inherit lib config;};
 
     framework = import ./modules/framework.nix {
-      inherit lib dlib;
+      inherit lib dlib externalSources;
       dream2nixConfig = config;
       apps = throw "apps is not available before nixpkgs is imported";
       pkgs = throw "pkgs is not available before nixpkgs is imported";
       utils = throw "utils is not available before nixpkgs is imported";
+      externals = throw "externals is not available before nixpkgs is imported";
     };
 
     initD2N = initDream2nix config;

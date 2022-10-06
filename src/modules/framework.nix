@@ -2,13 +2,13 @@
   dream2nixConfig,
   pkgs,
   dlib,
+  externals,
+  externalSources,
   lib,
   utils,
   apps,
-}: let
-  topLevel = import ./top-level.nix {
-    inherit apps lib dlib utils pkgs dream2nixConfig;
-  };
+} @ args: let
+  topLevel = import ./top-level.nix args;
   evaledModules = lib.evalModules {
     modules = [topLevel] ++ (dream2nixConfig.modules or []);
   };

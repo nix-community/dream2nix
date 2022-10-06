@@ -1,5 +1,5 @@
 {config, ...}: let
-  funcs = config.functions.subsystem-loading;
+  funcs = import ../subsystem-loading.nix config;
   collectedModules = funcs.collect "translators";
 in {
   config = {

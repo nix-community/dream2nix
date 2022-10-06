@@ -1,17 +1,22 @@
-framework: {
+{
+  pkgs,
+  utils,
+  translators,
+  ...
+}: {
   type = "impure";
 
   # the input format is specified in /specifications/translator-call-example.json
   # this script receives a json file including the input paths and specialArgs
   translateBin = let
     inherit
-      (framework.pkgs)
+      (pkgs)
       coreutils
       jq
       rustPlatform
       ;
   in
-    framework.utils.writePureShellScript
+    utils.writePureShellScript
     [
       coreutils
       jq
@@ -41,7 +46,7 @@ framework: {
       popd
 
       if [ $cargoResult -eq 0 ]; then
-        ${framework.translators.cargo-lock.translateBin} $TMPDIR/newJsonInput
+        ${translators.cargo-lock.translateBin} $TMPDIR/newJsonInput
       else
         echo "cargo failed to generate the lockfile"
         exit 1
@@ -50,7 +55,7 @@ framework: {
 
   # inherit options from cargo-lock translator
   extraArgs =
-    framework.translators.cargo-lock.extraArgs
+    translators.cargo-lock.extraArgs
     // {
       cargoArgs = {
         description = "Additional arguments for Cargo";
