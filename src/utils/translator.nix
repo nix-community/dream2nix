@@ -1,8 +1,8 @@
 {
   lib,
   # dream2nix
-  fetchers,
   dlib,
+  framework,
   ...
 }: let
   b = builtins;
@@ -89,12 +89,14 @@
           constructedArgsKeep =
             overrideWarning ["pname" "version"] constructedArgs;
 
-          constructedSource = fetchers.constructSource (constructedArgsKeep
+          constructedSource = framework.functions.fetchers.constructSource (
+            constructedArgsKeep
             // {
               inherit type;
               pname = pkgName;
               version = pkgVersion;
-            });
+            }
+          );
 
           skip =
             (type == "path")
