@@ -7,7 +7,9 @@
   pkgs,
   utils,
   dream2nixConfig,
-}: let
+  dream2nixConfigFile,
+  dream2nixWithExternals,
+} @ args: let
   t = lib.types;
 in {
   imports = [
@@ -47,9 +49,16 @@ in {
     dream2nixConfig = lib.mkOption {
       type = t.raw;
     };
+    dream2nixWithExternals = lib.mkOption {
+      type = t.path;
+    };
+    dream2nixConfigFile = lib.mkOption {
+      type = t.path;
+    };
   };
-  config = {
-    inherit apps dlib externals externalSources pkgs utils dream2nixConfig;
-    lib = lib // builtins;
-  };
+  config =
+    args
+    // {
+      lib = args.lib // builtins;
+    };
 }

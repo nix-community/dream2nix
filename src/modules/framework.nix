@@ -1,12 +1,7 @@
 {
-  dream2nixConfig,
-  pkgs,
-  dlib,
-  externals,
-  externalSources,
   lib,
-  utils,
-  apps,
+  dream2nixConfig,
+  ...
 } @ args: let
   topLevel = import ./top-level.nix args;
   evaledModules = lib.evalModules {
