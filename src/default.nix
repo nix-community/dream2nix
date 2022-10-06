@@ -238,8 +238,8 @@ in let
   # detect if granular or combined fetching must be used
   findFetcher = dreamLock:
     if null != dreamLock._generic.sourcesAggregatedHash
-    then framework.functions.fetchers.combinedFetcher
-    else framework.functions.fetchers.defaultFetcher;
+    then framework.functions.combinedFetcher
+    else framework.functions.defaultFetcher;
 
   # fetch only sources and do not build
   fetchSources = {

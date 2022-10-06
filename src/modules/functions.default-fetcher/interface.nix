@@ -3,7 +3,7 @@
   t = l.types;
 in {
   options = {
-    functions.fetchers.defaultFetcher = l.mkOption {
+    functions.defaultFetcher = l.mkOption {
       type = t.functionTo t.attrs;
     };
   };

@@ -6,7 +6,7 @@
   pkgs,
   ...
 }: let
-  defaultFetcher = config.functions.fetchers.defaultFetcher;
+  defaultFetcher = config.functions.defaultFetcher;
   inherit
     (pkgs)
     nix
@@ -195,7 +195,7 @@
             (fetcherArgs: (fetcherArgs.nativeBuildInputs or []))
             FODArgsAllList));
     in
-      stdenv.mkDerivation rec {
+      stdenv.mkDerivation {
         name = "sources-combined";
         inherit builder;
         nativeBuildInputs =
@@ -230,6 +230,6 @@
   };
 in {
   config = {
-    functions.fetchers.combinedFetcher = func;
+    functions.combinedFetcher = func;
   };
 }

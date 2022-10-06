@@ -71,6 +71,6 @@
   };
 in {
   config = {
-    functions.fetchers.defaultFetcher = func;
+    functions.defaultFetcher = func;
   };
 }

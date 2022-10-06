@@ -3,7 +3,7 @@
   t = l.types;
 in {
   options = {
-    functions.fetchers.combinedFetcher = l.mkOption {
+    functions.combinedFetcher = l.mkOption {
       type = t.functionTo t.attrs;
     };
   };
