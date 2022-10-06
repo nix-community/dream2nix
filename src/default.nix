@@ -71,7 +71,6 @@ in let
       inherit dlib;
       inherit externals;
       inherit externalSources;
-      inherit fetchers;
       inherit framework;
       inherit indexers;
       inherit dream2nixWithExternals;
@@ -96,9 +95,6 @@ in let
 
   # apps for CLI and installation
   apps = callPackageDream ./apps {};
-
-  # fetcher implementations
-  fetchers = callPackageDream ./fetchers {};
 
   # indexer implementations
   indexers = callPackageDream ./indexers {};
