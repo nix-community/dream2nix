@@ -709,7 +709,6 @@ in {
     apps
     callPackageDream
     dream2nixWithExternals
-    fetchers
     framework
     indexers
     fetchSources
