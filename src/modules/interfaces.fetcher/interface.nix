@@ -41,14 +41,15 @@ in {
       '';
     };
     parseParams = l.mkOption {
-      type = t.functionTo t.attrs;
+      type = t.nullOr (t.uniq (t.functionTo t.attrs));
+      default = null;
     };
     outputs = l.mkOption {
-      type = t.functionTo (
+      type = t.uniq (t.functionTo (
         t.submoduleWith {
           modules = [outputsOptions];
         }
-      );
+      ));
     };
   };
 }

@@ -186,7 +186,7 @@ in {
           fetcher = fetchers."${fetcherName}";
 
           args =
-            if fetcher ? parseParams
+            if fetcher.parseParams != null
             then fetcher.parseParams params
             else if b.length params != b.length fetcher.inputs
             then

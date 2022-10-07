@@ -8,7 +8,7 @@ in {
       default = false;
     };
     discoverProject = lib.mkOption {
-      type = t.nullOr (t.functionTo (t.anything));
+      type = t.nullOr (t.uniq (t.functionTo (t.anything)));
       default = null;
     };
     extraArgs = lib.mkOption {
@@ -43,11 +43,11 @@ in {
       type = t.str;
     };
     translate = lib.mkOption {
-      type = t.nullOr (t.functionTo t.attrs);
+      type = t.nullOr (t.uniq (t.functionTo t.attrs));
       default = null;
     };
     finalTranslate = lib.mkOption {
-      type = t.nullOr (t.functionTo t.attrs);
+      type = t.nullOr (t.uniq (t.functionTo t.attrs));
       readOnly = true;
       description = ''
         the final translate that you should use.
