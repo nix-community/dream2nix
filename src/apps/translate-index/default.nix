@@ -25,9 +25,10 @@
       translate $jobJson $targetDir &> $TMPDIR/log \
         || (
           echo "Failed to translate $1"
-          mkdir -p ./translation-errors
           jobId=$(jq '.id' -c -r <(echo "$jobJson"))
-          cp $TMPDIR/log ./translation-errors/$jobId.log
+          logFile="./translation-errors/$jobId.log"
+          mkdir -p $(dirname "$logFile")
+          cp $TMPDIR/log "$logFile"
         )
     '';
 in
