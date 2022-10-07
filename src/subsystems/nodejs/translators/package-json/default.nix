@@ -60,7 +60,7 @@
       jq ".source = \"$newSource\"" -c -r $jsonInput > $TMPDIR/newJsonInput
 
       popd
-      ${translators.package-lock.translateBin} $TMPDIR/newJsonInput
+      ${translators.package-lock.translateBinInstanced} $TMPDIR/newJsonInput
     '';
 
   # inherit options from package-lock translator

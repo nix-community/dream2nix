@@ -82,7 +82,7 @@
       popd
 
       # execute cabal-plan translator
-      ${translators.cabal-plan.translateBin} $TMPDIR/newJsonInput
+      ${translators.cabal-plan.translateBinInstanced} $TMPDIR/newJsonInput
 
       # finalize dream-lock. Add source and export default package
       # set correct package version under `packages`

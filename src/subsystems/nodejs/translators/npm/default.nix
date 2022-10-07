@@ -62,7 +62,7 @@
       popd
 
       # call package-lock translator
-      ${translators.package-lock.translateBin} $TMPDIR/newJsonInput
+      ${translators.package-lock.translateBinInstanced} $TMPDIR/newJsonInput
 
       # get resolved package version
       export version=$(npm view $candidate version)

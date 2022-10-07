@@ -54,6 +54,10 @@ in {
       type = t.nullOr t.package;
       default = null;
     };
+    translateBinInstanced = lib.mkOption {
+      type = t.nullOr t.package;
+      readOnly = true;
+    };
     type = lib.mkOption {
       type = t.enum [
         "ifd"
