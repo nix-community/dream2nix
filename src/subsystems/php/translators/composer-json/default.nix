@@ -17,24 +17,15 @@
   # by the input parameter `outFile`.
   # The output file must contain the dream lock data encoded as json.
   # See /src/specifications/dream-lock-example.json
-  translateBin = let
-    inherit
-      (pkgs)
-      bash
-      coreutils
-      moreutils
-      jq
-      phpPackages
-      ;
-  in
+  translateBin =
     utils.writePureShellScript
-    [
+    (with pkgs; [
       bash
       coreutils
       moreutils
       jq
       phpPackages.composer
-    ]
+    ])
     ''
       # accroding to the spec, the translator reads the input from a json file
       jsonInput=$1

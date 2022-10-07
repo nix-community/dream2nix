@@ -9,20 +9,9 @@
 
   # the input format is specified in /specifications/translator-call-example.json
   # this script receives a json file including the input paths and specialArgs
-  translateBin = let
-    inherit
-      (pkgs)
-      coreutils
-      curl
-      gnutar
-      gzip
-      jq
-      moreutils
-      rustPlatform
-      ;
-  in
+  translateBin =
     utils.writePureShellScript
-    [
+    (with pkgs; [
       coreutils
       curl
       gnutar
@@ -30,7 +19,7 @@
       jq
       moreutils
       rustPlatform.rust.cargo
-    ]
+    ])
     ''
       # according to the spec, the translator reads the input from a json file
       jsonInput=$1

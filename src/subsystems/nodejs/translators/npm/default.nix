@@ -9,21 +9,9 @@
 
   # the input format is specified in /specifications/translator-call-example.json
   # this script receives a json file including the input paths and specialArgs
-  translateBin = let
-    inherit
-      (pkgs)
-      bash
-      coreutils
-      git
-      jq
-      moreutils
-      nodePackages
-      openssh
-      python3
-      ;
-  in
+  translateBin =
     utils.writePureShellScript
-    [
+    (with pkgs; [
       bash
       coreutils
       git
@@ -32,7 +20,7 @@
       nodePackages.npm
       openssh
       python3
-    ]
+    ])
     ''
       # accroding to the spec, the translator reads the input from a json file
       jsonInput=$1
