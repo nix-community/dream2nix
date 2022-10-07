@@ -188,8 +188,7 @@ in {
       };
 
       getDependencyNames = finalObj: objectsByName: let
-        cabal = with finalObj;
-          cabalData.${name}.${version};
+        cabal = cabalData.${finalObj.name}.${finalObj.version};
 
         targetBuildDepends =
           cabal.library.condTreeData.build-info.targetBuildDepends or [];
