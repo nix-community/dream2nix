@@ -502,7 +502,7 @@ in let
       l.forEach projectsPureUnresolved
       (proj: let
         translator = getTranslator proj.translator;
-        dreamLock'' = translator.translateInstanced {
+        dreamLock'' = translator.translateFinal {
           inherit source tree discoveredProjects;
           project = proj;
         };

@@ -46,17 +46,23 @@ in {
       type = t.nullOr (t.functionTo t.attrs);
       default = null;
     };
-    translateInstanced = lib.mkOption {
+    translateFinal = lib.mkOption {
       type = t.nullOr (t.functionTo t.attrs);
       readOnly = true;
+      description = ''
+        the final translate that you should use.
+      '';
     };
     translateBin = lib.mkOption {
       type = t.nullOr t.package;
       default = null;
     };
-    translateBinInstanced = lib.mkOption {
+    translateBinFinal = lib.mkOption {
       type = t.nullOr t.package;
       readOnly = true;
+      description = ''
+        the final translateBin that you should use.
+      '';
     };
     type = lib.mkOption {
       type = t.enum [

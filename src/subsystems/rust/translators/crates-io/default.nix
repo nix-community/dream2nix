@@ -66,9 +66,9 @@
 
       # we don't need to run cargo-toml translator if Cargo.lock exists
       if [ -f "$TMPDIR/source/Cargo.lock" ]; then
-        ${translators.cargo-lock.translateBinInstanced} $TMPDIR/newJsonInput
+        ${translators.cargo-lock.translateBinFinal} $TMPDIR/newJsonInput
       else
-        ${translators.cargo-toml.translateBinInstanced} $TMPDIR/newJsonInput
+        ${translators.cargo-toml.translateBinFinal} $TMPDIR/newJsonInput
       fi
 
       # add main package source info to dream-lock.json

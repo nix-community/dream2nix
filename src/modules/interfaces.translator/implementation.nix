@@ -4,7 +4,7 @@
   ...
 }: {
   config = {
-    translateInstanced = args:
+    translateFinal = args:
       if config.translate != null
       then
         config.translate
@@ -19,7 +19,7 @@
           }
         )
       else null;
-    translateBinInstanced =
+    translateBinFinal =
       if config.translate != null
       then
         framework.functions.translators.wrapPureTranslator
