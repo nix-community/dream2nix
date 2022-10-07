@@ -13,18 +13,27 @@
     utils.writePureShellScript
     [coreutils translate jq python3]
     ''
+      jobJson=$1
       job_nr=$2
       time=$(date +%s)
       runtime=$(($time - $start_time))
       average_runtime=$(python3 -c "print($runtime / $job_nr)")
       total_remaining_time=$(python3 -c "print($average_runtime * ($num_jobs - $job_nr))")
       echo "starting job nr. $job_nr; average job runtime: $average_runtime sec; remaining time: $total_remaining_time sec"
-      translate $1 $targetDir || echo "Failed to translate $1"
+
+      # if job fails, store error in ./translation-errors/$jobId.log
+      translate $jobJson $targetDir &> $TMPDIR/log \
+        || (
+          echo "Failed to translate $1"
+          mkdir -p ./translation-errors
+          jobId=$(jq '.id' -c -r <(echo "$jobJson"))
+          cp $TMPDIR/log ./translation-errors/$jobId.log
+        )
     '';
 in
   utils.writePureShellScriptBin
   "translate-index"
-  [coreutils translate jq parallel]
+  [coreutils translate jq parallel python3]
   ''
     set -e
     usage="usage:
@@ -65,4 +74,6 @@ in
 
     runtime=$(($(date +%s) - $start_time))
     echo "FINISHED! Executed $num_jobs jobs in $runtime seconds"
+
+    python3 ${./summarize-stats.py} translation-errors.json
   ''
