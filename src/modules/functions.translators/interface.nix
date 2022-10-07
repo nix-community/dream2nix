@@ -3,7 +3,11 @@
   t = lib.types;
 in {
   options.functions.translators = {
-    makeTranslatorDefaultArgs = lib.mkOption {type = t.functionTo t.anything;};
-    wrapPureTranslator = lib.mkOption {type = t.functionTo t.package;};
+    makeTranslatorDefaultArgs = lib.mkOption {
+      type = t.uniq (t.functionTo t.attrs);
+    };
+    wrapPureTranslator = lib.mkOption {
+      type = t.uniq (t.functionTo t.package);
+    };
   };
 }
