@@ -306,7 +306,7 @@ in {
           {
             type = "http";
             url = haskellUtils.getHackageUrl finalObj;
-            hash = with finalObj; "sha256:${all-cabal-hashes.${name}.${version}.SHA256}";
+            hash = "sha256:${all-cabal-hashes.${finalObj.name}.${finalObj.version}.SHA256}";
           };
         };
 
