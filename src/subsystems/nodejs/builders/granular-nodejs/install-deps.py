@@ -20,7 +20,7 @@ def get_package_json(path):
   if path not in package_json_cache:
     if not os.path.isfile(f"{path}/package.json"):
       return None
-    with open(f"{path}/package.json") as f:
+    with open(f"{path}/package.json", encoding="utf-8-sig") as f:
       package_json_cache[path] = json.load(f)
   return package_json_cache[path]
 
