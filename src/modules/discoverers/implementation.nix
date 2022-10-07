@@ -5,6 +5,9 @@ in {
   config = {
     discoverers = funcs.import_ collectedModules;
 
-    discoverersBySubsystem = funcs.structureBySubsystem config.discoverers;
+    discoverersBySubsystem = funcs.structureBySubsystem (
+      # remove the "default" discoverer we create, as it's not subsystem specific.
+      builtins.removeAttrs config.discoverers ["default"]
+    );
   };
 }
