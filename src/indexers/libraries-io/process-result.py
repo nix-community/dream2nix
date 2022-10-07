@@ -10,9 +10,8 @@ input = json.load(sys.stdin)
 projects = []
 for package in input:
   versions = package['versions']
-  versions = sorted(versions, key=lambda v: v['published_at'], reverse=True)
   if versions:
-    latest_version = versions[0]['number']
+    latest_version = package["latest_stable_release_number"]
     projects.append(dict(
         id=f"{package['name']}-{latest_version}",
         name=package['name'],
