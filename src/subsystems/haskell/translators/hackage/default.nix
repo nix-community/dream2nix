@@ -84,7 +84,9 @@ in {
 
       # download and unpack package source
       mkdir source
-      curl -L https://hackage.haskell.org/package/$name-$version/$name-$version.tar.gz > $TMPDIR/tarball
+      url="https://hackage.haskell.org/package/$name-$version/$name-$version.tar.gz"
+      echo "downloading $url"
+      curl -L "$url" > $TMPDIR/tarball
       cd source
       cat $TMPDIR/tarball | tar xz --strip-components 1
       # trigger creation of `dist-newstyle` directory

@@ -102,8 +102,9 @@ in rec {
         ])
         ''
           set -e
-          mkdir -p /tmp/flake
-          cp -r ./* /tmp/flake
+          rm -rf /tmp/.flake
+          mkdir -p /tmp/.flake
+          cp -r ./* /tmp/.flake
           set -x
           git fetch origin ${branchname} || :
           git checkout -f origin/${branchname} || :
@@ -111,7 +112,7 @@ in rec {
           git checkout -b ${branchname}
           # the flake should always be the one from the current main branch
           rm -rf ./*
-          cp -r /tmp/flake/. ./
+          cp -r /tmp/.flake/. ./
           ${commands}
           git add .
           git commit -m "automatic update - $(date --rfc-3339=seconds)"
