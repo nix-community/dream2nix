@@ -47,7 +47,7 @@
               (builtins.fromJSON
                   (builtins.unsafeDiscardStringContext (builtins.readFile '''$1''')));
             dreamLock' =
-              dream2nix.framework.translatorsBySubsystem.${subsystem}.${name}.translateFinal
+              dream2nix.framework.translatorsBySubsystem.${subsystem}.${name}.finalTranslate
                 translatorArgs;
             # simpleTranslate2 puts dream-lock in result
             dreamLock = dreamLock'.result or dreamLock';

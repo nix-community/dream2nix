@@ -4,7 +4,7 @@
   ...
 }: {
   config = {
-    translateFinal = args:
+    finalTranslate = args:
       if config.translate != null
       then
         config.translate
@@ -19,7 +19,7 @@
           }
         )
       else null;
-    translateBinFinal =
+    finalTranslateBin =
       if config.translate != null
       then
         framework.functions.translators.wrapPureTranslator

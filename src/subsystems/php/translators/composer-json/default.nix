@@ -66,7 +66,7 @@
 
       jq ".source = \"$newSource\"" -c -r $jsonInput > $TMPDIR/newJsonInput
       popd
-      ${translators.composer-lock.translateBinFinal} $TMPDIR/newJsonInput
+      ${translators.composer-lock.finalTranslateBin} $TMPDIR/newJsonInput
     '';
 
   # inherit options from composer-lock translator

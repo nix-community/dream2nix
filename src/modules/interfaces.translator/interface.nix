@@ -46,7 +46,7 @@ in {
       type = t.nullOr (t.functionTo t.attrs);
       default = null;
     };
-    translateFinal = lib.mkOption {
+    finalTranslate = lib.mkOption {
       type = t.nullOr (t.functionTo t.attrs);
       readOnly = true;
       description = ''
@@ -57,7 +57,7 @@ in {
       type = t.nullOr t.package;
       default = null;
     };
-    translateBinFinal = lib.mkOption {
+    finalTranslateBin = lib.mkOption {
       type = t.nullOr t.package;
       readOnly = true;
       description = ''

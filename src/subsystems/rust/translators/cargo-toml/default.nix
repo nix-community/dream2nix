@@ -39,7 +39,7 @@
       popd
 
       if [ $cargoResult -eq 0 ]; then
-        ${translators.cargo-lock.translateBinFinal} $TMPDIR/newJsonInput
+        ${translators.cargo-lock.finalTranslateBin} $TMPDIR/newJsonInput
       else
         echo "cargo failed to generate the lockfile"
         exit 1

@@ -51,7 +51,7 @@ utils.writePureShellScriptBin
     translateBin="$TRANSLATOR_DIR/$translator"
   else
     translateBin=$(${callNixWithD2N} build --print-out-paths --no-link "
-      dream2nix.framework.translators.$translator.translateBinFinal
+      dream2nix.framework.translators.$translator.finalTranslateBin
     ")
   fi
 

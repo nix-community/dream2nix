@@ -206,7 +206,7 @@ in
         ''
           dreamLockPath="${project.dreamLockPath}"
 
-          ${translator.translateBinFinal} ${argsJsonFile}
+          ${translator.finalTranslateBin} ${argsJsonFile}
 
           # aggregate source hashes
           if [ "${l.toJSON aggregate}" == "true" ]; then

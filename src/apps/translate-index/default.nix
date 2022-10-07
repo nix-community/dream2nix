@@ -54,7 +54,7 @@ in
       if [ ! -e "$bin" ]; then
         echo "building executable for translator $translator"
         ${callNixWithD2N} build -o "$bin" "
-          dream2nix.framework.translators.$translator.translateBinFinal
+          dream2nix.framework.translators.$translator.finalTranslateBin
         "
       fi
     done

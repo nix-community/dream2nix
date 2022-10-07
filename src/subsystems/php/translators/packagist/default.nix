@@ -61,10 +61,10 @@
       if [ -f $TMPDIR/source/composer.lock ]
       then
         echo 'Translating with composer-lock'
-        ${translators.composer-lock.translateBinFinal} $TMPDIR/newJsonInput
+        ${translators.composer-lock.finalTranslateBin} $TMPDIR/newJsonInput
       else
         echo 'Translating with composer-json'
-        ${translators.composer-json.translateBinFinal} $TMPDIR/newJsonInput
+        ${translators.composer-json.finalTranslateBin} $TMPDIR/newJsonInput
       fi
 
       # add main package source info to dream-lock.json
