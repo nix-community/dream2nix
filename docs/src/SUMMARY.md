@@ -12,13 +12,35 @@
 - [Haskell](./subsystems/haskell.md)
 - [PHP](./subsystems/php.md)
 
-# Concepts
-- [Architectural Considerations](./intro/architectural-considerations.md)
-- [Nixpkgs improvements](./intro/nixpkgs-improvements.md)
-- [Override system](./intro/override-system.md)
+# Concepts / API
+- [Architecture](./intro/architecture.md)
 - [Translators](./intro/translators.md)
+  - [npm]()
+  - [package-json]()
+  - [package-lock]()
+  - [yarn-lock]()
+- [Generic Lockfile](./api/generic-lock.md)
 - [Indexers](./intro/indexers.md)
+  - [pip]()
+  - [crates-io]()
+  - [crates-io-simple]()
+  - [libraries-io]()
+  - [npm]()
 - [Fetchers](./intro/fetchers.md)
+  - [git]()
+  - [github]()
+  - [gitlab]()
+  - [http]()
+  - [path]()
+  - [npm]()
+  - [pypi-sdist]()
+  - [crates-io]()
+- [Builders]()
+  - [nodejs]()
+- [Override system](./intro/override-system.md)
+
+# Correlation with nixpkgs
+- [Nixpkgs improvements](./intro/nixpkgs-improvements.md)
 
 # Contributing
 - [Extending dream2nix](./extending-dream2nix.md)
