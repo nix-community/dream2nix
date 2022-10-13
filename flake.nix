@@ -53,6 +53,11 @@
       url = "github:nix-community/all-cabal-json/hackage";
       flake = false;
     };
+
+    ghc-utils = {
+      url = "git+https://gitlab.haskell.org/bgamari/ghc-utils";
+      flake = false;
+    };
   };
 
   outputs = {
@@ -66,6 +71,7 @@
     pre-commit-hooks,
     crane,
     all-cabal-json,
+    ghc-utils,
     ...
   } @ inp: let
     b = builtins;

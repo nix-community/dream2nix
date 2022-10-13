@@ -79,4 +79,37 @@ in {
       (targetBuildDepends ++ buildToolDepends ++ condBuildDepends);
   in
     depNames;
+
+  # XXX: This might be better as a function.  See
+  # https://github.com/nixos/nixpkgs/blob/773c2a7afa4cc94f91d53d8cb35245cbf216082b/pkgs/development/haskell-modules/configuration-ghc-9.4.x.nix#L49-L56
+  # Packages we shouldn't always overwrite with null, but presently do anyway, are
+  # 1) terminfo, when we cross-compile
+  # 2) xhtml, when ghc.hasHaddock is set to false
+  ghcVersionToHiddenPackages = l.pipe "${inputs.ghc-utils}/library-versions/pkg_versions.txt" [
+    l.readFile
+    (l.split "\n#+\n# GHC [^\n]+")
+    l.tail
+    (l.filter l.isString)
+    (l.concatMap (l.splitString "\n"))
+    (l.filter (s: s != "" && !(l.hasPrefix "HEAD" s)))
+    (l.map (
+      s: let
+        ghcVersionAndHiddenPackages = l.match "([^[:space:]]+)[[:space:]]+(.+)" s;
+        ghcVersion = l.head ghcVersionAndHiddenPackages;
+        hiddenPackages = l.pipe (l.last ghcVersionAndHiddenPackages) [
+          (l.splitString " ")
+          (l.map (packageAndVersion:
+            l.pipe packageAndVersion [
+              (l.match "([^/]+)/.+")
+              l.head
+              (packageName: l.nameValuePair packageName null)
+            ]))
+          (pkgNames: [(l.nameValuePair "Win32" null)] ++ pkgNames)
+          l.listToAttrs
+        ];
+      in
+        l.nameValuePair ghcVersion hiddenPackages
+    ))
+    l.listToAttrs
+  ];
 }
