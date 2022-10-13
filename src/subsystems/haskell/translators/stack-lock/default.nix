@@ -8,53 +8,6 @@
   ...
 }: let
   l = lib // builtins;
-
-  hiddenPackagesDefault = {
-    # TODO: unblock these packages and implement actual logic to interpret the
-    # flags found in cabal files
-    Win32 = null;
-
-    # These are the packages which are already contained in the ghc package.
-    # This list actually depends on the ghc version used.
-    # see: https://gitlab.haskell.org/ghc/ghc/-/wikis/commentary/libraries/version-history
-    # and: https://gitlab.haskell.org/bgamari/ghc-utils/-/blob/master/library-versions/pkg_versions.txt
-    # TODO: Generate this list dynamically for the given ghc version via pkg_versions.txt
-    array = null;
-    base = null;
-    binary = null;
-    bytestring = null;
-    Cabal = null;
-    containers = null;
-    deepseq = null;
-    directory = null;
-    dns-internal = null;
-    fast-digits-internal = null;
-    filepath = null;
-    ghc = null;
-    ghc-boot = null;
-    ghc-boot-th = null;
-    ghc-compact = null;
-    ghc-heap = null;
-    ghc-prim = null;
-    ghci = null;
-    haskeline = null;
-    hpc = null;
-    integer-gmp = null;
-    libiserv = null;
-    mtl = null;
-    parsec = null;
-    pretty = null;
-    process = null;
-    rts = null;
-    stm = null;
-    template-haskell = null;
-    terminfo = null;
-    text = null;
-    time = null;
-    transformers = null;
-    unix = null;
-    xhtml = null;
-  };
 in {
   type = "ifd";
 
@@ -134,7 +87,7 @@ in {
       compilerVersion = l.last compilerSplit;
 
       hidden =
-        hiddenPackagesDefault;
+        haskellUtils.ghcVersionToHiddenPackages."${compilerVersion}" or haskellUtils.ghcVersionToHiddenPackages."9.0.2";
       # TODO: find out what to do with the hidden packages from the snapshot
       # Currently it looks like those should not be included
       # // (
