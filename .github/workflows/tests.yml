@@ -89,5 +89,9 @@ jobs:
         extra_nix_config: |
           access-tokens = github.com=${{ secrets.GITHUB_TOKEN }}
           max-jobs = 10
+    - uses: cachix/cachix-action@v10
+      with:
+        name: nix-community
+        signingKey: '${{ secrets.CACHIX_SIGNING_KEY }}'
 
     - run: nix run .#format -- --fail-on-change
