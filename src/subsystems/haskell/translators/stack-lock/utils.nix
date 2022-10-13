@@ -17,7 +17,31 @@ in rec {
   '';
 
   # The cabal2json program
-  cabal2json = pkgs.haskell.packages.ghc8107.cabal2json;
+  cabal2json = let
+    haskellLib = pkgs.haskell.lib.compose;
+    haskellPackages = pkgs.haskell.packages.ghc8107.override {
+      overrides = _: prev: {
+        autodocodec = l.pipe prev.autodocodec [
+          haskellLib.markUnbroken
+          haskellLib.dontCheck
+        ];
+        validity-aeson = l.pipe prev.validity-aeson [
+          haskellLib.dontCheck
+          haskellLib.markUnbroken
+        ];
+        validity =
+          haskellLib.overrideCabal (_: {
+            patches = [];
+          })
+          (haskellLib.dontCheck prev.validity);
+      };
+    };
+    cabal2json' = haskellPackages.cabal2json.override {
+      Cabal = haskellLib.dontCheck haskellPackages.Cabal_3_2_1_0;
+    };
+    cabal2json = haskellLib.dontCheck cabal2json';
+  in
+    cabal2json;
 
   # parse cabal file via IFD
   fromCabal = file: name: let
