@@ -123,6 +123,9 @@ in {
 
           src = getSource name version;
 
+          # ignore if dependencies contain multiple versions of the same package
+          jailbreak = true;
+
           isLibrary = true;
           isExecutable = true;
           doCheck = false;
