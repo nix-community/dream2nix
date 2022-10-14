@@ -24,7 +24,7 @@ in {
 
   discoverProject = tree:
     l.any
-    (filename: l.hasSuffix ".cabal" filename)
+    (filename: l.hasSuffix "stack.yaml.lock" filename)
     (l.attrNames tree.files);
 
   # translate from a given source and a project specification to a dream-lock.
