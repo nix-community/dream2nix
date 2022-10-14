@@ -1,11 +1,5 @@
-{
-  lib,
-  dlib,
-  utils,
-  config,
-  pkgs,
-  ...
-}: let
+{config, ...}: let
+  inherit (config) lib pkgs utils;
   defaultFetcher = config.functions.defaultFetcher;
   inherit
     (pkgs)

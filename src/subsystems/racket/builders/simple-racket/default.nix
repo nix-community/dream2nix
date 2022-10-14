@@ -1,14 +1,12 @@
-{...}: {
+{
+  pkgs,
+  lib,
+  externals,
+  ...
+}: {
   type = "pure";
 
   build = {
-    lib,
-    pkgs,
-    stdenv,
-    # dream2nix inputs
-    externals,
-    ...
-  }: {
     ### FUNCTIONS
     # AttrSet -> Bool) -> AttrSet -> [x]
     getCyclicDependencies, # name: version: -> [ {name=; version=; } ]

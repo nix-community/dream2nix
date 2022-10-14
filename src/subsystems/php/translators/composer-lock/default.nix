@@ -1,4 +1,5 @@
 {
+  name,
   dlib,
   lib,
   ...
@@ -24,10 +25,6 @@ in {
 
   # translate from a given source and a project specification to a dream-lock.
   translate = {
-    translatorName,
-    callPackageDream,
-    ...
-  }: {
     /*
     A list of projects returned by `discoverProjects`
     Example:
@@ -95,7 +92,7 @@ in {
     ...
   } @ args: let
     inherit
-      (callPackageDream ../../semver.nix {})
+      (import ../../semver.nix {inherit lib;})
       satisfies
       multiSatisfies
       ;
@@ -236,7 +233,7 @@ in {
   in
     dlib.simpleTranslate2.translate
     ({objectsByKey, ...}: rec {
-      inherit translatorName;
+      translatorName = name;
 
       # relative path of the project within the source tree.
       location = project.relPath;

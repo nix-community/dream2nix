@@ -1,11 +1,13 @@
 {config, ...}: let
-  funcs = config.functions.subsystem-loading;
+  funcs = import ../subsystem-loading.nix config;
   collectedModules = funcs.collect "discoverers";
 in {
   config = {
-    # The user can add more discoverers by extending this attribute
     discoverers = funcs.import_ collectedModules;
 
-    discoverersBySubsystem = funcs.structureBySubsystem config.discoverers;
+    discoverersBySubsystem = funcs.structureBySubsystem (
+      # remove the "default" discoverer we create, as it's not subsystem specific.
+      builtins.removeAttrs config.discoverers ["default"]
+    );
   };
 }

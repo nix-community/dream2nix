@@ -1,6 +1,7 @@
 {
   dlib,
   lib,
+  name,
   ...
 }: let
   l = lib // builtins;
@@ -10,7 +11,7 @@
   getYarnLock = tree: project:
     nodejsUtils.getWorkspaceLockFile tree project "yarn.lock";
 
-  translate = {translatorName, ...}: {
+  translate = {
     project,
     source,
     tree,
@@ -130,7 +131,9 @@
         then "path"
         else "http";
     in rec {
-      inherit defaultPackage translatorName;
+      inherit defaultPackage;
+
+      translatorName = name;
 
       location = relPath;
 

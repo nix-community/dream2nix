@@ -1,10 +1,8 @@
 {
-  dlib,
-  lib,
+  utils,
+  pkgs,
   ...
-}: let
-  l = lib // builtins;
-in {
+}: {
   type = "impure";
 
   # A derivation which outputs a single executable at `$out`.
@@ -18,40 +16,27 @@ in {
   # by the input parameter `outFile`.
   # The output file must contain the dream lock data encoded as json.
   # See /src/specifications/dream-lock-example.json
-  translateBin = {
-    # dream2nix utils
-    utils,
-    # nixpkgs dependencies
-    bash,
-    coreutils,
-    fetchurl,
-    jq,
-    nix,
-    racket,
-    runCommandLocal,
-    writeScriptBin,
-    ...
-  }: let
+  translateBin = let
     pruned-racket-catalog = let
-      src = fetchurl {
+      src = pkgs.fetchurl {
         url = "https://github.com/nix-community/pruned-racket-catalog/tarball/9f11e5ea5765c8a732c5e3129ca2b71237ae2bac";
         sha256 = "sha256-/n30lailqSndoqPGWcFquCpQWVQcciMiypXYLhNmFUo=";
       };
     in
-      runCommandLocal "pruned-racket-catalog" {} ''
+      pkgs.runCommandLocal "pruned-racket-catalog" {} ''
         mkdir $out
         cd $out
         tar --strip-components 1 -xf ${src}
       '';
   in
     utils.writePureShellScript
-    [
+    (with pkgs; [
       bash
       coreutils
       jq
       nix
       racket
-    ]
+    ])
     ''
       # according to the spec, the translator reads the input from a json file
       jsonInput=$1

@@ -1,9 +1,5 @@
-{
-  config,
-  lib,
-  ...
-}: let
-  l = lib // builtins;
+{config, ...}: let
+  l = config.lib // builtins;
 
   translatorsWithDiscoverFunc =
     l.filter

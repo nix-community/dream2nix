@@ -1,10 +1,6 @@
-{
-  callPackageDream,
-  dlib,
-  lib,
-  ...
-}: let
-  l = lib // builtins;
+{config, ...}: let
+  l = config.lib;
+
   fetchersDir = ../../fetchers;
   fetcherNames = l.attrNames (
     l.filterAttrs
@@ -14,12 +10,7 @@
   fetcherModules =
     l.genAttrs
     fetcherNames
-    (
-      name:
-        import "${fetchersDir}/${name}" {
-          inherit dlib lib;
-        }
-    );
+    (name: import "${fetchersDir}/${name}" config);
 in {
   config = {
     fetchers = fetcherModules;

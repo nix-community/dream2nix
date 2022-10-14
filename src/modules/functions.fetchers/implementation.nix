@@ -1,10 +1,6 @@
-{
-  config,
-  lib,
-  ...
-}: let
+{config, ...}: let
+  inherit (config) fetchers lib;
   b = builtins;
-  fetchers = config.fetchers;
 
   renderUrlArgs = kwargs: let
     asStr =
@@ -28,7 +24,7 @@ in {
         fetcher = fetchers."${type}";
         argsKeep = b.removeAttrs args ["reComputeHash"];
         fetcherOutputs =
-          fetcher.outputsInstanced
+          fetcher.outputs
           (b.removeAttrs argsKeep ["dir" "hash" "type"]);
       in
         argsKeep
@@ -58,7 +54,7 @@ in {
       }: let
         fetcher = fetchers."${source.type}";
         fetcherArgs = b.removeAttrs source ["dir" "hash" "type"];
-        fetcherOutputs = fetcher.outputsInstanced fetcherArgs;
+        fetcherOutputs = fetcher.outputs fetcherArgs;
         maybeArchive = fetcherOutputs.fetched (source.hash or null);
       in
         if source ? dir
@@ -136,7 +132,7 @@ in {
 
           url = with parsed; "${proto2}://${path}${urlArgsFinal}";
 
-          fetcherOutputs = fetcher.outputsInstanced {
+          fetcherOutputs = fetcher.outputs {
             inherit url;
           };
         in
@@ -165,7 +161,7 @@ in {
 
           args = parsed.kwargs // {inherit url;};
 
-          fetcherOutputs = fetcher.outputsInstanced (checkArgs fetcherName args);
+          fetcherOutputs = fetcher.outputs (checkArgs fetcherName args);
         in
           constructSource
           (parsed.kwargs
@@ -190,7 +186,7 @@ in {
           fetcher = fetchers."${fetcherName}";
 
           args =
-            if fetcher ? parseParams
+            if fetcher.parseParams != null
             then fetcher.parseParams params
             else if b.length params != b.length fetcher.inputs
             then
@@ -209,7 +205,7 @@ in {
                     (lib.elemAt params idx)
                 ));
 
-          fetcherOutputs = fetcher.outputsInstanced (args // parsed.kwargs);
+          fetcherOutputs = fetcher.outputs (args // parsed.kwargs);
         in
           constructSource (args
             // parsed.kwargs

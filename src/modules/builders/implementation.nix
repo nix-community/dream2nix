@@ -1,9 +1,5 @@
-{
-  config,
-  callPackageDream,
-  lib,
-  ...
-}: let
+{config, ...}: let
+  lib = config.lib;
   defaults = {
     rust = "build-rust-package";
     nodejs = "granular-nodejs";
@@ -13,19 +9,12 @@
     debian = "simple-debian";
     racket = "simple-racket";
   };
-  loader = b: b // {build = callPackageDream b.build {};};
-  funcs = config.functions.subsystem-loading;
+  funcs = import ../subsystem-loading.nix config;
   collectedModules = funcs.collect "builders";
 in {
   config = {
     # The user can add more translators by extending this attribute
     builders = funcs.import_ collectedModules;
-
-    /*
-    translators wrapped with extra logic to add extra attributes,
-    like .translateBin for pure translators
-    */
-    builderInstances = funcs.instantiate config.builders loader;
 
     buildersBySubsystem =
       lib.mapAttrs
@@ -36,6 +25,6 @@ in {
             default = builders.${defaults.${subsystem}};
           }
       )
-      (funcs.structureBySubsystem config.builderInstances);
+      (funcs.structureBySubsystem config.builders);
   };
 }

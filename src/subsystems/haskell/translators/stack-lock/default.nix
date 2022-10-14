@@ -1,6 +1,9 @@
 {
   dlib,
   lib,
+  pkgs,
+  utils,
+  name,
   ...
 }: let
   l = lib // builtins;
@@ -71,12 +74,7 @@ in {
     (l.attrNames tree.files);
 
   # translate from a given source and a project specification to a dream-lock.
-  translate = {
-    translatorName,
-    pkgs,
-    utils,
-    ...
-  }: let
+  translate = let
     stackLockUtils = import ./utils.nix {inherit dlib lib pkgs;};
     all-cabal-hashes = let
       all-cabal-hashes' = pkgs.runCommandLocal "all-cabal-hashes" {} ''
@@ -190,8 +188,7 @@ in {
       };
 
       getDependencyNames = finalObj: objectsByName: let
-        cabal = with finalObj;
-          cabalData.${name}.${version};
+        cabal = cabalData.${finalObj.name}.${finalObj.version};
 
         targetBuildDepends =
           cabal.library.condTreeData.build-info.targetBuildDepends or [];
@@ -231,7 +228,7 @@ in {
     in
       dlib.simpleTranslate2.translate
       ({objectsByKey, ...}: rec {
-        inherit translatorName;
+        translatorName = name;
 
         # relative path of the project within the source tree.
         location = project.relPath;
@@ -309,7 +306,7 @@ in {
           {
             type = "http";
             url = haskellUtils.getHackageUrl finalObj;
-            hash = with finalObj; "sha256:${all-cabal-hashes.${name}.${version}.SHA256}";
+            hash = "sha256:${all-cabal-hashes.${finalObj.name}.${finalObj.version}.SHA256}";
           };
         };
 

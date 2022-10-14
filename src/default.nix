@@ -51,7 +51,17 @@ in let
   };
 
   framework = import ./modules/framework.nix {
-    inherit lib dlib callPackageDream pkgs utils;
+    inherit
+      apps
+      lib
+      dlib
+      pkgs
+      utils
+      externals
+      externalSources
+      dream2nixWithExternals
+      ;
+    dream2nixConfigFile = configFile;
     dream2nixConfig = config;
   };
 
@@ -71,13 +81,11 @@ in let
       inherit dlib;
       inherit externals;
       inherit externalSources;
-      inherit fetchers;
       inherit framework;
       inherit indexers;
       inherit dream2nixWithExternals;
       inherit utils;
       inherit nix;
-      inherit subsystems;
       dream2nixInterface = {
         inherit
           makeOutputsForDreamLock
@@ -98,16 +106,11 @@ in let
   # apps for CLI and installation
   apps = callPackageDream ./apps {};
 
-  # fetcher implementations
-  fetchers = callPackageDream ./fetchers {};
-
   # indexer implementations
   indexers = callPackageDream ./indexers {};
 
   # updater modules to find newest package versions
   updaters = callPackageDream ./updaters {};
-
-  subsystems = callPackageDream ./subsystems {};
 
   externals = {
     devshell = {
@@ -434,7 +437,7 @@ in let
     settings ? [],
   } @ args: let
     getTranslator = translatorName:
-      framework.translatorInstances.${translatorName};
+      framework.translators.${translatorName};
 
     isImpure = project: translatorName:
       (getTranslator translatorName).type == "impure";
@@ -499,7 +502,7 @@ in let
       l.forEach projectsPureUnresolved
       (proj: let
         translator = getTranslator proj.translator;
-        dreamLock'' = translator.translate {
+        dreamLock'' = translator.finalTranslate {
           inherit source tree discoveredProjects;
           project = proj;
         };
@@ -650,7 +653,7 @@ in let
     impureDiscoveredProjects =
       l.filter
       (proj:
-        framework.translatorInstances."${proj.translator}".type
+        framework.translators."${proj.translator}".type
         == "impure")
       discoveredProjects;
 
@@ -716,7 +719,6 @@ in {
     apps
     callPackageDream
     dream2nixWithExternals
-    fetchers
     framework
     indexers
     fetchSources
@@ -727,6 +729,5 @@ in {
     utils
     makeOutputsForDreamLock
     makeOutputs
-    subsystems
     ;
 }

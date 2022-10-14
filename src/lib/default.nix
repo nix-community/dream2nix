@@ -8,14 +8,11 @@
   # exported attributes
   dlib = {
     inherit
-      builders
       calcInvalidationHash
       callViaEnv
       construct
       containsMatchingFile
       dirNames
-      discoverers
-      fetchers
       indexers
       latestVersion
       listDirs
@@ -25,7 +22,6 @@
       readTextFile
       recursiveUpdateUntilDepth
       simpleTranslate2
-      translators
       sanitizePath
       sanitizeRelativePath
       subsystems
@@ -46,11 +42,7 @@
   subsystems = dirNames ../subsystems;
 
   # other libs
-  builders = import ./builders.nix {inherit dlib lib config;};
   construct = import ./construct.nix {inherit lib;};
-  discoverers = import ./discoverers.nix {inherit config dlib lib;};
-  fetchers = import ./fetchers.nix {inherit dlib lib;};
-  translators = import ./translators.nix {inherit dlib lib;};
   indexers = import ./indexers.nix {inherit dlib lib;};
 
   modules = import ./modules.nix {inherit config dlib lib;};

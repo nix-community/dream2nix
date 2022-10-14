@@ -1,13 +1,13 @@
-{...}: {
+{
+  lib,
+  dlib,
+  pkgs,
+  externals,
+  ...
+} @ topArgs: {
   type = "pure";
 
   build = {
-    lib,
-    dlib,
-    pkgs,
-    callPackageDream,
-    ...
-  } @ topArgs: {
     subsystemAttrs,
     defaultPackageName,
     defaultPackageVersion,
@@ -68,7 +68,10 @@
       });
 
     mkShellForPkg = pkg:
-      callPackageDream ../devshell.nix {drv = pkg;};
+      pkgs.callPackage ../devshell.nix {
+        inherit externals;
+        drv = pkg;
+      };
 
     allPackages =
       l.mapAttrs

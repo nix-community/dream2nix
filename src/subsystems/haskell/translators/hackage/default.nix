@@ -1,10 +1,9 @@
 {
-  dlib,
-  lib,
+  pkgs,
+  utils,
+  translators,
   ...
-}: let
-  l = lib // builtins;
-in {
+}: {
   type = "impure";
 
   # A derivation which outputs a single executable at `$out`.
@@ -18,27 +17,9 @@ in {
   # by the input parameter `outFile`.
   # The output file must contain the dream lock data encoded as json.
   # See /src/specifications/dream-lock-example.json
-  translateBin = {
-    # dream2nix utils
-    subsystems,
-    utils,
-    # nixpkgs dependenies
-    bash,
-    coreutils,
-    curl,
-    gnutar,
-    gzip,
-    haskellPackages,
-    jq,
-    moreutils,
-    nix,
-    python3,
-    util-linux,
-    writeScriptBin,
-    ...
-  }:
+  translateBin =
     utils.writePureShellScript
-    [
+    (with pkgs; [
       bash
       coreutils
       curl
@@ -51,7 +32,7 @@ in {
       nix
       python3
       util-linux
-    ]
+    ])
     ''
       # accroding to the spec, the translator reads the input from a json file
       jsonInput=$1
@@ -106,7 +87,7 @@ in {
       popd
 
       # execute cabal-plan translator
-      ${subsystems.haskell.translators.cabal-plan.translateBin} $TMPDIR/newJsonInput
+      ${translators.cabal-plan.finalTranslateBin} $TMPDIR/newJsonInput
 
       # finalize dream-lock. Add source and export default package
       # set correct package version under `packages`
@@ -125,22 +106,5 @@ in {
   #   - boolean flag (type = "flag")
   # String arguments contain a default value and examples. Flags do not.
   extraArgs = {
-    # Example: boolean option
-    # Flags always default to 'false' if not specified by the user
-    noDev = {
-      description = "Exclude dev dependencies";
-      type = "flag";
-    };
-
-    # Example: string option
-    theAnswer = {
-      default = "42";
-      description = "The Answer to the Ultimate Question of Life";
-      examples = [
-        "0"
-        "1234"
-      ];
-      type = "argument";
-    };
   };
 }

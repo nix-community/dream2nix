@@ -1,6 +1,7 @@
 {
   dlib,
   lib,
+  name,
   ...
 }: let
   l = lib // builtins;
@@ -37,7 +38,7 @@ in {
     l.pathExists "${tree.fullPath}/dist-newstyle/cache/plan.json";
 
   # translate from a given source and a project specification to a dream-lock.
-  translate = {translatorName, ...}: {
+  translate = {
     /*
     A list of projects returned by `discoverProjects`
     Example:
@@ -189,7 +190,7 @@ in {
   in
     dlib.simpleTranslate2.translate
     ({objectsByKey, ...}: rec {
-      inherit translatorName;
+      translatorName = name;
 
       # relative path of the project within the source tree.
       location = project.relPath;

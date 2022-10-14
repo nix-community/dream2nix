@@ -1,8 +1,15 @@
 {
-  config,
+  apps,
+  dlib,
+  externals,
+  externalSources,
   lib,
-  ...
-}: let
+  pkgs,
+  utils,
+  dream2nixConfig,
+  dream2nixConfigFile,
+  dream2nixWithExternals,
+} @ args: let
   t = lib.types;
 in {
   imports = [
@@ -11,7 +18,6 @@ in {
     ./functions.default-fetcher
     ./functions.combined-fetcher
     ./functions.translators
-    ./functions.subsystem-loading
     ./builders
     ./discoverers
     ./discoverers.default-discoverer
@@ -19,11 +25,40 @@ in {
     ./translators
   ];
   options = {
+    apps = lib.mkOption {
+      type = t.raw;
+    };
     lib = lib.mkOption {
       type = t.raw;
     };
+    dlib = lib.mkOption {
+      type = t.raw;
+    };
+    externals = lib.mkOption {
+      type = t.raw;
+    };
+    externalSources = lib.mkOption {
+      type = t.raw;
+    };
+    pkgs = lib.mkOption {
+      type = t.raw;
+    };
+    utils = lib.mkOption {
+      type = t.raw;
+    };
+    dream2nixConfig = lib.mkOption {
+      type = t.raw;
+    };
+    dream2nixWithExternals = lib.mkOption {
+      type = t.path;
+    };
+    dream2nixConfigFile = lib.mkOption {
+      type = t.path;
+    };
   };
-  config = {
-    lib = lib // builtins;
-  };
+  config =
+    args
+    // {
+      lib = args.lib // builtins;
+    };
 }

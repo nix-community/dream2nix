@@ -1,18 +1,17 @@
-{lib, ...}: {
+{
+  pkgs,
+  utils,
+  ...
+}: {
   inputs = ["pname" "version"];
 
   versionField = "version";
 
   outputs = {
-    fetchurl,
-    runCommandLocal,
-    utils,
-    ...
-  }: {
     pname,
     version,
     ...
-  } @ inp: let
+  }: let
     b = builtins;
     # See https://github.com/rust-lang/crates.io-index/blob/master/config.json#L2
     url = "https://crates.io/api/v1/crates/${pname}/${version}/download";
@@ -23,13 +22,13 @@
       });
 
     fetched = hash: let
-      fetched = fetchurl {
+      fetched = pkgs.fetchurl {
         inherit url;
         sha256 = hash;
         name = "download-${pname}-${version}";
       };
     in
-      runCommandLocal "unpack-${pname}-${version}" {}
+      pkgs.runCommandLocal "unpack-${pname}-${version}" {}
       ''
         mkdir -p $out
         tar --strip-components 1 -xzf ${fetched} -C $out

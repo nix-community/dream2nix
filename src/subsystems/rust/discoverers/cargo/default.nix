@@ -1,6 +1,6 @@
 {
-  dlib,
   lib,
+  dlib,
   ...
 }: let
   l = lib // builtins;
