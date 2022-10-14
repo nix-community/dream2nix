@@ -1,4 +1,9 @@
-{lib, ...}: let
+{
+  pkgs,
+  lib,
+  utils,
+  ...
+}: let
   b = builtins;
 
   # check if a string is a git ref
@@ -14,10 +19,6 @@ in {
   versionField = "rev";
 
   outputs = {
-    fetchgit,
-    utils,
-    ...
-  }: {
     url,
     rev,
     submodules ? true,
@@ -78,7 +79,7 @@ in {
                 inherit submodules;
               })
         else
-          fetchgit
+          pkgs.fetchgit
           (refAndRev
             // {
               inherit url;

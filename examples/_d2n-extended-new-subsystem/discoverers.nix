@@ -1,9 +1,9 @@
-{dlib, ...}: {
+{config, ...}: {
   discoverers.dummy = rec {
     name = "dummy";
     subsystem = "hello";
     discover = {tree}: [
-      (dlib.construct.discoveredProject {
+      (config.dlib.construct.discoveredProject {
         inherit subsystem name;
         inherit (tree) relPath;
         translators = ["dummy"];

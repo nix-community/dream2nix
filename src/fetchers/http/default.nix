@@ -1,13 +1,14 @@
-{lib, ...}: {
+{
+  pkgs,
+  lib,
+  utils,
+  ...
+}: {
   inputs = [
     "url"
   ];
 
-  outputs = {
-    fetchurl,
-    utils,
-    ...
-  }: {url, ...} @ inp: let
+  outputs = {url, ...}: let
     b = builtins;
   in {
     calcHash = algo:
@@ -19,12 +20,12 @@
       drv =
         if hash != null && lib.stringLength hash == 40
         then
-          fetchurl {
+          pkgs.fetchurl {
             inherit url;
             sha1 = hash;
           }
         else
-          fetchurl {
+          pkgs.fetchurl {
             inherit url hash;
           };
 

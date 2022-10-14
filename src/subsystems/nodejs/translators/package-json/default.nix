@@ -1,35 +1,23 @@
 {
-  dlib,
-  lib,
+  utils,
+  pkgs,
+  translators,
   ...
 }: {
   type = "impure";
 
   # the input format is specified in /specifications/translator-call-example.json
   # this script receives a json file including the input paths and specialArgs
-  translateBin = {
-    # dream2nix utils
-    subsystems,
-    utils,
-    # nixpkgs dependencies
-    bash,
-    coreutils,
-    git,
-    jq,
-    nodePackages,
-    openssh,
-    writeScriptBin,
-    ...
-  }:
+  translateBin =
     utils.writePureShellScript
-    [
+    (with pkgs; [
       bash
       coreutils
       git
       jq
       nodePackages.npm
       openssh
-    ]
+    ])
     ''
       # accroding to the spec, the translator reads the input from a json file
       jsonInput=$1
@@ -62,12 +50,12 @@
       jq ".source = \"$newSource\"" -c -r $jsonInput > $TMPDIR/newJsonInput
 
       popd
-      ${subsystems.nodejs.translators.package-lock.translateBin} $TMPDIR/newJsonInput
+      ${translators.package-lock.finalTranslateBin} $TMPDIR/newJsonInput
     '';
 
   # inherit options from package-lock translator
   extraArgs =
-    dlib.translators.translators.nodejs.package-lock.extraArgs
+    translators.package-lock.extraArgs
     // {
       npmArgs = {
         description = "Additional arguments for npm";

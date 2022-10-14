@@ -1,4 +1,9 @@
-{lib, ...}: {
+{
+  pkgs,
+  lib,
+  utils,
+  ...
+}: {
   inputs = [
     "owner"
     "repo"
@@ -10,15 +15,11 @@
   defaultUpdater = "githubNewestReleaseTag";
 
   outputs = {
-    fetchFromGitHub,
-    utils,
-    ...
-  }: {
     owner,
     repo,
     rev,
     ...
-  } @ inp: let
+  }: let
     b = builtins;
   in {
     calcHash = algo:
@@ -27,7 +28,7 @@
       });
 
     fetched = hash:
-      fetchFromGitHub {
+      pkgs.fetchFromGitHub {
         inherit owner repo rev hash;
       };
   };

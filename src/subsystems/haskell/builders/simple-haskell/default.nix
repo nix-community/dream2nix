@@ -1,17 +1,15 @@
-{lib, ...}: let
+{
+  pkgs,
+  utils,
+  externals,
+  lib,
+  ...
+}: let
   l = lib // builtins;
 in {
   type = "pure";
 
   build = {
-    lib,
-    pkgs,
-    stdenv,
-    # dream2nix inputs
-    externals,
-    utils,
-    ...
-  }: {
     ### FUNCTIONS
     # AttrSet -> Bool) -> AttrSet -> [x]
     getCyclicDependencies, # name: version: -> [ {name=; version=; } ]
@@ -37,8 +35,6 @@ in {
     produceDerivation,
     ...
   } @ args: let
-    b = builtins;
-
     compiler =
       pkgs
       .haskell

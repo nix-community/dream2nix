@@ -1,8 +1,5 @@
-{
-  config,
-  lib,
-  ...
-}: let
+{framework, ...}: let
+  lib = framework.lib;
   t = lib.types;
 in {
   options = {
@@ -11,7 +8,7 @@ in {
       default = false;
     };
     discoverProject = lib.mkOption {
-      type = t.nullOr (t.functionTo (t.anything));
+      type = t.nullOr (t.uniq (t.functionTo (t.anything)));
       default = null;
     };
     extraArgs = lib.mkOption {
@@ -46,12 +43,26 @@ in {
       type = t.str;
     };
     translate = lib.mkOption {
-      type = t.nullOr (t.functionTo (t.functionTo (t.attrs)));
+      type = t.nullOr (t.uniq (t.functionTo t.attrs));
       default = null;
     };
+    finalTranslate = lib.mkOption {
+      type = t.nullOr (t.uniq (t.functionTo t.attrs));
+      readOnly = true;
+      description = ''
+        the final translate that you should use.
+      '';
+    };
     translateBin = lib.mkOption {
-      type = t.nullOr (t.functionTo t.package);
+      type = t.nullOr t.package;
       default = null;
+    };
+    finalTranslateBin = lib.mkOption {
+      type = t.nullOr t.package;
+      readOnly = true;
+      description = ''
+        the final translateBin that you should use.
+      '';
     };
     type = lib.mkOption {
       type = t.enum [

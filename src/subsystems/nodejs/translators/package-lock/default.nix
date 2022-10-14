@@ -1,9 +1,10 @@
 {
   dlib,
   lib,
+  utils,
+  name,
   ...
 }: let
-  b = builtins;
   l = lib // builtins;
   nodejsUtils = import ../utils.nix {inherit dlib lib;};
 
@@ -11,10 +12,6 @@
     nodejsUtils.getWorkspaceLockFile tree project "package-lock.json";
 
   translate = {
-    translatorName,
-    utils,
-    ...
-  }: {
     project,
     source,
     tree,
@@ -146,7 +143,7 @@
       dependenciesByOriginalID,
       ...
     }: rec {
-      inherit translatorName;
+      translatorName = name;
       location = relPath;
 
       # values

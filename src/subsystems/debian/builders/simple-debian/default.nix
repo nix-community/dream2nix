@@ -1,14 +1,11 @@
-{...}: {
+{
+  lib,
+  pkgs,
+  ...
+}: {
   type = "pure";
 
   build = {
-    lib,
-    pkgs,
-    stdenv,
-    # dream2nix inputs
-    externals,
-    ...
-  }: {
     ### FUNCTIONS
     # AttrSet -> Bool) -> AttrSet -> [x]
     getCyclicDependencies, # name: version: -> [ {name=; version=; } ]
@@ -54,7 +51,7 @@
       (src: src.original or src)
       allDependencySources';
 
-    package = produceDerivation defaultPackageName (stdenv.mkDerivation {
+    package = produceDerivation defaultPackageName (pkgs.stdenv.mkDerivation {
       name = defaultPackageName;
       src = ":";
       dontUnpack = true;

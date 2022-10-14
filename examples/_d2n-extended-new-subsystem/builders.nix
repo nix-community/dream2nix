@@ -1,9 +1,11 @@
-{
+{config, ...}: let
+  inherit (config.pkgs) hello;
+in {
   builders.dummy = {...}: {
     name = "dummy";
     subsystem = "hello";
     type = "pure";
-    build = {hello, ...}: {...}: {
+    build = {...}: {
       packages.${hello.pname}.${hello.version} =
         hello;
     };

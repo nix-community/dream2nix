@@ -1,8 +1,5 @@
-{
-  config,
-  lib,
-  ...
-}: let
+{framework, ...}: let
+  lib = framework.lib;
   t = lib.types;
 in {
   options = {
@@ -20,7 +17,7 @@ in {
       description = "Subsystem of the discoverer.";
     };
     discover = lib.mkOption {
-      type = t.functionTo (t.listOf t.attrs);
+      type = t.uniq (t.functionTo (t.listOf t.attrs));
       default = _: {};
     };
   };
