@@ -1,9 +1,11 @@
 {
   lib,
   pkgs,
-  all-cabal-json,
+  inputs,
 }: let
   l = lib // builtins;
+
+  all-cabal-json = inputs.all-cabal-json;
 
   findJsonFromCabalCandidate = name: version: let
     jsonCabalFile = "${all-cabal-json}/${name}/${version}/${name}.json";

@@ -7,13 +7,13 @@
   overridesDirs,
   externalSources,
   externalPaths,
-  all-cabal-json,
+  inputs,
 } @ args: let
   l = lib // builtins;
 
   initDream2nix = config: pkgs:
     import ./default.nix
-    {inherit all-cabal-json config pkgs externalPaths externalSources;};
+    {inherit config inputs pkgs externalPaths externalSources;};
 
   loadConfig = config'': let
     config' = (import ./utils/config.nix).loadConfig config'';
@@ -91,10 +91,9 @@
     dlib = import ./lib {inherit lib config;};
 
     framework = import ./modules/framework.nix {
-      inherit lib dlib externalSources;
+      inherit lib dlib externalSources inputs;
       dream2nixConfig = config;
       dream2nixConfigFile = l.toFile "dream2nix-config.json" (l.toJSON config);
-      all-cabal-json = throw "all-cabal-json is not available before nixpkgs is imported";
       apps = throw "apps is not available before nixpkgs is imported";
       pkgs = throw "pkgs is not available before nixpkgs is imported";
       utils = throw "utils is not available before nixpkgs is imported";

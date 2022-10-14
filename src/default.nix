@@ -6,13 +6,6 @@
   pkgs ? import <nixpkgs> {},
   lib ? pkgs.lib,
   nix ? pkgs.nix,
-  all-cabal-json ?
-    (import ../flake-compat.nix {
-      src = ../.;
-      inherit (pkgs) system;
-    })
-    .inputs
-    .all-cabal-json,
   # default to empty dream2nix config
   config ?
   # if called via CLI, load config via env
@@ -20,7 +13,17 @@
   then (import ./utils/config.nix).loadConfig (builtins.toPath (builtins.getEnv "dream2nixConfig"))
   # load from default directory
   else (import ./utils/config.nix).loadConfig {},
-  # dependencies of dream2nix
+  /*
+  Inputs that are not required for building, and therefore not need to be
+  copied alongside a dream2nix installation.
+  */
+  inputs ?
+    (import ../flake-compat.nix {
+      src = ../.;
+      inherit (pkgs) system;
+    })
+    .inputs,
+  # dependencies of dream2nix builders
   externalSources ?
     lib.genAttrs
     (lib.attrNames (builtins.readDir externalDir))
@@ -59,7 +62,7 @@ in let
 
   framework = import ./modules/framework.nix {
     inherit
-      all-cabal-json
+      inputs
       apps
       lib
       dlib
@@ -82,7 +85,6 @@ in let
   callPackageDreamArgs =
     pkgs
     // {
-      inherit all-cabal-json;
       inherit apps;
       inherit callPackageDream;
       inherit config;
@@ -90,6 +92,7 @@ in let
       inherit dlib;
       inherit externals;
       inherit externalSources;
+      inherit inputs;
       inherit framework;
       inherit indexers;
       inherit dream2nixWithExternals;

@@ -150,13 +150,19 @@
       (lib.attrNames externalPaths)
       (inputName: inp."${inputName}");
 
+    /*
+    Inputs that are not required for building, and therefore not need to be
+    copied alongside a dream2nix installation.
+    */
+    inputs = inp;
+
     overridesDirs = [(toString ./overrides)];
 
     # system specific dream2nix api
     dream2nixFor = forAllSystems (system: pkgs:
       import ./src rec {
         externalDir = externalDirFor."${system}";
-        inherit all-cabal-json externalPaths externalSources lib pkgs;
+        inherit externalPaths externalSources inputs lib pkgs;
         config = {
           inherit overridesDirs;
         };
@@ -174,7 +180,7 @@
     # Produces flake-like output schema.
     d2n-lib =
       (import ./src/lib.nix {
-        inherit all-cabal-json externalPaths externalSources overridesDirs lib;
+        inherit externalPaths externalSources inputs overridesDirs lib;
         nixpkgsSrc = "${nixpkgs}";
       })
       # system specific dream2nix library
