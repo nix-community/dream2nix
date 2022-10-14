@@ -1367,14 +1367,12 @@ dependencies: so it can fetch them later during building.</p>
 source, the rest of the attributes are simply passed to the fetcher.</p>
 <h2 id="fetcher-structure"><a class="header" href="#fetcher-structure">Fetcher structure</a></h2>
 <p>Here is the implementation of the simple <code>path</code> fetcher:</p>
-<pre><code class="language-nix">{...}: {
+<pre><code class="language-nix">{utils, ...}: {
   inputs = [
     &quot;path&quot;
   ];
 
-  outputs = {utils, ...}: {path, ...} @ inp: let
-    b = builtins;
-  in {
+  outputs = {path, ...}: {
     calcHash = algo: utils.hashPath &quot;${path}&quot;;
 
     fetched = hash: &quot;${path}&quot;;
