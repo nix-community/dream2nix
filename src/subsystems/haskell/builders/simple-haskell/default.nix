@@ -137,16 +137,9 @@ in {
           testToolDepends = libraryHaskellDepends;
 
           libraryHaskellDepends =
-            (with compiler; [
-              # TODO: remove these deps / find out why they were missing
-              hspec
-              QuickCheck
-            ])
-            ++ (
-              map
-              (dep: allPackages."${dep.name}"."${dep.version}")
-              (getDependencies name version)
-            );
+            map
+            (dep: allPackages."${dep.name}"."${dep.version}")
+            (getDependencies name version);
         }
         /*
         For all transitive dependencies, overwrite cabal file with the one
