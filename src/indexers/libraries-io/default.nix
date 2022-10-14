@@ -48,6 +48,7 @@ libraries.io also supports other interesting popularity metrics:
 
       export platform=$(jq '.platform' -c -r $input)
       export number=$(jq '.number' -c -r $input)
+      export urlSuffix=$(jq '.urlSuffix? //""' -c -r $input)
 
       # calculate number of pages to query
       # page size is always 100
@@ -65,7 +66,7 @@ libraries.io also supports other interesting popularity metrics:
       echo "[]" > $outFile
       for page in $(seq 1 $numPages); do
         echo "requesting page $page"
-        url="https://libraries.io/api/search?page=$page&sort=dependents_count&per_page=100&platforms=$platformQuery&api_key=$apiKey"
+        url="https://libraries.io/api/search?page=$page&sort=dependents_count&per_page=100&platforms=$platformQuery&api_key=$apiKey$urlSuffix"
         curl -k "$url" | python3 ${./process-result.py} $outFile
       done
     '';

@@ -31,6 +31,7 @@
       moreutils
       nix
       python3
+      util-linux
     ])
     ''
       # accroding to the spec, the translator reads the input from a json file
@@ -43,15 +44,33 @@
       source=$(jq '.source' -c -r $jsonInput)
       relPath=$(jq '.project.relPath' -c -r $jsonInput)
 
+      # update the cabal index if older than 1 day
+      (
+        flock 9 || exit 1
+        # ... commands executed under lock ...
+        cabalIndex="$HOME/.cabal/packages/hackage.haskell.org/01-index.cache"
+        set -x
+        if [ -e "$cabalIndex" ]; then
+          indexTime=$(stat -c '%Y' "$cabalIndex")
+          age=$(( $(date +%s) - $indexTime ))
+          if [ "$age" -gt "$((60*60*24))" ]; then
+            cabal update
+          fi
+        else
+          cabal update
+        fi
+      ) 9>/tmp/cabal-lock
+
       pushd $TMPDIR
 
       # download and unpack package source
       mkdir source
-      curl -L https://hackage.haskell.org/package/$name-$version/$name-$version.tar.gz > $TMPDIR/tarball
+      url="https://hackage.haskell.org/package/$name-$version/$name-$version.tar.gz"
+      echo "downloading $url"
+      curl -L "$url" > $TMPDIR/tarball
       cd source
       cat $TMPDIR/tarball | tar xz --strip-components 1
       # trigger creation of `dist-newstyle` directory
-      cabal update
       cabal freeze
       cd -
 
