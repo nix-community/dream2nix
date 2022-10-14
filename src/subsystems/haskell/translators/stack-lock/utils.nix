@@ -10,12 +10,6 @@
     sha256 = "1qc703yg0babixi6wshn5wm2kgl5y1drcswgszh4xxzbrwkk9sv7";
   });
 in rec {
-  all-cabal-hashes = pkgs.runCommandLocal "all-cabal-hashes" {} ''
-    mkdir $out
-    cd $out
-    tar --strip-components 1 -xf ${pkgs.all-cabal-hashes}
-  '';
-
   # The cabal2json program
   cabal2json = let
     haskellLib = pkgs.haskell.lib.compose;
