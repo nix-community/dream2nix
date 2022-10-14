@@ -13,7 +13,17 @@
   then (import ./utils/config.nix).loadConfig (builtins.toPath (builtins.getEnv "dream2nixConfig"))
   # load from default directory
   else (import ./utils/config.nix).loadConfig {},
-  # dependencies of dream2nix
+  /*
+  Inputs that are not required for building, and therefore not need to be
+  copied alongside a dream2nix installation.
+  */
+  inputs ?
+    (import ../flake-compat.nix {
+      src = ../.;
+      inherit (pkgs) system;
+    })
+    .inputs,
+  # dependencies of dream2nix builders
   externalSources ?
     lib.genAttrs
     (lib.attrNames (builtins.readDir externalDir))
@@ -52,6 +62,7 @@ in let
 
   framework = import ./modules/framework.nix {
     inherit
+      inputs
       apps
       lib
       dlib
@@ -81,6 +92,7 @@ in let
       inherit dlib;
       inherit externals;
       inherit externalSources;
+      inherit inputs;
       inherit framework;
       inherit indexers;
       inherit dream2nixWithExternals;

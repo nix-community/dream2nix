@@ -3,6 +3,7 @@
   dlib,
   externals,
   externalSources,
+  inputs,
   lib,
   pkgs,
   utils,
@@ -38,6 +39,9 @@ in {
       type = t.raw;
     };
     externalSources = lib.mkOption {
+      type = t.raw;
+    };
+    inputs = lib.mkOption {
       type = t.raw;
     };
     pkgs = lib.mkOption {
