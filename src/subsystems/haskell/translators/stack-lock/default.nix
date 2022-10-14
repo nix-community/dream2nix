@@ -4,6 +4,7 @@
   pkgs,
   utils,
   name,
+  all-cabal-json,
   ...
 }: let
   l = lib // builtins;
@@ -77,11 +78,7 @@ in {
   translate = let
     stackLockUtils = import ./utils.nix {inherit dlib lib pkgs;};
     all-cabal-hashes = let
-      all-cabal-hashes' = pkgs.runCommandLocal "all-cabal-hashes" {} ''
-        mkdir $out
-        cd $out
-        tar --strip-components 1 -xf ${pkgs.all-cabal-hashes}
-      '';
+      all-cabal-hashes' = all-cabal-json;
       names = dlib.listDirs all-cabal-hashes';
       getVersions = name: dlib.listDirs "${all-cabal-hashes'}/${name}";
     in
@@ -91,7 +88,7 @@ in {
         (getVersions name)
         (
           version:
-            (l.fromJSON (l.readFile "${all-cabal-hashes'}/${name}/${version}/${name}.json"))
+            (l.fromJSON (l.readFile "${all-cabal-hashes'}/${name}/${version}/${name}.hashes.json"))
             .package-hashes
         ));
   in
@@ -156,7 +153,7 @@ in {
         (rawObj: dlib.nameVersionPair rawObj.name rawObj.version)
         serializedRawObjects;
 
-      haskellUtils = import ../utils.nix {inherit lib pkgs;};
+      haskellUtils = import ../utils.nix {inherit all-cabal-json lib pkgs;};
 
       cabalData =
         haskellUtils.batchFindJsonFromCabalCandidates

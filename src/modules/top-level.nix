@@ -1,4 +1,5 @@
 {
+  all-cabal-json,
   apps,
   dlib,
   externals,
@@ -25,6 +26,9 @@ in {
     ./translators
   ];
   options = {
+    all-cabal-json = lib.mkOption {
+      type = t.raw;
+    };
     apps = lib.mkOption {
       type = t.raw;
     };

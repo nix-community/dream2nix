@@ -6,6 +6,13 @@
   pkgs ? import <nixpkgs> {},
   lib ? pkgs.lib,
   nix ? pkgs.nix,
+  all-cabal-json ?
+    (import ../flake-compat.nix {
+      src = ../.;
+      inherit (pkgs) system;
+    })
+    .inputs
+    .all-cabal-json,
   # default to empty dream2nix config
   config ?
   # if called via CLI, load config via env
@@ -52,6 +59,7 @@ in let
 
   framework = import ./modules/framework.nix {
     inherit
+      all-cabal-json
       apps
       lib
       dlib
@@ -74,6 +82,7 @@ in let
   callPackageDreamArgs =
     pkgs
     // {
+      inherit all-cabal-json;
       inherit apps;
       inherit callPackageDream;
       inherit config;

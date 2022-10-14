@@ -15,7 +15,6 @@
 
     pre-commit-hooks.url = "github:cachix/pre-commit-hooks.nix";
     pre-commit-hooks.inputs.nixpkgs.follows = "nixpkgs";
-    # upstream flake-utils dep not supporting `aarch64-darwin` yet
     flake-utils-pre-commit.url = "github:numtide/flake-utils";
     pre-commit-hooks.inputs.flake-utils.follows = "flake-utils-pre-commit";
 
@@ -48,6 +47,12 @@
       url = "github:ipetkov/crane";
       flake = false;
     };
+
+    # required for haskell translators
+    all-cabal-json = {
+      url = "github:nix-community/all-cabal-json/hackage";
+      flake = false;
+    };
   };
 
   outputs = {
@@ -60,6 +65,7 @@
     poetry2nix,
     pre-commit-hooks,
     crane,
+    all-cabal-json,
     ...
   } @ inp: let
     b = builtins;
@@ -150,7 +156,7 @@
     dream2nixFor = forAllSystems (system: pkgs:
       import ./src rec {
         externalDir = externalDirFor."${system}";
-        inherit externalPaths externalSources lib pkgs;
+        inherit all-cabal-json externalPaths externalSources lib pkgs;
         config = {
           inherit overridesDirs;
         };
@@ -168,7 +174,7 @@
     # Produces flake-like output schema.
     d2n-lib =
       (import ./src/lib.nix {
-        inherit externalPaths externalSources overridesDirs lib;
+        inherit all-cabal-json externalPaths externalSources overridesDirs lib;
         nixpkgsSrc = "${nixpkgs}";
       })
       # system specific dream2nix library
