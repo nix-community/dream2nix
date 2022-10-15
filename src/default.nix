@@ -8,17 +8,13 @@
   nix ? pkgs.nix,
   # default to empty dream2nix config
   config ?
-  # if called via CLI, load config via env
-  if builtins ? getEnv && builtins.getEnv "dream2nixConfig" != ""
-  then
     import ./modules/config.nix {
-      configRaw = builtins.toPath (builtins.getEnv "dream2nixConfig");
-      inherit lib;
-    }
-  # load from default directory
-  else
-    import ./modules/config.nix {
-      configRaw = {};
+      configRaw =
+        if builtins ? getEnv && builtins.getEnv "dream2nixConfig" != ""
+        # if called via CLI, load config via env
+        then builtins.toPath (builtins.getEnv "dream2nixConfig")
+        # load from default directory
+        else {};
       inherit lib;
     },
   /*
