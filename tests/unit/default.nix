@@ -22,6 +22,6 @@ in
     nix
   ]
   ''
-    export dream2nixSrc=${dream2nixWithExternals}
+    export dream2nixSrc=${../../.}/src
     ${pythonEnv}/bin/pytest ${self}/tests/unit -n $(nproc) -v "$@"
   ''
