@@ -5,7 +5,6 @@ in {
   options = {
     _loaded = l.mkOption {
       type = t.bool;
-      default = false;
       readOnly = true;
       internal = true;
     };
