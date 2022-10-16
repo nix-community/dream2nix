@@ -12,13 +12,17 @@
 - [Haskell](./subsystems/haskell.md)
 - [PHP](./subsystems/php.md)
 
-# Concepts
-- [Architectural Considerations](./intro/architectural-considerations.md)
-- [Nixpkgs improvements](./intro/nixpkgs-improvements.md)
-- [Override system](./intro/override-system.md)
+# Concepts / API
+- [Architecture](./intro/architecture.md)
 - [Translators](./intro/translators.md)
+- [Generic Lockfile](./api/generic-lock.md)
 - [Indexers](./intro/indexers.md)
 - [Fetchers](./intro/fetchers.md)
+- [Builders]()
+- [Override system](./intro/override-system.md)
+
+# Correlation with nixpkgs
+- [Nixpkgs improvements](./intro/nixpkgs-improvements.md)
 
 # Contributing
 - [Extending dream2nix](./extending-dream2nix.md)
