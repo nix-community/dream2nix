@@ -76,7 +76,7 @@
 
         <nav id="sidebar" class="sidebar" aria-label="Table of contents">
             <div class="sidebar-scrollbox">
-                <ol class="chapter"><li class="chapter-item expanded "><a href="intro.html"><strong aria-hidden="true">1.</strong> Introduction</a></li><li class="chapter-item expanded affix "><li class="part-title">Guides</li><li class="chapter-item expanded "><a href="guides/getting-started-python.html"><strong aria-hidden="true">2.</strong> Python: getting started in 10 minutes</a></li><li class="chapter-item expanded "><a href="guides/getting-started-nodejs.html"><strong aria-hidden="true">3.</strong> Node.js: quickstart</a></li><li class="chapter-item expanded affix "><li class="part-title">Subsystems</li><li class="chapter-item expanded "><a href="subsystems/rust.html"><strong aria-hidden="true">4.</strong> Rust</a></li><li class="chapter-item expanded "><a href="subsystems/python.html"><strong aria-hidden="true">5.</strong> Python</a></li><li class="chapter-item expanded "><a href="subsystems/node.html"><strong aria-hidden="true">6.</strong> Node.js</a></li><li class="chapter-item expanded "><a href="subsystems/haskell.html"><strong aria-hidden="true">7.</strong> Haskell</a></li><li class="chapter-item expanded "><a href="subsystems/php.html"><strong aria-hidden="true">8.</strong> PHP</a></li><li class="chapter-item expanded affix "><li class="part-title">Concepts</li><li class="chapter-item expanded "><a href="intro/architectural-considerations.html"><strong aria-hidden="true">9.</strong> Architectural Considerations</a></li><li class="chapter-item expanded "><a href="intro/nixpkgs-improvements.html"><strong aria-hidden="true">10.</strong> Nixpkgs improvements</a></li><li class="chapter-item expanded "><a href="intro/override-system.html"><strong aria-hidden="true">11.</strong> Override system</a></li><li class="chapter-item expanded "><a href="intro/translators.html"><strong aria-hidden="true">12.</strong> Translators</a></li><li class="chapter-item expanded "><a href="intro/indexers.html"><strong aria-hidden="true">13.</strong> Indexers</a></li><li class="chapter-item expanded "><a href="intro/fetchers.html"><strong aria-hidden="true">14.</strong> Fetchers</a></li><li class="chapter-item expanded affix "><li class="part-title">Contributing</li><li class="chapter-item expanded "><a href="extending-dream2nix.html"><strong aria-hidden="true">15.</strong> Extending dream2nix</a></li><li class="chapter-item expanded "><a href="contributing.html"><strong aria-hidden="true">16.</strong> Contributing</a></li><li class="chapter-item expanded affix "><li class="part-title">Development Roundups</li><li class="chapter-item expanded "><a href="development-roundups/2022-april-june.html"><strong aria-hidden="true">17.</strong> April - June 2022</a></li></ol>
+                <ol class="chapter"><li class="chapter-item expanded "><a href="intro.html"><strong aria-hidden="true">1.</strong> Introduction</a></li><li class="chapter-item expanded affix "><li class="part-title">Guides</li><li class="chapter-item expanded "><a href="guides/getting-started-python.html"><strong aria-hidden="true">2.</strong> Python: getting started in 10 minutes</a></li><li class="chapter-item expanded "><a href="guides/getting-started-nodejs.html"><strong aria-hidden="true">3.</strong> Node.js: quickstart</a></li><li class="chapter-item expanded affix "><li class="part-title">Subsystems</li><li class="chapter-item expanded "><a href="subsystems/rust.html"><strong aria-hidden="true">4.</strong> Rust</a></li><li class="chapter-item expanded "><a href="subsystems/python.html"><strong aria-hidden="true">5.</strong> Python</a></li><li class="chapter-item expanded "><a href="subsystems/node.html"><strong aria-hidden="true">6.</strong> Node.js</a></li><li class="chapter-item expanded "><a href="subsystems/haskell.html"><strong aria-hidden="true">7.</strong> Haskell</a></li><li class="chapter-item expanded "><a href="subsystems/php.html"><strong aria-hidden="true">8.</strong> PHP</a></li><li class="chapter-item expanded affix "><li class="part-title">Concepts / API</li><li class="chapter-item expanded "><a href="intro/architecture.html"><strong aria-hidden="true">9.</strong> Architecture</a></li><li class="chapter-item expanded "><a href="intro/translators.html"><strong aria-hidden="true">10.</strong> Translators</a></li><li class="chapter-item expanded "><a href="api/generic-lock.html"><strong aria-hidden="true">11.</strong> Generic Lockfile</a></li><li class="chapter-item expanded "><a href="intro/indexers.html"><strong aria-hidden="true">12.</strong> Indexers</a></li><li class="chapter-item expanded "><a href="intro/fetchers.html"><strong aria-hidden="true">13.</strong> Fetchers</a></li><li class="chapter-item expanded "><div><strong aria-hidden="true">14.</strong> Builders</div></li><li class="chapter-item expanded "><a href="intro/override-system.html"><strong aria-hidden="true">15.</strong> Override system</a></li><li class="chapter-item expanded affix "><li class="part-title">Correlation with nixpkgs</li><li class="chapter-item expanded "><a href="intro/nixpkgs-improvements.html"><strong aria-hidden="true">16.</strong> Nixpkgs improvements</a></li><li class="chapter-item expanded affix "><li class="part-title">Contributing</li><li class="chapter-item expanded "><a href="extending-dream2nix.html"><strong aria-hidden="true">17.</strong> Extending dream2nix</a></li><li class="chapter-item expanded "><a href="contributing.html"><strong aria-hidden="true">18.</strong> Contributing</a></li><li class="chapter-item expanded affix "><li class="part-title">Development Roundups</li><li class="chapter-item expanded "><a href="development-roundups/2022-april-june.html"><strong aria-hidden="true">19.</strong> April - June 2022</a></li></ol>
             </div>
             <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
         </nav>
@@ -154,9 +154,56 @@
 </ul>
 <p>The goal of this project is to create a standardized, generic, modular framework for automated packaging solutions, aiming for better flexibility, maintainability and usability.</p>
 <p>The intention is to integrate many existing 2nix converters into this framework, thereby improving many of the previously named aspects and providing a unified UX for all 2nix solutions.</p>
+<h3 id="modularity"><a class="header" href="#modularity">Modularity:</a></h3>
+<p>The following phases which are generic to basically all existing 2nix solutions:</p>
+<ul>
+<li>parsing project metadata</li>
+<li>resolving/locking dependencies (not always required)</li>
+<li>fetching sources</li>
+<li>building/installing packages</li>
+</ul>
+<p>... should be separated from each other with well defined interfaces.</p>
+<p>This will allow for free composition of different approaches for these phases.
+The user should be able to freely choose between:</p>
+<ul>
+<li>input metadata formats (eg. lock file formats)</li>
+<li>metadata fetching/translation strategies: IFD vs. in-tree</li>
+<li>source fetching strategies: granular fetching vs fetching via single large FOD to minimize expression file size</li>
+<li>installation strategies: build dependencies individually vs inside a single derivation.</li>
+</ul>
+<h3 id="customizability"><a class="header" href="#customizability">Customizability</a></h3>
+<p>Every Phase mentioned in the previous section should be customizable at a high degree via override functions. Practical examples:</p>
+<ul>
+<li>Inject extra requirements/dependencies</li>
+<li>fetch sources from alternative locations</li>
+<li>replace or modify sources</li>
+<li>customize the build/installation procedure</li>
+</ul>
+<h3 id="maintainability"><a class="header" href="#maintainability">Maintainability</a></h3>
+<p>Due to the modular architecture with strict interfaces, contributors can add support for new lock-file formats or new strategies for fetching, building, installing more easily.</p>
+<h3 id="compatibility"><a class="header" href="#compatibility">Compatibility</a></h3>
+<p>Depending on where the nix code is used, different approaches are desired or discouraged. While IFD might be desired for some out of tree projects to achieve simplified UX, it is strictly prohibited in nixpkgs due to nix/hydra limitations.
+All solutions which follow the dream2nix specification will be compatible with both approaches without having to re-invent the tool.</p>
+<h3 id="code-de-duplication"><a class="header" href="#code-de-duplication">Code de-duplication</a></h3>
+<p>Common problems that apply to many 2nix solutions can be solved once by the framework. Examples:</p>
+<ul>
+<li>handling cyclic dependencies</li>
+<li>handling sources from various origins (http, git, local, ...)</li>
+<li>generate nixpkgs/hydra friendly output (no IFD)</li>
+<li>good user interface</li>
+</ul>
+<h3 id="code-de-duplication-in-nixpkgs"><a class="header" href="#code-de-duplication-in-nixpkgs">Code de-duplication in nixpkgs</a></h3>
+<p>Essential components like package update scripts or fetching and override logic are provided by the dream2nix framework and are stored only once in the source tree instead of several times.</p>
+<h3 id="risk-free-opt-in-fod-fetching"><a class="header" href="#risk-free-opt-in-fod-fetching">Risk free opt-in FOD fetching</a></h3>
+<p>Optionally, to save more storage space, individual hashes for source can be omitted and a single large FOD used instead.
+Due to a unified minimalistic fetching layer the risk of FOD hash breakages should be very low.</p>
+<h3 id="common-ui-across-many-2nix-solutions"><a class="header" href="#common-ui-across-many-2nix-solutions">Common UI across many 2nix solutions</a></h3>
+<p>2nix solutions which follow the dream2nix framework will have a unified UI for workflows like project initialization or code generation. This will allow quicker onboarding of new users by providing familiar workflows across different build systems.</p>
+<h3 id="reduced-effort-to-develop-new-2nix-solutions"><a class="header" href="#reduced-effort-to-develop-new-2nix-solutions">Reduced effort to develop new 2nix solutions</a></h3>
+<p>Since the framework already solves common problems and provides an interface for integrating new build systems, developers will have an easier time creating their next 2nix solution.</p>
 <h3 id="further-reading"><a class="header" href="#further-reading">Further reading</a></h3>
 <ul>
-<li><a href="./intro/architectural-considerations.html">Architectural Considerations</a></li>
+<li><a href="./intro/architecture.html">Architectural Considerations</a></li>
 <li><a href="./intro/nixpkgs-improvements.html">Potential impact on nixpkgs</a></li>
 </ul>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="build-your-python-project-with-nix-in-10-minutes"><a class="header" href="#build-your-python-project-with-nix-in-10-minutes">Build your python project with nix in 10 minutes</a></h1>
@@ -908,54 +955,7 @@ or <code>composer-json</code> otherwise to translate the package.</p>
 <p>Builds all dependencies in isolation, moving upwards to the top-level package.</p>
 <h3 id="simple-pure"><a class="header" href="#simple-pure">simple (pure)</a></h3>
 <p>Builds the package including all its dependencies in a single derivation.</p>
-<div style="break-before: page; page-break-before: always;"></div><h3 id="modularity"><a class="header" href="#modularity">Modularity:</a></h3>
-<p>The following phases which are generic to basically all existing 2nix solutions:</p>
-<ul>
-<li>parsing project metadata</li>
-<li>resolving/locking dependencies (not always required)</li>
-<li>fetching sources</li>
-<li>building/installing packages</li>
-</ul>
-<p>... should be separated from each other with well defined interfaces.</p>
-<p>This will allow for free composition of different approaches for these phases.
-The user should be able to freely choose between:</p>
-<ul>
-<li>input metadata formats (eg. lock file formats)</li>
-<li>metadata fetching/translation strategies: IFD vs. in-tree</li>
-<li>source fetching strategies: granular fetching vs fetching via single large FOD to minimize expression file size</li>
-<li>installation strategies: build dependencies individually vs inside a single derivation.</li>
-</ul>
-<h3 id="customizability"><a class="header" href="#customizability">Customizability</a></h3>
-<p>Every Phase mentioned in the previous section should be customizable at a high degree via override functions. Practical examples:</p>
-<ul>
-<li>Inject extra requirements/dependencies</li>
-<li>fetch sources from alternative locations</li>
-<li>replace or modify sources</li>
-<li>customize the build/installation procedure</li>
-</ul>
-<h3 id="maintainability"><a class="header" href="#maintainability">Maintainability</a></h3>
-<p>Due to the modular architecture with strict interfaces, contributors can add support for new lock-file formats or new strategies for fetching, building, installing more easily.</p>
-<h3 id="compatibility"><a class="header" href="#compatibility">Compatibility</a></h3>
-<p>Depending on where the nix code is used, different approaches are desired or discouraged. While IFD might be desired for some out of tree projects to achieve simplified UX, it is strictly prohibited in nixpkgs due to nix/hydra limitations.
-All solutions which follow the dream2nix specification will be compatible with both approaches without having to re-invent the tool.</p>
-<h3 id="code-de-duplication"><a class="header" href="#code-de-duplication">Code de-duplication</a></h3>
-<p>Common problems that apply to many 2nix solutions can be solved once by the framework. Examples:</p>
-<ul>
-<li>handling cyclic dependencies</li>
-<li>handling sources from various origins (http, git, local, ...)</li>
-<li>generate nixpkgs/hydra friendly output (no IFD)</li>
-<li>good user interface</li>
-</ul>
-<h3 id="code-de-duplication-in-nixpkgs"><a class="header" href="#code-de-duplication-in-nixpkgs">Code de-duplication in nixpkgs</a></h3>
-<p>Essential components like package update scripts or fetching and override logic are provided by the dream2nix framework and are stored only once in the source tree instead of several times.</p>
-<h3 id="risk-free-opt-in-fod-fetching"><a class="header" href="#risk-free-opt-in-fod-fetching">Risk free opt-in FOD fetching</a></h3>
-<p>Optionally, to save more storage space, individual hashes for source can be omitted and a single large FOD used instead.
-Due to a unified minimalistic fetching layer the risk of FOD hash breakages should be very low.</p>
-<h3 id="common-ui-across-many-2nix-solutions"><a class="header" href="#common-ui-across-many-2nix-solutions">Common UI across many 2nix solutions</a></h3>
-<p>2nix solutions which follow the dream2nix framework will have a unified UI for workflows like project initialization or code generation. This will allow quicker onboarding of new users by providing familiar workflows across different build systems.</p>
-<h3 id="reduced-effort-to-develop-new-2nix-solutions"><a class="header" href="#reduced-effort-to-develop-new-2nix-solutions">Reduced effort to develop new 2nix solutions</a></h3>
-<p>Since the framework already solves common problems and provides an interface for integrating new build systems, developers will have an easier time creating their next 2nix solution.</p>
-<h3 id="architecture"><a class="header" href="#architecture">Architecture</a></h3>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="architecture"><a class="header" href="#architecture">Architecture</a></h1>
 <p>The general architecture should consist of these components:<br />
 <code>Input -&gt; Translation -&gt; Generic Lock -&gt; Fetching -&gt; Building</code></p>
 <pre><code>┌───────┐
@@ -1100,150 +1100,6 @@ Poetry uses <code>pyproject.toml</code> and <code>poetry.lock</code> to lock dep
 <li>No matter which type of translator is used, it is always possible to export the generic lock to a file, which can later be evaluated without using IFD or FOD, similar to current nix code generators, just with a standardized format.</li>
 <li>If the translator supports IFD or is written in pure nix, it is optional to the user to skip exporting the generic lock and instead evaluate everything on the fly.</li>
 </ul>
-<div style="break-before: page; page-break-before: always;"></div><h2 id="list-of-problems-which-currently-exist-in-nixpkgs"><a class="header" href="#list-of-problems-which-currently-exist-in-nixpkgs">List of problems which currently exist in nixpkgs</a></h2>
-<h3 id="generated-code-sizeduplication"><a class="header" href="#generated-code-sizeduplication">Generated Code Size/Duplication</a></h3>
-<h4 id="problem"><a class="header" href="#problem">Problem</a></h4>
-<ul>
-<li>large .nix files containing auto generated code for fetching sources (example: nodejs)</li>
-<li>many duplicated .nix files containing build logic</li>
-</ul>
-<h4 id="solution"><a class="header" href="#solution">Solution</a></h4>
-<ul>
-<li>
-<p>dream2nix minimizes the amount of generated nix code, as most of the logic required to build a package resides in the framework and therefore is not duplicated across individual packages.</p>
-</li>
-<li>
-<p>If the upstream lock file format can be interpreted with pure nix and is present at evaluation time, then generating any intermediary code can be omitted.</p>
-</li>
-<li>
-<p>Once any kind of recursive nix (IFD, recursive-nix, RFC-92) is enabled in nixpkgs, dream2nix will utilize it and eliminate the requirement of generating nix code or storing upsteam lock files</p>
-</li>
-</ul>
-<h3 id="update-scripts-duplicationcomplexity"><a class="header" href="#update-scripts-duplicationcomplexity">Update Scripts Duplication/Complexity</a></h3>
-<h4 id="problem-1"><a class="header" href="#problem-1">Problem</a></h4>
-<ul>
-<li>update scripts are largely duplicated</li>
-<li>update scripts are complex</li>
-</ul>
-<h4 id="solution-1"><a class="header" href="#solution-1">Solution</a></h4>
-<ul>
-<li>storing <code>update.sh</code> scripts alongside packages will not be necessary anymore. dream2nix can generate update procedures on the fly by reading the package declaration.</li>
-<li>The UI for updating packages is the same across all languages/frameworks</li>
-</ul>
-<h3 id="fetching--caching-issues-large-fods"><a class="header" href="#fetching--caching-issues-large-fods">Fetching / Caching issues (large FODs)</a></h3>
-<h4 id="problem-2"><a class="header" href="#problem-2">Problem</a></h4>
-<ul>
-<li>non-reproducible large FOD fetchers (example: rust)</li>
-<li>updating FODs is not risk free (forget to update hash)</li>
-<li>bad caching properties due to large FODs</li>
-</ul>
-<h4 id="solution-2"><a class="header" href="#solution-2">Solution</a></h4>
-<ul>
-<li>the translators of dream2nix always produce a clear list of URLs to fetch</li>
-<li>large-FOD fetching is not necessary and never enforced</li>
-<li>large-FOD fetching can be used optionally to reduce amount of hashes to be stored</li>
-<li>even if large-FOD fetching is used, it won't have any of the known reproducibility issues, since dream2nix does never make use of upstream toolchain for fetching and potentially impure operations like dependency resolution are never done inside an FOD.</li>
-<li>updating hashes of FODs is done via dream2nix CLI, which ensures that the correct hashes are in place</li>
-<li>As the use of large-FOD fetching is not necessary and therefore minimized, dependencies are cached on an individual basis and shared between packages.</li>
-</ul>
-<h3 id="update-workflows"><a class="header" href="#update-workflows">Update Workflows</a></h3>
-<h4 id="problem-3"><a class="header" href="#problem-3">Problem</a></h4>
-<ul>
-<li>package update workflows can be complicated</li>
-<li>package update workflows vary significantly depending on the language/framework</li>
-</ul>
-<h4 id="solution-3"><a class="header" href="#solution-3">Solution</a></h4>
-<ul>
-<li>the workflow for updating packages will be unified and largely independent of the underlying language/framework.</li>
-</ul>
-<h3 id="merge-conflicts-for-shared-dependencies"><a class="header" href="#merge-conflicts-for-shared-dependencies">Merge Conflicts for shared dependencies</a></h3>
-<h4 id="problem-4"><a class="header" href="#problem-4">Problem</a></h4>
-<ul>
-<li>Due to how shared dependencies are managed, merge conflicts are likely (example: global node-packages.nix)</li>
-</ul>
-<h4 id="solution-4"><a class="header" href="#solution-4">Solution</a></h4>
-<ul>
-<li>Having a central set of shared dependencies can make sense to reduce the code size of nixpkgs, load on hydra+cache.</li>
-<li>To eliminate merge conflicts, the global package set can be maintained via a two stage process. Individual package maintainers can manage their dependencies independently. Once every staging cycle, common dependencies can be found via graph analysis and moved into a global package set.</li>
-<li>The total amount of dependency versions used can also be minimized by re-running the resolver, prioritizing dependencies from the global set of common packages.</li>
-</ul>
-<h3 id="customizability--overriding"><a class="header" href="#customizability--overriding">Customizability / Overriding</a></h3>
-<h4 id="problem-5"><a class="header" href="#problem-5">Problem</a></h4>
-<ul>
-<li>Capabilities vary depending on the underlying generator/translator.</li>
-<li>UI is different depending on the underlying generator/translator.</li>
-</ul>
-<h4 id="solution-5"><a class="header" href="#solution-5">Solution</a></h4>
-<ul>
-<li>dream2nix provides good interfaces for customizability which are unified as much as possible independently from the underlying subsystems.</li>
-</ul>
-<h3 id="inefficientslow-innovation"><a class="header" href="#inefficientslow-innovation">Inefficient/Slow Innovation</a></h3>
-<h4 id="problem-6"><a class="header" href="#problem-6">Problem</a></h4>
-<ul>
-<li>Design issues (FOD-impurity, Maintainability, etc.) cannot be fixed easily and lead to long term suffering of maintainers.</li>
-<li>Innovation often happens on individual tools and are not adopted ecosystem wide</li>
-<li>New nix features will not be easily adopted as this will require updating many individual tools.</li>
-</ul>
-<h4 id="solution-6"><a class="header" href="#solution-6">Solution</a></h4>
-<ul>
-<li>Since dream2nix centrally handles many core elements of packaging like different strategies for fetching and building, it is much easier to fix problems at large scale and apply new innovations to all underlysing subsystems at once.</li>
-<li>Experimenting with and adding support for new nix features will be easier as the framework offers better abstractions than existing 2nix converters and allows adding/modifying strategies more easily.</li>
-</ul>
-<div style="break-before: page; page-break-before: always;"></div><p>The override system plays an important role when packaging software with dream2nix. Overrides are the only way to express package specific logic in dream2nix. This serves the purpose of strictly separating:</p>
-<pre><code>  - generic logic     (builders)
-  - specific logic    (overrides)
-  - data              (dream-lock.json)
-</code></pre>
-<p>To optimize for scalable workflows, the structure of dream2nix overrides differs from the ones seen in other projects.
-dream2nix overrides have the following properties:</p>
-<ul>
-<li><strong>referenceable</strong>: each override is assigned to a key through which it can be referenced. This allows for better inspection, selective debugging, replacing, etc.</li>
-<li><strong>conditional</strong>: each override can declare a condition, so that the override only applies when the condition evaluates positively.</li>
-<li><strong>attribute-oriented</strong>: The relevant parameters are attributes, not override functions. dream2nix will automatically figure out which underlying function (eg. override, overrideAttrs, ...) needs to be called to update each given attribute. The user is not confronted with this by default.</li>
-</ul>
-<p>Each subsystem in dream2nix like <code>nodejs</code> or <code>python</code> manages its overrides in a separate directory to avoid package name collisions.</p>
-<p>dream2nix supports packaging different versions of the same package within one repository. Therefore conditions are used to make overrides apply only to certain package versions.</p>
-<p>Currently a collection of overrides is maintained at <a href="https://github.com/nix-community/dream2nix/tree/main/overrides">dream2nix/overrides</a></p>
-<p>Example for nodejs overrides:</p>
-<pre><code class="language-nix">{
-  # The name of a package.
-  # Contains all overrides which can apply to the package `enhanced-resolve`
-  enhanced-resolve = {
-
-    # first override for enhanced-resolve named `preserve-symlinks-v4`
-    preserve-symlinks-v4 = {
-
-      # override will apply for packages with major version 4
-      _condition = satisfiesSemver &quot;^4.0.0&quot;;
-
-      # this statement replaces exisiting patches
-      # (for appending see next example)
-      patches = [
-        ./enhanced-resolve/npm-preserve-symlinks-v4.patch
-      ];
-
-    };
-
-    # second override for enhanced-resolve
-    preserve-symlinks-v5 = {
-
-      # override will apply for packages with major version 5
-      _condition = satisfiesSemver &quot;^5.0.0&quot;;
-
-      # this statement adds a patch to the exsiting list of patches
-      patches = old: old ++ [
-        ./enhanced-resolve/npm-preserve-symlinks-v5.patch
-      ];
-    };
-
-  };
-
-  # another package name
-  webpack = {
-    # overrides for webpack
-  };
-}
-</code></pre>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="translators-5"><a class="header" href="#translators-5">Translators</a></h1>
 <p>This document classifies different methods for translating requirement/lock
 files to the generic lock format and describes how the resulting packages
@@ -1302,6 +1158,32 @@ can be integrated into nix builds inside and outside of nixpkgs.</p>
 <ul>
 <li>generic lock file must be pre-generated using dream2nix cli</li>
 </ul>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="generic-lockfile"><a class="header" href="#generic-lockfile">Generic lockfile</a></h1>
+<p>The generic lockfile is interpreted from the fetchers and dependencies are loaded based on their type.</p>
+<p>When dream2nix reads project dependencies and translates them into
+a dream2nix lockfile, it writes down the sources for all the
+dependencies: so it can fetch them later during building.</p>
+<p>The generic lockfile is used always, either in memory or dumped to a file. </p>
+<p>Below are some examples of the sources written in the dream-lock file
+(at the end, under <code>sources</code>).</p>
+<pre><code class="language-json">&quot;symfony/process&quot;: {
+  &quot;v6.1.3&quot;: {
+    &quot;rev&quot;: &quot;a6506e99cfad7059b1ab5cab395854a0a0c21292&quot;,
+    &quot;type&quot;: &quot;git&quot;,
+    &quot;url&quot;: &quot;https://github.com/symfony/process.git&quot;
+  }
+}
+</code></pre>
+<pre><code class="language-json">&quot;fast-glob&quot;: {
+  &quot;3.2.11&quot;: {
+    &quot;hash&quot;: &quot;sha512-xrO3+1bxSo3ZVHAnqzyuewYT6aMFHRAd4Kcs92MAonjwQZLsK9d0SF1IyQ3k5PoirxTW0Oe/RqFgMQ6TcNE5Ew==&quot;,
+    &quot;type&quot;: &quot;http&quot;,
+    &quot;url&quot;: &quot;https://registry.npmjs.org/fast-glob/-/fast-glob-3.2.11.tgz&quot;
+  }
+}
+</code></pre>
+<p>The <code>type</code> field tells dream2nix what <a href="api/../intro/fetchers.html">fetchers</a> to invoke to get this
+source, the rest of the attributes are simply passed to the fetcher.</p>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="indexers"><a class="header" href="#indexers">Indexers</a></h1>
 <p>Indexers are programs that can query a package repository (think of npm, or crates.io) for package information.
 This information mainly consists of the package name, the package version, and anything extra that might be useful / needed to fetch / translate it.
@@ -1340,31 +1222,7 @@ This index should simply be a list of project specifications in JSON. Example:</
 <li><strong>npm</strong>: simple indexer using npm's registry</li>
 </ul>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="fetchers"><a class="header" href="#fetchers">Fetchers</a></h1>
-<p>This section describes the available source code fetchers.</p>
-<h2 id="what-are-fetchers"><a class="header" href="#what-are-fetchers">What are fetchers</a></h2>
-<p>When dream2nix reads project dependencies and translates them into
-a dream2nix lockfile, it writes down the sources for all the
-dependencies: so it can fetch them later during building.</p>
-<p>Below are some examples of the sources written in the dream-lock file
-(at the end, under <code>sources</code>).</p>
-<pre><code class="language-json">&quot;symfony/process&quot;: {
-  &quot;v6.1.3&quot;: {
-    &quot;rev&quot;: &quot;a6506e99cfad7059b1ab5cab395854a0a0c21292&quot;,
-    &quot;type&quot;: &quot;git&quot;,
-    &quot;url&quot;: &quot;https://github.com/symfony/process.git&quot;
-  }
-}
-</code></pre>
-<pre><code class="language-json">&quot;fast-glob&quot;: {
-  &quot;3.2.11&quot;: {
-    &quot;hash&quot;: &quot;sha512-xrO3+1bxSo3ZVHAnqzyuewYT6aMFHRAd4Kcs92MAonjwQZLsK9d0SF1IyQ3k5PoirxTW0Oe/RqFgMQ6TcNE5Ew==&quot;,
-    &quot;type&quot;: &quot;http&quot;,
-    &quot;url&quot;: &quot;https://registry.npmjs.org/fast-glob/-/fast-glob-3.2.11.tgz&quot;
-  }
-}
-</code></pre>
-<p>The <code>type</code> field tells dream2nix what fetchers to invoke to get this
-source, the rest of the attributes are simply passed to the fetcher.</p>
+<p>This section describes the available source code fetchers. A fetcher is responsible for loading sources defined in the generic lockfile described earlier.</p>
 <h2 id="fetcher-structure"><a class="header" href="#fetcher-structure">Fetcher structure</a></h2>
 <p>Here is the implementation of the simple <code>path</code> fetcher:</p>
 <pre><code class="language-nix">{utils, ...}: {
@@ -1461,6 +1319,150 @@ integrity instead.</em></p>
 <li>pname</li>
 <li>version</li>
 <li>hash</li>
+</ul>
+<div style="break-before: page; page-break-before: always;"></div><p>The override system plays an important role when packaging software with dream2nix. Overrides are the only way to express package specific logic in dream2nix. This serves the purpose of strictly separating:</p>
+<pre><code>  - generic logic     (builders)
+  - specific logic    (overrides)
+  - data              (dream-lock.json)
+</code></pre>
+<p>To optimize for scalable workflows, the structure of dream2nix overrides differs from the ones seen in other projects.
+dream2nix overrides have the following properties:</p>
+<ul>
+<li><strong>referenceable</strong>: each override is assigned to a key through which it can be referenced. This allows for better inspection, selective debugging, replacing, etc.</li>
+<li><strong>conditional</strong>: each override can declare a condition, so that the override only applies when the condition evaluates positively.</li>
+<li><strong>attribute-oriented</strong>: The relevant parameters are attributes, not override functions. dream2nix will automatically figure out which underlying function (eg. override, overrideAttrs, ...) needs to be called to update each given attribute. The user is not confronted with this by default.</li>
+</ul>
+<p>Each subsystem in dream2nix like <code>nodejs</code> or <code>python</code> manages its overrides in a separate directory to avoid package name collisions.</p>
+<p>dream2nix supports packaging different versions of the same package within one repository. Therefore conditions are used to make overrides apply only to certain package versions.</p>
+<p>Currently a collection of overrides is maintained at <a href="https://github.com/nix-community/dream2nix/tree/main/overrides">dream2nix/overrides</a></p>
+<p>Example for nodejs overrides:</p>
+<pre><code class="language-nix">{
+  # The name of a package.
+  # Contains all overrides which can apply to the package `enhanced-resolve`
+  enhanced-resolve = {
+
+    # first override for enhanced-resolve named `preserve-symlinks-v4`
+    preserve-symlinks-v4 = {
+
+      # override will apply for packages with major version 4
+      _condition = satisfiesSemver &quot;^4.0.0&quot;;
+
+      # this statement replaces exisiting patches
+      # (for appending see next example)
+      patches = [
+        ./enhanced-resolve/npm-preserve-symlinks-v4.patch
+      ];
+
+    };
+
+    # second override for enhanced-resolve
+    preserve-symlinks-v5 = {
+
+      # override will apply for packages with major version 5
+      _condition = satisfiesSemver &quot;^5.0.0&quot;;
+
+      # this statement adds a patch to the exsiting list of patches
+      patches = old: old ++ [
+        ./enhanced-resolve/npm-preserve-symlinks-v5.patch
+      ];
+    };
+
+  };
+
+  # another package name
+  webpack = {
+    # overrides for webpack
+  };
+}
+</code></pre>
+<div style="break-before: page; page-break-before: always;"></div><h2 id="list-of-problems-which-currently-exist-in-nixpkgs"><a class="header" href="#list-of-problems-which-currently-exist-in-nixpkgs">List of problems which currently exist in nixpkgs</a></h2>
+<h3 id="generated-code-sizeduplication"><a class="header" href="#generated-code-sizeduplication">Generated Code Size/Duplication</a></h3>
+<h4 id="problem"><a class="header" href="#problem">Problem</a></h4>
+<ul>
+<li>large .nix files containing auto generated code for fetching sources (example: nodejs)</li>
+<li>many duplicated .nix files containing build logic</li>
+</ul>
+<h4 id="solution"><a class="header" href="#solution">Solution</a></h4>
+<ul>
+<li>
+<p>dream2nix minimizes the amount of generated nix code, as most of the logic required to build a package resides in the framework and therefore is not duplicated across individual packages.</p>
+</li>
+<li>
+<p>If the upstream lock file format can be interpreted with pure nix and is present at evaluation time, then generating any intermediary code can be omitted.</p>
+</li>
+<li>
+<p>Once any kind of recursive nix (IFD, recursive-nix, RFC-92) is enabled in nixpkgs, dream2nix will utilize it and eliminate the requirement of generating nix code or storing upsteam lock files</p>
+</li>
+</ul>
+<h3 id="update-scripts-duplicationcomplexity"><a class="header" href="#update-scripts-duplicationcomplexity">Update Scripts Duplication/Complexity</a></h3>
+<h4 id="problem-1"><a class="header" href="#problem-1">Problem</a></h4>
+<ul>
+<li>update scripts are largely duplicated</li>
+<li>update scripts are complex</li>
+</ul>
+<h4 id="solution-1"><a class="header" href="#solution-1">Solution</a></h4>
+<ul>
+<li>storing <code>update.sh</code> scripts alongside packages will not be necessary anymore. dream2nix can generate update procedures on the fly by reading the package declaration.</li>
+<li>The UI for updating packages is the same across all languages/frameworks</li>
+</ul>
+<h3 id="fetching--caching-issues-large-fods"><a class="header" href="#fetching--caching-issues-large-fods">Fetching / Caching issues (large FODs)</a></h3>
+<h4 id="problem-2"><a class="header" href="#problem-2">Problem</a></h4>
+<ul>
+<li>non-reproducible large FOD fetchers (example: rust)</li>
+<li>updating FODs is not risk free (forget to update hash)</li>
+<li>bad caching properties due to large FODs</li>
+</ul>
+<h4 id="solution-2"><a class="header" href="#solution-2">Solution</a></h4>
+<ul>
+<li>the translators of dream2nix always produce a clear list of URLs to fetch</li>
+<li>large-FOD fetching is not necessary and never enforced</li>
+<li>large-FOD fetching can be used optionally to reduce amount of hashes to be stored</li>
+<li>even if large-FOD fetching is used, it won't have any of the known reproducibility issues, since dream2nix does never make use of upstream toolchain for fetching and potentially impure operations like dependency resolution are never done inside an FOD.</li>
+<li>updating hashes of FODs is done via dream2nix CLI, which ensures that the correct hashes are in place</li>
+<li>As the use of large-FOD fetching is not necessary and therefore minimized, dependencies are cached on an individual basis and shared between packages.</li>
+</ul>
+<h3 id="update-workflows"><a class="header" href="#update-workflows">Update Workflows</a></h3>
+<h4 id="problem-3"><a class="header" href="#problem-3">Problem</a></h4>
+<ul>
+<li>package update workflows can be complicated</li>
+<li>package update workflows vary significantly depending on the language/framework</li>
+</ul>
+<h4 id="solution-3"><a class="header" href="#solution-3">Solution</a></h4>
+<ul>
+<li>the workflow for updating packages will be unified and largely independent of the underlying language/framework.</li>
+</ul>
+<h3 id="merge-conflicts-for-shared-dependencies"><a class="header" href="#merge-conflicts-for-shared-dependencies">Merge Conflicts for shared dependencies</a></h3>
+<h4 id="problem-4"><a class="header" href="#problem-4">Problem</a></h4>
+<ul>
+<li>Due to how shared dependencies are managed, merge conflicts are likely (example: global node-packages.nix)</li>
+</ul>
+<h4 id="solution-4"><a class="header" href="#solution-4">Solution</a></h4>
+<ul>
+<li>Having a central set of shared dependencies can make sense to reduce the code size of nixpkgs, load on hydra+cache.</li>
+<li>To eliminate merge conflicts, the global package set can be maintained via a two stage process. Individual package maintainers can manage their dependencies independently. Once every staging cycle, common dependencies can be found via graph analysis and moved into a global package set.</li>
+<li>The total amount of dependency versions used can also be minimized by re-running the resolver, prioritizing dependencies from the global set of common packages.</li>
+</ul>
+<h3 id="customizability--overriding"><a class="header" href="#customizability--overriding">Customizability / Overriding</a></h3>
+<h4 id="problem-5"><a class="header" href="#problem-5">Problem</a></h4>
+<ul>
+<li>Capabilities vary depending on the underlying generator/translator.</li>
+<li>UI is different depending on the underlying generator/translator.</li>
+</ul>
+<h4 id="solution-5"><a class="header" href="#solution-5">Solution</a></h4>
+<ul>
+<li>dream2nix provides good interfaces for customizability which are unified as much as possible independently from the underlying subsystems.</li>
+</ul>
+<h3 id="inefficientslow-innovation"><a class="header" href="#inefficientslow-innovation">Inefficient/Slow Innovation</a></h3>
+<h4 id="problem-6"><a class="header" href="#problem-6">Problem</a></h4>
+<ul>
+<li>Design issues (FOD-impurity, Maintainability, etc.) cannot be fixed easily and lead to long term suffering of maintainers.</li>
+<li>Innovation often happens on individual tools and are not adopted ecosystem wide</li>
+<li>New nix features will not be easily adopted as this will require updating many individual tools.</li>
+</ul>
+<h4 id="solution-6"><a class="header" href="#solution-6">Solution</a></h4>
+<ul>
+<li>Since dream2nix centrally handles many core elements of packaging like different strategies for fetching and building, it is much easier to fix problems at large scale and apply new innovations to all underlysing subsystems at once.</li>
+<li>Experimenting with and adding support for new nix features will be easier as the framework offers better abstractions than existing 2nix converters and allows adding/modifying strategies more easily.</li>
 </ul>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="extending-dream2nix-with-external-translators-builders-etc"><a class="header" href="#extending-dream2nix-with-external-translators-builders-etc">Extending dream2nix with external translators, builders etc.</a></h1>
 <p><code>dream2nix</code> can be extended while you are <code>init</code>ializing it. This can be done in a few ways.

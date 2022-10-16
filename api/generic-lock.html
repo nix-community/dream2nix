@@ -3,7 +3,7 @@
     <head>
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
-        <title>Python - dream2nix documentation</title>
+        <title>Generic Lockfile - dream2nix documentation</title>
         <!-- Custom HTML head -->
         <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
         <meta name="description" content="">
@@ -75,7 +75,7 @@
 
         <nav id="sidebar" class="sidebar" aria-label="Table of contents">
             <div class="sidebar-scrollbox">
-                <ol class="chapter"><li class="chapter-item expanded "><a href="../intro.html"><strong aria-hidden="true">1.</strong> Introduction</a></li><li class="chapter-item expanded affix "><li class="part-title">Guides</li><li class="chapter-item expanded "><a href="../guides/getting-started-python.html"><strong aria-hidden="true">2.</strong> Python: getting started in 10 minutes</a></li><li class="chapter-item expanded "><a href="../guides/getting-started-nodejs.html"><strong aria-hidden="true">3.</strong> Node.js: quickstart</a></li><li class="chapter-item expanded affix "><li class="part-title">Subsystems</li><li class="chapter-item expanded "><a href="../subsystems/rust.html"><strong aria-hidden="true">4.</strong> Rust</a></li><li class="chapter-item expanded "><a href="../subsystems/python.html" class="active"><strong aria-hidden="true">5.</strong> Python</a></li><li class="chapter-item expanded "><a href="../subsystems/node.html"><strong aria-hidden="true">6.</strong> Node.js</a></li><li class="chapter-item expanded "><a href="../subsystems/haskell.html"><strong aria-hidden="true">7.</strong> Haskell</a></li><li class="chapter-item expanded "><a href="../subsystems/php.html"><strong aria-hidden="true">8.</strong> PHP</a></li><li class="chapter-item expanded affix "><li class="part-title">Concepts / API</li><li class="chapter-item expanded "><a href="../intro/architecture.html"><strong aria-hidden="true">9.</strong> Architecture</a></li><li class="chapter-item expanded "><a href="../intro/translators.html"><strong aria-hidden="true">10.</strong> Translators</a></li><li class="chapter-item expanded "><a href="../api/generic-lock.html"><strong aria-hidden="true">11.</strong> Generic Lockfile</a></li><li class="chapter-item expanded "><a href="../intro/indexers.html"><strong aria-hidden="true">12.</strong> Indexers</a></li><li class="chapter-item expanded "><a href="../intro/fetchers.html"><strong aria-hidden="true">13.</strong> Fetchers</a></li><li class="chapter-item expanded "><div><strong aria-hidden="true">14.</strong> Builders</div></li><li class="chapter-item expanded "><a href="../intro/override-system.html"><strong aria-hidden="true">15.</strong> Override system</a></li><li class="chapter-item expanded affix "><li class="part-title">Correlation with nixpkgs</li><li class="chapter-item expanded "><a href="../intro/nixpkgs-improvements.html"><strong aria-hidden="true">16.</strong> Nixpkgs improvements</a></li><li class="chapter-item expanded affix "><li class="part-title">Contributing</li><li class="chapter-item expanded "><a href="../extending-dream2nix.html"><strong aria-hidden="true">17.</strong> Extending dream2nix</a></li><li class="chapter-item expanded "><a href="../contributing.html"><strong aria-hidden="true">18.</strong> Contributing</a></li><li class="chapter-item expanded affix "><li class="part-title">Development Roundups</li><li class="chapter-item expanded "><a href="../development-roundups/2022-april-june.html"><strong aria-hidden="true">19.</strong> April - June 2022</a></li></ol>
+                <ol class="chapter"><li class="chapter-item expanded "><a href="../intro.html"><strong aria-hidden="true">1.</strong> Introduction</a></li><li class="chapter-item expanded affix "><li class="part-title">Guides</li><li class="chapter-item expanded "><a href="../guides/getting-started-python.html"><strong aria-hidden="true">2.</strong> Python: getting started in 10 minutes</a></li><li class="chapter-item expanded "><a href="../guides/getting-started-nodejs.html"><strong aria-hidden="true">3.</strong> Node.js: quickstart</a></li><li class="chapter-item expanded affix "><li class="part-title">Subsystems</li><li class="chapter-item expanded "><a href="../subsystems/rust.html"><strong aria-hidden="true">4.</strong> Rust</a></li><li class="chapter-item expanded "><a href="../subsystems/python.html"><strong aria-hidden="true">5.</strong> Python</a></li><li class="chapter-item expanded "><a href="../subsystems/node.html"><strong aria-hidden="true">6.</strong> Node.js</a></li><li class="chapter-item expanded "><a href="../subsystems/haskell.html"><strong aria-hidden="true">7.</strong> Haskell</a></li><li class="chapter-item expanded "><a href="../subsystems/php.html"><strong aria-hidden="true">8.</strong> PHP</a></li><li class="chapter-item expanded affix "><li class="part-title">Concepts / API</li><li class="chapter-item expanded "><a href="../intro/architecture.html"><strong aria-hidden="true">9.</strong> Architecture</a></li><li class="chapter-item expanded "><a href="../intro/translators.html"><strong aria-hidden="true">10.</strong> Translators</a></li><li class="chapter-item expanded "><a href="../api/generic-lock.html" class="active"><strong aria-hidden="true">11.</strong> Generic Lockfile</a></li><li class="chapter-item expanded "><a href="../intro/indexers.html"><strong aria-hidden="true">12.</strong> Indexers</a></li><li class="chapter-item expanded "><a href="../intro/fetchers.html"><strong aria-hidden="true">13.</strong> Fetchers</a></li><li class="chapter-item expanded "><div><strong aria-hidden="true">14.</strong> Builders</div></li><li class="chapter-item expanded "><a href="../intro/override-system.html"><strong aria-hidden="true">15.</strong> Override system</a></li><li class="chapter-item expanded affix "><li class="part-title">Correlation with nixpkgs</li><li class="chapter-item expanded "><a href="../intro/nixpkgs-improvements.html"><strong aria-hidden="true">16.</strong> Nixpkgs improvements</a></li><li class="chapter-item expanded affix "><li class="part-title">Contributing</li><li class="chapter-item expanded "><a href="../extending-dream2nix.html"><strong aria-hidden="true">17.</strong> Extending dream2nix</a></li><li class="chapter-item expanded "><a href="../contributing.html"><strong aria-hidden="true">18.</strong> Contributing</a></li><li class="chapter-item expanded affix "><li class="part-title">Development Roundups</li><li class="chapter-item expanded "><a href="../development-roundups/2022-april-june.html"><strong aria-hidden="true">19.</strong> April - June 2022</a></li></ol>
             </div>
             <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
         </nav>
@@ -134,83 +134,41 @@
 
                 <div id="content" class="content">
                     <main>
-                        <h1 id="python-subsystem"><a class="header" href="#python-subsystem">Python subsystem</a></h1>
-<p>This section documents the Python subsystem.</p>
-<h2 id="examples"><a class="header" href="#examples">Examples</a></h2>
-<p>flake.nix</p>
-<pre><code class="language-nix">{
-  inputs = {
-    dream2nix.url = &quot;github:nix-community/dream2nix&quot;;
-    src.url = &quot;https://files.pythonhosted.org/packages/5a/86/5f63de7a202550269a617a5d57859a2961f3396ecd1739a70b92224766bc/aiohttp-3.8.1.tar.gz&quot;;
-    src.flake = false;
-  };
-
-  outputs = {
-    self,
-    dream2nix,
-    src,
-  } @ inp:
-    (dream2nix.lib.makeFlakeOutputs {
-      systems = [&quot;x86_64-linux&quot;];
-      config.projectRoot = ./.;
-      source = src;
-      settings = [
-        {
-          # optionally define python version
-          subsystemInfo.pythonAttr = &quot;python38&quot;;
-          # # optionally define extra setup requirements;
-          subsystemInfo.extraSetupDeps = [&quot;cython &gt; 0.29&quot;];
-        }
-      ];
-    })
-    // {
-      checks.x86_64-linux.aiohttp = self.packages.x86_64-linux.main;
-    };
+                        <h1 id="generic-lockfile"><a class="header" href="#generic-lockfile">Generic lockfile</a></h1>
+<p>The generic lockfile is interpreted from the fetchers and dependencies are loaded based on their type.</p>
+<p>When dream2nix reads project dependencies and translates them into
+a dream2nix lockfile, it writes down the sources for all the
+dependencies: so it can fetch them later during building.</p>
+<p>The generic lockfile is used always, either in memory or dumped to a file. </p>
+<p>Below are some examples of the sources written in the dream-lock file
+(at the end, under <code>sources</code>).</p>
+<pre><code class="language-json">&quot;symfony/process&quot;: {
+  &quot;v6.1.3&quot;: {
+    &quot;rev&quot;: &quot;a6506e99cfad7059b1ab5cab395854a0a0c21292&quot;,
+    &quot;type&quot;: &quot;git&quot;,
+    &quot;url&quot;: &quot;https://github.com/symfony/process.git&quot;
+  }
 }
 </code></pre>
-<h2 id="translators"><a class="header" href="#translators">Translators</a></h2>
-<h3 id="pip-impure"><a class="header" href="#pip-impure">pip (impure)</a></h3>
-<p>Can translate all pip compatible python projects, including projects managed with poetry or other tool-chains which integrate via <code>pyproject.toml</code>.</p>
-<p>This translator simply executes <code>pip download</code> on the given source and observes which sources are downloaded by pip.
-The downside of this approach is, that this translator cannot be used with a granular builder. It does not understand the exact relation between the dependencies, and therefore it only allows to build all dependencies in one large derivation.</p>
-<h4 id="pip-optional-translator-arguments"><a class="header" href="#pip-optional-translator-arguments"><strong>pip</strong> optional translator arguments</a></h4>
-<pre><code class="language-nix">{
-  pythonAttr = {
-    description = &quot;python version to translate for&quot;;
-    default = &quot;python3&quot;;
-    examples = [
-      &quot;python27&quot;
-      &quot;python39&quot;
-      &quot;python310&quot;
-    ];
-    type = &quot;argument&quot;;
-  };
-
-  extraSetupDeps = {
-    description = ''
-      a list of extra setup reqirements to install before executing 'pip download'
-    '';
-    default = [];
-    examples = [
-      &quot;cython&quot;
-      &quot;numpy&quot;
-    ];
-    type = &quot;argument&quot;;
-  };
+<pre><code class="language-json">&quot;fast-glob&quot;: {
+  &quot;3.2.11&quot;: {
+    &quot;hash&quot;: &quot;sha512-xrO3+1bxSo3ZVHAnqzyuewYT6aMFHRAd4Kcs92MAonjwQZLsK9d0SF1IyQ3k5PoirxTW0Oe/RqFgMQ6TcNE5Ew==&quot;,
+    &quot;type&quot;: &quot;http&quot;,
+    &quot;url&quot;: &quot;https://registry.npmjs.org/fast-glob/-/fast-glob-3.2.11.tgz&quot;
+  }
 }
 </code></pre>
-<h2 id="builders"><a class="header" href="#builders">Builders</a></h2>
-<h3 id="simple-builder-pure-default"><a class="header" href="#simple-builder-pure-default">simple-builder (pure) (default)</a></h3>
-<p>Builds a package including all its dependencies in a single derivation.</p>
+<p>The <code>type</code> field tells dream2nix what <a href="../intro/fetchers.html">fetchers</a> to invoke to get this
+source, the rest of the attributes are simply passed to the fetcher.</p>
 
                     </main>
 
                     <nav class="nav-wrapper" aria-label="Page navigation">
                         <!-- Mobile navigation buttons -->
-                            <a rel="prev" href="../subsystems/rust.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                            <a rel="prev" href="../intro/translators.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                                 <i class="fa fa-angle-left"></i>
                             </a>
-                            <a rel="next" href="../subsystems/node.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                            <a rel="next" href="../intro/indexers.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                                 <i class="fa fa-angle-right"></i>
                             </a>
                         <div style="clear: both"></div>
@@ -219,10 +177,10 @@ The downside of this approach is, that this translator cannot be used with a gra
             </div>
 
             <nav class="nav-wide-wrapper" aria-label="Page navigation">
-                    <a rel="prev" href="../subsystems/rust.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                    <a rel="prev" href="../intro/translators.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                         <i class="fa fa-angle-left"></i>
                     </a>
-                    <a rel="next" href="../subsystems/node.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                    <a rel="next" href="../intro/indexers.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                         <i class="fa fa-angle-right"></i>
                     </a>
             </nav>

@@ -75,7 +75,7 @@
 
         <nav id="sidebar" class="sidebar" aria-label="Table of contents">
             <div class="sidebar-scrollbox">
-                <ol class="chapter"><li class="chapter-item expanded "><a href="intro.html" class="active"><strong aria-hidden="true">1.</strong> Introduction</a></li><li class="chapter-item expanded affix "><li class="part-title">Guides</li><li class="chapter-item expanded "><a href="guides/getting-started-python.html"><strong aria-hidden="true">2.</strong> Python: getting started in 10 minutes</a></li><li class="chapter-item expanded "><a href="guides/getting-started-nodejs.html"><strong aria-hidden="true">3.</strong> Node.js: quickstart</a></li><li class="chapter-item expanded affix "><li class="part-title">Subsystems</li><li class="chapter-item expanded "><a href="subsystems/rust.html"><strong aria-hidden="true">4.</strong> Rust</a></li><li class="chapter-item expanded "><a href="subsystems/python.html"><strong aria-hidden="true">5.</strong> Python</a></li><li class="chapter-item expanded "><a href="subsystems/node.html"><strong aria-hidden="true">6.</strong> Node.js</a></li><li class="chapter-item expanded "><a href="subsystems/haskell.html"><strong aria-hidden="true">7.</strong> Haskell</a></li><li class="chapter-item expanded "><a href="subsystems/php.html"><strong aria-hidden="true">8.</strong> PHP</a></li><li class="chapter-item expanded affix "><li class="part-title">Concepts</li><li class="chapter-item expanded "><a href="intro/architectural-considerations.html"><strong aria-hidden="true">9.</strong> Architectural Considerations</a></li><li class="chapter-item expanded "><a href="intro/nixpkgs-improvements.html"><strong aria-hidden="true">10.</strong> Nixpkgs improvements</a></li><li class="chapter-item expanded "><a href="intro/override-system.html"><strong aria-hidden="true">11.</strong> Override system</a></li><li class="chapter-item expanded "><a href="intro/translators.html"><strong aria-hidden="true">12.</strong> Translators</a></li><li class="chapter-item expanded "><a href="intro/indexers.html"><strong aria-hidden="true">13.</strong> Indexers</a></li><li class="chapter-item expanded "><a href="intro/fetchers.html"><strong aria-hidden="true">14.</strong> Fetchers</a></li><li class="chapter-item expanded affix "><li class="part-title">Contributing</li><li class="chapter-item expanded "><a href="extending-dream2nix.html"><strong aria-hidden="true">15.</strong> Extending dream2nix</a></li><li class="chapter-item expanded "><a href="contributing.html"><strong aria-hidden="true">16.</strong> Contributing</a></li><li class="chapter-item expanded affix "><li class="part-title">Development Roundups</li><li class="chapter-item expanded "><a href="development-roundups/2022-april-june.html"><strong aria-hidden="true">17.</strong> April - June 2022</a></li></ol>
+                <ol class="chapter"><li class="chapter-item expanded "><a href="intro.html" class="active"><strong aria-hidden="true">1.</strong> Introduction</a></li><li class="chapter-item expanded affix "><li class="part-title">Guides</li><li class="chapter-item expanded "><a href="guides/getting-started-python.html"><strong aria-hidden="true">2.</strong> Python: getting started in 10 minutes</a></li><li class="chapter-item expanded "><a href="guides/getting-started-nodejs.html"><strong aria-hidden="true">3.</strong> Node.js: quickstart</a></li><li class="chapter-item expanded affix "><li class="part-title">Subsystems</li><li class="chapter-item expanded "><a href="subsystems/rust.html"><strong aria-hidden="true">4.</strong> Rust</a></li><li class="chapter-item expanded "><a href="subsystems/python.html"><strong aria-hidden="true">5.</strong> Python</a></li><li class="chapter-item expanded "><a href="subsystems/node.html"><strong aria-hidden="true">6.</strong> Node.js</a></li><li class="chapter-item expanded "><a href="subsystems/haskell.html"><strong aria-hidden="true">7.</strong> Haskell</a></li><li class="chapter-item expanded "><a href="subsystems/php.html"><strong aria-hidden="true">8.</strong> PHP</a></li><li class="chapter-item expanded affix "><li class="part-title">Concepts / API</li><li class="chapter-item expanded "><a href="intro/architecture.html"><strong aria-hidden="true">9.</strong> Architecture</a></li><li class="chapter-item expanded "><a href="intro/translators.html"><strong aria-hidden="true">10.</strong> Translators</a></li><li class="chapter-item expanded "><a href="api/generic-lock.html"><strong aria-hidden="true">11.</strong> Generic Lockfile</a></li><li class="chapter-item expanded "><a href="intro/indexers.html"><strong aria-hidden="true">12.</strong> Indexers</a></li><li class="chapter-item expanded "><a href="intro/fetchers.html"><strong aria-hidden="true">13.</strong> Fetchers</a></li><li class="chapter-item expanded "><div><strong aria-hidden="true">14.</strong> Builders</div></li><li class="chapter-item expanded "><a href="intro/override-system.html"><strong aria-hidden="true">15.</strong> Override system</a></li><li class="chapter-item expanded affix "><li class="part-title">Correlation with nixpkgs</li><li class="chapter-item expanded "><a href="intro/nixpkgs-improvements.html"><strong aria-hidden="true">16.</strong> Nixpkgs improvements</a></li><li class="chapter-item expanded affix "><li class="part-title">Contributing</li><li class="chapter-item expanded "><a href="extending-dream2nix.html"><strong aria-hidden="true">17.</strong> Extending dream2nix</a></li><li class="chapter-item expanded "><a href="contributing.html"><strong aria-hidden="true">18.</strong> Contributing</a></li><li class="chapter-item expanded affix "><li class="part-title">Development Roundups</li><li class="chapter-item expanded "><a href="development-roundups/2022-april-june.html"><strong aria-hidden="true">19.</strong> April - June 2022</a></li></ol>
             </div>
             <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
         </nav>
@@ -153,9 +153,56 @@
 </ul>
 <p>The goal of this project is to create a standardized, generic, modular framework for automated packaging solutions, aiming for better flexibility, maintainability and usability.</p>
 <p>The intention is to integrate many existing 2nix converters into this framework, thereby improving many of the previously named aspects and providing a unified UX for all 2nix solutions.</p>
+<h3 id="modularity"><a class="header" href="#modularity">Modularity:</a></h3>
+<p>The following phases which are generic to basically all existing 2nix solutions:</p>
+<ul>
+<li>parsing project metadata</li>
+<li>resolving/locking dependencies (not always required)</li>
+<li>fetching sources</li>
+<li>building/installing packages</li>
+</ul>
+<p>... should be separated from each other with well defined interfaces.</p>
+<p>This will allow for free composition of different approaches for these phases.
+The user should be able to freely choose between:</p>
+<ul>
+<li>input metadata formats (eg. lock file formats)</li>
+<li>metadata fetching/translation strategies: IFD vs. in-tree</li>
+<li>source fetching strategies: granular fetching vs fetching via single large FOD to minimize expression file size</li>
+<li>installation strategies: build dependencies individually vs inside a single derivation.</li>
+</ul>
+<h3 id="customizability"><a class="header" href="#customizability">Customizability</a></h3>
+<p>Every Phase mentioned in the previous section should be customizable at a high degree via override functions. Practical examples:</p>
+<ul>
+<li>Inject extra requirements/dependencies</li>
+<li>fetch sources from alternative locations</li>
+<li>replace or modify sources</li>
+<li>customize the build/installation procedure</li>
+</ul>
+<h3 id="maintainability"><a class="header" href="#maintainability">Maintainability</a></h3>
+<p>Due to the modular architecture with strict interfaces, contributors can add support for new lock-file formats or new strategies for fetching, building, installing more easily.</p>
+<h3 id="compatibility"><a class="header" href="#compatibility">Compatibility</a></h3>
+<p>Depending on where the nix code is used, different approaches are desired or discouraged. While IFD might be desired for some out of tree projects to achieve simplified UX, it is strictly prohibited in nixpkgs due to nix/hydra limitations.
+All solutions which follow the dream2nix specification will be compatible with both approaches without having to re-invent the tool.</p>
+<h3 id="code-de-duplication"><a class="header" href="#code-de-duplication">Code de-duplication</a></h3>
+<p>Common problems that apply to many 2nix solutions can be solved once by the framework. Examples:</p>
+<ul>
+<li>handling cyclic dependencies</li>
+<li>handling sources from various origins (http, git, local, ...)</li>
+<li>generate nixpkgs/hydra friendly output (no IFD)</li>
+<li>good user interface</li>
+</ul>
+<h3 id="code-de-duplication-in-nixpkgs"><a class="header" href="#code-de-duplication-in-nixpkgs">Code de-duplication in nixpkgs</a></h3>
+<p>Essential components like package update scripts or fetching and override logic are provided by the dream2nix framework and are stored only once in the source tree instead of several times.</p>
+<h3 id="risk-free-opt-in-fod-fetching"><a class="header" href="#risk-free-opt-in-fod-fetching">Risk free opt-in FOD fetching</a></h3>
+<p>Optionally, to save more storage space, individual hashes for source can be omitted and a single large FOD used instead.
+Due to a unified minimalistic fetching layer the risk of FOD hash breakages should be very low.</p>
+<h3 id="common-ui-across-many-2nix-solutions"><a class="header" href="#common-ui-across-many-2nix-solutions">Common UI across many 2nix solutions</a></h3>
+<p>2nix solutions which follow the dream2nix framework will have a unified UI for workflows like project initialization or code generation. This will allow quicker onboarding of new users by providing familiar workflows across different build systems.</p>
+<h3 id="reduced-effort-to-develop-new-2nix-solutions"><a class="header" href="#reduced-effort-to-develop-new-2nix-solutions">Reduced effort to develop new 2nix solutions</a></h3>
+<p>Since the framework already solves common problems and provides an interface for integrating new build systems, developers will have an easier time creating their next 2nix solution.</p>
 <h3 id="further-reading"><a class="header" href="#further-reading">Further reading</a></h3>
 <ul>
-<li><a href="./intro/architectural-considerations.html">Architectural Considerations</a></li>
+<li><a href="./intro/architecture.html">Architectural Considerations</a></li>
 <li><a href="./intro/nixpkgs-improvements.html">Potential impact on nixpkgs</a></li>
 </ul>
 
