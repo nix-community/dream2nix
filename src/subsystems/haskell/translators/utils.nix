@@ -56,6 +56,8 @@ in {
     buildToolDepends =
       cabal.library.condTreeData.build-info.buildToolDepends or [];
 
+    buildTools = cabal.library.condTreeData.build-info.buildTools or [];
+
     defaultFlags = l.filter (flag: flag.default) cabal.package-flags;
 
     defaultFlagNames = l.map (flag: flag.name) defaultFlags;
@@ -76,7 +78,7 @@ in {
     depNames =
       l.map
       (dep: dep.package-name)
-      (targetBuildDepends ++ buildToolDepends ++ condBuildDepends);
+      (targetBuildDepends ++ buildToolDepends ++ buildTools ++ condBuildDepends);
   in
     depNames;
 
