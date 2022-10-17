@@ -14,16 +14,13 @@ libraries.io also supports other interesting popularity metrics:
   - forks
   - rank (source rank, see https://libraries.io/api#project-sourcerank)
 */
-{...}: {
-  indexBin = {
-    utils,
-    coreutils,
-    curl,
-    jq,
-    lib,
-    python3,
-    ...
-  }: let
+{
+  pkgs,
+  utils,
+  lib,
+  ...
+}: {
+  indexBin = let
     l = lib // builtins;
     platformMap = {
       npm = "npm";
@@ -33,7 +30,7 @@ libraries.io also supports other interesting popularity metrics:
     };
   in
     utils.writePureShellScript
-    [coreutils curl jq python3]
+    (with pkgs; [coreutils curl jq python3])
     ''
       input=''${1:?"please provide an input as a JSON file"}
 
