@@ -24,7 +24,7 @@ We started a larger refactoring effort, separating dream2nix internals into nixo
 - type checked and automatically documented user interfaces (similar to search.nixos.org for nixos)
 - better integration into nixos itself
 
-This is only partially complete yet, as we have to refactor module by module carefully while making sure to not break the current API. Once the internals are `modularized`, the final piece of work will be creating a new user interface using nixos modules as well.
+This is only partially complete yet, as we have to refactor module by module carefully while making sure to not break the current API. Currently, only translators, fetchers, builders and discoverers use the module system. Once the internals are `modularized`, the final piece of work will be creating a new user interface using nixos modules as well.
 
 ## More Changes
 
