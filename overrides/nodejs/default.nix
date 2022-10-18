@@ -600,7 +600,7 @@ in
           old
           ++ [
             pkgs.pkg-config
-            pkgs.libusb
+            pkgs.libusb1
           ];
       };
     };
