@@ -163,9 +163,7 @@
       import ./src rec {
         externalDir = externalDirFor."${system}";
         inherit externalPaths externalSources inputs lib pkgs;
-        config = {
-          inherit overridesDirs;
-        };
+        config = {inherit overridesDirs;};
       });
 
     docsCli = forAllSystems (

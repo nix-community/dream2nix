@@ -1,5 +1,0 @@
-{
-  config = {
-    _loaded = true;
-  };
-}

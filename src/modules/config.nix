@@ -1,5 +1,5 @@
 {
-  configRaw,
+  rawConfig,
   lib,
 }: let
   b = builtins;
@@ -19,14 +19,11 @@
     then input
     else throw "input for loadAttrs must be json file or string or attrs";
 
-  config = loadAttrs configRaw;
+  config = loadAttrs rawConfig;
 
   evaled = lib.evalModules {
     modules = [./config {inherit config;}];
     specialArgs = {inherit lib;};
   };
 in
-  # If the config was already loaded, then we skip validating it again
-  if configRaw._loaded or null == true
-  then configRaw
-  else evaled.config
+  evaled.config

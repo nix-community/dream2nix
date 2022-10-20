@@ -3,11 +3,6 @@
   t = l.types;
 in {
   options = {
-    _loaded = l.mkOption {
-      type = t.bool;
-      readOnly = true;
-      internal = true;
-    };
     overridesDirs = l.mkOption {
       type = t.listOf t.path;
       default = [];

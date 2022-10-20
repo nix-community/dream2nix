@@ -13,11 +13,14 @@
 
   initDream2nix = config: pkgs:
     import ./default.nix
-    {inherit config inputs pkgs externalPaths externalSources;};
+    {
+      loadedConfig = config;
+      inherit inputs pkgs externalPaths externalSources;
+    };
 
   loadConfig = config'': let
     config' = import ./modules/config.nix {
-      configRaw = config'';
+      rawConfig = config'';
       inherit lib;
     };
 

@@ -6,17 +6,16 @@
   pkgs ? import <nixpkgs> {},
   lib ? pkgs.lib,
   nix ? pkgs.nix,
-  # default to empty dream2nix config
+  # already validated config.
+  # this is mainly used by src/lib.nix since it loads the config beforehand.
+  loadedConfig ? null,
+  # default to empty dream2nix config. This is assumed to be not loaded.
   config ?
-    import ./modules/config.nix {
-      configRaw =
-        if builtins ? getEnv && builtins.getEnv "dream2nixConfig" != ""
-        # if called via CLI, load config via env
-        then builtins.toPath (builtins.getEnv "dream2nixConfig")
-        # load from default directory
-        else {};
-      inherit lib;
-    },
+    if builtins ? getEnv && builtins.getEnv "dream2nixConfig" != ""
+    # if called via CLI, load config via env
+    then builtins.toPath (builtins.getEnv "dream2nixConfig")
+    # load from default directory
+    else {},
   /*
   Inputs that are not required for building, and therefore not need to be
   copied alongside a dream2nix installation.
@@ -48,16 +47,18 @@
   # load from default directory
   else ./external,
 } @ args: let
-  argsConfig = config;
-in let
   b = builtins;
 
   l = lib // builtins;
 
-  config = import ./modules/config.nix {
-    configRaw = argsConfig;
-    inherit lib;
-  };
+  config =
+    if loadedConfig != null
+    then loadedConfig
+    else
+      import ./modules/config.nix {
+        inherit lib;
+        rawConfig = args.config;
+      };
 
   configFile = pkgs.writeText "dream2nix-config.json" (b.toJSON config);
 
