@@ -47,6 +47,8 @@
   # load from default directory
   else ./external,
 } @ args: let
+  argsConfig = config;
+in let
   b = builtins;
 
   l = lib // builtins;
@@ -57,7 +59,7 @@
     else
       import ./modules/config.nix {
         inherit lib;
-        rawConfig = args.config;
+        rawConfig = argsConfig;
       };
 
   configFile = pkgs.writeText "dream2nix-config.json" (b.toJSON config);
