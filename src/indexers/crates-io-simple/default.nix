@@ -1,14 +1,11 @@
-{...}: {
-  indexBin = {
-    utils,
-    coreutils,
-    curl,
-    jq,
-    python3,
-    ...
-  }:
+{
+  pkgs,
+  utils,
+  ...
+}: {
+  indexBin =
     utils.writePureShellScript
-    [coreutils curl jq python3]
+    (with pkgs; [coreutils curl jq python3])
     ''
       input=''${1:?"please provide an input as a JSON file"}
 

@@ -94,7 +94,6 @@ in let
       inherit externalSources;
       inherit inputs;
       inherit framework;
-      inherit indexers;
       inherit dream2nixWithExternals;
       inherit utils;
       inherit nix;
@@ -117,9 +116,6 @@ in let
 
   # apps for CLI and installation
   apps = callPackageDream ./apps {};
-
-  # indexer implementations
-  indexers = callPackageDream ./indexers {};
 
   # updater modules to find newest package versions
   updaters = callPackageDream ./updaters {};
@@ -732,7 +728,6 @@ in {
     callPackageDream
     dream2nixWithExternals
     framework
-    indexers
     fetchSources
     realizeProjects
     translateProjects

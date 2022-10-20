@@ -13,7 +13,6 @@
       construct
       containsMatchingFile
       dirNames
-      indexers
       latestVersion
       listDirs
       listFiles
@@ -27,7 +26,6 @@
       subsystems
       systemsFromFile
       traceJ
-      modules
       warnIfIfd
       parseSpdxId
       ;
@@ -43,9 +41,6 @@
 
   # other libs
   construct = import ./construct.nix {inherit lib;};
-  indexers = import ./indexers.nix {inherit dlib lib;};
-
-  modules = import ./modules.nix {inherit config dlib lib;};
 
   simpleTranslate2 =
     import ./simpleTranslate2.nix {inherit dlib lib;};

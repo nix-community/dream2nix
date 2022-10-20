@@ -24,6 +24,7 @@ in {
     ./discoverers.default-discoverer
     ./fetchers
     ./translators
+    ./indexers
   ];
   options = {
     apps = lib.mkOption {
