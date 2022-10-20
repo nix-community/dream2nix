@@ -13,10 +13,16 @@
 
   initDream2nix = config: pkgs:
     import ./default.nix
-    {inherit config inputs pkgs externalPaths externalSources;};
+    {
+      loadedConfig = config;
+      inherit inputs pkgs externalPaths externalSources;
+    };
 
   loadConfig = config'': let
-    config' = (import ./utils/config.nix).loadConfig config'';
+    config' = import ./modules/config.nix {
+      rawConfig = config'';
+      inherit lib;
+    };
 
     config =
       config'
@@ -197,7 +203,7 @@ in {
   inherit init makeFlakeOutputs makeFlakeOutputsForIndexes;
   dlib = import ./lib {
     inherit lib;
-    config = (import ./utils/config.nix).loadConfig {};
+    config = loadConfig {};
   };
   riseAndShine = throw "Use makeFlakeOutputs instead of riseAndShine.";
 }
