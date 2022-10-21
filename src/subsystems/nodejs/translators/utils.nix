@@ -16,12 +16,14 @@ in rec {
     (packageJson.dependencies or {})
     // (lib.optionalAttrs (! noDev) (packageJson.devDependencies or {}));
 
+  getWorkspaceParent = project:
+    if project ? subsystemInfo.workspaceParent
+    then "${project.subsystemInfo.workspaceParent}"
+    else "${project.relPath}";
+
   getWorkspaceLockFile = tree: project: fname: let
     # returns the parsed package-lock.json for a given project
-    dirRelPath =
-      if project ? subsystemInfo.workspaceParent
-      then "${project.subsystemInfo.workspaceParent}"
-      else "${project.relPath}";
+    dirRelPath = getWorkspaceParent project;
 
     packageJson =
       (tree.getNodeFromPath "${dirRelPath}/package.json").jsonContent;

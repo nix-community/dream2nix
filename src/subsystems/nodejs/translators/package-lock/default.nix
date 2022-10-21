@@ -8,8 +8,16 @@
   l = lib // builtins;
   nodejsUtils = import ../utils.nix {inherit dlib lib;};
 
+  getPackageLockPath = tree: project: let
+    parent = nodejsUtils.getWorkspaceParent project;
+    node = tree.getNodeFromPath parent;
+  in
+    if node.files ? "npm-shrinkwrap.json"
+    then "npm-shrinkwrap.json"
+    else "package-lock.json";
+
   getPackageLock = tree: project:
-    nodejsUtils.getWorkspaceLockFile tree project "package-lock.json";
+    nodejsUtils.getWorkspaceLockFile tree project (getPackageLockPath tree project);
 
   translate = {
     project,
@@ -109,7 +117,7 @@
               else
                 l.trace
                 ''
-                  WARNING: could not find dependency ${name} in package-lock.json
+                  WARNING: could not find dependency ${name} in ${getPackageLockPath args.tree project}
                   This might be expected for bundled dependencies of sub-dependencies.
                 ''
                 false)

@@ -45,7 +45,7 @@
         && (packageJson.workspaces or [] == [])
       then ["package-lock"]
       else
-        l.optionals (tree.files ? "package-lock.json") ["package-lock"]
+        l.optionals (tree.files ? "npm-shrinkwrap.json" || tree.files ? "package-lock.json") ["package-lock"]
         ++ l.optionals (tree.files ? "yarn.lock") ["yarn-lock"]
         ++ ["package-json"];
   in
