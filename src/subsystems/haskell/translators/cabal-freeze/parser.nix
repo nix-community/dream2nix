@@ -6,9 +6,12 @@
 
   cabalFreezeFileText = dlib.readTextFile cabalFreezeFile;
 
-  sectionNamesAndContents = l.tail (l.split "\n([^ \t:]+):" (
-    "\n" + (trimSurroundingWhitespace cabalFreezeFileText)
-  ));
+  sectionNamesAndContents = l.pipe cabalFreezeFileText [
+    trimSurroundingWhitespace
+    (s: "\n" + s)
+    (l.split "\n([^ \t:]+):")
+    l.tail
+  ];
 
   sectionNames = l.pipe sectionNamesAndContents [
     (l.filter l.isList)
