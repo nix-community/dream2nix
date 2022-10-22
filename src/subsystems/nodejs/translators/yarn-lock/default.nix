@@ -1,16 +1,17 @@
 {
   dlib,
   lib,
+  name,
   ...
 }: let
   l = lib // builtins;
-  nodejsUtils = import ../utils.nix {inherit lib;};
+  nodejsUtils = import ../utils.nix {inherit dlib lib;};
   parser = import ./parser.nix {inherit lib;};
 
   getYarnLock = tree: project:
     nodejsUtils.getWorkspaceLockFile tree project "yarn.lock";
 
-  translate = {translatorName, ...}: {
+  translate = {
     project,
     source,
     tree,
@@ -130,7 +131,9 @@
         then "path"
         else "http";
     in rec {
-      inherit defaultPackage translatorName;
+      inherit defaultPackage;
+
+      translatorName = name;
 
       location = relPath;
 
@@ -140,7 +143,10 @@
 
       subsystemName = "nodejs";
 
-      subsystemAttrs = {nodejsVersion = b.toString args.nodejs;};
+      subsystemAttrs = {
+        nodejsVersion = b.toString args.nodejs;
+        meta = nodejsUtils.getMetaFromPackageJson packageJson;
+      };
 
       keys = {
         yarnName = rawObj: finalObj:

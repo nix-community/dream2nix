@@ -15,7 +15,6 @@
 
     pre-commit-hooks.url = "github:cachix/pre-commit-hooks.nix";
     pre-commit-hooks.inputs.nixpkgs.follows = "nixpkgs";
-    # upstream flake-utils dep not supporting `aarch64-darwin` yet
     flake-utils-pre-commit.url = "github:numtide/flake-utils";
     pre-commit-hooks.inputs.flake-utils.follows = "flake-utils-pre-commit";
 
@@ -48,6 +47,17 @@
       url = "github:ipetkov/crane";
       flake = false;
     };
+
+    # required for haskell translators
+    all-cabal-json = {
+      url = "github:nix-community/all-cabal-json/hackage";
+      flake = false;
+    };
+
+    ghc-utils = {
+      url = "git+https://gitlab.haskell.org/bgamari/ghc-utils";
+      flake = false;
+    };
   };
 
   outputs = {
@@ -60,6 +70,8 @@
     poetry2nix,
     pre-commit-hooks,
     crane,
+    all-cabal-json,
+    ghc-utils,
     ...
   } @ inp: let
     b = builtins;
@@ -108,6 +120,22 @@
         "pkgs/installCargoArtifactsHook.sh"
         "LICENSE"
       ];
+      devshell = [
+        "modules/back-compat.nix"
+        "modules/commands.nix"
+        "modules/default.nix"
+        "modules/devshell.nix"
+        "modules/env.nix"
+        "modules/modules.nix"
+        "modules/modules-docs.nix"
+        "nix/ansi.nix"
+        "nix/mkNakedShell.nix"
+        "nix/source.nix"
+        "nix/strOrPackage.nix"
+        "nix/writeDefaultShellScript.nix"
+        "extra/language/c.nix"
+        "LICENSE"
+      ];
     };
 
     # create a directory containing the files listed in externalPaths
@@ -128,16 +156,20 @@
       (lib.attrNames externalPaths)
       (inputName: inp."${inputName}");
 
+    /*
+    Inputs that are not required for building, and therefore not need to be
+    copied alongside a dream2nix installation.
+    */
+    inputs = inp;
+
     overridesDirs = [(toString ./overrides)];
 
     # system specific dream2nix api
     dream2nixFor = forAllSystems (system: pkgs:
       import ./src rec {
         externalDir = externalDirFor."${system}";
-        inherit externalPaths externalSources lib pkgs;
-        config = {
-          inherit overridesDirs;
-        };
+        inherit externalPaths externalSources inputs lib pkgs;
+        config = {inherit overridesDirs;};
       });
 
     docsCli = forAllSystems (
@@ -152,7 +184,7 @@
     # Produces flake-like output schema.
     d2n-lib =
       (import ./src/lib.nix {
-        inherit externalPaths externalSources overridesDirs lib;
+        inherit externalPaths externalSources inputs overridesDirs lib;
         nixpkgsSrc = "${nixpkgs}";
       })
       # system specific dream2nix library

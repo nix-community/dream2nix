@@ -1,11 +1,13 @@
-{...}: {
+{
+  lib,
+  dlib,
+  pkgs,
+  externals,
+  ...
+} @ topArgs: {
   type = "pure";
 
   build = {
-    lib,
-    pkgs,
-    ...
-  } @ topArgs: {
     subsystemAttrs,
     defaultPackageName,
     defaultPackageVersion,
@@ -41,13 +43,16 @@
       produceDerivation pname (buildWithToolchain defaultToolchain {
         inherit pname version src;
 
+        meta = utils.getMeta pname version;
+
         cargoBuildFlags = cargoBuildFlags;
         cargoTestFlags = cargoBuildFlags;
 
         cargoVendorDir = "../nix-vendor";
+        dream2nixVendorDir = vendoring.vendoredDependencies;
 
         postUnpack = ''
-          ${vendoring.copyVendorDir "./nix-vendor"}
+          ${vendoring.copyVendorDir "$dream2nixVendorDir" "./nix-vendor"}
           export CARGO_HOME=$(pwd)/.cargo_home
         '';
 
@@ -63,16 +68,10 @@
       });
 
     mkShellForPkg = pkg:
-      pkg.overrideAttrs (old: {
-        buildInputs =
-          (old.buildInputs or [])
-          ++ (
-            with pkg.passthru.rustToolchain; [
-              cargo
-              rustc
-            ]
-          );
-      });
+      pkgs.callPackage ../devshell.nix {
+        inherit externals;
+        drv = pkg;
+      };
 
     allPackages =
       l.mapAttrs

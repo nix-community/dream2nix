@@ -14,25 +14,23 @@ libraries.io also supports other interesting popularity metrics:
   - forks
   - rank (source rank, see https://libraries.io/api#project-sourcerank)
 */
-{...}: {
-  indexBin = {
-    utils,
-    coreutils,
-    curl,
-    jq,
-    lib,
-    python3,
-    ...
-  }: let
+{
+  pkgs,
+  utils,
+  lib,
+  ...
+}: {
+  indexBin = let
     l = lib // builtins;
     platformMap = {
       npm = "npm";
       crates-io = "cargo";
       pypi = "pypi";
+      packagist = "packagist";
     };
   in
     utils.writePureShellScript
-    [coreutils curl jq python3]
+    (with pkgs; [coreutils curl jq python3])
     ''
       input=''${1:?"please provide an input as a JSON file"}
 
@@ -47,6 +45,7 @@ libraries.io also supports other interesting popularity metrics:
 
       export platform=$(jq '.platform' -c -r $input)
       export number=$(jq '.number' -c -r $input)
+      export urlSuffix=$(jq '.urlSuffix? //""' -c -r $input)
 
       # calculate number of pages to query
       # page size is always 100
@@ -55,13 +54,16 @@ libraries.io also supports other interesting popularity metrics:
 
       # get platform
       platformQuery=$(jq ".\"$platform\"" -c -r ${l.toFile "platform-map.json" (l.toJSON platformMap)})
+      if [ "$platformQuery" == "null" ]; then
+        platformQuery=$platform
+      fi
 
       echo "Starting to query $numPages pages..."
 
       echo "[]" > $outFile
       for page in $(seq 1 $numPages); do
         echo "requesting page $page"
-        url="https://libraries.io/api/search?page=$page&sort=dependents_count&per_page=100&platforms=$platformQuery&api_key=$apiKey"
+        url="https://libraries.io/api/search?page=$page&sort=dependents_count&per_page=100&platforms=$platformQuery&api_key=$apiKey$urlSuffix"
         curl -k "$url" | python3 ${./process-result.py} $outFile
       done
     '';

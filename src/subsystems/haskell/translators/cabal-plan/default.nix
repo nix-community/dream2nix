@@ -1,6 +1,7 @@
 {
   dlib,
   lib,
+  name,
   ...
 }: let
   l = lib // builtins;
@@ -37,7 +38,7 @@ in {
     l.pathExists "${tree.fullPath}/dist-newstyle/cache/plan.json";
 
   # translate from a given source and a project specification to a dream-lock.
-  translate = {translatorName, ...}: {
+  translate = {
     /*
     A list of projects returned by `discoverProjects`
     Example:
@@ -185,10 +186,11 @@ in {
       l.filter
       (rawObj: rawObj.style or null == "local")
       rawObjectsNonBuiltin;
+    compilerInfo = l.splitString "-" buildPlan.compiler-id;
   in
     dlib.simpleTranslate2.translate
     ({objectsByKey, ...}: rec {
-      inherit translatorName;
+      translatorName = name;
 
       # relative path of the project within the source tree.
       location = project.relPath;
@@ -199,11 +201,23 @@ in {
       # Extract subsystem specific attributes.
       # The structure of this should be defined in:
       #   ./src/specifications/{subsystem}
-      subsystemAttrs = let
-        compilerSplit = l.splitString "-" buildPlan.compiler-id;
-      in {
-        compilerName = l.elemAt compilerSplit 0;
-        compilerVersion = l.elemAt compilerSplit 1;
+      subsystemAttrs = {
+        cabalHashes =
+          l.listToAttrs
+          (
+            l.map
+            (
+              rawObj:
+                l.nameValuePair
+                "${rawObj.pkg-name}#${rawObj.pkg-version}"
+                rawObj.pkg-cabal-sha256
+            )
+            (l.filter (rawObj: rawObj ? pkg-cabal-sha256) serializedRawObjects)
+          );
+        compiler = {
+          name = l.head compilerInfo;
+          version = l.last compilerInfo;
+        };
       };
 
       # name of the default package

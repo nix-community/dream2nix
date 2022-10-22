@@ -47,11 +47,11 @@ utils.writePureShellScriptBin
   echo -e "\nTranslating:: $name (translator: $translator) (lock path: $dreamLockPath)"
 
   # allow pre-built translator executables to avoid the `nix build` on each run
-  if [ -n "$TRANSLATOR_DIR" ]; then
+  if [ -n "''${TRANSLATOR_DIR:-""}" ]; then
     translateBin="$TRANSLATOR_DIR/$translator"
   else
     translateBin=$(${callNixWithD2N} build --print-out-paths --no-link "
-      dream2nix.framework.translatorInstances.$translator.translateBin
+      dream2nix.framework.translators.$translator.finalTranslateBin
     ")
   fi
 

@@ -13,6 +13,14 @@
 }: let
   l = lib // builtins;
 in rec {
+  getMeta = pname: version: let
+    meta = subsystemAttrs.meta.${pname}.${version};
+  in
+    meta
+    // {
+      license = l.map (name: l.licenses.${name}) meta.license;
+    };
+
   # Gets the root source for a package
   getRootSource = pname: version: let
     root = getRoot pname version;

@@ -1,11 +1,12 @@
-{...}: {
+{
+  lib,
+  pkgs,
+  externals,
+  ...
+} @ topArgs: {
   type = "ifd";
+
   build = {
-    lib,
-    pkgs,
-    externals,
-    ...
-  } @ topArgs: {
     subsystemAttrs,
     defaultPackageName,
     defaultPackageVersion,
@@ -83,8 +84,9 @@
           pnameSuffix = depsNameSuffix;
           # Make sure cargo only checks the package we want
           cargoCheckCommand = "cargo check --release --package ${pname}";
+          dream2nixVendorDir = vendoring.vendoredDependencies;
           preUnpack = ''
-            ${vendoring.copyVendorDir "$cargoVendorDir"}
+            ${vendoring.copyVendorDir "$dream2nixVendorDir" "$cargoVendorDir"}
           '';
           # move the vendored dependencies folder to $out for main derivation to use
           postInstall = ''
@@ -99,10 +101,11 @@
       buildArgs =
         common
         // {
+          meta = utils.getMeta pname version;
           cargoArtifacts = deps;
           # link the vendor dir we used earlier to the correct place
           preUnpack = ''
-            ln -sf ${deps}/nix-vendor $cargoVendorDir
+            ${vendoring.copyVendorDir "$cargoArtifacts/nix-vendor" "$cargoVendorDir"}
           '';
           # write our cargo lock
           # note: we don't do this in buildDepsOnly since
@@ -118,42 +121,19 @@
       pname
       (buildPackageWithToolchain defaultToolchain buildArgs);
 
-    # TODO: this does not carry over environment variables from the
-    # dependencies derivation. this could cause confusion for users.
     mkShellForPkg = pkg: let
       pkgDeps = pkg.passthru.dependencies;
+      depsShell = pkgs.callPackage ../devshell.nix {
+        inherit externals;
+        drv = pkgDeps;
+      };
+      mainShell = pkgs.callPackage ../devshell.nix {
+        inherit externals;
+        drv = pkg;
+      };
+      shell = depsShell.combineWith mainShell;
     in
-      pkg.overrideAttrs (old: {
-        # we have to set these to empty because crane uses the phases
-        # to compile & test. buildRustPackage uses hooks instead so that's
-        # why build-rust-package doesn't need to do this.
-        buildPhase = "";
-        checkPhase = "";
-        # we have to have some output, so we just record the build inputs
-        # to a file (like mkShell does). this makes the derivation buildable.
-        # see https://github.com/NixOS/nixpkgs/pull/153194.
-        installPhase = "echo >> $out && export >> $out";
-
-        # set cargo artifacts to empty string so that dependencies
-        # derivation doesn't get built when entering devshell.
-        cargoArtifacts = "";
-
-        # merge build inputs from main drv and dependencies drv.
-        buildInputs = l.unique (
-          (old.buildInputs or [])
-          ++ (pkgDeps.buildInputs or [])
-          ++ [
-            (
-              pkg.passthru.rustToolchain.cargoHostTarget
-              or pkg.passthru.rustToolchain.cargo
-            )
-          ]
-        );
-        nativeBuildInputs = l.unique (
-          (old.nativeBuildInputs or [])
-          ++ (pkgDeps.nativeBuildInputs or [])
-        );
-      });
+      shell;
 
     allPackages =
       l.mapAttrs

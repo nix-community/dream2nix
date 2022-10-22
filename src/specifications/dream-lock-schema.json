@@ -52,6 +52,7 @@
                       "url": { "type": "string" },
                       "rev": { "type": "string" },
                       "ref": { "type": "string" },
+                      "submodules": { "type": "boolean" },
                       "hash": { "type": "string" },
                       "type": { "type": "string" },
                       "dir": { "type": "string" }

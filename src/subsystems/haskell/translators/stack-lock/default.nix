@@ -1,56 +1,13 @@
 {
   dlib,
   lib,
+  pkgs,
+  utils,
+  name,
+  inputs,
   ...
 }: let
   l = lib // builtins;
-
-  hiddenPackagesDefault = {
-    # TODO: unblock these packages and implement actual logic to interpret the
-    # flags found in cabal files
-    Win32 = null;
-
-    # These are the packages which are already contained in the ghc package.
-    # This list actually depends on the ghc version used.
-    # see: https://gitlab.haskell.org/ghc/ghc/-/wikis/commentary/libraries/version-history
-    # and: https://gitlab.haskell.org/bgamari/ghc-utils/-/blob/master/library-versions/pkg_versions.txt
-    # TODO: Generate this list dynamically for the given ghc version via pkg_versions.txt
-    array = null;
-    base = null;
-    binary = null;
-    bytestring = null;
-    Cabal = null;
-    containers = null;
-    deepseq = null;
-    directory = null;
-    dns-internal = null;
-    fast-digits-internal = null;
-    filepath = null;
-    ghc = null;
-    ghc-boot = null;
-    ghc-boot-th = null;
-    ghc-compact = null;
-    ghc-heap = null;
-    ghc-prim = null;
-    ghci = null;
-    haskeline = null;
-    hpc = null;
-    integer-gmp = null;
-    libiserv = null;
-    mtl = null;
-    parsec = null;
-    pretty = null;
-    process = null;
-    rts = null;
-    stm = null;
-    template-haskell = null;
-    terminfo = null;
-    text = null;
-    time = null;
-    transformers = null;
-    unix = null;
-    xhtml = null;
-  };
 in {
   type = "ifd";
 
@@ -67,23 +24,14 @@ in {
 
   discoverProject = tree:
     l.any
-    (filename: l.hasSuffix ".cabal" filename)
+    (filename: l.hasSuffix "stack.yaml.lock" filename)
     (l.attrNames tree.files);
 
   # translate from a given source and a project specification to a dream-lock.
-  translate = {
-    translatorName,
-    pkgs,
-    utils,
-    ...
-  }: let
+  translate = let
     stackLockUtils = import ./utils.nix {inherit dlib lib pkgs;};
     all-cabal-hashes = let
-      all-cabal-hashes' = pkgs.runCommandLocal "all-cabal-hashes" {} ''
-        mkdir $out
-        cd $out
-        tar --strip-components 1 -xf ${pkgs.all-cabal-hashes}
-      '';
+      all-cabal-hashes' = inputs.all-cabal-json;
       names = dlib.listDirs all-cabal-hashes';
       getVersions = name: dlib.listDirs "${all-cabal-hashes'}/${name}";
     in
@@ -93,7 +41,7 @@ in {
         (getVersions name)
         (
           version:
-            (l.fromJSON (l.readFile "${all-cabal-hashes'}/${name}/${version}/${name}.json"))
+            (l.fromJSON (l.readFile "${all-cabal-hashes'}/${name}/${version}/${name}.hashes.json"))
             .package-hashes
         ));
   in
@@ -133,8 +81,13 @@ in {
 
       snapshot = stackLockUtils.fromYaml snapshotYamlFile;
 
+      compiler = snapshot.resolver.compiler;
+      compilerSplit = l.splitString "-" snapshot.resolver.compiler;
+      compilerName = l.head compilerSplit;
+      compilerVersion = l.last compilerSplit;
+
       hidden =
-        hiddenPackagesDefault;
+        haskellUtils.ghcVersionToHiddenPackages."${compilerVersion}" or haskellUtils.ghcVersionToHiddenPackages."9.0.2";
       # TODO: find out what to do with the hidden packages from the snapshot
       # Currently it looks like those should not be included
       # // (
@@ -153,7 +106,7 @@ in {
         (rawObj: dlib.nameVersionPair rawObj.name rawObj.version)
         serializedRawObjects;
 
-      haskellUtils = import ../utils.nix {inherit lib pkgs;};
+      haskellUtils = import ../utils.nix {inherit inputs lib pkgs;};
 
       cabalData =
         haskellUtils.batchFindJsonFromCabalCandidates
@@ -183,50 +136,10 @@ in {
       in {
         inherit name version hash;
       };
-
-      getDependencyNames = finalObj: objectsByName: let
-        cabal = with finalObj;
-          cabalData.${name}.${version};
-
-        targetBuildDepends =
-          cabal.library.condTreeData.build-info.targetBuildDepends or [];
-
-        buildToolDepends =
-          cabal.library.condTreeData.build-info.buildToolDepends or [];
-
-        defaultFlags = l.filter (flag: flag.default) cabal.package-flags;
-
-        defaultFlagNames = l.map (flag: flag.name) defaultFlags;
-
-        collectBuildDepends = condTreeComponent:
-          l.concatMap
-          (attrs: attrs.targetBuildDepends)
-          (l.collect
-            (x: x ? targetBuildDepends)
-            condTreeComponent);
-
-        # TODO: use flags to determine which conditional deps are required
-        condBuildDepends =
-          l.concatMap
-          (component: collectBuildDepends component)
-          cabal.library.condTreeComponents or [];
-
-        depNames =
-          l.map
-          (dep: dep.package-name)
-          (targetBuildDepends ++ buildToolDepends ++ condBuildDepends);
-      in
-        l.filter
-        (name:
-          # ensure package is not a hidden package
-            (! hidden ? ${name})
-            # ignore packages which are not part of the snapshot or lock file
-            && (objectsByName ? ${name}))
-        depNames;
     in
       dlib.simpleTranslate2.translate
       ({objectsByKey, ...}: rec {
-        inherit translatorName;
+        translatorName = name;
 
         # relative path of the project within the source tree.
         location = project.relPath;
@@ -237,8 +150,24 @@ in {
         # Extract subsystem specific attributes.
         # The structure of this should be defined in:
         #   ./src/specifications/{subsystem}
-        # TODO: put ghc version here
-        subsystemAttrs = {};
+        subsystemAttrs = {
+          cabalHashes =
+            l.listToAttrs
+            (
+              l.map
+              (
+                rawObj:
+                  l.nameValuePair
+                  "${rawObj.name}#${rawObj.version}"
+                  rawObj.hash
+              )
+              serializedRawObjects
+            );
+          compiler = {
+            name = compilerName;
+            version = compilerVersion;
+          };
+        };
 
         # name of the default package
         defaultPackage = cabal.description.package.name;
@@ -255,10 +184,7 @@ in {
         /*
         a list of raw package objects
         */
-        serializedRawObjects =
-          l.map
-          parseStackLockEntry
-          (stackLock.packages ++ snapshot.packages);
+        inherit serializedRawObjects;
 
         /*
         Define extractor functions which each extract one property from
@@ -275,15 +201,22 @@ in {
           version = rawObj: finalObj:
             rawObj.version;
 
-          dependencies = rawObj: finalObj: let
-            depNames = getDependencyNames finalObj objectsByKey.name;
-          in
-            l.map
-            (depName: {
-              name = depName;
-              version = objectsByKey.name.${depName}.version;
-            })
-            depNames;
+          dependencies = rawObj: finalObj:
+            l.pipe cabalData
+            [
+              (haskellUtils.getDependencyNames finalObj)
+              (l.filter
+                (name:
+                  # ensure package is not a hidden package
+                    (! hidden ? ${name})
+                    # ignore packages which are not part of the snapshot or lock file
+                    && (objectsByKey.name ? ${name})))
+              (l.map
+                (depName: {
+                  name = depName;
+                  version = objectsByKey.name.${depName}.version;
+                }))
+            ];
 
           sourceSpec = rawObj: finalObj:
           # example
@@ -291,7 +224,7 @@ in {
           {
             type = "http";
             url = haskellUtils.getHackageUrl finalObj;
-            hash = with finalObj; "sha256:${all-cabal-hashes.${name}.${version}.SHA256}";
+            hash = "sha256:${all-cabal-hashes.${finalObj.name}.${finalObj.version}.SHA256}";
           };
         };
 

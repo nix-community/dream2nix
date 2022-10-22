@@ -6,14 +6,27 @@
   pkgs ? import <nixpkgs> {},
   lib ? pkgs.lib,
   nix ? pkgs.nix,
-  # default to empty dream2nix config
+  # already validated config.
+  # this is mainly used by src/lib.nix since it loads the config beforehand.
+  loadedConfig ? null,
+  # default to empty dream2nix config. This is assumed to be not loaded.
   config ?
-  # if called via CLI, load config via env
-  if builtins ? getEnv && builtins.getEnv "dream2nixConfig" != ""
-  then (import ./utils/config.nix).loadConfig (builtins.toPath (builtins.getEnv "dream2nixConfig"))
-  # load from default directory
-  else (import ./utils/config.nix).loadConfig {},
-  # dependencies of dream2nix
+    if builtins ? getEnv && builtins.getEnv "dream2nixConfig" != ""
+    # if called via CLI, load config via env
+    then builtins.toPath (builtins.getEnv "dream2nixConfig")
+    # load from default directory
+    else {},
+  /*
+  Inputs that are not required for building, and therefore not need to be
+  copied alongside a dream2nix installation.
+  */
+  inputs ?
+    (import ../flake-compat.nix {
+      src = ../.;
+      inherit (pkgs) system;
+    })
+    .inputs,
+  # dependencies of dream2nix builders
   externalSources ?
     lib.genAttrs
     (lib.attrNames (builtins.readDir externalDir))
@@ -40,31 +53,37 @@ in let
 
   l = lib // builtins;
 
-  config = (import ./utils/config.nix).loadConfig argsConfig;
+  config =
+    if loadedConfig != null
+    then loadedConfig
+    else
+      import ./modules/config.nix {
+        inherit lib;
+        rawConfig = argsConfig;
+      };
 
   configFile = pkgs.writeText "dream2nix-config.json" (b.toJSON config);
 
   dlib = import ./lib {
-    inherit lib;
-    config = (import ./utils/config.nix).loadConfig config;
+    inherit lib config;
     inherit framework;
   };
 
-  evaledModules = lib.evalModules {
-    modules =
-      [./modules/top-level.nix]
-      ++ (config.modules or []);
-
-    # TODO: remove specialArgs once all functionality is moved to /src/modules
-    specialArgs = {
-      inherit
-        callPackageDream
-        dlib
-        ;
-    };
+  framework = import ./modules/framework.nix {
+    inherit
+      inputs
+      apps
+      lib
+      dlib
+      pkgs
+      utils
+      externals
+      externalSources
+      dream2nixWithExternals
+      ;
+    dream2nixConfigFile = configFile;
+    dream2nixConfig = config;
   };
-
-  framework = evaledModules.config;
 
   /*
   The nixos module system seems to break pkgs.callPackage.
@@ -82,13 +101,11 @@ in let
       inherit dlib;
       inherit externals;
       inherit externalSources;
-      inherit fetchers;
+      inherit inputs;
       inherit framework;
-      inherit indexers;
       inherit dream2nixWithExternals;
       inherit utils;
       inherit nix;
-      inherit subsystems;
       dream2nixInterface = {
         inherit
           makeOutputsForDreamLock
@@ -109,18 +126,14 @@ in let
   # apps for CLI and installation
   apps = callPackageDream ./apps {};
 
-  # fetcher implementations
-  fetchers = callPackageDream ./fetchers {};
-
-  # indexer implementations
-  indexers = callPackageDream ./indexers {};
-
   # updater modules to find newest package versions
   updaters = callPackageDream ./updaters {};
 
-  subsystems = callPackageDream ./subsystems {};
-
   externals = {
+    devshell = {
+      makeShell = import "${externalSources.devshell}/modules" pkgs;
+      imports.c = "${externalSources.devshell}/extra/language/c.nix";
+    };
     crane = let
       importLibFile = name: import "${externalSources.crane}/lib/${name}.nix";
 
@@ -238,15 +251,15 @@ in let
   findBuilder = dreamLock: let
     subsystem = dreamLock._generic.subsystem;
   in
-    if ! subsystems."${subsystem}" ? builders
+    if ! framework.buildersBySubsystem ? ${subsystem}
     then throw "Could not find any builder for subsystem '${subsystem}'"
-    else subsystems."${subsystem}".builders.default;
+    else framework.buildersBySubsystem.${subsystem}.default;
 
   # detect if granular or combined fetching must be used
   findFetcher = dreamLock:
     if null != dreamLock._generic.sourcesAggregatedHash
-    then fetchers.combinedFetcher
-    else fetchers.defaultFetcher;
+    then framework.functions.combinedFetcher
+    else framework.functions.defaultFetcher;
 
   # fetch only sources and do not build
   fetchSources = {
@@ -390,7 +403,7 @@ in let
       if builder == null
       then findBuilder dreamLock
       else if l.isString builder
-      then subsystems.${dreamLock._generic.subsystem}.builders.${builder}
+      then framework.buildersBySubsystem.${dreamLock._generic.subsystem}.${builder}
       else builder;
 
     fetcher' =
@@ -432,7 +445,7 @@ in let
 
   translateProjects = {
     discoveredProjects ?
-      dlib.discoverers.discoverProjects
+      framework.functions.discoverers.discoverProjects
       {inherit projects settings tree;},
     projects ? {},
     source ? throw "Pass either `source` or `tree` to translateProjects",
@@ -441,7 +454,7 @@ in let
     settings ? [],
   } @ args: let
     getTranslator = translatorName:
-      framework.translatorInstances.${translatorName};
+      framework.translators.${translatorName};
 
     isImpure = project: translatorName:
       (getTranslator translatorName).type == "impure";
@@ -506,7 +519,7 @@ in let
       l.forEach projectsPureUnresolved
       (proj: let
         translator = getTranslator proj.translator;
-        dreamLock'' = translator.translate {
+        dreamLock'' = translator.finalTranslate {
           inherit source tree discoveredProjects;
           project = proj;
         };
@@ -644,7 +657,7 @@ in let
   makeOutputs = {
     source ? throw "pass a 'source' to 'makeOutputs'",
     discoveredProjects ?
-      dlib.discoverers.discoverProjects {
+      framework.functions.discoverers.discoverProjects {
         inherit projects settings source;
       },
     pname ? null,
@@ -657,7 +670,7 @@ in let
     impureDiscoveredProjects =
       l.filter
       (proj:
-        framework.translatorInstances."${proj.translator}".type
+        framework.translators."${proj.translator}".type
         == "impure")
       discoveredProjects;
 
@@ -723,9 +736,7 @@ in {
     apps
     callPackageDream
     dream2nixWithExternals
-    fetchers
     framework
-    indexers
     fetchSources
     realizeProjects
     translateProjects
@@ -734,6 +745,5 @@ in {
     utils
     makeOutputsForDreamLock
     makeOutputs
-    subsystems
     ;
 }

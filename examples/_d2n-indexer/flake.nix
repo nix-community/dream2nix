@@ -7,17 +7,21 @@
     (inp.dream2nix.lib.makeFlakeOutputsForIndexes {
       source = ./.;
       systems = ["x86_64-linux"];
-      indexes = {
-        libraries-io = {
+      indexes = [
+        {
+          name = "libraries-io";
           platform = "npm";
           number = 5;
-        };
-        crates-io = {};
-        crates-io-simple = {
+        }
+        {
+          name = "crates-io";
+        }
+        {
+          name = "crates-io-simple";
           sortBy = "name";
           maxPages = 1;
-        };
-      };
+        }
+      ];
       packageOverrides = {
         "^.*$".disable-build = {
           buildScript = ":";

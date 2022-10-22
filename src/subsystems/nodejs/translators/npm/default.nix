@@ -1,31 +1,17 @@
 {
-  dlib,
-  lib,
+  apps,
+  utils,
+  pkgs,
+  translators,
   ...
 }: {
   type = "impure";
 
   # the input format is specified in /specifications/translator-call-example.json
   # this script receives a json file including the input paths and specialArgs
-  translateBin = {
-    # dream2nix utils
-    apps,
-    subsystems,
-    utils,
-    # nixpkgs dependenies
-    bash,
-    coreutils,
-    git,
-    jq,
-    moreutils,
-    nodePackages,
-    openssh,
-    python3,
-    writeScriptBin,
-    ...
-  }:
+  translateBin =
     utils.writePureShellScript
-    [
+    (with pkgs; [
       bash
       coreutils
       git
@@ -34,7 +20,7 @@
       nodePackages.npm
       openssh
       python3
-    ]
+    ])
     ''
       # accroding to the spec, the translator reads the input from a json file
       jsonInput=$1
@@ -64,21 +50,21 @@
       popd
 
       # call package-lock translator
-      ${subsystems.nodejs.translators.package-lock.translateBin} $TMPDIR/newJsonInput
+      ${translators.package-lock.finalTranslateBin} $TMPDIR/newJsonInput
 
       # get resolved package version
       export version=$(npm view $candidate version)
 
       # set correct package version under `packages`
       cat $outputFile \
-        | python3 ${./fixup-dream-lock.py} $TMPDIR/sourceInfo.json \
+        | python3 ${./fixup-dream-lock.py} \
         | sponge $outputFile
 
     '';
 
   # inherit options from package-lock translator
   extraArgs =
-    dlib.translators.translators.nodejs.package-lock.extraArgs
+    translators.package-lock.extraArgs
     // {
       npmArgs = {
         description = "Additional arguments for npm";

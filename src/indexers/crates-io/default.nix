@@ -1,15 +1,16 @@
-{...}: {
-  indexBin = {
-    rustPlatform,
-    runCommandLocal,
-    openssl,
-    pkg-config,
-    zlib,
-    curl,
-    libssh2,
-    libgit2,
-    ...
-  }: let
+{pkgs, ...}: {
+  indexBin = let
+    inherit
+      (pkgs)
+      rustPlatform
+      runCommandLocal
+      openssl
+      pkg-config
+      zlib
+      curl
+      libssh2
+      libgit2
+      ;
     package = rustPlatform.buildRustPackage {
       name = "indexer";
 

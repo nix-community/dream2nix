@@ -17,20 +17,38 @@
         (builtins.toFile "cargo-toml-new.nix" ''
           {
             translators.cargo-toml-new = {
-              imports = ["${inp.dream2nix}/src/subsystems/rust/translators/cargo-toml"];
+              imports = [(attrs: import "${inp.dream2nix}/src/subsystems/rust/translators/cargo-toml" attrs.framework)];
               name = "cargo-toml-new";
               subsystem = "rust";
             };
           }
         '')
+        (builtins.toFile "brp-new.nix" ''
+          {
+            builders.brp-new = {
+              imports = [(attrs: import "${inp.dream2nix}/src/subsystems/rust/builders/build-rust-package" attrs.framework)];
+              name = "brp-new";
+              subsystem = "rust";
+            };
+          }
+        '')
+        (builtins.toFile "cargo-new.nix" ''
+          {
+            discoverers.cargo-new = {
+              imports = [(attrs: import "${inp.dream2nix}/src/subsystems/rust/discoverers/cargo" attrs.framework)];
+              name = "cargo-new";
+              subsystem = "rust";
+            };
+          }
+        '')
+        (builtins.toFile "crates-io-new.nix" ''
+          {config, ...}: {
+            fetchers.crates-io = config.lib.mkForce {
+              imports = [(attrs: import "${inp.dream2nix}/src/fetchers/crates-io" attrs.framework)];
+            };
+          }
+        '')
       ];
-      config.extra = {
-        subsystems.rust = {
-          builders.brp-new = "${inp.dream2nix}/src/subsystems/rust/builders/build-rust-package";
-          discoverers.default = "${inp.dream2nix}/src/subsystems/rust/discoverers/default";
-        };
-        fetchers.crates-io = "${inp.dream2nix}/src/fetchers/crates-io";
-      };
       source = src;
       settings = [
         {

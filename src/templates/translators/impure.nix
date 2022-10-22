@@ -43,7 +43,7 @@ in {
   translateBin = {
     # dream2nix utils
     utils,
-    # nixpkgs dependenies
+    # nixpkgs dependencies
     bash,
     coreutils,
     jq,
@@ -67,7 +67,7 @@ in {
       source=$(jq '.source' -c -r $jsonInput)
       relPath=$(jq '.project.relPath' -c -r $jsonInput)
 
-      cd $TMPDIR
+      pushd $TMPDIR
       # TODO:
       # read input files/dirs and produce a json file at $outputFile
       # containing the dream lock similar to /src/specifications/dream-lock-example.json

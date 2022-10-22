@@ -8,15 +8,11 @@
   # exported attributes
   dlib = {
     inherit
-      builders
       calcInvalidationHash
       callViaEnv
       construct
       containsMatchingFile
       dirNames
-      discoverers
-      fetchers
-      indexers
       latestVersion
       listDirs
       listFiles
@@ -25,15 +21,13 @@
       readTextFile
       recursiveUpdateUntilDepth
       simpleTranslate2
-      translators
-      sanitizeDerivationName
       sanitizePath
       sanitizeRelativePath
       subsystems
       systemsFromFile
       traceJ
-      modules
       warnIfIfd
+      parseSpdxId
       ;
 
     inherit
@@ -46,14 +40,7 @@
   subsystems = dirNames ../subsystems;
 
   # other libs
-  builders = import ./builders.nix {inherit dlib lib config;};
   construct = import ./construct.nix {inherit lib;};
-  discoverers = import ./discoverers.nix {inherit config dlib lib;};
-  fetchers = import ./fetchers.nix {inherit dlib lib;};
-  translators = import ./translators.nix {inherit dlib lib;};
-  indexers = import ./indexers.nix {inherit dlib lib;};
-
-  modules = import ./modules.nix {inherit config dlib lib;};
 
   simpleTranslate2 =
     import ./simpleTranslate2.nix {inherit dlib lib;};
@@ -279,9 +266,6 @@
   recursiveUpdateUntilDepth = depth: lhs: rhs:
     lib.recursiveUpdateUntil (path: _: _: (l.length path) > depth) lhs rhs;
 
-  sanitizeDerivationName = name:
-    lib.replaceStrings ["@" "/"] ["__at__" "__slash__"] name;
-
   sanitizeRelativePath = path:
     l.removePrefix "/" (l.toString (l.toPath "/${path}"));
 
@@ -322,5 +306,21 @@
     (ifdWarningEnabled && module.type == "ifd")
     (ifdWarnMsg module)
     val;
+
+  idToLicenseKey =
+    l.mapAttrs'
+    (n: v: l.nameValuePair (l.toLower (v.spdxId or v.fullName or n)) n)
+    l.licenses;
+  # Parses a string like "Unlicense OR MIT" to `["unlicense" "mit"]`
+  # TODO: this does not parse `AND` or `WITH` or paranthesis, so it is
+  # pretty hacky in how it works. But for most cases this should be okay.
+  parseSpdxId = _id: let
+    # some spdx ids might have paranthesis around them
+    id = l.removePrefix "(" (l.removeSuffix ")" _id);
+    licenseStrings = l.map l.toLower (l.splitString " OR " id);
+    _licenses = l.map (string: idToLicenseKey.${string} or null) licenseStrings;
+    licenses = l.filter (license: license != null) _licenses;
+  in
+    licenses;
 in
   dlib

@@ -19,7 +19,6 @@
   callPackageDream,
   dream2nixWithExternals,
   externalSources,
-  subsystems,
   config,
   configFile,
   framework,
@@ -65,7 +64,6 @@ in
       parseGitUrl
       readTextFile
       recursiveUpdateUntilDepth
-      sanitizeDerivationName
       traceJ
       ;
 
@@ -182,7 +180,7 @@ in
       aggregate = project.aggregate or false;
 
       translator =
-        framework.translatorInstances."${project.translator}";
+        framework.translators."${project.translator}";
 
       argsJsonFile =
         pkgs.writeText "translator-args.json"
@@ -208,7 +206,7 @@ in
         ''
           dreamLockPath="${project.dreamLockPath}"
 
-          ${translator.translateBin} ${argsJsonFile}
+          ${translator.finalTranslateBin} ${argsJsonFile}
 
           # aggregate source hashes
           if [ "${l.toJSON aggregate}" == "true" ]; then

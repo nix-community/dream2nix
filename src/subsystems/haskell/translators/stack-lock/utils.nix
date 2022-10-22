@@ -10,14 +10,32 @@
     sha256 = "1qc703yg0babixi6wshn5wm2kgl5y1drcswgszh4xxzbrwkk9sv7";
   });
 in rec {
-  all-cabal-hashes = pkgs.runCommandLocal "all-cabal-hashes" {} ''
-    mkdir $out
-    cd $out
-    tar --strip-components 1 -xf ${pkgs.all-cabal-hashes}
-  '';
-
   # The cabal2json program
-  cabal2json = pkgs.haskell.packages.ghc8107.cabal2json;
+  cabal2json = let
+    haskellLib = pkgs.haskell.lib.compose;
+    haskellPackages = pkgs.haskell.packages.ghc8107.override {
+      overrides = _: prev: {
+        autodocodec = l.pipe prev.autodocodec [
+          haskellLib.markUnbroken
+          haskellLib.dontCheck
+        ];
+        validity-aeson = l.pipe prev.validity-aeson [
+          haskellLib.dontCheck
+          haskellLib.markUnbroken
+        ];
+        validity =
+          haskellLib.overrideCabal (_: {
+            patches = [];
+          })
+          (haskellLib.dontCheck prev.validity);
+      };
+    };
+    cabal2json' = haskellPackages.cabal2json.override {
+      Cabal = haskellLib.dontCheck haskellPackages.Cabal_3_2_1_0;
+    };
+    cabal2json = haskellLib.dontCheck cabal2json';
+  in
+    cabal2json;
 
   # parse cabal file via IFD
   fromCabal = file: name: let

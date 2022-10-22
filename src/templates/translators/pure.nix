@@ -56,26 +56,24 @@ in
       /*
         A list of projects returned by `discoverProjects`
         Example:
-          [
-            {
-              "dreamLockPath": "packages/optimism/dream-lock.json",
-              "name": "optimism",
-              "relPath": "",
-              "subsystem": "nodejs",
-              "subsystemInfo": {
-                "workspaces": [
-                  "packages/common-ts",
-                  "packages/contracts",
-                  "packages/core-utils",
-                ]
-              },
-              "translator": "yarn-lock",
-              "translators": [
-                "yarn-lock",
-                "package-json"
+          {
+            "dreamLockPath": "packages/optimism/dream-lock.json",
+            "name": "optimism",
+            "relPath": "",
+            "subsystem": "nodejs",
+            "subsystemInfo": {
+              "workspaces": [
+                "packages/common-ts",
+                "packages/contracts",
+                "packages/core-utils",
               ]
-            }
-          ]
+            },
+            "translator": "yarn-lock",
+            "translators": [
+              "yarn-lock",
+              "package-json"
+            ]
+          }
       */
       project,
 

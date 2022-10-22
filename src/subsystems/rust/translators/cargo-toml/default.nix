@@ -1,28 +1,20 @@
 {
-  dlib,
-  lib,
+  pkgs,
+  utils,
+  translators,
   ...
 }: {
   type = "impure";
 
   # the input format is specified in /specifications/translator-call-example.json
   # this script receives a json file including the input paths and specialArgs
-  translateBin = {
-    # dream2nix utils
-    subsystems,
-    utils,
-    # nixpkgs dependenies
-    coreutils,
-    jq,
-    rustPlatform,
-    ...
-  }:
+  translateBin =
     utils.writePureShellScript
-    [
+    (with pkgs; [
       coreutils
       jq
       rustPlatform.rust.cargo
-    ]
+    ])
     ''
       # according to the spec, the translator reads the input from a json file
       jsonInput=$1
@@ -47,7 +39,7 @@
       popd
 
       if [ $cargoResult -eq 0 ]; then
-        ${subsystems.rust.translators.cargo-lock.translateBin} $TMPDIR/newJsonInput
+        ${translators.cargo-lock.finalTranslateBin} $TMPDIR/newJsonInput
       else
         echo "cargo failed to generate the lockfile"
         exit 1
@@ -56,7 +48,7 @@
 
   # inherit options from cargo-lock translator
   extraArgs =
-    dlib.translators.translators.rust.cargo-lock.extraArgs
+    translators.cargo-lock.extraArgs
     // {
       cargoArgs = {
         description = "Additional arguments for Cargo";

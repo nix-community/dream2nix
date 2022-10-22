@@ -7,15 +7,22 @@
   overridesDirs,
   externalSources,
   externalPaths,
+  inputs,
 } @ args: let
   l = lib // builtins;
 
   initDream2nix = config: pkgs:
     import ./default.nix
-    {inherit config pkgs externalPaths externalSources;};
+    {
+      loadedConfig = config;
+      inherit inputs pkgs externalPaths externalSources;
+    };
 
   loadConfig = config'': let
-    config' = (import ./utils/config.nix).loadConfig config'';
+    config' = import ./modules/config.nix {
+      rawConfig = config'';
+      inherit lib;
+    };
 
     config =
       config'
@@ -89,10 +96,21 @@
     config = loadConfig (args.config or {});
     dlib = import ./lib {inherit lib config;};
 
+    framework = import ./modules/framework.nix {
+      inherit lib dlib externalSources inputs;
+      dream2nixConfig = config;
+      dream2nixConfigFile = l.toFile "dream2nix-config.json" (l.toJSON config);
+      apps = throw "apps is not available before nixpkgs is imported";
+      pkgs = throw "pkgs is not available before nixpkgs is imported";
+      utils = throw "utils is not available before nixpkgs is imported";
+      externals = throw "externals is not available before nixpkgs is imported";
+      dream2nixWithExternals = throw "not available before nixpkgs is imported";
+    };
+
     initD2N = initDream2nix config;
     dream2nixFor = l.mapAttrs (_: pkgs: initD2N pkgs) allPkgs;
 
-    discoveredProjects = dlib.discoverers.discoverProjects {
+    discoveredProjects = framework.functions.discoverers.discoverProjects {
       inherit projects settings;
       tree = dlib.prepareSourceTree {inherit source;};
     };
@@ -147,7 +165,6 @@
     allPkgs = makeNixpkgs pkgs systems;
 
     config = loadConfig (args.config or {});
-    dlib = import ./lib {inherit lib config;};
 
     initD2N = initDream2nix config;
     dream2nixFor = l.mapAttrs (_: pkgs: initD2N pkgs) allPkgs;
@@ -182,11 +199,11 @@
       flakifiedOutputsList;
   in
     flakeOutputs;
-in rec {
+in {
   inherit init makeFlakeOutputs makeFlakeOutputsForIndexes;
   dlib = import ./lib {
     inherit lib;
-    config = (import ./utils/config.nix).loadConfig {};
+    config = loadConfig {};
   };
   riseAndShine = throw "Use makeFlakeOutputs instead of riseAndShine.";
 }

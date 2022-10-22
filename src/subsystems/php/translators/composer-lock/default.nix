@@ -1,4 +1,5 @@
 {
+  name,
   dlib,
   lib,
   ...
@@ -24,10 +25,6 @@ in {
 
   # translate from a given source and a project specification to a dream-lock.
   translate = {
-    translatorName,
-    callPackageDream,
-    ...
-  }: {
     /*
     A list of projects returned by `discoverProjects`
     Example:
@@ -94,6 +91,12 @@ in {
     noDev,
     ...
   } @ args: let
+    inherit
+      (import ../../semver.nix {inherit lib;})
+      satisfies
+      multiSatisfies
+      ;
+
     # get the root source and project source
     rootSource = tree.fullPath;
     projectSource = "${tree.fullPath}/${project.relPath}";
@@ -102,120 +105,121 @@ in {
     composerJson = (projectTree.getNodeFromPath "composer.json").jsonContent;
     composerLock = (projectTree.getNodeFromPath "composer.lock").jsonContent;
 
-    inherit
-      (callPackageDream ../../utils.nix {})
-      satisfiesSemver
-      multiSatisfiesSemver
-      ;
+    # toplevel php semver
+    phpSemver = composerJson.require."php" or "*";
+    # all the php extensions
+    phpExtensions = let
+      allDepNames = l.flatten (map (x: l.attrNames (getRequire x)) packages);
+      extensions = l.unique (l.filter (l.hasPrefix "ext-") allDepNames);
+    in
+      map (l.removePrefix "ext-") extensions;
 
+    composerPluginApiSemver = l.listToAttrs (l.flatten (map
+      (
+        pkg: let
+          requires = getRequire pkg;
+        in
+          l.optional (requires ? "composer-plugin-api")
+          {
+            name = "${pkg.name}@${pkg.version}";
+            value = requires."composer-plugin-api";
+          }
+      )
+      packages));
+
+    # get cleaned pkg attributes
+    getRequire = pkg:
+      l.mapAttrs
+      (_: version: resolvePkgVersion pkg version)
+      (pkg.require or {});
+    getProvide = pkg:
+      l.mapAttrs
+      (_: version: resolvePkgVersion pkg version)
+      (pkg.provide or {});
+    getReplace = pkg:
+      l.mapAttrs
+      (_: version: resolvePkgVersion pkg version)
+      (pkg.replace or {});
+
+    resolvePkgVersion = pkg: version:
+      if version == "self.version"
+      then pkg.version
+      else version;
+
+    # project package
+    toplevelPackage = {
+      name = project.name;
+      version = composerJson.version or "unknown";
+      source = {
+        type = "path";
+        path = rootSource;
+      };
+      require =
+        (l.optionalAttrs (!noDev) (composerJson.require-dev or {}))
+        // (composerJson.require or {});
+    };
     # all the packages
     packages =
-      composerLock.packages
-      ++ (
-        if noDev
-        then []
-        else composerLock.packages-dev
-      );
-
-    # packages with replacements applied
+      # Add the top-level package, this is not written in composer.lock
+      [toplevelPackage]
+      ++ composerLock.packages
+      ++ (l.optionals (!noDev) (composerLock.packages-dev or []));
+    # packages with replace/provide applied
     resolvedPackages = let
-      getProvide = pkg: (pkg.provide or {});
-      getReplace = pkg: let
-        resolveVersion = _: version:
-          if version == "self.version"
-          then pkg.version
-          else version;
-      in
-        l.mapAttrs resolveVersion (pkg.replace or {});
-      provide = pkg: dep: let
-        requirements = getDependencies pkg;
-        providements = getProvide dep;
-        cleanRequirements =
+      apply = pkg: dep: candidates: let
+        original = getRequire pkg;
+        applied =
           l.filterAttrs (
             name: semver:
-              !((providements ? "${name}")
-                && (multiSatisfiesSemver providements."${name}" semver))
+              !((candidates ? "${name}") && (multiSatisfies candidates."${name}" semver))
           )
-          requirements;
+          original;
       in
         pkg
         // {
           require =
-            cleanRequirements
+            applied
             // (
-              if requirements != cleanRequirements
-              then {"${dep.name}" = "${dep.version}";}
-              else {}
+              l.optionalAttrs
+              (applied != original)
+              {"${dep.name}" = "${dep.version}";}
             );
         };
-      replace = pkg: dep: let
-        requirements = getDependencies pkg;
-        replacements = getReplace dep;
-        cleanRequirements =
-          l.filterAttrs (
-            name: semver:
-              !((replacements ? "${name}")
-                && (satisfiesSemver replacements."${name}" semver))
-          )
-          requirements;
-      in
-        pkg
-        // {
-          require =
-            cleanRequirements
-            // (
-              if requirements != cleanRequirements
-              then {"${dep.name}" = "${dep.version}";}
-              else {}
-            );
-        };
-      doReplace = pkg: l.foldl replace pkg packages;
-      doProvide = pkg: l.foldl provide pkg packages;
       dropMissing = pkgs: let
         doDropMissing = pkg:
           pkg
           // {
             require =
               l.filterAttrs
-              (name: semver: l.any (pkg: (pkg.name == name) && (satisfiesSemver pkg.version semver)) pkgs)
-              (getDependencies pkg);
+              (name: semver: l.any (pkg: (pkg.name == name) && (satisfies pkg.version semver)) pkgs)
+              (getRequire pkg);
           };
       in
         map doDropMissing pkgs;
-      resolve = pkg: (doProvide (doReplace pkg));
+      doReplace = pkg:
+        l.foldl
+        (pkg: dep: apply pkg dep (getProvide dep))
+        pkg
+        packages;
+      doProvide = pkg:
+        l.foldl
+        (pkg: dep: apply pkg dep (getReplace dep))
+        pkg
+        packages;
     in
-      dropMissing (map resolve packages);
-
-    # toplevel php semver
-    phpSemver = composerJson.require."php" or "*";
-    # all the php extensions
-    phpExtensions = let
-      all = map (pkg: l.attrsets.attrNames (getDependencies pkg)) resolvedPackages;
-      flat = l.lists.flatten all;
-      extensions = l.filter (l.strings.hasPrefix "ext-") flat;
-    in
-      map (l.strings.removePrefix "ext-") (l.lists.unique extensions);
-
-    # get dependencies
-    getDependencies = pkg:
-      l.mapAttrs
-      (name: version:
-        if version == "self.version"
-        then pkg.version
-        else version)
-      (pkg.require or {});
+      dropMissing (map (pkg: (doProvide (doReplace pkg))) packages);
 
     # resolve semvers into exact versions
     pinPackages = pkgs: let
       clean = requires:
         l.filterAttrs
         (name: _:
-          (l.all (x: name != x) ["php" "composer/composer" "composer-runtime-api"])
+          !(l.elem name ["php" "composer-plugin-api" "composer-runtime-api"])
           && !(l.strings.hasPrefix "ext-" name))
         requires;
       doPin = name: semver:
         (l.head
-          (l.filter (dep: satisfiesSemver dep.version semver)
+          (l.filter (dep: satisfies dep.version semver)
             (l.filter (dep: dep.name == name)
               resolvedPackages)))
         .version;
@@ -229,7 +233,7 @@ in {
   in
     dlib.simpleTranslate2.translate
     ({objectsByKey, ...}: rec {
-      inherit translatorName;
+      translatorName = name;
 
       # relative path of the project within the source tree.
       location = project.relPath;
@@ -241,11 +245,13 @@ in {
       # The structure of this should be defined in:
       #   ./src/specifications/{subsystem}
       subsystemAttrs = {
+        inherit noDev;
         inherit phpSemver phpExtensions;
+        inherit composerPluginApiSemver;
       };
 
       # name of the default package
-      defaultPackage = project.name;
+      defaultPackage = toplevelPackage.name;
 
       /*
       List the package candidates which should be exposed to the user.
@@ -253,7 +259,7 @@ in {
       Users will not be interested in all individual dependencies.
       */
       exportedPackages = {
-        "${defaultPackage}" = composerJson.version or "unknown";
+        "${defaultPackage}" = toplevelPackage.version;
       };
 
       /*
@@ -261,27 +267,7 @@ in {
       If the upstream format is a deep attrset, this list should contain
       a flattened representation of all entries.
       */
-      serializedRawObjects = pinPackages (
-        [
-          # Add the top-level package, this is not written in composer.lock
-          {
-            name = defaultPackage;
-            version = exportedPackages."${defaultPackage}";
-            source = {
-              type = "path";
-              path = projectSource;
-            };
-            require =
-              (
-                if noDev
-                then {}
-                else composerJson.require-dev or {}
-              )
-              // composerJson.require;
-          }
-        ]
-        ++ resolvedPackages
-      );
+      serializedRawObjects = pinPackages resolvedPackages;
 
       /*
       Define extractor functions which each extract one property from
@@ -301,17 +287,33 @@ in {
         dependencies = rawObj: finalObj:
           l.attrsets.mapAttrsToList
           (name: version: {inherit name version;})
-          (getDependencies rawObj);
+          (getRequire rawObj);
 
         sourceSpec = rawObj: finalObj:
-          if rawObj.source.type == "path"
+          if rawObj ? "source" && rawObj.source.type == "path"
           then {
             inherit (rawObj.source) type path;
+            rootName = finalObj.name;
+            rootVersion = finalObj.version;
           }
-          else {
+          else if rawObj ? "source" && rawObj.source.type == "git"
+          then {
             inherit (rawObj.source) type url;
             rev = rawObj.source.reference;
-          };
+            submodules = false;
+          }
+          else if rawObj ? "dist" && rawObj.dist.type == "path"
+          then {
+            inherit (rawObj.dist) type;
+            path = rawObj.dist.url;
+            rootName = finalObj.name;
+            rootVersion = finalObj.version;
+          }
+          else
+            l.abort ''
+              Cannot find source for ${finalObj.name}@${finalObj.version},
+              rawObj: ${l.toJSON rawObj}
+            '';
       };
 
       /*

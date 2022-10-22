@@ -1,4 +1,9 @@
-{lib, ...}: let
+{
+  pkgs,
+  lib,
+  utils,
+  ...
+}: let
   b = builtins;
 
   # check if a string is a git ref
@@ -14,12 +19,9 @@ in {
   versionField = "rev";
 
   outputs = {
-    fetchgit,
-    utils,
-    ...
-  }: {
     url,
     rev,
+    submodules ? true,
     ...
   } @ inp: let
     isRevGitRef = isGitRef rev;
@@ -58,7 +60,7 @@ in {
               inherit url;
               # disable fetching all refs if the source specifies a ref
               allRefs = ! hasGitRef;
-              submodules = true;
+              inherit submodules;
             }));
 
       # git can either be verified via revision or hash.
@@ -74,14 +76,14 @@ in {
               // {
                 inherit url;
                 allRefs = true;
-                submodules = true;
+                inherit submodules;
               })
         else
-          fetchgit
+          pkgs.fetchgit
           (refAndRev
             // {
               inherit url;
-              fetchSubmodules = true;
+              fetchSubmodules = submodules;
               sha256 = hash;
             });
     };

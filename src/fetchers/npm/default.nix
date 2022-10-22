@@ -1,4 +1,9 @@
-{lib, ...}: let
+{
+  pkgs,
+  lib,
+  utils,
+  ...
+}: let
   b = builtins;
 in rec {
   inputs = ["pname" "version"];
@@ -36,14 +41,9 @@ in rec {
   # defaultUpdater = "";
 
   outputs = {
-    python3,
-    utils,
-    fetchurl,
-    ...
-  }: {
     pname,
     version,
-  } @ inp: let
+  }: let
     b = builtins;
 
     submodule = lib.last (lib.splitString "/" pname);
@@ -56,7 +56,7 @@ in rec {
 
     fetched = hash: let
       source =
-        (fetchurl {
+        (pkgs.fetchurl {
           inherit url;
           sha256 = hash;
         })

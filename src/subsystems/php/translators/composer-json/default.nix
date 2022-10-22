@@ -1,10 +1,9 @@
 {
-  dlib,
-  lib,
+  pkgs,
+  utils,
+  translators,
   ...
-}: let
-  l = lib // builtins;
-in {
+}: {
   type = "impure";
 
   # A derivation which outputs a single executable at `$out`.
@@ -18,25 +17,15 @@ in {
   # by the input parameter `outFile`.
   # The output file must contain the dream lock data encoded as json.
   # See /src/specifications/dream-lock-example.json
-  translateBin = {
-    # dream2nix utils
-    subsystems,
-    utils,
-    # nixpkgs dependenies
-    bash,
-    coreutils,
-    jq,
-    phpPackages,
-    writeScriptBin,
-    ...
-  }:
+  translateBin =
     utils.writePureShellScript
-    [
+    (with pkgs; [
       bash
       coreutils
+      moreutils
       jq
       phpPackages.composer
-    ]
+    ])
     ''
       # accroding to the spec, the translator reads the input from a json file
       jsonInput=$1
@@ -57,21 +46,29 @@ in {
       echo "translating in temp dir: $(pwd)"
 
       # create lockfile
+      mv composer.json composer.json.orig
+
+      jq \
+        "(.config.lock = true) | \
+         (.config.\"platform-check\" = false) | \
+         (.authors = []) | \
+         (.require = ((.require // {}) | with_entries(.key |= ascii_downcase))) | \
+         (.\"require-dev\" = ((.\"require-dev\" // {}) | with_entries(.key |= ascii_downcase)))" \
+        composer.json.orig > composer.json
+
       if [ "$(jq '.project.subsystemInfo.noDev' -c -r $jsonInput)" == "true" ]; then
         echo "excluding dev dependencies"
-        jq '.require-dev = {}' ./composer.json > composer.json.mod
-        mv composer.json.mod composer.json
-        composer update --no-install --no-dev
-      else
-        composer update --no-install
+        jq \
+          '.require-dev = {}' \
+          composer.json | sponge composer.json
       fi
+      composer update --ignore-platform-reqs --no-scripts --no-plugins --no-install
 
       jq ".source = \"$newSource\"" -c -r $jsonInput > $TMPDIR/newJsonInput
-
       popd
-      ${subsystems.php.translators.composer-lock.translateBin} $TMPDIR/newJsonInput
+      ${translators.composer-lock.finalTranslateBin} $TMPDIR/newJsonInput
     '';
 
   # inherit options from composer-lock translator
-  extraArgs = dlib.translators.translators.php.composer-lock.extraArgs;
+  extraArgs = translators.composer-lock.extraArgs;
 }
