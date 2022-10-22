@@ -4,6 +4,17 @@
 
 This guide walks you through the process of setting up nix for your project using dream2nix. This will allow your project's build and dev-environment to be reproduced by machines of other developers or CI systems with high accuracy.
 
+## Outline
+
+0. Install nix
+1. Navigate to your python project
+2. Initialize the dream2nix flake
+3. Define target platform(s)
+4. List the available packages
+5. Build the project
+6. Create a development shell
+7. Resolve impurities
+
 {{#include ../install-nix.md}}
 
 ## Navigate to your python project
@@ -21,16 +32,7 @@ wrote: /tmp/my_project/flake.nix
 Great, this created a new file `flake.nix` which is like a recipe that tells nix how to build our python project or how to assemble a development environment for it.
 By modifying this file, we can tweak settings and change the way our package gets built by nix. But for now we just go with the defaults.
 
-## Define the target platform
-Before we can start, we need to tell dream2nix which platform we want to build software for.
-Dream2nix will read these platforms from the file `./nix_systems`.
-To get started we will just add our current platform to it with the following command.
-```command
-> nix eval --impure --raw --expr 'builtins.currentSystem' > ./nix_systems
-> git add ./nix_systems
-```
-Don't forget to add the file `./nix_systems` to git, otherwise it will be ignored.
-If you want to support more platforms later, just add more lines to that file.
+{{#include ../define-targets.md}}
 
 ## List the available packages
 Let's get an overview of what the `flake.nix` allows us to do with our project.
@@ -66,7 +68,7 @@ Our flake.nix imported external libraries. The versions of these libraries have 
 
     The packages which we can see here is my python package and a package called `resolveImpure`, which is a special package provided by dream2nix which we will learn more about later.
 
-## Build the Project
+## Build the project
 Let's try building our project.
 If you get an error about `unresolved impurities`, see [Resolve Impurities](#resolve-impurities)
 ```command
@@ -83,7 +85,7 @@ First, ensure that your project [is resolved](#resolve-impurities), then execute
 ```
 The `-c $SHELL` part is only necessary if you use a different shell than bash and would like to bring that shell with you into the dev environment.
 
-## Resolve Impurities
+## Resolve impurities
 If you try to build, you might run into the following error.
 ```command
 > nix build .#default

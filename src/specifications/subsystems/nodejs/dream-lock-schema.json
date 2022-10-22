@@ -1,0 +1,16 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema",
+  "title": "manifest",
+  "type": "object",
+  "properties": {
+    "_subsystem": {
+      "type": "object",
+      "required": ["nodejsVersion"],
+      "properties": {
+        "nodejsVersion": {
+          "type": "string"
+        }
+      }
+    }
+  }
+}

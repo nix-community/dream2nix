@@ -1,0 +1,10 @@
+{
+  "name": "test-built-binary",
+  "version": "1.0.0",
+  "bin": {
+    "main": "./main.js"
+  },
+  "scripts": {
+    "build": "touch main.js"
+  }
+}

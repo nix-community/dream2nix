@@ -1,7 +1,7 @@
 ## Install nix
 If you don't have nix already, check out [nixos.org/download.html](https://nixos.org/download.html) on how to install it.
 
-## Enable the nix flakes feature
+### Enable the nix flakes feature
 For internal dependency management dream2nix requires the experimental nix feature `flakes` being enabled.
 ```
 export NIX_CONFIG="extras-experimental-features = flakes nix-command"

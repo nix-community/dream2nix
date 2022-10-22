@@ -6,7 +6,7 @@ from cleo.helpers import option
 
 
 dream2nix_src = "./src"
-subsystem_dir = dream2nix_src + f"/subsystems/"
+subsystem_dir = dream2nix_src + f"/subsystems"
 
 class ContributeCommand(Command):
 
@@ -50,7 +50,7 @@ class ContributeCommand(Command):
     module = f"{module}s"
 
     subsystem = self.option('subsystem')
-    known_subsystems = list(dir for dir in os.listdir(subsystem_dir) if os.path.isdir(subsystem_dir + dir))
+    known_subsystems = list(dir for dir in os.listdir(subsystem_dir) if os.path.isdir(f"{subsystem_dir}/{dir}"))
     if not subsystem:
       subsystem = self.choice(
         'Select subsystem',

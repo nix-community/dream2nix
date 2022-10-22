@@ -8,7 +8,9 @@
 # Subsystems
 - [Rust](./subsystems/rust.md)
 - [Python](./subsystems/python.md)
+- [Node.js](./subsystems/node.md)
 - [Haskell](./subsystems/haskell.md)
+- [PHP](./subsystems/php.md)
 
 # Concepts
 - [Architectural Considerations](./intro/architectural-considerations.md)
@@ -16,6 +18,7 @@
 - [Override system](./intro/override-system.md)
 - [Translators](./intro/translators.md)
 - [Indexers](./intro/indexers.md)
+- [Fetchers](./intro/fetchers.md)
 
 # Contributing
 - [Extending dream2nix](./extending-dream2nix.md)

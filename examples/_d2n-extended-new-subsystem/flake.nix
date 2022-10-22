@@ -11,6 +11,9 @@
       systems = ["x86_64-linux"];
       config.projectRoot = ./.;
       config.extra = ./extra.nix;
+      config.modules = [
+        ./translators.nix
+      ];
       source = ./.;
       settings = [
         {

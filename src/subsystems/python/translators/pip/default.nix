@@ -36,13 +36,15 @@ in {
       jsonInput=$1
 
       # read the json input
-      outputFile=$WORKDIR/$(jq '.outputFile' -c -r $jsonInput)
+      outputFile=$(realpath -m $(jq '.outputFile' -c -r $jsonInput))
       source="$(jq '.source' -c -r $jsonInput)/$(jq '.project.relPath' -c -r $jsonInput)"
       name="$(jq '.project.name' -c -r $jsonInput)"
       pythonAttr=$(jq '.pythonAttr' -c -r $jsonInput)
       extraSetupDeps=$(jq '[.extraSetupDeps[]] | join(" ")' -c -r $jsonInput)
 
       sitePackages=$(nix eval --impure --raw --expr "(import <nixpkgs> {}).$pythonAttr.sitePackages")
+
+      pushd $TMPDIR
 
       # build python and pip executables
       tmpBuild=$(mktemp -d)
@@ -87,7 +89,7 @@ in {
       cd ./source
       export NAME=$name
       export VERSION=$($python ./setup.py --version 2>/dev/null)
-      cd $WORKDIR
+      popd
       $python ${./generate-dream-lock.py} $tmp $jsonInput
 
       rm -rf $tmp $tmpBuild

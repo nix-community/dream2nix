@@ -31,7 +31,6 @@
 
     buildPackage = pname: version: let
       src = utils.getRootSource pname version;
-      vendorDir = vendoring.vendoredDependencies;
       replacePaths =
         utils.replaceRelativePathsWithAbsolute
         subsystemAttrs.relPathReplacements.${pname}.${version};
@@ -48,7 +47,7 @@
         cargoVendorDir = "../nix-vendor";
 
         postUnpack = ''
-          ln -s ${vendorDir} ./nix-vendor
+          ${vendoring.copyVendorDir "./nix-vendor"}
           export CARGO_HOME=$(pwd)/.cargo_home
         '';
 

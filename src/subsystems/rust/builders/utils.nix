@@ -115,6 +115,8 @@ in rec {
           else null;
       in
         source;
+      # TODO: this is currently unused but will be used in the future, see
+      # comment down below in dependencies.
       getDepSource = name: version: let
         sourceSpec = getSourceSpec name version;
       in
@@ -133,13 +135,27 @@ in rec {
     in
       {
         inherit name version;
+        # put dependencies like how cargo expects them
         dependencies =
           l.map
           (
             dep: let
-              src = getDepSource dep.name dep.version;
+              # only put version if there are different versions of the dep
+              hasMultipleVersions =
+                (l.length (l.attrValues dreamLock.sources.${dep.name})) > 1;
+              versionString =
+                l.optionalString hasMultipleVersions " ${dep.version}";
+              # TODO: we need to comment out this and put the srcString only
+              # if there are duplicate versions of a dependency. This currently
+              # doesn't matter for us since the two Rust builders we have
+              # (brp and crane) use cargo, and cargo vendor does not support
+              # duplicate dependency versions. However if we get a more granular
+              # builder that does not use cargo, we would be able to test and
+              # support this, since we wouldn't be limited to cargo's functionality.
+              # src = getDepSource dep.name dep.version;
+              src = null;
               srcString = l.optionalString (src != null) " (${src})";
-            in "${dep.name} ${dep.version}${srcString}"
+            in "${dep.name}${versionString}${srcString}"
           )
           dependencies;
       }
@@ -166,7 +182,11 @@ in rec {
       )
       dreamLock.dependencies
     );
-    lockTOML = utils.toTOML {inherit package;};
+    lockTOML = utils.toTOML {
+      # the lockfile we generate is of version 3
+      version = 3;
+      inherit package;
+    };
   in
     pkgs.writeText "Cargo.lock" lockTOML;
 }

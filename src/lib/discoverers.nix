@@ -13,7 +13,7 @@
     dlib.modules.collectSubsystemModules dlib.translators.translators;
 
   translatorsWithDiscoverFunc =
-    l.filter (translator: translator ? discoverProject) allTranslators;
+    l.filter (translator: translator.discoverProject or null != null) allTranslators;
 
   defaultDiscoverer.discover = {tree}: let
     translatorsCurrentDir =
@@ -65,6 +65,7 @@
   );
 
   discoverProjects = {
+    projects,
     source ? throw "Pass either `source` or `tree` to discoverProjects",
     tree ? dlib.prepareSourceTree {inherit source;},
     settings ? [],
@@ -78,19 +79,22 @@
     discoveredProjectsSorted = let
       sorted =
         l.sort
-        (p1: p2: l.hasPrefix p1.relPath p2.relPath)
+        (p1: p2: l.hasPrefix p1.relPath or "" p2.relPath or "")
         discoveredProjects;
     in
       sorted;
 
-    rootProject = l.head discoveredProjectsSorted;
+    allProjects = discoveredProjectsSorted ++ (l.attrValues projects);
+
+    rootProject = l.head allProjects;
 
     projectsExtended =
-      l.forEach discoveredProjectsSorted
+      l.forEach allProjects
       (proj:
         proj
         // {
-          translator = l.head proj.translators;
+          relPath = proj.relPath or "";
+          translator = proj.translator or (l.head proj.translators);
           dreamLockPath = getDreamLockPath proj rootProject;
         });
   in
@@ -98,7 +102,7 @@
 
   getDreamLockPath = project: rootProject:
     dlib.sanitizeRelativePath
-    "${config.packagesDir}/${rootProject.name}/${project.relPath}/dream-lock.json";
+    "${config.packagesDir}/${rootProject.name}/${project.relPath or ""}/dream-lock.json";
 
   applyProjectSettings = projects: settingsList: let
     settingsListForProject = project:

@@ -10,7 +10,6 @@
 utils.writePureShellScript
 [nix]
 ''
-  cd $WORKDIR
   nix ''${@:1:$#-1} --impure --expr "
     let
       nixpkgs = <nixpkgs>;

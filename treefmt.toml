@@ -4,4 +4,5 @@ includes = ["*.nix"]
 excludes = [
   "overrides/nodejs/electron/*",
   "src/templates/translators/*",
+  "src/modules/_template/*",
 ]

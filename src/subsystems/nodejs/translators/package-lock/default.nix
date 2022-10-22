@@ -170,7 +170,7 @@
 
       subsystemName = "nodejs";
 
-      subsystemAttrs = {nodejsVersion = args.nodejs;};
+      subsystemAttrs = {nodejsVersion = b.toString args.nodejs;};
 
       # functions
       serializePackages = inputData: let

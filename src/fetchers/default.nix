@@ -11,7 +11,7 @@
 in rec {
   fetchers = dlib.fetchers.mapFetchers callFetcher;
 
-  defaultFetcher = callPackageDream ./default-fetcher.nix {inherit fetchers fetchSource;};
+  defaultFetcher = callPackageDream ./default-fetcher.nix {inherit fetchSource;};
 
   combinedFetcher = callPackageDream ./combined-fetcher.nix {inherit defaultFetcher;};
 

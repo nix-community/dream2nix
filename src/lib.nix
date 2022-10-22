@@ -75,6 +75,7 @@
     inject ? {},
     pname ? throw "Please pass `pname` to makeFlakeOutputs",
     packageOverrides ? {},
+    projects ? {},
     settings ? [],
     sourceOverrides ? oldSources: {},
   } @ args: let
@@ -92,7 +93,7 @@
     dream2nixFor = l.mapAttrs (_: pkgs: initD2N pkgs) allPkgs;
 
     discoveredProjects = dlib.discoverers.discoverProjects {
-      inherit settings;
+      inherit projects settings;
       tree = dlib.prepareSourceTree {inherit source;};
     };
 
@@ -137,8 +138,7 @@
     pkgs ? null,
     config ? {},
     source,
-    indexNames,
-    overrideOutputs ? args: {},
+    indexes,
     inject ? {},
     packageOverrides ? {},
     settings ? [],
@@ -159,8 +159,7 @@
         allOutputs = dream2nix.utils.makeOutputsForIndexes {
           inherit
             source
-            indexNames
-            overrideOutputs
+            indexes
             inject
             packageOverrides
             settings

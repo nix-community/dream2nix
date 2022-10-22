@@ -22,6 +22,7 @@
   subsystems,
   config,
   configFile,
+  framework,
   ...
 }: let
   b = builtins;
@@ -33,7 +34,7 @@
 
   translatorUtils = callPackageDream ./translator.nix {};
 
-  indexUtils = callPackageDream ./index.nix {};
+  indexUtils = callPackageDream ./index {};
 
   poetry2nixSemver = import "${externalSources.poetry2nix}/semver.nix" {
     inherit lib;
@@ -100,15 +101,12 @@ in
 
         export PATH="${lib.makeBinPath availablePrograms}"
         export NIX_PATH=nixpkgs=${pkgs.path}
-        export WORKDIR="$PWD"
 
         TMPDIR=$(${coreutils}/bin/mktemp -d)
-        cd $TMPDIR
+
+        trap '${coreutils}/bin/rm -rf "$TMPDIR"' EXIT
 
         ${script}
-
-        cd
-        ${coreutils}/bin/rm -rf $TMPDIR
       '';
 
     # builder to create a shell script that has it's own PATH
@@ -119,15 +117,12 @@ in
 
         export PATH="${lib.makeBinPath availablePrograms}"
         export NIX_PATH=nixpkgs=${pkgs.path}
-        export WORKDIR="$PWD"
 
         TMPDIR=$(${coreutils}/bin/mktemp -d)
-        cd $TMPDIR
+
+        trap '${coreutils}/bin/rm -rf "$TMPDIR"' EXIT
 
         ${script}
-
-        cd
-        ${coreutils}/bin/rm -rf $TMPDIR
       '';
 
     # TODO is this really needed? Seems to make builds slower, why not unpack + build?
@@ -187,7 +182,7 @@ in
       aggregate = project.aggregate or false;
 
       translator =
-        subsystems."${project.subsystem}".translators."${project.translator}";
+        framework.translatorInstances."${project.translator}";
 
       argsJsonFile =
         pkgs.writeText "translator-args.json"
@@ -197,7 +192,7 @@ in
             project = l.removeAttrs args.project ["dreamLock"];
             outputFile = project.dreamLockPath;
           }
-          // (dlib.translators.getextraArgsDefaults translator.extraArgs or {})
+          // (framework.functions.translators.makeTranslatorDefaultArgs translator.extraArgs or {})
           // args.project.subsystemInfo or {}
         ));
       script =
@@ -213,7 +208,6 @@ in
         ''
           dreamLockPath="${project.dreamLockPath}"
 
-          cd $WORKDIR
           ${translator.translateBin} ${argsJsonFile}
 
           # aggregate source hashes
@@ -238,6 +232,18 @@ in
             --instance $dreamLockPath \
             --output pretty \
             ${../specifications/dream-lock-schema.json}
+
+          # if applicable, validate subsystem portion against jsonschema
+          subsystem=$(jq '._generic.subsystem' $dreamLockPath)
+          subsystem=''${subsystem%\"}
+          subsystem=''${subsystem#\"}
+          schema=${../specifications/subsystems}/$subsystem/dream-lock-schema.json
+          if [[ -f "$schema" ]]; then
+            ${python3.pkgs.jsonschema}/bin/jsonschema \
+                --instance $dreamLockPath \
+                --output pretty \
+                $schema
+          fi
 
           # add dream-lock.json to git
           if git rev-parse --show-toplevel &>/dev/null; then

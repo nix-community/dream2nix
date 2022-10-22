@@ -21,14 +21,13 @@ in {
   translate = {translatorName, ...}: {
     project,
     tree,
-    packageName,
     ...
-  } @ args: let
+  }: let
     # get the root source and project source
     rootTree = tree;
+    projectTree = rootTree.getNodeFromPath project.relPath;
     rootSource = rootTree.fullPath;
     projectSource = dlib.sanitizePath "${rootSource}/${project.relPath}";
-    projectTree = rootTree.getNodeFromPath project.relPath;
     subsystemInfo = project.subsystemInfo;
 
     # Get the root toml
@@ -83,12 +82,6 @@ in {
 
     # Get a "main" package toml
     packageToml = l.elemAt cargoPackages 0;
-
-    # Figure out a package name
-    packageName =
-      if args.packageName == "{automatic}"
-      then packageToml.value.package.name
-      else args.packageName;
 
     # Parse Cargo.lock and extract dependencies
     parsedLock = projectTree.files."Cargo.lock".tomlContent;
@@ -186,7 +179,7 @@ in {
     };
   in
     dlib.simpleTranslate2.translate
-    ({...}: rec {
+    ({...}: {
       inherit translatorName;
 
       # relative path of the project within the source tree.
@@ -198,7 +191,7 @@ in {
       # Extract subsystem specific attributes.
       # The structure of this should be defined in:
       #   ./src/specifications/{subsystem}
-      subsystemAttrs = rec {
+      subsystemAttrs = {
         relPathReplacements = let
           # function to find path replacements for one package
           findReplacements = package: let
@@ -231,8 +224,17 @@ in {
               value = dlib.sanitizeRelativePath "${package.relPath}/${dep.path}";
             };
             replacements = l.listToAttrs (l.map makeReplacement outsideDeps);
+            # filter out replacements which won't replace anything
+            # this means that the path doesn't need to be replaced because it's
+            # already in the source that we are building
+            filtered =
+              l.filterAttrs
+              (
+                n: v: ! l.pathExists (dlib.sanitizePath "${projectSource}/${v}")
+              )
+              replacements;
           in
-            replacements;
+            filtered;
           # find replacements for all packages we export
           allPackageReplacements =
             l.map
@@ -304,7 +306,7 @@ in {
               workspaceCrates =
                 l.map
                 (
-                  pkg: rec {
+                  pkg: {
                     inherit (pkg.value.package) name version;
                     inherit (pkg) relPath;
                   }
@@ -372,12 +374,5 @@ in {
   #   - string argument (type = "argument")
   #   - boolean flag (type = "flag")
   # String arguments contain a default value and examples. Flags do not.
-  extraArgs = {
-    packageName = {
-      description = "name of the package you want to build";
-      default = "{automatic}";
-      examples = ["rand"];
-      type = "argument";
-    };
-  };
+  extraArgs = {};
 }

@@ -69,19 +69,7 @@ nix read and understand `package.json` and how to install and link
 nodejs packages - to avoid duplication of dependency definitions and
 build steps.
 
-## Define the target platform(s)
-We have the flake setup, now we need to define the supported systems,
-this is necessary because nix can do multi platform and cross-platform
-builds so we need to tell it what can be built and where.
-
-```command
-> nix eval --impure --raw --expr 'builtins.currentSystem' > ./nix_systems
-> git add ./nix_systems
-```
-
-Remember to add the file `./nix_systems` to git, or it will be ignored.
-If you want to support more platforms later,
-just add more lines to that file.
+{{#include ../define-targets.md}}
 
 ## Explore the outputs
 We have setup the flake, defined our target system(s), now we are ready
@@ -244,26 +232,30 @@ re-enter the nix development shell, nix will overwrite the
 lockfile.
 
 ## FAQ
-> Refusing to overwrite existing file on `flake init`.
+
+### Refusing to overwrite existing file on `flake init`.
+
 When initializing a flake it needs to write some files, if these already
 exists, the initialization will fail. Since our repository is under
 version control, we can delete the conflicting files, let `flake init`
 create them and then check the diff and merge the changes manually.
 
-> Getting status of `flake.nix`: no such file or directory.
+### Getting status of `flake.nix`: no such file or directory.
+
 The flake build does not happen inside the directory. Nix copies your
 repository to a temporary location and builds there; only files under
 version control are used. To resolve this run `git add flake.nix` and
 all other missing files.
 
-> warning: Git tree is dirty
+### Warning: Git tree is dirty
+
 This is just a warning, nix is using the git revision for build artifact
 versioning. Having a dirty git tree - meaning uncommitted changes - can
 lead to some extra rebuilds, for simple projects this should not be a
 major concern.
 
-> error: The package contains unresolved impurities. Resolve all impure
-> projects by running the `resolveImpure` package.
+### error: The package contains unresolved impurities. Resolve all impure projects by running the `resolveImpure` package.
+
 This happens when dream2nix cannot resolve exact package versions. We
 can define a dependency like `something@^2.1`, but it is not obvious if
 we actually want `2.1.1` or `2.1.2` or maybe `2.1.1-alpha`.

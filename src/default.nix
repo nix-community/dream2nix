@@ -4,11 +4,6 @@
 # use ./lib.nix instead.
 {
   pkgs ? import <nixpkgs> {},
-  dlib ?
-    import ./lib {
-      inherit lib;
-      config = (import ./utils/config.nix).loadConfig config;
-    },
   lib ? pkgs.lib,
   nix ? pkgs.nix,
   # default to empty dream2nix config
@@ -49,29 +44,65 @@ in let
 
   configFile = pkgs.writeText "dream2nix-config.json" (b.toJSON config);
 
+  dlib = import ./lib {
+    inherit lib;
+    config = (import ./utils/config.nix).loadConfig config;
+    inherit framework;
+  };
+
+  evaledModules = lib.evalModules {
+    modules =
+      [./modules/top-level.nix]
+      ++ (config.modules or []);
+
+    # TODO: remove specialArgs once all functionality is moved to /src/modules
+    specialArgs = {
+      inherit
+        callPackageDream
+        dlib
+        ;
+    };
+  };
+
+  framework = evaledModules.config;
+
+  /*
+  The nixos module system seems to break pkgs.callPackage.
+  Therefore we always need to pass all of pkgs with callPackageDream.
+  callPackageDream should also be deprecated once all functionality is moved to
+  the module system.
+  */
+  callPackageDreamArgs =
+    pkgs
+    // {
+      inherit apps;
+      inherit callPackageDream;
+      inherit config;
+      inherit configFile;
+      inherit dlib;
+      inherit externals;
+      inherit externalSources;
+      inherit fetchers;
+      inherit framework;
+      inherit indexers;
+      inherit dream2nixWithExternals;
+      inherit utils;
+      inherit nix;
+      inherit subsystems;
+      dream2nixInterface = {
+        inherit
+          makeOutputsForDreamLock
+          ;
+      };
+    };
+
   # like pkgs.callPackage, but includes all the dream2nix modules
   callPackageDream = f: fargs:
-    pkgs.callPackage f (fargs
-      // {
-        inherit apps;
-        inherit callPackageDream;
-        inherit config;
-        inherit configFile;
-        inherit dlib;
-        inherit externals;
-        inherit externalSources;
-        inherit fetchers;
-        inherit indexers;
-        inherit dream2nixWithExternals;
-        inherit utils;
-        inherit nix;
-        inherit subsystems;
-        dream2nixInterface = {
-          inherit
-            makeOutputsForDreamLock
-            ;
-        };
-      });
+    (
+      if l.isFunction f
+      then f
+      else import f
+    ) (callPackageDreamArgs // fargs);
 
   utils = callPackageDream ./utils {};
 
@@ -105,9 +136,9 @@ in let
       }: rec {
         otherHooks =
           genHooks [
+            "cargoHelperFunctions"
             "configureCargoCommonVarsHook"
             "configureCargoVendoredDepsHook"
-            "remapSourcePathPrefixHook"
           ]
           {};
         installHooks =
@@ -143,12 +174,21 @@ in let
           inherit writeTOML cleanCargoToml findCargoFiles;
         };
 
-        mkCargoDerivation = importLibFile "mkCargoDerivation" ({
-            cargo = cargoHostTarget;
-            inherit (pkgs) stdenv lib;
-          }
-          // installHooks
-          // otherHooks);
+        mkCargoDerivation = importLibFile "mkCargoDerivation" {
+          cargo = cargoHostTarget;
+          inherit (pkgs) stdenv lib;
+          inherit
+            (installHooks)
+            inheritCargoArtifactsHook
+            installCargoArtifactsHook
+            ;
+          inherit
+            (otherHooks)
+            configureCargoCommonVarsHook
+            configureCargoVendoredDepsHook
+            ;
+          cargoHelperFunctionsHook = otherHooks.cargoHelperFunctions;
+        };
         buildDepsOnly = importLibFile "buildDepsOnly" {
           inherit
             mkCargoDerivation
@@ -166,7 +206,7 @@ in let
             ;
         };
         buildPackage = importLibFile "buildPackage" {
-          inherit (pkgs) lib;
+          inherit (pkgs) removeReferencesTo lib;
           inherit (installLogHook) installFromCargoBuildLogHook;
           inherit cargoBuild;
         };
@@ -393,17 +433,18 @@ in let
   translateProjects = {
     discoveredProjects ?
       dlib.discoverers.discoverProjects
-      {inherit settings tree;},
+      {inherit projects settings tree;},
+    projects ? {},
     source ? throw "Pass either `source` or `tree` to translateProjects",
     tree ? dlib.prepareSourceTree {inherit source;},
     pname,
     settings ? [],
   } @ args: let
-    getTranslator = subsystem: translatorName:
-      subsystems."${subsystem}".translators."${translatorName}";
+    getTranslator = translatorName:
+      framework.translatorInstances.${translatorName};
 
     isImpure = project: translatorName:
-      (getTranslator project.subsystem translatorName).type == "impure";
+      (getTranslator translatorName).type == "impure";
 
     getInvalidationHash = project:
       dlib.calcInvalidationHash {
@@ -464,7 +505,7 @@ in let
     projectsResolvedOnTheFly =
       l.forEach projectsPureUnresolved
       (proj: let
-        translator = getTranslator proj.subsystem proj.translator;
+        translator = getTranslator proj.translator;
         dreamLock'' = translator.translate {
           inherit source tree discoveredProjects;
           project = proj;
@@ -578,7 +619,7 @@ in let
         (
           project:
             l.nameValuePair
-            "Name: ${project.name}; Subsystem: ${project.subsystem}; relPath: ${project.relPath}"
+            "Name: ${project.name}; Subsystem: ${project.subsystem or "?"}; relPath: ${project.relPath}"
             (utils.makeTranslateScript {inherit project source;})
         )
         impureDiscoveredProjects
@@ -589,7 +630,6 @@ in let
       "resolve"
       []
       ''
-        cd $WORKDIR
         ${l.concatStringsSep "\n"
           (l.mapAttrsToList
             (title: script: ''
@@ -603,8 +643,12 @@ in let
 
   makeOutputs = {
     source ? throw "pass a 'source' to 'makeOutputs'",
-    discoveredProjects ? dlib.discoverers.discoverProjects {inherit settings source;},
+    discoveredProjects ?
+      dlib.discoverers.discoverProjects {
+        inherit projects settings source;
+      },
     pname ? null,
+    projects ? {},
     settings ? [],
     packageOverrides ? {},
     sourceOverrides ? old: {},
@@ -613,7 +657,7 @@ in let
     impureDiscoveredProjects =
       l.filter
       (proj:
-        subsystems."${proj.subsystem}".translators."${proj.translator}".type
+        framework.translatorInstances."${proj.translator}".type
         == "impure")
       discoveredProjects;
 
@@ -680,6 +724,7 @@ in {
     callPackageDream
     dream2nixWithExternals
     fetchers
+    framework
     indexers
     fetchSources
     realizeProjects

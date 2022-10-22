@@ -100,12 +100,12 @@
         "lib/mkCargoDerivation.nix"
         "lib/mkDummySrc.nix"
         "lib/writeTOML.nix"
+        "pkgs/cargoHelperFunctions.sh"
         "pkgs/configureCargoCommonVarsHook.sh"
         "pkgs/configureCargoVendoredDepsHook.sh"
         "pkgs/installFromCargoBuildLogHook.sh"
         "pkgs/inheritCargoArtifactsHook.sh"
         "pkgs/installCargoArtifactsHook.sh"
-        "pkgs/remapSourcePathPrefixHook.sh"
         "LICENSE"
       ];
     };
@@ -174,6 +174,13 @@
               inherit self;
             });
 
+          tests-integration.type = "app";
+          tests-integration.program =
+            b.toString
+            (dream2nixFor."${system}".callPackageDream ./tests/integration {
+              inherit self;
+            });
+
           tests-examples.type = "app";
           tests-examples.program =
             b.toString
@@ -193,6 +200,8 @@
               ]
               ''
                 echo "check for correct formatting"
+                WORKDIR=$(realpath ./.)
+                cd $TMPDIR
                 cp -r $WORKDIR ./repo
                 cd ./repo
                 ${self.apps.${system}.format.program} --fail-on-change
@@ -200,6 +209,9 @@
 
                 echo "running unit tests"
                 ${self.apps.${system}.tests-unit.program}
+
+                echo "running integration tests"
+                ${self.apps.${system}.tests-integration.program}
 
                 echo "checking flakes under ./examples"
                 ${self.apps.${system}.tests-examples.program}
