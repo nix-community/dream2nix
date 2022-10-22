@@ -273,7 +273,7 @@ in {
   extraArgs = {
     ghcVersion = {
       description = "GHC version";
-      default = "9.0.2";
+      default = pkgs.ghc.version;
       examples = ["9.0.2" "9.4.1"];
       type = "argument";
     };
