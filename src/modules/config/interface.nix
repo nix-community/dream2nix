@@ -39,7 +39,7 @@ in {
       '';
     };
     modules = l.mkOption {
-      type = t.listOf (t.oneOf [t.attrs t.path (t.functionTo t.attrs)]);
+      type = t.listOf t.path;
       default = [];
       description = ''
         Extra modules to import in while evaluating the dream2nix framework.
