@@ -3,6 +3,7 @@
   lib,
   coreutils,
   nix,
+  git,
   python3,
   utils,
   dream2nixWithExternals,
@@ -20,8 +21,9 @@ in
   [
     coreutils
     nix
+    git
   ]
   ''
-    export dream2nixSrc=${dream2nixWithExternals}
+    export dream2nixSrc=${../../.}/src
     ${pythonEnv}/bin/pytest ${self}/tests/unit -n $(nproc) -v "$@"
   ''

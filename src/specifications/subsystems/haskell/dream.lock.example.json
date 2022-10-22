@@ -4,6 +4,12 @@
       "name": "ghc",
       "version": "8.10.7"
     },
+    "cabalFlags": {
+      "darcs": [
+        "-fforce-char8-encoding",
+        "-flibrary"
+      ]
+    },
     "cabal-files": {
       "aeson": {
         "1.2.2.0": {

@@ -8,53 +8,6 @@
   ...
 }: let
   l = lib // builtins;
-
-  hiddenPackagesDefault = {
-    # TODO: unblock these packages and implement actual logic to interpret the
-    # flags found in cabal files
-    Win32 = null;
-
-    # These are the packages which are already contained in the ghc package.
-    # This list actually depends on the ghc version used.
-    # see: https://gitlab.haskell.org/ghc/ghc/-/wikis/commentary/libraries/version-history
-    # and: https://gitlab.haskell.org/bgamari/ghc-utils/-/blob/master/library-versions/pkg_versions.txt
-    # TODO: Generate this list dynamically for the given ghc version via pkg_versions.txt
-    array = null;
-    base = null;
-    binary = null;
-    bytestring = null;
-    Cabal = null;
-    containers = null;
-    deepseq = null;
-    directory = null;
-    dns-internal = null;
-    fast-digits-internal = null;
-    filepath = null;
-    ghc = null;
-    ghc-boot = null;
-    ghc-boot-th = null;
-    ghc-compact = null;
-    ghc-heap = null;
-    ghc-prim = null;
-    ghci = null;
-    haskeline = null;
-    hpc = null;
-    integer-gmp = null;
-    libiserv = null;
-    mtl = null;
-    parsec = null;
-    pretty = null;
-    process = null;
-    rts = null;
-    stm = null;
-    template-haskell = null;
-    terminfo = null;
-    text = null;
-    time = null;
-    transformers = null;
-    unix = null;
-    xhtml = null;
-  };
 in {
   type = "ifd";
 
@@ -71,7 +24,7 @@ in {
 
   discoverProject = tree:
     l.any
-    (filename: l.hasSuffix ".cabal" filename)
+    (filename: l.hasSuffix "stack.yaml.lock" filename)
     (l.attrNames tree.files);
 
   # translate from a given source and a project specification to a dream-lock.
@@ -134,7 +87,7 @@ in {
       compilerVersion = l.last compilerSplit;
 
       hidden =
-        hiddenPackagesDefault;
+        haskellUtils.ghcVersionToHiddenPackages."${compilerVersion}" or haskellUtils.ghcVersionToHiddenPackages."9.0.2";
       # TODO: find out what to do with the hidden packages from the snapshot
       # Currently it looks like those should not be included
       # // (
@@ -183,45 +136,6 @@ in {
       in {
         inherit name version hash;
       };
-
-      getDependencyNames = finalObj: objectsByName: let
-        cabal = cabalData.${finalObj.name}.${finalObj.version};
-
-        targetBuildDepends =
-          cabal.library.condTreeData.build-info.targetBuildDepends or [];
-
-        buildToolDepends =
-          cabal.library.condTreeData.build-info.buildToolDepends or [];
-
-        defaultFlags = l.filter (flag: flag.default) cabal.package-flags;
-
-        defaultFlagNames = l.map (flag: flag.name) defaultFlags;
-
-        collectBuildDepends = condTreeComponent:
-          l.concatMap
-          (attrs: attrs.targetBuildDepends)
-          (l.collect
-            (x: x ? targetBuildDepends)
-            condTreeComponent);
-
-        # TODO: use flags to determine which conditional deps are required
-        condBuildDepends =
-          l.concatMap
-          (component: collectBuildDepends component)
-          cabal.library.condTreeComponents or [];
-
-        depNames =
-          l.map
-          (dep: dep.package-name)
-          (targetBuildDepends ++ buildToolDepends ++ condBuildDepends);
-      in
-        l.filter
-        (name:
-          # ensure package is not a hidden package
-            (! hidden ? ${name})
-            # ignore packages which are not part of the snapshot or lock file
-            && (objectsByName ? ${name}))
-        depNames;
     in
       dlib.simpleTranslate2.translate
       ({objectsByKey, ...}: rec {
@@ -287,15 +201,22 @@ in {
           version = rawObj: finalObj:
             rawObj.version;
 
-          dependencies = rawObj: finalObj: let
-            depNames = getDependencyNames finalObj objectsByKey.name;
-          in
-            l.map
-            (depName: {
-              name = depName;
-              version = objectsByKey.name.${depName}.version;
-            })
-            depNames;
+          dependencies = rawObj: finalObj:
+            l.pipe cabalData
+            [
+              (haskellUtils.getDependencyNames finalObj)
+              (l.filter
+                (name:
+                  # ensure package is not a hidden package
+                    (! hidden ? ${name})
+                    # ignore packages which are not part of the snapshot or lock file
+                    && (objectsByKey.name ? ${name})))
+              (l.map
+                (depName: {
+                  name = depName;
+                  version = objectsByKey.name.${depName}.version;
+                }))
+            ];
 
           sourceSpec = rawObj: finalObj:
           # example
