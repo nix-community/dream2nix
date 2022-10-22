@@ -17,7 +17,6 @@
       {
         translator = "cabal-freeze";
       }
-      {subsystemInfo = {defaultPackageName = "unordered-containers";};}
     ];
   });
 }
