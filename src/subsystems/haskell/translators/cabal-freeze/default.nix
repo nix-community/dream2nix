@@ -41,9 +41,9 @@ in {
   */
   discoverProject = tree:
   # Example
-  # Returns true if given directory contains a file ending with .freeze
+  # Returns true if given directory contains a file ending with cabal.project.freeze
     l.any
-    (filename: l.hasSuffix ".freeze" filename)
+    (filename: l.hasSuffix "cabal.project.freeze" filename)
     (l.attrNames tree.files);
 
   # translate from a given source and a project specification to a dream-lock.
@@ -124,7 +124,7 @@ in {
     parsedCabalFreeze = l.pipe projectTree.files [
       l.attrNames
       (
-        l.findFirst (l.hasSuffix ".freeze")
+        l.findFirst (l.hasSuffix "cabal.project.freeze")
         (throw "No cabal.project.freeze file in the tree")
       )
       projectTree.getNodeFromPath
