@@ -1465,62 +1465,29 @@ dream2nix overrides have the following properties:</p>
 <li>Experimenting with and adding support for new nix features will be easier as the framework offers better abstractions than existing 2nix converters and allows adding/modifying strategies more easily.</li>
 </ul>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="extending-dream2nix-with-external-translators-builders-etc"><a class="header" href="#extending-dream2nix-with-external-translators-builders-etc">Extending dream2nix with external translators, builders etc.</a></h1>
-<p><code>dream2nix</code> can be extended while you are <code>init</code>ializing it. This can be done in a few ways.
-For extending, you need to utilize the <code>config.extra</code> option of the dream2nix config.</p>
-<h2 id="module-system-transition"><a class="header" href="#module-system-transition">Module System Transition</a></h2>
-<p>The dream2nix architecture is currently in the process of being refactored into nixos modules. The actual APIs can deviate from what is described in this document.
-For up-to-date examples see <code>/examples/_d2n-extended</code> and <code>/examples/_d2n-extended-new-subsystem</code>
-Once the transition is completed we will update this document and remove this notice.</p>
-<h2 id="declare-extras-from-a-nix-file"><a class="header" href="#declare-extras-from-a-nix-file">Declare <code>extra</code>s from a nix file</a></h2>
+<p><code>dream2nix</code> uses the NixOS module system for it's internal components.
+This means you can extend it using the module system.
+This can be done while the framework is being <code>init</code>ialized.
+To do this, you need to utilize the <code>config.modules</code> option of the dream2nix config.</p>
+<h2 id="declaring-modules"><a class="header" href="#declaring-modules">Declaring <code>modules</code></a></h2>
+<p><code>config.modules</code> is a configuration option that expects paths to module files.</p>
 <pre><code class="language-nix">dream2nix.lib.init {
-  # this also works around errors with function modules
-  # being declared here, which will be explained later.
-  config.extra = ./nix/d2n/extras.nix;
+  config.modules = [./nix/d2n/extras.nix];
 }
 </code></pre>
-<p>this file should look like this:</p>
-<pre><code class="language-nix">{ dlib, lib, config, ... }:
+<p>this file can look like this:</p>
+<pre><code class="language-nix">{ config, ... }:
+let
+  inherit (config) pkgs lib dlib;
+in
 {
-  subsystems.rust.translators.example-translator = ./rust-translator.nix;
+  translators.example-translator = {/* translator attrs */};
   # you can declare modules using functions here
-  fetchers.ipfs = {...}: {/* fetcher attrs */};
+  fetchers.ipfs = {/* fetcher attrs */};
 }
 </code></pre>
-<p>See the <a href="https://github.com/nix-community/dream2nix/tree/main/examples/_d2n-extended-new-subsystem"><code>d2n-extended-new-subsystem</code> example</a> for a basic example.</p>
-<h2 id="declare-extras-as-an-attribute-set"><a class="header" href="#declare-extras-as-an-attribute-set">Declare <code>extra</code>s as an attribute set</a></h2>
-<pre><code class="language-nix">dream2nix.lib.init {
-  config.extra = {
-    subsystems = {
-      # add new modules
-      ruby.discoverers.default = ./nix/d2n/ruby/discoverer.nix;
-      ruby.translators.bundix = ./nix/d2n/ruby/bundix.nix;
-      # existing modules can be overridden
-      rust.builders.crane = ./nix/d2n/rust/crane.nix;
-    };
-    # add new fetchers
-    fetchers.ipfs = ./nix/d2n/fetchers/ipfs.nix;
-    fetchers.gitea = ./nix/d2n/fetchers/gitea.nix;
-    # existing fetchers can be overridden
-    fetchers.http = ./nix/d2n/fetchers/http-proxied.nix;
-  };
-}
-</code></pre>
-<p>note: you can't declare modules using functions here.
-This is because the <code>config</code> may need to be serialized to JSON and passed around in impure situations (mostly impure translators).</p>
-<p>See the <a href="https://github.com/nix-community/dream2nix/tree/main/examples/_d2n-extended/flake.nix"><code>d2n-extended</code> example</a> for a basic example.</p>
-<h2 id="compose-multiple-different-extras"><a class="header" href="#compose-multiple-different-extras">Compose multiple different <code>extra</code>s</a></h2>
-<p>This allows one to compose multiple <code>extra</code>s together with ease.
-The <code>dream2nixExtras</code> flake output in this case can be any of the approaches explained in this document for declaring <code>config.extra</code>.</p>
-<pre><code class="language-nix">dream2nix.lib.init {
-  # note: .dream2nixExtras is a hypothetical standardized flake output
-  # in practice this can be any flake output.
-  config.extra = [
-    haskellSubsystemFlake.dream2nixExtras
-    crystalSubsystemFlake.dream2nixExtras
-    gleamSubsystemFlake.dream2nixExtras
-  ];
-}
-</code></pre>
+<p>See the <a href="https://github.com/nix-community/dream2nix/tree/main/examples/_d2n-extended"><code>d2n-extended</code> example</a> for an example on how to extend existing subsystems.
+See the <a href="https://github.com/nix-community/dream2nix/tree/main/examples/_d2n-extended-new-subsystem"><code>d2n-extended-new-subsystem</code> example</a> for an example on how to implement a new subsystem.</p>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="dream2nix-contributers-guide"><a class="header" href="#dream2nix-contributers-guide">dream2nix contributers guide</a></h1>
 <h2 id="translator-notes"><a class="header" href="#translator-notes">Translator Notes</a></h2>
 <p>In general there are 3 different types of translators</p>
