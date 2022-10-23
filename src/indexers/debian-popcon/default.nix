@@ -1,15 +1,11 @@
-{...}: {
-  indexBin = {
-    utils,
-    coreutils,
-    curl,
-    gnused,
-    gawk,
-    jq,
-    ...
-  }:
+{
+  pkgs,
+  utils,
+  ...
+}: {
+  indexBin =
     utils.writePureShellScript
-    [coreutils curl jq gnused gawk]
+    (with pkgs; [coreutils curl jq gnused gawk])
     ''
       cd $WORKDIR
 
