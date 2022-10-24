@@ -447,6 +447,11 @@
           buildPhase = ''
             runHook preBuild
 
+            cd $out
+            mv $sourceRoot $out/src
+            ln -s $out/src $sourceRoot
+            cd $out/src
+
             # execute electron-rebuild
             if [ -n "$electronHeaders" ]; then
               echo "executing electron-rebuild"
@@ -474,6 +479,9 @@
                 npm --production --offline --nodedir=$nodeSources run postinstall
               fi
             fi
+
+            rm $sourceRoot
+            mv $out/src $sourceRoot
 
             runHook postBuild
           '';
