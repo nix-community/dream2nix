@@ -127,7 +127,7 @@ def symlink_bin(bin_dir, package_location, package_json, force=False):
 
 # checks if dependency is already installed in the current or parent dir.
 def dependency_satisfied(root, pname, version):
-  if root == "/nix/store":
+  if root == "/":
     return False
 
   parent = os.path.dirname(root)
@@ -138,6 +138,7 @@ def dependency_satisfied(root, pname, version):
       if version == get_package_json(f"{root}/{pname}").get('version'):
         return True
 
+  print(f"satisfied: parent: {parent}; pname: {pname}; version: {version}")
   return dependency_satisfied(parent, pname, version)
 
 
