@@ -10,8 +10,6 @@ with open(os.environ.get('dependenciesJsonPath')) as f:
 with open('package.json', encoding="utf-8-sig") as f:
   package_json = json.load(f)
 
-out = os.environ.get('out')
-
 changed = False
 
 # fail if platform incompatible

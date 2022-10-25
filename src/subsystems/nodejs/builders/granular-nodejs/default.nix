@@ -315,7 +315,7 @@
           unpackPhase = ''
             runHook preUnpack
 
-            nodeModules=$out/lib/node_modules
+            nodeModules=$(realpath ./package)
 
             export sourceRoot="$nodeModules/$packageName"
 
@@ -336,7 +336,7 @@
             if [ -f "$src" ]
             then
                 # Figure out what directory has been unpacked
-                export packageDir="$(find . -maxdepth 1 -type d | tail -1)"
+                packageDir="$(find . -maxdepth 1 -type d | tail -1)"
 
                 # Restore write permissions
                 find "$packageDir" -type d -exec chmod u+x {} \;
@@ -346,7 +346,7 @@
                 mv -- "$packageDir" "$sourceRoot"
             elif [ -d "$src" ]
             then
-                export strippedName="$(stripHash $src)"
+                strippedName="$(stripHash $src)"
 
                 # Restore write permissions
                 chmod -R u+w -- "$strippedName"
@@ -382,9 +382,9 @@
             python $fixPackage \
             || \
             # exit code 3 -> the package is incompatible to the current platform
-            #  -> Let the build succeed, but don't create lib/node_packages
+            #  -> Let the build succeed, but don't create lib/node_modules
             if [ "$?" == "3" ]; then
-              rm -r $out/*
+              mkdir -p $out
               echo "Not compatible with system $system" > $out/error
               exit 0
             else
@@ -447,11 +447,6 @@
           buildPhase = ''
             runHook preBuild
 
-            cd $out
-            mv $sourceRoot $out/src
-            ln -s $out/src $sourceRoot
-            cd $out/src
-
             # execute electron-rebuild
             if [ -n "$electronHeaders" ]; then
               echo "executing electron-rebuild"
@@ -480,15 +475,16 @@
               fi
             fi
 
-            rm $sourceRoot
-            mv $out/src $sourceRoot
-
             runHook postBuild
           '';
 
           # Symlinks executables and manual pages to correct directories
           installPhase = ''
             runHook preInstall
+            mkdir -p $out/lib
+            cp -r $nodeModules $out/lib/node_modules
+            nodeModules=$out/lib/node_modules
+            cd "$nodeModules/$packageName"
 
             echo "Symlinking bin entries from package.json"
             python $linkBins
