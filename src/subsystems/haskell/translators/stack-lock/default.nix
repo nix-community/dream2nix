@@ -50,27 +50,27 @@ in {
       tree,
       ...
     } @ args: let
-      # get the root source and project source
-      rootSource = tree.fullPath;
-      projectSource = "${tree.fullPath}/${project.relPath}";
-      projectTree = tree.getNodeFromPath project.relPath;
+      allRepoPackages = l.filterAttrsRecursive (n: v: l.hasSuffix ".cabal" n) tree;
+      builtPackages = builtins.trace (builtins.toString allRepoPackages) {};
+      # (l.mapAttrs (n: v: buildSingleCabalPackage v) allRepoPackages);
 
-      # parse the cabal file
-      cabalFiles =
-        l.filter
-        (l.hasSuffix ".cabal")
-        (l.attrNames projectTree.files);
+      buildSingleCabalPackage = projectTree: let
+        # get the root source and project source
+        # parse the cabal file
+        cabalFiles =
+          l.filter
+          (l.hasSuffix ".cabal")
+          (l.attrNames projectTree.files);
 
-      cabalFile = projectTree.getNodeFromPath (l.head cabalFiles);
-      cabal = stackLockUtils.fromCabal cabalFile.fullPath project.name;
-      defaultPackageVersion =
-        l.concatStringsSep
-        "."
-        (l.map l.toString cabal.description.package.version);
+        cabalFile = projectTree.getNodeFromPath (l.head cabalFiles);
+      in
+        stackLockUtils.fromCabal cabalFile.fullPath project.name;
+
+      defaultCabalPackage = l.mapAttrsToList (n: v: l.nameValuePair n v) builtPackages;
 
       stackLock =
         stackLockUtils.fromYaml
-        (projectTree.getNodeFromPath "stack.yaml.lock").fullPath;
+        (tree.getNodeFromPath "stack.yaml.lock").fullPath;
 
       snapshotEntry = l.head (stackLock.snapshots);
 
@@ -170,16 +170,14 @@ in {
         };
 
         # name of the default package
-        defaultPackage = cabal.description.package.name;
+        defaultPackage = l.mapAttrsToList (n: v: n) builtPackages;
 
         /*
         List the package candidates which should be exposed to the user.
         Only top-level packages should be listed here.
         Users will not be interested in all individual dependencies.
         */
-        exportedPackages = {
-          "${defaultPackage}" = defaultPackageVersion;
-        };
+        exportedPackages = builtPackages;
 
         /*
         a list of raw package objects
@@ -244,8 +242,8 @@ in {
         */
         extraObjects = [
           {
-            name = defaultPackage;
-            version = defaultPackageVersion;
+            name = defaultCabalPackage.name;
+            version = defaultCabalPackage.value.version;
 
             dependencies = let
               testTargetBuildDepends = l.flatten (
@@ -253,16 +251,16 @@ in {
                 (suiteName: suite:
                   suite.condTreeData.build-info.targetBuildDepends
                   ++ suite.condTreeData.build-info.buildToolDepends)
-                cabal.test-suites or {}
+                defaultCabalPackage.test-suites or {}
               );
 
               depNames =
                 l.map
                 (dep: dep.package-name)
                 (
-                  cabal.library.condTreeData.build-info.targetBuildDepends
+                  defaultCabalPackage.library.condTreeData.build-info.targetBuildDepends
                   or []
-                  ++ cabal.library.condTreeData.build-info.buildToolDepends or []
+                  ++ defaultCabalPackage.library.condTreeData.build-info.buildToolDepends or []
                   ++ testTargetBuildDepends
                 );
             in
@@ -279,7 +277,7 @@ in {
 
             sourceSpec = {
               type = "path";
-              path = projectTree.fullPath;
+              path = tree.fullPath;
             };
           }
         ];
