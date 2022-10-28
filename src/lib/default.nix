@@ -16,10 +16,12 @@
       latestVersion
       listDirs
       listFiles
+      mergeFlakes
       nameVersionPair
       prepareSourceTree
       readTextFile
       recursiveUpdateUntilDepth
+      recursiveUpdateUntilDrv
       simpleTranslate2
       sanitizePath
       sanitizeRelativePath
@@ -243,6 +245,10 @@
   # directory names of a given directory
   dirNames = dir: l.attrNames (l.filterAttrs (name: type: type == "directory") (builtins.readDir dir));
 
+  # ensures that value is attrset but not a derivation
+  isNotDrvAttrs = val:
+    l.isAttrs val && (val.type or "") != "derivation";
+
   # picks the latest version from a list of version strings
   latestVersion = versions:
     l.head
@@ -251,6 +257,8 @@
   listDirs = path: l.attrNames (l.filterAttrs (n: v: v == "directory") (builtins.readDir path));
 
   listFiles = path: l.attrNames (l.filterAttrs (n: v: v == "regular") (builtins.readDir path));
+
+  mergeFlakes = flakes: l.foldl' recursiveUpdateUntilDrv {} flakes;
 
   nameVersionPair = name: version: {inherit name version;};
 
@@ -265,6 +273,10 @@
   # like nixpkgs recursiveUpdateUntil, but with the depth as a stop condition
   recursiveUpdateUntilDepth = depth: lhs: rhs:
     lib.recursiveUpdateUntil (path: _: _: (l.length path) > depth) lhs rhs;
+
+  recursiveUpdateUntilDrv =
+    l.recursiveUpdateUntil
+    (_: l: r: !(isNotDrvAttrs l && isNotDrvAttrs r));
 
   sanitizeRelativePath = path:
     l.removePrefix "/" (l.toString (l.toPath "/${path}"));

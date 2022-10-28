@@ -609,17 +609,8 @@ in let
       };
 
     projectOutputs = l.map outputsForProject translatedProjects;
-
-    mergedOutputs = let
-      isNotDrvAttrs = val:
-        l.isAttrs val && (val.type or "") != "derivation";
-      recursiveUpdateUntilDrv =
-        l.recursiveUpdateUntil
-        (_: l: r: !(isNotDrvAttrs l && isNotDrvAttrs r));
-    in
-      l.foldl' recursiveUpdateUntilDrv {} projectOutputs;
   in
-    mergedOutputs;
+    dlib.mergeFlakes projectOutputs;
 
   generateImpureResolveScript = {
     source,
