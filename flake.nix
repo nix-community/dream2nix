@@ -194,6 +194,11 @@
     # kept for compat
     lib2 = d2n-lib;
 
+    flakePartsModule = {
+      imports = [./src/modules/flake-parts];
+      dream2nix.lib = d2n-lib;
+    };
+
     # all apps including cli, install, etc.
     apps = forAllSystems (
       system: pkgs:
