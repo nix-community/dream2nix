@@ -138,7 +138,6 @@ def dependency_satisfied(root, pname, version):
       if version == get_package_json(f"{root}/{pname}").get('version'):
         return True
 
-  print(f"satisfied: parent: {parent}; pname: {pname}; version: {version}")
   return dependency_satisfied(parent, pname, version)
 
 
