@@ -1,4 +1,8 @@
-{lib, ...}: let
+{
+  lib,
+  flake-parts-lib,
+  ...
+}: let
   l = lib // builtins;
   t = l.types;
 in {
@@ -9,6 +13,7 @@ in {
         readOnly = true;
         description = ''
           The system-less dream2nix library.
+          This should be the the `lib` attribute of the dream2nix flake.
         '';
       };
       config = l.mkOption {
@@ -27,6 +32,28 @@ in {
           The projects that outputs will be generated for.
         '';
       };
+      outputs = l.mkOption {
+        type = t.attrsOf t.raw;
+        readOnly = true;
+        description = ''
+          The raw outputs that were generated.
+        '';
+      };
     };
+    perSystem =
+      flake-parts-lib.mkPerSystemOption
+      ({...}: {
+        options = {
+          dream2nix = {
+            outputs = l.mkOption {
+              type = t.attrsOf t.raw;
+              readOnly = true;
+              description = ''
+                The raw outputs that were generated.
+              '';
+            };
+          };
+        };
+      });
   };
 }
