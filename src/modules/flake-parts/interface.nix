@@ -26,8 +26,8 @@ in {
         '';
       };
       projects = l.mkOption {
-        type = t.listOf t.raw;
-        default = [];
+        type = t.attrsOf t.raw;
+        default = {};
         description = ''
           The projects that outputs will be generated for.
         '';

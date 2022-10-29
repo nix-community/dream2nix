@@ -16,15 +16,13 @@
   }:
     flake-parts.lib.mkFlake {inherit self;} {
       systems = ["x86_64-linux"];
-      imports = [dream2nix.flakePartsModule];
+      imports = [dream2nix.flakeModule];
       dream2nix = {
         config.projectRoot = ./.;
-        projects = [
-          {
-            source = src;
-            settings = [{builder = "crane";}];
-          }
-        ];
+        projects."ripgrep" = {
+          source = src;
+          settings = [{builder = "crane";}];
+        };
       };
       perSystem = {
         config,

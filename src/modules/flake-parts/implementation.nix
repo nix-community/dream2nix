@@ -12,7 +12,9 @@
     }
     // p;
   outputs = d2n.lib.dlib.mergeFlakes (
-    l.map (p: d2n.lib.makeFlakeOutputs (makeArgs p)) d2n.projects
+    l.map
+    (p: d2n.lib.makeFlakeOutputs (makeArgs p))
+    (l.attrValues d2n.projects)
   );
 in {
   config = {
