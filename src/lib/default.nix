@@ -30,6 +30,7 @@
       traceJ
       warnIfIfd
       parseSpdxId
+      isNotDrvAttrs
       ;
 
     inherit

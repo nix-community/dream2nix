@@ -15,17 +15,17 @@
   mergeShellConfig = base: other: let
     c = base.config;
     oc = other.config;
-    i = base.imports;
-    oi = other.imports;
+    i = base.imports or [];
+    oi = other.imports or [];
     hasCConfig = config: (config ? language) && (config.language ? c);
   in {
     config =
       c
       // oc
       // {
-        packages = l.unique (c.packages ++ oc.packages);
-        commands = l.unique (c.commands ++ oc.commands);
-        env = l.unique (c.env ++ oc.env);
+        packages = l.unique ((c.packages or []) ++ (oc.packages or []));
+        commands = l.unique ((c.commands or []) ++ (oc.commands or []));
+        env = l.unique ((c.env or []) ++ (oc.env or []));
         devshell =
           (c.devshell or {})
           // (oc.devshell or {})
@@ -56,6 +56,8 @@
       passthru.config = config;
       combineWith = other:
         mkShell (mergeShellConfig config other.passthru.config);
+      addConfig = otherConfig:
+        mkShell (mergeShellConfig config {config = otherConfig;});
     };
   # convenience utils for converting a nix attribute to a shell env
   # TODO: we could probably replace this with something from nixpkgs?
