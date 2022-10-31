@@ -14,7 +14,7 @@
   outputs = d2n.lib.dlib.mergeFlakes (
     l.map
     (p: d2n.lib.makeFlakeOutputs (makeArgs p))
-    (l.attrValues d2n.projects)
+    (l.attrValues d2n.inputs)
   );
 in {
   config = {

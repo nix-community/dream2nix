@@ -16,29 +16,14 @@
   }:
     flake-parts.lib.mkFlake {inherit self;} {
       systems = ["x86_64-linux"];
-      imports = [dream2nix.flakeModule];
+      imports = [dream2nix.flakeModuleBeta];
       dream2nix = {
         config.projectRoot = ./.;
-        projects."ripgrep" = {
+        # define an input for dream2nix to generate outputs for
+        inputs."ripgrep" = {
           source = src;
           settings = [{builder = "crane";}];
         };
-      };
-      perSystem = {
-        config,
-        lib,
-        pkgs,
-        ...
-      }: let
-        inherit (config.dream2nix) outputs;
-      in {
-        packages.ripgrep = outputs.packages.ripgrep.overrideAttrs (old: {
-          buildInputs = (old.buildInputs or []) ++ [pkgs.hello];
-          postInstall = ''
-            ${old.postInstall or ""}
-            hello
-          '';
-        });
       };
     };
 }

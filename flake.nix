@@ -194,7 +194,7 @@
     # kept for compat
     lib2 = d2n-lib;
 
-    flakeModule = {
+    flakeModuleBeta = {
       imports = [./src/modules/flake-parts];
       dream2nix.lib = d2n-lib;
     };
