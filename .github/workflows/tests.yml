@@ -20,7 +20,7 @@ jobs:
     - uses: cachix/cachix-action@v10
       with:
         name: nix-community
-        signingKey: '${{ secrets.CACHIX_SIGNING_KEY }}'
+        authToken: '${{ secrets.CACHIX_AUTH_TOKEN }}'
 
     - run: JOBS=10 nix run .#tests-examples
 
@@ -38,7 +38,7 @@ jobs:
     - uses: cachix/cachix-action@v10
       with:
         name: nix-community
-        signingKey: '${{ secrets.CACHIX_SIGNING_KEY }}'
+        authToken: '${{ secrets.CACHIX_AUTH_TOKEN }}'
 
     - run: nix flake check
 
@@ -56,7 +56,7 @@ jobs:
     - uses: cachix/cachix-action@v10
       with:
         name: nix-community
-        signingKey: '${{ secrets.CACHIX_SIGNING_KEY }}'
+        authToken: '${{ secrets.CACHIX_AUTH_TOKEN }}'
 
     - run: JOBS=10 nix run .#tests-integration
 
@@ -74,7 +74,7 @@ jobs:
     - uses: cachix/cachix-action@v10
       with:
         name: nix-community
-        signingKey: '${{ secrets.CACHIX_SIGNING_KEY }}'
+        authToken: '${{ secrets.CACHIX_AUTH_TOKEN }}'
 
     - run: nix run .#tests-unit
 
@@ -92,6 +92,6 @@ jobs:
     - uses: cachix/cachix-action@v10
       with:
         name: nix-community
-        signingKey: '${{ secrets.CACHIX_SIGNING_KEY }}'
+        authToken: '${{ secrets.CACHIX_AUTH_TOKEN }}'
 
     - run: nix run .#format -- --fail-on-change
