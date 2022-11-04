@@ -15,7 +15,6 @@
   writeScript,
   writeScriptBin,
   # dream2nix inputs
-  apps,
   callPackageDream,
   dream2nixWithExternals,
   externalSources,
@@ -213,7 +212,7 @@ in
             echo "aggregating all sources to one large FOD"
             dream2nixWithExternals=${dream2nixWithExternals} \
             dream2nixConfig=${configFile} \
-              python3 ${../apps/cli}/aggregate-hashes.py $dreamLockPath
+              python3 ${./cli}/aggregate-hashes.py $dreamLockPath
           fi
 
           # add invalidationHash to dream-lock.json
@@ -222,7 +221,7 @@ in
 
           # format dream lock
           cat $dreamLockPath \
-            | python3 ${../apps/cli/format-dream-lock.py} \
+            | python3 ${./cli/format-dream-lock.py} \
             | sponge $dreamLockPath
 
           # validate dream-lock.json against jsonschema

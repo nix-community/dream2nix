@@ -4,7 +4,7 @@
 in {
   options = {
     translators = lib.mkOption {
-      type = t.attrsOf (t.submoduleWith {
+      type = t.lazyAttrsOf (t.submoduleWith {
         modules = [../interfaces.translator];
         specialArgs = {framework = config;};
       });

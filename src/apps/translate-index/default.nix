@@ -1,17 +1,12 @@
 {
-  callNixWithD2N,
+  apps,
   utils,
-  translate,
-  coreutils,
-  jq,
-  parallel,
-  python3,
-  writeScript,
+  pkgs,
   ...
 }: let
   script =
     utils.writePureShellScript
-    [coreutils translate jq python3]
+    (with pkgs; [coreutils translate jq python3])
     ''
       jobJson=$1
       job_nr=$2
@@ -34,7 +29,7 @@
 in
   utils.writePureShellScriptBin
   "translate-index"
-  [coreutils translate jq parallel python3]
+  (with pkgs; [coreutils translate jq parallel python3])
   ''
     set -e
     usage="usage:
@@ -64,7 +59,7 @@ in
       bin="$TRANSLATOR_DIR/$translator"
       if [ ! -e "$bin" ]; then
         echo "building executable for translator $translator"
-        ${callNixWithD2N} build -o "$bin" "
+        ${apps.callNixWithD2N} build -o "$bin" "
           dream2nix.framework.translators.$translator.finalTranslateBin
         "
       fi

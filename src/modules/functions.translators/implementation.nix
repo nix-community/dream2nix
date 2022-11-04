@@ -57,7 +57,7 @@
               (dreamLock // {
                 _generic = builtins.removeAttrs dreamLock._generic [ \"cyclicDependencies\" ];
               })
-        " | python3 ${../../apps/cli/format-dream-lock.py} > out
+        " | python3 ${../../utils/cli/format-dream-lock.py} > out
         tmpOut=$(realpath out)
         popd
         mkdir -p $(dirname $outputFile)

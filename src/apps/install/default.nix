@@ -1,10 +1,10 @@
 {
-  writeScriptBin,
+  pkgs,
   # dream2nix inputs
   dream2nixWithExternals,
   ...
 }:
-writeScriptBin
+pkgs.writeScriptBin
 "install"
 ''
   target="$1"

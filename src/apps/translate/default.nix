@@ -1,25 +1,19 @@
 {
   # dream2nix deps
-  framework,
+  apps,
   utils,
-  callNixWithD2N,
-  translateSourceShortcut,
-  coreutils,
-  moreutils,
-  nix,
-  python3,
-  jq,
+  pkgs,
   ...
 }:
 utils.writePureShellScriptBin
 "translate"
-[
+(with pkgs; [
   jq
   coreutils
   nix
   python3
   moreutils
-]
+])
 ''
   usage="usage:
     $0 PROJECT_JSON TARGET_DIR"
@@ -50,7 +44,7 @@ utils.writePureShellScriptBin
   if [ -n "''${TRANSLATOR_DIR:-""}" ]; then
     translateBin="$TRANSLATOR_DIR/$translator"
   else
-    translateBin=$(${callNixWithD2N} build --print-out-paths --no-link "
+    translateBin=$(${apps.callNixWithD2N} build --print-out-paths --no-link "
       dream2nix.framework.translators.$translator.finalTranslateBin
     ")
   fi
@@ -68,7 +62,7 @@ utils.writePureShellScriptBin
     | python3 ${../cli/format-dream-lock.py} \
     | sponge $dreamLockPath
 
-  ${python3.pkgs.jsonschema}/bin/jsonschema \
+  ${pkgs.python3.pkgs.jsonschema}/bin/jsonschema \
       --instance $dreamLockPath \
       --output pretty \
       ${../../specifications/dream-lock-schema.json}
