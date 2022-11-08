@@ -41,9 +41,9 @@ in {
   */
   discoverProject = tree:
   # Example
-  # Returns true if given directory contains a file ending with .freeze
+  # Returns true if given directory contains a file ending with cabal.project.freeze
     l.any
-    (filename: l.hasSuffix ".freeze" filename)
+    (filename: l.hasSuffix "cabal.project.freeze" filename)
     (l.attrNames tree.files);
 
   # translate from a given source and a project specification to a dream-lock.
@@ -112,8 +112,6 @@ in {
     tree,
     # arguments defined in `extraArgs` (see below) specified by user
     ghcVersion,
-    defaultPackageName,
-    defaultPackageVersion,
     ...
   } @ args: let
     # get the root source and project source
@@ -121,10 +119,33 @@ in {
     projectSource = "${tree.fullPath}/${project.relPath}";
     projectTree = tree.getNodeFromPath project.relPath;
 
+    # FIXME: This is the first of many snippets that will need to be modified to support multiple packages
+    cabalFileText = l.pipe projectTree.files [
+      l.attrNames
+      (
+        l.findFirst (l.hasSuffix ".cabal")
+        (throw "No cabal file in the tree")
+      )
+      projectTree.getNodeFromPath
+      (l.attrByPath ["fullPath"] "")
+      dlib.readTextFile
+      (s: "\n" + s)
+    ];
+
+    defaultPackageName = l.pipe cabalFileText [
+      (l.match ".*\nname:[[:space:]]+([^[:space:]]+).*")
+      l.head
+    ];
+
+    defaultPackageVersion = l.pipe cabalFileText [
+      (l.match ".*\nversion:[[:space:]]+([^[:space:]]+).*")
+      l.head
+    ];
+
     parsedCabalFreeze = l.pipe projectTree.files [
       l.attrNames
       (
-        l.findFirst (l.hasSuffix ".freeze")
+        l.findFirst (l.hasSuffix "cabal.project.freeze")
         (throw "No cabal.project.freeze file in the tree")
       )
       projectTree.getNodeFromPath
@@ -273,22 +294,8 @@ in {
   extraArgs = {
     ghcVersion = {
       description = "GHC version";
-      default = "9.0.2";
+      default = pkgs.ghc.version;
       examples = ["9.0.2" "9.4.1"];
-      type = "argument";
-    };
-
-    defaultPackageName = {
-      description = "Name of default package";
-      default = "main";
-      examples = ["main" "default"];
-      type = "argument";
-    };
-
-    defaultPackageVersion = {
-      description = "Version of default package";
-      default = "unknown";
-      examples = ["unknown" "1.2.0"];
       type = "argument";
     };
   };
