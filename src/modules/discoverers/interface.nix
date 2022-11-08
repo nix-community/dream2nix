@@ -4,7 +4,7 @@
 in {
   options = {
     discoverers = lib.mkOption {
-      type = t.attrsOf (t.submoduleWith {
+      type = t.lazyAttrsOf (t.submoduleWith {
         modules = [../interfaces.discoverer];
         specialArgs = {framework = config;};
       });

@@ -1,1 +1,1 @@
-../../src/apps/cli/nix_ffi.py
+../../src/utils/cli/nix_ffi.py

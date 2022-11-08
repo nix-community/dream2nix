@@ -4,7 +4,7 @@
 in {
   options = {
     indexers = l.mkOption {
-      type = t.attrsOf (
+      type = t.lazyAttrsOf (
         t.submoduleWith {
           modules = [../interfaces.indexer];
           specialArgs = {framework = config;};

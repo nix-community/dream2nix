@@ -4,7 +4,7 @@
 in {
   options = {
     builders = lib.mkOption {
-      type = t.attrsOf (t.submoduleWith {
+      type = t.lazyAttrsOf (t.submoduleWith {
         modules = [../interfaces.builder];
         specialArgs = {framework = config;};
       });

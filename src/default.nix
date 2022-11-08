@@ -72,7 +72,6 @@ in let
   framework = import ./modules/framework.nix {
     inherit
       inputs
-      apps
       lib
       dlib
       pkgs
@@ -94,7 +93,6 @@ in let
   callPackageDreamArgs =
     pkgs
     // {
-      inherit apps;
       inherit callPackageDream;
       inherit config;
       inherit configFile;
@@ -122,9 +120,6 @@ in let
     ) (callPackageDreamArgs // fargs);
 
   utils = callPackageDream ./utils {};
-
-  # apps for CLI and installation
-  apps = callPackageDream ./apps {};
 
   # updater modules to find newest package versions
   updaters = callPackageDream ./updaters {};
@@ -724,7 +719,6 @@ in let
     };
 in {
   inherit
-    apps
     callPackageDream
     dream2nixWithExternals
     framework

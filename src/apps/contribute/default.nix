@@ -1,12 +1,7 @@
-{
-  # from nixpkgs
-  python3,
-  writeScriptBin,
-  ...
-}: let
-  cliPython = python3.withPackages (ps: [ps.cleo]);
+{pkgs, ...}: let
+  cliPython = pkgs.python3.withPackages (ps: [ps.cleo]);
 in
-  writeScriptBin
+  pkgs.writeScriptBin
   "contribute"
   ''
     dream2nixSrc=${../../.} \

@@ -4,7 +4,7 @@
 in {
   options = {
     fetchers = l.mkOption {
-      type = t.attrsOf (
+      type = t.lazyAttrsOf (
         t.submoduleWith {
           modules = [../interfaces.fetcher];
           specialArgs = {framework = config;};

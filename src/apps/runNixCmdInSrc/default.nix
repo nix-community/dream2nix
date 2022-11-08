@@ -1,14 +1,9 @@
 {
-  # dream2nix deps
-  writeFlakeD2N,
-  callNixWithD2N,
-  translate,
-  writers,
-  coreutils,
-  nix,
+  pkgs,
+  apps,
   ...
 }:
-writers.writeBashBin
+pkgs.writers.writeBashBin
 "runNixCmdInSrc"
 ''
   set -e
@@ -27,18 +22,18 @@ writers.writeBashBin
 
   source="''${1:?"error: pass a source shortcut"}"
 
-  TMPDIR="$(${coreutils}/bin/mktemp --directory)"
-  SRC="$(${coreutils}/bin/mktemp --directory)"
+  TMPDIR="$(${pkgs.coreutils}/bin/mktemp --directory)"
+  SRC="$(${pkgs.coreutils}/bin/mktemp --directory)"
 
   # translate any impure packages
   export translateSkipResolved=1
   export translateSourceInfoPath="$SRC/sourceInfo.json"
-  ${translate}/bin/translate "$source" "$TMPDIR/packages"
+  ${apps.translate}/bin/translate "$source" "$TMPDIR/packages"
 
   # write flake.nix file
   export dream2nixConfig="{packagesDir=\"./packages\"; projectRoot=./.;}"
   export flakeSrcInfoPath="$translateSourceInfoPath"
-  ${writeFlakeD2N} "$TMPDIR/flake.nix"
+  ${apps.writeFlakeD2N} "$TMPDIR/flake.nix"
 
   # process arguments to pass to Nix
   args=()
@@ -60,8 +55,8 @@ writers.writeBashBin
   fi
 
   # enable IFD explicitly so 'flake show' works
-  ${nix}/bin/nix --option allow-import-from-derivation true \
+  ${pkgs.nix}/bin/nix --option allow-import-from-derivation true \
     ''${cmdArgs[@]} --impure ''${remArgs[@]}
 
-  ${coreutils}/bin/rm -rf {$TMPDIR,$SRC}
+  ${pkgs.coreutils}/bin/rm -rf {$TMPDIR,$SRC}
 ''

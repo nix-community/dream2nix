@@ -100,7 +100,6 @@
       inherit lib dlib externalSources inputs;
       dream2nixConfig = config;
       dream2nixConfigFile = l.toFile "dream2nix-config.json" (l.toJSON config);
-      apps = throw "apps is not available before nixpkgs is imported";
       pkgs = throw "pkgs is not available before nixpkgs is imported";
       utils = throw "utils is not available before nixpkgs is imported";
       externals = throw "externals is not available before nixpkgs is imported";

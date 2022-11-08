@@ -3,11 +3,11 @@
   dlib,
   dream2nixInterface,
   pkgs,
-  apps,
   callPackageDream,
   utils,
+  framework,
   ...
-} @ topArgs: let
+}: let
   l = lib // builtins;
 in rec {
   generatePackagesFromLocksTree = {
@@ -77,7 +77,7 @@ in rec {
         inputJson="$(${pkgs.coreutils}/bin/mktemp)"
         echo '${l.toJSON inputFinal}' > $inputJson
         mkdir -p $(dirname ${inputFinal.outputFile})
-        ${apps.index}/bin/index ${input.indexer} $inputJson
+        ${framework.apps.index}/bin/index ${input.indexer} $inputJson
       '';
     in
       mkApp script;
@@ -86,7 +86,7 @@ in rec {
       mkApp (
         pkgs.writers.writeBash "translate-${name}" ''
           set -e
-          ${apps.translate-index}/bin/translate-index \
+          ${framework.apps.translate-index}/bin/translate-index \
             ${name}/index.json ${name}/locks
         ''
       );

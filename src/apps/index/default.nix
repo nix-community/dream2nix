@@ -1,12 +1,12 @@
 {
+  apps,
   utils,
-  callNixWithD2N,
-  coreutils,
+  pkgs,
   ...
 }:
 utils.writePureShellScriptBin
 "index"
-[coreutils]
+[pkgs.coreutils]
 ''
   usage="usage:
     $0 INDEXER_NAME INDEXER_INPUT"
@@ -29,7 +29,7 @@ utils.writePureShellScriptBin
 
   resultBin="$TMPDIR/result"
 
-  ${callNixWithD2N} build -L --keep-failed --show-trace --out-link $resultBin \
+  ${apps.callNixWithD2N} build -L --keep-failed --show-trace --out-link $resultBin \
     "dream2nix.framework.indexers.$name.indexBin"
 
   $resultBin $inputFile

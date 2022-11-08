@@ -1,5 +1,4 @@
 {
-  apps,
   dlib,
   externals,
   externalSources,
@@ -19,6 +18,7 @@ in {
     ./functions.default-fetcher
     ./functions.combined-fetcher
     ./functions.translators
+    ./apps
     ./builders
     ./discoverers
     ./discoverers.default-discoverer
@@ -27,9 +27,6 @@ in {
     ./indexers
   ];
   options = {
-    apps = lib.mkOption {
-      type = t.raw;
-    };
     lib = lib.mkOption {
       type = t.raw;
     };

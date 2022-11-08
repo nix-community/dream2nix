@@ -1,13 +1,10 @@
 {
   # dream2nix deps
   dream2nixWithExternals,
-  # nixpkgs deps
-  writers,
-  nix,
   pkgs,
   ...
-} @ args:
-writers.writeBash
+}:
+pkgs.writers.writeBash
 "writeFlakeD2N"
 ''
   set -e
