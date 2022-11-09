@@ -14,11 +14,17 @@
       echo "[]" > "$tmpFile"
 
       sortBy=$(jq '.sortBy' -c -r $input)
-      maxPages=$(jq '.maxPages' -c -r $input)
+      export number=$(jq '.number' -c -r $input)
 
-      for currentPage in $(seq 1 $maxPages); do
+      # calculate number of pages to query
+      # page size is always 100
+      # result will be truncated to the given $number later
+      numPages=$(($number/100 + ($number % 100 > 0)))
+
+      for currentPage in $(seq 1 $numPages); do
         url="https://crates.io/api/v1/crates?page=$currentPage&per_page=100&sort=$sortBy"
-        curl -k "$url" | python3 ${./process-result.py} > "$tmpFile"
+        echo "fetching page $currentPage"
+        curl -k "$url" | python3 ${./process-result.py} "$tmpFile"
       done
 
       mv "$tmpFile" "$(realpath $outFile)"
