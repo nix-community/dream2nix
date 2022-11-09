@@ -1,10 +1,27 @@
+!!! Warning: dream2nix is unstable software. While simple UX is one of our main focus points, the APIs  are still under development. Do expect changes that will break your setup.
+
 <p align="center">
-<img width="400" src="https://gist.githubusercontent.com/DavHau/755fed3774e89c0b9b8953a0a25309fa/raw/e2a12a60ae49aa5eb11b42775abdd1652dbe63c0/dream2nix-01.png">
+  <picture>
+    <source width="600" media="(prefers-color-scheme: dark)" srcset="https://gist.githubusercontent.com/DavHau/755fed3774e89c0b9b8953a0a25309fa/raw/e2a12a60ae49aa5eb11b42775abdd1652dbe63c0/dream2nix-01.png">
+    <source width="600" media="(prefers-color-scheme: light)" srcset="https://gist.githubusercontent.com/DavHau/755fed3774e89c0b9b8953a0a25309fa/raw/e2a12a60ae49aa5eb11b42775abdd1652dbe63c0/dream2nix-01.png">
+    <img width="600" alt="dream2nix - A framework for automated nix packaging" src="https://gist.githubusercontent.com/DavHau/755fed3774e89c0b9b8953a0a25309fa/raw/e2a12a60ae49aa5eb11b42775abdd1652dbe63c0/dream2nix-01.png">
+  </picture>
+  <br>
+  <a href="https://nix-community.github.io/dream2nix/">Documentation</a> |
+  <a href="https://nix-community.github.io/dream2nix/contributing.html">Contributing</a> |
+  <a href="https://nix-community.github.io/dream2nix/intro/override-system.html">Overriding Packages</a> |
+  <a href="https://github.com/nix-community/dream2nix/tree/main/examples">Examples</a>
 </p>
 
+### Ecosystem stats:
+<p>
+<a href="https://nix-community.github.io/dream2nix-auto-test/#pkgs-nodejs" target="_blank" rel="noopener noreferrer">
+<img src="https://raw.githubusercontent.com/nix-community/dream2nix-auto-test/gh-pages/pkgs-nodejs.svg"></a>
+<br>
+<a href="https://nix-community.github.io/dream2nix-auto-test/#pkgs-haskell" target="_blank" rel="noopener noreferrer">
+<img src="https://raw.githubusercontent.com/nix-community/dream2nix-auto-test/gh-pages/pkgs-haskell.svg"></a>
+</p>
 ## dream2nix - A framework for automated nix packaging
-
-!!! Warning: dream2nix is unstable software. While simple UX is one of our main focus points, the APIs  are still under development. Do expect changes that will break your setup.
 
 dream2nix is a framework for automatically converting packages from other build systems to nix.
 
