@@ -1,4 +1,5 @@
 {
+  self,
   lib,
   flake-parts-lib,
   ...
@@ -20,7 +21,9 @@ in {
         type = t.submoduleWith {
           modules = [../config];
         };
-        default = {};
+        default = {
+          projectRoot = self;
+        };
         description = ''
           The dream2nix config.
         '';
@@ -47,11 +50,10 @@ in {
               '';
             };
             outputs = l.mkOption {
-              type = t.either (t.attrsOf t.raw) (t.attrsOf (t.attrsOf t.raw));
+              type = t.lazyAttrsOf (t.lazyAttrsOf t.raw);
               readOnly = true;
               description = ''
                 The raw outputs that were generated for each input.
-                If only one input was specified, then this will be the outputs for only that input.
               '';
             };
           };

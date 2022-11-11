@@ -25,30 +25,24 @@ in {
         inherit (d2n) config;
       };
 
-      outputsRaw =
+      outputs =
         l.mapAttrs
         (_: args: instance.makeOutputs args)
         config.dream2nix.inputs;
 
       getAttrFromOutputs = attrName:
-        d2n.lib.dlib.mergeFlakes (
+        l.mkMerge (
           l.mapAttrsToList
-          (_: attrs: attrs.${attrName})
-          outputsRaw
+          (_: output: mkDefaultRecursive output.${attrName})
+          outputs
         );
     in {
       config = {
-        dream2nix = {
-          inherit instance;
-          outputs =
-            # if only one input was defined, then only export outputs from
-            # that since there is nothing else
-            if l.length (l.attrNames outputsRaw) != 1
-            then outputsRaw
-            else l.head (l.attrValues outputsRaw);
-        };
-        devShells = mkDefaultRecursive (getAttrFromOutputs "devShells");
-        packages = mkDefaultRecursive (getAttrFromOutputs "packages");
+        dream2nix = {inherit instance outputs;};
+        # TODO(yusdacra): we could combine all the resolveImpure here if there are multiple
+        # TODO(yusdacra): maybe we could rename outputs with the same name to avoid collisions?
+        packages = getAttrFromOutputs "packages";
+        devShells = getAttrFromOutputs "devShells";
       };
     };
   };

@@ -1,6 +1,6 @@
 {
   inputs = {
-    dream2nix.url = "github:nix-community/dream2nix";
+    dream2nix.url = "path:../..";
     nixpkgs.follows = "dream2nix/nixpkgs";
     flake-parts.url = "github:hercules-ci/flake-parts";
     src.url = "github:BurntSushi/ripgrep/13.0.0";
@@ -17,8 +17,6 @@
     flake-parts.lib.mkFlake {inherit self;} {
       systems = ["x86_64-linux"];
       imports = [dream2nix.flakeModuleBeta];
-
-      dream2nix.config.projectRoot = ./.;
 
       perSystem = {config, ...}: {
         # define an input for dream2nix to generate outputs for
