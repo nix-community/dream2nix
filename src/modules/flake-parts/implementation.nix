@@ -5,44 +5,44 @@
 }: let
   l = lib // builtins;
   d2n = config.dream2nix;
-  makeArgs = p:
-    {
-      inherit (config) systems;
-      inherit (d2n) config;
-    }
-    // p;
-  outputs = d2n.lib.dlib.mergeFlakes (
-    l.map
-    (p: d2n.lib.makeFlakeOutputs (makeArgs p))
-    (l.attrValues d2n.inputs)
-  );
+
+  # make attrs default, so that users can override them without
+  # needing to use lib.mkOverride (usually, lib.mkForce)
+  mkDefaultRecursive = attrs:
+    l.mapAttrsRecursiveCond
+    d2n.lib.dlib.isNotDrvAttrs
+    (_: l.mkDefault)
+    attrs;
 in {
   config = {
-    flake =
-      # make attrs default, so that users can override them without
-      # needing to use lib.mkOverride (usually, lib.mkForce)
-      l.mapAttrsRecursiveCond
-      d2n.lib.dlib.isNotDrvAttrs
-      (_: l.mkDefault)
-      outputs;
-    dream2nix.outputs = outputs;
     perSystem = {
       config,
-      system,
+      pkgs,
       ...
     }: let
-      # get output attrs that have systems
-      systemizedOutputs =
+      instance = d2n.lib.init {
+        inherit pkgs;
+        inherit (d2n) config;
+      };
+
+      outputs =
         l.mapAttrs
-        (_: attrs: attrs.${system})
-        (
-          l.filterAttrs
-          (_: attrs: l.isAttrs attrs && l.hasAttr system attrs)
+        (_: args: instance.makeOutputs args)
+        config.dream2nix.inputs;
+
+      getAttrFromOutputs = attrName:
+        l.mkMerge (
+          l.mapAttrsToList
+          (_: output: mkDefaultRecursive output.${attrName})
           outputs
         );
     in {
       config = {
-        dream2nix.outputs = systemizedOutputs;
+        dream2nix = {inherit instance outputs;};
+        # TODO(yusdacra): we could combine all the resolveImpure here if there are multiple
+        # TODO(yusdacra): maybe we could rename outputs with the same name to avoid collisions?
+        packages = getAttrFromOutputs "packages";
+        devShells = getAttrFromOutputs "devShells";
       };
     };
   };
