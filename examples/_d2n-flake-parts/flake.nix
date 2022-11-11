@@ -17,10 +17,12 @@
     flake-parts.lib.mkFlake {inherit self;} {
       systems = ["x86_64-linux"];
       imports = [dream2nix.flakeModuleBeta];
-      dream2nix = {
-        config.projectRoot = ./.;
+
+      dream2nix.config.projectRoot = ./.;
+
+      perSystem = {config, ...}: {
         # define an input for dream2nix to generate outputs for
-        inputs."ripgrep" = {
+        dream2nix.inputs."ripgrep" = {
           source = src;
           settings = [{builder = "crane";}];
         };

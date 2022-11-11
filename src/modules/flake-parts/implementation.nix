@@ -5,44 +5,50 @@
 }: let
   l = lib // builtins;
   d2n = config.dream2nix;
-  makeArgs = p:
-    {
-      inherit (config) systems;
-      inherit (d2n) config;
-    }
-    // p;
-  outputs = d2n.lib.dlib.mergeFlakes (
-    l.map
-    (p: d2n.lib.makeFlakeOutputs (makeArgs p))
-    (l.attrValues d2n.inputs)
-  );
+
+  # make attrs default, so that users can override them without
+  # needing to use lib.mkOverride (usually, lib.mkForce)
+  mkDefaultRecursive = attrs:
+    l.mapAttrsRecursiveCond
+    d2n.lib.dlib.isNotDrvAttrs
+    (_: l.mkDefault)
+    attrs;
 in {
   config = {
-    flake =
-      # make attrs default, so that users can override them without
-      # needing to use lib.mkOverride (usually, lib.mkForce)
-      l.mapAttrsRecursiveCond
-      d2n.lib.dlib.isNotDrvAttrs
-      (_: l.mkDefault)
-      outputs;
-    dream2nix.outputs = outputs;
     perSystem = {
       config,
-      system,
+      pkgs,
       ...
     }: let
-      # get output attrs that have systems
-      systemizedOutputs =
+      instance = d2n.lib.init {
+        inherit pkgs;
+        inherit (d2n) config;
+      };
+
+      outputsRaw =
         l.mapAttrs
-        (_: attrs: attrs.${system})
-        (
-          l.filterAttrs
-          (_: attrs: l.isAttrs attrs && l.hasAttr system attrs)
-          outputs
+        (_: args: instance.makeOutputs args)
+        config.dream2nix.inputs;
+
+      getAttrFromOutputs = attrName:
+        d2n.lib.dlib.mergeFlakes (
+          l.mapAttrsToList
+          (_: attrs: attrs.${attrName})
+          outputsRaw
         );
     in {
       config = {
-        dream2nix.outputs = systemizedOutputs;
+        dream2nix = {
+          inherit instance;
+          outputs =
+            # if only one input was defined, then only export outputs from
+            # that since there is nothing else
+            if l.length (l.attrNames outputsRaw) != 1
+            then outputsRaw
+            else l.head (l.attrValues outputsRaw);
+        };
+        devShells = mkDefaultRecursive (getAttrFromOutputs "devShells");
+        packages = mkDefaultRecursive (getAttrFromOutputs "packages");
       };
     };
   };
