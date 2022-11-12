@@ -29,9 +29,10 @@
     dream2nix.lib.dlib.mergeFlakes [
       d2n-flake
       {
-        devShells =
-          forAllSystems
-          (system: pkgs: (l.optionalAttrs (d2n-flake ? devShells) {
+        devShells = forAllSystems (system: pkgs: (
+          l.optionalAttrs
+          (d2n-flake ? devShells.${system}.prettier.overrideAttrs)
+          {
             prettier =
               d2n-flake.devShells.${system}.prettier.overrideAttrs
               (old: {
@@ -41,7 +42,8 @@
                     pkgs.hello
                   ];
               });
-          }));
+          }
+        ));
       }
       {
         checks.x86_64-linux.prettier = self.packages.x86_64-linux.prettier;
