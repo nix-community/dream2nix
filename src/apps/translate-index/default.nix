@@ -6,7 +6,7 @@
 }: let
   script =
     utils.writePureShellScript
-    (with pkgs; [coreutils translate jq python3])
+    (with pkgs; [coreutils apps.translate jq python3])
     ''
       jobJson=$1
       job_nr=$2
@@ -29,7 +29,7 @@
 in
   utils.writePureShellScriptBin
   "translate-index"
-  (with pkgs; [coreutils translate jq parallel python3])
+  (with pkgs; [coreutils apps.translate jq parallel python3])
   ''
     set -e
     usage="usage:

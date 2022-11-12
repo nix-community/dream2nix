@@ -1,6 +1,6 @@
 {config, ...}: let
   l = config.lib;
-  appsDir = ../../apps;
+  appsDir = "${../../.}/apps";
   appNames = l.attrNames (l.readDir appsDir);
   appModules =
     l.genAttrs
