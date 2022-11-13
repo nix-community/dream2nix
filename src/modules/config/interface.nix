@@ -1,6 +1,16 @@
 {lib, ...}: let
   l = lib // builtins;
   t = l.types;
+
+  relativePathString = l.types.mkOptionType {
+    name = "relativePathString";
+    description = "Relative path in a string.";
+    check = s:
+      (t.str.check s)
+      && (l.substring 0 2 s == "./");
+    descriptionClass = "noun";
+    inherit (t.str) merge;
+  };
 in {
   options = {
     disableIfdWarning = l.mkOption {
@@ -18,7 +28,7 @@ in {
       '';
     };
     packagesDir = l.mkOption {
-      type = t.str;
+      type = relativePathString;
       default = "./dream2nix-packages";
       description = ''
         Relative path to the project root to put generated dream-lock files in.
