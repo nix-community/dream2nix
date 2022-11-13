@@ -666,6 +666,17 @@ in
       };
     };
 
+    sharp = {
+      add-vips = {
+        nativeBuildInputs = old:
+          old
+          ++ [
+            pkgs.pkg-config
+            pkgs.vips
+          ];
+      };
+    };
+
     simple-git-hooks = {
       dont-postinstall = {
         buildScript = "true";
