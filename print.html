@@ -611,6 +611,12 @@ supported.)</p>
 <p>Builds a package using <a href="https://github.com/ipetkov/crane"><code>crane</code></a>.
 This builder builds two separate derivations, one for dependencies and the other for your crate.
 The dependencies derivation will be named <code>&lt;crate&gt;-deps</code> where <code>&lt;crate&gt;</code> is the name of the crate you are building.</p>
+<h4 id="setting-profile-and-cargo-flags"><a class="header" href="#setting-profile-and-cargo-flags">Setting profile and Cargo flags</a></h4>
+<p>This can be done via setting environment variables:</p>
+<ul>
+<li><code>cargoTestFlags</code> and <code>cargoBuildFlags</code> are passed to <code>cargo</code> invocations for <code>checkPhase</code> and <code>buildPhase</code> respectively.</li>
+<li><code>cargoTestProfile</code> and <code>cargoBuildProfile</code> are used as profiles while compiling for <code>checkPhase</code> and <code>buildPhase</code> respectively.</li>
+</ul>
 <h4 id="override-gotchas"><a class="header" href="#override-gotchas">Override gotchas</a></h4>
 <p>This builder builds two separate derivations, one for your crate's dependencies and another for your crate.
 This means that if you want to override stuff for the dependencies you need to use the <code>&lt;crate-name&gt;-deps</code> key for your override where <code>&lt;crate-name&gt;</code> is the name of the crate you are building.</p>
