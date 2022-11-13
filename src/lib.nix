@@ -110,19 +110,38 @@
     dream2nixFor = l.mapAttrs (_: pkgs: initD2N pkgs) allPkgs;
 
     discoveredProjects = framework.functions.discoverers.discoverProjects {
-      inherit projects settings;
+      inherit settings;
       tree = dlib.prepareSourceTree {inherit source;};
     };
+
+    finalProjects =
+      if projects != {}
+      then let
+        projectsList = l.attrValues projects;
+      in
+        # skip discovery and just add required attributes to project list
+        l.forEach projectsList
+        (proj:
+          proj
+          // {
+            relPath = proj.relPath or "";
+            translator = proj.translator or (l.head proj.translators);
+            dreamLockPath =
+              framework.functions.discoverers.getDreamLockPath
+              proj
+              (l.head projectsList);
+          })
+      else discoveredProjects;
 
     allBuilderOutputs =
       l.mapAttrs
       (system: pkgs: let
         dream2nix = dream2nixFor."${system}";
         allOutputs = dream2nix.makeOutputs {
+          discoveredProjects = finalProjects;
           inherit
             source
             pname
-            discoveredProjects
             settings
             sourceOverrides
             packageOverrides
@@ -145,7 +164,7 @@
       flakifiedOutputsList;
 
     flakeOutputs =
-      {projectsJson = l.toJSON discoveredProjects;}
+      {projectsJson = l.toJSON finalProjects;}
       // flakeOutputsBuilders;
   in
     flakeOutputs;

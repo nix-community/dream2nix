@@ -609,7 +609,7 @@ in let
 
   generateImpureResolveScript = {
     source,
-    impureDiscoveredProjects,
+    impureProjects,
   }: let
     impureResolveScriptsList =
       l.listToAttrs
@@ -621,7 +621,7 @@ in let
             "Name: ${project.name}; Subsystem: ${project.subsystem or "?"}; relPath: ${project.relPath}"
             (utils.makeTranslateScript {inherit project source;})
         )
-        impureDiscoveredProjects
+        impureProjects
       );
 
     resolveImpureScript =
@@ -644,7 +644,7 @@ in let
     source ? throw "pass a 'source' to 'makeOutputs'",
     discoveredProjects ?
       framework.functions.discoverers.discoverProjects {
-        inherit projects settings source;
+        inherit settings source;
       },
     pname ? null,
     projects ? {},
@@ -653,20 +653,40 @@ in let
     sourceOverrides ? old: {},
     inject ? {},
   }: let
-    impureDiscoveredProjects =
+    # if projects are defined manually, ignore discoveredProjects
+    finalProjects =
+      if projects != {}
+      then let
+        projectsList = l.attrValues projects;
+      in
+        # skip discovery and just add required attributes to project list
+        l.forEach projectsList
+        (proj:
+          proj
+          // {
+            relPath = proj.relPath or "";
+            translator = proj.translator or (l.head proj.translators);
+            dreamLockPath =
+              framework.functions.discoverers.getDreamLockPath
+              proj
+              (l.head projectsList);
+          })
+      else discoveredProjects;
+
+    impureProjects =
       l.filter
       (proj:
         framework.translators."${proj.translator}".type
         == "impure")
-      discoveredProjects;
+      finalProjects;
 
     resolveImpureScript = generateImpureResolveScript {
-      inherit impureDiscoveredProjects source;
+      inherit impureProjects source;
     };
 
     translatedProjects = translateProjects {
+      discoveredProjects = finalProjects;
       inherit
-        discoveredProjects
         pname
         settings
         source
@@ -702,7 +722,7 @@ in let
               or by resolving all impure projects by running the `resolveImpure` package
             '';
           })
-        impureDiscoveredProjects);
+        impureProjects);
   in
     realizedProjects
     // {

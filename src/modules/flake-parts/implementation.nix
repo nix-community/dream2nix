@@ -33,7 +33,7 @@ in {
       getAttrFromOutputs = attrName:
         l.mkMerge (
           l.mapAttrsToList
-          (_: output: mkDefaultRecursive output.${attrName})
+          (_: output: mkDefaultRecursive output.${attrName} or {})
           outputs
         );
     in {

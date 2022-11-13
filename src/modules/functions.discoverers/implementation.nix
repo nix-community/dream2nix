@@ -3,7 +3,6 @@
   dlib = config.dlib;
 
   discoverProjects = {
-    projects,
     source ? throw "Pass either `source` or `tree` to discoverProjects",
     tree ? dlib.prepareSourceTree {inherit source;},
     settings ? [],
@@ -24,7 +23,7 @@
     in
       sorted;
 
-    allProjects = discoveredProjectsSorted ++ (l.attrValues projects);
+    allProjects = discoveredProjectsSorted;
 
     rootProject = l.head allProjects;
 
