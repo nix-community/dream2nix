@@ -20,6 +20,9 @@
 <br>
 <a href="https://nix-community.github.io/dream2nix-auto-test/#pkgs-haskell" target="_blank" rel="noopener noreferrer">
 <img src="https://raw.githubusercontent.com/nix-community/dream2nix-auto-test/gh-pages/pkgs-haskell.svg"></a>
+<br>
+<a href="https://nix-community.github.io/dream2nix-auto-test/#pkgs-rust" target="_blank" rel="noopener noreferrer">
+<img src="https://raw.githubusercontent.com/nix-community/dream2nix-auto-test/gh-pages/pkgs-rust.svg"></a>
 </p>
 ## dream2nix - A framework for automated nix packaging
 
