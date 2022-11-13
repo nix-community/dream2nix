@@ -644,7 +644,7 @@ in let
     source ? throw "pass a 'source' to 'makeOutputs'",
     discoveredProjects ?
       framework.functions.discoverers.discoverProjects {
-        inherit projects settings source;
+        inherit settings source;
       },
     pname ? null,
     projects ? {},
