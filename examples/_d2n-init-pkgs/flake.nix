@@ -32,7 +32,7 @@
     in rec {
       packages.${pkgs.system} = outputs.packages;
       checks.${pkgs.system} = {
-        inherit (outputs.packages) ripgrep;
+        inherit (outputs.packages) linemd;
       };
     };
 

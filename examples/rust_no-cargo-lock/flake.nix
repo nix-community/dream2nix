@@ -22,6 +22,6 @@
       ];
     })
     // {
-      checks.x86_64-linux.rand = self.packages.x86_64-linux.rand;
+      checks.x86_64-linux.linemd = self.packages.x86_64-linux.linemd;
     };
 }

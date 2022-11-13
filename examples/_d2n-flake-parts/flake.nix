@@ -20,7 +20,7 @@
 
       perSystem = {config, ...}: {
         # define an input for dream2nix to generate outputs for
-        dream2nix.inputs."ripgrep" = {
+        dream2nix.inputs."linemd" = {
           source = src;
           settings = [{builder = "crane";}];
         };
