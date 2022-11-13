@@ -69,8 +69,8 @@
         '';
 
         # Make sure cargo only builds & tests the package we want
-        cargoBuildCommand = "cargo build --release --package ${pname}";
-        cargoTestCommand = "cargo test --release --package ${pname}";
+        cargoBuildCommand = "cargo build \${cargoBuildFlags:-} --release --package ${pname}";
+        cargoTestCommand = "cargo test \${cargoTestFlags:-} --release --package ${pname}";
       };
 
       # The deps-only derivation will use this as a prefix to the `pname`

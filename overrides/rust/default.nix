@@ -27,4 +27,7 @@ in rec {
     # the tests seem to be undeterministic if ran in parallel
     disable-parallel-tests.RUST_TEST_THREADS = 1;
   };
+  linemd = {
+    fix-tests.cargoTestFlags = "--features svg";
+  };
 }
