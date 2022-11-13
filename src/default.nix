@@ -491,7 +491,15 @@ in let
             invalidationHash = getInvalidationHash project;
             key = getProjectKey project;
             resolved = isResolved self;
-            translator = project.translator or (l.head project.translators);
+            translator =
+              if
+                (project ? translator)
+                && (
+                  (! project ? translators)
+                  || (l.any (t: project.translator == t) project.translators)
+                )
+              then project.translator
+              else l.head project.translators;
           };
       in
         self))
