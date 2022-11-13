@@ -1,17 +1,19 @@
 {
+  dreamLock,
   getSourceSpec,
   getSource,
   getRoot,
   sourceRoot,
-  dreamLock,
+  subsystemAttrs,
+  packages,
   lib,
   dlib,
   utils,
-  subsystemAttrs,
   pkgs,
   ...
 }: let
   l = lib // builtins;
+  isInPackages = name: version: (packages.${name} or null) == version;
 in rec {
   getMeta = pname: version: let
     meta = subsystemAttrs.meta.${pname}.${version};
@@ -90,10 +92,10 @@ in rec {
   in
     buildWithToolchain;
 
-  # Script to write the Cargo.lock if it doesn't already exist.
+  # Backup original Cargo.lock if it exists and write our own one
   writeCargoLock = ''
-    rm -f "$PWD/Cargo.lock"
-    cat ${cargoLock} > "$PWD/Cargo.lock"
+    mv -f Cargo.lock Cargo.lock.orig || echo "no Cargo.lock"
+    cat ${cargoLock} > Cargo.lock
   '';
 
   # The Cargo.lock for this dreamLock.
@@ -101,8 +103,8 @@ in rec {
     mkPkgEntry = {
       name,
       version,
-      dependencies,
-    }: let
+      ...
+    } @ args: let
       getSource = name: version: let
         sourceSpec = getSourceSpec name version;
         source =
@@ -140,41 +142,47 @@ in rec {
         if src == null
         then throw "source type '${sourceSpec.type}' not supported"
         else src;
+      dependencies =
+        l.map
+        (
+          dep: let
+            # only put version if there are different versions of the dep
+            hasMultipleVersions =
+              (l.length (l.attrValues dreamLock.sources.${dep.name})) > 1;
+            versionString =
+              l.optionalString hasMultipleVersions " ${dep.version}";
+            # TODO: we need to comment out this and put the srcString only
+            # if there are duplicate versions of a dependency. This currently
+            # doesn't matter for us since the two Rust builders we have
+            # (brp and crane) use cargo, and cargo vendor does not support
+            # duplicate dependency versions. However if we get a more granular
+            # builder that does not use cargo, we would be able to test and
+            # support this, since we wouldn't be limited to cargo's functionality.
+            # src = getDepSource dep.name dep.version;
+            src = null;
+            srcString = l.optionalString (src != null) " (${src})";
+          in "${dep.name}${versionString}${srcString}"
+        )
+        args.dependencies;
+      isMainPackage = isInPackages name version;
     in
       {
         inherit name version;
-        # put dependencies like how cargo expects them
-        dependencies =
-          l.map
-          (
-            dep: let
-              # only put version if there are different versions of the dep
-              hasMultipleVersions =
-                (l.length (l.attrValues dreamLock.sources.${dep.name})) > 1;
-              versionString =
-                l.optionalString hasMultipleVersions " ${dep.version}";
-              # TODO: we need to comment out this and put the srcString only
-              # if there are duplicate versions of a dependency. This currently
-              # doesn't matter for us since the two Rust builders we have
-              # (brp and crane) use cargo, and cargo vendor does not support
-              # duplicate dependency versions. However if we get a more granular
-              # builder that does not use cargo, we would be able to test and
-              # support this, since we wouldn't be limited to cargo's functionality.
-              # src = getDepSource dep.name dep.version;
-              src = null;
-              srcString = l.optionalString (src != null) " (${src})";
-            in "${dep.name}${versionString}${srcString}"
-          )
-          dependencies;
       }
+      # put dependencies like how cargo expects them
       // (
         l.optionalAttrs
-        (sourceSpec.type != "path")
+        (l.length dependencies > 0)
+        {inherit dependencies;}
+      )
+      // (
+        l.optionalAttrs
+        (sourceSpec.type != "path" && !isMainPackage)
         {inherit source;}
       )
       // (
         l.optionalAttrs
-        (sourceSpec.type == "crates-io")
+        (sourceSpec.type == "crates-io" && !isMainPackage)
         {checksum = sourceSpec.hash;}
       );
     package = l.flatten (
