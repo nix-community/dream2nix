@@ -3,7 +3,7 @@
     dream2nix.url = "github:nix-community/dream2nix";
     nixpkgs.follows = "dream2nix/nixpkgs";
     flake-parts.url = "github:hercules-ci/flake-parts";
-    src.url = "github:BurntSushi/ripgrep/13.0.0";
+    src.url = "github:yusdacra/linemd/v0.4.0";
     src.flake = false;
   };
 
