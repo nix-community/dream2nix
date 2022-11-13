@@ -158,7 +158,6 @@
     indexes,
     inject ? {},
     packageOverrides ? {},
-    settings ? [],
     sourceOverrides ? oldSources: {},
   }: let
     allPkgs = makeNixpkgs pkgs systems;
@@ -178,7 +177,6 @@
             indexes
             inject
             packageOverrides
-            settings
             sourceOverrides
             ;
         };

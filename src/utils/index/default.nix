@@ -12,8 +12,8 @@
 in rec {
   generatePackagesFromLocksTree = {
     source ? throw "pass source",
+    builder ? null,
     tree ? dlib.prepareSourceTree {inherit source;},
-    settings ? [],
     inject ? {},
     packageOverrides ? {},
     sourceOverrides ? {},
@@ -45,6 +45,7 @@ in rec {
           inject
           packageOverrides
           sourceOverrides
+          builder
           ;
       })
       .packages;
@@ -56,13 +57,11 @@ in rec {
   makeOutputsForIndexes = {
     source,
     indexes,
-    settings ? [],
     inject ? {},
     packageOverrides ? {},
     sourceOverrides ? {},
   }: let
     l = lib // builtins;
-    indexNames = l.map (index: index.name) indexes;
 
     mkApp = script: {
       type = "app";
@@ -130,12 +129,12 @@ in rec {
     translateApps = l.listToAttrs (
       l.map
       (
-        name:
+        index:
           l.nameValuePair
-          "translate-${name}"
-          (mkTranslateApp name)
+          "translate-${index.name}"
+          (mkTranslateApp index.name)
       )
-      indexNames
+      indexes
     );
 
     indexApps = l.listToAttrs (
@@ -205,16 +204,16 @@ in rec {
         ''
       );
 
-    mkIndexOutputs = name: let
-      src = "${toString source}/${name}/locks";
+    mkIndexOutputs = index: let
+      src = "${toString source}/${index.name}/locks";
     in
       if l.pathExists src
       then
         l.removeAttrs
         (generatePackagesFromLocksTree {
           source = src;
+          builder = index.builder or null;
           inherit
-            settings
             inject
             packageOverrides
             sourceOverrides
@@ -227,7 +226,7 @@ in rec {
       l.foldl'
       (acc: el: acc // el)
       {}
-      (l.map mkIndexOutputs indexNames);
+      (l.map mkIndexOutputs indexes);
 
     outputs = {
       packages = allPackages;
