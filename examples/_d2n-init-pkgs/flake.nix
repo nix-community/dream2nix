@@ -1,7 +1,7 @@
 {
   inputs = {
     dream2nix.url = "path:../..";
-    src.url = "github:BurntSushi/ripgrep/13.0.0";
+    src.url = "github:yusdacra/linemd/v0.4.0";
     src.flake = false;
   };
 
@@ -32,7 +32,7 @@
     in rec {
       packages.${pkgs.system} = outputs.packages;
       checks.${pkgs.system} = {
-        inherit (outputs.packages) ripgrep;
+        inherit (outputs.packages) linemd;
       };
     };
 

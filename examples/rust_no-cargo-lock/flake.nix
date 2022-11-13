@@ -1,7 +1,7 @@
 {
   inputs = {
     dream2nix.url = "github:nix-community/dream2nix";
-    src.url = "github:rust-random/rand";
+    src.url = "github:yusdacra/linemd/v0.4.0";
     src.flake = false;
   };
 
@@ -22,6 +22,6 @@
       ];
     })
     // {
-      checks.x86_64-linux.rand = self.packages.x86_64-linux.rand;
+      checks.x86_64-linux.linemd = self.packages.x86_64-linux.linemd;
     };
 }

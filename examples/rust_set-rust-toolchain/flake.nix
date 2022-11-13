@@ -5,7 +5,7 @@
     fenix.inputs.nixpkgs.follows = "nixpkgs";
     dream2nix.url = "github:nix-community/dream2nix";
     dream2nix.inputs.nixpkgs.follows = "nixpkgs";
-    src.url = "github:BurntSushi/ripgrep/13.0.0";
+    src.url = "github:yusdacra/linemd/v0.4.0";
     src.flake = false;
   };
 
@@ -48,6 +48,6 @@
       };
     })
     // {
-      checks.x86_64-linux.ripgrep = self.packages.x86_64-linux.ripgrep;
+      checks.x86_64-linux.linemd = self.packages.x86_64-linux.linemd;
     };
 }
