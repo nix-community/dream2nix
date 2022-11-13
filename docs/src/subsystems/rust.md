@@ -24,6 +24,13 @@ Builds a package using [`crane`](https://github.com/ipetkov/crane).
 This builder builds two separate derivations, one for dependencies and the other for your crate.
 The dependencies derivation will be named `<crate>-deps` where `<crate>` is the name of the crate you are building.
 
+#### Setting profile and Cargo flags
+
+This can be done via setting environment variables:
+
+- `cargoTestFlags` and `cargoBuildFlags` are passed to `cargo` invocations for `checkPhase` and `buildPhase` respectively.
+- `cargoTestProfile` and `cargoBuildProfile` are used as profiles while compiling for `checkPhase` and `buildPhase` respectively.
+
 #### Override gotchas
 
 This builder builds two separate derivations, one for your crate's dependencies and another for your crate.
