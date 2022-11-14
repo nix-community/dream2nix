@@ -22,6 +22,6 @@
       ];
     })
     // {
-      checks = self.packages;
+      # checks = self.packages;
     };
 }

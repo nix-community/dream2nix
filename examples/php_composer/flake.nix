@@ -1,7 +1,7 @@
 {
   inputs = {
     dream2nix.url = "github:nix-community/dream2nix";
-    src.url = "github:composer/composer";
+    src.url = "github:Gipetto/CowSay";
     src.flake = false;
   };
 

@@ -46,7 +46,7 @@
         ));
       }
       {
-        checks.x86_64-linux.prettier = self.packages.x86_64-linux.prettier;
+        # checks.x86_64-linux.prettier = self.packages.x86_64-linux.prettier;
       }
     ];
 }

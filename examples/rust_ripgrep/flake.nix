@@ -22,6 +22,6 @@
       ];
     })
     // {
-      checks.x86_64-linux.ripgrep = self.packages.x86_64-linux.ripgrep;
+      # checks.x86_64-linux.ripgrep = self.packages.x86_64-linux.ripgrep;
     };
 }

@@ -31,9 +31,9 @@
       };
     in rec {
       packages.${pkgs.system} = outputs.packages;
-      checks.${pkgs.system} = {
-        inherit (outputs.packages) linemd;
-      };
+      # checks.${pkgs.system} = {
+      #   inherit (outputs.packages) linemd;
+      # };
     };
 
     allOutputs = l.map makeOutputs allPkgs;
