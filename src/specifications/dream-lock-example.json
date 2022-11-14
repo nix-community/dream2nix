@@ -11,6 +11,7 @@
 
   "_subsystem": {
     "pythonAttr": "python38",
+    "application": false,
     "sourceFormats": {
       "requests": "sdist",
       "certifi": "wheel"
@@ -32,7 +33,6 @@
       "1.2.3": {
         "url": "https://download.pypi.org/requests/2.28.0",
         "hash": "000000000000000000000000000000000000000",
-        "version": "1.2.3",
         "type": "http"
       }
     },
@@ -40,7 +40,6 @@
       "2.3.4": {
         "url": "https://download.pypi.org/certifi/2.0",
         "hash": "000000000000000000000000000000000000000",
-        "version": "2.3.4",
         "type": "http"
       }
     }

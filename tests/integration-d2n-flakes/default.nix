@@ -55,7 +55,7 @@ in
       shift
       ${testScript} $arg1 "$@"
     fi
-    echo "done running integration tests"
+    echo "done running flake integration tests"
     echo -e "\nExecution times:"
     cat $STATS_FILE | sort --numeric-sort
     rm $STATS_FILE

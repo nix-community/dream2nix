@@ -229,7 +229,7 @@ in
           ${python3.pkgs.jsonschema}/bin/jsonschema \
             --instance $dreamLockPath \
             --output pretty \
-            --base-uri file:${../specifications} \
+            --base-uri file:${../specifications}/ \
             ${../specifications}/dream-lock-schema.json
 
           # add dream-lock.json to git
