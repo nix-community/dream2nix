@@ -218,6 +218,13 @@
               inherit self;
             });
 
+          tests-integration-d2n-flakes.type = "app";
+          tests-integration-d2n-flakes.program =
+            b.toString
+            (dream2nixFor."${system}".callPackageDream ./tests/integration-d2n-flakes {
+              inherit self;
+            });
+
           tests-examples.type = "app";
           tests-examples.program =
             b.toString
