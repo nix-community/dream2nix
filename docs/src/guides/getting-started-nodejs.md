@@ -34,7 +34,7 @@ to some common issues.
 We start by cloning the project:
 ```command
 > git clone https://github.com/piuccio/cowsay /tmp/my_project
-> cd ./my_project
+> cd /tmp/my_project
 ```
 
 ## Initialize the dream2nix flake

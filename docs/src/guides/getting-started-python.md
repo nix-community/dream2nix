@@ -21,7 +21,7 @@ This guide walks you through the process of setting up nix for your project usin
 In this example I will clone the python project [`httpie`](https://github.com/httpie/httpie) to `/tmp/my_project` as an example.
 ```command
 > git clone https://github.com/httpie/httpie /tmp/my_project
-> cd ./my_project
+> cd /tmp/my_project
 ```
 
 ## Initialize the dream2nix flake.nix
