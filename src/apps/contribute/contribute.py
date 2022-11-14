@@ -1,7 +1,8 @@
 import os
 import pathlib
 import subprocess as sp
-from cleo import Application, Command
+from cleo.application import Application
+from cleo.commands.command import Command
 from cleo.helpers import option
 
 
