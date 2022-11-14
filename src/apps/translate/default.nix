@@ -63,9 +63,10 @@ utils.writePureShellScriptBin
     | sponge $dreamLockPath
 
   ${pkgs.python3.pkgs.jsonschema}/bin/jsonschema \
-      --instance $dreamLockPath \
-      --output pretty \
-      ${../../specifications/dream-lock-schema.json}
+    --instance $dreamLockPath \
+    --output pretty \
+    --base-uri file:${../../specifications}/ \
+    ${../../specifications}/dream-lock-schema.json
 
   echo -e "\nFinished:: $name (translator: $translator) (lock path: $dreamLockPath)"
 ''

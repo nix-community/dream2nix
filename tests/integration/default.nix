@@ -7,54 +7,50 @@
   git,
   parallel,
   nix,
+  pkgs,
   utils,
   dream2nixWithExternals,
+  callPackageDream,
   ...
 }: let
   l = lib // builtins;
-  tests = ./tests;
-  testScript =
+  testDirs = l.attrNames (l.readDir ./tests);
+  testScripts =
+    map
+    (dir: callPackageDream (./tests + "/${dir}") {inherit self;})
+    testDirs;
+  testScriptsFile = pkgs.writeText "scripts-list" (l.concatStringsSep "\n" testScripts);
+  execTest =
     utils.writePureShellScript
     [
-      async
       bash
       coreutils
-      git
-      nix
     ]
     ''
       cd $TMPDIR
-      dir=$1
+      test=$1
       shift
-      echo -e "\nrunning test $dir"
+      echo -e "\nrunning test $test"
       start_time=$(date +%s)
-      cp -r ${tests}/$dir/* .
-      chmod -R +w .
-      nix flake lock --override-input dream2nix ${../../.}
-      nix run .#resolveImpure || echo "no resolveImpure probably?"
-      nix build
-      nix flake check
+
+      bash "$test"
+
       end_time=$(date +%s)
       elapsed=$(( end_time - start_time ))
-      echo -e "testing example for $dir took $elapsed seconds"
-      echo "$elapsed sec: $dir" >> $STATS_FILE
+      echo -e "testing example for $test took $elapsed seconds"
+      echo "$elapsed sec: $test" >> $STATS_FILE
     '';
 in
   utils.writePureShellScript
   [
+    bash
     coreutils
     parallel
   ]
   ''
     export STATS_FILE=$(mktemp)
-    if [ -z ''${1+x} ]; then
-      JOBS=''${JOBS:-$(nproc)}
-      parallel --halt now,fail=1 -j$JOBS -a <(ls ${tests}) ${testScript}
-    else
-      arg1=$1
-      shift
-      ${testScript} $arg1 "$@"
-    fi
+    JOBS=''${JOBS:-$(nproc)}
+    parallel --halt now,fail=1 -j$JOBS -a ${testScriptsFile} ${execTest}
     echo "done running integration tests"
     echo -e "\nExecution times:"
     cat $STATS_FILE | sort --numeric-sort

@@ -225,22 +225,12 @@ in
             | sponge $dreamLockPath
 
           # validate dream-lock.json against jsonschema
+          # setting --base-uri is required to resolve refs to subsystem schemas
           ${python3.pkgs.jsonschema}/bin/jsonschema \
             --instance $dreamLockPath \
             --output pretty \
-            ${../specifications/dream-lock-schema.json}
-
-          # if applicable, validate subsystem portion against jsonschema
-          subsystem=$(jq '._generic.subsystem' $dreamLockPath)
-          subsystem=''${subsystem%\"}
-          subsystem=''${subsystem#\"}
-          schema=${../specifications/subsystems}/$subsystem/dream-lock-schema.json
-          if [[ -f "$schema" ]]; then
-            ${python3.pkgs.jsonschema}/bin/jsonschema \
-                --instance $dreamLockPath \
-                --output pretty \
-                $schema
-          fi
+            --base-uri file:${../specifications}/ \
+            ${../specifications}/dream-lock-schema.json
 
           # add dream-lock.json to git
           if git rev-parse --show-toplevel &>/dev/null; then
