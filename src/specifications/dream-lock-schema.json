@@ -1,5 +1,6 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema",
+  "$id": "dream-lock-schema.json",
   "title": "manifest",
   "type": "object",
   "properties": {
@@ -182,5 +183,40 @@
         }
       }
     }
-  }
+  },
+
+  "allOf": [
+    {
+      "if": {
+        "properties": { "_generic": { "properties": { "subsystem": { "const": "haskell" } } } }
+      },
+      "then": {
+        "$ref": "subsystems/haskell/dream-lock-schema.json"
+      }
+    },
+    {
+      "if": {
+        "properties": { "_generic": { "properties": { "subsystem": { "const": "nodejs" } } } }
+      },
+      "then": {
+        "$ref": "subsystems/nodejs/dream-lock-schema.json"
+      }
+    },
+    {
+      "if": {
+        "properties": { "_generic": { "properties": { "subsystem": { "const": "python" } } } }
+      },
+      "then": {
+        "$ref": "subsystems/python/dream-lock-schema.json"
+      }
+    },
+    {
+      "if": {
+        "properties": { "_generic": { "properties": { "subsystem": { "const": "rust" } } } }
+      },
+      "then": {
+        "$ref": "subsystems/rust/dream-lock-schema.json"
+      }
+    }
+  ]
 }
