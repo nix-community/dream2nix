@@ -441,7 +441,7 @@ in let
   translateProjects = {
     discoveredProjects ?
       framework.functions.discoverers.discoverProjects
-      {inherit projects settings tree;},
+      {inherit settings tree;},
     projects ? {},
     source ? throw "Pass either `source` or `tree` to translateProjects",
     tree ? dlib.prepareSourceTree {inherit source;},
