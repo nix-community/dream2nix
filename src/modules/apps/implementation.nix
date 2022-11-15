@@ -19,7 +19,6 @@ in {
       {
         inherit
           (config.apps)
-          contribute
           install
           translate
           runNixCmdInSrc
