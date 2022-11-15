@@ -1,6 +1,8 @@
 {config, ...}: let
   lib = config.lib;
+  l = lib // builtins;
   defaults = {
+    # TODO: define a priority in each builder and remove the defaults here.
     rust = "build-rust-package";
     nodejs = "granular-nodejs";
     python = "simple-python";
@@ -21,8 +23,11 @@ in {
       (
         subsystem: builders:
           builders
-          // lib.optionalAttrs (lib.hasAttr subsystem defaults) {
-            default = builders.${defaults.${subsystem}};
+          // {
+            default =
+              if l.hasAttr subsystem defaults
+              then builders.${defaults.${subsystem}}
+              else l.head (l.attrValues builders);
           }
       )
       (funcs.structureBySubsystem config.builders);
