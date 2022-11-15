@@ -1,14 +1,11 @@
-{...}: {
+{
+  pkgs,
+  lib,
+  ...
+}: {
   type = "pure";
 
   build = {
-    lib,
-    pkgs,
-    stdenv,
-    # dream2nix inputs
-    externals,
-    ...
-  }: {
     ### FUNCTIONS
     # AttrSet -> Bool) -> AttrSet -> [x]
     getCyclicDependencies, # name: version: -> [ {name=; version=; } ]
@@ -33,48 +30,36 @@
     #   produceDerivation name (mkDerivation {...})
     produceDerivation,
     ...
-  } @ args: let
+  }: let
     l = lib // builtins;
-
-    # the main package
-    defaultPackage = allPackages."${defaultPackageName}"."${defaultPackageVersion}";
-
-    # packages to export
-    packages =
-      lib.mapAttrs
-      (name: version: {
-        "${version}" = allPackages.${name}.${version};
-      })
-      args.packages;
-
-    # manage packages in attrset to prevent duplicated evaluation
-    allPackages =
-      lib.mapAttrs
-      (name: versions:
-        lib.genAttrs
-        versions
-        (version: makeOnePackage name version))
-      packageVersions;
-
-    # Generates a derivation for a specific package name + version
-    makeOnePackage = name: version: let
-      pkg = stdenv.mkDerivation rec {
-        pname = l.strings.sanitizeDerivationName name;
-        inherit version;
-
-        src = getSource name version;
-
-        buildInputs =
-          map
-          (dep: allPackages."${dep.name}"."${dep.version}")
-          (getDependencies name version);
-
-        # TODO: Implement build phases
-      };
+    makeTopLevelPackage = pname: version: let
+      deps = getDependencies pname version;
+      depsSources = map ({
+        name,
+        version,
+      }:
+        getSource name version)
+      deps;
     in
-      # apply packageOverrides to current derivation
-      produceDerivation name pkg;
+      pkgs.runCommand
+      pname
+      {}
+      ''
+        mkdir $out
+        for dep in ${toString depsSources}; do
+          cp -r $dep $out/$(basename $dep)
+        done
+      '';
+
+    allPackages =
+      l.mapAttrs
+      (
+        name: ver: {
+          ${ver} = makeTopLevelPackage name ver;
+        }
+      )
+      packages;
   in {
-    inherit defaultPackage packages;
+    packages = allPackages;
   };
 }
