@@ -832,7 +832,7 @@ The downside of this approach is, that this translator cannot be used with a gra
       ];
     })
     // {
-      checks = self.packages;
+      # checks = self.packages;
     };
 }
 </code></pre>
@@ -925,7 +925,7 @@ Currently we have a builder for haskell and several translators (see table below
 <pre><code class="language-nix">{
   inputs = {
     dream2nix.url = &quot;github:nix-community/dream2nix&quot;;
-    src.url = &quot;github:composer/composer&quot;;
+    src.url = &quot;github:Gipetto/CowSay&quot;;
     src.flake = false;
   };
 
