@@ -23,9 +23,11 @@
   },
 
   "dependencies": {
-    "requests": [
-      "certifi"
-    ]
+    "requests": {
+      "1.2.3": [
+        {"name": "certifi", "name": "2.3.4"}
+      ]
+    }
   },
 
   "sources": {
