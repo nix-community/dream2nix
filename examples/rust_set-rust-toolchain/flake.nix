@@ -48,6 +48,6 @@
       };
     })
     // {
-      checks.x86_64-linux.linemd = self.packages.x86_64-linux.linemd;
+      # checks.x86_64-linux.linemd = self.packages.x86_64-linux.linemd;
     };
 }
