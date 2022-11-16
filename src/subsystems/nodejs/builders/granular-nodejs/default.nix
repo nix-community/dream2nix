@@ -242,30 +242,6 @@
           # costs performance and doesn't seem beneficial in most scenarios
           dontStrip = true;
 
-          # declare some useful shell functions
-          d2nLoadFuncsPhase = ''
-            # function to resolve symlinks to copies
-            symlinksToCopies() {
-              local dir="$1"
-
-              echo "transforming symlinks to copies..."
-              for f in $(find -L "$dir" -xtype l); do
-                if [ -f $f ]; then
-                  continue
-                fi
-                echo "copying $f"
-                chmod +wx $(dirname "$f")
-                mv "$f" "$f.bak"
-                mkdir "$f"
-                if [ -n "$(ls -A "$f.bak/")" ]; then
-                  cp -r "$f.bak"/* "$f/"
-                  chmod -R +w $f
-                fi
-                rm "$f.bak"
-              done
-            }
-          '';
-
           # TODO: upstream fix to nixpkgs
           # example which requires this:
           #   https://registry.npmjs.org/react-window-infinite-loader/-/react-window-infinite-loader-1.0.7.tgz
@@ -273,7 +249,6 @@
             if lib.hasSuffix ".tgz" src
             then "tar --delay-directory-restore -xf $src"
             else null;
-
           unpackPhase = import ./unpackPhase.nix {};
 
           # - installs dependencies into the node_modules directory
