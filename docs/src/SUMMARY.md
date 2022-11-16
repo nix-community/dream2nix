@@ -26,7 +26,7 @@
 
 # Contributing
 - [Extending dream2nix](./extending-dream2nix.md)
-- [Contributing](./contributing.md)
+- [Contributing](./contributing/contributing.md)
 
 # Development Roundups
 - [April - June 2022](./development-roundups/2022-april-june.md)

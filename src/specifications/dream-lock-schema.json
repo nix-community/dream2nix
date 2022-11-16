@@ -15,10 +15,11 @@
               "properties": {
                 "type": {
                   "enum": [
-                    "http",
+                    "archive",
                     "git",
                     "github",
                     "gitlab",
+                    "http",
                     "npm",
                     "path",
                     "pypi-sdist",
@@ -30,7 +31,7 @@
               "allOf": [
                 {
                   "if": {
-                    "properties": { "type": { "const": "http" } }
+                    "properties": { "type": { "const": "archive" } }
                   },
                   "then": {
                     "properties": {
@@ -75,6 +76,21 @@
                       "dir": { "type": "string" }
                     },
                     "required": ["type", "owner", "repo", "rev"],
+                    "additionalProperties": false
+                  }
+                },
+                {
+                  "if": {
+                    "properties": { "type": { "const": "http" } }
+                  },
+                  "then": {
+                    "properties": {
+                      "url": { "type": "string" },
+                      "hash": { "type": "string" },
+                      "type": { "type": "string" },
+                      "dir": { "type": "string" }
+                    },
+                    "required": ["type", "url"],
                     "additionalProperties": false
                   }
                 },
