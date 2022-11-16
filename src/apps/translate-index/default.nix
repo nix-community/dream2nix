@@ -65,6 +65,8 @@ in
       fi
     done
 
+    rm -rf $targetDir
+
     export start_time=$(date +%s)
     parallel --halt now,fail=1 -j$JOBS --link -a <(jq '.[]' -c -r $index) -a $TMPDIR/job_numbers ${script}
 
