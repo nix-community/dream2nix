@@ -252,7 +252,7 @@ in let
 
   # detect if granular or combined fetching must be used
   findFetcher = dreamLock:
-    if null != dreamLock._generic.sourcesAggregatedHash
+    if null != dreamLock._generic.sourcesAggregatedHash or null
     then framework.functions.combinedFetcher
     else framework.functions.defaultFetcher;
 

@@ -1,3 +1,9 @@
+/*
+  This is an example for a pure translator which translates niv's sources.json
+    to a dream2nix dream-lock(.json).
+
+  Example sources.json: https://github.com/nmattia/niv/blob/351d8bc316bf901a81885bab5f52687ec8ccab6e/nix/sources.json
+*/
 {
   dlib,
   lib,
@@ -9,21 +15,6 @@ in
 {
 
   type = "pure";
-
-  /*
-    Automatically generate unit tests for this translator using project sources
-    from the specified list.
-
-    !!! Your first action should be adding a project here. This will simplify
-    your work because you will be able to use `nix run .#tests-unit` to
-    test your implementation for correctness.
-  */
-  generateUnitTestsForProjects = [
-    (builtins.fetchTarball {
-      url = "";
-      sha256 = "";
-    })
-  ];
 
   /*
     Allow dream2nix to detect if a given directory contains a project
@@ -40,18 +31,15 @@ in
     If a fully featured discoverer exists, do not define `discoverProject`.
   */
   discoverProject = tree:
-    # Example
-    # Returns true if given directory contains a file ending with .cabal
-    l.any
-    (filename: l.hasSuffix ".cabal" filename)
-    (l.attrNames tree.files);
+    /*
+      TODO: change this function to identify projects that can be translated
+       by the current translator.
+    */
+    # checks if the path
+    l.pathExists "${tree.fullPath}/nix/sources.json";
 
   # translate from a given source and a project specification to a dream-lock.
   translate =
-    {
-      translatorName,
-      ...
-    }:
     {
       /*
         A list of projects returned by `discoverProjects`
@@ -67,22 +55,17 @@ in
                 "packages/contracts",
                 "packages/core-utils",
               ]
-            },
-            "translator": "yarn-lock",
-            "translators": [
-              "yarn-lock",
-              "package-json"
-            ]
+            }
           }
       */
       project,
 
       /*
-        Entire source tree represented as deep attribute set.
-        (produced by `prepareSourceTree`)
+        Entire source tree represented as nested attribute set.
+        (produced by `dlib.prepareSourceTree`)
 
-        This has the advantage that files will only be read once, even when
-        accessed multiple times or by multiple translators.
+        This has the advantage that files will only be read/parsed once, even
+        when accessed multiple times or by multiple translators.
 
         Example:
           {
@@ -101,10 +84,10 @@ in
                 relPath = "packages";
                 fullPath = "${source}/packages";
                 files = {
-
+                  ...
                 };
                 directories = {
-
+                  ...
                 };
               };
             };
@@ -115,128 +98,133 @@ in
       */
       tree,
 
-      # arguments defined in `extraArgs` (see below) specified by user
+      /*
+        arguments defined in `extraArgs` specified by user
+        (see definition for `extraArgs` near the bottom of this file)
+      */
       noDev,
       theAnswer,
       ...
-    }@args:
+    }:
     let
-
       # get the root source and project source
       rootSource = tree.fullPath;
       projectSource = "${tree.fullPath}/${project.relPath}";
       projectTree = tree.getNodeFromPath project.relPath;
 
-      # parse the json / toml etc.
-      projectJson = (projectTree.getNodeFromPath "project.json").jsonContent;
+      # use dream2nix' source tree abstraction to access json content of files
+      sourcesJson =
+        (projectTree.getNodeFromPath "nix/sources.json").jsonContent;
 
+      /*
+
+        Define the name and version of the top-level package.
+        If there are multiple top-level packages, just pick any of them.
+        Dream2nix requires one package to be the default package.
+        TODO: change this. In the case of niv, we just pick some static values
+          here because there isn't really a concept of a package in niv.
+          (Later we just fetch the dependencies and merge them into one output)
+      */
+      defaultPackageName = "my-niv-dependencies";
+      defaultPackageVersion = "unknown-version";
     in
-
-      dlib.simpleTranslate2.translate
-        ({
-          objectsByKey,
-          ...
-        }:
-
-        rec {
-
-          inherit translatorName;
-
-          # relative path of the project within the source tree.
-          location = project.relPath;
-
-          # the name of the subsystem
-          subsystemName = "nodejs";
-
-          # Extract subsystem specific attributes.
-          # The structure of this should be defined in:
-          #   ./src/specifications/{subsystem}
-          subsystemAttrs = {theAnswer = args.theAnswer;};
-
-          # name of the default package
-          defaultPackage = "name-of-the-default-package";
-
-          /*
-            List the package candidates which should be exposed to the user.
-            Only top-level packages should be listed here.
-            Users will not be interested in all individual dependencies.
-          */
-          exportedPackages = {
-            foo = "1.1.0";
-            bar = "1.2.0";
+      # see example in src/specifications/dream-lock-example.json
+      {
+        /*
+          Tell dream2nix that this is the human-readable (decompressed)
+           representation of the dream-lock.
+        */
+        decompressed = true;
+        # generic fields
+        _generic = {
+          # TODO: specify the default package name
+          defaultPackage = defaultPackageName;
+          # TODO: specify a list of exported packages and their versions
+          packages = {
+            my-niv-dependencies = "unknown-version";
           };
+          # TODO: this must be equivalent to the subsystem name
+          subsystem = "my-subsystem";
+        };
 
-          /*
-            a list of raw package objects
-            If the upstream format is a deep attrset, this list should contain
-            a flattened representation of all entries.
-          */
-          serializedRawObjects = [];
+        /*
+          Store subsystem specific data.
+          This is needed if the subsystem requires extra metadata to be stored.
+          This will be a free-form field as long as no jsonschema exists for
+           this subsystem.
+          TODO: create a jsonschema for the current subsystem under
+           /src/specifications/{subsystem}/dream-lock-schema.json
+        */
+        _subsystem = {
+          example-key = "example-value";
+        };
 
-          /*
-            Define extractor functions which each extract one property from
-            a given raw object.
-            (Each rawObj comes from serializedRawObjects).
+        /*
+          List dependency edges that need to be removed in order to prevent
+           infinite recursions in the nix evaluator.
+          Usually this can be ommitted.
+        */
+        cyclicDependencies = {
 
-            Extractors can access the fields extracted by other extractors
-            by accessing finalObj.
-          */
-          extractors = {
-            name = rawObj: finalObj:
-              # example
-              "foo";
+        };
 
-            version = rawObj: finalObj:
-              # example
-              "1.2.3";
-
-            dependencies = rawObj: finalObj:
-              # example
-              [];
-
-            sourceSpec = rawObj: finalObj:
-              # example
-              {
-                type = "http";
-                url = "https://registry.npmjs.org/${finalObj.name}/-/${finalObj.name}-${finalObj.version}.tgz";
-                hash = "sha1-4h3xCtbCBTKVvLuNq0Cwnb6ofk0=";
-              };
-          };
-
-          /*
-            Optionally define extra extractors which will be used to key all
-            final objects, so objects can be accessed via:
-            `objectsByKey.${keyName}.${value}`
-          */
-          keys = {
-            /*
-              This is an example. Remove this completely or replace in case you
-              need a key.
-            */
-            sanitizedName = rawObj: finalObj:
-              l.strings.sanitizeDerivationName rawObj.name;
-          };
-
-          /*
-            Optionally add extra objects (list of `finalObj`) to be added to
-            the dream-lock.
-          */
-          extraObjects = [
+        /*
+          Define the dependency graph.
+          This can be ommitted, in which case dream2nix assumes that:
+           - all sources listed in `sources` represent one dependency
+           - all dependencies are direct dependenceis of the `defaultPackage`
+          Example:
+            # foo-1.2.3 depends on bar-2.3.4 and baz-3.4.5
             {
-              name = "foo2";
-              version = "1.0";
-              dependencies = [
-                {name = "bar2"; version = "1.1";}
-              ];
-              sourceSpec = {
-                type = "git";
-                url = "https://...";
-                rev = "...";
-              };
+              foo."1.2.3" = [
+                {name = "bar"; version = "2.3.4"}
+                {name = "baz"; version = "3.4.5"}
+              ]
+              ...
             }
-          ];
+        */
+        dependencies = {
+          ${defaultPackageName}.${defaultPackageVersion} =
+            l.mapAttrsToList
+            (sourceName: source:
+              {name = sourceName; version = source.rev or "unknown-version";}
+            )
+            sourcesJson;
+        };
 
-        });
+
+        /*
+          Define the sources for all dependencies including their checksums.
+          This allows dream2nix to fetch all sources reproducibly.
+          Each dependency specified in `dependencies` must have a corresponding
+           entry in `sources` which describes how the source can be fetched.
+          Check the `fetchers` section in the docs to see what fetchers are
+           supported and which arguments they require.
+          Example:
+            {
+              foo."1.2.3" = {
+                type = "http";
+                url = "https://foo.com/tarball.tar.gz";
+                hash = "sha256:000000000000000000000000000000000000000";
+              };
+              bar."2.3.4" = {
+                ...
+              }
+              ...
+            }
+        */
+        sources =
+          l.mapAttrs
+          (sourceName: source: {
+            ${source.rev or "unknown-version"} = {
+              type = "archive";
+              url = source.url;
+              hash = "sha256:${source.sha256}";
+            };
+          })
+          sourcesJson;
+      };
+
 
   # If the translator requires additional arguments, specify them here.
   # Users will be able to set these arguments via `settings`.
