@@ -261,7 +261,7 @@
           # prevents running into ulimits
           passAsFile = ["dependenciesJson" "nodeDeps"];
 
-          preConfigurePhases = ["d2nLoadFuncsPhase" "d2nPatchPhase"];
+          preConfigurePhases = ["d2nPatchPhase"];
 
           # can be overridden to define alternative install command
           # (defaults to 'npm run postinstall')
@@ -279,30 +279,6 @@
 
           # costs performance and doesn't seem beneficial in most scenarios
           dontStrip = true;
-
-          # declare some useful shell functions
-          d2nLoadFuncsPhase = ''
-            # function to resolve symlinks to copies
-            symlinksToCopies() {
-              local dir="$1"
-
-              echo "transforming symlinks to copies..."
-              for f in $(find -L "$dir" -xtype l); do
-                if [ -f $f ]; then
-                  continue
-                fi
-                echo "copying $f"
-                chmod +wx $(dirname "$f")
-                mv "$f" "$f.bak"
-                mkdir "$f"
-                if [ -n "$(ls -A "$f.bak/")" ]; then
-                  cp -r "$f.bak"/* "$f/"
-                  chmod -R +w $f
-                fi
-                rm "$f.bak"
-              done
-            }
-          '';
 
           # TODO: upstream fix to nixpkgs
           # example which requires this:
@@ -389,14 +365,6 @@
               exit 0
             else
               exit 1
-            fi
-
-            # configure typescript
-            if [ -f ./tsconfig.json ] \
-                && node -e 'require("typescript")' &>/dev/null; then
-              node ${./tsconfig-to-json.js}
-              ${pkgs.jq}/bin/jq ".compilerOptions.preserveSymlinks = true" tsconfig.json \
-                  | ${pkgs.moreutils}/bin/sponge tsconfig.json
             fi
           '';
 
