@@ -12,6 +12,9 @@
 in {
   options.utils = {
     scripts = {
+      nixFFI = l.mkOption {
+        type = t.path;
+      };
       formatDreamLock = l.mkOption {
         type = t.path;
       };

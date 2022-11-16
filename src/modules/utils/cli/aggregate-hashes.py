@@ -3,7 +3,7 @@ import os
 import re
 import sys
 
-from nix_ffi import nix
+from %nix_ffi% import nix
 
 def strip_hashes_from_lock(lock):
   for name, versions in lock['sources'].items():

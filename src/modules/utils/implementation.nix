@@ -34,9 +34,13 @@
   };
 
   impl = rec {
-    scripts = {
+    scripts = rec {
+      nixFFI = ./cli/nix_ffi.py;
       formatDreamLock = ./cli/format-dream-lock.py;
-      aggregateHashes = ./cli/aggregate-hashes.py;
+      aggregateHashes = l.toFile "aggregate-hashes.py" (
+        l.replaceStrings ["%nix_ffi%"] [nixFFI]
+        (l.readFile ./cli/aggregate-hashes.py)
+      );
     };
 
     toDrv = path: runCommandLocal "some-drv" {} "cp -r ${path} $out";
