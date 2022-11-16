@@ -390,14 +390,6 @@
             else
               exit 1
             fi
-
-            # configure typescript
-            if [ -f ./tsconfig.json ] \
-                && node -e 'require("typescript")' &>/dev/null; then
-              node ${./tsconfig-to-json.js}
-              ${pkgs.jq}/bin/jq ".compilerOptions.preserveSymlinks = true" tsconfig.json \
-                  | ${pkgs.moreutils}/bin/sponge tsconfig.json
-            fi
           '';
 
           # - installs dependencies into the node_modules directory
