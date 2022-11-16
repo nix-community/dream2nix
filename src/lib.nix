@@ -189,7 +189,7 @@
       l.mapAttrs
       (system: pkgs: let
         dream2nix = dream2nixFor."${system}";
-        allOutputs = dream2nix.utils.makeOutputsForIndexes {
+        allOutputs = dream2nix.framework.utils.makeOutputsForIndexes {
           inherit
             source
             indexes

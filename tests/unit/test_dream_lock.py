@@ -26,7 +26,7 @@ exampleDreamLock = dict(
 
 def test_dream_lock_inject():
   result = nix_ffi.callNixFunction(
-    'utils.dreamLock.injectDependencies',
+    'framework.utils.dreamLock.injectDependencies',
     dreamLock=exampleDreamLock,
     inject=dict(
       example={
@@ -43,7 +43,7 @@ def test_dream_lock_inject():
 
 def test_dream_lock_replace_root_sources():
   result = nix_ffi.callNixFunction(
-    'utils.dreamLock.replaceRootSources',
+    'framework.utils.dreamLock.replaceRootSources',
     dreamLock=exampleDreamLock,
     newSourceRoot=dict(
       type = "http",
