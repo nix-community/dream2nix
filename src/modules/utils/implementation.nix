@@ -37,12 +37,13 @@
     scripts = rec {
       nixFFI = ./cli/nix_ffi.py;
       formatDreamLock = ./cli/format-dream-lock.py;
-      aggregateHashes = l.toFile "aggregate-hashes.py" (
-        l.replaceStrings
-        ["%nix_ffi%"]
-        [(toString nixFFI)]
-        (l.readFile ./cli/aggregate-hashes.py)
-      );
+      aggregateHashes = let
+        dir = pkgs.runCommandLocal "aggregate-hashes" {} ''
+          mkdir -p $out
+          cp ${./cli/aggregate-hashes.py} $out/aggregate-hashes.py
+          cp ${nixFFI} $out/nix_ffi.py
+        '';
+      in "${dir}/aggregate-hashes.py";
     };
 
     toDrv = path: runCommandLocal "some-drv" {} "cp -r ${path} $out";
