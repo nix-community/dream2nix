@@ -1,14 +1,14 @@
 {
   lib,
   pkgs,
-  utils,
+  framework,
   self,
   ...
 }: let
   l = lib // builtins;
   specificationsDir = ../../../../src/specifications;
 in
-  utils.writePureShellScript
+  framework.utils.writePureShellScript
   (with pkgs; [
     coreutils
     nix
