@@ -34,6 +34,11 @@
   };
 
   impl = rec {
+    scripts = {
+      formatDreamLock = ./cli/format-dream-lock.py;
+      aggregateHashes = ./cli/aggregate-hashes.py;
+    };
+
     toDrv = path: runCommandLocal "some-drv" {} "cp -r ${path} $out";
 
     # hash the contents of a path via `nix hash path`
@@ -174,7 +179,7 @@
             echo "aggregating all sources to one large FOD"
             dream2nixWithExternals=${config.dream2nixWithExternals} \
             dream2nixConfig=${config.dream2nixConfigFile} \
-              python3 ${./cli}/aggregate-hashes.py $dreamLockPath
+              python3 ${scripts.aggregateHashes} $dreamLockPath
           fi
 
           # add invalidationHash to dream-lock.json
@@ -183,7 +188,7 @@
 
           # format dream lock
           cat $dreamLockPath \
-            | python3 ${./cli/format-dream-lock.py} \
+            | python3 ${scripts.formatDreamLock} \
             | sponge $dreamLockPath
 
           # validate dream-lock.json against jsonschema

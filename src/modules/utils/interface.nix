@@ -11,6 +11,14 @@
     );
 in {
   options.utils = {
+    scripts = {
+      formatDreamLock = l.mkOption {
+        type = t.path;
+      };
+      aggregateHashes = l.mkOption {
+        type = t.path;
+      };
+    };
     dreamLock = {
       compressDreamLock = mkFunction {
         type = t.attrs;
