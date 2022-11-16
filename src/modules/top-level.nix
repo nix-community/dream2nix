@@ -1,5 +1,4 @@
 {
-  dlib,
   externals,
   externalSources,
   inputs,
@@ -31,12 +30,13 @@ in {
     ./utils.override
     ./utils.toTOML
     ./utils.dream-lock
+    ./dlib
+    ./dlib.parsing
+    ./dlib.construct
+    ./dlib.simpleTranslate2
   ];
   options = {
     lib = lib.mkOption {
-      type = t.raw;
-    };
-    dlib = lib.mkOption {
       type = t.raw;
     };
     externals = lib.mkOption {

@@ -1,55 +1,5 @@
-{
-  lib,
-  config,
-  ...
-} @ args: let
-  l = lib // builtins;
-
-  # exported attributes
-  dlib = {
-    inherit
-      calcInvalidationHash
-      callViaEnv
-      construct
-      containsMatchingFile
-      dirNames
-      latestVersion
-      listDirs
-      listFiles
-      mergeFlakes
-      mkFunction
-      nameVersionPair
-      prepareSourceTree
-      readTextFile
-      recursiveUpdateUntilDepth
-      recursiveUpdateUntilDrv
-      simpleTranslate2
-      sanitizePath
-      sanitizeRelativePath
-      subsystems
-      systemsFromFile
-      traceJ
-      warnIfIfd
-      parseSpdxId
-      isNotDrvAttrs
-      ;
-
-    inherit
-      (parseUtils)
-      identifyGitUrl
-      parseGitUrl
-      ;
-  };
-
-  subsystems = dirNames ../subsystems;
-
-  # other libs
-  construct = import ./construct.nix {inherit lib;};
-
-  simpleTranslate2 =
-    import ./simpleTranslate2.nix {inherit dlib lib;};
-
-  parseUtils = import ./parsing.nix {inherit lib;};
+{config, ...}: let
+  l = config.lib // builtins;
 
   # INTERNAL
 
@@ -67,7 +17,7 @@
         (func (l.head params))
         (l.tail params);
   in
-    if lib.functionArgs func == {}
+    if l.functionArgs func == {}
     then applyParamsRec func (l.attrValues args)
     else func args;
 
@@ -189,6 +139,7 @@
     source,
     translator,
     translatorArgs,
+    config,
   }: let
     sanitizedPackagesDir = sanitizeRelativePath config.packagesDir;
 
@@ -253,8 +204,7 @@
 
   # picks the latest version from a list of version strings
   latestVersion = versions:
-    l.head
-    (lib.sort versionGreater versions);
+    l.head (l.sort versionGreater versions);
 
   listDirs = path: l.attrNames (l.filterAttrs (n: v: v == "directory") (builtins.readDir path));
 
@@ -274,7 +224,7 @@
 
   # like nixpkgs recursiveUpdateUntil, but with the depth as a stop condition
   recursiveUpdateUntilDepth = depth: lhs: rhs:
-    lib.recursiveUpdateUntil (path: _: _: (l.length path) > depth) lhs rhs;
+    l.recursiveUpdateUntil (path: _: _: (l.length path) > depth) lhs rhs;
 
   recursiveUpdateUntilDrv =
     l.recursiveUpdateUntil
@@ -291,7 +241,10 @@
     then "/${sanitizedRelPath}"
     else sanitizedRelPath;
 
-  systemsFromFile = file:
+  systemsFromFile = {
+    file,
+    config,
+  }:
     if ! l.pathExists file
     then let
       relPathFile =
@@ -314,10 +267,13 @@
     don't wish to see this message, set `config.disableIfdWarning` to `true`
     in `dream2nix.lib.init` (or similar functions that take `config`).
   '';
-  ifdWarningEnabled = ! (config.disableIfdWarning or false);
-  warnIfIfd = module: val:
+  warnIfIfd = {
+    config,
+    module,
+    val,
+  }:
     l.warnIf
-    (ifdWarningEnabled && module.type == "ifd")
+    ((! (config.disableIfdWarning or false)) && module.type == "ifd")
     (ifdWarnMsg module)
     val;
 
@@ -344,5 +300,30 @@
         type = l.types.uniq (l.types.functionTo attrs.type);
       }
     );
-in
-  dlib
+in {
+  config.dlib = {
+    inherit
+      calcInvalidationHash
+      callViaEnv
+      containsMatchingFile
+      dirNames
+      latestVersion
+      listDirs
+      listFiles
+      mergeFlakes
+      mkFunction
+      nameVersionPair
+      prepareSourceTree
+      readTextFile
+      recursiveUpdateUntilDepth
+      recursiveUpdateUntilDrv
+      sanitizePath
+      sanitizeRelativePath
+      systemsFromFile
+      traceJ
+      warnIfIfd
+      parseSpdxId
+      isNotDrvAttrs
+      ;
+  };
+}

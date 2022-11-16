@@ -1,9 +1,5 @@
-{
-  dlib,
-  lib,
-  ...
-}: let
-  l = lib // builtins;
+{config, ...}: let
+  l = config.lib // builtins;
 
   expectedFields = [
     "name"
@@ -76,7 +72,7 @@
   makeDependencies = finalObjects:
     l.foldl'
     (result: finalObj:
-      lib.recursiveUpdate
+      l.recursiveUpdate
       result
       {
         "${finalObj.name}" = {
@@ -171,9 +167,9 @@
         relevantDependencies;
 
       dependencyGraph =
-        lib.mapAttrs
+        l.mapAttrs
         (name: versions:
-          lib.mapAttrs
+          l.mapAttrs
           (version: finalObj: finalObj.dependencies)
           versions)
         relevantDependencies;
@@ -192,7 +188,7 @@
             {
               __fake-entry.__fake-version =
                 l.mapAttrsToList
-                dlib.nameVersionPair
+                config.dlib.nameVersionPair
                 exportedPackages;
             };
 
@@ -201,12 +197,12 @@
               depGraphWithFakeRoot."${node.name}"."${node.version}";
 
             cyclicChildren =
-              lib.filter
+              l.filter
               (child: prevNodes ? "${child.name}#${child.version}")
               children;
 
             nonCyclicChildren =
-              lib.filter
+              l.filter
               (child: ! prevNodes ? "${child.name}#${child.version}")
               children;
 
@@ -226,16 +222,18 @@
             if nonCyclicChildren == []
             then cycles'
             else
-              lib.flatten
+              l.flatten
               (l.map
                 (child: findCycles child prevNodes' cycles')
                 nonCyclicChildren);
 
           cyclesList =
             findCycles
-            (dlib.nameVersionPair
+            (
+              config.dlib.nameVersionPair
               "__fake-entry"
-              "__fake-version")
+              "__fake-version"
+            )
             {}
             [];
         in
@@ -256,7 +254,7 @@
                 || l.elem cycle.to existing
               then cycles
               else
-                lib.recursiveUpdate
+                l.recursiveUpdate
                 cycles
                 {
                   "${cycle.from.name}"."${cycle.from.version}" =
@@ -295,11 +293,13 @@
     inputs = dreamLockData.inputs;
   };
 in {
-  inherit
-    translate
-    mkFinalObjects
-    mkExportedFinalObjects
-    mkRelevantFinalObjects
-    makeDependencies
-    ;
+  config.dlib.simpleTranslate2 = {
+    inherit
+      translate
+      mkFinalObjects
+      mkExportedFinalObjects
+      mkRelevantFinalObjects
+      makeDependencies
+      ;
+  };
 }
