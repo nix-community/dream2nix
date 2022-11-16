@@ -52,7 +52,7 @@
             # simpleTranslate2 puts dream-lock in result
             dreamLock = dreamLock'.result or dreamLock';
           in
-            dream2nix.utils.dreamLock.toJSON
+            dream2nix.framework.utils.dreamLock.toJSON
               # don't use nix to detect cycles, this will be more efficient in python
               (dreamLock // {
                 _generic = builtins.removeAttrs dreamLock._generic [ \"cyclicDependencies\" ];
