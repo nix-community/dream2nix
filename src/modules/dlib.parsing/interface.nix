@@ -10,5 +10,8 @@ in {
     parseGitUrl = mkFunction {
       type = t.attrs;
     };
+    parseSpdxId = mkFunction {
+      type = t.listOf t.str;
+    };
   };
 }

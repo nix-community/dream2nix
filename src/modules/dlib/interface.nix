@@ -58,9 +58,6 @@ in {
     warnIfIfd = mkFunction {
       type = t.raw;
     };
-    parseSpdxId = mkFunction {
-      type = t.listOf t.str;
-    };
     isNotDrvAttrs = mkFunction {
       type = t.bool;
     };
