@@ -101,7 +101,6 @@
       dream2nixConfig = config;
       dream2nixConfigFile = l.toFile "dream2nix-config.json" (l.toJSON config);
       pkgs = throw "pkgs is not available before nixpkgs is imported";
-      utils = throw "utils is not available before nixpkgs is imported";
       externals = throw "externals is not available before nixpkgs is imported";
       dream2nixWithExternals = throw "not available before nixpkgs is imported";
     };

@@ -1,18 +1,13 @@
-{
-  lib,
-  # dream2nix
-  dlib,
-  framework,
-  ...
-}: let
+{config, ...}: let
   b = builtins;
+  l = config.lib // builtins;
 
   overrideWarning = fields: args:
-    lib.filterAttrs (
+    l.filterAttrs (
       name: _:
-        if lib.any (field: name == field) fields
+        if l.any (field: name == field) fields
         then
-          lib.warn ''
+          l.warn ''
             you are trying to pass a "${name}" key from your source
             constructor, this will be overridden with a value passed
             by dream2nix.
@@ -36,7 +31,7 @@
     dependenciesByOriginalID =
       b.foldl'
       (result: pkgData:
-        lib.recursiveUpdate result {
+        l.recursiveUpdate result {
           "${final.getOriginalID pkgData}" = pkgData;
         })
       {}
@@ -70,7 +65,7 @@
       allDependencies =
         b.foldl'
         (result: pkgData:
-          lib.recursiveUpdate result {
+          l.recursiveUpdate result {
             "${getName pkgData}" = {
               "${getVersion pkgData}" = pkgData;
             };
@@ -89,7 +84,7 @@
           constructedArgsKeep =
             overrideWarning ["pname" "version"] constructedArgs;
 
-          constructedSource = framework.functions.fetchers.constructSource (
+          constructedSource = config.functions.fetchers.constructSource (
             constructedArgsKeep
             // {
               inherit type;
@@ -100,12 +95,12 @@
 
           skip =
             (type == "path")
-            && lib.isStorePath (lib.removeSuffix "/" constructedArgs.path);
+            && l.isStorePath (l.removeSuffix "/" constructedArgs.path);
         in
           if skip
           then result
           else
-            lib.recursiveUpdate result {
+            l.recursiveUpdate result {
               "${pkgName}" = {
                 "${pkgVersion}" =
                   b.removeAttrs constructedSource ["pname" "version"];
@@ -116,9 +111,9 @@
 
       dependencyGraph = let
         depGraph =
-          lib.mapAttrs
+          l.mapAttrs
           (name: versions:
-            lib.mapAttrs
+            l.mapAttrs
             (version: pkgData: getDependencies pkgData)
             versions)
           allDependencies;
@@ -135,17 +130,17 @@
 
       allDependencyKeys = let
         depsWithDuplicates =
-          lib.flatten
-          (lib.flatten
-            (lib.mapAttrsToList
-              (name: versions: lib.attrValues versions)
+          l.flatten
+          (l.flatten
+            (l.mapAttrsToList
+              (name: versions: l.attrValues versions)
               dependencyGraph));
       in
-        lib.unique depsWithDuplicates;
+        l.unique depsWithDuplicates;
 
       missingDependencies =
-        lib.flatten
-        (lib.forEach allDependencyKeys
+        l.flatten
+        (l.forEach allDependencyKeys
           (dep:
             if sources ? "${dep.name}"."${dep.version}"
             then []
@@ -155,10 +150,10 @@
         if missingDependencies == []
         then {}
         else
-          lib.listToAttrs
+          l.listToAttrs
           (b.map
             (dep:
-              lib.nameValuePair
+              l.nameValuePair
               "${dep.name}"
               {
                 "${dep.version}" =
@@ -167,7 +162,7 @@
             missingDependencies);
 
       allSources =
-        lib.recursiveUpdate sources generatedSources;
+        l.recursiveUpdate sources generatedSources;
 
       cyclicDependencies =
         # TODO: inefficient! Implement some kind of early cutoff
@@ -176,12 +171,12 @@
             children = dependencyGraph."${node.name}"."${node.version}";
 
             cyclicChildren =
-              lib.filter
+              l.filter
               (child: prevNodes ? "${child.name}#${child.version}")
               children;
 
             nonCyclicChildren =
-              lib.filter
+              l.filter
               (child: ! prevNodes ? "${child.name}#${child.version}")
               children;
 
@@ -201,14 +196,14 @@
             if nonCyclicChildren == []
             then cycles'
             else
-              lib.flatten
+              l.flatten
               (b.map
                 (child: findCycles child prevNodes' cycles')
                 nonCyclicChildren);
 
           cyclesList =
             findCycles
-            (dlib.nameVersionPair defaultPackage packages."${defaultPackage}")
+            (config.dlib.nameVersionPair defaultPackage packages."${defaultPackage}")
             {}
             [];
         in
@@ -229,7 +224,7 @@
                 || b.elem cycle.to existing
               then cycles
               else
-                lib.recursiveUpdate
+                l.recursiveUpdate
                 cycles
                 {
                   "${cycle.from.name}"."${cycle.from.version}" =
@@ -259,11 +254,13 @@
 
         sources = allSources;
       }
-      // (lib.optionalAttrs
+      // (l.optionalAttrs
         (getDependencies != null)
         {dependencies = dependencyGraph;});
   in
     dreamLockData;
 in {
-  inherit simpleTranslate;
+  config.utils = {
+    inherit simpleTranslate;
+  };
 }

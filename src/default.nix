@@ -75,7 +75,6 @@ in let
       lib
       dlib
       pkgs
-      utils
       externals
       externalSources
       dream2nixWithExternals
@@ -102,7 +101,6 @@ in let
       inherit inputs;
       inherit framework;
       inherit dream2nixWithExternals;
-      inherit utils;
       inherit nix;
       dream2nixInterface = {
         inherit
@@ -119,7 +117,7 @@ in let
       else import f
     ) (callPackageDreamArgs // fargs);
 
-  utils = callPackageDream ./utils {};
+  inherit (framework) utils;
 
   # updater modules to find newest package versions
   updaters = callPackageDream ./updaters {};
@@ -265,7 +263,7 @@ in let
     sourceOverrides ? oldSources: {},
   } @ args: let
     # if dream lock is a file, read and parse it
-    dreamLock' = (utils.readDreamLock {inherit dreamLock;}).lock;
+    dreamLock' = (utils.dreamLock.readDreamLock {inherit dreamLock;}).lock;
 
     fetcher =
       if args.fetcher or null == null
@@ -308,7 +306,7 @@ in let
     # inject dependencies
     dreamLock = utils.dreamLock.injectDependencies args.dreamLock inject;
 
-    dreamLockInterface = (utils.readDreamLock {inherit dreamLock;}).interface;
+    dreamLockInterface = (utils.dreamLock.readDreamLock {inherit dreamLock;}).interface;
 
     produceDerivation = name: pkg:
       utils.applyOverridesToPackage {
@@ -356,7 +354,7 @@ in let
             lib.mapAttrs'
             (pname: releases: let
               latest =
-                releases."${utils.latestVersion (b.attrNames releases)}";
+                releases."${dlib.latestVersion (b.attrNames releases)}";
             in (lib.nameValuePair
               "${pname}"
               (latest
@@ -390,7 +388,7 @@ in let
     packageOverrides ? {},
   } @ args: let
     # parse dreamLock
-    dreamLockLoaded = utils.readDreamLock {inherit (args) dreamLock;};
+    dreamLockLoaded = utils.dreamLock.readDreamLock {inherit (args) dreamLock;};
     dreamLock = dreamLockLoaded.lock;
     dreamLockInterface = dreamLockLoaded.interface;
 
@@ -483,7 +481,7 @@ in let
           project
           // rec {
             dreamLock =
-              (utils.readDreamLock {
+              (utils.dreamLock.readDreamLock {
                 dreamLock = "${toString config.projectRoot}/${project.dreamLockPath}";
               })
               .lock;
@@ -741,13 +739,13 @@ in {
   inherit
     callPackageDream
     dream2nixWithExternals
+    dlib
     framework
     fetchSources
     realizeProjects
     translateProjects
     riseAndShine
     updaters
-    utils
     makeOutputsForDreamLock
     makeOutputs
     ;

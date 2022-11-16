@@ -7,27 +7,28 @@
   writeText,
   # dream2nix inputs
   callPackageDream,
-  fetchers,
-  utils,
+  framework,
   ...
 }: let
+  inherit (framework) utils fetchers;
+
   lockUtils = utils.dreamLock;
 
   updaters = callPackageDream ./updaters.nix {};
 
   getUpdaterName = {dreamLock}: let
-    lock = (utils.readDreamLock {inherit dreamLock;}).lock;
+    lock = (utils.dreamLock.readDreamLock {inherit dreamLock;}).lock;
     source = lockUtils.getMainPackageSource lock;
   in
     lock.updater
-    or fetchers.fetchers."${source.type}".defaultUpdater
+    or fetchers."${source.type}".defaultUpdater
     or null;
 
   makeUpdateScript = {
     dreamLock,
     updater ? getUpdaterName {inherit dreamLock;},
   }: let
-    lock = (utils.readDreamLock {inherit dreamLock;}).lock;
+    lock = (utils.dreamLock.readDreamLock {inherit dreamLock;}).lock;
     source = lockUtils.getMainPackageSource lock;
     updater' = updaters."${updater}";
   in
