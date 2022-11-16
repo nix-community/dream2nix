@@ -9,15 +9,15 @@
   jq,
   parallel,
   nix,
-  utils,
-  dream2nixWithExternals,
   pkgs,
+  framework,
+  dream2nixWithExternals,
   ...
 }: let
   l = lib // builtins;
   examples = ../../examples;
   testScript =
-    utils.writePureShellScript
+    framework.utils.writePureShellScript
     [
       async
       bash
@@ -53,7 +53,7 @@
       echo "$elapsed sec: $dir" >> $STATS_FILE
     '';
 in
-  utils.writePureShellScript
+  framework.utils.writePureShellScript
   [
     coreutils
     parallel

@@ -7,14 +7,14 @@
   git,
   parallel,
   nix,
-  utils,
   dream2nixWithExternals,
+  framework,
   ...
 }: let
   l = lib // builtins;
   tests = ./tests;
   testScript =
-    utils.writePureShellScript
+    framework.utils.writePureShellScript
     [
       async
       bash
@@ -40,7 +40,7 @@
       echo "$elapsed sec: $dir" >> $STATS_FILE
     '';
 in
-  utils.writePureShellScript
+  framework.utils.writePureShellScript
   [
     coreutils
     parallel

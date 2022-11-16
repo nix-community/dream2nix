@@ -5,8 +5,8 @@
   nix,
   git,
   python3,
-  utils,
   dream2nixWithExternals,
+  framework,
   ...
 }: let
   l = lib // builtins;
@@ -17,7 +17,7 @@
       pytest-xdist
     ]);
 in
-  utils.writePureShellScript
+  framework.utils.writePureShellScript
   [
     coreutils
     nix
