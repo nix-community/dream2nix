@@ -140,25 +140,6 @@
         fi
       '';
 
-      # Only executed for electron based packages.
-      # Creates an executable script under /bin starting the electron app
-      electron-wrap =
-        if pkgs.stdenv.isLinux
-        then ''
-          mkdir -p $out/bin
-          makeWrapper \
-            $electronDist/electron \
-            $out/bin/$(basename "$packageName") \
-            --add-flags "$(realpath $electronAppDir)"
-        ''
-        else ''
-          mkdir -p $out/bin
-          makeWrapper \
-            $electronDist/Electron.app/Contents/MacOS/Electron \
-            $out/bin/$(basename "$packageName") \
-            --add-flags "$(realpath $electronAppDir)"
-        '';
-
       # Generates a derivation for a specific package name + version
       makePackage = name: version: let
         pname = lib.replaceStrings ["@" "/"] ["__at__" "__slash__"] name;
@@ -479,38 +460,9 @@
           '';
 
           # Symlinks executables and manual pages to correct directories
-          installPhase = ''
-            runHook preInstall
-            mkdir -p $out/lib
-            cp -r $nodeModules $out/lib/node_modules
-            nodeModules=$out/lib/node_modules
-            cd "$nodeModules/$packageName"
-
-            echo "Symlinking bin entries from package.json"
-            python $linkBins
-
-            echo "Symlinking manual pages"
-            if [ -d "$nodeModules/$packageName/man" ]
-            then
-              mkdir -p $out/share
-              for dir in "$nodeModules/$packageName/man/"*
-              do
-                mkdir -p $out/share/man/$(basename "$dir")
-                for page in "$dir"/*
-                do
-                    ln -s $page $out/share/man/$(basename "$dir")
-                done
-              done
-            fi
-
-            # wrap electron app
-            if [ -n "$electronHeaders" ]; then
-              echo "Wrapping electron app"
-              ${electron-wrap}
-            fi
-
-            runHook postInstall
-          '';
+          installPhase = import ./installPhase.nix {
+            inherit pkgs;
+          };
         });
       in
         pkg;
