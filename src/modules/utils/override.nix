@@ -6,7 +6,7 @@
     loadOverrides = dir:
       l.genAttrs (config.dlib.dirNames dir) (name:
         import (dir + "/${name}") {
-          inherit l pkgs;
+          inherit (config) lib pkgs;
           satisfiesSemver = constraint: pkg:
             config.utils.satisfiesSemver pkg.version constraint;
         });
