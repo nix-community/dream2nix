@@ -5,8 +5,8 @@
   nix,
   git,
   python3,
-  utils,
   dream2nixWithExternals,
+  framework,
   ...
 }: let
   l = lib // builtins;
@@ -17,7 +17,7 @@
       pytest-xdist
     ]);
 in
-  utils.writePureShellScript
+  framework.utils.writePureShellScript
   [
     coreutils
     nix
@@ -25,5 +25,9 @@ in
   ]
   ''
     export dream2nixSrc=${../../.}/src
-    ${pythonEnv}/bin/pytest ${self}/tests/unit -n $(nproc) -v "$@"
+    TESTDIR="$TMPDIR/tests/unit"
+    mkdir -p $TESTDIR
+    ln -sf ${framework.utils.scripts.nixFFI} "$TESTDIR/nix_ffi.py"
+    cp -r ${self}/tests/unit/* $TESTDIR
+    ${pythonEnv}/bin/pytest $TESTDIR -n $(nproc) -v "$@"
   ''

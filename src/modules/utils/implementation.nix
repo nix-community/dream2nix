@@ -1,78 +1,52 @@
-{
-  bash,
-  coreutils,
-  moreutils,
-  dlib,
-  fetchzip,
-  gitMinimal,
-  jq,
-  lib,
-  nix,
-  pkgs,
-  python3,
-  runCommandLocal,
-  stdenv,
-  writeScript,
-  writeScriptBin,
-  # dream2nix inputs
-  callPackageDream,
-  dream2nixWithExternals,
-  externalSources,
-  config,
-  configFile,
-  framework,
-  ...
-}: let
+# TODO(yusdacra): separate every util function implementation into it's own file and load them automatically
+# for now this will have to suffice
+{config, ...}: let
   b = builtins;
-  l = lib // builtins;
+  l = config.lib // builtins;
 
-  dreamLockUtils = callPackageDream ./dream-lock.nix {};
+  inherit
+    (config.pkgs)
+    bash
+    coreutils
+    moreutils
+    gitMinimal
+    jq
+    nix
+    pkgs
+    python3
+    runCommandLocal
+    stdenv
+    writeScript
+    writeScriptBin
+    ;
 
-  overrideUtils = callPackageDream ./override.nix {};
-
-  translatorUtils = callPackageDream ./translator.nix {};
-
-  indexUtils = callPackageDream ./index {};
-
-  poetry2nixSemver = import "${externalSources.poetry2nix}/semver.nix" {
-    inherit lib;
+  poetry2nixSemver = import "${config.externalSources.poetry2nix}/semver.nix" {
+    inherit (config) lib;
     # copied from poetry2nix
     ireplace = idx: value: list: (
-      lib.genList
+      l.genList
       (i:
         if i == idx
         then value
-        else (b.elemAt list i))
-      (b.length list)
+        else (l.elemAt list i))
+      (l.length list)
     );
   };
-in
-  overrideUtils
-  // translatorUtils
-  // indexUtils
-  // rec {
-    inherit
-      (dlib)
-      dirNames
-      callViaEnv
-      identifyGitUrl
-      latestVersion
-      listDirs
-      listFiles
-      nameVersionPair
-      parseGitUrl
-      readTextFile
-      recursiveUpdateUntilDepth
-      traceJ
-      ;
 
-    dreamLock = dreamLockUtils;
-
-    inherit (dreamLockUtils) readDreamLock;
+  impl = rec {
+    scripts = rec {
+      nixFFI = ./cli/nix_ffi.py;
+      formatDreamLock = ./cli/format-dream-lock.py;
+      aggregateHashes = let
+        dir = pkgs.runCommandLocal "aggregate-hashes" {} ''
+          mkdir -p $out
+          cp ${./cli/aggregate-hashes.py} $out/aggregate-hashes.py
+          cp ${nixFFI} $out/nix_ffi.py
+        '';
+      in "${dir}/aggregate-hashes.py";
+    };
 
     toDrv = path: runCommandLocal "some-drv" {} "cp -r ${path} $out";
-
-    toTOML = import ./toTOML.nix {inherit lib;};
 
     # hash the contents of a path via `nix hash path`
     hashPath = algo: path: let
@@ -96,7 +70,7 @@ in
         #!${bash}/bin/bash
         set -Eeuo pipefail
 
-        export PATH="${lib.makeBinPath availablePrograms}"
+        export PATH="${l.makeBinPath availablePrograms}"
         export NIX_PATH=nixpkgs=${pkgs.path}
 
         TMPDIR=$(${coreutils}/bin/mktemp -d)
@@ -112,7 +86,7 @@ in
         #!${bash}/bin/bash
         set -Eeuo pipefail
 
-        export PATH="${lib.makeBinPath availablePrograms}"
+        export PATH="${l.makeBinPath availablePrograms}"
         export NIX_PATH=nixpkgs=${pkgs.path}
 
         TMPDIR=$(${coreutils}/bin/mktemp -d)
@@ -139,7 +113,7 @@ in
         # Some builders like python require the original archive.
         passthru.original = source;
         unpackCmd =
-          if lib.hasSuffix ".tgz" (source.name or "${source}")
+          if l.hasSuffix ".tgz" (source.name or "${source}")
           then ''
             tar --delay-directory-restore -xf $src
 
@@ -169,7 +143,7 @@ in
       source,
       project,
       invalidationHash ?
-        dlib.calcInvalidationHash {
+        config.dlib.calcInvalidationHash {
           inherit project source;
           # TODO: translatorArgs
           translatorArgs = {};
@@ -179,7 +153,7 @@ in
       aggregate = project.aggregate or false;
 
       translator =
-        framework.translators."${project.translator}";
+        config.translators."${project.translator}";
 
       argsJsonFile =
         pkgs.writeText "translator-args.json"
@@ -189,7 +163,7 @@ in
             project = l.removeAttrs args.project ["dreamLock"];
             outputFile = project.dreamLockPath;
           }
-          // (framework.functions.translators.makeTranslatorDefaultArgs translator.extraArgs or {})
+          // (config.functions.translators.makeTranslatorDefaultArgs translator.extraArgs or {})
           // args.project.subsystemInfo or {}
         ));
       script =
@@ -210,9 +184,9 @@ in
           # aggregate source hashes
           if [ "${l.toJSON aggregate}" == "true" ]; then
             echo "aggregating all sources to one large FOD"
-            dream2nixWithExternals=${dream2nixWithExternals} \
-            dream2nixConfig=${configFile} \
-              python3 ${./cli}/aggregate-hashes.py $dreamLockPath
+            dream2nixWithExternals=${config.dream2nixWithExternals} \
+            dream2nixConfig=${config.dream2nixConfigFile} \
+              python3 ${scripts.aggregateHashes} $dreamLockPath
           fi
 
           # add invalidationHash to dream-lock.json
@@ -221,7 +195,7 @@ in
 
           # format dream lock
           cat $dreamLockPath \
-            | python3 ${./cli/format-dream-lock.py} \
+            | python3 ${scripts.formatDreamLock} \
             | sponge $dreamLockPath
 
           # validate dream-lock.json against jsonschema
@@ -229,8 +203,8 @@ in
           ${python3.pkgs.jsonschema}/bin/jsonschema \
             --instance $dreamLockPath \
             --output pretty \
-            --base-uri file:${../specifications}/ \
-            ${../specifications}/dream-lock-schema.json
+            --base-uri file:${../../specifications}/ \
+            ${../../specifications}/dream-lock-schema.json
 
           # add dream-lock.json to git
           if git rev-parse --show-toplevel &>/dev/null; then
@@ -240,4 +214,9 @@ in
         '';
     in
       script // {passthru = {inherit project;};};
-  }
+  };
+in {
+  config = {
+    utils = impl;
+  };
+}

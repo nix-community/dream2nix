@@ -1,23 +1,19 @@
-{
-  lib,
-  # dream2nix
-  utils,
-  ...
-}: let
+{config, ...}: let
   b = builtins;
+  l = config.lib // builtins;
 
   loadOverridesDirs = overridesDirs: pkgs: let
     loadOverrides = dir:
-      lib.genAttrs (utils.dirNames dir) (name:
+      l.genAttrs (config.dlib.dirNames dir) (name:
         import (dir + "/${name}") {
-          inherit lib pkgs;
+          inherit (config) lib pkgs;
           satisfiesSemver = constraint: pkg:
-            utils.satisfiesSemver pkg.version constraint;
+            config.utils.satisfiesSemver pkg.version constraint;
         });
   in
     b.foldl'
     (loaded: nextDir:
-      utils.recursiveUpdateUntilDepth 3 loaded (loadOverrides nextDir))
+      config.dlib.recursiveUpdateUntilDepth 3 loaded (loadOverrides nextDir))
     {}
     overridesDirs;
 
@@ -51,13 +47,13 @@
     '';
 
   getOverrideFunctionArgs = function: let
-    funcArgs = lib.functionArgs function;
+    funcArgs = l.functionArgs function;
   in
     if funcArgs != {}
     then b.attrNames funcArgs
     else
       (
-        function (old: {passthru.funcArgs = lib.attrNames old;})
+        function (old: {passthru.funcArgs = l.attrNames old;})
       )
       .funcArgs;
 
@@ -76,9 +72,9 @@
     # filter the overrides by the package name and conditions
     overridesToApply = let
       regexOverrides =
-        lib.filterAttrs
+        l.filterAttrs
         (name: data:
-          lib.hasPrefix "^" name
+          l.hasPrefix "^" name
           && b.match name pname != null)
         conditionalOverrides;
 
@@ -86,16 +82,16 @@
         b.foldl'
         (overrides: new: overrides // new)
         conditionalOverrides."${pname}" or {}
-        (lib.attrValues regexOverrides);
+        (l.attrValues regexOverrides);
 
       overridesListForPackage =
-        lib.mapAttrsToList
+        l.mapAttrsToList
         (
           _name: data:
             data // {inherit _name;}
         )
         overridesForPackage;
-    in (lib.filter
+    in (l.filter
       (condOverride: evalCondition condOverride pkg)
       overridesListForPackage);
 
@@ -103,7 +99,7 @@
     applySingleAttributeOverride = oldVal: functionOrValue:
       if b.isFunction functionOrValue
       then
-        if lib.functionArgs functionOrValue == {}
+        if l.functionArgs functionOrValue == {}
         then functionOrValue oldVal
         else
           functionOrValue {
@@ -118,9 +114,9 @@
       base_derivation =
         if condOverride ? _replace
         then
-          if lib.isFunction condOverride._replace
+          if l.isFunction condOverride._replace
           then condOverride._replace pkg
-          else if lib.isDerivation condOverride._replace
+          else if l.isDerivation condOverride._replace
           then condOverride._replace
           else
             throw
@@ -129,27 +125,27 @@
         else pkg;
 
       overrideFuncs =
-        lib.mapAttrsToList
+        l.mapAttrsToList
         (funcName: func: {inherit funcName func;})
-        (lib.filterAttrs (
+        (l.filterAttrs (
             n: v:
-              lib.hasPrefix "override" n
+              l.hasPrefix "override" n
               && (! b.elem n ["overrideDerivation" "overridePythonAttrs"])
           )
           condOverride);
 
       singleArgOverrideFuncs = let
         availableFunctions =
-          lib.mapAttrs
+          l.mapAttrs
           (funcName: func: getOverrideFunctionArgs func)
-          (lib.filterAttrs
-            (funcName: func: lib.hasPrefix "override" funcName && funcName != "overrideDerivation" && funcName != "overridePythonAttrs")
+          (l.filterAttrs
+            (funcName: func: l.hasPrefix "override" funcName && funcName != "overrideDerivation" && funcName != "overridePythonAttrs")
             base_derivation);
 
         getOverrideFuncNameForAttrName = attrName: let
           applicableFuncs =
-            lib.attrNames
-            (lib.filterAttrs
+            l.attrNames
+            (l.filterAttrs
               (funcName: args: b.elem attrName args)
               availableFunctions);
         in
@@ -160,11 +156,11 @@
           else b.elemAt applicableFuncs 0;
 
         attributeOverrides =
-          lib.filterAttrs
-          (n: v: ! lib.hasPrefix "override" n && ! lib.hasPrefix "_" n)
+          l.filterAttrs
+          (n: v: ! l.hasPrefix "override" n && ! l.hasPrefix "_" n)
           condOverride;
       in
-        lib.mapAttrsToList
+        l.mapAttrsToList
         (attrName: funcOrValue: {
           funcName = getOverrideFuncNameForAttrName attrName;
           func = oldAttrs: {"${attrName}" = funcOrValue;};
@@ -177,7 +173,7 @@
         (old: let
           updateAttrsFuncs = overrideFunc.func old;
         in
-          lib.mapAttrs
+          l.mapAttrs
           (attrName: functionOrValue:
             applySingleAttributeOverride old."${attrName}" functionOrValue)
           updateAttrsFuncs))
@@ -185,10 +181,12 @@
       (overrideFuncs ++ singleArgOverrideFuncs);
   in
     # apply the overrides to the given pkg
-    lib.foldl
+    l.foldl
     (pkg: condOverride: applyOneOverride pkg condOverride)
     pkg
     overridesToApply;
 in {
-  inherit applyOverridesToPackage loadOverridesDirs;
+  config.utils = {
+    inherit applyOverridesToPackage loadOverridesDirs;
+  };
 }

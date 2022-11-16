@@ -1,13 +1,13 @@
 {
   lib,
   pkgs,
-  utils,
   self,
+  framework,
   ...
 }: let
   l = lib // builtins;
 in
-  utils.writePureShellScript
+  framework.utils.writePureShellScript
   (with pkgs; [
     coreutils
     nix

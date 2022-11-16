@@ -1,19 +1,11 @@
-{
-  lib,
-  dlib,
-  dream2nixInterface,
-  pkgs,
-  callPackageDream,
-  utils,
-  framework,
-  ...
-}: let
-  l = lib // builtins;
-in rec {
+{config, ...}: let
+  inherit (config) pkgs utils;
+  l = config.lib // builtins;
+
   generatePackagesFromLocksTree = {
     source ? throw "pass source",
     builder ? null,
-    tree ? dlib.prepareSourceTree {inherit source;},
+    tree ? config.dlib.prepareSourceTree {inherit source;},
     inject ? {},
     packageOverrides ? {},
     sourceOverrides ? {},
@@ -39,7 +31,7 @@ in rec {
       );
     dreamLocks = findDreamLocks tree;
     makePackagesForDreamLock = dreamLock:
-      (dream2nixInterface.makeOutputsForDreamLock {
+      (config.dream2nixInterface.makeOutputsForDreamLock {
         inherit
           dreamLock
           inject
@@ -54,6 +46,7 @@ in rec {
     (acc: el: acc // el)
     {}
     (l.map makePackagesForDreamLock dreamLocks);
+
   makeOutputsForIndexes = {
     source,
     indexes,
@@ -61,8 +54,6 @@ in rec {
     packageOverrides ? {},
     sourceOverrides ? {},
   }: let
-    l = lib // builtins;
-
     mkApp = script: {
       type = "app";
       program = toString script;
@@ -76,7 +67,7 @@ in rec {
         inputJson="$(${pkgs.coreutils}/bin/mktemp)"
         echo '${l.toJSON inputFinal}' > $inputJson
         mkdir -p $(dirname ${inputFinal.outputFile})
-        ${framework.apps.index}/bin/index ${input.indexer} $inputJson
+        ${config.apps.index}/bin/index ${input.indexer} $inputJson
       '';
     in
       mkApp script;
@@ -85,7 +76,7 @@ in rec {
       mkApp (
         pkgs.writers.writeBash "translate-${name}" ''
           set -e
-          ${framework.apps.translate-index}/bin/translate-index \
+          ${config.apps.translate-index}/bin/translate-index \
             ${name}/index.json ${name}/locks
         ''
       );
@@ -163,8 +154,8 @@ in rec {
       mkCiAppWith
       "pkgs-all"
       ''
-        ${lib.concatStringsSep "\n" (l.mapAttrsToList (_: app: app.program) indexApps)}
-        ${lib.concatStringsSep "\n" (l.mapAttrsToList (_: app: app.program) translateApps)}
+        ${l.concatStringsSep "\n" (l.mapAttrsToList (_: app: app.program) indexApps)}
+        ${l.concatStringsSep "\n" (l.mapAttrsToList (_: app: app.program) translateApps)}
       '';
 
     buildAllApp = let
@@ -239,4 +230,11 @@ in rec {
     };
   in
     outputs;
+in {
+  config.utils = {
+    inherit
+      generatePackagesFromLocksTree
+      makeOutputsForIndexes
+      ;
+  };
 }

@@ -52,12 +52,12 @@
             # simpleTranslate2 puts dream-lock in result
             dreamLock = dreamLock'.result or dreamLock';
           in
-            dream2nix.utils.dreamLock.toJSON
+            dream2nix.framework.utils.dream-lock.toJSON
               # don't use nix to detect cycles, this will be more efficient in python
               (dreamLock // {
                 _generic = builtins.removeAttrs dreamLock._generic [ \"cyclicDependencies\" ];
               })
-        " | python3 ${../../utils/cli/format-dream-lock.py} > out
+        " | python3 ${utils.scripts.formatDreamLock} > out
         tmpOut=$(realpath out)
         popd
         mkdir -p $(dirname $outputFile)

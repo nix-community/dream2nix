@@ -1,21 +1,21 @@
-{lib}: let
+{config, ...}: let
   inherit
-    (lib)
+    (config.lib)
     length
     elemAt
     concatMap
-    all
     concatLists
     concatStringsSep
     concatMapStringsSep
     mapAttrsToList
+    foldl
+    isDerivation
     ;
 
   inherit
     (builtins)
     abort
     match
-    toJSON
     typeOf
     ;
 
@@ -103,7 +103,7 @@
     then "float"
     else if typeOf x == "set"
     then
-      if lib.isDerivation x
+      if isDerivation x
       then "string"
       else "set"
     else if typeOf x == "list"
@@ -122,7 +122,7 @@
   toTOML = attrs:
     assert (typeOf attrs == "set"); let
       byTy =
-        lib.foldl
+        foldl
         (
           acc: x: let
             ty = tomlTy x.v;
@@ -141,5 +141,8 @@
         ++ (byTy.list_of_attrs or [])
         ++ (byTy.set or [])
       );
-in
-  toTOML
+in {
+  config.utils = {
+    inherit toTOML;
+  };
+}

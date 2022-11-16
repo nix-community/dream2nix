@@ -59,7 +59,7 @@ utils.writePureShellScriptBin
   $translateBin $TMPDIR/args.json
 
   cat $dreamLockPath \
-    | python3 ${../../utils/cli/format-dream-lock.py} \
+    | python3 ${utils.scripts.formatDreamLock} \
     | sponge $dreamLockPath
 
   ${pkgs.python3.pkgs.jsonschema}/bin/jsonschema \

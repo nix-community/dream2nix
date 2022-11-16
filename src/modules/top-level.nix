@@ -5,7 +5,6 @@
   inputs,
   lib,
   pkgs,
-  utils,
   dream2nixConfig,
   dream2nixConfigFile,
   dream2nixWithExternals,
@@ -25,6 +24,12 @@ in {
     ./fetchers
     ./translators
     ./indexers
+    ./utils
+    ./utils.translator
+    ./utils.index
+    ./utils.override
+    ./utils.toTOML
+    ./utils.dream-lock
   ];
   options = {
     lib = lib.mkOption {
@@ -34,22 +39,21 @@ in {
       type = t.raw;
     };
     externals = lib.mkOption {
-      type = t.raw;
+      type = t.lazyAttrsOf t.raw;
     };
     externalSources = lib.mkOption {
-      type = t.raw;
+      type = t.lazyAttrsOf t.path;
     };
     inputs = lib.mkOption {
-      type = t.raw;
+      type = t.lazyAttrsOf t.attrs;
     };
     pkgs = lib.mkOption {
       type = t.raw;
     };
-    utils = lib.mkOption {
-      type = t.raw;
-    };
     dream2nixConfig = lib.mkOption {
-      type = t.raw;
+      type = t.submoduleWith {
+        modules = [./config];
+      };
     };
     dream2nixWithExternals = lib.mkOption {
       type = t.path;

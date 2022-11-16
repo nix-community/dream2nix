@@ -1,18 +1,12 @@
-{
-  lib,
-  # dream2nix
-  dlib,
-  utils,
-  ...
-}: let
+{config, ...}: let
   b = builtins;
-  l = lib // builtins;
+  l = config.lib // builtins;
 
   replaceRootSources = {
     dreamLock,
     newSourceRoot,
   } @ args: let
-    dreamLockLoaded = utils.readDreamLock {dreamLock = args.dreamLock;};
+    dreamLockLoaded = config.utils.dream-lock.readDreamLock {dreamLock = args.dreamLock;};
     iface = dreamLockLoaded.interface;
     patchVersion = version: source:
       if
@@ -44,10 +38,10 @@
   subDreamLockNames = dreamLockFile: let
     dir = b.dirOf dreamLockFile;
 
-    directories = utils.listDirs dir;
+    directories = config.dlib.listDirs dir;
 
     dreamLockDirs =
-      lib.filter
+      l.filter
       (d: b.pathExists "${dir}/${d}/dream-lock.json")
       directories;
   in
@@ -57,7 +51,7 @@
     isFile =
       b.isPath dreamLock
       || b.isString dreamLock
-      || lib.isDerivation dreamLock;
+      || l.isDerivation dreamLock;
 
     lockMaybeCompressed =
       if isFile
@@ -75,7 +69,7 @@
       else let
         dir = b.dirOf dreamLock;
       in
-        lib.genAttrs
+        l.genAttrs
         (subDreamLockNames dreamLock)
         (d:
           readDreamLock
@@ -111,8 +105,8 @@
       candidatesList;
 
     allDependants =
-      lib.mapAttrs
-      (name: versions: lib.attrNames versions)
+      l.mapAttrs
+      (name: versions: l.attrNames versions)
       dependencyGraph;
 
     packageVersions =
@@ -228,24 +222,24 @@
       newDependcyGraph = decompressDependencyGraph inject;
 
       newDependencyGraph =
-        lib.zipAttrsWith
+        l.zipAttrsWith
         (name: versions:
-          lib.zipAttrsWith
-          (version: deps: lib.unique (lib.flatten deps))
+          l.zipAttrsWith
+          (version: deps: l.unique (l.flatten deps))
           versions)
         [
           oldDependencyGraph
           newDependcyGraph
         ];
     in
-      lib.recursiveUpdate lock {
+      l.recursiveUpdate lock {
         dependencies = newDependencyGraph;
       };
 
   decompressDependencyGraph = compGraph:
-    lib.mapAttrs
+    l.mapAttrs
     (name: versions:
-      lib.mapAttrs
+      l.mapAttrs
       (version: deps:
         map
         (dep: {
@@ -257,9 +251,9 @@
     compGraph;
 
   compressDependencyGraph = decompGraph:
-    lib.mapAttrs
+    l.mapAttrs
     (name: versions:
-      lib.mapAttrs
+      l.mapAttrs
       (version: deps: map (dep: [dep.name dep.version]) deps)
       versions)
     decompGraph;
@@ -272,15 +266,15 @@
       decompressDependencyGraph (comp.cyclicDependencies or {});
 
     emptyDependencyGraph =
-      lib.mapAttrs
+      l.mapAttrs
       (name: versions:
-        lib.mapAttrs
+        l.mapAttrs
         (version: source: [])
         versions)
       comp.sources;
 
     dependencyGraph =
-      lib.recursiveUpdate
+      l.recursiveUpdate
       emptyDependencyGraph
       dependencyGraphDecomp;
   in
@@ -301,11 +295,11 @@
       uncomp.cyclicDependencies;
 
     dependencyGraph =
-      lib.filterAttrs
+      l.filterAttrs
       (name: versions: versions != {})
-      (lib.mapAttrs
+      (l.mapAttrs
         (name: versions:
-          lib.filterAttrs
+          l.filterAttrs
           (version: deps: deps != [])
           versions)
         dependencyGraphComp);
@@ -326,16 +320,17 @@
   in
     json;
 in {
-  inherit
-    compressDreamLock
-    decompressDreamLock
-    decompressDependencyGraph
-    getMainPackageSource
-    getSource
-    getSubDreamLock
-    readDreamLock
-    replaceRootSources
-    injectDependencies
-    toJSON
-    ;
+  config.utils.dream-lock = {
+    inherit
+      compressDreamLock
+      decompressDreamLock
+      getMainPackageSource
+      getSource
+      getSubDreamLock
+      readDreamLock
+      replaceRootSources
+      injectDependencies
+      toJSON
+      ;
+  };
 }

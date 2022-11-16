@@ -14,7 +14,7 @@
     (goName: depAttrs: depAttrs // {inherit goName;})
     parsed;
   translated =
-    dream2nix.utils.simpleTranslate
+    dream2nix.framework.utils.simpleTranslate
     ({
       getDepByNameVer,
       dependenciesByOriginalID,
@@ -68,4 +68,4 @@
       };
     });
 in
-  dream2nix.utils.dreamLock.toJSON translated
+  dream2nix.framework.utils.dream-lock.toJSON translated

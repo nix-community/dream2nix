@@ -8,7 +8,7 @@
   parallel,
   nix,
   pkgs,
-  utils,
+  framework,
   dream2nixWithExternals,
   callPackageDream,
   ...
@@ -21,7 +21,7 @@
     testDirs;
   testScriptsFile = pkgs.writeText "scripts-list" (l.concatStringsSep "\n" testScripts);
   execTest =
-    utils.writePureShellScript
+    framework.utils.writePureShellScript
     [
       bash
       coreutils
@@ -41,7 +41,7 @@
       echo "$elapsed sec: $test" >> $STATS_FILE
     '';
 in
-  utils.writePureShellScript
+  framework.utils.writePureShellScript
   [
     bash
     coreutils
