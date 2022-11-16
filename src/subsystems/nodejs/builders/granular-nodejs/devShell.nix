@@ -53,13 +53,15 @@ mkShell {
     nodeModulesDir = "${nodeModulesDrv}/lib/node_modules/${packageName}/node_modules";
     binDir = "${nodeModulesDrv}/lib/node_modules/.bin";
   in ''
-    # create the ./node_modules directory
+    # re-create the ./node_modules directory
     rm -rf ./node_modules
     mkdir -p ./node_modules/.bin
     cp -r ${nodeModulesDir}/* ./node_modules/
-    for link in $(ls ${binDir}); do
-      target=$(readlink ${binDir}/$link | cut -d'/' -f4-)
-      ln -s ../$target ./node_modules/.bin/$link
+    for executablePath in ${binDir}/*; do
+      binaryName=$(basename $executablePath)
+      target=$(readlink $executable)
+      echo linking binary $binaryName to nix store: $target
+      ln -s $target ./node_modules/.bin/$binaryName
     done
     chmod -R +w ./node_modules
     export PATH="$PATH:$(realpath ./node_modules)/.bin"
