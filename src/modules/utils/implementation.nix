@@ -38,7 +38,9 @@
       nixFFI = ./cli/nix_ffi.py;
       formatDreamLock = ./cli/format-dream-lock.py;
       aggregateHashes = l.toFile "aggregate-hashes.py" (
-        l.replaceStrings ["%nix_ffi%"] [nixFFI]
+        l.replaceStrings
+        ["%nix_ffi%"]
+        [(toString nixFFI)]
         (l.readFile ./cli/aggregate-hashes.py)
       );
     };
