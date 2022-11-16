@@ -1,4 +1,7 @@
 {config, ...}: let
-  lib = config.lib;
+  l = config.lib // builtins;
 in {
+  config = {
+
+  };
 }
