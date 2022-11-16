@@ -26,7 +26,7 @@ in
   ''
     export dream2nixSrc=${../../.}/src
     mkdir -p tests
-    ln -sf ${framework.utils.scripts.nixFFI} tests
-    ln -sf ${self}/tests/unit/* tests
+    ln -sf ${framework.utils.scripts.nixFFI} tests/nix_ffi.py
+    cp -r ${self}/tests/unit/* tests
     ${pythonEnv}/bin/pytest tests -n $(nproc) -v "$@"
   ''
