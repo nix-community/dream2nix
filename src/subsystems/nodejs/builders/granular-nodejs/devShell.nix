@@ -37,12 +37,12 @@ mkShell {
           missing or changed modules.
     */
     nodeModulesDrv = pkg.overrideAttrs (old: {
-      buildPhase = ":";
       installMethod = "copy";
       dontPatch = true;
       dontBuild = true;
       dontInstall = true;
       dontFixup = true;
+
       # the configurePhase fails if these variables are not set
       d2nPatchPhase = ''
         nodeModules=$out/lib/node_modules
