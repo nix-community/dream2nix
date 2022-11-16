@@ -25,8 +25,9 @@ in
   ]
   ''
     export dream2nixSrc=${../../.}/src
-    mkdir -p tests
-    ln -sf ${framework.utils.scripts.nixFFI} tests/nix_ffi.py
-    cp -r ${self}/tests/unit/* tests
-    ${pythonEnv}/bin/pytest tests -n $(nproc) -v "$@"
+    TESTDIR="$TMPDIR/tests/unit"
+    mkdir -p $TESTDIR
+    ln -sf ${framework.utils.scripts.nixFFI} "$TESTDIR/nix_ffi.py"
+    cp -r ${self}/tests/unit/* $TESTDIR
+    ${pythonEnv}/bin/pytest $TESTDIR -n $(nproc) -v "$@"
   ''
