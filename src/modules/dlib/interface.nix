@@ -55,9 +55,6 @@ in {
     traceJ = mkFunction {
       type = t.functionTo t.raw;
     };
-    warnIfIfd = mkFunction {
-      type = t.raw;
-    };
     isNotDrvAttrs = mkFunction {
       type = t.bool;
     };

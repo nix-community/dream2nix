@@ -260,23 +260,6 @@
 
   traceJ = toTrace: eval: l.trace (l.toJSON toTrace) eval;
 
-  ifdWarnMsg = module: ''
-    the builder / translator you are using (`${module.subsystem}.${module.name}`)
-    uses IFD (https://nixos.wiki/wiki/Glossary) and this *might* cause issues
-    (for example, `nix flake show` not working). if you are aware of this and
-    don't wish to see this message, set `config.disableIfdWarning` to `true`
-    in `dream2nix.lib.init` (or similar functions that take `config`).
-  '';
-  warnIfIfd = {
-    config,
-    module,
-    val,
-  }:
-    l.warnIf
-    ((! (config.disableIfdWarning or false)) && module.type == "ifd")
-    (ifdWarnMsg module)
-    val;
-
   mkFunction = {type, ...} @ attrs:
     l.mkOption (
       attrs
@@ -305,7 +288,6 @@ in {
       sanitizeRelativePath
       systemsFromFile
       traceJ
-      warnIfIfd
       isNotDrvAttrs
       ;
   };
