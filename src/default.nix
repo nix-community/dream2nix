@@ -453,6 +453,7 @@ in let
         # TODO: add translatorArgs
         translatorArgs = {};
         translator = project.translator;
+        inherit config;
       };
 
     isResolved = project: let
@@ -734,7 +735,6 @@ in {
   inherit
     callPackageDream
     dream2nixWithExternals
-    dlib
     framework
     fetchSources
     realizeProjects

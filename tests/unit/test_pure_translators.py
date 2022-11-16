@@ -213,12 +213,12 @@ def test_extractors(p):
       source=p['source'],
     ),
     wrapper_code = '''
-      {result, dlib, ...}:
+      {result, framework, ...}:
       let
         l = builtins;
         inputs = result.inputs;
         rawObjects = inputs.serializedRawObjects;
-        s = dlib.simpleTranslate2;
+        s = framework.dlib.simpleTranslate2;
 
         finalObjects = s.mkFinalObjects rawObjects inputs.extractors;
         allDependencies = s.makeDependencies finalObjects;
@@ -247,12 +247,12 @@ def test_keys(p):
       source=p['source'],
     ),
     wrapper_code = '''
-      {result, dlib, ...}:
+      {result, framework, ...}:
       let
         l = builtins;
         inputs = result.inputs;
         rawObjects = inputs.serializedRawObjects;
-        s = dlib.simpleTranslate2;
+        s = framework.dlib.simpleTranslate2;
 
         finalObjects = s.mkFinalObjects rawObjects inputs.extractors;
         allDependencies = s.makeDependencies finalObjects;
