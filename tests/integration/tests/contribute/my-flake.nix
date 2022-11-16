@@ -24,7 +24,7 @@
           source = src;
           projects.my-project = {
             name = "my-project";
-            subsytem = "my-subsystem";
+            subsystem = "my-subsystem";
             translator = "my-pure-translator";
           };
         };
