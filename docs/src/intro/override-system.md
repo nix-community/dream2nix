@@ -17,7 +17,81 @@ dream2nix supports packaging different versions of the same package within one r
 
 Currently a collection of overrides is maintained at [dream2nix/overrides](https://github.com/nix-community/dream2nix/tree/main/overrides)
 
-Example for nodejs overrides:
+## General override system
+
+values can either be declared directly via
+
+```nix
+# "${pname}" = {
+#   "${overrideName}" = {
+#     ...
+#     `attrName` will get overriden with `newValue`
+#     ${attrName} = newValue;  
+#     ...
+#   };
+# };
+#
+```
+
+or via function that takes the `oldAttrs` and returns `newAttrs` depending on the old ones.
+
+```nix
+#  
+# "${pname}" = {
+#   "${overrideName}" = {
+#     ...
+#     overrideAttrs = oldAttrs: {
+#       ${attrName} = ...;
+#     };
+#     ...
+#   };
+# };
+```
+
+## Overview of `attrNames`
+
+The available values depend on the subsystem
+But at least all values of `pkgs.mkDerivation` are available on every subsystem
+
+```nix
+
+# some internal attributes
+# if that attribute is true the override will apply
+# e.g. _condition = satisfiesSemver "^5.0.0";
+_condition
+
+
+# attributes of the nodejs subsystem 
+dependenciesJson
+electronHeaders
+nodeDeps
+nodeSources
+packageName
+installMethod
+electronAppDir
+runBuild
+linkBins
+installDeps
+buildScript
+
+# python script to modify some metadata to support installation
+# (see comments below on d2nPatch)
+fixPackage
+
+# attibutes of mkDerivation (also found in the nix manual)
+nativeBuildInputs
+buildInputs
+src
+configurePhase 
+buildPhase 
+installPhase 
+patches
+...
+
+```
+
+# Example for nodejs overrides
+
 ```nix
 {
   # The name of a package.
