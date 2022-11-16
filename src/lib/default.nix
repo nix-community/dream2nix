@@ -17,6 +17,7 @@
       listDirs
       listFiles
       mergeFlakes
+      mkFunction
       nameVersionPair
       prepareSourceTree
       readTextFile
@@ -335,5 +336,13 @@
     licenses = l.filter (license: license != null) _licenses;
   in
     licenses;
+
+  mkFunction = {type, ...} @ attrs:
+    l.mkOption (
+      attrs
+      // {
+        type = l.types.uniq (l.types.functionTo attrs.type);
+      }
+    );
 in
   dlib

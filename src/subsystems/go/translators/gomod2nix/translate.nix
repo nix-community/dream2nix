@@ -68,4 +68,4 @@
       };
     });
 in
-  dream2nix.framework.utils.dreamLock.toJSON translated
+  dream2nix.framework.utils.dream-lock.toJSON translated

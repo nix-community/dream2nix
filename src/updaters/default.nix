@@ -12,12 +12,12 @@
 }: let
   inherit (framework) utils fetchers;
 
-  lockUtils = utils.dreamLock;
+  lockUtils = utils.dream-lock;
 
   updaters = callPackageDream ./updaters.nix {};
 
   getUpdaterName = {dreamLock}: let
-    lock = (utils.dreamLock.readDreamLock {inherit dreamLock;}).lock;
+    lock = (utils.dream-lock.readDreamLock {inherit dreamLock;}).lock;
     source = lockUtils.getMainPackageSource lock;
   in
     lock.updater
@@ -28,7 +28,7 @@
     dreamLock,
     updater ? getUpdaterName {inherit dreamLock;},
   }: let
-    lock = (utils.dreamLock.readDreamLock {inherit dreamLock;}).lock;
+    lock = (utils.dream-lock.readDreamLock {inherit dreamLock;}).lock;
     source = lockUtils.getMainPackageSource lock;
     updater' = updaters."${updater}";
   in

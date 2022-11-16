@@ -263,7 +263,7 @@ in let
     sourceOverrides ? oldSources: {},
   } @ args: let
     # if dream lock is a file, read and parse it
-    dreamLock' = (utils.dreamLock.readDreamLock {inherit dreamLock;}).lock;
+    dreamLock' = (utils.dream-lock.readDreamLock {inherit dreamLock;}).lock;
 
     fetcher =
       if args.fetcher or null == null
@@ -304,9 +304,9 @@ in let
     allOutputs,
   } @ args: let
     # inject dependencies
-    dreamLock = utils.dreamLock.injectDependencies args.dreamLock inject;
+    dreamLock = utils.dream-lock.injectDependencies args.dreamLock inject;
 
-    dreamLockInterface = (utils.dreamLock.readDreamLock {inherit dreamLock;}).interface;
+    dreamLockInterface = (utils.dream-lock.readDreamLock {inherit dreamLock;}).interface;
 
     produceDerivation = name: pkg:
       utils.applyOverridesToPackage {
@@ -337,7 +337,7 @@ in let
           packageVersions
           ;
 
-        getSource = utils.dreamLock.getSource fetchedSources;
+        getSource = utils.dream-lock.getSource fetchedSources;
       });
 
     # Makes the packages tree compatible with flakes schema.
@@ -388,7 +388,7 @@ in let
     packageOverrides ? {},
   } @ args: let
     # parse dreamLock
-    dreamLockLoaded = utils.dreamLock.readDreamLock {inherit (args) dreamLock;};
+    dreamLockLoaded = utils.dream-lock.readDreamLock {inherit (args) dreamLock;};
     dreamLock = dreamLockLoaded.lock;
     dreamLockInterface = dreamLockLoaded.interface;
 
@@ -481,7 +481,7 @@ in let
           project
           // rec {
             dreamLock =
-              (utils.dreamLock.readDreamLock {
+              (utils.dream-lock.readDreamLock {
                 dreamLock = "${toString config.projectRoot}/${project.dreamLockPath}";
               })
               .lock;

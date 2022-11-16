@@ -25,6 +25,11 @@ in {
     ./translators
     ./indexers
     ./utils
+    ./utils.translator
+    ./utils.index
+    ./utils.override
+    ./utils.toTOML
+    ./utils.dream-lock
   ];
   options = {
     lib = lib.mkOption {

@@ -216,13 +216,6 @@
       script // {passthru = {inherit project;};};
   };
 in {
-  imports = [
-    ./dream-lock.nix
-    ./override.nix
-    ./translator.nix
-    ./toTOML.nix
-    ./index
-  ];
   config = {
     utils = impl;
   };

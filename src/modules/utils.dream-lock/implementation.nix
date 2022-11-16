@@ -6,7 +6,7 @@
     dreamLock,
     newSourceRoot,
   } @ args: let
-    dreamLockLoaded = config.utils.dreamLock.readDreamLock {dreamLock = args.dreamLock;};
+    dreamLockLoaded = config.utils.dream-lock.readDreamLock {dreamLock = args.dreamLock;};
     iface = dreamLockLoaded.interface;
     patchVersion = version: source:
       if
@@ -320,7 +320,7 @@
   in
     json;
 in {
-  config.utils.dreamLock = {
+  config.utils.dream-lock = {
     inherit
       compressDreamLock
       decompressDreamLock
