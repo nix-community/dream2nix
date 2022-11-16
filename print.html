@@ -1341,7 +1341,69 @@ dream2nix overrides have the following properties:</p>
 <p>Each subsystem in dream2nix like <code>nodejs</code> or <code>python</code> manages its overrides in a separate directory to avoid package name collisions.</p>
 <p>dream2nix supports packaging different versions of the same package within one repository. Therefore conditions are used to make overrides apply only to certain package versions.</p>
 <p>Currently a collection of overrides is maintained at <a href="https://github.com/nix-community/dream2nix/tree/main/overrides">dream2nix/overrides</a></p>
-<p>Example for nodejs overrides:</p>
+<h2 id="general-override-system"><a class="header" href="#general-override-system">General override system</a></h2>
+<p>values can either be declared directly via</p>
+<pre><code class="language-nix"># &quot;${pname}&quot; = {
+#   &quot;${overrideName}&quot; = {
+#     ...
+#     `attrName` will get overriden with `newValue`
+#     ${attrName} = newValue;  
+#     ...
+#   };
+# };
+#
+</code></pre>
+<p>or via function that takes the <code>oldAttrs</code> and returns <code>newAttrs</code> depending on the old ones.</p>
+<pre><code class="language-nix">#  
+# &quot;${pname}&quot; = {
+#   &quot;${overrideName}&quot; = {
+#     ...
+#     overrideAttrs = oldAttrs: {
+#       ${attrName} = ...;
+#     };
+#     ...
+#   };
+# };
+</code></pre>
+<h2 id="overview-of-attrnames"><a class="header" href="#overview-of-attrnames">Overview of <code>attrNames</code></a></h2>
+<p>The available values depend on the subsystem
+But at least all values of <code>pkgs.mkDerivation</code> are available on every subsystem</p>
+<pre><code class="language-nix">
+# some internal attributes
+# if that attribute is true the override will apply
+# e.g. _condition = satisfiesSemver &quot;^5.0.0&quot;;
+_condition
+
+
+# attributes of the nodejs subsystem 
+dependenciesJson
+electronHeaders
+nodeDeps
+nodeSources
+packageName
+installMethod
+electronAppDir
+runBuild
+linkBins
+installDeps
+buildScript
+
+# python script to modify some metadata to support installation
+# (see comments below on d2nPatch)
+fixPackage
+
+# attibutes of mkDerivation (also found in the nix manual)
+nativeBuildInputs
+buildInputs
+src
+configurePhase 
+buildPhase 
+installPhase 
+patches
+...
+
+</code></pre>
+<h1 id="example-for-nodejs-overrides"><a class="header" href="#example-for-nodejs-overrides">Example for nodejs overrides</a></h1>
 <pre><code class="language-nix">{
   # The name of a package.
   # Contains all overrides which can apply to the package `enhanced-resolve`
