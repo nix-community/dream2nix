@@ -12,6 +12,7 @@ out = os.environ.get('out')
 def symlink_bin(bin_dir, package_json):
   if 'bin' in package_json and package_json['bin']:
     bin = package_json['bin']
+    # print("link bin: ", bin)
 
     def link(name, relpath):
       source = f'{bin_dir}/{name}'

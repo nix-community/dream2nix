@@ -270,6 +270,18 @@
           installPhase = import ./installPhase.nix {
             inherit pkgs;
           };
+          # doInstallCheck = isMainPackage packageName version;
+          doInstallCheck = true;
+
+          # installCheckPhase = import ./installCheckPhase.nix {};
+
+          installCheckExcludes = ["tsserver"];
+          installCheckPhase =
+            builtins.readFile (pkgs.writeShellApplication {
+              name = "check";
+              text = builtins.readFile ./test.sh;
+            })
+            /bin/check;
         });
       in
         pkg;
