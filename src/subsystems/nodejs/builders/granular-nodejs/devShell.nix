@@ -59,7 +59,7 @@ mkShell {
     cp -r ${nodeModulesDir}/* ./node_modules/
     for executablePath in ${binDir}/*; do
       binaryName=$(basename $executablePath)
-      target=$(readlink $executablePath)
+      target=$(realpath $executablePath)
       echo linking binary $binaryName to nix store: $target
       ln -s $target ./node_modules/.bin/$binaryName
     done
