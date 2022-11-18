@@ -8,6 +8,7 @@
   dream2nixConfig,
   dream2nixConfigFile,
   dream2nixWithExternals,
+  dream2nixInterface,
 } @ args: let
   t = lib.types;
 in {
@@ -60,6 +61,9 @@ in {
     };
     dream2nixConfigFile = lib.mkOption {
       type = t.path;
+    };
+    dream2nixInterface = lib.mkOption {
+      type = t.raw;
     };
   };
   config =

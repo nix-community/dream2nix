@@ -81,6 +81,11 @@ in let
       ;
     dream2nixConfigFile = configFile;
     dream2nixConfig = config;
+    dream2nixInterface = {
+      inherit
+        makeOutputsForDreamLock
+        ;
+    };
   };
 
   /*
@@ -102,11 +107,6 @@ in let
       inherit framework;
       inherit dream2nixWithExternals;
       inherit nix;
-      dream2nixInterface = {
-        inherit
-          makeOutputsForDreamLock
-          ;
-      };
     };
 
   # like pkgs.callPackage, but includes all the dream2nix modules

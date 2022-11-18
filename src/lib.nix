@@ -103,6 +103,7 @@
       pkgs = throw "pkgs is not available before nixpkgs is imported";
       externals = throw "externals is not available before nixpkgs is imported";
       dream2nixWithExternals = throw "not available before nixpkgs is imported";
+      dream2nixInterface = throw "not available before nixpkgs is imported";
     };
 
     initD2N = initDream2nix config;
