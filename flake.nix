@@ -235,7 +235,7 @@
           tests-all.type = "app";
           tests-all.program =
             l.toString
-            (dream2nixFor.${system}.utils.writePureShellScript
+            (dream2nixFor.${system}.framework.utils.writePureShellScript
               [
                 alejandra.defaultPackage.${system}
                 pkgs.coreutils
