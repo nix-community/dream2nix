@@ -148,6 +148,7 @@
           # TODO: translatorArgs
           translatorArgs = {};
           translator = project.translator;
+          config = config.dream2nixConfig;
         },
     } @ args: let
       aggregate = project.aggregate or false;

@@ -1,10 +1,8 @@
 {config, ...}: let
-  lib = config.lib;
-  t = lib.types;
+  l = config.lib // builtins;
+  t = l.types;
 in {
   options = {
-     = lib.mkOption {
-      type = t.;
-    };
+
   };
 }

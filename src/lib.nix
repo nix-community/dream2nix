@@ -86,18 +86,10 @@
     settings ? [],
     sourceOverrides ? oldSources: {},
   } @ args: let
-    systems =
-      if systemsFromFile == null
-      then args.systems or []
-      else dlib.systemsFromFile systemsFromFile;
-
-    allPkgs = makeNixpkgs pkgs systems;
-
     config = loadConfig (args.config or {});
-    dlib = import ./lib {inherit lib config;};
 
     framework = import ./modules/framework.nix {
-      inherit lib dlib externalSources inputs;
+      inherit lib externalSources inputs;
       dream2nixConfig = config;
       dream2nixConfigFile = l.toFile "dream2nix-config.json" (l.toJSON config);
       pkgs = throw "pkgs is not available before nixpkgs is imported";
@@ -106,12 +98,23 @@
       dream2nixInterface = throw "not available before nixpkgs is imported";
     };
 
+    systems =
+      if systemsFromFile == null
+      then args.systems or []
+      else
+        framework.dlib.systemsFromFile {
+          inherit config;
+          file = systemsFromFile;
+        };
+
+    allPkgs = makeNixpkgs pkgs systems;
+
     initD2N = initDream2nix config;
     dream2nixFor = l.mapAttrs (_: pkgs: initD2N pkgs) allPkgs;
 
     discoveredProjects = framework.functions.discoverers.discoverProjects {
       inherit settings;
-      tree = dlib.prepareSourceTree {inherit source;};
+      tree = framework.dlib.prepareSourceTree {inherit source;};
     };
 
     finalProjects =
@@ -217,9 +220,6 @@
     flakeOutputs;
 in {
   inherit init makeFlakeOutputs makeFlakeOutputsForIndexes;
-  dlib = import ./lib {
-    inherit lib;
-    config = loadConfig {};
-  };
+  dlib = import ./modules/dlib.nix {inherit lib;};
   riseAndShine = throw "Use makeFlakeOutputs instead of riseAndShine.";
 }

@@ -64,16 +64,10 @@ in let
 
   configFile = pkgs.writeText "dream2nix-config.json" (b.toJSON config);
 
-  dlib = import ./lib {
-    inherit lib config;
-    inherit framework;
-  };
-
   framework = import ./modules/framework.nix {
     inherit
       inputs
       lib
-      dlib
       pkgs
       externals
       externalSources
@@ -88,6 +82,8 @@ in let
     };
   };
 
+  inherit (framework) dlib;
+
   /*
   The nixos module system seems to break pkgs.callPackage.
   Therefore we always need to pass all of pkgs with callPackageDream.
@@ -100,7 +96,6 @@ in let
       inherit callPackageDream;
       inherit config;
       inherit configFile;
-      inherit dlib;
       inherit externals;
       inherit externalSources;
       inherit inputs;
@@ -458,6 +453,7 @@ in let
         # TODO: add translatorArgs
         translatorArgs = {};
         translator = project.translator;
+        inherit config;
       };
 
     isResolved = project: let
@@ -739,7 +735,6 @@ in {
   inherit
     callPackageDream
     dream2nixWithExternals
-    dlib
     framework
     fetchSources
     realizeProjects

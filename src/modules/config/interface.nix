@@ -13,13 +13,6 @@
   };
 in {
   options = {
-    disableIfdWarning = l.mkOption {
-      type = t.bool;
-      default = false;
-      description = ''
-        Disables IFD warning for translators / builders.
-      '';
-    };
     overridesDirs = l.mkOption {
       type = t.listOf t.path;
       default = [];
