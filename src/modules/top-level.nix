@@ -45,6 +45,7 @@ in {
     ./functions.default-fetcher
     ./functions.combined-fetcher
     ./functions.translators
+    ./functions.updaters
     ./apps
     ./builders
     ./discoverers
@@ -62,6 +63,7 @@ in {
     ./dlib.parsing
     ./dlib.construct
     ./dlib.simpleTranslate2
+    ./updaters
     ./externals
     ./dream2nix-interface
   ];
