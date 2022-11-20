@@ -41,18 +41,18 @@
           --show-trace --impure --raw --expr "
           let
             dream2nix = import ${dream2nixWithExternals} {
-              config = ${dream2nixConfigFile};
+              dream2nixConfig = ${dream2nixConfigFile};
             };
             translatorArgs =
               (builtins.fromJSON
                   (builtins.unsafeDiscardStringContext (builtins.readFile '''$1''')));
             dreamLock' =
-              dream2nix.framework.translatorsBySubsystem.${subsystem}.${name}.finalTranslate
+              dream2nix.translatorsBySubsystem.${subsystem}.${name}.finalTranslate
                 translatorArgs;
             # simpleTranslate2 puts dream-lock in result
             dreamLock = dreamLock'.result or dreamLock';
           in
-            dream2nix.framework.utils.dream-lock.toJSON
+            dream2nix.utils.dream-lock.toJSON
               # don't use nix to detect cycles, this will be more efficient in python
               (dreamLock // {
                 _generic = builtins.removeAttrs dreamLock._generic [ \"cyclicDependencies\" ];

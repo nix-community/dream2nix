@@ -14,7 +14,7 @@ utils.writePureShellScript
       nixpkgs = <nixpkgs>;
       l = (import \"\''${nixpkgs}/lib\") // builtins;
       dream2nix = import ${dream2nixWithExternals} {
-        config = ''${dream2nixConfig:-"${dream2nixConfigFile}"};
+        dream2nixConfig = ''${dream2nixConfig:-"${dream2nixConfigFile}"};
       };
     in ''${@:$#}
   "

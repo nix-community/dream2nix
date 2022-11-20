@@ -68,7 +68,7 @@ import nix_ffi
 ])
 def test_translateShortcut(shortcut, expected):
   result = nix_ffi.callNixFunction(
-    'framework.functions.fetchers.translateShortcut',
+    'functions.fetchers.translateShortcut',
     shortcut=shortcut,
     computeHash=False,
   )

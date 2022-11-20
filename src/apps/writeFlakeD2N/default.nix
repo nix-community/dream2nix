@@ -19,7 +19,7 @@ pkgs.writers.writeBash
         pkgs = import ${pkgs.path} {inherit system;};
         d2n = import ${dream2nixWithExternals} {
           inherit pkgs;
-          config = ''${dream2nixConfig:-"{}"};
+          dream2nixConfig = ''${dream2nixConfig:-"{}"};
         };
         src = d2n.fetchers.fetchSource {
           source = b.fromJSON (b.readFile \"''${flakeSrcInfoPath:?"error: set source info path"}\");

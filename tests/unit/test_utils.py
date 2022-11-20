@@ -5,5 +5,5 @@ import nix_ffi
     ('3', [ '2', '3', '1' ]),
 ])
 def test_latestVersion(expected, versions):
-    result = nix_ffi.callNixFunction('framework.dlib.latestVersion', versions=versions)
+    result = nix_ffi.callNixFunction('dlib.latestVersion', versions=versions)
     assert result == expected

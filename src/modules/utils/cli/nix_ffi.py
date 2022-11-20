@@ -25,7 +25,7 @@ def callNixFunction(function_path, **kwargs):
           d2n = (import {dream2nix_src} {{}});
         in
           builtins.toJSON (
-            (d2n.framework.dlib.callViaEnv d2n.{function_path})
+            (d2n.dlib.callViaEnv d2n.{function_path})
           )
       ''',
       env=env
@@ -63,11 +63,11 @@ def eval(attr_path, wrapper_code=None, **kwargs):
             d2n = (import {dream2nix_src} {{}});
             result' =
               if "{is_function_call}" == "True"
-              then d2n.framework.dlib.callViaEnv d2n.{attr_path}
+              then d2n.dlib.callViaEnv d2n.{attr_path}
               else d2n.{attr_path};
-            result = (d2n.callPackageDream
+            result = (d2n.pkgs.callPackage
               {wrapper_code_file.name}
-              {{ result = result'; }});
+              (d2n // {{ result = result'; }}));
           in
             b.toJSON (
               # remove override attributes added by callPackage
@@ -101,7 +101,7 @@ def buildNixFunction(function_path, **kwargs):
         let
           d2n = (import {dream2nix_src} {{}});
         in
-          (d2n.framework.dlib.callViaEnv d2n.{function_path})
+          (d2n.dlib.callViaEnv d2n.{function_path})
       ''',
       env=env
     )

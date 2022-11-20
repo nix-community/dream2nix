@@ -1,15 +1,43 @@
 {
-  externals,
-  externalSources,
-  inputs,
-  lib,
-  pkgs,
-  dream2nixConfig,
-  dream2nixConfigFile,
-  dream2nixWithExternals,
-  dream2nixInterface,
+  inputs ?
+    (import ../../flake-compat.nix {
+      src = ../../.;
+      inherit (pkgs) system;
+    })
+    .inputs,
+  lib ? pkgs.lib,
+  pkgs ? import <nixpkgs> {},
+  dream2nixConfig ?
+    if builtins ? getEnv && builtins.getEnv "dream2nixConfig" != ""
+    # if called via CLI, load config via env
+    then builtins.toPath (builtins.getEnv "dream2nixConfig")
+    # load from default directory
+    else {},
+  externalPaths ? null,
+  externalSources ? null,
 } @ args: let
+  b = builtins;
   t = lib.types;
+
+  externalDir =
+    if externalPaths != null
+    then
+      (import ../utils/external-dir.nix {
+        inherit externalPaths externalSources pkgs;
+      })
+    # if called via CLI, load externals via env
+    else if b ? getEnv && b.getEnv "d2nExternalDir" != ""
+    then ../. + (b.getEnv "d2nExternalDir")
+    # load from default directory
+    else ../external;
+
+  externalSources =
+    args.externalSources
+    or (
+      lib.genAttrs
+      (lib.attrNames (builtins.readDir externalDir))
+      (inputName: "${../. + externalDir}/${inputName}")
+    );
 in {
   imports = [
     ./functions.discoverers
@@ -34,16 +62,12 @@ in {
     ./dlib.parsing
     ./dlib.construct
     ./dlib.simpleTranslate2
+    ./externals
+    ./dream2nix-interface
   ];
   options = {
     lib = lib.mkOption {
       type = t.raw;
-    };
-    externals = lib.mkOption {
-      type = t.lazyAttrsOf t.raw;
-    };
-    externalSources = lib.mkOption {
-      type = t.lazyAttrsOf t.path;
     };
     inputs = lib.mkOption {
       type = t.lazyAttrsOf t.attrs;
@@ -51,24 +75,51 @@ in {
     pkgs = lib.mkOption {
       type = t.raw;
     };
+    externalDir = lib.mkOption {
+      type = t.path;
+    };
+    externalPaths = lib.mkOption {
+      type = t.listOf t.str;
+    };
+    externalSources = lib.mkOption {
+      type = t.lazyAttrsOf t.path;
+    };
+    dream2nixWithExternals = lib.mkOption {
+      type = t.path;
+    };
     dream2nixConfig = lib.mkOption {
       type = t.submoduleWith {
         modules = [./config];
       };
     };
-    dream2nixWithExternals = lib.mkOption {
-      type = t.path;
-    };
     dream2nixConfigFile = lib.mkOption {
       type = t.path;
     };
-    dream2nixInterface = lib.mkOption {
-      type = t.raw;
-    };
   };
-  config =
-    args
-    // {
-      lib = args.lib // builtins;
-    };
+  config = {
+    inherit
+      dream2nixConfig
+      pkgs
+      inputs
+      externalPaths
+      externalSources
+      externalDir
+      ;
+
+    lib = lib // builtins;
+
+    dream2nixConfigFile = b.toFile "dream2nix-config.json" (b.toJSON dream2nixConfig);
+
+    # the location of the dream2nix framework for self references (update scripts, etc.)
+    dream2nixWithExternals =
+      if b.pathExists (../. + "/external")
+      then ../.
+      else
+        pkgs.runCommandLocal "dream2nix-full-src" {} ''
+          cp -r ${../.} $out
+          chmod +w $out
+          mkdir $out/external
+          cp -r ${externalDir}/* $out/external/
+        '';
+  };
 }

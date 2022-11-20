@@ -5,7 +5,7 @@ import pytest
 
 def get_projects_to_test():
   tests = nix_ffi.eval(
-    'framework.translators',
+    'translators',
     wrapper_code = '''
       {result, ...}: let
         lib = (import <nixpkgs> {}).lib;
@@ -65,7 +65,7 @@ def check_format_sourceSpec(sourceSpec):
 @pytest.mark.parametrize("p", projects)
 def test_packageName(p):
   defaultPackage = nix_ffi.eval(
-    f"framework.translatorsBySubsystem.{p['subsystem']}.{p['translator']}.finalTranslate",
+    f"translatorsBySubsystem.{p['subsystem']}.{p['translator']}.finalTranslate",
     params=dict(
       project=p['project'],
       source=p['source'],
@@ -81,7 +81,7 @@ def test_packageName(p):
 @pytest.mark.parametrize("p", projects)
 def test_exportedPackages(p):
   exportedPackages = nix_ffi.eval(
-    f"framework.translatorsBySubsystem.{p['subsystem']}.{p['translator']}.finalTranslate",
+    f"translatorsBySubsystem.{p['subsystem']}.{p['translator']}.finalTranslate",
     params=dict(
       project=p['project'],
       source=p['source'],
@@ -97,7 +97,7 @@ def test_exportedPackages(p):
 @pytest.mark.parametrize("p", projects)
 def test_extraObjects(p):
   extraObjects = nix_ffi.eval(
-    f"framework.translatorsBySubsystem.{p['subsystem']}.{p['translator']}.finalTranslate",
+    f"translatorsBySubsystem.{p['subsystem']}.{p['translator']}.finalTranslate",
     params=dict(
       project=p['project'],
       source=p['source'],
@@ -121,7 +121,7 @@ def test_extraObjects(p):
 @pytest.mark.parametrize("p", projects)
 def test_location(p):
   location = nix_ffi.eval(
-    f"framework.translatorsBySubsystem.{p['subsystem']}.{p['translator']}.finalTranslate",
+    f"translatorsBySubsystem.{p['subsystem']}.{p['translator']}.finalTranslate",
     params=dict(
       project=p['project'],
       source=p['source'],
@@ -136,7 +136,7 @@ def test_location(p):
 @pytest.mark.parametrize("p", projects)
 def test_serializedRawObjects(p):
   serializedRawObjects = nix_ffi.eval(
-    f"framework.translatorsBySubsystem.{p['subsystem']}.{p['translator']}.finalTranslate",
+    f"translatorsBySubsystem.{p['subsystem']}.{p['translator']}.finalTranslate",
     params=dict(
       project=p['project'],
       source=p['source'],
@@ -159,7 +159,7 @@ def test_serializedRawObjects(p):
 @pytest.mark.parametrize("p", projects)
 def test_subsystemName(p):
   subsystemName = nix_ffi.eval(
-    f"framework.translatorsBySubsystem.{p['subsystem']}.{p['translator']}.finalTranslate",
+    f"translatorsBySubsystem.{p['subsystem']}.{p['translator']}.finalTranslate",
     params=dict(
       project=p['project'],
       source=p['source'],
@@ -175,7 +175,7 @@ def test_subsystemName(p):
 @pytest.mark.parametrize("p", projects)
 def test_subsystemAttrs(p):
   subsystemAttrs = nix_ffi.eval(
-    f"framework.translatorsBySubsystem.{p['subsystem']}.{p['translator']}.finalTranslate",
+    f"translatorsBySubsystem.{p['subsystem']}.{p['translator']}.finalTranslate",
     params=dict(
       project=p['project'],
       source=p['source'],
@@ -191,7 +191,7 @@ def test_subsystemAttrs(p):
 @pytest.mark.parametrize("p", projects)
 def test_translatorName(p):
   translatorName = nix_ffi.eval(
-    f"framework.translatorsBySubsystem.{p['subsystem']}.{p['translator']}.finalTranslate",
+    f"translatorsBySubsystem.{p['subsystem']}.{p['translator']}.finalTranslate",
     params=dict(
       project=p['project'],
       source=p['source'],
@@ -207,18 +207,18 @@ def test_translatorName(p):
 @pytest.mark.parametrize("p", projects)
 def test_extractors(p):
   finalObjects = nix_ffi.eval(
-    f"framework.translatorsBySubsystem.{p['subsystem']}.{p['translator']}.finalTranslate",
+    f"translatorsBySubsystem.{p['subsystem']}.{p['translator']}.finalTranslate",
     params=dict(
       project=p['project'],
       source=p['source'],
     ),
     wrapper_code = '''
-      {result, framework, ...}:
+      {result, dlib, ...}:
       let
         l = builtins;
         inputs = result.inputs;
         rawObjects = inputs.serializedRawObjects;
-        s = framework.dlib.simpleTranslate2;
+        s = dlib.simpleTranslate2;
 
         finalObjects = s.mkFinalObjects rawObjects inputs.extractors;
         allDependencies = s.makeDependencies finalObjects;
@@ -241,18 +241,18 @@ def test_extractors(p):
 @pytest.mark.parametrize("p", projects)
 def test_keys(p):
   objectsByKey = nix_ffi.eval(
-    f"framework.translatorsBySubsystem.{p['subsystem']}.{p['translator']}.finalTranslate",
+    f"translatorsBySubsystem.{p['subsystem']}.{p['translator']}.finalTranslate",
     params=dict(
       project=p['project'],
       source=p['source'],
     ),
     wrapper_code = '''
-      {result, framework, ...}:
+      {result, dlib, ...}:
       let
         l = builtins;
         inputs = result.inputs;
         rawObjects = inputs.serializedRawObjects;
-        s = framework.dlib.simpleTranslate2;
+        s = dlib.simpleTranslate2;
 
         finalObjects = s.mkFinalObjects rawObjects inputs.extractors;
         allDependencies = s.makeDependencies finalObjects;

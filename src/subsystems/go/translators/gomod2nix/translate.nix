@@ -4,7 +4,7 @@
 }: cwd: let
   b = builtins;
   dream2nix = import dream2nixWithExternals {
-    config = b.path {path = dream2nixConfig;};
+    dream2nixConfig = b.path {path = dream2nixConfig;};
   };
   parsed = b.fromTOML (builtins.readFile "${cwd}/gomod2nix.toml");
   pkgs = import <nixpkgs> {};
@@ -14,7 +14,7 @@
     (goName: depAttrs: depAttrs // {inherit goName;})
     parsed;
   translated =
-    dream2nix.framework.utils.simpleTranslate
+    dream2nix.utils.simpleTranslate
     ({
       getDepByNameVer,
       dependenciesByOriginalID,
@@ -68,4 +68,4 @@
       };
     });
 in
-  dream2nix.framework.utils.dream-lock.toJSON translated
+  dream2nix.utils.dream-lock.toJSON translated

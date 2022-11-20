@@ -12,10 +12,9 @@
   l = lib // builtins;
 
   initDream2nix = config: pkgs:
-    import ./default.nix
-    {
-      loadedConfig = config;
-      inherit inputs pkgs externalPaths externalSources;
+    import ./modules/framework.nix {
+      inherit lib inputs pkgs externalPaths externalSources;
+      dream2nixConfig = config;
     };
 
   loadConfig = config'': let
@@ -89,13 +88,9 @@
     config = loadConfig (args.config or {});
 
     framework = import ./modules/framework.nix {
-      inherit lib externalSources inputs;
+      inherit lib externalPaths externalSources inputs;
       dream2nixConfig = config;
-      dream2nixConfigFile = l.toFile "dream2nix-config.json" (l.toJSON config);
       pkgs = throw "pkgs is not available before nixpkgs is imported";
-      externals = throw "externals is not available before nixpkgs is imported";
-      dream2nixWithExternals = throw "not available before nixpkgs is imported";
-      dream2nixInterface = throw "not available before nixpkgs is imported";
     };
 
     systems =
@@ -140,7 +135,7 @@
       l.mapAttrs
       (system: pkgs: let
         dream2nix = dream2nixFor."${system}";
-        allOutputs = dream2nix.makeOutputs {
+        allOutputs = dream2nix.dream2nixInterface.makeOutputs {
           discoveredProjects = finalProjects;
           inherit
             source
@@ -193,7 +188,7 @@
       l.mapAttrs
       (system: pkgs: let
         dream2nix = dream2nixFor."${system}";
-        allOutputs = dream2nix.framework.utils.makeOutputsForIndexes {
+        allOutputs = dream2nix.utils.makeOutputsForIndexes {
           inherit
             source
             indexes

@@ -11,7 +11,6 @@
   nix,
   pkgs,
   framework,
-  dream2nixWithExternals,
   ...
 }: let
   l = lib // builtins;

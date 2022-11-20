@@ -77,7 +77,6 @@
     ghc-utils,
     ...
   } @ inp: let
-    b = builtins;
     l = lib // builtins;
 
     lib = nixpkgs.lib;
@@ -133,9 +132,6 @@
       ];
     };
 
-    # create a directory containing the files listed in externalPaths
-    makeExternalDir = import ./src/utils/external-dir.nix;
-
     # An interface to access files of external projects.
     # This implementation accesses the flake inputs directly,
     # but if dream2nix is used without flakes, it defaults
@@ -168,212 +164,156 @@
       system,
       ...
     }: let
-      externalDir = makeExternalDir {
-        inherit externalPaths externalSources pkgs;
-      };
       d2n = import ./src {
-        inherit externalDir externalPaths externalSources inputs lib pkgs;
-        config = {inherit overridesDirs;};
+        inherit externalPaths externalSources inputs lib pkgs;
+        dream2nixConfig = {inherit overridesDirs;};
       };
       docsCli = pkgs.callPackage ./src/utils/view-docs {
         dream2nixDocsSrc = "${self}/docs/src";
       };
     in {
-      # all apps including cli, install, etc.
-      apps =
-        d2n.framework.flakeApps
-        // {
-          tests-unit.type = "app";
-          tests-unit.program =
-            b.toString
-            (d2n.callPackageDream ./tests/unit {
-              inherit self;
-            });
+      options = {
+        d2n = l.mkOption {
+          type = l.types.raw;
+        };
+      };
+      config = {
+        inherit d2n;
 
-          tests-integration.type = "app";
-          tests-integration.program =
-            b.toString
-            (d2n.callPackageDream ./tests/integration {
-              inherit self;
-            });
+        # all apps including cli, install, etc.
+        apps =
+          d2n.flakeApps
+          // {
+            # passes through extra flags to treefmt
+            format.type = "app";
+            format.program =
+              l.toString
+              (pkgs.writeScript "format" ''
+                export PATH="${alejandra.defaultPackage.${system}}/bin"
+                ${pkgs.treefmt}/bin/treefmt --clear-cache "$@"
+              '');
 
-          tests-integration-d2n-flakes.type = "app";
-          tests-integration-d2n-flakes.program =
-            b.toString
-            (d2n.callPackageDream ./tests/integration-d2n-flakes {
-              inherit self;
-            });
+            docs.type = "app";
+            docs.program = "${docsCli}/bin/d2n-docs";
+          };
 
-          tests-examples.type = "app";
-          tests-examples.program =
-            b.toString
-            (d2n.callPackageDream ./tests/examples {
-              inherit self;
-            });
+        # a dev shell for working on dream2nix
+        # use via 'nix develop . -c $SHELL'
+        devShells = let
+          makeDevshell = import "${inp.devshell}/modules" pkgs;
+          mkShell = config:
+            (makeDevshell {
+              configuration = {
+                inherit config;
+                imports = [];
+              };
+            })
+            .shell;
+        in rec {
+          default = dream2nix-shell;
+          dream2nix-shell = mkShell {
+            devshell.name = "dream2nix-devshell";
 
-          tests-all.type = "app";
-          tests-all.program =
-            l.toString
-            (d2n.framework.utils.writePureShellScript
+            commands =
               [
-                alejandra.defaultPackage.${system}
-                pkgs.coreutils
-                pkgs.gitMinimal
-                pkgs.nix
+                {package = pkgs.nix;}
+                {
+                  package = pkgs.mdbook;
+                  category = "documentation";
+                }
+                {
+                  package = docsCli;
+                  category = "documentation";
+                  help = "CLI for listing and viewing dream2nix documentation";
+                }
+                {
+                  package = pkgs.treefmt;
+                  category = "formatting";
+                }
+                {
+                  package = alejandra.defaultPackage.${system};
+                  category = "formatting";
+                }
               ]
-              ''
-                echo "check for correct formatting"
-                WORKDIR=$(realpath ./.)
-                cd $TMPDIR
-                cp -r $WORKDIR ./repo
-                cd ./repo
-                ${config.apps.format.program} --fail-on-change
-                cd -
+              # using linux is highly recommended as cntr is amazing for debugging builds
+              ++ lib.optional pkgs.stdenv.isLinux {
+                package = pkgs.cntr;
+                category = "debugging";
+              };
 
-                echo "running unit tests"
-                ${config.apps.tests-unit.program}
+            devshell.startup = {
+              preCommitHooks.text = self.checks.${system}.pre-commit-check.shellHook;
+              dream2nixEnv.text = ''
+                export NIX_PATH=nixpkgs=${nixpkgs}
+                export d2nExternalDir=${d2n.externalDir}
+                export dream2nixWithExternals=${d2n.dream2nixWithExternals}
 
-                echo "running integration tests"
-                ${config.apps.tests-integration.program}
-
-                echo "checking flakes under ./examples"
-                ${config.apps.tests-examples.program}
-
-                echo "running nix flake check"
-                cd $WORKDIR
-                nix flake show >/dev/null
-                nix flake check
-              '');
-
-          # passes through extra flags to treefmt
-          format.type = "app";
-          format.program =
-            l.toString
-            (pkgs.writeScript "format" ''
-              export PATH="${alejandra.defaultPackage.${system}}/bin"
-              ${pkgs.treefmt}/bin/treefmt --clear-cache "$@"
-            '');
-
-          docs.type = "app";
-          docs.program = "${docsCli}/bin/d2n-docs";
-        };
-
-      # a dev shell for working on dream2nix
-      # use via 'nix develop . -c $SHELL'
-      devShells = let
-        makeDevshell = import "${inp.devshell}/modules" pkgs;
-        mkShell = config:
-          (makeDevshell {
-            configuration = {
-              inherit config;
-              imports = [];
-            };
-          })
-          .shell;
-      in rec {
-        default = dream2nix-shell;
-        dream2nix-shell = mkShell {
-          devshell.name = "dream2nix-devshell";
-
-          commands =
-            [
-              {package = pkgs.nix;}
-              {
-                package = pkgs.mdbook;
-                category = "documentation";
-              }
-              {
-                package = docsCli;
-                category = "documentation";
-                help = "CLI for listing and viewing dream2nix documentation";
-              }
-              {
-                package = pkgs.treefmt;
-                category = "formatting";
-              }
-              {
-                package = alejandra.defaultPackage.${system};
-                category = "formatting";
-              }
-            ]
-            # using linux is highly recommended as cntr is amazing for debugging builds
-            ++ lib.optional pkgs.stdenv.isLinux {
-              package = pkgs.cntr;
-              category = "debugging";
-            };
-
-          devshell.startup = {
-            preCommitHooks.text = self.checks.${system}.pre-commit-check.shellHook;
-            dream2nixEnv.text = ''
-              export NIX_PATH=nixpkgs=${nixpkgs}
-              export d2nExternalDir=${externalDir}
-              export dream2nixWithExternals=${d2n.dream2nixWithExternals}
-
-              if [ -e ./overrides ]; then
-                export d2nOverridesDir=$(realpath ./overrides)
-              else
-                export d2nOverridesDir=${./overrides}
-                echo -e "\nManually execute 'export d2nOverridesDir={path to your dream2nix overrides dir}'"
-              fi
-
-              if [ -e ../dream2nix ]; then
-                export dream2nixWithExternals=$(realpath ./src)
-              else
-                export dream2nixWithExternals=${./src}
-                echo -e "\nManually execute 'export dream2nixWithExternals={path to your dream2nix checkout}'"
-              fi
-            '';
-          };
-        };
-      };
-
-      checks = {
-        pre-commit-check = pre-commit-hooks.lib.${system}.run {
-          src = ./.;
-          hooks = {
-            treefmt = {
-              enable = true;
-              name = "treefmt";
-              pass_filenames = false;
-              entry = l.toString (pkgs.writeScript "treefmt" ''
-                #!${pkgs.bash}/bin/bash
-                export PATH="$PATH:${alejandra.defaultPackage.${system}}/bin"
-                ${pkgs.treefmt}/bin/treefmt --clear-cache --fail-on-change
-              '');
-            };
-            cleanup = {
-              enable = true;
-              name = "cleaned";
-              entry = l.toString (pkgs.writeScript "cleaned" ''
-                #!${pkgs.bash}/bin/bash
-                for badFile in  $(find ./examples | grep 'flake.lock\|dream2nix-packages'); do
-                  rm -rf $badFile
-                  git add $badFile || :
-                done
-              '');
-            };
-            is-cleaned = {
-              enable = true;
-              name = "is-cleaned";
-              entry = l.toString (pkgs.writeScript "is-cleaned" ''
-                #!${pkgs.bash}/bin/bash
-                if find ./examples | grep -q 'flake.lock\|dream2nix-packages'; then
-                  echo "./examples should not contain any flake.lock files or dream2nix-packages directories" >&2
-                  exit 1
+                if [ -e ./overrides ]; then
+                  export d2nOverridesDir=$(realpath ./overrides)
+                else
+                  export d2nOverridesDir=${./overrides}
+                  echo -e "\nManually execute 'export d2nOverridesDir={path to your dream2nix overrides dir}'"
                 fi
-              '');
+
+                if [ -e ../dream2nix ]; then
+                  export dream2nixWithExternals=$(realpath ./src)
+                else
+                  export dream2nixWithExternals=${./src}
+                  echo -e "\nManually execute 'export dream2nixWithExternals={path to your dream2nix checkout}'"
+                fi
+              '';
             };
           };
         };
-      };
-      packages = {
-        docs =
-          pkgs.runCommand
-          "dream2nix-docs"
-          {nativeBuildInputs = [pkgs.mdbook];}
-          ''
-            mdbook build -d $out ${./.}/docs
-          '';
+
+        checks = {
+          pre-commit-check = pre-commit-hooks.lib.${system}.run {
+            src = ./.;
+            hooks = {
+              treefmt = {
+                enable = true;
+                name = "treefmt";
+                pass_filenames = false;
+                entry = l.toString (pkgs.writeScript "treefmt" ''
+                  #!${pkgs.bash}/bin/bash
+                  export PATH="$PATH:${alejandra.defaultPackage.${system}}/bin"
+                  ${pkgs.treefmt}/bin/treefmt --clear-cache --fail-on-change
+                '');
+              };
+              cleanup = {
+                enable = true;
+                name = "cleaned";
+                entry = l.toString (pkgs.writeScript "cleaned" ''
+                  #!${pkgs.bash}/bin/bash
+                  for badFile in  $(find ./examples | grep 'flake.lock\|dream2nix-packages'); do
+                    rm -rf $badFile
+                    git add $badFile || :
+                  done
+                '');
+              };
+              is-cleaned = {
+                enable = true;
+                name = "is-cleaned";
+                entry = l.toString (pkgs.writeScript "is-cleaned" ''
+                  #!${pkgs.bash}/bin/bash
+                  if find ./examples | grep -q 'flake.lock\|dream2nix-packages'; then
+                    echo "./examples should not contain any flake.lock files or dream2nix-packages directories" >&2
+                    exit 1
+                  fi
+                '');
+              };
+            };
+          };
+        };
+        packages = {
+          docs =
+            pkgs.runCommand
+            "dream2nix-docs"
+            {nativeBuildInputs = [pkgs.mdbook];}
+            ''
+              mdbook build -d $out ${./.}/docs
+            '';
+        };
       };
     };
 
@@ -386,37 +326,13 @@
         imports = [./src/modules/flake-parts];
         dream2nix.lib = d2n-lib;
       };
-      templates =
-        {
-          default = self.templates.simple;
-          simple = {
-            description = "Simple dream2nix flake";
-            path = ./templates/simple;
-            welcomeText = ''
-              You just created a simple dream2nix package!
-
-              start with typing `nix flake show` to discover the projects attributes.
-
-              commands:
-
-              - `nix develop` <-- enters the devShell
-              - `nix build .#` <-- builds the default package (`.#default`)
-
-
-              Start hacking and -_- have some fun!
-
-              > dont forget to add nix `result` folder to your `.gitignore`
-
-            '';
-          };
-        }
-        // (b.mapAttrs (name: value: {
-          description = "Example: ${name} template";
-          path = ./examples/${name};
-        }) (l.filterAttrs (n: v: v == "directory") (b.readDir ./examples)));
     };
   in
     flake-parts.lib.mkFlake {inherit self;} {
+      imports = [
+        ./tests
+        ./templates
+      ];
       systems = [
         "x86_64-linux"
         "aarch64-linux"
