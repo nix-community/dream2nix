@@ -135,7 +135,7 @@
       l.mapAttrs
       (system: pkgs: let
         dream2nix = dream2nixFor."${system}";
-        allOutputs = dream2nix.dream2nixInterface.makeOutputs {
+        allOutputs = dream2nix.dream2nix-interface.makeOutputs {
           discoveredProjects = finalProjects;
           inherit
             source

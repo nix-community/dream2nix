@@ -510,7 +510,7 @@
         // {resolveImpure = resolveImpureScript;};
     };
 in {
-  config.dream2nixInterface = {
+  config.dream2nix-interface = {
     inherit
       fetchSources
       realizeProjects
