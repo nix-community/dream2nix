@@ -17,7 +17,7 @@
   }: {
     fetched = hash:
       pkgs.runCommand
-      "${pname}-pypi-url"
+      filename
       {
         buildInputs = [
           pkgs.curl
