@@ -729,7 +729,12 @@ in let
         ''
         impureFakeDerivations
         // (realizedProjects.packages or {})
-        // {resolveImpure = resolveImpureScript;};
+        // {resolveImpure = resolveImpureScript;}
+        // (
+          if l.length (l.mapAttrsToList (k: v: v) impureFakeDerivations) != 0
+          then {default = l.head (l.mapAttrsToList (k: v: v) impureFakeDerivations);}
+          else {}
+        );
     };
 in {
   inherit
