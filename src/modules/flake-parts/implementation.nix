@@ -27,7 +27,7 @@ in {
 
       outputs =
         l.mapAttrs
-        (_: args: instance.makeOutputs args)
+        (_: args: instance.dream2nix-interface.makeOutputs args)
         config.dream2nix.inputs;
 
       getAttrFromOutputs = attrName:

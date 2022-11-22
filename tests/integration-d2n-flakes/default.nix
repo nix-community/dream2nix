@@ -7,7 +7,6 @@
   git,
   parallel,
   nix,
-  dream2nixWithExternals,
   framework,
   ...
 }: let

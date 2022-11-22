@@ -31,7 +31,7 @@
       );
     dreamLocks = findDreamLocks tree;
     makePackagesForDreamLock = dreamLock:
-      (config.dream2nixInterface.makeOutputsForDreamLock {
+      (config.dream2nix-interface.makeOutputsForDreamLock {
         inherit
           dreamLock
           inject

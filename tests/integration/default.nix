@@ -9,15 +9,18 @@
   nix,
   pkgs,
   framework,
-  dream2nixWithExternals,
-  callPackageDream,
   ...
 }: let
   l = lib // builtins;
   testDirs = l.attrNames (l.readDir ./tests);
   testScripts =
     map
-    (dir: callPackageDream (./tests + "/${dir}") {inherit self;})
+    (
+      dir:
+        pkgs.callPackage
+        (./tests + "/${dir}")
+        {inherit self framework;}
+    )
     testDirs;
   testScriptsFile = pkgs.writeText "scripts-list" (l.concatStringsSep "\n" testScripts);
   execTest =

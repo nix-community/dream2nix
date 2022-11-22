@@ -1,20 +1,7 @@
-{
-  curl,
-  gnugrep,
-  jq,
-  lib,
-  python3,
-  writeText,
-  # dream2nix inputs
-  callPackageDream,
-  framework,
-  ...
-}: let
-  inherit (framework) utils fetchers;
+{config, ...}: let
+  inherit (config) utils fetchers updaters;
 
   lockUtils = utils.dream-lock;
-
-  updaters = callPackageDream ./updaters.nix {};
 
   getUpdaterName = {dreamLock}: let
     lock = (utils.dream-lock.readDreamLock {inherit dreamLock;}).lock;
@@ -34,5 +21,7 @@
   in
     updater' source;
 in {
-  inherit getUpdaterName makeUpdateScript updaters;
+  config.functions.updaters = {
+    inherit getUpdaterName makeUpdateScript;
+  };
 }

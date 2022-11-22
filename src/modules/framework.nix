@@ -1,6 +1,6 @@
 {
-  lib,
-  dream2nixConfig,
+  lib ? (args.pkgs or (import <nixpkgs> {})).lib,
+  dream2nixConfig ? {},
   ...
 } @ args: let
   topLevel = import ./top-level.nix args;

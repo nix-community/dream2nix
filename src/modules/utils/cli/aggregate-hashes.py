@@ -21,7 +21,7 @@ def aggregate_hashes(lock, outputDreamLock, dream2nix_src, dream2nix_config):
     # compute FOD hash of aggregated sources
     proc = nix(
       "build", "--impure", "-L", "--show-trace", "--expr",
-      f"(import {dream2nix_src} {{ config = {dream2nix_config}; }}).fetchSources {{ dreamLock = {outputDreamLock}; }}"
+      f"(import {dream2nix_src} {{ dream2nixConfig = {dream2nix_config}; }}).dream2nix-interface.fetchSources {{ dreamLock = {outputDreamLock}; }}"
     )
     print(proc.stderr.decode())
     # read the output hash from the failed build log

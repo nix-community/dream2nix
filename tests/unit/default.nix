@@ -5,7 +5,6 @@
   nix,
   git,
   python3,
-  dream2nixWithExternals,
   framework,
   ...
 }: let

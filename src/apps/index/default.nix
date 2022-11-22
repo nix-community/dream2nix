@@ -30,7 +30,7 @@ utils.writePureShellScriptBin
   resultBin="$TMPDIR/result"
 
   ${apps.callNixWithD2N} build -L --keep-failed --show-trace --out-link $resultBin \
-    "dream2nix.framework.indexers.$name.indexBin"
+    "dream2nix.indexers.$name.indexBin"
 
   $resultBin $inputFile
 ''
