@@ -24,6 +24,7 @@
 <a href="https://nix-community.github.io/dream2nix-auto-test/#pkgs-rust" target="_blank" rel="noopener noreferrer">
 <img src="https://raw.githubusercontent.com/nix-community/dream2nix-auto-test/gh-pages/pkgs-rust.svg"></a>
 </p>
+
 ## dream2nix - A framework for automated nix packaging
 
 dream2nix is a framework for automatically converting packages from other build systems to nix.
