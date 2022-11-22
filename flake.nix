@@ -151,7 +151,6 @@
     overridesDirs = [(toString ./overrides)];
 
     # System independent dream2nix api.
-    # Similar to drem2nixFor but will require 'system(s)' or 'pkgs' as an argument.
     # Produces flake-like output schema.
     d2n-lib = import ./src/lib.nix {
       inherit externalPaths externalSources inputs overridesDirs lib;
