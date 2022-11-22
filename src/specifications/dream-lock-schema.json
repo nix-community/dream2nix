@@ -23,6 +23,7 @@
                     "npm",
                     "path",
                     "pypi-sdist",
+                    "pypi-wheel",
                     "crates-io",
                     "unknown"
                   ]
@@ -137,6 +138,18 @@
                     },
                     "required": ["type", "pname", "version"],
                     "additionalProperties": false
+                  }
+                },
+                {
+                  "if": {
+                    "properties": { "type": { "const": "pypi-wheel" } }
+                  },
+                  "then": {
+                    "properties": {
+                      "hash": { "type": "string" },
+                      "type": { "type": "string" },
+                      "filename": { "type": "string" }
+                    },
                     "required": ["type"],
                     "additionalProperties": false
                   }
