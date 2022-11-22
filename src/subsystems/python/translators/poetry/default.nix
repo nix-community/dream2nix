@@ -7,9 +7,33 @@ Example poetry.lock: https://github.com/python-poetry/poetry/blob/master/poetry.
 {
   dlib,
   lib,
+  inputs,
   ...
 }: let
   l = lib // builtins;
+  # initialize poetry2nix libs
+  pythonVersion = "python3";
+  system = "x86_64-linux";
+  fakeStdenv = {
+    isLinux = l.hasInfix "-linux" system;
+    isDarwin = l.hasInfix "-darwin" system;
+    targetPlatform.isAarch64 = l.hasPrefix "aarch64-" system;
+    targetPlatform.parsed.cpu.name = l.elemAt (l.splitString "-" system) 0;
+  };
+  fakePython = {
+    version = pythonVersion;
+    passthru.implementation = "cpython";
+  };
+  pep425 = import "${inputs.poetry2nix}/pep425.nix" {
+    inherit lib;
+    python = fakePython;
+    stdenv = fakeStdenv;
+    poetryLib = import "${inputs.poetry2nix}/lib.nix" {
+      inherit lib;
+      pkgs = null;
+      stdenv = fakeStdenv;
+    };
+  };
 in {
   type = "pure";
 
@@ -199,7 +223,12 @@ in {
       sources =
         l.mapAttrs
         (sourceName: files: let
-          candidate = lib.head files;
+          wheels = pep425.selectWheel files;
+          sdists = builtins.filter (x: !(lib.hasSuffix ".whl" x.file)) files;
+          candidate =
+            if lib.length wheels > 0
+            then builtins.head wheels
+            else builtins.head sdists;
           isWheel = l.hasSuffix "whl" candidate.file;
           suffix =
             if isWheel
