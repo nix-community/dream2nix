@@ -132,8 +132,11 @@
                     "properties": {
                       "hash": { "type": "string" },
                       "type": { "type": "string" },
-                      "dir": { "type": "string" }
+                      "pname": { "type": "string" },
+                      "version": { "type": "string" }
                     },
+                    "required": ["type", "pname", "version"],
+                    "additionalProperties": false
                     "required": ["type"],
                     "additionalProperties": false
                   }
