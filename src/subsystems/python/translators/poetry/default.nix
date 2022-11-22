@@ -1,8 +1,8 @@
 /*
-This is an example for a pure translator which translates niv's sources.json
+This is an example for a pure translator which translates poetry's poetry.lock
   to a dream2nix dream-lock(.json).
 
-Example sources.json: https://github.com/nmattia/niv/blob/351d8bc316bf901a81885bab5f52687ec8ccab6e/nix/sources.json
+Example poetry.lock: https://github.com/python-poetry/poetry/blob/master/poetry.loc
 */
 {
   dlib,
@@ -33,7 +33,7 @@ in {
    by the current translator.
   */
   # checks if the path
-    l.pathExists "${tree.fullPath}/nix/sources.json";
+    l.pathExists "${tree.fullPath}/poetry.lock";
 
   # translate from a given source and a project specification to a dream-lock.
   translate = {
@@ -96,8 +96,6 @@ in {
     arguments defined in `extraArgs` specified by user
     (see definition for `extraArgs` near the bottom of this file)
     */
-    noDev,
-    theAnswer,
     ...
   }: let
     # get the root source and project source
@@ -106,11 +104,10 @@ in {
     projectTree = tree.getNodeFromPath project.relPath;
 
     # use dream2nix' source tree abstraction to access json content of files
-    sourcesJson =
-      (projectTree.getNodeFromPath "nix/sources.json").jsonContent;
+    sources =
+      (projectTree.getNodeFromPath "poetry.lock").tomlContent;
 
     /*
-
     Define the name and version of the top-level package.
     If there are multiple top-level packages, just pick any of them.
     Dream2nix requires one package to be the default package.
@@ -118,7 +115,7 @@ in {
       here because there isn't really a concept of a package in niv.
       (Later we just fetch the dependencies and merge them into one output)
     */
-    defaultPackageName = "my-niv-dependencies";
+    defaultPackageName = "poetry";
     defaultPackageVersion = "unknown-version";
   in
     # see example in src/specifications/dream-lock-example.json
@@ -134,10 +131,11 @@ in {
         defaultPackage = defaultPackageName;
         # TODO: specify a list of exported packages and their versions
         packages = {
-          my-niv-dependencies = "unknown-version";
+          poetry = "unknown-version";
         };
         # TODO: this must be equivalent to the subsystem name
         subsystem = "python";
+        location = project.relPath;
       };
 
       /*
@@ -159,8 +157,7 @@ in {
        infinite recursions in the nix evaluator.
       Usually this can be ommitted.
       */
-      cyclicDependencies = {
-      };
+      cyclicDependencies = {};
 
       /*
       Define the dependency graph.
@@ -177,17 +174,7 @@ in {
           ...
         }
       */
-      dependencies = {
-        ${defaultPackageName}.${defaultPackageVersion} =
-          l.mapAttrsToList
-          (
-            sourceName: source: {
-              name = sourceName;
-              version = source.rev or "unknown-version";
-            }
-          )
-          sourcesJson;
-      };
+      dependencies = {};
 
       /*
       Define the sources for all dependencies including their checksums.
@@ -211,14 +198,38 @@ in {
       */
       sources =
         l.mapAttrs
-        (sourceName: source: {
-          ${source.rev or "unknown-version"} = {
-            type = "archive";
-            url = source.url;
-            hash = "sha256:${source.sha256}";
-          };
+        (sourceName: files: let
+          candidate = lib.head files;
+          isWheel = l.hasSuffix "whl" candidate.file;
+          suffix =
+            if isWheel
+            then ".whl"
+            else ".tar.gz";
+          parts = lib.splitString "-" (lib.removeSuffix suffix candidate.file);
+          last = (lib.length parts) - 1;
+          pname =
+            if isWheel
+            then lib.elemAt parts (last - 4)
+            else builtins.concatStringsSep "-" (lib.init parts);
+          version =
+            if isWheel
+            then lib.elemAt parts (last - 3)
+            else lib.elemAt parts last;
+        in {
+          ${version} =
+            if isWheel
+            then {
+              type = "pypi-wheel";
+              filename = candidate.file;
+              hash = candidate.hash;
+            }
+            else {
+              type = "pypi-sdist";
+              inherit pname version;
+              hash = candidate.hash;
+            };
         })
-        sourcesJson;
+        sources.metadata.files;
     };
 
   # If the translator requires additional arguments, specify them here.
@@ -228,23 +239,5 @@ in {
   #   - boolean flag (type = "flag")
   # String arguments contain a default value and examples. Flags do not.
   # Flags are false by default.
-  extraArgs = {
-    # Example: boolean option
-    # Flags always default to 'false' if not specified by the user
-    noDev = {
-      description = "Exclude dev dependencies";
-      type = "flag";
-    };
-
-    # Example: string option
-    theAnswer = {
-      default = "42";
-      description = "The Answer to the Ultimate Question of Life";
-      examples = [
-        "0"
-        "1234"
-      ];
-      type = "argument";
-    };
-  };
+  extraArgs = {};
 }

@@ -3,7 +3,7 @@
     dream2nix.url = "github:nix-community/dream2nix";
     nixpkgs.follows = "dream2nix/nixpkgs";
     flake-parts.url = "github:hercules-ci/flake-parts";
-    src.url = "github:nmattia/niv";
+    src.url = "github:python-poetry/poetry";
     src.flake = false;
   };
 

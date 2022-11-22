@@ -10,11 +10,11 @@
 
   defaultUpdater = "pypiNewestReleaseVersion";
 
-  outputs = {filename}: let
-    parts = lib.splitString "-" filename;
-    pname = builtins.elemAt parts 0;
-    version = builtins.elemAt parts 1;
-  in {
+  outputs = {
+    filename,
+    pname,
+    version,
+  }: {
     fetched = hash:
       pkgs.runCommand
       "${pname}-pypi-url"
