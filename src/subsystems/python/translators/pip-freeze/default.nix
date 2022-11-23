@@ -141,7 +141,7 @@ in {
         location = project.relPath;
 
         packages = {
-          mypkg = defaultPackageVersion;
+          "${defaultPackageName}" = defaultPackageVersion;
         };
 
         subsystem = "python";
