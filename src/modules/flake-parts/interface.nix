@@ -42,7 +42,7 @@ in {
               '';
             };
             inputs = l.mkOption {
-              type = t.attrsOf t.attrs;
+              type = t.attrsOf (t.submodule (import ./makeOutputsArgs.nix {inherit lib;}));
               default = {};
               description = ''
                 A list of inputs to generate outputs from.
