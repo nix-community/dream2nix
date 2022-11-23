@@ -97,7 +97,7 @@ in {
 
     requirements = readRequirements "${projectSource}/requirements-dev.txt";
 
-    defaultPackageName = "mypkg"; # pyproject.toml
+    defaultPackageName = "default"; # pyproject.toml
     defaultPackageVersion = "unknown-version";
 
     getSource = {
@@ -136,17 +136,14 @@ in {
 
       # generic fields
       _generic = {
-        # TODO: specify the default package name
         defaultPackage = defaultPackageName;
 
-        # the location of the package within the source tree
         location = project.relPath;
 
-        # TODO: specify a list of exported packages and their versions
         packages = {
-          mypkg = "unknown-version";
+          mypkg = defaultPackageVersion;
         };
-        # TODO: this must be equivalent to the subsystem name
+
         subsystem = "python";
       };
 
