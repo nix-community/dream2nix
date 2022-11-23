@@ -11,29 +11,6 @@ Example poetry.lock: https://github.com/python-poetry/poetry/blob/master/poetry.
   ...
 }: let
   l = lib // builtins;
-  # initialize poetry2nix libs
-  pythonVersion = "python3";
-  system = "x86_64-linux";
-  fakeStdenv = {
-    isLinux = l.hasInfix "-linux" system;
-    isDarwin = l.hasInfix "-darwin" system;
-    targetPlatform.isAarch64 = l.hasPrefix "aarch64-" system;
-    targetPlatform.parsed.cpu.name = l.elemAt (l.splitString "-" system) 0;
-  };
-  fakePython = {
-    version = pythonVersion;
-    passthru.implementation = "cpython";
-  };
-  pep425 = import "${inputs.poetry2nix}/pep425.nix" {
-    inherit lib;
-    python = fakePython;
-    stdenv = fakeStdenv;
-    poetryLib = import "${inputs.poetry2nix}/lib.nix" {
-      inherit lib;
-      pkgs = null;
-      stdenv = fakeStdenv;
-    };
-  };
 in {
   type = "pure";
 
@@ -44,12 +21,36 @@ in {
   translate = {
     project,
     tree,
+    pythonVersion,
+    system,
     ...
   }: let
     # get the root source and project source
     rootSource = tree.fullPath;
     projectSource = "${tree.fullPath}/${project.relPath}";
     projectTree = tree.getNodeFromPath project.relPath;
+
+    # initialize poetry2nix libs
+    fakeStdenv = {
+      isLinux = l.hasInfix "-linux" system;
+      isDarwin = l.hasInfix "-darwin" system;
+      targetPlatform.isAarch64 = l.hasPrefix "aarch64-" system;
+      targetPlatform.parsed.cpu.name = l.elemAt (l.splitString "-" system) 0;
+    };
+    fakePython = {
+      version = pythonVersion;
+      passthru.implementation = "cpython";
+    };
+    pep425 = import "${inputs.poetry2nix}/pep425.nix" {
+      inherit lib;
+      python = fakePython;
+      stdenv = fakeStdenv;
+      poetryLib = import "${inputs.poetry2nix}/lib.nix" {
+        inherit lib;
+        pkgs = null;
+        stdenv = fakeStdenv;
+      };
+    };
 
     # use dream2nix' source tree abstraction to access json content of files
     sources =
@@ -125,5 +126,25 @@ in {
         sources.metadata.files;
     };
 
-  extraArgs = {};
+  extraArgs = {
+    system = {
+      description = "System for produced outputs.";
+      # default = "blabla";
+      examples = [
+        "x86_64-linux"
+        "x86_64-darwin"
+      ];
+      type = "argument";
+    };
+    pythonVersion = {
+      description = "python version to translate for";
+      default = "3.10";
+      examples = [
+        "3.8"
+        "3.9"
+        "3.10"
+      ];
+      type = "argument";
+    };
+  };
 }
