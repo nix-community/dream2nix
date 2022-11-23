@@ -29,7 +29,7 @@
           projects.rosbags = {
             name = "rosbags";
             subsystem = "python";
-            translator = "pinned";
+            translator = "pip-freeze";
             subsystemInfo.system = system;
           };
         };
