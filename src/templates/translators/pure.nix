@@ -162,13 +162,13 @@ in {
       /*
       List dependency edges that need to be removed in order to prevent
        infinite recursions in the nix evaluator.
-      Usually this can be ommitted.
+      Usually this can be omitted.
       */
-      cyclicDependencies = null;
+      cyclicDependencies = {};
 
       /*
       Define the dependency graph.
-      This can be set to `null`, in which case dream2nix assumes that:
+      This can be set to `{}`, in which case dream2nix assumes that:
        - all sources listed in `sources` represent one dependency
        - all dependencies are direct dependenceis of the `defaultPackage`
       Example:
