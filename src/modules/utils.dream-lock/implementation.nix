@@ -58,10 +58,12 @@
       then b.fromJSON (b.readFile dreamLock)
       else dreamLock;
 
-    lock =
+    lockRaw =
       if lockMaybeCompressed.decompressed or false
       then lockMaybeCompressed
       else decompressDreamLock lockMaybeCompressed;
+
+    lock = extendWithEmptyGraph lockRaw;
 
     subDreamLocks =
       if ! isFile
@@ -236,6 +238,33 @@
         dependencies = newDependencyGraph;
       };
 
+  /*
+  Ensures that there is an entry in dependencies for each source.
+  This allows translators to omit creating dream-locks with empty
+    dependency graph.
+  */
+  extendWithEmptyGraph = dreamLockDecomp: let
+    emptyDependencyGraph =
+      l.mapAttrs
+      (name: versions:
+        l.mapAttrs
+        (version: source: [])
+        versions)
+      dreamLockDecomp.sources;
+
+    dependencyGraph =
+      l.recursiveUpdate
+      emptyDependencyGraph
+      dreamLockDecomp.dependencies;
+
+    lock =
+      dreamLockDecomp
+      // {
+        dependencies = dependencyGraph;
+      };
+  in
+    lock;
+
   decompressDependencyGraph = compGraph:
     l.mapAttrs
     (name: versions:
@@ -264,25 +293,12 @@
 
     cyclicDependencies =
       decompressDependencyGraph (comp.cyclicDependencies or {});
-
-    emptyDependencyGraph =
-      l.mapAttrs
-      (name: versions:
-        l.mapAttrs
-        (version: source: [])
-        versions)
-      comp.sources;
-
-    dependencyGraph =
-      l.recursiveUpdate
-      emptyDependencyGraph
-      dependencyGraphDecomp;
   in
     comp
     // {
       decompressed = true;
       cyclicDependencies = cyclicDependencies;
-      dependencies = dependencyGraph;
+      dependencies = dependencyGraphDecomp;
     };
 
   compressDreamLock = uncomp: let
