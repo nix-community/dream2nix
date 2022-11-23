@@ -56,8 +56,9 @@ in {
     sources =
       (projectTree.getNodeFromPath "poetry.lock").tomlContent;
 
-    defaultPackageName = "poetry";
-    defaultPackageVersion = "unknown-version";
+    pyproject = (projectTree.getNodeFromPath "pyproject.toml").tomlContent;
+    defaultPackageName = pyproject.tool.poetry.name;
+    defaultPackageVersion = pyproject.tool.poetry.version;
   in
     # see example in src/specifications/dream-lock-example.json
     {
@@ -67,9 +68,7 @@ in {
         # TODO: specify the default package name
         defaultPackage = defaultPackageName;
         # TODO: specify a list of exported packages and their versions
-        packages = {
-          poetry = "unknown-version";
-        };
+        packages.${defaultPackageName} = defaultPackageVersion;
         # TODO: this must be equivalent to the subsystem name
         subsystem = "python";
         location = project.relPath;
