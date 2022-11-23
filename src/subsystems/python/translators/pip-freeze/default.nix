@@ -178,7 +178,7 @@ in {
       default = "3.10";
       examples = [
         "3.8"
-        "3.9.1"
+        "3.9"
         "3.10"
       ];
       type = "argument";

@@ -31,9 +31,10 @@
             subsystem = "python";
             translator = "pip-freeze";
             subsystemInfo.system = system;
+            subsystemInfo.pythonVersion = "3.10";
           };
         };
-        checks.package = config.dream2nix.outputs.rosbags.packages.default;
+        # checks.package = config.dream2nix.outputs.rosbags.packages.default;
       };
     };
 }
