@@ -128,14 +128,21 @@ in {
        representation of the dream-lock.
       */
       decompressed = true;
+
+
       # generic fields
       _generic = {
         # TODO: specify the default package name
         defaultPackage = defaultPackageName;
+
+        # the location of the package within the source tree
+        location = project.relPath;
+
         # TODO: specify a list of exported packages and their versions
         packages = {
-          my-niv-dependencies = "unknown-version";
+          "${defaultPackageName}" = defaultPackageVersion;
         };
+
         # TODO: this must be equivalent to the subsystem name
         subsystem = "my-subsystem";
       };
@@ -155,14 +162,13 @@ in {
       /*
       List dependency edges that need to be removed in order to prevent
        infinite recursions in the nix evaluator.
-      Usually this can be ommitted.
+      Usually this can be omitted.
       */
-      cyclicDependencies = {
-      };
+      cyclicDependencies = {};
 
       /*
       Define the dependency graph.
-      This can be ommitted, in which case dream2nix assumes that:
+      This can be set to `{}`, in which case dream2nix assumes that:
        - all sources listed in `sources` represent one dependency
        - all dependencies are direct dependenceis of the `defaultPackage`
       Example:

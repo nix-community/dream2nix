@@ -1,11 +1,11 @@
 {
-  pythonAttr = {
+  pythonVersion = {
     description = "python version to translate for";
-    default = "python3";
+    default = "3.10";
     examples = [
-      "python27"
-      "python39"
-      "python310"
+      "3.8"
+      "3.9"
+      "3.10"
     ];
     type = "argument";
   };

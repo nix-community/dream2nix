@@ -13,6 +13,7 @@
     (with pkgs; [
       bash
       coreutils
+      gnused
       jq
       nix
       remarshal
@@ -26,9 +27,10 @@
       outputFile=$(realpath -m $(jq '.outputFile' -c -r $jsonInput))
       source="$(jq '.source' -c -r $jsonInput)/$(jq '.project.relPath' -c -r $jsonInput)"
       name="$(jq '.project.name' -c -r $jsonInput)"
-      pythonAttr=$(jq '.pythonAttr' -c -r $jsonInput)
+      pythonVersion=$(jq '.pythonVersion' -c -r $jsonInput)
       extraSetupDeps=$(jq '[.extraSetupDeps[]] | join(" ")' -c -r $jsonInput)
 
+      pythonAttr="python$(echo "$pythonVersion" |  sed 's/\.//')"
       sitePackages=$(nix eval --impure --raw --expr "(import <nixpkgs> {}).$pythonAttr.sitePackages")
 
       pushd $TMPDIR

@@ -116,12 +116,13 @@ in {
     dream2nixWithExternals =
       if b.pathExists (../. + "/external")
       then ../.
-      else
-        pkgs.runCommandLocal "dream2nix-full-src" {} ''
-          cp -r ${../.} $out
-          chmod +w $out
-          mkdir $out/external
-          cp -r ${externalDir}/* $out/external/
+      else let
+        dream2nixSrc = pkgs.runCommandLocal "dream2nix-full-src" {} ''
+          cp -r ${../../.} $out
+          chmod +w $out/src
+          mkdir $out/src/external
+          cp -r ${externalDir}/* $out/src/external/
         '';
+      in "${dream2nixSrc}/src";
   };
 }

@@ -38,6 +38,12 @@
       flake = false;
     };
 
+    # required for pinned python translator
+    nix-pypi-fetcher = {
+      url = "github:DavHau/nix-pypi-fetcher";
+      flake = false;
+    };
+
     # required for utils.satisfiesSemver
     poetry2nix = {
       url = "github:nix-community/poetry2nix/1.21.0";
@@ -94,6 +100,8 @@
         "LICENSE"
       ];
       poetry2nix = [
+        "lib.nix"
+        "pep425.nix"
         "semver.nix"
         "LICENSE"
       ];
