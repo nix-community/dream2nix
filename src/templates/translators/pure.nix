@@ -140,7 +140,7 @@ in {
 
         # TODO: specify a list of exported packages and their versions
         packages = {
-          my-niv-dependencies = "unknown-version";
+          "${defaultPackageName}" = defaultPackageVersion;
         };
 
         # TODO: this must be equivalent to the subsystem name
