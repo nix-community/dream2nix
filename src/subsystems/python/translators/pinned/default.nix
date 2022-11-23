@@ -156,8 +156,8 @@ in {
         sourceFormats = {};
       };
 
-      cyclicDependencies = null;
-      dependencies = null;
+      cyclicDependencies = {};
+      dependencies = {};
 
       sources =
         l.foldl
