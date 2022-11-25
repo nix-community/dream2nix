@@ -38,8 +38,17 @@
       allDependencySources';
 
     buildReq = subsystemAttrs.buildRequires or {};
+    requirementsFiles = subsystemAttrs.requirementsFiles or {};
     buildReqArgs = l.concatStringsSep " " (l.map (name: "${name}==${buildReq.${name}}") (l.attrNames buildReq));
-    reqArgs = l.concatStringsSep " " (l.map (x: "${x.name}==${x.version}") subsystemAttrs.reqList);
+    # Requirements files may contain hashes and markers; we let pip handle
+    # these. As a fallback we support a [ { name = 'foo'; version = '1.2.3'; },
+    # ... ] list which we might want to generate from the deps stored in
+    # dreamlock already.
+    reqArgs =
+      if requirementsFiles != {}
+      then l.concatStringsSep " " (l.map (x: "-r ${x}") requirementsFiles)
+      else l.concatStringsSep " " (l.map (x: "${x.name}==${x.version}") subsystemAttrs.reqList or []);
+
     package = produceDerivation defaultPackageName (buildFunc {
       name = defaultPackageName;
       src = getSource defaultPackageName defaultPackageVersion;
