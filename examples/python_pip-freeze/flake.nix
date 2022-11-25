@@ -30,8 +30,14 @@
             name = "rosbags";
             subsystem = "python";
             translator = "pip-freeze";
-            subsystemInfo.system = system;
-            subsystemInfo.pythonVersion = "3.10";
+            subsystemInfo = {
+              system = system;
+              pythonVersion = "3.10";
+              requirementsFiles = [
+                "requirements.txt"
+                "requirements-dev.txt"
+              ];
+            };
           };
         };
         # checks.package = config.dream2nix.outputs.rosbags.packages.default;

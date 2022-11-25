@@ -50,6 +50,7 @@ in {
     tree,
     pythonVersion,
     system,
+    requirementsFiles ? ["requirements.txt"],
     ...
   }:
   # if system == null
@@ -83,6 +84,7 @@ in {
     };
 
     nameVersion = builtins.match ''^([[:alnum:]\.\_\-]+)[^=]*==([^[:space:];\]+).*'';
+    # [{ name = "foo"; version = "1.2.3"; }, ...]
     readRequirements = path: let
       lines = l.splitString "\n" (l.readFile path);
       matched = l.filter (m: m != null) (l.map (line: nameVersion line) lines);
@@ -95,7 +97,7 @@ in {
     in
       reqs;
 
-    requirements = readRequirements "${projectSource}/requirements-dev.txt";
+    reqList = l.concatLists (l.map (file: readRequirements "${projectSource}/${file}") requirementsFiles);
 
     defaultPackageName = "default"; # pyproject.toml
     defaultPackageVersion = "unknown-version";
@@ -134,7 +136,7 @@ in {
       # Multiple versions are not supported, but preserved here through deep update.
       (all: req: all // {${req.name} = all.${req.name} or {} // {${req.version} = getSource req;};})
       {}
-      requirements;
+      reqList;
   in
     # see example in src/specifications/dream-lock-example.json
     {
