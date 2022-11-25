@@ -27,7 +27,7 @@
       l.flatten
       (l.mapAttrsToList
         (name: versions:
-          if l.elem name [defaultPackageName "setuptools" "pip" "wheel"]
+          if l.elem name [defaultPackageName "setuptools" "pip"]
           then []
           else l.map (ver: getSource name ver) versions)
         packageVersions);
