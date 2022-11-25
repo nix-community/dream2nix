@@ -129,6 +129,12 @@ in {
       type = "http";
       inherit hash url;
     };
+    sources =
+      l.foldl
+      # Multiple versions are not supported, but preserved here through deep update.
+      (all: req: all // {${req.name} = all.${req.name} or {} // {${req.version} = getSource req;};})
+      {}
+      requirements;
   in
     # see example in src/specifications/dream-lock-example.json
     {
@@ -156,11 +162,7 @@ in {
       cyclicDependencies = {};
       dependencies = {};
 
-      sources =
-        l.foldl
-        (all: req: all // {"${req.name}"."${req.version}" = getSource req;})
-        {}
-        requirements;
+      inherit sources;
     };
 
   extraArgs = {
