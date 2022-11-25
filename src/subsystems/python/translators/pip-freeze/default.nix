@@ -169,7 +169,7 @@ in {
       _subsystem = {
         inherit reqList buildRequires requirementsFiles;
         application = false;
-        pythonAttr = "python3";
+        pythonAttr = "python${l.replaceStrings ["."] [""] pythonVersion}";
         sourceFormats = {};
         packageFormat =
           if l.pathExists "${projectSource}/setup.py"
