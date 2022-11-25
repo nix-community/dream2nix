@@ -43,7 +43,7 @@
     package = produceDerivation defaultPackageName (buildFunc {
       name = defaultPackageName;
       src = getSource defaultPackageName defaultPackageVersion;
-      format = "setuptools";
+      format = subsystemAttrs.packageFormat or "setuptools";
       buildInputs = pkgs.pythonManylinuxPackages.manylinux1;
       nativeBuildInputs = [pkgs.autoPatchelfHook];
       propagatedBuildInputs = [python.pkgs.setuptools];

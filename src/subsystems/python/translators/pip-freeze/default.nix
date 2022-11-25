@@ -171,6 +171,10 @@ in {
         application = false;
         pythonAttr = "python3";
         sourceFormats = {};
+        packageFormat =
+          if l.pathExists "${projectSource}/setup.py"
+          then "setuptools"
+          else "pyproject.toml";
       };
 
       cyclicDependencies = {};
