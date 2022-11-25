@@ -11,7 +11,7 @@ in {
         default = self.templates.simple;
         simple = {
           description = "Simple dream2nix flake";
-          path = ./templates/simple;
+          path = ./simple;
           welcomeText = ''
             You just created a simple dream2nix package!
 
