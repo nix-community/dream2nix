@@ -40,13 +40,14 @@
     package = produceDerivation defaultPackageName (buildFunc {
       name = defaultPackageName;
       src = getSource defaultPackageName defaultPackageVersion;
-      format = "setuptools";
+      format = "other";
       buildInputs = pkgs.pythonManylinuxPackages.manylinux1;
-      nativeBuildInputs = [pkgs.autoPatchelfHook];
+      nativeBuildInputs = [pkgs.autoPatchelfHook python.pkgs.pip python.pkgs.poetry-core];
       propagatedBuildInputs = [python.pkgs.setuptools];
       doCheck = false;
       dontStrip = true;
-      preBuild = ''
+
+      buildPhase = ''
         mkdir dist
         for file in ${builtins.toString allDependencySources}; do
           # pick right most element of path
@@ -54,17 +55,18 @@
           fname=$(stripHash $fname)
           cp $file dist/$fname
         done
-        mkdir -p "$out/${python.sitePackages}"
-        export PYTHONPATH="$out/${python.sitePackages}:$PYTHONPATH"
         ${python}/bin/python -m pip install \
-          ./dist/*.{whl,tar.gz,zip} \
+          --find-links ./dist/ \
           --no-build-isolation \
           --no-index \
           --no-warn-script-location \
           --prefix="$out" \
           --no-cache \
+          --ignore-installed \
+          . \
           $pipInstallFlags
       '';
+      installPhase = "true";
     });
 
     devShell = pkgs.mkShell {
@@ -72,8 +74,6 @@
         # a drv with all dependencies without the main package
         (package.overrideAttrs (old: {
           src = ".";
-          dontUnpack = true;
-          buildPhase = old.preBuild;
         }))
       ];
     };
