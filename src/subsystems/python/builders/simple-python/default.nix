@@ -37,6 +37,7 @@
       (src: src.original or src)
       allDependencySources';
 
+    reqArgs = l.concatStringsSep " " (l.map (x: "${x.name}==${x.version}") subsystemAttrs.reqList);
     package = produceDerivation defaultPackageName (buildFunc {
       name = defaultPackageName;
       src = getSource defaultPackageName defaultPackageVersion;
@@ -56,8 +57,8 @@
         done
         mkdir -p "$out/${python.sitePackages}"
         export PYTHONPATH="$out/${python.sitePackages}:$PYTHONPATH"
-        ${python}/bin/python -m pip install \
-          ./dist/*.{whl,tar.gz,zip} \
+        ${python}/bin/python -m pip install ${reqArgs} \
+          --find-links ./dist/ \
           --no-build-isolation \
           --no-index \
           --no-warn-script-location \

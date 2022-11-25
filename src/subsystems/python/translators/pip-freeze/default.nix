@@ -156,6 +156,7 @@ in {
       };
 
       _subsystem = {
+        inherit reqList;
         application = false;
         pythonAttr = "python3";
         sourceFormats = {};
