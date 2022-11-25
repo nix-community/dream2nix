@@ -37,6 +37,10 @@
                 "requirements.txt"
                 "requirements-dev.txt"
               ];
+              # For now, just installed into same environment before the rest.
+              buildRequires = {
+                pytest-runner = "6.0.0"; # flake8-mutable
+              };
             };
           };
         };

@@ -37,6 +37,8 @@
       (src: src.original or src)
       allDependencySources';
 
+    buildReq = subsystemAttrs.buildRequires or {};
+    buildReqArgs = l.concatStringsSep " " (l.map (name: "${name}==${buildReq.${name}}") (l.attrNames buildReq));
     reqArgs = l.concatStringsSep " " (l.map (x: "${x.name}==${x.version}") subsystemAttrs.reqList);
     package = produceDerivation defaultPackageName (buildFunc {
       name = defaultPackageName;
@@ -47,25 +49,42 @@
       propagatedBuildInputs = [python.pkgs.setuptools];
       doCheck = false;
       dontStrip = true;
-      preBuild = ''
-        mkdir dist
-        for file in ${builtins.toString allDependencySources}; do
-          # pick right most element of path
-          fname=''${file##*/}
-          fname=$(stripHash $fname)
-          cp $file dist/$fname
-        done
-        mkdir -p "$out/${python.sitePackages}"
-        export PYTHONPATH="$out/${python.sitePackages}:$PYTHONPATH"
-        ${python}/bin/python -m pip install ${reqArgs} \
-          --find-links ./dist/ \
-          --no-build-isolation \
-          --no-index \
-          --no-warn-script-location \
-          --prefix="$out" \
-          --no-cache \
-          $pipInstallFlags
-      '';
+      preBuild =
+        ''
+          mkdir dist
+          for file in ${builtins.toString allDependencySources}; do
+            # pick right most element of path
+            fname=''${file##*/}
+            fname=$(stripHash $fname)
+            cp $file dist/$fname
+          done
+          mkdir -p "$out/${python.sitePackages}"
+          export PYTHONPATH="$out/${python.sitePackages}:$PYTHONPATH"
+        ''
+        + (
+          if buildReq != {}
+          then ''
+            ${python}/bin/python -m pip install ${buildReqArgs} \
+              --find-links ./dist/ \
+              --no-build-isolation \
+              --no-index \
+              --no-warn-script-location \
+              --prefix="$out" \
+              --no-cache \
+              $pipInstallFlags
+          ''
+          else ""
+        )
+        + ''
+          ${python}/bin/python -m pip install ${reqArgs} \
+            --find-links ./dist/ \
+            --no-build-isolation \
+            --no-index \
+            --no-warn-script-location \
+            --prefix="$out" \
+            --no-cache \
+            $pipInstallFlags
+        '';
     });
 
     devShell = pkgs.mkShell {

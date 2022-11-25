@@ -51,6 +51,7 @@ in {
     pythonVersion,
     system,
     requirementsFiles ? ["requirements.txt"],
+    buildRequires ? {},
     ...
   }:
   # if system == null
@@ -131,12 +132,22 @@ in {
       type = "http";
       inherit hash url;
     };
-    sources =
+    sources' =
       l.foldl
       # Multiple versions are not supported, but preserved here through deep update.
       (all: req: all // {${req.name} = all.${req.name} or {} // {${req.version} = getSource req;};})
       {}
       reqList;
+
+    sources = l.foldl (all: name:
+      all
+      // {
+        ${name}.${buildRequires.${name}} = getSource {
+          inherit name;
+          version = buildRequires.${name};
+        };
+      })
+    sources' (l.attrNames buildRequires);
   in
     # see example in src/specifications/dream-lock-example.json
     {
@@ -156,7 +167,7 @@ in {
       };
 
       _subsystem = {
-        inherit reqList;
+        inherit reqList buildRequires;
         application = false;
         pythonAttr = "python3";
         sourceFormats = {};
