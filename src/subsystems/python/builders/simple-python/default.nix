@@ -42,7 +42,13 @@
       src = getSource defaultPackageName defaultPackageVersion;
       format = "other";
       buildInputs = pkgs.pythonManylinuxPackages.manylinux1;
-      nativeBuildInputs = [pkgs.autoPatchelfHook python.pkgs.pip python.pkgs.poetry-core];
+      nativeBuildInputs =
+        [pkgs.autoPatchelfHook]
+        ++ (with python.pkgs; [
+          pip
+          poetry-core
+          wheel
+        ]);
       propagatedBuildInputs = [python.pkgs.setuptools];
       doCheck = false;
       dontStrip = true;
