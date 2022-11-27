@@ -90,12 +90,23 @@ Inputs:
 
 ### pypi-sdist
 
-Fetches from pypi registry.
+Fetches sources distributions ("sdists") from pypi registry.
 
 Inputs:
 - pname
 - version
 - hash
+
+### pypi-wheel
+
+Fetches wheels from pypi registry.
+
+Inputs:
+- filename
+- pname
+- version
+- hash
+
 
 ### crates-io
 

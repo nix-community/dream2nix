@@ -46,7 +46,7 @@
 
     # required for utils.satisfiesSemver
     poetry2nix = {
-      url = "github:nix-community/poetry2nix/1.21.0";
+      url = "github:nix-community/poetry2nix/1.36.0";
       flake = false;
     };
 
