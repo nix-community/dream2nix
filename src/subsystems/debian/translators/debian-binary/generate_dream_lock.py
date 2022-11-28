@@ -8,39 +8,63 @@ import subprocess
 # for initialization
 def update_apt():
     subprocess.run(
-        ["apt",
-        "-o", "Acquire::AllowInsecureRepositories=1",
-            "-o", "Dir::State::status=./status",
-            "-o", "Dir::Etc=./etc/apt",
-            "-o" ,"Dir::State=./state",
-            "update"
-        ])
+        [
+            "apt",
+            "-o",
+            "Acquire::AllowInsecureRepositories=1",
+            "-o",
+            "Dir::State::status=./status",
+            "-o",
+            "Dir::Etc=./etc/apt",
+            "-o",
+            "Dir::State=./state",
+            "update",
+        ]
+    )
+
 
 def get_package_info_apt(name):
     result = subprocess.run(
-        ["apt",
-        "-o Acquire::AllowInsecureRepositories=1",
-            "-o", "Dir::State::status=./status",
-            "-o", "Dir::Etc=./etc/apt",
+        [
+            "apt",
+            "-o Acquire::AllowInsecureRepositories=1",
+            "-o",
+            "Dir::State::status=./status",
+            "-o",
+            "Dir::Etc=./etc/apt",
             "-o" "Dir::State=./state",
-            "install", f"{name}", "--print-uris",
+            "install",
+            f"{name}",
+            "--print-uris",
         ],
         stdout=subprocess.PIPE,
         text=True,
     )
     print(f"result {result.stdout}")
-    with open('./deb-uris', 'w') as f:
+    with open("./deb-uris", "w") as f:
         f.write(result.stdout)
 
     subprocess.run(
-        ["apt",
-        "-o", "Acquire::AllowInsecureRepositories=1",
-            "-o", "Dir::State::status=./status",
-            "-o", "Dir::Etc=./etc/apt",
-            "-o", "Dir::Cache=./download",
-            "-o", "Dir::State=./state",
-            "install", f"{name}", "--download-only", "-y" ,"--allow-unauthenticated",
-        ])
+        [
+            "apt",
+            "-o",
+            "Acquire::AllowInsecureRepositories=1",
+            "-o",
+            "Dir::State::status=./status",
+            "-o",
+            "Dir::Etc=./etc/apt",
+            "-o",
+            "Dir::Cache=./download",
+            "-o",
+            "Dir::State=./state",
+            "install",
+            f"{name}",
+            "--download-only",
+            "-y",
+            "--allow-unauthenticated",
+        ]
+    )
+
 
 def main():
     update_apt()
@@ -96,7 +120,7 @@ def main():
     )[0]
 
     # dump dream lock to $outputFile
-    outputFile = (os.environ.get("outputFile"))
+    outputFile = os.environ.get("outputFile")
     dirPath = pathlib.Path(os.path.dirname(outputFile))
     dirPath.mkdir(parents=True, exist_ok=True)
     with open(outputFile, "w") as lock:
