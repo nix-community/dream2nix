@@ -309,6 +309,10 @@
                   fi
                 '');
               };
+              black = {
+                enable = true;
+                name = "black";
+              };
             };
           };
         };
