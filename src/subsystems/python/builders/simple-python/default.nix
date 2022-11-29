@@ -46,7 +46,6 @@
         [pkgs.autoPatchelfHook]
         ++ (with python.pkgs; [
           pip
-          poetry-core
           wheel
         ]);
       propagatedBuildInputs = [python.pkgs.setuptools];
@@ -61,15 +60,21 @@
           fname=$(stripHash $fname)
           cp $file dist/$fname
         done
-        ${python}/bin/python -m pip install \
-          --find-links ./dist/ \
+
+        mkdir -p "$out/${python.sitePackages}"
+        export PYTHONPATH="$out/${python.sitePackages}:$PYTHONPATH"
+
+        pipInstallFlags="--find-links ./dist/ \
           --no-build-isolation \
           --no-index \
           --no-warn-script-location \
           --prefix="$out" \
           --no-cache \
-          . \
-          $pipInstallFlags
+          --ignore-installed \
+          $pipInstallFlags"
+        ${python}/bin/python -m pip install $pipInstallFlags ${lib.concatStringsSep " " subsystemAttrs.buildRequirements}
+        ${python}/bin/python -m pip wheel --verbose --no-index --no-deps --no-clean --no-build-isolation --wheel-dir dist .
+        ${python}/bin/python -m pip install $pipInstallFlags .\
       '';
       installPhase = "true";
     });

@@ -11,7 +11,11 @@
           "type": "object"
         },
         "application": { "type": "boolean" },
-        "pythonAttr": { "type": "string" }
+        "pythonAttr": { "type": "string" },
+        "buildRequirements": {
+          "type": "array",
+          "items": { "type": "string" }
+        }
       }
     }
   }
