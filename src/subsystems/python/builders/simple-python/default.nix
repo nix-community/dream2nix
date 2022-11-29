@@ -37,6 +37,8 @@
       (src: src.original or src)
       allDependencySources';
 
+    buildRequirements = lib.concatStringsSep " " (subsystemAttrs.buildRequirements or []);
+
     package = produceDerivation defaultPackageName (buildFunc {
       name = defaultPackageName;
       src = getSource defaultPackageName defaultPackageVersion;
@@ -72,7 +74,7 @@
           --no-cache \
           --ignore-installed \
           $pipInstallFlags"
-        ${python}/bin/python -m pip install $pipInstallFlags ${lib.concatStringsSep " " subsystemAttrs.buildRequirements}
+        ${lib.optionalString (buildRequirements != "") "${python}/bin/python -m pip install $pipInstallFlags ${buildRequirements}"}
         ${python}/bin/python -m pip wheel --verbose --no-index --no-deps --no-clean --no-build-isolation --wheel-dir dist .
         ${python}/bin/python -m pip install $pipInstallFlags .\
       '';
