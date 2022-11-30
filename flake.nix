@@ -193,10 +193,15 @@
           // {
             # passes through extra flags to treefmt
             format.type = "app";
-            format.program =
+            format.program = let
+              path = lib.makeBinPath [
+                alejandra.defaultPackage.${system}
+                pkgs.python3.pkgs.black
+              ];
+            in
               l.toString
               (pkgs.writeScript "format" ''
-                export PATH="${alejandra.defaultPackage.${system}}/bin"
+                export PATH="${path}"
                 ${pkgs.treefmt}/bin/treefmt --clear-cache "$@"
               '');
 
@@ -221,6 +226,11 @@
           dream2nix-shell = mkShell {
             devshell.name = "dream2nix-devshell";
 
+            packages = [
+              alejandra.defaultPackage.${system}
+              pkgs.python3.pkgs.black
+            ];
+
             commands =
               [
                 {package = pkgs.nix;}
@@ -235,10 +245,6 @@
                 }
                 {
                   package = pkgs.treefmt;
-                  category = "formatting";
-                }
-                {
-                  package = alejandra.defaultPackage.${system};
                   category = "formatting";
                 }
               ]
@@ -289,8 +295,8 @@
               };
               cleanup = {
                 enable = true;
-                name = "cleaned";
-                entry = l.toString (pkgs.writeScript "cleaned" ''
+                name = "cleanup";
+                entry = l.toString (pkgs.writeScript "cleanup" ''
                   #!${pkgs.bash}/bin/bash
                   for badFile in  $(find ./examples | grep 'flake.lock\|dream2nix-packages'); do
                     rm -rf $badFile
@@ -308,10 +314,6 @@
                     exit 1
                   fi
                 '');
-              };
-              black = {
-                enable = true;
-                name = "black";
               };
             };
           };
