@@ -53,8 +53,7 @@
       if l.isList pkgsList
       then
         l.listToAttrs
-        (pkgs: l.nameValuePair (makePkgsKey pkgs) pkgs)
-        pkgsList
+        (map (pkgs: l.nameValuePair (makePkgsKey pkgs) pkgs) pkgsList)
       else {"${makePkgsKey pkgsList}" = pkgsList;}
     # only systems is specified
     else
