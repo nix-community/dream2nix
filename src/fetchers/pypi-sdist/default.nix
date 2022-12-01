@@ -21,20 +21,11 @@
       "https://files.pythonhosted.org/packages/source/"
       + "${firstChar}/${pname}/${pname}-${version}.${extension}";
   in {
-    calcHash = algo:
-      utils.hashPath algo (
-        b.fetchurl {inherit url;}
-      );
-
     fetched = hash: let
-      source =
-        (pkgs.fetchurl {
-          inherit url;
-          sha256 = hash;
-        })
-        .overrideAttrs (old: {
-          outputHashMode = "recursive";
-        });
+      source = pkgs.fetchurl {
+        inherit url;
+        sha256 = hash;
+      };
     in
       utils.extractSource {
         inherit source;
