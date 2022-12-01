@@ -28,12 +28,7 @@ in {
       outputs =
         l.mapAttrs
         (_: args: instance.dream2nix-interface.makeOutputs args)
-        (
-          # Remove empty discoveredProjects so that default argument in makeOutputs is called
-          # TODO(antotocar34) maybe this should be done for all default arguments?
-          lib.filterAttrs (n: v: {n = v;} != {discoveredProjects = [];})
-          config.dream2nix.inputs
-        );
+        config.dream2nix.inputs;
 
       getAttrFromOutputs = attrName:
         l.mkMerge (

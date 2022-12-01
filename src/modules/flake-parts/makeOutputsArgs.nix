@@ -50,15 +50,6 @@ in {
       description = "projects that dream2nix will build";
     };
 
-    discoveredProjects = mkOption {
-      # Let default be null so we can pass a default argument to makeOutputs
-      default = [];
-      internal = true; # TODO should this option be exposed to the user?
-      # TODO should it be readonly?
-      type = t.nullOr (t.listOf (t.submodule project));
-      description = "the projects found by the discoverer";
-    };
-
     pname = mkOption {
       default = null;
       type = t.nullOr t.str;
