@@ -103,25 +103,25 @@ in {
         };
       '';
     };
-  };
 
-  inject = mkOption {
-    default = {};
-    type = t.lazyAttrsOf (t.listOf (t.listOf t.str));
-    description = "Inject missing dependencies into the dependency tree"; # TODO(antotocar34) find a suitable description
-    example =
-      l.literalExpression
-      # TODO(DavHau) don't require specifying the version here. This will break as soon as the dependencies get updated
-      ''
-        {
-          foo."6.4.1" = [
-            ["bar" "13.2.0"]
-            ["baz" "1.0.0"]
-          ];
-          "@tiptap/extension-code"."2.0.0-beta.26" = [
-            ["@tiptap/core" "2.0.0-beta.174"]
-          ];
-        };
-      '';
+    inject = mkOption {
+      default = {};
+      type = t.lazyAttrsOf (t.listOf (t.listOf t.str));
+      description = "Inject missing dependencies into the dependency tree"; # TODO(antotocar34) find a suitable description
+      example =
+        l.literalExpression
+        # TODO(DavHau) don't require specifying the version here. This will break as soon as the dependencies get updated
+        ''
+          {
+            foo."6.4.1" = [
+              ["bar" "13.2.0"]
+              ["baz" "1.0.0"]
+            ];
+            "@tiptap/extension-code"."2.0.0-beta.26" = [
+              ["@tiptap/core" "2.0.0-beta.174"]
+            ];
+          };
+        '';
+    };
   };
 }
