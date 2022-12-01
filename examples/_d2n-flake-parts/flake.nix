@@ -3,7 +3,7 @@
     dream2nix.url = "github:nix-community/dream2nix";
     nixpkgs.follows = "dream2nix/nixpkgs";
     flake-parts.url = "github:hercules-ci/flake-parts";
-    src.url = "github:yusdacra/linemd/v0.4.0";
+    src.url = "github:prettier/prettier/2.4.1";
     src.flake = false;
   };
 
@@ -20,9 +20,15 @@
 
       perSystem = {config, ...}: {
         # define an input for dream2nix to generate outputs for
-        dream2nix.inputs."linemd" = {
+        dream2nix.inputs."prettier" = {
           source = src;
-          settings = [{builder = "crane";}];
+          projects = {
+            prettier = {
+              name = "prettier";
+              subsystem = "nodejs";
+              translator = "yarn-lock";
+            };
+          };
         };
       };
     };
