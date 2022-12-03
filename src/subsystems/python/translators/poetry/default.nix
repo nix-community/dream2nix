@@ -53,12 +53,49 @@ in {
     };
 
     # use dream2nix' source tree abstraction to access json content of files
-    sources =
+    poetryLock =
       (projectTree.getNodeFromPath "poetry.lock").tomlContent;
 
     pyproject = (projectTree.getNodeFromPath "pyproject.toml").tomlContent;
     defaultPackageName = pyproject.tool.poetry.name;
     defaultPackageVersion = pyproject.tool.poetry.version;
+
+    computeSource = sourceName: files: let
+      wheels = pep425.selectWheel files;
+      sdists = builtins.filter (x: !(lib.hasSuffix ".whl" x.file)) files;
+      candidate =
+        if lib.length wheels > 0
+        then builtins.head wheels
+        else builtins.head sdists;
+      isWheel = l.hasSuffix "whl" candidate.file;
+      suffix =
+        if isWheel
+        then ".whl"
+        else ".tar.gz";
+      parts = lib.splitString "-" (lib.removeSuffix suffix candidate.file);
+      last = (lib.length parts) - 1;
+      pname =
+        if isWheel
+        then lib.elemAt parts (last - 4)
+        else builtins.concatStringsSep "-" (lib.init parts);
+      version =
+        if isWheel
+        then lib.elemAt parts (last - 3)
+        else lib.elemAt parts last;
+    in {
+      ${version} =
+        if isWheel
+        then {
+          type = "pypi-wheel";
+          filename = candidate.file;
+          hash = candidate.hash;
+        }
+        else {
+          type = "pypi-sdist";
+          inherit pname version;
+          hash = candidate.hash;
+        };
+    };
   in
     # see example in src/specifications/dream-lock-example.json
     {
@@ -85,44 +122,19 @@ in {
       dependencies = {};
 
       sources =
-        l.mapAttrs
-        (sourceName: files: let
-          wheels = pep425.selectWheel files;
-          sdists = builtins.filter (x: !(lib.hasSuffix ".whl" x.file)) files;
-          candidate =
-            if lib.length wheels > 0
-            then builtins.head wheels
-            else builtins.head sdists;
-          isWheel = l.hasSuffix "whl" candidate.file;
-          suffix =
-            if isWheel
-            then ".whl"
-            else ".tar.gz";
-          parts = lib.splitString "-" (lib.removeSuffix suffix candidate.file);
-          last = (lib.length parts) - 1;
-          pname =
-            if isWheel
-            then lib.elemAt parts (last - 4)
-            else builtins.concatStringsSep "-" (lib.init parts);
-          version =
-            if isWheel
-            then lib.elemAt parts (last - 3)
-            else lib.elemAt parts last;
-        in {
-          ${version} =
-            if isWheel
-            then {
-              type = "pypi-wheel";
-              filename = candidate.file;
-              hash = candidate.hash;
-            }
-            else {
-              type = "pypi-sdist";
-              inherit pname version;
-              hash = candidate.hash;
-            };
-        })
-        sources.metadata.files;
+        if poetryLock ? metadata.files
+        # the old poetry lock format
+        then l.mapAttrs computeSource poetryLock.metadata.files
+        # the newer format
+        else
+          l.listToAttrs (
+            l.map
+            (package:
+              l.nameValuePair
+              package.name
+              (computeSource package.name package.files))
+            poetryLock.package
+          );
     };
 
   extraArgs = {
