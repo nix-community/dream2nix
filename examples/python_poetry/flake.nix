@@ -30,7 +30,6 @@
             name = "my-project";
             subsystem = "python";
             translator = "poetry";
-            pythonVersion = "3.10";
             subsystemInfo.system = system;
             subsystemInfo.pythonVersion = "3.10";
           };
