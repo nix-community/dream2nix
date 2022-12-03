@@ -209,8 +209,17 @@
       "type": "object",
       "properties": {
         "^.*$": {
-          "type": "array",
-          "items": { "type": "string" }
+          "type": "object",
+          "properties": {
+            "^.*$": {
+              "type": "object",
+              "properties": {
+                "name": { "type": "string"},
+                "version": { "type": "string"}
+               },
+              "additionalProperties": false
+            }
+          }
         }
       }
     }
