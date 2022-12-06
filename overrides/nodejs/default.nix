@@ -780,7 +780,6 @@ in
     # Is required for installMethod != "copy"
     typescript = {
       preserve-symlinks = {
-        installCheckExcludes = ["tsserver"];
         postInstall = ''
           realTsc=$(realpath $out/bin/tsc)
           rm $out/bin/tsc
