@@ -64,8 +64,7 @@
         version = "0.1.0";
         src = ./bin_tests;
         format = "pyproject";
-        nativeBuildInputs = with python310Packages; [poetry mypy flake8 black semantic-version];
-        propagatedBuildInputs = with python310Packages; [node-semver];
+        nativeBuildInputs = with python310Packages; [poetry mypy flake8 black];
         doCheck = false;
         meta = {
           description = "Custom binary tests";
