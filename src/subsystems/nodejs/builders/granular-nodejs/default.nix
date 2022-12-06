@@ -14,6 +14,7 @@
       python3
       runCommandLocal
       stdenv
+      python310Packages
       ;
   in
     {
@@ -57,6 +58,19 @@
         tar --no-same-owner --no-same-permissions -xf ${nodejs.src}
         mv node-* $out
       '';
+
+      binTestApp = python310Packages.buildPythonApplication {
+        pname = "builder";
+        version = "0.1.0";
+        src = ./bin_tests;
+        format = "pyproject";
+        nativeBuildInputs = with python310Packages; [poetry mypy flake8 black semantic-version];
+        propagatedBuildInputs = with python310Packages; [node-semver];
+        doCheck = false;
+        meta = {
+          description = "Custom binary tests";
+        };
+      };
 
       allPackages =
         lib.mapAttrs
@@ -270,18 +284,14 @@
           installPhase = import ./installPhase.nix {
             inherit pkgs;
           };
-          # doInstallCheck = isMainPackage packageName version;
-          doInstallCheck = true;
 
-          # installCheckPhase = import ./installCheckPhase.nix {};
-
-          installCheckExcludes = ["tsserver"];
-          installCheckPhase =
-            builtins.readFile (pkgs.writeShellApplication {
-              name = "check";
-              text = builtins.readFile ./test.sh;
-            })
-            /bin/check;
+          # check all binaries of the top level package
+          doInstallCheck = isMainPackage packageName version;
+          # list of binaries that cannot be tested
+          installCheckExcludes = [];
+          installCheckPhase = ''
+            ${binTestApp}/bin/d2nCheck
+          '';
         });
       in
         pkg;

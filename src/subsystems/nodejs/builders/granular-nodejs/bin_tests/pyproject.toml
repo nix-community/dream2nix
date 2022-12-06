@@ -1,0 +1,22 @@
+[tool.poetry]
+name = "bin_tests"
+version = "0.1.0"
+description = ""
+authors = ["hsjobeki <hsjobeki@gmail.com>"]
+# readme = "README.md"
+
+[tool.poetry.scripts]
+d2nCheck = 'bin_tests.main:check'
+
+[tool.poetry.dependencies]
+python = "^3.10"
+semantic-version = "^2.9.0"
+node-semver = "^0.8.1"
+
+[tool.poetry.dev-dependencies]
+mypy = "^0.991"
+black = "flake8"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
