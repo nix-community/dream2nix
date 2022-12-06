@@ -7,4 +7,4 @@ export impureTranslator="my-impure-translator" # example: package-json
 export builder="my-builder" # pick `default` as name if not sure
 
 # define path to example flake
-export myFlake="$dream2nix/examples/$subsystem"
+export myFlake="$dream2nix/src/examples/$subsystem"
