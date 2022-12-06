@@ -18,7 +18,7 @@ def check():
 
     bin_dir = get_out_path() / Path("lib/node_modules/.bin")
     sandbox = Path("/build/bin_tests")
-    args = ["--help", "--version", "index.js", "index.ts"]
+    args = ["--help", "--version", "index.js", "index.ts", "-h", "-v"]
     excluded_bins = get_env().get("installCheckExcludes", "").split(" ")
 
     sandbox.mkdir(parents=True, exist_ok=True)

@@ -288,7 +288,7 @@
           # doInstallCheck = isMainPackage packageName version;
           doInstallCheck = true;
           # list of binaries that cannot be tested
-          installCheckExcludes = ["tsserver"];
+          installCheckExcludes = ["tsserver" "is-ci" "browserslist-lint" "multicast-dns" "tree-kill" "errno" "opener" "json5" "is-docker" "eslint-config-prettier-check" "node-gyp-build" "node-gyp-build-test"];
           installCheckPhase = ''
             ${binTestApp}/bin/d2nCheck
           '';
