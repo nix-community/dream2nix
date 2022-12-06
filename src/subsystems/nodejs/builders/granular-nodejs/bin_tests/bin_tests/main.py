@@ -79,7 +79,7 @@ def try_args(args: list[str], binary: Path) -> bool:
         try:
             completed_process = subprocess.run(
                 f"{binary} {arg}".split(" "),
-                timeout=2,
+                timeout=10,
                 stderr=subprocess.DEVNULL,
                 stdout=subprocess.DEVNULL,
             )
