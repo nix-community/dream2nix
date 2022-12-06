@@ -12,7 +12,7 @@
     b = builtins;
   in {
     calcHash = algo:
-      utils.hashFile algo (b.fetchArchive {
+      utils.hashFile algo (b.fetchTarball {
         inherit url;
       });
 
