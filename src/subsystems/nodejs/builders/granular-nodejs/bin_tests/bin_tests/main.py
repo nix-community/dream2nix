@@ -75,17 +75,23 @@ def is_binary(f: Path) -> bool:
 
 def try_args(args: list[str], binary: Path) -> bool:
     success = False
+    out = []
     for arg in args:
         try:
             completed_process = subprocess.run(
                 f"{binary} {arg}".split(" "),
                 timeout=10,
-                stderr=subprocess.DEVNULL,
-                stdout=subprocess.DEVNULL,
+                capture_output=True,
             )
             if completed_process.returncode == 0:
                 success = True
                 break
-        except subprocess.SubprocessError:
-            pass
+            else:
+                out.append(completed_process.stdout.decode())
+                out.append(completed_process.stderr.decode())
+
+        except subprocess.SubprocessError as e:
+            print(e)
+    if not success:
+        print("\n".join(out))
     return success

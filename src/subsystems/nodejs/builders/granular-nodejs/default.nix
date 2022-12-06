@@ -285,9 +285,10 @@
           };
 
           # check all binaries of the top level package
-          doInstallCheck = isMainPackage packageName version;
+          # doInstallCheck = isMainPackage packageName version;
+          doInstallCheck = true;
           # list of binaries that cannot be tested
-          installCheckExcludes = [];
+          installCheckExcludes = ["tsserver"];
           installCheckPhase = ''
             ${binTestApp}/bin/d2nCheck
           '';
