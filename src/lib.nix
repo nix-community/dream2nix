@@ -71,7 +71,7 @@
   }:
     initDream2nix (loadConfig config) pkgs;
 
-  missingProjectsError = ''
+  missingProjectsError = source: ''
     Please pass `projects` to makeFlakeOutputs.
     `projects` can be:
       - an attrset
@@ -80,7 +80,7 @@
 
     To generate a projects.toml file automatically:
       1. execute:
-        nix run github:nix-community/dream2nix#discover-projects > projects.toml
+        nix run github:nix-community/dream2nix#detect-projects ${source} > projects.toml
       2. review the ./projects.toml and edit it if necessary.
       3. pass `projects = ./projects.toml` to makeFlakeOutputs.
 
@@ -129,7 +129,7 @@
       else if l.isPath givenProjects
       then
         if ! l.pathExists givenProjects
-        then throw missingProjectsError
+        then throw (missingProjectsError source)
         else if l.hasSuffix ".toml" (l.toString givenProjects)
         then l.fromTOML (l.readFile givenProjects)
         else l.fromJSON (l.readFile givenProjects)
@@ -164,7 +164,7 @@
           })
       else if autoProjects == true
       then discoveredProjects
-      else throw missingProjectsError;
+      else throw (missingProjectsError source);
 
     allBuilderOutputs =
       l.mapAttrs

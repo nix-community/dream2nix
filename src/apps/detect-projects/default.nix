@@ -13,9 +13,10 @@ utils.writePureShellScriptBin
 ''
   set -e
 
-  export source=$(realpath .)
+  # Use $1 as source if set. Otherwise default to ./.
+  export source=$(realpath ''${1:-.})
 
   ${apps.callNixWithD2N} eval --json \
-    "dream2nix.framework.functions.discoverers.discoverProjects2 {source = builtins.getEnv \"source\";}" \
+    "dream2nix.functions.discoverers.discoverProjects2 {source = builtins.getEnv \"source\";}" \
     | yq --toml-output
 ''
