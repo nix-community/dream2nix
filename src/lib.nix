@@ -75,8 +75,8 @@
     Please pass `projects` to makeFlakeOutputs.
     `projects` can be:
       - an attrset
-      - a path to a .toml file
-      - a path to a .json file
+      - a path to a .toml file (not empty & added to git)
+      - a path to a .json file (not empty & added to git)
 
     To generate a projects.toml file automatically:
       1. execute:
