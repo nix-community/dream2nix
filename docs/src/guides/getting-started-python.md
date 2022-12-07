@@ -42,11 +42,10 @@ warning: Git tree '/tmp/my_project' is dirty
 warning: creating lock file '/tmp/my_project/flake.lock'
 warning: Git tree '/tmp/my_project' is dirty
 git+file:///tmp/my_project
-├───packages
-│   └───x86_64-linux
-│       ├───main: package 'main'
-│       └───resolveImpure: package 'resolve'
-└───projectsJson: unknown
+└───packages
+    └───x86_64-linux
+        ├───main: package 'main'
+        └───resolveImpure: package 'resolve'
 ```
 
 What we can observe here:
@@ -57,11 +56,10 @@ Our flake.nix imported external libraries. The versions of these libraries have 
 1.
     ```
       git+file:///tmp/my_project
-      ├───packages
-      │   └───x86_64-linux
-      │       ├───main: package 'main'
-      │       └───resolveImpure: package 'resolve'
-      └───projectsJson: unknown
+      └───packages
+          └───x86_64-linux
+              ├───main: package 'main'
+              └───resolveImpure: package 'resolve'
     ```
     Similar like a .json file defines a structure of data, our flake.nix defines a structure of `nix attributes` which are things that we can build or run with nix.
     We can see that it contains packages for my current platform `x86_64-linux`.

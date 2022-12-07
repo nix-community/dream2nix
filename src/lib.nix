@@ -195,12 +195,8 @@
       (allOutputs: output: lib.recursiveUpdate allOutputs output)
       {}
       flakifiedOutputsList;
-
-    flakeOutputs =
-      {projectsJson = l.toJSON finalProjects;}
-      // flakeOutputsBuilders;
   in
-    flakeOutputs;
+    flakeOutputsBuilders;
 
   makeFlakeOutputsForIndexes = {
     systems ? [],

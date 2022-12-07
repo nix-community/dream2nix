@@ -60,6 +60,7 @@ to create a `flake.nix`:
       systemsFromFile = ./nix_systems;
       config.projectRoot = ./.;
       source = ./.;
+      projects = ./projects.toml;
     };
 }
 ```
@@ -87,12 +88,11 @@ git+file:///tmp/my_project
 │   └───x86_64-linux
 │       ├───cowsay: development environment 'nix-shell'
 │       └───default: development environment 'nix-shell'
-├───packages
-│   └───x86_64-linux
-│       ├───cowsay: package 'cowsay-1.5.0'
-│       ├───default: package 'cowsay-1.5.0'
-│       └───resolveImpure: package 'resolve'
-└───projectsJson: unknown
+└───packages
+    └───x86_64-linux
+        ├───cowsay: package 'cowsay-1.5.0'
+        ├───default: package 'cowsay-1.5.0'
+        └───resolveImpure: package 'resolve'
 ```
 
 We can see that:
@@ -207,12 +207,11 @@ git+file:///tmp/my_project
 │   └───x86_64-linux
 │       ├───cowsay: development environment 'nix-shell'
 │       └───default: development environment 'nix-shell'
-├───packages
-│   └───x86_64-linux
-│       ├───cowsay: package 'cowsay-1.5.0'
-│       ├───default: package 'cowsay-1.5.0'
-│       └───resolveImpure: package 'resolve'
-└───projectsJson: unknown
+└───packages
+    └───x86_64-linux
+        ├───cowsay: package 'cowsay-1.5.0'
+        ├───default: package 'cowsay-1.5.0'
+        └───resolveImpure: package 'resolve'
 ```
 When we enter the `cowsay` development shell, we will get `node` in our
 `PATH`, together with all the binaries from our dependencies packages.
