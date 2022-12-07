@@ -14,12 +14,7 @@
       systems = ["x86_64-linux"];
       config.projectRoot = ./.;
       source = src;
-      settings = [
-        {
-          builder = "crane";
-          translator = "cargo-toml";
-        }
-      ];
+      projects = ./projects.toml;
     })
     // {
       # checks.x86_64-linux.linemd = self.packages.x86_64-linux.linemd;

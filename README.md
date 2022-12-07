@@ -72,6 +72,7 @@ Minimal Example `flake.nix`:
       systems = ["x86_64-linux"];
       config.projectRoot = ./.;
       source = ./.;
+      projects = ./projects.toml;
     };
 }
 ```
@@ -86,6 +87,7 @@ Extensive Example `flake.nix`:
       config.projectRoot = ./.;
 
       source = ./.;
+      projects = ./projects.toml;
 
       # Configure the behavior of dream2nix when translating projects.
       # A setting applies to all discovered projects if `filter` is unset,

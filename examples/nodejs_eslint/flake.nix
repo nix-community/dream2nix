@@ -14,12 +14,7 @@
       systems = ["x86_64-linux"];
       config.projectRoot = ./.;
       source = src;
-      settings = [
-        {
-          subsystemInfo.noDev = true;
-          subsystemInfo.nodejs = 18;
-        }
-      ];
+      projects = ./projects.toml;
     })
     // {
       # checks = self.packages;

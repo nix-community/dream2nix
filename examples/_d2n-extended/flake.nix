@@ -50,12 +50,12 @@
         '')
       ];
       source = src;
-      settings = [
-        {
-          builder = "brp-new";
-          translator = "cargo-toml-new";
-        }
-      ];
+      projects.linemd = {
+        name = "linemd";
+        subsystem = "rust";
+        translator = "cargo-toml-new";
+        builder = "brp-new";
+      };
     })
     // {
       # checks.x86_64-linux.linemd = self.packages.x86_64-linux.linemd;

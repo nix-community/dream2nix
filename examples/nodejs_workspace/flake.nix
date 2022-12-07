@@ -11,8 +11,7 @@
       systems = ["x86_64-linux"];
       config.projectRoot = ./.;
       source = ./.;
-      settings = [
-      ];
+      autoProjects = true;
     })
     // {
       checks = self.packages;

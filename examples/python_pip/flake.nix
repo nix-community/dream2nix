@@ -14,14 +14,7 @@
       systems = ["x86_64-linux"];
       config.projectRoot = ./.;
       source = src;
-      settings = [
-        {
-          # optionally define python version
-          subsystemInfo.pythonVersion = "3.8";
-          # optionally define extra setup requirements;
-          subsystemInfo.extraSetupDeps = ["cython > 0.29"];
-        }
-      ];
+      projects = ./projects.toml;
     })
     // {
       checks.x86_64-linux.aiohttp = self.packages.x86_64-linux.main;

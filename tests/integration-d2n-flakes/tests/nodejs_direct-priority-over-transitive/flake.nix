@@ -24,6 +24,7 @@
     systems = ["x86_64-linux"];
     config.projectRoot = ./.;
     source = ./.;
+    autoProjects = true;
     packageOverrides = {
       test = {
         "check-linked-bin-version" = {

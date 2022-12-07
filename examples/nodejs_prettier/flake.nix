@@ -14,6 +14,7 @@
       systems = ["x86_64-linux"];
       config.projectRoot = ./.;
       source = src;
+      projects = ./projects.toml;
     })
     // {
       checks.x86_64-linux.prettier = self.packages.x86_64-linux.prettier;

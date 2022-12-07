@@ -14,15 +14,7 @@
       pkgs = dream2nix.inputs.nixpkgs.legacyPackages.x86_64-linux;
       source = src;
       config.projectRoot = ./.;
-      settings = [
-        {
-          # Optionally, override the compiler version
-          subsystemInfo.compiler = {
-            name = "ghc";
-            version = "8.10.7";
-          };
-        }
-      ];
+      projects = ./projects.toml;
     })
     // {
       # checks = self.packages;

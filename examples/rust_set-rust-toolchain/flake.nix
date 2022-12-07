@@ -23,12 +23,7 @@
       systems = [system];
       config.projectRoot = ./.;
       source = src;
-      settings = [
-        {
-          builder = "crane";
-          translator = "cargo-lock";
-        }
-      ];
+      projects = ./projects.toml;
       packageOverrides = {
         # override all packages and set a toolchain
         "^.*" = {
