@@ -29,7 +29,7 @@ in {
     projectTree = rootTree.getNodeFromPath project.relPath;
     rootSource = rootTree.fullPath;
     projectSource = dlib.sanitizePath "${rootSource}/${project.relPath}";
-    subsystemInfo = project.subsystemInfo;
+    subsystemInfo = project.subsystemInfo or {};
 
     # Get the root toml
     rootToml = {
