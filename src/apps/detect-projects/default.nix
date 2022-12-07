@@ -18,5 +18,6 @@ utils.writePureShellScriptBin
 
   ${apps.callNixWithD2N} eval --json \
     "dream2nix.functions.discoverers.discoverProjects2 {source = builtins.getEnv \"source\";}" \
-    | yq --toml-output
+    | yq --toml-output \
+    | (cat ${./template.toml} && echo "" && cat)
 ''
