@@ -14,7 +14,7 @@ in {
         makeHook = attrs: name:
           pkgs.makeSetupHook
           ({inherit name;} // attrs)
-          "${externalSources.crane}/pkgs/${name}.sh";
+          "${externalSources.crane}/lib/setupHooks/${name}.sh";
         genHooks = names: attrs: l.genAttrs names (makeHook attrs);
       in
         {
@@ -23,9 +23,10 @@ in {
         }: rec {
           otherHooks =
             genHooks [
-              "cargoHelperFunctions"
+              "cargoHelperFunctionsHook"
               "configureCargoCommonVarsHook"
               "configureCargoVendoredDepsHook"
+              "removeReferencesToVendoredSourcesHook"
             ]
             {};
           installHooks =
@@ -63,7 +64,7 @@ in {
 
           mkCargoDerivation = importLibFile "mkCargoDerivation" {
             cargo = cargoHostTarget;
-            inherit (pkgs) stdenv lib;
+            inherit (pkgs) stdenv zstd;
             inherit
               (installHooks)
               inheritCargoArtifactsHook
@@ -73,8 +74,9 @@ in {
               (otherHooks)
               configureCargoCommonVarsHook
               configureCargoVendoredDepsHook
+              cargoHelperFunctionsHook
               ;
-            cargoHelperFunctionsHook = otherHooks.cargoHelperFunctions;
+            inherit crateNameFromCargoToml vendorCargoDeps;
           };
           buildDepsOnly = importLibFile "buildDepsOnly" {
             inherit
@@ -84,18 +86,16 @@ in {
               mkDummySrc
               ;
           };
-          cargoBuild = importLibFile "cargoBuild" {
+          buildPackage = importLibFile "buildPackage" {
+            inherit (pkgs) lib jq;
+            inherit (installLogHook) installFromCargoBuildLogHook;
             inherit
-              mkCargoDerivation
               buildDepsOnly
               crateNameFromCargoToml
               vendorCargoDeps
+              mkCargoDerivation
               ;
-          };
-          buildPackage = importLibFile "buildPackage" {
-            inherit (pkgs) removeReferencesTo lib;
-            inherit (installLogHook) installFromCargoBuildLogHook;
-            inherit cargoBuild;
+            inherit (otherHooks) removeReferencesToVendoredSourcesHook;
           };
         };
     };

@@ -114,12 +114,12 @@
         "lib/mkCargoDerivation.nix"
         "lib/mkDummySrc.nix"
         "lib/writeTOML.nix"
-        "pkgs/cargoHelperFunctions.sh"
-        "pkgs/configureCargoCommonVarsHook.sh"
-        "pkgs/configureCargoVendoredDepsHook.sh"
-        "pkgs/installFromCargoBuildLogHook.sh"
-        "pkgs/inheritCargoArtifactsHook.sh"
-        "pkgs/installCargoArtifactsHook.sh"
+        "lib/setupHooks/cargoHelperFunctionsHook.sh"
+        "lib/setupHooks/configureCargoCommonVarsHook.sh"
+        "lib/setupHooks/configureCargoVendoredDepsHook.sh"
+        "lib/setupHooks/installFromCargoBuildLogHook.sh"
+        "lib/setupHooks/inheritCargoArtifactsHook.sh"
+        "lib/setupHooks/installCargoArtifactsHook.sh"
         "LICENSE"
       ];
       devshell = [

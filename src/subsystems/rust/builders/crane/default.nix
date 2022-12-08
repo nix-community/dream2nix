@@ -57,9 +57,6 @@
         src = utils.getRootSource pname version;
         cargoVendorDir = "./nix-vendor";
 
-        # this is needed because remove-references-to doesn't work on non nix-store paths
-        doNotRemoveReferencesToVendorDir = true;
-
         postUnpack = ''
           export CARGO_HOME=$(pwd)/.cargo_home
         '';
