@@ -32,7 +32,8 @@
         devShells = forAllSystems (system: pkgs: (
           l.optionalAttrs
           (d2n-flake ? devShells.${system}.prettier.overrideAttrs)
-          {
+          rec {
+            default = prettier;
             prettier =
               d2n-flake.devShells.${system}.prettier.overrideAttrs
               (old: {
