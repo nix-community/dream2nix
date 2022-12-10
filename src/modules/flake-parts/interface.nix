@@ -24,6 +24,11 @@ in {
         default = {
           projectRoot = self;
         };
+        defaultText = lib.literalExpression ''
+          {
+            projectRoot = self;
+          }
+        '';
         description = ''
           The dream2nix config.
         '';
