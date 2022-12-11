@@ -72,13 +72,14 @@
           --no-warn-script-location \
           --prefix="$out" \
           --no-cache \
-          --ignore-installed \
           $pipInstallFlags"
         ${lib.optionalString (buildRequirements != "") "${python}/bin/python -m pip install $pipInstallFlags ${buildRequirements}"}
         ${python}/bin/python -m pip wheel --verbose --no-index --no-deps --no-clean --no-build-isolation --wheel-dir dist .
-        ${python}/bin/python -m pip install $pipInstallFlags .\
       '';
-      installPhase = "true";
+
+      installPhase = ''
+        ${python}/bin/python -m pip install $pipInstallFlags dist/*
+      '';
     });
 
     devShell = pkgs.mkShell {
