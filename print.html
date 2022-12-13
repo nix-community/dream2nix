@@ -265,6 +265,7 @@ If you want to support more platforms later, just add more lines to that file.</
       systems = [&quot;x86_64-linux&quot;];         # &lt;- This line.
       config.projectRoot = ./.;
       source = ./.;
+      projects = ./projects.toml;
     };
 }
 </code></pre>
@@ -276,11 +277,10 @@ warning: Git tree '/tmp/my_project' is dirty
 warning: creating lock file '/tmp/my_project/flake.lock'
 warning: Git tree '/tmp/my_project' is dirty
 git+file:///tmp/my_project
-├───packages
-│   └───x86_64-linux
-│       ├───main: package 'main'
-│       └───resolveImpure: package 'resolve'
-└───projectsJson: unknown
+└───packages
+    └───x86_64-linux
+        ├───main: package 'main'
+        └───resolveImpure: package 'resolve'
 </code></pre>
 <p>What we can observe here:</p>
 <ol>
@@ -294,11 +294,10 @@ Our flake.nix imported external libraries. The versions of these libraries have 
 </li>
 <li>
 <pre><code>  git+file:///tmp/my_project
-  ├───packages
-  │   └───x86_64-linux
-  │       ├───main: package 'main'
-  │       └───resolveImpure: package 'resolve'
-  └───projectsJson: unknown
+  └───packages
+      └───x86_64-linux
+          ├───main: package 'main'
+          └───resolveImpure: package 'resolve'
 </code></pre>
 <p>Similar like a .json file defines a structure of data, our flake.nix defines a structure of <code>nix attributes</code> which are things that we can build or run with nix.
 We can see that it contains packages for my current platform <code>x86_64-linux</code>.</p>
@@ -391,6 +390,7 @@ wrote: /tmp/my_project/flake.nix
       systemsFromFile = ./nix_systems;
       config.projectRoot = ./.;
       source = ./.;
+      projects = ./projects.toml;
     };
 }
 </code></pre>
@@ -424,6 +424,7 @@ If you want to support more platforms later, just add more lines to that file.</
       systems = [&quot;x86_64-linux&quot;];         # &lt;- This line.
       config.projectRoot = ./.;
       source = ./.;
+      projects = ./projects.toml;
     };
 }
 </code></pre>
@@ -443,12 +444,11 @@ git+file:///tmp/my_project
 │   └───x86_64-linux
 │       ├───cowsay: development environment 'nix-shell'
 │       └───default: development environment 'nix-shell'
-├───packages
-│   └───x86_64-linux
-│       ├───cowsay: package 'cowsay-1.5.0'
-│       ├───default: package 'cowsay-1.5.0'
-│       └───resolveImpure: package 'resolve'
-└───projectsJson: unknown
+└───packages
+    └───x86_64-linux
+        ├───cowsay: package 'cowsay-1.5.0'
+        ├───default: package 'cowsay-1.5.0'
+        └───resolveImpure: package 'resolve'
 </code></pre>
 <p>We can see that:</p>
 <ol>
@@ -550,12 +550,11 @@ git+file:///tmp/my_project
 │   └───x86_64-linux
 │       ├───cowsay: development environment 'nix-shell'
 │       └───default: development environment 'nix-shell'
-├───packages
-│   └───x86_64-linux
-│       ├───cowsay: package 'cowsay-1.5.0'
-│       ├───default: package 'cowsay-1.5.0'
-│       └───resolveImpure: package 'resolve'
-└───projectsJson: unknown
+└───packages
+    └───x86_64-linux
+        ├───cowsay: package 'cowsay-1.5.0'
+        ├───default: package 'cowsay-1.5.0'
+        └───resolveImpure: package 'resolve'
 </code></pre>
 <p>When we enter the <code>cowsay</code> development shell, we will get <code>node</code> in our
 <code>PATH</code>, together with all the binaries from our dependencies packages.
@@ -796,12 +795,7 @@ The downside of this approach is, that this translator cannot be used with a gra
       systems = [&quot;x86_64-linux&quot;];
       config.projectRoot = ./.;
       source = src;
-      settings = [
-        {
-          subsystemInfo.noDev = true;
-          subsystemInfo.nodejs = 18;
-        }
-      ];
+      projects = ./projects.toml;
     })
     // {
       # checks = self.packages;
@@ -863,15 +857,7 @@ Currently we have a builder for haskell and several translators (see table below
       pkgs = dream2nix.inputs.nixpkgs.legacyPackages.x86_64-linux;
       source = src;
       config.projectRoot = ./.;
-      settings = [
-        {
-          # Optionally, override the compiler version
-          subsystemInfo.compiler = {
-            name = &quot;ghc&quot;;
-            version = &quot;8.10.7&quot;;
-          };
-        }
-      ];
+      projects = ./projects.toml;
     })
     // {
       # checks = self.packages;
@@ -910,7 +896,7 @@ Currently we have a builder for haskell and several translators (see table below
       systems = [&quot;x86_64-linux&quot;];
       config.projectRoot = ./.;
       source = src;
-      settings = [];
+      projects = ./projects.toml;
     })
     // {
       # checks = self.packages;

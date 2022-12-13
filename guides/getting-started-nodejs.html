@@ -193,6 +193,7 @@ wrote: /tmp/my_project/flake.nix
       systemsFromFile = ./nix_systems;
       config.projectRoot = ./.;
       source = ./.;
+      projects = ./projects.toml;
     };
 }
 </code></pre>
@@ -226,6 +227,7 @@ If you want to support more platforms later, just add more lines to that file.</
       systems = [&quot;x86_64-linux&quot;];         # &lt;- This line.
       config.projectRoot = ./.;
       source = ./.;
+      projects = ./projects.toml;
     };
 }
 </code></pre>
@@ -245,12 +247,11 @@ git+file:///tmp/my_project
 │   └───x86_64-linux
 │       ├───cowsay: development environment 'nix-shell'
 │       └───default: development environment 'nix-shell'
-├───packages
-│   └───x86_64-linux
-│       ├───cowsay: package 'cowsay-1.5.0'
-│       ├───default: package 'cowsay-1.5.0'
-│       └───resolveImpure: package 'resolve'
-└───projectsJson: unknown
+└───packages
+    └───x86_64-linux
+        ├───cowsay: package 'cowsay-1.5.0'
+        ├───default: package 'cowsay-1.5.0'
+        └───resolveImpure: package 'resolve'
 </code></pre>
 <p>We can see that:</p>
 <ol>
@@ -352,12 +353,11 @@ git+file:///tmp/my_project
 │   └───x86_64-linux
 │       ├───cowsay: development environment 'nix-shell'
 │       └───default: development environment 'nix-shell'
-├───packages
-│   └───x86_64-linux
-│       ├───cowsay: package 'cowsay-1.5.0'
-│       ├───default: package 'cowsay-1.5.0'
-│       └───resolveImpure: package 'resolve'
-└───projectsJson: unknown
+└───packages
+    └───x86_64-linux
+        ├───cowsay: package 'cowsay-1.5.0'
+        ├───default: package 'cowsay-1.5.0'
+        └───resolveImpure: package 'resolve'
 </code></pre>
 <p>When we enter the <code>cowsay</code> development shell, we will get <code>node</code> in our
 <code>PATH</code>, together with all the binaries from our dependencies packages.

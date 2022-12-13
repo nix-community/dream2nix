@@ -193,6 +193,7 @@ If you want to support more platforms later, just add more lines to that file.</
       systems = [&quot;x86_64-linux&quot;];         # &lt;- This line.
       config.projectRoot = ./.;
       source = ./.;
+      projects = ./projects.toml;
     };
 }
 </code></pre>
@@ -204,11 +205,10 @@ warning: Git tree '/tmp/my_project' is dirty
 warning: creating lock file '/tmp/my_project/flake.lock'
 warning: Git tree '/tmp/my_project' is dirty
 git+file:///tmp/my_project
-├───packages
-│   └───x86_64-linux
-│       ├───main: package 'main'
-│       └───resolveImpure: package 'resolve'
-└───projectsJson: unknown
+└───packages
+    └───x86_64-linux
+        ├───main: package 'main'
+        └───resolveImpure: package 'resolve'
 </code></pre>
 <p>What we can observe here:</p>
 <ol>
@@ -222,11 +222,10 @@ Our flake.nix imported external libraries. The versions of these libraries have 
 </li>
 <li>
 <pre><code>  git+file:///tmp/my_project
-  ├───packages
-  │   └───x86_64-linux
-  │       ├───main: package 'main'
-  │       └───resolveImpure: package 'resolve'
-  └───projectsJson: unknown
+  └───packages
+      └───x86_64-linux
+          ├───main: package 'main'
+          └───resolveImpure: package 'resolve'
 </code></pre>
 <p>Similar like a .json file defines a structure of data, our flake.nix defines a structure of <code>nix attributes</code> which are things that we can build or run with nix.
 We can see that it contains packages for my current platform <code>x86_64-linux</code>.</p>
