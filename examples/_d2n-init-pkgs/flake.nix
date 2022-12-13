@@ -18,11 +18,6 @@
       pkgs = allPkgs;
       config.projectRoot = ./.;
       source = inp.src;
-      settings = [
-        {
-          builder = "build-rust-package";
-          translator = "cargo-lock";
-        }
-      ];
+      projects = ./projects.toml;
     };
 }

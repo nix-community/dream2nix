@@ -29,7 +29,16 @@ in {
     projectTree = rootTree.getNodeFromPath project.relPath;
     rootSource = rootTree.fullPath;
     projectSource = dlib.sanitizePath "${rootSource}/${project.relPath}";
-    subsystemInfo = project.subsystemInfo;
+    subsystemInfo = project.subsystemInfo or {};
+    # pull all crates from subsystemInfo, if not find all of them
+    # this is mainly helpful when `projects` is defined manually in which case
+    # crates won't be available, so we will reduce burden on the user here.
+    allCrates =
+      subsystemInfo.crates
+      or (
+        (import ../../findAllCrates.nix {inherit lib dlib;})
+        {tree = rootTree;}
+      );
 
     # Get the root toml
     rootToml = {
@@ -330,7 +339,7 @@ in {
                 )
                 cargoPackages;
               workspaceCrate = findCrate workspaceCrates;
-              nonWorkspaceCrate = findCrate (subsystemInfo.crates or []);
+              nonWorkspaceCrate = findCrate allCrates;
             in
               if
                 (package.name == dependencyObject.name)

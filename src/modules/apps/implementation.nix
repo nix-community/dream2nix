@@ -19,10 +19,11 @@ in {
       {
         inherit
           (config.apps)
-          install
-          translate
-          runNixCmdInSrc
+          detect-projects
           index
+          install
+          runNixCmdInSrc
+          translate
           translate-index
           ;
       };

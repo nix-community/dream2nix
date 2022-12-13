@@ -50,12 +50,7 @@
         '')
       ];
       source = src;
-      settings = [
-        {
-          builder = "brp-new";
-          translator = "cargo-toml-new";
-        }
-      ];
+      projects = ./projects.toml;
     })
     // {
       # checks.x86_64-linux.linemd = self.packages.x86_64-linux.linemd;

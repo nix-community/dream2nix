@@ -1,7 +1,7 @@
 {
   inputs = {
     dream2nix.url = "github:nix-community/dream2nix";
-    src.url = "github:prettier/prettier/2.4.1";
+    src.url = "github:yusdacra/linemd/v0.4.0";
     src.flake = false;
   };
 
@@ -14,9 +14,9 @@
       systems = ["x86_64-linux"];
       config.projectRoot = ./.;
       source = src;
-      projects = ./projects.toml;
+      autoProjects = true;
     })
     // {
-      checks.x86_64-linux.prettier = self.packages.x86_64-linux.prettier;
+      # checks.x86_64-linux.linemd = self.packages.x86_64-linux.linemd;
     };
 }

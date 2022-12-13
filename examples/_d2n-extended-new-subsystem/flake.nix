@@ -16,12 +16,8 @@
         ./builders.nix
       ];
       source = ./.;
-      settings = [
-        {
-          builder = "dummy";
-          translator = "dummy";
-        }
-      ];
+      # The dummy discoverer will discover a project `hello` automatically.
+      autoProjects = true;
     })
     // {
       checks.x86_64-linux.hello = self.packages.x86_64-linux.hello;

@@ -24,5 +24,6 @@
       config.projectRoot = ./.;
       packageOverrides = {};
       source = ./.;
+      autoProjects = true;
     };
 }

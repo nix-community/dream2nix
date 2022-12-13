@@ -24,6 +24,7 @@
       inherit systems;
       config.projectRoot = ./.;
       source = src;
+      projects = ./projects.toml;
     };
   in
     dream2nix.lib.dlib.mergeFlakes [

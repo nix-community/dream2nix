@@ -13,10 +13,6 @@
     systems = ["x86_64-linux"];
     config.projectRoot = ./.;
     source = src;
-    settings = [
-      {
-        translator = "cabal-freeze";
-      }
-    ];
+    projects = ./projects.toml;
   });
 }

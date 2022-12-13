@@ -71,6 +71,24 @@
   }:
     initDream2nix (loadConfig config) pkgs;
 
+  missingProjectsError = source: ''
+    Please pass `projects` to makeFlakeOutputs.
+    `projects` can be:
+      - an attrset
+      - a path to a .toml file (not empty & added to git)
+      - a path to a .json file (not empty & added to git)
+
+    To generate a projects.toml file automatically:
+      1. execute:
+        nix run github:nix-community/dream2nix#detect-projects ${source} > projects.toml
+      2. review the ./projects.toml and edit it if necessary.
+      3. pass `projects = ./projects.toml` to makeFlakeOutputs.
+
+    Alternatively pass `autoProjects = true` to makeFlakeOutputs.
+    This is not recommended as it doesn't allow you to review or filter the list
+      of detected projects.
+  '';
+
   makeFlakeOutputs = {
     source,
     pkgs ? null,
@@ -81,6 +99,7 @@
     pname ? throw "Please pass `pname` to makeFlakeOutputs",
     packageOverrides ? {},
     projects ? {},
+    autoProjects ? false,
     settings ? [],
     sourceOverrides ? oldSources: {},
   } @ args: let
@@ -100,6 +119,21 @@
           inherit config;
           file = systemsFromFile;
         };
+
+    # if projects provided via `.json` or `.toml` file, parse to attrset
+    projects = let
+      givenProjects = args.projects or {};
+    in
+      if autoProjects && args ? projects
+      then throw "Don't pass `projects` to makeFlakeOutputs when `autoProjects = true`"
+      else if l.isPath givenProjects
+      then
+        if ! l.pathExists givenProjects
+        then throw (missingProjectsError source)
+        else if l.hasSuffix ".toml" (l.toString givenProjects)
+        then l.fromTOML (l.readFile givenProjects)
+        else l.fromJSON (l.readFile givenProjects)
+      else givenProjects;
 
     allPkgs = makeNixpkgs pkgs systems;
 
@@ -128,7 +162,9 @@
               proj
               (l.head projectsList);
           })
-      else discoveredProjects;
+      else if autoProjects == true
+      then discoveredProjects
+      else throw (missingProjectsError source);
 
     allBuilderOutputs =
       l.mapAttrs
@@ -146,7 +182,12 @@
             ;
         };
       in
-        allOutputs)
+        framework.dlib.recursiveUpdateUntilDrv
+        allOutputs
+        {
+          apps.detect-projects =
+            dream2nixFor.${system}.flakeApps.detect-projects;
+        })
       allPkgs;
 
     flakifiedOutputsList =
@@ -159,12 +200,8 @@
       (allOutputs: output: lib.recursiveUpdate allOutputs output)
       {}
       flakifiedOutputsList;
-
-    flakeOutputs =
-      {projectsJson = l.toJSON finalProjects;}
-      // flakeOutputsBuilders;
   in
-    flakeOutputs;
+    flakeOutputsBuilders;
 
   makeFlakeOutputsForIndexes = {
     systems ? [],

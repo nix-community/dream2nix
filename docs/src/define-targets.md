@@ -32,6 +32,7 @@ Alternatively, we can define the targets in the `flake.nix` like so:
       systems = ["x86_64-linux"];         # <- This line.
       config.projectRoot = ./.;
       source = ./.;
+      projects = ./projects.toml;
     };
 }
 ```

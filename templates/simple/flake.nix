@@ -5,5 +5,6 @@
       systemsFromFile = ./nix_systems;
       config.projectRoot = ./.;
       source = ./.;
+      projects = ./projects.toml;
     };
 }

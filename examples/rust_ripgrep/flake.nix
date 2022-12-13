@@ -14,12 +14,7 @@
       systems = ["x86_64-linux"];
       config.projectRoot = ./.;
       source = src;
-      settings = [
-        {
-          builder = "crane";
-          translator = "cargo-lock";
-        }
-      ];
+      projects = ./projects.toml;
     })
     // {
       # checks.x86_64-linux.ripgrep = self.packages.x86_64-linux.ripgrep;

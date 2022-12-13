@@ -1,0 +1,11 @@
+# To re-generate this file, run:
+#   nix run github:nix-community/dream2nix#detect-projects $source
+# ... where `$source` points to the source of your project.
+
+[goblins]
+name = "goblins"
+relPath = "goblins"
+subsystem = "racket"
+translator = "racket-impure"
+
+[goblins.subsystemInfo]

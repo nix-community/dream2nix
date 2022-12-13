@@ -3,6 +3,9 @@
   t = l.types;
 in {
   options.functions.discoverers = {
+    discoverProjects2 = l.mkOption {
+      type = t.uniq (t.functionTo (t.listOf t.attrs));
+    };
     discoverProjects = l.mkOption {
       type = t.uniq (t.functionTo (t.listOf t.attrs));
     };

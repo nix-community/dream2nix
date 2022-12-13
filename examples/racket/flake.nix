@@ -14,5 +14,6 @@
     systems = ["x86_64-linux"];
     config.projectRoot = ./.;
     source = goblins;
+    projects = ./projects.toml;
   });
 }
