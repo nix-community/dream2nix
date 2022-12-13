@@ -37,13 +37,18 @@
       (src: src.original or src)
       allDependencySources';
 
-    buildRequirements = lib.concatStringsSep " " (subsystemAttrs.buildRequirements or []);
+    buildRequirements =
+      l.map
+        # We strip the version constraint, because we currently use the version in nixpkgs.
+        (requirement:
+          python.pkgs.${l.head (builtins.match "([^<>=]+).*" requirement)})
+        (subsystemAttrs.buildRequirements or []);
 
     package = produceDerivation defaultPackageName (buildFunc {
       name = defaultPackageName;
       src = getSource defaultPackageName defaultPackageVersion;
       format = "other";
-      buildInputs = pkgs.pythonManylinuxPackages.manylinux1;
+      buildInputs = [pkgs.pythonManylinuxPackages.manylinux1] ++ buildRequirements;
       nativeBuildInputs =
         [pkgs.autoPatchelfHook]
         ++ (with python.pkgs; [
@@ -65,6 +70,18 @@
 
         mkdir -p "$out/${python.sitePackages}"
         export PYTHONPATH="$out/${python.sitePackages}:$PYTHONPATH"
+        ${python}/bin/python -m pip wheel --verbose --no-index --no-deps --no-clean --no-build-isolation --wheel-dir dist .
+      '';
+
+      installPhase = let
+        # Some packages have another package as a dependency *and* as a buildRequirement.
+        # In this case, pip tries to uninstall the buildRequirement before installing the dependency and fails
+        # as it can't delete something in the nix store. So we patch PYTHONPATH to remove the buildRequirement in installPhase.
+        removeBuildRequirements = l.concatMapStringsSep "\n"
+          (requirement: "export PYTHONPATH=\${PYTHONPATH//\"${requirement}/lib/${python.libPrefix}/site-packages\"}")
+          buildRequirements;
+      in ''
+        ${removeBuildRequirements}
 
         pipInstallFlags="--find-links ./dist/ \
           --no-build-isolation \
@@ -73,11 +90,6 @@
           --prefix="$out" \
           --no-cache \
           $pipInstallFlags"
-        ${lib.optionalString (buildRequirements != "") "${python}/bin/python -m pip install $pipInstallFlags ${buildRequirements}"}
-        ${python}/bin/python -m pip wheel --verbose --no-index --no-deps --no-clean --no-build-isolation --wheel-dir dist .
-      '';
-
-      installPhase = ''
         ${python}/bin/python -m pip install $pipInstallFlags dist/*
       '';
     });
