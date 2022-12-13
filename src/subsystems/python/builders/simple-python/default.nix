@@ -39,10 +39,10 @@
 
     buildRequirements =
       l.map
-        # We strip the version constraint, because we currently use the version in nixpkgs.
-        (requirement:
-          python.pkgs.${l.head (builtins.match "([^<>=]+).*" requirement)})
-        (subsystemAttrs.buildRequirements or []);
+      # We strip the version constraint, because we currently use the version in nixpkgs.
+      (requirement:
+        python.pkgs.${l.head (builtins.match "([^<>=]+).*" requirement)})
+      (subsystemAttrs.buildRequirements or []);
 
     package = produceDerivation defaultPackageName (buildFunc {
       name = defaultPackageName;
@@ -78,7 +78,8 @@
         # Some packages have another package as a dependency *and* as a buildRequirement.
         # In this case, pip tries to uninstall the buildRequirement before installing the dependency and fails
         # as it can't delete something in the nix store. So we patch PYTHONPATH to remove the buildRequirement in installPhase.
-        removeBuildRequirements = l.concatMapStringsSep "\n"
+        removeBuildRequirements =
+          l.concatMapStringsSep "\n"
           (requirement: "export PYTHONPATH=\${PYTHONPATH//\"${requirement}/lib/${python.libPrefix}/site-packages\"}")
           buildRequirements;
       in ''
