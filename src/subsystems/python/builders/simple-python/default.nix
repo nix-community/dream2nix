@@ -68,7 +68,6 @@
           --no-warn-script-location \
           --prefix="$out" \
           --no-cache \
-          --ignore-installed \
           . \
           $pipInstallFlags
       '';
