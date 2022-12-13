@@ -182,7 +182,12 @@
             ;
         };
       in
-        allOutputs)
+        framework.dlib.recursiveUpdateUntilDrv
+        allOutputs
+        {
+          apps.detect-projects =
+            dream2nixFor.${system}.flakeApps.detect-projects;
+        })
       allPkgs;
 
     flakifiedOutputsList =
