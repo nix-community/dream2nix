@@ -80,7 +80,11 @@
 
     To generate a projects.toml file automatically:
       1. execute:
+        nix run .#detect-projects ${source} > projects.toml
+
+        or alternatively:
         nix run github:nix-community/dream2nix#detect-projects ${source} > projects.toml
+
       2. review the ./projects.toml and edit it if necessary.
       3. pass `projects = ./projects.toml` to makeFlakeOutputs.
 
@@ -128,9 +132,7 @@
       then throw "Don't pass `projects` to makeFlakeOutputs when `autoProjects = true`"
       else if l.isPath givenProjects
       then
-        if ! l.pathExists givenProjects
-        then throw (missingProjectsError source)
-        else if l.hasSuffix ".toml" (l.toString givenProjects)
+        if l.hasSuffix ".toml" (l.toString givenProjects)
         then l.fromTOML (l.readFile givenProjects)
         else l.fromJSON (l.readFile givenProjects)
       else givenProjects;
@@ -146,8 +148,9 @@
     };
 
     finalProjects =
-      if projects != {}
-      then let
+      if autoProjects == true
+      then discoveredProjects
+      else let
         projectsList = l.attrValues projects;
       in
         # skip discovery and just add required attributes to project list
@@ -161,10 +164,7 @@
               framework.functions.discoverers.getDreamLockPath
               proj
               (l.head projectsList);
-          })
-      else if autoProjects == true
-      then discoveredProjects
-      else throw (missingProjectsError source);
+          });
 
     allBuilderOutputs =
       l.mapAttrs
@@ -200,8 +200,29 @@
       (allOutputs: output: lib.recursiveUpdate allOutputs output)
       {}
       flakifiedOutputsList;
+
+    errorFlakeOutputs = {
+      apps =
+        l.mapAttrs
+        (system: pkgs: {
+          detect-projects =
+            dream2nixFor.${system}.flakeApps.detect-projects;
+
+          error = throw (missingProjectsError source);
+        })
+        allPkgs;
+    };
+
+    finalOutputs = let
+      givenProjects = args.projects or {};
+    in
+      if
+        (givenProjects == {} && autoProjects == false)
+        || (l.isPath givenProjects && ! l.pathExists givenProjects)
+      then errorFlakeOutputs
+      else flakeOutputsBuilders;
   in
-    flakeOutputsBuilders;
+    finalOutputs;
 
   makeFlakeOutputsForIndexes = {
     systems ? [],
