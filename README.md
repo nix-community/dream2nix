@@ -87,6 +87,9 @@ Extensive Example `flake.nix`:
       config.projectRoot = ./.;
 
       source = ./.;
+
+      # `projects` can alternatively be an attrset.
+      # `projects` can be omitted if `autoProjects = true` is defined.
       projects = ./projects.toml;
 
       # Configure the behavior of dream2nix when translating projects.
