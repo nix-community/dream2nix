@@ -1,9 +1,6 @@
-{
-  lib,
-  dlib,
-}: let
-  l = lib // builtins;
-
+{config, ...}: let
+  l = config.lib // builtins;
+  dlib = config.dlib;
   getMetaFromPackageJson = packageJson:
     {license = dlib.parseSpdxId (packageJson.license or "");}
     // (
@@ -14,7 +11,7 @@
 
   getPackageJsonDeps = packageJson: noDev:
     (packageJson.dependencies or {})
-    // (lib.optionalAttrs (! noDev) (packageJson.devDependencies or {}));
+    // (l.optionalAttrs (! noDev) (packageJson.devDependencies or {}));
 
   getWorkspaceParent = project:
     if project ? subsystemInfo.workspaceParent
@@ -44,19 +41,21 @@
       (tree.getNodeFromPath "${wsRelPath}/package.json").jsonContent);
 
   getWorkspacePackages = tree: workspaces:
-    lib.mapAttrs'
+    l.mapAttrs'
     (wsRelPath: json:
       l.nameValuePair
       json.name
       json.version)
     (getWorkspacePackageJson tree workspaces);
 in {
-  inherit
-    getMetaFromPackageJson
-    getPackageJsonDeps
-    getWorkspaceLockFile
-    getWorkspacePackageJson
-    getWorkspacePackages
-    getWorkspaceParent
-    ;
+  config.functions.translators.nodejs = {
+    inherit
+      getMetaFromPackageJson
+      getPackageJsonDeps
+      getWorkspaceLockFile
+      getWorkspacePackageJson
+      getWorkspacePackages
+      getWorkspaceParent
+      ;
+  };
 }
