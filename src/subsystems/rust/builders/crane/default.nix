@@ -55,10 +55,12 @@
         inherit pname version;
 
         src = utils.getRootSource pname version;
-        cargoVendorDir = "./nix-vendor";
+        cargoVendorDir = "$TMPDIR/nix-vendor";
+        installCargoArtifactsMode = "use-zstd";
 
         postUnpack = ''
           export CARGO_HOME=$(pwd)/.cargo_home
+          export cargoVendorDir="$TMPDIR/nix-vendor"
         '';
         preConfigure = ''
           ${writeGitVendorEntries}
@@ -86,7 +88,7 @@
           cargoCheckCommand = "cargo check --release --package ${pname}";
           dream2nixVendorDir = vendoring.vendoredDependencies;
           preUnpack = ''
-            ${vendoring.copyVendorDir "$dream2nixVendorDir" "$cargoVendorDir"}
+            ${vendoring.copyVendorDir "$dream2nixVendorDir" common.cargoVendorDir}
           '';
           # move the vendored dependencies folder to $out for main derivation to use
           postInstall = ''
@@ -105,7 +107,7 @@
           cargoArtifacts = deps;
           # link the vendor dir we used earlier to the correct place
           preUnpack = ''
-            ${vendoring.copyVendorDir "$cargoArtifacts/nix-vendor" "$cargoVendorDir"}
+            ${vendoring.copyVendorDir "$cargoArtifacts/nix-vendor" common.cargoVendorDir}
           '';
           # write our cargo lock
           # note: we don't do this in buildDepsOnly since
