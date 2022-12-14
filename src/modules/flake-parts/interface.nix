@@ -36,7 +36,7 @@ in {
     };
     perSystem =
       flake-parts-lib.mkPerSystemOption
-      ({...}: {
+      ({config, ...}: {
         options = {
           dream2nix = {
             instance = l.mkOption {
@@ -47,7 +47,12 @@ in {
               '';
             };
             inputs = l.mkOption {
-              type = t.attrsOf (t.submodule ./makeOutputsArgs.nix);
+              type = t.attrsOf (t.submoduleWith {
+                modules = [./inputs.nix];
+                specialArgs = {
+                  framework = config.dream2nix.instance;
+                };
+              });
               default = {};
               description = ''
                 A list of inputs to generate outputs from.

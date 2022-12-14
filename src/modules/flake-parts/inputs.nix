@@ -1,4 +1,8 @@
-{lib, ...}: let
+{
+  lib,
+  framework,
+  ...
+}: let
   l = lib // builtins;
   t = l.types;
   mkOption = l.options.mkOption;
@@ -15,12 +19,17 @@
       type = t.str;
     };
 
-    # TODO(antotocar34) make a smart enum of all available translators conditional on the given the subsystem? Is this possible?
     translator = mkOption {
       description = "Translators to use";
-      example = ["yarn-lock" "package-json"];
-      type = t.str;
+      example = "package-json";
+      type = t.enum (l.attrNames framework.translators);
     };
+
+    # this generates options like: translatorArgs.package-lock.nodejs = ...;
+    translatorArgs =
+      l.mapAttrs
+      (name: translator: translator.translatorOptions)
+      framework.translators;
 
     # TODO(antotocar34) make an enum of all available subsystems?
     subsystem = mkOption {

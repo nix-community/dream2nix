@@ -25,9 +25,14 @@ in {
         inherit (d2n) config;
       };
 
+      callMakeOutputs = import ./callMakeOutputs.nix {
+        inherit lib;
+        inherit (instance.dream2nix-interface) makeOutputs;
+      };
+
       outputs =
         l.mapAttrs
-        (_: args: instance.dream2nix-interface.makeOutputs args)
+        (_: input: callMakeOutputs input)
         config.dream2nix.inputs;
 
       getAttrFromOutputs = attrName:

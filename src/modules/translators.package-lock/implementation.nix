@@ -4,6 +4,7 @@
   ...
 }: let
   l = config.lib // builtins;
+  t = l.types;
   dlib = config.dlib;
 
   nodejsUtils = config.functions.translators.nodejs;
@@ -279,6 +280,33 @@ in {
     type = "pure";
     subsystem = "nodejs";
     inherit translate;
+
+    /*
+    Currently this duplicates the information declared in extraArgs.
+    `extraArgs` is currently still needed by some internals but could probably
+    be factored out.
+
+    TODO: remove `extraArgs`
+    */
+    translatorOptions = {
+      name = l.mkOption {
+        description = "The name of the main package";
+        example = "@babel/code-frame";
+        default = "{automatic}";
+        type = t.str;
+      };
+      noDev = l.mkOption {
+        description = "Exclude development dependencies";
+        type = t.bool;
+        default = false;
+      };
+      nodejs = l.mkOption {
+        description = "nodejs version to use for building";
+        default = "14";
+        example = "16";
+        type = t.str;
+      };
+    };
 
     extraArgs = {
       name = {

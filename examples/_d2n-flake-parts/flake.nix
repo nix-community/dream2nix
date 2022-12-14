@@ -3,7 +3,7 @@
     dream2nix.url = "github:nix-community/dream2nix";
     nixpkgs.follows = "dream2nix/nixpkgs";
     flake-parts.url = "github:hercules-ci/flake-parts";
-    src.url = "github:prettier/prettier/2.4.1";
+    src.url = "github:DavHau/prettier/master";
     src.flake = false;
   };
 
@@ -26,7 +26,10 @@
             prettier = {
               name = "prettier";
               subsystem = "nodejs";
-              translator = "yarn-lock";
+              translator = "package-lock";
+              translatorArgs.package-lock = {
+                nodejs = "18";
+              };
             };
           };
         };
