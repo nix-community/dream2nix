@@ -3,7 +3,7 @@
   dlib,
 }: let
   l = lib // builtins;
-
+in rec {
   getMetaFromPackageJson = packageJson:
     {license = dlib.parseSpdxId (packageJson.license or "");}
     // (
@@ -50,13 +50,4 @@
       json.name
       json.version)
     (getWorkspacePackageJson tree workspaces);
-in {
-  inherit
-    getMetaFromPackageJson
-    getPackageJsonDeps
-    getWorkspaceLockFile
-    getWorkspacePackageJson
-    getWorkspacePackages
-    getWorkspaceParent
-    ;
 }

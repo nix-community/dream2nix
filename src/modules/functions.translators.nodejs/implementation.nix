@@ -1,3 +1,7 @@
+/*
+migrated from src/subsystems/nodejs/translators/utils.nix
+TODO: get rid of the original and remove this comment
+*/
 {config, ...}: let
   l = config.lib // builtins;
   dlib = config.dlib;
