@@ -1,8 +1,9 @@
 # dream2nix
+Automate reproducible packaging for various language ecosystems
 
 {{#include ./warning.md}}
 
-dream2nix is a framework for automatically converting packages from other build systems to nix.
+{{#include ./funding.md}}
 
 dream2nix focuses on the following aspects:
 

@@ -1,5 +1,3 @@
-!!! Warning: dream2nix is unstable software. While simple UX is one of our main focus points, the APIs  are still under development. Do expect changes that will break your setup.
-
 <p align="center">
   <picture>
     <source width="600" media="(prefers-color-scheme: dark)" srcset="https://gist.githubusercontent.com/DavHau/755fed3774e89c0b9b8953a0a25309fa/raw/0312cc4f785de36212f4303d23298f07c13549dc/dream2nix-dark.png">
@@ -7,11 +5,15 @@
     <img width="600" alt="dream2nix - A framework for automated nix packaging" src="https://gist.githubusercontent.com/DavHau/755fed3774e89c0b9b8953a0a25309fa/raw/e2a12a60ae49aa5eb11b42775abdd1652dbe63c0/dream2nix-01.png">
   </picture>
   <br>
+  Automate reproducible packaging for various language ecosystems
+  <br>
   <a href="https://nix-community.github.io/dream2nix/">Documentation</a> |
   <a href="https://nix-community.github.io/dream2nix/contributing.html">Contributing</a> |
   <a href="https://nix-community.github.io/dream2nix/intro/override-system.html">Overriding Packages</a> |
   <a href="https://github.com/nix-community/dream2nix/tree/main/examples">Examples</a>
 </p>
+
+!!! Warning: dream2nix is unstable software. While simple UX is one of our main focus points, the APIs  are still under development. Do expect changes that will break your setup.
 
 ### Ecosystem stats:
 <p>
@@ -25,11 +27,17 @@
 <img src="https://raw.githubusercontent.com/nix-community/dream2nix-auto-test/gh-pages/pkgs-rust.svg"></a>
 </p>
 
-## dream2nix - A framework for automated nix packaging
+### Funding
 
-dream2nix is a framework for automatically converting packages from other build systems to nix.
+This project was funded through the [NGI Assure](https://nlnet.nl/assure) Fund, a fund established by [NLnet](https://nlnet.nl/) with financial support from the European Commission's [Next Generation Internet](https://ngi.eu/) programme, under the aegis of DG Communications Networks, Content and Technology under grant agreement No 957073. **Applications are still open, you can [apply today](https://nlnet.nl/propose)**.
 
-It focuses on the following aspects:
+Besides that, the project also receives private funding and support from [<img src="https://platonic.systems/logo.svg" height="25" width="25" alt=""> Platonic.Systems](https://platonic.systems).
+
+If your organization wants to support the project with extra funding in order to add support for more languages or new features, please contact one of the maintainers.
+
+## Goals
+
+dream2nix focuses on the following aspects:
 
 - Modularity
 - Customizability
@@ -168,12 +176,6 @@ Or by entering the development shell (`nix develop`) and running `mdbook build d
 
 (The code examples of the presentation are outdated)
 [![dream2nix - A generic framework for 2nix tools](https://gist.githubusercontent.com/DavHau/755fed3774e89c0b9b8953a0a25309fa/raw/3c8b2c56f5fca3bf5c343ffc179136eef39d4d6a/dream2nix-youtube-talk.png)](https://www.youtube.com/watch?v=jqCfHMvCsfQ)
-
-### Funding
-
-This project receives financial support by [NLNet](https://nlnet.nl/) as part of the [NGI Assure Programme](https://nlnet.nl/assure/) funded by the European Commission; as well as private funding and support from [<img src="https://platonic.systems/logo.svg" height="25" width="25" alt=""> Platonic.Systems](https://platonic.systems).
-
-If your organization wants to support the project with extra funding in order to add support for more languages or new features, please contact one of the maintainers.
 
 ### Community
 
