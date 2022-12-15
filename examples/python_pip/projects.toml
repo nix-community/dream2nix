@@ -2,20 +2,12 @@
 #   nix run github:nix-community/dream2nix#detect-projects $source
 # ... where `$source` points to the source of your project.
 
-[llhttp]
-name = "llhttp"
-relPath = "vendor/llhttp"
-subsystem = "nodejs"
-translator = "package-lock"
-
-[main]
-name = "main"
+[aiohttp]
+name = "aiohttp"
 relPath = ""
 subsystem = "python"
 translator = "pip"
 
-[llhttp.subsystemInfo]
-
-[main.subsystemInfo]
+[aiohttp.subsystemInfo]
 pythonAttr = "python3"
 pythonVersion = "3.8"

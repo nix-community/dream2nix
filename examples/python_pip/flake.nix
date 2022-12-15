@@ -17,6 +17,6 @@
       projects = ./projects.toml;
     })
     // {
-      checks.x86_64-linux.aiohttp = self.packages.x86_64-linux.main;
+      checks.x86_64-linux = self.packages.x86_64-linux;
     };
 }
