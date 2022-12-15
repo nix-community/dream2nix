@@ -1,6 +1,6 @@
 {config, ...}: let
   b = builtins;
-  l = config.lib // builtins;
+  l = config.lib;
 
   overrideWarning = fields: args:
     l.filterAttrs (

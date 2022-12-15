@@ -2,7 +2,7 @@
 # for now this will have to suffice
 {config, ...}: let
   b = builtins;
-  l = config.lib // builtins;
+  l = config.lib;
 
   inherit
     (config.pkgs)

@@ -1,6 +1,6 @@
 {config, ...}: let
   inherit (config) pkgs utils;
-  l = config.lib // builtins;
+  l = config.lib;
 
   generatePackagesFromLocksTree = {
     source ? throw "pass source",
