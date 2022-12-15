@@ -201,24 +201,20 @@
       {}
       flakifiedOutputsList;
 
-    errorFlakeOutputs = {
+    errorFlakeOutputs = l.warn (missingProjectsError source) {
       apps =
         l.mapAttrs
         (system: pkgs: {
           detect-projects =
             dream2nixFor.${system}.flakeApps.detect-projects;
-
-          error = throw (missingProjectsError source);
         })
         allPkgs;
     };
 
-    finalOutputs = let
-      givenProjects = args.projects or {};
-    in
+    finalOutputs =
       if
-        (givenProjects == {} && autoProjects == false)
-        || (l.isPath givenProjects && ! l.pathExists givenProjects)
+        (args ? projects && l.isPath args.projects && ! l.pathExists args.projects)
+        || (projects == {} && autoProjects == false)
       then errorFlakeOutputs
       else flakeOutputsBuilders;
   in
