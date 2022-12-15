@@ -1,6 +1,10 @@
-{config, ...}: let
+{
+  config,
+  lib,
+  ...
+}: let
   b = builtins;
-  l = config.lib // builtins;
+  l = config.lib;
 
   loadOverridesDirs = overridesDirs: pkgs: let
     loadOverrides = dir:
@@ -47,7 +51,7 @@
     '';
 
   getOverrideFunctionArgs = function: let
-    funcArgs = l.functionArgs function;
+    funcArgs = lib.functionArgs function;
   in
     if funcArgs != {}
     then b.attrNames funcArgs
