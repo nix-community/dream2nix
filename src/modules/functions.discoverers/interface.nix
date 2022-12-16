@@ -1,5 +1,5 @@
 {config, ...}: let
-  l = config.lib // builtins;
+  l = config.lib;
   t = l.types;
 in {
   options.functions.discoverers = {

@@ -1,5 +1,5 @@
 {config, ...}: let
-  l = config.lib // builtins;
+  l = config.lib;
   b = builtins;
 
   inherit (config) dream2nixConfig pkgs utils dlib lib;

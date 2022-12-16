@@ -1,6 +1,6 @@
 {config, ...}: let
   inherit (config.dlib) mkFunction;
-  l = config.lib // builtins;
+  l = config.lib;
   t = l.types;
 in {
   options.dlib.simpleTranslate2 = {

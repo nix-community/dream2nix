@@ -1,6 +1,5 @@
 {config, ...}: let
-  lib = config.lib;
-  l = lib // builtins;
+  l = config.lib;
   defaults = {
     # TODO: define a priority in each builder and remove the defaults here.
     rust = "build-rust-package";
@@ -19,7 +18,7 @@ in {
     builders = funcs.import_ collectedModules;
 
     buildersBySubsystem =
-      lib.mapAttrs
+      l.mapAttrs
       (
         subsystem: builders:
           builders
