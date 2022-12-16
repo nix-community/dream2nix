@@ -18,7 +18,7 @@
     ...
   } @ args: let
     b = builtins;
-    l = lib // builtins;
+    l = config.lib;
 
     # resolve to individual fetcher calls
     defaultFetched = (defaultFetcher args).fetchedSources;

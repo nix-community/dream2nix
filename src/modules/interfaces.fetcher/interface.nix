@@ -1,5 +1,5 @@
-{framework, ...}: let
-  l = framework.lib // builtins;
+{lib, ...}: let
+  l = lib // builtins;
   t = l.types;
 
   outputsOptions = {
