@@ -41,7 +41,11 @@
           --show-trace --impure --raw --expr "
           let
             dream2nix = import ${dream2nixWithExternals} {
-              dream2nixConfig = ${dream2nixConfigFile};
+              dream2nixConfig = builtins.fromJSON (
+                builtins.unsafeDiscardStringContext (
+                  builtins.readFile ${dream2nixConfigFile}
+                )
+              );
             };
             translatorArgs =
               (builtins.fromJSON
