@@ -92,8 +92,9 @@
     outputs = builder.build (builderArgs
       // {
         inherit
-          produceDerivation
           dreamLock
+          pkgs
+          produceDerivation
           sourceRoot
           ;
 
