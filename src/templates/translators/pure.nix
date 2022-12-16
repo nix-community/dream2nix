@@ -41,7 +41,6 @@ in {
     A list of projects returned by `discoverProjects`
     Example:
       {
-        "dreamLockPath": "packages/optimism/dream-lock.json",
         "name": "optimism",
         "relPath": "",
         "subsystem": "nodejs",
