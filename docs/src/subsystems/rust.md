@@ -14,11 +14,11 @@ Translates a `Cargo.toml` file to a dream2nix lockfile by generating a `Cargo.lo
 
 ## Builders
 
-### build-rust-package (pure) (default)
+### build-rust-package (pure)
 
 Builds a package using `buildRustPackage` from `nixpkgs`.
 
-### crane (ifd)
+### crane (ifd) (default)
 
 Builds a package using [`crane`](https://github.com/ipetkov/crane).
 This builder builds two separate derivations, one for dependencies and the other for your crate.
@@ -173,3 +173,19 @@ in
   # ...
 }
 ```
+
+### Specifying the `stdenv`
+
+`crane` supports specifying the `stdenv` like so:
+```nix
+{
+  # ...
+  packageOverrides = {
+    # change all derivations' stdenv to clangStdenv
+    "^.*".set-stdenv.override = old: {stdenv = pkgs.clangStdenv;};
+  };
+  # ...
+}
+```
+
+`build-rust-package` builder does not support specifying the `stdenv`.
