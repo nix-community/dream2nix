@@ -90,7 +90,18 @@ in rec {
   mkBuildWithToolchain = mkBuildFunc: let
     buildWithToolchain = args:
       makeOverridable
-      (args: {derivation = (mkBuildFunc args.toolchain) args.args;})
+      (args: {
+        derivation =
+          (mkBuildFunc args.toolchain)
+          (
+            args.args
+            // {
+              passthru =
+                (args.args.passthru or {})
+                // {rustToolchain = args.toolchain;};
+            }
+          );
+      })
       args;
   in
     buildWithToolchain;
