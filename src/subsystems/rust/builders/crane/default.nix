@@ -85,7 +85,7 @@
           inherit (utils) cargoLock;
           pnameSuffix = depsNameSuffix;
           # Make sure cargo only checks the package we want
-          cargoCheckCommand = "cargo check --release --package ${pname}";
+          cargoCheckCommand = "cargo check \${cargoBuildFlags:-} --profile \${cargoBuildProfile} --package ${pname}";
           dream2nixVendorDir = vendoring.vendoredDependencies;
           preUnpack = ''
             ${vendoring.copyVendorDir "$dream2nixVendorDir" common.cargoVendorDir}
@@ -98,7 +98,10 @@
       deps =
         produceDerivation
         "${pname}${depsNameSuffix}"
-        (buildDepsWithToolchain defaultToolchain depsArgs);
+        (buildDepsWithToolchain {
+          toolchain = defaultToolchain;
+          args = depsArgs;
+        });
 
       buildArgs =
         common
@@ -118,10 +121,15 @@
           '';
           passthru = {dependencies = deps;};
         };
+      build =
+        produceDerivation
+        pname
+        (buildPackageWithToolchain {
+          toolchain = defaultToolchain;
+          args = buildArgs;
+        });
     in
-      produceDerivation
-      pname
-      (buildPackageWithToolchain defaultToolchain buildArgs);
+      build;
 
     mkShellForPkg = pkg: let
       pkgDeps = pkg.passthru.dependencies;

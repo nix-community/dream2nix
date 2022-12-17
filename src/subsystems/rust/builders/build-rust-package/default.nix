@@ -39,8 +39,7 @@
       writeGitVendorEntries = vendoring.writeGitVendorEntries "vendored-sources";
 
       cargoBuildFlags = "--package ${pname}";
-    in
-      produceDerivation pname (buildWithToolchain defaultToolchain {
+      buildArgs = {
         inherit pname version src;
 
         meta = utils.getMeta pname version;
@@ -65,6 +64,11 @@
           ${replacePaths}
           ${utils.writeCargoLock}
         '';
+      };
+    in
+      produceDerivation pname (buildWithToolchain {
+        toolchain = defaultToolchain;
+        args = buildArgs;
       });
 
     mkShellForPkg = pkg:

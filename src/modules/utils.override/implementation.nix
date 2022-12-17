@@ -143,7 +143,7 @@
           l.mapAttrs
           (funcName: func: getOverrideFunctionArgs func)
           (l.filterAttrs
-            (funcName: func: l.hasPrefix "override" funcName && funcName != "overrideDerivation" && funcName != "overridePythonAttrs")
+            (funcName: func: l.hasPrefix "override" funcName && (! b.elem funcName ["overrideDerivation" "overridePythonAttrs" "overrideRustToolchain"]))
             base_derivation);
 
         getOverrideFuncNameForAttrName = attrName: let
