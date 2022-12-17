@@ -28,6 +28,6 @@ in rec {
     disable-parallel-tests.RUST_TEST_THREADS = 1;
   };
   linemd = {
-    fix-tests.cargoTestFlags = "--features svg";
+    fix-tests.overrideAttrs = old: {cargoTestFlags = "--features svg";};
   };
 }
