@@ -27,7 +27,10 @@
       packageOverrides = {
         # override all packages and set a toolchain
         "^.*" = {
-          set-toolchain.overrideRustToolchain = old: {cargo = toolchain;};
+          set-toolchain.overrideRustToolchain = old: {
+            cargo = toolchain;
+            rustc = toolchain;
+          };
           check-toolchain-version.overrideAttrs = old: {
             buildPhase = ''
               currentCargoVersion="$(cargo --version)"

@@ -7,6 +7,7 @@ name = "linemd"
 relPath = ""
 subsystem = "rust"
 translator = "cargo-lock"
+builder = "build-rust-package"
 
 [[linemd.subsystemInfo.crates]]
 name = "linemd"
