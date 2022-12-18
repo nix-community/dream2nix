@@ -142,9 +142,9 @@
 <h3 id="cargo-toml-impure"><a class="header" href="#cargo-toml-impure">cargo-toml (impure)</a></h3>
 <p>Translates a <code>Cargo.toml</code> file to a dream2nix lockfile by generating a <code>Cargo.lock</code> file first and then using <code>cargo-lock</code> translator on the generated lockfile.</p>
 <h2 id="builders"><a class="header" href="#builders">Builders</a></h2>
-<h3 id="build-rust-package-pure-default"><a class="header" href="#build-rust-package-pure-default">build-rust-package (pure) (default)</a></h3>
+<h3 id="build-rust-package-pure"><a class="header" href="#build-rust-package-pure">build-rust-package (pure)</a></h3>
 <p>Builds a package using <code>buildRustPackage</code> from <code>nixpkgs</code>.</p>
-<h3 id="crane-ifd"><a class="header" href="#crane-ifd">crane (ifd)</a></h3>
+<h3 id="crane-ifd-default"><a class="header" href="#crane-ifd-default">crane (ifd) (default)</a></h3>
 <p>Builds a package using <a href="https://github.com/ipetkov/crane"><code>crane</code></a>.
 This builder builds two separate derivations, one for dependencies and the other for your crate.
 The dependencies derivation will be named <code>&lt;crate&gt;-deps</code> where <code>&lt;crate&gt;</code> is the name of the crate you are building.</p>
@@ -274,6 +274,18 @@ in
   # ...
 }
 </code></pre>
+<h3 id="specifying-the-stdenv"><a class="header" href="#specifying-the-stdenv">Specifying the <code>stdenv</code></a></h3>
+<p><code>crane</code> supports specifying the <code>stdenv</code> like so:</p>
+<pre><code class="language-nix">{
+  # ...
+  packageOverrides = {
+    # change all derivations' stdenv to clangStdenv
+    &quot;^.*&quot;.set-stdenv.override = old: {stdenv = pkgs.clangStdenv;};
+  };
+  # ...
+}
+</code></pre>
+<p><code>build-rust-package</code> builder does not support specifying the <code>stdenv</code>.</p>
 
                     </main>
 
