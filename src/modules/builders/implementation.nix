@@ -2,7 +2,7 @@
   l = config.lib;
   defaults = {
     # TODO: define a priority in each builder and remove the defaults here.
-    rust = "build-rust-package";
+    rust = "crane";
     nodejs = "granular-nodejs";
     python = "simple-python";
     php = "granular-php";
