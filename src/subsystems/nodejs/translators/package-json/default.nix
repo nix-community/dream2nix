@@ -60,7 +60,7 @@
       npmArgs = {
         description = "Additional arguments for npm";
         type = "argument";
-        default = "";
+        default = "--force";
         examples = [
           "--force"
         ];
