@@ -71,27 +71,37 @@
         args = buildArgs;
       });
 
-    mkShellForPkg = pkg:
-      pkgs.callPackage ../devshell.nix {
-        inherit externals;
-        drv = pkg;
-      };
-
     allPackages =
       l.mapAttrs
       (name: version: {"${version}" = buildPackage name version;})
       args.packages;
 
-    allDevshells =
+    mkShellForDrvs = drvs:
+      pkgs.callPackage ../devshell.nix {
+        name = "devshell";
+        inherit drvs;
+      };
+
+    pkgShells =
       l.mapAttrs
-      (name: version: mkShellForPkg allPackages.${name}.${version})
+      (
+        name: version: let
+          pkg = allPackages.${name}.${version};
+        in
+          mkShellForDrvs [pkg]
+      )
+      args.packages;
+
+    allPackagesList =
+      l.mapAttrsToList
+      (name: version: allPackages.${name}.${version})
       args.packages;
   in {
     packages = allPackages;
     devShells =
-      allDevshells
+      pkgShells
       // {
-        default = allDevshells.${defaultPackageName};
+        default = mkShellForDrvs allPackagesList;
       };
   };
 }

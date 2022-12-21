@@ -131,35 +131,42 @@
     in
       build;
 
-    mkShellForPkg = pkg: let
-      pkgDeps = pkg.passthru.dependencies;
-      depsShell = pkgs.callPackage ../devshell.nix {
-        inherit externals;
-        drv = pkgDeps;
-      };
-      mainShell = pkgs.callPackage ../devshell.nix {
-        inherit externals;
-        drv = pkg;
-      };
-      shell = depsShell.combineWith mainShell;
-    in
-      shell;
-
     allPackages =
       l.mapAttrs
       (name: version: {"${version}" = buildPackage name version;})
       args.packages;
 
-    allDevshells =
+    mkShellForDrvs = drvs:
+      pkgs.callPackage ../devshell.nix {
+        name = "devshell";
+        inherit drvs;
+      };
+
+    pkgShells =
       l.mapAttrs
-      (name: version: mkShellForPkg allPackages.${name}.${version})
+      (
+        name: version: let
+          pkg = allPackages.${name}.${version};
+        in
+          mkShellForDrvs [pkg.passthru.dependencies pkg]
+      )
       args.packages;
+
+    allPackagesList = l.flatten (
+      l.mapAttrsToList
+      (
+        name: version: let
+          pkg = allPackages.${name}.${version};
+        in [pkg.passthru.dependencies pkg]
+      )
+      args.packages
+    );
   in {
     packages = allPackages;
     devShells =
-      allDevshells
+      pkgShells
       // {
-        default = allDevshells.${defaultPackageName};
+        default = mkShellForDrvs allPackagesList;
       };
   };
 }

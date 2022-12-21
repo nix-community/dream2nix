@@ -1,129 +1,64 @@
 {
   # args
-  drv,
-  # d2n
-  externals,
+  drvs,
+  name,
   # nixpkgs
   lib,
-  stdenv,
   libiconv,
+  mkShell,
   ...
 }: let
   l = lib // builtins;
 
-  # function to merge two devshells
-  mergeShellConfig = base: other: let
-    c = base.config;
-    oc = other.config;
-    i = base.imports or [];
-    oi = other.imports or [];
-    hasCConfig = config: (config ? language) && (config.language ? c);
-  in {
-    config =
-      c
-      // oc
-      // {
-        packages = l.unique ((c.packages or []) ++ (oc.packages or []));
-        commands = l.unique ((c.commands or []) ++ (oc.commands or []));
-        env = l.unique ((c.env or []) ++ (oc.env or []));
-        devshell =
-          (c.devshell or {})
-          // (oc.devshell or {})
-          // {
-            startup = (c.devshell.startup or {}) // (oc.devshell.startup or {});
-          };
-      }
-      // l.optionalAttrs (hasCConfig c || hasCConfig oc) {
-        language.c = let
-          cConf = c.language.c or {};
-          ocConf = oc.language.c or {};
-        in {
-          compiler = ocConf.compiler or cConf.compiler;
-          libraries =
-            l.unique ((cConf.libraries or []) ++ (ocConf.libraries or []));
-          includes =
-            l.unique ((cConf.includes or []) ++ (ocConf.includes or []));
-        };
-      };
-    imports = l.unique (i ++ oi);
-  };
-  # creates a shell from a config
-  mkShell = config: let
-    shell = (externals.devshell.makeShell {configuration = config;}).shell;
-  in
-    shell
-    // {
-      passthru.config = config;
-      combineWith = other:
-        mkShell (mergeShellConfig config other.passthru.config);
-      addConfig = otherConfig:
-        mkShell (mergeShellConfig config {config = otherConfig;});
-    };
-  # convenience utils for converting a nix attribute to a shell env
-  # TODO: we could probably replace this with something from nixpkgs?
-  toStr = v:
-    if l.isBool v
-    then l.boolToString v
-    else l.toString v;
-  toShellEnv = v:
-    if l.isList v
-    then "( ${l.concatStringsSep " " (l.map (v: ''"${toStr v}"'') v)} )"
-    else l.toString v;
   # illegal env names to be removed and not be added to the devshell
   illegalEnvNames = [
+    "name"
+    "pname"
+    "version"
     "all"
     "args"
     "drvPath"
+    "drvAttrs"
     "outPath"
     "stdenv"
     "cargoArtifacts"
     "dream2nixVendorDir"
     "cargoVendorDir"
   ];
-  isIllegalEnv = name: l.any (oname: name == oname) illegalEnvNames;
-  inputs = (drv.buildInputs or []) ++ (drv.nativeBuildInputs or []);
-  rustToolchain = drv.passthru.rustToolchain;
-  # the config we will use
-  conf = {
-    config =
-      {
-        packages = inputs;
-        commands = [
-          {
-            package = rustToolchain.cargoHostTarget or rustToolchain.cargo;
-            name = "cargo";
-            category = "rust";
-            help = "Rust build tool";
-          }
-        ];
-        env =
-          # filter out attrsets, functions and illegal environment vars
-          l.filter
-          (env: (env != null) && (! isIllegalEnv env.name))
-          (
-            l.mapAttrsToList
-            (
-              n: v:
-                if ! (l.isAttrs v || l.isFunction v)
-                then {
-                  name = n;
-                  value = toShellEnv v;
-                }
-                else null
-            )
-            drv
-          );
-      }
-      # only add c stuff *if* the stdenv has a c compiler
-      # if the user wants to use stdenvNoCC this allows them to do it easily
-      // l.optionalAttrs (drv.stdenv ? cc) {
-        language.c = {
-          compiler = drv.stdenv.cc;
-          libraries = inputs ++ (lib.optional stdenv.isDarwin libiconv);
-          includes = inputs;
-        };
-      };
-    imports = [externals.devshell.imports.c];
-  };
+  isIllegalEnv = name: l.elem name illegalEnvNames;
+  getEnvs = drv:
+  # filter out attrsets, functions and illegal environment vars
+    l.filterAttrs
+    (name: env: (env != null) && (! isIllegalEnv name))
+    (
+      l.mapAttrs
+      (
+        n: v:
+          if ! (l.isAttrs v || l.isFunction v)
+          then v
+          else null
+      )
+      drv
+    );
+  combineEnvs = envs:
+    l.foldl'
+    (
+      all: env:
+        all
+        // env
+        // {
+          buildInputs = (all.buildInputs or []) ++ (env.buildInputs or []);
+          nativeBuildInputs = (all.nativeBuildInputs or []) ++ (env.nativeBuildInputs or []);
+        }
+    )
+    {}
+    envs;
+  _shellEnv = combineEnvs (l.map getEnvs drvs);
+  shellEnv =
+    _shellEnv
+    // {
+      inherit name;
+      passthru.env = _shellEnv;
+    };
 in
-  mkShell conf
+  (mkShell.override {stdenv = (l.head drvs).stdenv;}) shellEnv
