@@ -47,19 +47,18 @@
         all
         // env
         // {
-          packages = (all.packages or []) ++ (env.packages or []);
           buildInputs = (all.buildInputs or []) ++ (env.buildInputs or []);
           nativeBuildInputs = (all.nativeBuildInputs or []) ++ (env.nativeBuildInputs or []);
-          propagatedBuildInputs = (all.propagatedBuildInputs or []) ++ (env.propagatedBuildInputs or []);
-          propagatedNativeBuildInputs = (all.propagatedNativeBuildInputs or []) ++ (env.propagatedNativeBuildInputs or []);
         }
     )
     {}
     envs;
+  _shellEnv = combineEnvs (l.map getEnvs drvs);
   shellEnv =
-    (combineEnvs (l.map getEnvs drvs))
+    _shellEnv
     // {
       inherit name;
+      passthru.env = _shellEnv;
     };
 in
   (mkShell.override {stdenv = (l.head drvs).stdenv;}) shellEnv

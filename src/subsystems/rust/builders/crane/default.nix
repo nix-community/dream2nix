@@ -136,6 +136,22 @@
       (name: version: {"${version}" = buildPackage name version;})
       args.packages;
 
+    mkShellForDrvs = drvs:
+      pkgs.callPackage ../devshell.nix {
+        name = "devshell";
+        inherit drvs;
+      };
+
+    pkgShells =
+      l.mapAttrs
+      (
+        name: version: let
+          pkg = allPackages.${name}.${version};
+        in
+          mkShellForDrvs [pkg.passthru.dependencies pkg]
+      )
+      args.packages;
+
     allPackagesList = l.flatten (
       l.mapAttrsToList
       (
@@ -145,14 +161,12 @@
       )
       args.packages
     );
-    shell = pkgs.callPackage ../devshell.nix {
-      name = "devshell";
-      drvs = allPackagesList;
-    };
   in {
     packages = allPackages;
-    devShells = {
-      default = shell;
-    };
+    devShells =
+      pkgShells
+      // {
+        default = mkShellForDrvs allPackagesList;
+      };
   };
 }
