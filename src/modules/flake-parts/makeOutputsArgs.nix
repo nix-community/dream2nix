@@ -9,6 +9,12 @@
       type = t.str;
     };
 
+    version = mkOption {
+      default = null;
+      description = "Version of the project";
+      type = t.nullOr t.str;
+    };
+
     relPath = mkOption {
       default = "";
       description = "Relative path to project tree from source";
