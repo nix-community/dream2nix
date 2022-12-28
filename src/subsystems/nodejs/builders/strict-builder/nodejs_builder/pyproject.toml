@@ -1,0 +1,22 @@
+[tool.poetry]
+name = "nodejs_builder"
+version = "0.1.0"
+description = ""
+authors = ["hsjobeki <hsjobeki@gmail.com>"]
+
+[tool.poetry.scripts]
+d2nNodeModules = 'nodejs_builder.main:d2nNodeModules'
+d2nCheck = 'nodejs_builder.main:check'
+
+[tool.poetry.dependencies]
+python = "^3.10"
+semantic-version = "^2.9.0"
+node-semver = "^0.8.1"
+
+[tool.poetry.dev-dependencies]
+mypy = "^0.991"
+black = "flake8"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

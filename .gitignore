@@ -4,3 +4,4 @@
 /.pre-commit-config.yaml
 result
 interpreter
+__pycache__

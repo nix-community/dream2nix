@@ -51,12 +51,7 @@
 
     rootDependencies = packageLockDeps;
 
-    packageJsonDeps = nodejsUtils.getPackageJsonDeps packageJson noDev;
-
-    parsedDependencies =
-      l.filterAttrs
-      (name: dep: packageJsonDeps ? "${name}")
-      packageLockDeps;
+    parsedDependencies = packageLockDeps;
 
     identifyGitSource = dependencyObject:
     # TODO: when integrity is there, and git url is github then use tarball instead
