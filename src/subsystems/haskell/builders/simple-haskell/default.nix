@@ -126,7 +126,11 @@ in {
           doBenchmark = false;
 
           # FIXME: this skips over the default package if its name isn't set properly
-          configureFlags = subsystemAttrs.cabalFlags."${name}"."${version}" or [];
+          configureFlags =
+            (subsystemAttrs.cabalFlags."${name}"."${version}" or [])
+            ++ (map
+              (dep: "--constraint=${dep.name}==${dep.version}")
+              (getDependencies name version));
 
           libraryToolDepends = libraryHaskellDepends;
           executableHaskellDepends = libraryHaskellDepends;
