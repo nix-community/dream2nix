@@ -30,19 +30,31 @@ in {
         (_: args: instance.dream2nix-interface.makeOutputs args)
         config.dream2nix.inputs;
 
-      getAttrFromOutputs = attrName:
-        l.mkMerge (
+      getAttrsFromOutputs = attrName:
+        l.mapAttrsToList
+        (_: output: mkDefaultRecursive output.${attrName} or {})
+        outputs;
+
+      combinedResolveImpure =
+        instance.utils.writePureShellScriptBin
+        "resolve"
+        []
+        (l.concatStringsSep "\n" (
           l.mapAttrsToList
-          (_: output: mkDefaultRecursive output.${attrName} or {})
+          (_: output: "${output.packages.resolveImpure}/bin/resolve")
           outputs
-        );
+        ));
     in {
       config = {
         dream2nix = {inherit instance outputs;};
-        # TODO(yusdacra): we could combine all the resolveImpure here if there are multiple
+
         # TODO(yusdacra): maybe we could rename outputs with the same name to avoid collisions?
-        packages = getAttrFromOutputs "packages";
-        devShells = getAttrFromOutputs "devShells";
+        packages = l.mkMerge (
+          getAttrsFromOutputs "packages"
+          ++ [{resolveImpure = l.mkForce combinedResolveImpure;}]
+        );
+
+        devShells = l.mkMerge (getAttrsFromOutputs "devShells");
       };
     };
   };
