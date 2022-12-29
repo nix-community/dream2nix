@@ -22,9 +22,6 @@
     (with pkgs; [
       bash
       coreutils
-      curl
-      gnutar
-      gzip
       haskellPackages.cabal-install
       haskellPackages.ghc
       jq
@@ -63,13 +60,11 @@
 
       pushd $TMPDIR
 
-      # download and unpack package source
-      mkdir source
-      url="https://hackage.haskell.org/package/$name-$version/$name-$version.tar.gz"
-      echo "downloading $url"
-      curl -L "$url" > $TMPDIR/tarball
+      # copy source
+      echo "copying source"
+      cp -drT --no-preserve=mode,ownership "$source" source
+
       cd source
-      cat $TMPDIR/tarball | tar xz --strip-components 1
       # trigger creation of `dist-newstyle` directory
       cabal freeze
       cd -
@@ -91,8 +86,7 @@
 
       # finalize dream-lock. Add source and export default package
       # set correct package version under `packages`
-      export version
-      export hash=$(sha256sum $TMPDIR/tarball | cut -d " " -f 1)
+      export source
       cat $outputFile \
         | python3 ${./fixup-dream-lock.py} $TMPDIR/sourceInfo.json \
         | sponge $outputFile
