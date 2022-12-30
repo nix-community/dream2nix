@@ -6,3 +6,7 @@ excludes = [
   "src/templates/translators/*",
   "src/modules/_template/*",
 ]
+
+[formatter.py]
+command = "black"
+includes = ["*.py"]
