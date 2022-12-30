@@ -10,7 +10,8 @@
     # AttrSet -> Bool -> AttrSet -> [x]
     getCyclicDependencies, # name: version: -> [ {name=; version=; } ]
     getDependencies, # name: version: -> [ {name=; version=; } ]
-    # function that returns a nix-store-path, where a single dependency from the lockfile has been fetched to.
+    # function that returns a nix-store-path, where a single dependency
+    # from the lockfile has been fetched to.
     getSource, # name: version: -> store-path
     # to get information about the original source spec
     getSourceSpec, # name: version: -> {type="git"; url=""; hash="";}
@@ -77,7 +78,8 @@
       )
       packageVersions;
 
-    # our builder, written in python. Better handles the complexity with how npm builds node_modules
+    # our builder, written in python. Better handles the complexity with how npm
+    # builds node_modules
     nodejsBuilder = pkgs.python310Packages.buildPythonApplication {
       name = "builder";
       src = ./nodejs_builder;
@@ -86,49 +88,71 @@
       doCheck = false;
     };
 
-    # type: resolveChildren :: { name :: String, version :: String, rootVersions :: { ${String} :: {String} }} -> { ${String} :: { version :: String, dependencies :: Self } }
-    # function that resolves local vs global dependencies.
-    # we copy dependencies into the global node_modules scope, if they dont have conflicts there.
-    # otherwise we need to declare the package as 'private'
-    # returns the recursive structure:
-    # {
-    #   "pname": {
-    #      "version": "1.0.0",
-    #      "dependencies": {...},
-    #   }
-    # }
+    /*
+    type:
+      resolveChildren :: {
+        name :: String,
+        version :: String,
+        ancestorCandidates :: {
+          ${String} :: {String}
+        }
+      }
+      -> {
+        ${name} :: {
+          version :: String,
+          dependencies :: Self,
+        }
+      }
+
+    Function that resolves local vs global dependencies.
+    We copy dependencies into the global node_modules scope, if they don't have
+    conflicts there.
+    Otherwise we need to declare the package as 'private'.
+    */
     resolveChildren = {
       name, #a
       version, #1.1.2
-      rootVersions,
       # {
       #   "packageNameA": "1.0.0",
       #   "packageNameB": "2.0.0"
       # }
+      ancestorCandidates,
     }: let
       directDeps = getDependencies name version;
 
-      installLocally = name: version: !(rootVersions ? ${name}) || (rootVersions.${name} != version);
+      /*
+      Determines if a dep needs to be installed as a local dep.
+      Node modules automatically inherit all ancestors and their siblings as
+        dependencies.
+      Therefore, installation of a local dep can be omitted, if the same dep
+        is already present as an ancestor or ancestor sibling.
+      */
+      installLocally = name: version:
+        !(ancestorCandidates ? ${name})
+        || (ancestorCandidates.${name} != version);
 
-      locallyRequiredDeps = b.filter (d: installLocally d.name d.version) directDeps;
+      locallyRequiredDeps =
+        b.filter (d: installLocally d.name d.version) directDeps;
 
-      localDepsAttrs = b.listToAttrs (l.map (dep: l.nameValuePair dep.name dep.version) locallyRequiredDeps);
-      newRootVersions = rootVersions // localDepsAttrs;
+      localDepsAttrs = b.listToAttrs (
+        l.map (dep: l.nameValuePair dep.name dep.version) locallyRequiredDeps
+      );
 
-      localDeps =
-        l.mapAttrs
-        (
-          name: version: {
-            inherit version;
-            dependencies = resolveChildren {
-              inherit name version;
-              rootVersions = newRootVersions;
-            };
-          }
-        )
-        localDepsAttrs;
+      newAncestorCandidates = ancestorCandidates // localDepsAttrs;
+
+      # creates entry for single dependency.
+      mkDependency = name: version: {
+        inherit version;
+        dependencies = resolveChildren {
+          inherit name version;
+          ancestorCandidates = newAncestorCandidates;
+        };
+      };
+
+      # attrset of locally installed dependencies
+      dependencies = l.mapAttrs mkDependency localDepsAttrs;
     in
-      localDeps;
+      dependencies;
 
     # function that 'builds' a package.
     # executes
@@ -157,7 +181,7 @@
           name: version: let
             dependencies = resolveChildren {
               inherit name version;
-              rootVersions = rootPackages;
+              ancestorCandidates = rootPackages;
             };
           in {
             inherit version dependencies;
