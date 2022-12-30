@@ -4,8 +4,16 @@ This section documents the Node.js subsystem.
 
 ## Example
 
+> ./flake.nix
+
 ```nix
 {{#include ../../../examples/nodejs_eslint/flake.nix}}
+```
+
+> ./projects.toml
+
+```toml
+{{#include ../../../examples/nodejs_eslint/projects.toml}}
 ```
 
 ## Translators
@@ -32,3 +40,98 @@ Builds all the dependencies in isolation, moving upwards to the top
 package.
 At the end copies over all dependencies into `node_modules` and writes
 symlinks for the bins into `node_modules/.bin`.
+
+### strict (pure + best compatibility) (experimental)
+
+Works almost the same as the granular builder. Not bulletproof stable yet.
+Recommended: Try it out, it should work better than the current default builder, but is not yet released as default.
+
+Features 🌈
+
+- Fully npm compatible
+- No Patches / Overrides required (if "installMethod = copy")
+  - (Most) Complex building of node_modules is fully implemented as python application, because it requires a lot of control flow.
+  - Multiple outputs `["out" "lib" "deps"]` (explained below)
+- Dedicated flattening of node_modules:
+  - Conflicts are resolved during flattening the node_modules folder in favor of the highest semver)
+  - Creates node_modules tree directly from package-lock.json informations. (Through the translator)
+  - Creates node_modules tree with other lock files (such as yarn-lock) most optimal.
+- consume itself:
+  - lets you override/inject a package into your dream2nix project which is built with dream2nix
+
+#### Usage
+
+in `projects.toml` set the `builder` attribute to `'strict-builder'`
+
+> ./projects.toml
+
+```toml
+{{#include ../../../examples/nodejs_alternative_builder/projects.toml}}
+```
+
+#### Override on the `strict-builder`
+
+As currently the builder has three outputs: `$out`, `$lib`, `$deps`.
+When overriding the `installPhase` the user is required to create all three out-paths:
+
+> next.js export (e.g. for static sites)
+
+```nix
+installPhase = ''
+    runHook preInstall
+
+    next export
+    cp -r out $out
+
+    touch $deps
+    touch $lib
+    
+    runHook postInstall
+'';
+}
+```
+
+#### Multiple outputs
+
+##### deps
+
+- content of `node_modules`
+- consumable by `devShells`
+- empty if package has no dependencies
+
+```bash
+    $deps
+    /nix/store/...-pname-1.0.0-deps
+    ├── .bin
+    ├── @babel
+    ├── ...
+    └── typescript
+```
+
+- package
+- consumable as bare package
+- containing all files from the `source`
+
+```bash
+    $lib
+    /nix/store/...-pname-1.0.0-lib
+    ├── cli.js
+    ├── ...
+    └── package.json
+```
+
+- standard composition
+- consumable by most users
+- `{pname}/bin/...` contains all executables of this package
+
+```bash
+    $out:
+    /nix/store/...-pname-1.0.0
+    ├── bin
+    │   └── cli -> ../lib/cli.js
+    └── lib
+        ├── cli.js 
+        ├── ...
+        ├── package.json 
+        └── node_modules 
+```
