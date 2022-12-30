@@ -196,6 +196,10 @@
             then "copy"
             else "symlink";
 
+          passthru.devShell = import ./devShell.nix {
+            inherit nodejs pkg pkgs;
+          };
+
           unpackCmd =
             if lib.hasSuffix ".tgz" src
             then "tar --delay-directory-restore -xf $src"
@@ -314,7 +318,15 @@
           "${name}"."${version}" = allPackages."${name}"."${version}";
         })
         packages);
+    devShells =
+      {default = devShells.${defaultPackageName};}
+      // (
+        l.mapAttrs
+        (name: version: allPackages.${name}.${version}.devShell)
+        packages
+      );
   in {
     packages = mainPackages;
+    inherit devShells;
   };
 }
