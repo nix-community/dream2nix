@@ -11,8 +11,6 @@ d2nMakeOutputs = 'nodejs_builder.main:makeOutputs'
 
 [tool.poetry.dependencies]
 python = "^3.10"
-semantic-version = "^2.9.0"
-node-semver = "^0.8.1"
 
 [tool.poetry.dev-dependencies]
 mypy = "^0.991"
