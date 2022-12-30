@@ -82,24 +82,24 @@
 
           $racket/bin/racket -t ${./make-new-config.rkt}
 
-          export TMP_RACO_HOME=$out/tmp-raco-home
-          mkdir -p $TMP_RACO_HOME
+          export TMP_PLTADDONDIR=$TMP/pltaddondir
+          mkdir -p $TMP_PLTADDONDIR
 
           chmod +w -R $TMP/unpack
-          HOME=$TMP_RACO_HOME $racket/bin/raco pkg install --copy $(ls -d $TMP/unpack/*/)
+          PLTADDONDIR=$TMP_PLTADDONDIR $racket/bin/raco pkg install --copy $(ls -d $TMP/unpack/*/)
 
-          for SUBPATH in $(ls -d $TMP_RACO_HOME/.local/share/racket/*/); # there is only one SUBPATH (whose name is the version number of Racket)
+          for SUBPATH in $(ls -d $TMP_PLTADDONDIR/*/); # there is only one SUBPATH (whose name is the version number of Racket)
           do
-              cp -r -t $PLTCONFIGDIR $SUBPATH/*
+              cp -r -t $PLTCONFIGDIR $SUBPATH
           done
 
-          rm -rf $TMP_RACO_HOME
+          export PLTADDONDIR=$PLTCONFIGDIR;
 
           mkdir -p $out/bin
           for EXE in $racket/bin/* $out/etc/bin/*;
           do
             NAME=$(basename "$EXE")
-            makeWrapper "$EXE" "$out/bin/$NAME" --set PLTCONFIGDIR "$PLTCONFIGDIR"
+            makeWrapper "$EXE" "$out/bin/$NAME" --set PLTCONFIGDIR "$PLTCONFIGDIR" --set PLTADDONDIR "$PLTADDONDIR"
           done
         '');
   in {

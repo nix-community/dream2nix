@@ -14,7 +14,7 @@
                          (pkgs-search-dirs . "pkgs/")
                          (share-search-dirs . "share/"))]
        [make-path-string (lambda (subpath)
-                           (path->string (cleanse-path (build-path (find-config-dir) subpath))))]
+                           (path->string (cleanse-path (build-path (find-config-dir) (version) subpath))))]
        [final-config-ht (foldl (match-lambda**
                                 [((cons key subpath) accum)
                                  (hash-update accum
