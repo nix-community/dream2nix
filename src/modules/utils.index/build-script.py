@@ -5,7 +5,7 @@ from pathlib import Path
 
 
 def store_error(attrPath, category, text, name=None):
-    with open(f"errors/{attrPath.replace('/', '--')}", 'w') as f:
+    with open(f"errors/{attrPath.replace('/', '--')}", "w") as f:
         json.dump(
             dict(
                 attrPath=attrPath,
@@ -18,42 +18,37 @@ def store_error(attrPath, category, text, name=None):
 
 
 input = json.loads(sys.argv[1])
-attr = input['attr']
-attrPath = '.'.join(input['attrPath'])
+attr = input["attr"]
+attrPath = ".".join(input["attrPath"])
 
 # handle eval error
 if "error" in input:
-    error = input['error']
+    error = input["error"]
     print(
-        f"Evaluation failed. attr: {attr} attrPath: {attrPath}\n"
-        "Error:\n{error}",
-        file=sys.stderr
+        f"Evaluation failed. attr: {attr} attrPath: {attrPath}\n" "Error:\n{error}",
+        file=sys.stderr,
     )
-    store_error(attrPath, 'eval', error)
+    store_error(attrPath, "eval", error)
 # try to build package
 else:
-    name = input['name']
-    drvPath = input['drvPath']
+    name = input["name"]
+    drvPath = input["drvPath"]
     print(
-        f"Building {name} attr: {attr} attrPath: {attrPath} "
-        f"drvPath: ({drvPath})",
-        file=sys.stderr
+        f"Building {name} attr: {attr} attrPath: {attrPath} " f"drvPath: ({drvPath})",
+        file=sys.stderr,
     )
     try:
         proc = sp.run(
-            ['nix', 'build', '-L', drvPath],
+            ["nix", "build", "-L", drvPath],
             capture_output=True,
             check=True,
         )
-        print(
-            f"Finished {name}. attr: {attr} attrPath: {attrPath}",
-            file=sys.stderr
-        )
+        print(f"Finished {name}. attr: {attr} attrPath: {attrPath}", file=sys.stderr)
     # handle build error
     except sp.CalledProcessError as error:
-        Path('errors').mkdir(exist_ok=True)
+        Path("errors").mkdir(exist_ok=True)
         print(
             f"Error while building {name}. attr: {attr} attrPath: {attrPath}",
-            file=sys.stderr
+            file=sys.stderr,
         )
-        store_error(attrPath, 'build', error.stderr.decode(), name)
+        store_error(attrPath, "build", error.stderr.decode(), name)
