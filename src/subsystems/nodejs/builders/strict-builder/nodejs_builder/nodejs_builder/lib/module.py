@@ -1,10 +1,33 @@
 import os
 from enum import Enum
 from typing import Any, Optional, TypedDict
-
+from pathlib import Path
 from .logger import logger
+from dataclasses import dataclass
 
 env: dict[str, str] = os.environ.copy()
+
+
+@dataclass
+class Output:
+    out: Path
+    lib: Path
+    deps: Path
+
+
+def get_outputs() -> Output:
+    outputs = {
+        "out": Path(get_env().get("out")),
+        "lib": Path(get_env().get("lib")),
+        "deps": Path(get_env().get("deps")),
+    }
+    if None in outputs.values():
+        logger.error(
+            f"\
+At least one out path uninitialized: {outputs}"
+        )
+        exit(1)
+    return Output(outputs["out"], outputs["lib"], outputs["deps"])
 
 
 def is_main_package() -> bool:
@@ -17,16 +40,14 @@ def get_env() -> dict[str, Any]:
     return env
 
 
-class SelfInfo(TypedDict):
+@dataclass
+class Info:
     name: str
     version: str
 
 
-def get_self() -> SelfInfo:
-    return {
-        "name": get_env().get("pname", "unknown"),
-        "version": get_env().get("version", "unknown"),
-    }
+def get_self() -> Info:
+    return Info(get_env().get("pname", "unknown"), get_env().get("version", "unknown"))
 
 
 class InstallMethod(Enum):

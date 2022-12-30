@@ -7,6 +7,7 @@ authors = ["hsjobeki <hsjobeki@gmail.com>"]
 [tool.poetry.scripts]
 d2nNodeModules = 'nodejs_builder.main:d2nNodeModules'
 d2nCheck = 'nodejs_builder.main:check'
+d2nMakeOutputs = 'nodejs_builder.main:makeOutputs'
 
 [tool.poetry.dependencies]
 python = "^3.10"

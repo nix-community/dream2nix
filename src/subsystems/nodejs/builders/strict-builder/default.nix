@@ -270,18 +270,10 @@
           installPhase = ''
             runHook preInstall
 
-            # remove the symlink (node_modules -> /build/node_modules)
-            rm node_modules || true
 
-            if [ -n "$isMain" ];
+
+            if [ ! -n "$isMain" ];
             then
-              echo ----------------------------- copying node_modules into root package---------------------
-
-              # mkdir -p $out/node_modules
-              # cp -r /build/node_modules $out
-              # cp ./package-lock.json $out/node_modules/.package-lock.json || true
-
-            else
               if [ "$(jq '.scripts.preinstall' ./package.json)" != "null" ]; then
                 npm --production --offline --nodedir=$nodeSources run preinstall
               fi
@@ -293,9 +285,8 @@
               fi
             fi
 
-            ### TODO:
             # $out
-            # - $out/lib/pkg-content -> $lib ...(extracted tgz)
+            # - $out/lib/... -> $lib ...(extracted tgz)
             # - $out/lib/node_modules -> $deps
             # - $out/bin
 
@@ -303,21 +294,9 @@
             # - $deps/node_modules
 
             # $lib
-            # - pkg-content (extracted + install scripts runned)
+            # - ... (extracted + install scripts runned)
+            ${nodejsBuilder}/bin/d2nMakeOutputs
 
-
-            # copy everything to $out
-
-            cp -r . $lib
-
-            mkdir -p $deps/node_modules
-
-
-            mkdir -p $out/bin
-            mkdir -p $out/lib
-
-            ln -s $lib $out/lib/pkg-content
-            ln -s $deps/node_modules $out/lib/node_modules
 
             runHook postInstall
           '';

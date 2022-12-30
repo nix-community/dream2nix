@@ -18,11 +18,6 @@ Building 'Prettier@2.4.1'.
     (dream2nix.lib.makeFlakeOutputs {
       systems = ["x86_64-linux"];
       config.projectRoot = ./.;
-      config.modules = [
-        import
-        ./builders.nix
-        {inherit dream2nix;}
-      ];
       source = src;
       projects = ./projects.toml;
     })
