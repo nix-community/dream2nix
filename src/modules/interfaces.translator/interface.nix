@@ -75,5 +75,11 @@ in {
       type = t.int;
       default = 2;
     };
+    translatorOptions = lib.mkOption {
+      type = t.attrs;
+      # TODO: remove the default once the `extraArgs` field of translators is
+      #   deprecated.
+      default = {};
+    };
   };
 }

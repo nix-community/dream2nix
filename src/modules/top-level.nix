@@ -45,12 +45,14 @@ in {
     ./functions.default-fetcher
     ./functions.combined-fetcher
     ./functions.translators
+    ./functions.translators.nodejs
     ./functions.updaters
     ./apps
     ./builders
     ./discoverers
     ./discoverers.default-discoverer
     ./fetchers
+    ./translators.package-lock
     ./translators
     ./indexers
     ./utils

@@ -1,12 +1,13 @@
 {
-  dlib,
   lib,
-  utils,
-  name,
+  config,
   ...
 }: let
-  l = lib // builtins;
-  nodejsUtils = import ../utils.nix {inherit dlib lib;};
+  l = config.lib // builtins;
+  t = l.types;
+  dlib = config.dlib;
+
+  nodejsUtils = config.functions.translators.nodejs;
 
   getPackageLockPath = tree: project: let
     parent = nodejsUtils.getWorkspaceParent project;
@@ -145,7 +146,7 @@
       url = "https://registry.npmjs.org/${name}/-/${name}-${version}.tgz";
     };
   in
-    utils.simpleTranslate
+    config.utils.simpleTranslate
     ({
       getDepByNameVer,
       dependenciesByOriginalID,
@@ -272,39 +273,68 @@
       getDependencies = dependencyObject:
         dependencyObject.depsExact;
     });
-in rec {
-  version = 2;
+in {
+  translators.package-lock = {
+    version = 2;
+    name = "package-lock";
+    type = "pure";
+    subsystem = "nodejs";
+    inherit translate;
 
-  type = "pure";
+    /*
+    Currently this duplicates the information declared in extraArgs.
+    `extraArgs` is currently still needed by some internals but could probably
+    be factored out.
 
-  inherit translate;
-
-  extraArgs = {
-    name = {
-      description = "The name of the main package";
-      examples = [
-        "react"
-        "@babel/code-frame"
-      ];
-      default = "{automatic}";
-      type = "argument";
+    TODO: remove `extraArgs`
+    */
+    translatorOptions = {
+      name = l.mkOption {
+        description = "The name of the main package";
+        example = "@babel/code-frame";
+        default = "{automatic}";
+        type = t.str;
+      };
+      noDev = l.mkOption {
+        description = "Exclude development dependencies";
+        type = t.bool;
+        default = false;
+      };
+      nodejs = l.mkOption {
+        description = "nodejs version to use for building";
+        default = "14";
+        example = "16";
+        type = t.str;
+      };
     };
 
-    noDev = {
-      description = "Exclude development dependencies";
-      type = "flag";
-    };
+    extraArgs = {
+      name = {
+        description = "The name of the main package";
+        examples = [
+          "react"
+          "@babel/code-frame"
+        ];
+        default = "{automatic}";
+        type = "argument";
+      };
 
-    # TODO: this should either be removed or only used to select
-    # the nodejs version for translating, not for building.
-    nodejs = {
-      description = "nodejs version to use for building";
-      default = "14";
-      examples = [
-        "14"
-        "16"
-      ];
-      type = "argument";
+      noDev = {
+        description = "Exclude development dependencies";
+        type = "flag";
+      };
+
+      # TODO: this should either be removed or only used to select
+      # the nodejs version for translating, not for building.
+      nodejs = {
+        description = "nodejs version to use for building";
+        default = "14";
+        examples = [
+          "14"
+          "16"
+        ];
+        type = "argument";
+      };
     };
   };
 }
