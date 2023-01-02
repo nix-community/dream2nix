@@ -128,6 +128,8 @@ in {
           # FIXME: this skips over the default package if its name isn't set properly
           configureFlags =
             (subsystemAttrs.cabalFlags."${name}"."${version}" or [])
+            # Pin dependency versions to circumvent https://github.com/nix-community/dream2nix/issues/437
+            # There is probably a better solution for this.
             ++ (map
               (dep: "--constraint=${dep.name}==${dep.version}")
               (getDependencies name version));
