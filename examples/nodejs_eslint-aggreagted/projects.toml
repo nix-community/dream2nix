@@ -7,9 +7,9 @@ name = "eslint"
 relPath = ""
 subsystem = "nodejs"
 translator = "package-json"
-translators = [ "package-json",]
+translators = ["package-json"]
 
 [eslint.subsystemInfo]
 noDev = true
-noedjs = 18
+nodejs = 18
 aggregated = true
