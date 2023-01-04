@@ -15,7 +15,7 @@ import os
 from pathlib import Path
 
 
-def check():
+def checkPlatform():
     """
     Checks if the package can be installed.
     - platform must have compatible: os + cpu

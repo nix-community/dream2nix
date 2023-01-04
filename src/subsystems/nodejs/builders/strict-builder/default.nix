@@ -268,14 +268,9 @@
               then "tar --delay-directory-restore -xf $src"
               else null;
 
-            preConfigurePhases = ["d2nPatchPhase" "d2nCheckPhase"];
+            preConfigurePhases = ["d2nCheckPhase"];
 
             unpackPhase = import ./unpackPhase.nix {};
-
-            # nodejs expects HOME to be set
-            d2nPatchPhase = ''
-              export HOME=$TMPDIR
-            '';
 
             # pre-checks:
             # - platform compatibility (os + arch must match)
@@ -301,6 +296,8 @@
             # - add PATH to .bin
             configurePhase = ''
               runHook preConfigure
+
+              export HOME=$TMPDIR
 
               ${nodejsBuilder}/bin/d2nNodeModules
 

@@ -69,9 +69,12 @@ in `projects.toml` set the `builder` attribute to `'strict-builder'`
 {{#include ../../../examples/nodejs_alternative_builder/projects.toml}}
 ```
 
-#### Override on the `strict-builder`
+#### Override on the `strict-builder` (e.g custom bundling / static pages)
 
 As currently the builder has three outputs: `$out`, `$lib`, `$deps`.
+
+Sometimes it may be necessary to override the installPhase to build e.g. static page with `webpack` or others like `react`, `vue`, `anuglar` etc.
+
 When overriding the `installPhase` the user is required to create all three out-paths:
 
 > next.js export (e.g. for static sites)
@@ -108,9 +111,10 @@ installPhase = ''
     └── typescript
 ```
 
-- package
+##### package
+
 - consumable as bare package
-- containing all files from the `source`
+- containing all files from the `source` ( _install-scripts_ already executed )
 
 ```bash
     $lib
@@ -120,7 +124,16 @@ installPhase = ''
     └── package.json
 ```
 
-- standard composition
+_install-scripts_ run in the following order:
+
+> preinstall ->  install -> postinstall
+>
+> isolated from other packages
+>
+> if the isolation during installScript is causing you problems, let us know.
+
+##### standard composition
+
 - consumable by most users
 - `{pname}/bin/...` contains all executables of this package
 
