@@ -268,16 +268,16 @@
               then "tar --delay-directory-restore -xf $src"
               else null;
 
-            preConfigurePhases = ["d2nCheckPhase"];
+            preConfigurePhases = ["skipForeignPlatform"];
 
             unpackPhase = import ./unpackPhase.nix {};
 
             # pre-checks:
             # - platform compatibility (os + arch must match)
-            d2nCheckPhase = ''
+            skipForeignPlatform = ''
               # exit code 3 -> the package is incompatible to the current platform
               #  -> Let the build succeed, but don't create node_modules
-              ${nodejsBuilder}/bin/d2nCheck  \
+              ${nodejsBuilder}/bin/checkPlatform  \
               || \
               if [ "$?" == "3" ]; then
                 mkdir -p $out
