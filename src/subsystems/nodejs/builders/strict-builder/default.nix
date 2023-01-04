@@ -191,52 +191,83 @@
 
       nmTreeJSON = b.toJSON nodeModulesTree;
 
-      # type: makeDepAttrs :: {
-      #  deps :: { ${String} :: { ${String} :: { deps :: Self, derivation :: Derivation } } },
-      #  dep :: { name :: String, version :: String }
-      #  attributes :: {
-      #    derivation :: Derivation,
-      #    deps :: { ${String} :: { ${String} :: { deps :: Self, derivation :: Derivation } } } }
-      #  }
-      #   -> { ${String} :: { ${String} :: { deps :: Self, derivation :: Derivation } } }
-      makeDepAttrs = {
-        deps,
+      # appends the given dependencyAttrs into the dependencyTree
+      # at location `tree.${dep.name}.${dep.version}`
+      #
+      # type:
+      #  makeDepAttrs :: {
+      #    deps :: DependencyTree,
+      #    dep :: Dependency,
+      #    attributes :: DependencyAttrs
+      #   } -> DependencyTree
+      #
+      #  Dependency :: { name :: String, version :: String }
+      #  DependencyAttrs :: { { deps :: DependencyTree, derivation :: Derivation } }
+      #  DependencyTree :: { ${name} :: { ${version} :: DependencyAttrs } }
+      insertDependencyAttrs = {
         dep,
-        attributes,
+        dependencyTree,
+        dependencyAttrs,
       }:
-        deps
+        dependencyTree
         // {
           ${dep.name} =
-            (deps.${dep.name} or {})
+            (dependencyTree.${dep.name} or {})
             // {
               ${dep.version} =
-                (deps.${dep.name}.${dep.version} or {})
-                // attributes;
+                (dependencyTree.${dep.name}.${dep.version} or {})
+                // dependencyAttrs;
             };
         };
 
+      # The fully rendered dependency tree.
+      # "Who depends on whom"
+      # needed because nix needs to know the order in which derivations must be built.
+      # "Dependencies must be built from bottom to top"
+      #
+      # type: depsTree :: DependencyTree
+      # (see insertDependencyAttrs for declaration)
       depsTree = let
-        getDeps = deps: (b.foldl'
+        getDeps = tree: (b.foldl'
           (
-            deps: dep:
-              makeDepAttrs {
-                inherit deps dep;
-                attributes = {
+            dependencyTree: dep:
+              insertDependencyAttrs {
+                inherit dependencyTree dep;
+                dependencyAttrs = {
                   deps = getDeps (getDependencies dep.name dep.version);
                   derivation = allPackages.${dep.name}.${dep.version}.lib;
                 };
               }
           )
           {}
-          deps);
+          tree);
       in (getDeps deps);
 
+      # dependency tree as JSON needed to build node_modules
       depsTreeJSON = b.toJSON depsTree;
 
       # Type: src :: Derivation
       src = getSource name version;
 
       # produceDerivation makes the mkDerivation overridable by the dream2nix users
+      nodeModules =
+        pkgs.runCommandLocal "node-modules" {
+          pname = "${pname}-node_modules";
+          inherit version;
+
+          buildInputs = with pkgs; [jq nodejs python3];
+
+          inherit nmTreeJSON depsTreeJSON;
+          passAsFile = ["nmTreeJSON" "depsTreeJSON"];
+        } ''
+          export isMain=1
+          export installMethod="copy"
+
+          ${nodejsBuilder}/bin/d2nNodeModules
+
+          cp -r /build/node_modules $out
+        '';
+
       pkg = produceDerivation name (
         with pkgs;
           stdenv.mkDerivation
@@ -259,6 +290,7 @@
               then "copy"
               else "symlink";
 
+            passthru.nodeModules = nodeModules;
             passthru.devShell = import ./devShell.nix {
               inherit nodejs pkg pkgs;
             };

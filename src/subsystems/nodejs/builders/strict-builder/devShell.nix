@@ -24,11 +24,12 @@ with pkgs;
       mkdir -p .dream2nix
       if [[ "$ID" != "$(cat .dream2nix/.node_modules_id)" || ! -d "node_modules"  ]];
       then
+        ${rsync}/bin/rsync -aE --chmod=ug+w  --delete ${nodeModulesDir}/ ./node_modules/
+        # chmod -R +w ./node_modules
+
         echo $ID > .dream2nix/.node_modules_id
-        ${rsync}/bin/rsync -aE --delete ${nodeModulesDir}/ ./node_modules/
       fi
 
-      chmod -R +w ./node_modules
       export PATH="$PATH:$(realpath ./node_modules)/.bin"
     '';
   }

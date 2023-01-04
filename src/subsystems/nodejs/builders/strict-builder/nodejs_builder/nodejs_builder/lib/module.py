@@ -7,6 +7,8 @@ from dataclasses import dataclass
 
 env: dict[str, str] = os.environ.copy()
 
+node_modules_link = env.get("NODE_MODULES_LINK")
+
 
 @dataclass
 class Output:
