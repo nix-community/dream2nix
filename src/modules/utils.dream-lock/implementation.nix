@@ -112,13 +112,12 @@
       dependencyGraph;
 
     packageVersions =
-      l.mapAttrs (name: versions: l.unique versions)
-      (l.zipAttrsWith
-        (name: versions: l.flatten versions)
-        [
-          allDependants
-          allDependencies
-        ]);
+      l.zipAttrsWith
+      (name: versions: l.unique (l.flatten versions))
+      [
+        allDependants
+        allDependencies
+      ];
 
     cyclicDependencies = lock.cyclicDependencies;
 
