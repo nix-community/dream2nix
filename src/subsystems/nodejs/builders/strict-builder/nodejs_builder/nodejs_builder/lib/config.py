@@ -1,5 +1,5 @@
 from pathlib import Path
-from .module import env
+from .derivation import env
 
 root = Path("/build")
 node_modules = root / Path("node_modules")

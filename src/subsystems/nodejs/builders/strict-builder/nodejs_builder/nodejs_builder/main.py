@@ -1,6 +1,6 @@
 from .lib.checks import check_platform
 from .lib.config import node_modules
-from .lib.module import (
+from .lib.derivation import (
     is_main_package,
     get_outputs,
     get_self,
@@ -40,21 +40,11 @@ def makeOutputs():
     build the outputs:
     - $lib
     - $out
-    - $deps
 
     > note: with installMethod == "copy" the symlinks sources are copied over.
     > note: binaries always reference their source.
 
-    The following three structured outputs are created.
-
-    # node_modules - consumable by devShell
-    # empty if package has no dependencies
-    $deps:
-    /nix/store/...-pname-1.0.0-deps
-    ├── .bin
-    ├── @babel
-    ├── ....
-    └── typescript
+    The following structured outputs are created.
 
     # package - consumable as bare package
     # containing all files from the source

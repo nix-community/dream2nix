@@ -5,7 +5,7 @@
 ''
   runHook preUnpack
 
-  export sourceRoot="$packageName"
+  export sourceRoot="$name"
 
   # sometimes tarballs do not end with .tar.??
   unpackFallback(){

@@ -1,3 +1,7 @@
+"""
+    some utility functions to reference the value of 
+    variables from the overlaying derivation (via env)
+"""
 import os
 from enum import Enum
 from typing import Any, Optional

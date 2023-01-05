@@ -25,6 +25,10 @@
     # all existing package names and versions
     # attrset of pname -> versions,
     # where versions is a list of version strings
+    # type:
+    #   packageVersions :: {
+    #    ${pname} :: [ ${version} ]
+    # }
     packageVersions,
     # function which applies overrides to a package
     # It must be applied by the builder to each individual derivation
@@ -35,6 +39,8 @@
   }: let
     l = lib // builtins;
     b = builtins;
+
+    inherit (import ./nodejs_builder {inherit pkgs;}) nodejsBuilder;
 
     nodejsVersion = subsystemAttrs.nodejsVersion;
 
@@ -55,346 +61,169 @@
       mv node-* $out
     '';
 
-    # e.g.
-    # {
-    #   "@babel/core": ["1.0.0","2.0.0"]
-    #   ...
-    # }
-    # is mapped to
-    # allPackages = {
-    #   "@babel/core": {"1.0.0": pkg-derivation, "2.0.0": pkg-derivation }
-    #   ...
-    # }
+    # Every package is mapped to a derivation
+    # type:
+    #   allPackages :: {
+    #     ${pname} :: {
+    #       ${version} :: Derivation
+    #     }
+    #   }
     allPackages =
       lib.mapAttrs
       (
         name: versions:
-        # genAttrs takes ["1.0.0, 2.0.0"] returns -> {"1.0.0": makePackage name version}
-        # makePackage: produceDerivation: name name (stdenv.mkDerivation {...})
-        # returns {"1.0.0": pkg-derivation, "2.0.0": pkg-derivation }
           lib.genAttrs
           versions
-          (version: (mkNodeModule name version))
+          (version: (mkPackage {inherit name version;}))
       )
       packageVersions;
 
-    # our builder, written in python. Better handles the complexity with how npm
-    # builds node_modules
-    nodejsBuilder = pkgs.python310Packages.buildPythonApplication {
-      name = "builder";
-      src = ./nodejs_builder;
-      format = "pyproject";
-      nativeBuildInputs = with pkgs.python310Packages; [poetry mypy flake8 black];
-      doCheck = false;
-    };
-
-    /*
-    type:
-      resolveChildren :: {
-        name :: String,
-        version :: String,
-        ancestorCandidates :: {
-          ${String} :: {String}
-        }
-      }
-      -> {
-        ${name} :: {
-          version :: String,
-          dependencies :: Self,
-        }
-      }
-
-    Function that resolves local vs global dependencies.
-    We copy dependencies into the global node_modules scope, if they don't have
-    conflicts there.
-    Otherwise we need to declare the package as 'private'.
-    */
-    resolveChildren = {
-      name, #a
-      version, #1.1.2
-      # {
-      #   "packageNameA": "1.0.0",
-      #   "packageNameB": "2.0.0"
-      # }
-      ancestorCandidates,
+    # function that 'builds' a package's derivation.
+    # type:
+    #   mkPackage :: {
+    #     name :: String,
+    #     version :: String,
+    #   } -> Derivation
+    mkPackage = {
+      name,
+      version,
     }: let
-      directDeps = getDependencies name version;
-
-      /*
-      Determines if a dep needs to be installed as a local dep.
-      Node modules automatically inherit all ancestors and their siblings as
-        dependencies.
-      Therefore, installation of a local dep can be omitted, if the same dep
-        is already present as an ancestor or ancestor sibling.
-      */
-      installLocally = name: version:
-        !(ancestorCandidates ? ${name})
-        || (ancestorCandidates.${name} != version);
-
-      locallyRequiredDeps =
-        b.filter (d: installLocally d.name d.version) directDeps;
-
-      localDepsAttrs = b.listToAttrs (
-        l.map (dep: l.nameValuePair dep.name dep.version) locallyRequiredDeps
-      );
-
-      newAncestorCandidates = ancestorCandidates // localDepsAttrs;
-
-      # creates entry for single dependency.
-      mkDependency = name: version: {
-        inherit version;
-        dependencies = resolveChildren {
-          inherit name version;
-          ancestorCandidates = newAncestorCandidates;
-        };
-      };
-
-      # attrset of locally installed dependencies
-      dependencies = l.mapAttrs mkDependency localDepsAttrs;
-    in
-      dependencies;
-
-    # function that 'builds' a package.
-    # executes
-    # type: mkNodeModule :: String -> String -> Derivation
-    mkNodeModule = name: version: let
-      pname = lib.replaceStrings ["@" "/"] ["__at__" "__slash__"] (name + "@" + version);
+      src = getSource name version;
+      pname = lib.replaceStrings ["@" "/"] ["__at__" "__slash__"] name;
 
       # all direct dependencies of current package
-      deps = getDependencies name version;
-
-      # in case of a conflict pick the highest semantic version as root. All other version must then be private if used.
-      # TODO: pick the version that minimizes the tree
-      pickVersion = name: versions: directDepsAttrs.${name} or (l.head (l.sort (a: b: l.compareVersions a b == 1) versions));
-      rootPackages = l.mapAttrs (name: versions: pickVersion name versions) packageVersions;
-
-      # direct dependencies are all direct dependencies parsed from the lockfile at root level.
+      # Type: deps :: [ { name :: String, version :: String } ]
       directDeps = getDependencies name version;
 
-      # type: { ${String} :: String } # e.g  { "prettier" = "1.2.3"; }
-      directDepsAttrs = l.listToAttrs (b.map (dep: l.nameValuePair dep.name dep.version) directDeps);
+      inherit
+        (import ./lib/node-modules-tree.nix {
+          inherit pkgs lib getDependencies packageVersions name version;
+          nodeModulesBuilder = "${nodejsBuilder}/bin/d2nNodeModules";
+        })
+        nodeModulesTree
+        mkNodeModules
+        ;
 
-      # build the node_modules tree from all known rootPackages
-      # type: { ${String} :: { version :: String, dependencies :: Self } }
-      nodeModulesTree =
-        l.mapAttrs (
-          name: version: let
-            dependencies = resolveChildren {
-              inherit name version;
-              ancestorCandidates = rootPackages;
-            };
-          in {
-            inherit version dependencies;
-          }
-        )
-        (l.filterAttrs (n: v: n != name) rootPackages);
+      inherit
+        (import ./lib/dependencies.nix {
+          inherit lib getDependencies allPackages;
+          deps = directDeps;
+        })
+        depsTree
+        ;
 
-      nmTreeJSON = b.toJSON nodeModulesTree;
+      # type: devShellNodeModules :: Derivation
+      devShellNodeModules = mkNodeModules {
+        isMain = true;
+        installMethod = "copy";
+        inherit pname version depsTree nodeModulesTree;
+      };
+      # type: nodeModules :: Derivation
+      nodeModules = mkNodeModules {
+        inherit installMethod isMain depsTree nodeModulesTree;
+        inherit pname version;
+      };
 
-      # appends the given dependencyAttrs into the dependencyTree
-      # at location `tree.${dep.name}.${dep.version}`
-      #
-      # type:
-      #  makeDepAttrs :: {
-      #    deps :: DependencyTree,
-      #    dep :: Dependency,
-      #    attributes :: DependencyAttrs
-      #   } -> DependencyTree
-      #
-      #  Dependency :: { name :: String, version :: String }
-      #  DependencyAttrs :: { { deps :: DependencyTree, derivation :: Derivation } }
-      #  DependencyTree :: { ${name} :: { ${version} :: DependencyAttrs } }
-      insertDependencyAttrs = {
-        dep,
-        dependencyTree,
-        dependencyAttrs,
-      }:
-        dependencyTree
-        // {
-          ${dep.name} =
-            (dependencyTree.${dep.name} or {})
-            // {
-              ${dep.version} =
-                (dependencyTree.${dep.name}.${dep.version} or {})
-                // dependencyAttrs;
-            };
-        };
+      installMethod =
+        if isMainPackage name version
+        then "copy"
+        else "symlink";
 
-      # The fully rendered dependency tree.
-      # "Who depends on whom"
-      # needed because nix needs to know the order in which derivations must be built.
-      # "Dependencies must be built from bottom to top"
-      #
-      # type: depsTree :: DependencyTree
-      # (see insertDependencyAttrs for declaration)
-      depsTree = let
-        getDeps = tree: (b.foldl'
-          (
-            dependencyTree: dep:
-              insertDependencyAttrs {
-                inherit dependencyTree dep;
-                dependencyAttrs = {
-                  deps = getDeps (getDependencies dep.name dep.version);
-                  derivation = allPackages.${dep.name}.${dep.version}.lib;
-                };
-              }
-          )
-          {}
-          tree);
-      in (getDeps deps);
-
-      # dependency tree as JSON needed to build node_modules
-      depsTreeJSON = b.toJSON depsTree;
-
-      # Type: src :: Derivation
-      src = getSource name version;
-
-      # produceDerivation makes the mkDerivation overridable by the dream2nix users
-      nodeModules =
-        pkgs.runCommandLocal "node-modules" {
-          pname = "${pname}-node_modules";
-          inherit version;
-
-          buildInputs = with pkgs; [jq nodejs python3];
-
-          inherit nmTreeJSON depsTreeJSON;
-          passAsFile = ["nmTreeJSON" "depsTreeJSON"];
-        } ''
-          export isMain=1
-          export installMethod="copy"
-
-          ${nodejsBuilder}/bin/d2nNodeModules
-
-          cp -r /build/node_modules $out
-        '';
+      isMain = isMainPackage name version;
 
       pkg = produceDerivation name (
-        with pkgs;
-          stdenv.mkDerivation
-          {
-            inherit pname version src nodeSources;
-            inherit nmTreeJSON depsTreeJSON;
-            passAsFile = ["nmTreeJSON" "depsTreeJSON"];
+        pkgs.stdenv.mkDerivation
+        {
+          inherit pname version src;
+          inherit nodeSources installMethod isMain;
 
-            # needed for some current overrides
-            nativeBuildInputs = [makeWrapper];
+          # makeWrapper is needed for some current overrides
+          nativeBuildInputs = with pkgs; [makeWrapper];
+          buildInputs = with pkgs; [jq nodejs python3];
 
-            buildInputs = [jq nodejs python3];
-            outputs = ["out" "lib" "deps"];
+          outputs = ["out" "lib"];
 
-            packageName = pname;
-            name = pname;
+          deps = nodeModules;
 
-            installMethod =
-              if isMainPackage name version
-              then "copy"
-              else "symlink";
-
-            passthru.nodeModules = nodeModules;
-            passthru.devShell = import ./devShell.nix {
-              inherit nodejs pkg pkgs;
+          passthru = {
+            inherit nodeModules;
+            devShell = import ./lib/devShell.nix {
+              inherit nodejs pkgs;
+              nodeModules = devShellNodeModules;
             };
+          };
 
-            unpackCmd =
-              if lib.hasSuffix ".tgz" src
-              then "tar --delay-directory-restore -xf $src"
-              else null;
+          unpackCmd =
+            if lib.hasSuffix ".tgz" src
+            then "tar --delay-directory-restore -xf $src"
+            else null;
 
-            preConfigurePhases = ["skipForeignPlatform"];
+          preConfigurePhases = ["skipForeignPlatform"];
 
-            unpackPhase = import ./unpackPhase.nix {};
+          unpackPhase = import ./lib/unpackPhase.nix {};
 
-            # pre-checks:
-            # - platform compatibility (os + arch must match)
-            skipForeignPlatform = ''
-              # exit code 3 -> the package is incompatible to the current platform
-              #  -> Let the build succeed, but don't create node_modules
-              ${nodejsBuilder}/bin/checkPlatform  \
-              || \
-              if [ "$?" == "3" ]; then
-                mkdir -p $out
-                mkdir -p $lib
-                mkdir -p $deps
-                echo "Not compatible with system $system" > $lib/error
-                exit 0
-              else
-                exit 1
+          # checks platform compatibility (os + arch must match)
+          skipForeignPlatform = ''
+            # exit code 3 -> the package is incompatible to the current platform
+            #  -> Let the build succeed, but don't create node_modules
+            ${nodejsBuilder}/bin/checkPlatform  \
+            || \
+            if [ "$?" == "3" ]; then
+              mkdir -p $out
+              mkdir -p $lib
+              echo "Not compatible with system $system" > $lib/error
+              exit 0
+            else
+              exit 1
+            fi
+          '';
+
+          # only build the main package
+          # deps only get unpacked, installed, patched, etc
+          dontBuild = ! isMain;
+
+          buildPhase = ''
+            runHook preBuild
+
+            if [ "$(jq '.scripts.build' ./package.json)" != "null" ];
+            then
+              echo "running npm run build...."
+              npm run build
+            fi
+
+            runHook postBuild
+          '';
+
+          # create package out-paths
+          # $out
+          # - $out/lib/... -> $lib ...(extracted tgz)
+          # - $out/lib/node_modules -> $deps
+          # - $out/bin
+
+          # $lib
+          # - ... (extracted + install scripts runned)
+          installPhase = ''
+            runHook preInstall
+
+            if [ ! -n "$isMain" ];
+            then
+              if [ "$(jq '.scripts.preinstall' ./package.json)" != "null" ]; then
+                npm --production --offline --nodedir=$nodeSources run preinstall
               fi
-            '';
-
-            # create the node_modules folder
-            # - uses symlinks as default
-            # - symlink the .bin
-            # - add PATH to .bin
-            configurePhase = ''
-              runHook preConfigure
-
-              export HOME=$TMPDIR
-
-              ${nodejsBuilder}/bin/d2nNodeModules
-
-              export PATH="$PATH:node_modules/.bin"
-
-              runHook postConfigure
-            '';
-
-            # only build the main package
-            # deps only get unpacked, installed, patched, etc
-            dontBuild = ! (isMainPackage name version);
-            isMain = isMainPackage name version;
-            # Build:
-            # npm run build
-            # custom build commands for:
-            # - electron apps
-            # fallback to npm lifecycle hooks, if no build script is present
-            buildPhase = ''
-              runHook preBuild
-
-              if [ "$(jq '.scripts.build' ./package.json)" != "null" ];
-              then
-                echo "running npm run build...."
-                npm run build
+              if [ "$(jq '.scripts.install' ./package.json)" != "null" ]; then
+                npm --production --offline --nodedir=$nodeSources run install
               fi
-
-              runHook postBuild
-            '';
-
-            # copy node_modules
-            # - symlink .bin
-            # - symlink manual pages
-            # - dream2nix copies node_modules folder if it is the top-level package
-            installPhase = ''
-              runHook preInstall
-
-              if [ ! -n "$isMain" ];
-              then
-                if [ "$(jq '.scripts.preinstall' ./package.json)" != "null" ]; then
-                  npm --production --offline --nodedir=$nodeSources run preinstall
-                fi
-                if [ "$(jq '.scripts.install' ./package.json)" != "null" ]; then
-                  npm --production --offline --nodedir=$nodeSources run install
-                fi
-                if [ "$(jq '.scripts.postinstall' ./package.json)" != "null" ]; then
-                  npm --production --offline --nodedir=$nodeSources run postinstall
-                fi
+              if [ "$(jq '.scripts.postinstall' ./package.json)" != "null" ]; then
+                npm --production --offline --nodedir=$nodeSources run postinstall
               fi
+            fi
 
-              # $out
-              # - $out/lib/... -> $lib ...(extracted tgz)
-              # - $out/lib/node_modules -> $deps
-              # - $out/bin
-
-              # $deps
-              # - $deps/node_modules
-
-              # $lib
-              # - ... (extracted + install scripts runned)
-              ${nodejsBuilder}/bin/d2nMakeOutputs
+            ${nodejsBuilder}/bin/d2nMakeOutputs
 
 
-              runHook postInstall
-            '';
-          }
+            runHook postInstall
+          '';
+        }
       );
     in
       pkg;

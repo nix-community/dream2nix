@@ -69,42 +69,16 @@ in `projects.toml` set the `builder` attribute to `'strict-builder'`
 {{#include ../../../examples/nodejs_alternative_builder/projects.toml}}
 ```
 
-#### Override on the `strict-builder` (e.g custom bundling / static pages)
-
-As currently the builder has three outputs: `$out`, `$lib`, `$deps`.
-
-Sometimes it may be necessary to override the installPhase to build e.g. static page with `webpack` or others like `react`, `vue`, `anuglar` etc.
-
-When overriding the `installPhase` the user is required to create all three out-paths:
-
-> next.js export (e.g. for static sites)
-
-```nix
-installPhase = ''
-    runHook preInstall
-
-    next export
-    cp -r out $out
-
-    touch $deps
-    touch $lib
-    
-    runHook postInstall
-'';
-}
-```
-
 #### Multiple outputs
 
-##### deps
+##### passthru.nodeModules
 
 - content of `node_modules`
-- consumable by `devShells`
 - empty if package has no dependencies
 
 ```bash
     $deps
-    /nix/store/...-pname-1.0.0-deps
+    /nix/store/...-pname-node_modules-1.0.0
     ├── .bin
     ├── @babel
     ├── ...

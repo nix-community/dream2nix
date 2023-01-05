@@ -9,10 +9,10 @@ class Dependency:
     name: str
     version: str
     derivation: str
-    parent: Union["Dependency", None] = None
-    dependencies: Union[dict[str, Any], None] = None
+    parent: Optional["Dependency"] = None
+    dependencies: Optional[dict[str, Any]] = None
 
-    def repr(self: "Dependency") -> str:
+    def __str__(self: "Dependency") -> str:
         return f"{self.name}@{self.version}"
 
 
@@ -21,26 +21,32 @@ def get_all_deps(all_deps: dict[str, Any], name: str, version: str) -> list[str]
     Returns all dependencies. as flattened list
     """
 
-    def is_found(acc: Any, dep: Dependency, dep_tree: Optional[DepsTree]) -> bool:
-        return not bool(acc)
+    def is_found(
+        accumulator: Any, dep: Dependency, dep_tree: Optional[DepsTree]
+    ) -> bool:
+        return not bool(accumulator)
 
     def find_exact_dependency(
-        acc: Any, dep: Dependency, dep_tree: Optional[DepsTree]
+        accumulator: Any, dep: Dependency, dep_tree: Optional[DepsTree]
     ) -> Any:
-        if acc:
-            return acc
+        if accumulator:
+            return accumulator
 
-        if dep.repr() == f"{name}@{version}":
+        if str(dep) == f"{name}@{version}":
             return dep_tree
         return None
 
     subtree = recurse_deps_tree(
-        all_deps, find_exact_dependency, acc=None, pred=is_found, order="top-down"
+        all_deps,
+        find_exact_dependency,
+        accumulator=None,
+        pred=is_found,
+        order="top-down",
     )
 
-    def flatten(acc: Any, dep: Dependency, dep_tree: Optional[DepsTree]) -> Any:
-        acc.append(dep.repr())
-        return acc
+    def flatten(accumulator: Any, dep: Dependency, dep_tree: Optional[DepsTree]) -> Any:
+        accumulator.append(str(dep))
+        return accumulator
 
     flattened: list[str] = []
     if subtree:
@@ -59,35 +65,35 @@ DepsTree = dict[str, dict[str, Meta]]
 
 def recurse_deps_tree(
     deps: DepsTree,
-    cb: Callable[[Any, Dependency, Optional[DepsTree]], Any],
-    acc: Any,
-    parent: Union[Dependency, None] = None,
+    callback: Callable[[Any, Dependency, Optional[DepsTree]], Any],
+    accumulator: Any,
+    parent: Optional[Dependency] = None,
     order: Literal["bottom-up", "top-down"] = "bottom-up",
     pred: Optional[Callable[[Any, Dependency, Optional[DepsTree]], bool]] = None,
 ):
     """
     Generic function that traverses the dependency tree and calls
-    'cb' on every node in the tree
+    'callback' on every node in the tree
 
     Parameters
     ----------
     deps : DepsTree
-        The nested tree of dependencies, that will be iterated through.
-    cb : Callable[[Any, Dependency, Optional[DepsTree]], Any]
+        The tree of dependencies, that will be iterated through.
+    callback : Callable[[Any, Dependency, Optional[DepsTree]], Any]
         takes an accumulator (like 'fold' )
-    acc : Any
-        The initial value for the accumulator passed to 'cb'
+    accumulator : Any
+        The initial value for the accumulator passed to 'callback'
     parent : Dependency
         The parent dependency, defaults to None, is set automatically during recursion
     order : Literal["bottom-up", "top-down"]
         The order in which the callback gets called: "bottom-up" or "top-down"
     pred : Callable[[Any, Dependency, Optional[DepsTree]], bool]
-        Like 'cb' but returns a bool that will stop recursion if False
+        Like 'callback' but returns a bool that will stop recursion if False
 
     Returns
     -------
-    acc
-        the last return value from 'cb: Callable'
+    accumulator
+        the last return value from 'callback: Callable'
     """
 
     dependencies: list[Dependency] = []
@@ -108,17 +114,17 @@ def recurse_deps_tree(
     for dependency in dependencies:
 
         if order == "top-down":
-            acc = cb(acc, dependency, dependency.dependencies)
+            accumulator = callback(accumulator, dependency, dependency.dependencies)
 
         if dependency.dependencies:
             stop = False
             if pred is not None:
-                stop = not pred(acc, dependency, dependency.dependencies)
+                stop = not pred(accumulator, dependency, dependency.dependencies)
             if not stop:
-                acc = recurse_deps_tree(
+                accumulator = recurse_deps_tree(
                     dependency.dependencies,
-                    cb,
-                    acc=acc,
+                    callback,
+                    accumulator=accumulator,
                     parent=dependency,
                     order=order,
                 )
@@ -127,9 +133,9 @@ def recurse_deps_tree(
                     f"stopped recursing the dependency tree at {dependency.repr()}\
     -> because the predicate function returned 'False'"
                 )
-                return acc
+                return accumulator
 
         if order == "bottom-up":
-            acc = cb(acc, dependency, dependency.dependencies)
+            accumulator = callback(accumulator, dependency, dependency.dependencies)
 
-    return acc
+    return accumulator

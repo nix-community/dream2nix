@@ -4,7 +4,7 @@ from pathlib import Path
 from typing import Any, Optional, TypedDict, Union
 
 from .dependencies import Dependency, DepsTree
-from .module import get_env
+from .derivation import get_env
 
 package_json_cache = {}
 
@@ -22,16 +22,14 @@ def get_package_json(path: Path = Path("")) -> Union[dict[str, Any], None]:
 
 def has_scripts(
     package_json: dict[str, Any],
-    lifecycle_scripts: list[str] = [
+    lifecycle_scripts: tuple[str] = (
         "preinstall",
         "install",
         "postinstall",
-    ],
+    ),
 ):
-    return (
-        package_json
-        and package_json.get("scripts")
-        and (set(package_json.get("scripts", {}).keys()) & set(lifecycle_scripts))
+    return package_json and (
+        package_json.get("scripts", {}).keys() & set(lifecycle_scripts)
     )
 
 
