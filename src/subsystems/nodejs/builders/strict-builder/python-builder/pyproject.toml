@@ -1,13 +1,13 @@
 [tool.poetry]
-name = "nodejs_builder"
+name = "app"
 version = "0.1.0"
 description = ""
 authors = ["hsjobeki <hsjobeki@gmail.com>"]
 
 [tool.poetry.scripts]
-d2nNodeModules = 'nodejs_builder.main:d2nNodeModules'
-checkPlatform = 'nodejs_builder.main:checkPlatform'
-d2nMakeOutputs = 'nodejs_builder.main:makeOutputs'
+d2nNodeModules = 'app.main:d2nNodeModules'
+checkPlatform = 'app.main:checkPlatform'
+d2nMakeOutputs = 'app.main:makeOutputs'
 
 [tool.poetry.dependencies]
 python = "^3.10"

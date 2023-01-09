@@ -18,7 +18,7 @@ class Dependency:
 
 def get_all_deps(all_deps: dict[str, Any], name: str, version: str) -> list[str]:
     """
-    Returns all dependencies. as flattened list
+    Returns all dependencies of 'name@version' as flattened list.
     """
 
     def is_found(

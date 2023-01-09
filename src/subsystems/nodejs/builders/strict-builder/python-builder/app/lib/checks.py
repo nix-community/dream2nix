@@ -34,6 +34,10 @@ arch_map: dict[str, NodeArch] = {
 
 
 def check_platform() -> bool:
+    """
+    Checks if bot cpu and platform is supported.
+    e.g. cpu: "arm", platform: "linux"
+    """
     platform: str = sys.platform  # 'linux','darwin',...
     arch: str = p.machine()
     package_json = get_package_json()

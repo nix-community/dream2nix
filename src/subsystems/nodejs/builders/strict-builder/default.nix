@@ -40,7 +40,7 @@
     l = lib // builtins;
     b = builtins;
 
-    inherit (import ./nodejs_builder {inherit pkgs;}) nodejsBuilder;
+    inherit (import ./python-builder {inherit pkgs;}) nodejsBuilder;
 
     nodejsVersion = subsystemAttrs.nodejsVersion;
 

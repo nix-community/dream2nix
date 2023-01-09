@@ -53,6 +53,7 @@ class Info:
 
 
 def get_self() -> Info:
+    """ """
     return Info(get_env().get("pname", "unknown"), get_env().get("version", "unknown"))
 
 
