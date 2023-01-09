@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from typing import Any, Callable, Literal, Optional, TypedDict, Union
+from typing import Any, Callable, Literal, Optional, TypedDict
 
 from .logger import logger
 
@@ -130,7 +130,7 @@ def recurse_deps_tree(
                 )
             else:
                 logger.debug(
-                    f"stopped recursing the dependency tree at {dependency.repr()}\
+                    f"stopped recursing the dependency tree at {dependency}\
     -> because the predicate function returned 'False'"
                 )
                 return accumulator

@@ -122,6 +122,7 @@
     installPath ? "",
     depsTree,
     nodeModulesTree,
+    reason ? "default",
   }:
   # dependency tree as JSON needed to build node_modules
   let
@@ -140,11 +141,14 @@
 
       export isMain=${b.toString isMain}
       export installMethod=${installMethod}
-      export installPath=${installPath}
+      export REASON=${reason}
 
       ${nodeModulesBuilder}
 
-      cp -r /build/node_modules $out 2> /dev/null || mkdir $out
+      # make sure $out gets created every time, even if it is empty
+      if [ ! -d "$out" ]; then
+        mkdir -p $out
+      fi
     '';
 in {
   inherit nodeModulesTree mkNodeModules;

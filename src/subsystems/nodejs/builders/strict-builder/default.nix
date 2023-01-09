@@ -116,6 +116,7 @@
       devShellNodeModules = mkNodeModules {
         isMain = true;
         installMethod = "copy";
+        reason = "devShell";
         inherit pname version depsTree nodeModulesTree;
       };
       # type: nodeModules :: Derivation
@@ -142,8 +143,6 @@
           buildInputs = with pkgs; [jq nodejs python3];
 
           outputs = ["out" "lib"];
-
-          deps = nodeModules;
 
           passthru = {
             inherit nodeModules;
@@ -217,7 +216,7 @@
                 npm --production --offline --nodedir=$nodeSources run postinstall
               fi
             fi
-
+            export NODE_MODULES_PATH=${nodeModules}
             ${nodejsBuilder}/bin/d2nMakeOutputs
 
 

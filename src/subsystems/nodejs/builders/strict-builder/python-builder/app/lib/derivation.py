@@ -1,49 +1,57 @@
 """
-    some utility functions to reference the value of 
+    some utility functions to reference the value of
     variables from the overlaying derivation (via env)
 """
 import os
 from enum import Enum
-from typing import Any, Optional
+from typing import Optional
 from pathlib import Path
 from .logger import logger
 from dataclasses import dataclass
 
 env: dict[str, str] = os.environ.copy()
 
-node_modules_link = env.get("NODE_MODULES_LINK")
+
+@dataclass
+class Input:
+    node_modules: Path
 
 
 @dataclass
 class Output:
     out: Path
     lib: Path
-    deps: Path
 
 
 def get_outputs() -> Output:
     outputs = {
-        "out": Path(get_env().get("out")),
-        "lib": Path(get_env().get("lib")),
-        "deps": Path(get_env().get("deps")),
+        "out": Path(get_env("out")),
+        "lib": Path(get_env("lib")),
     }
-    if None in outputs.values():
-        logger.error(
-            f"\
-At least one out path uninitialized: {outputs}"
-        )
-        exit(1)
-    return Output(outputs["out"], outputs["lib"], outputs["deps"])
+    return Output(outputs["out"], outputs["lib"])
+
+
+def get_inputs() -> Input:
+    node_modules_path = Path(get_env("NODE_MODULES_PATH"))
+    return Input(node_modules_path)
 
 
 def is_main_package() -> bool:
     """Returns True or False depending on the 'isMain' env variable."""
-    return bool(get_env().get("isMain"))
+    return bool(get_env("isMain"))
 
 
-def get_env() -> dict[str, Any]:
-    """Returns a copy of alle the current env variables"""
-    return env
+def get_env(key: str) -> str:
+    """
+    Returns the value of the required env variable
+    Prints an error end exits execution if the env variable is not set
+    """
+    try:
+        value = env[key]
+    except KeyError:
+        logger.error(f"env variable ${key} is not set")
+        exit(1)
+    return value
 
 
 @dataclass
@@ -54,7 +62,7 @@ class Info:
 
 def get_self() -> Info:
     """ """
-    return Info(get_env().get("pname", "unknown"), get_env().get("version", "unknown"))
+    return Info(env.get("pname", "unknown"), env.get("version", "unknown"))
 
 
 class InstallMethod(Enum):
@@ -64,7 +72,7 @@ class InstallMethod(Enum):
 
 def get_install_method() -> InstallMethod:
     """Returns the value of 'installMethod'"""
-    install_method: Optional[str] = get_env().get("installMethod")
+    install_method: Optional[str] = env.get("installMethod")
     try:
         return InstallMethod(install_method)
     except ValueError:

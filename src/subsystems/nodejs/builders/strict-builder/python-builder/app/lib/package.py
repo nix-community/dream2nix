@@ -22,7 +22,7 @@ def get_package_json(path: Path = Path("")) -> Union[dict[str, Any], None]:
 
 def has_scripts(
     package_json: dict[str, Any],
-    lifecycle_scripts: tuple[str] = (
+    lifecycle_scripts: tuple[str, str, str] = (
         "preinstall",
         "install",
         "postinstall",
@@ -56,14 +56,14 @@ def create_binary(target: Path, source: Path):
 
 def get_all_deps_tree() -> DepsTree:
     deps = {}
-    dependenciesJsonPath = get_env().get("depsTreeJSONPath")
+    dependenciesJsonPath = get_env("depsTreeJSONPath")
     if dependenciesJsonPath:
         with open(dependenciesJsonPath) as f:
             deps = json.load(f)
     return deps
 
 
-class NodeModulesTree(TypedDict):
+class NodeModulesPackage(TypedDict):
     version: str
     # mypy does not allow recursive types yet.
     # The real type is:
@@ -71,12 +71,12 @@ class NodeModulesTree(TypedDict):
     dependencies: Optional[dict[str, Any]]
 
 
-NodeModulesPackage = dict[str, NodeModulesTree]
+NodeModulesTree = dict[str, NodeModulesPackage]
 
 
 def get_node_modules_tree() -> dict[str, Any]:
     tree = {}
-    dependenciesJsonPath = get_env().get("nmTreeJSONPath")
+    dependenciesJsonPath = get_env("nmTreeJSONPath")
     if dependenciesJsonPath:
         with open(dependenciesJsonPath) as f:
             tree = json.load(f)

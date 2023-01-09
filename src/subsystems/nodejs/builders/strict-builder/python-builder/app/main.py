@@ -1,8 +1,8 @@
 from .lib.checks import check_platform
-from .lib.config import node_modules
 from .lib.derivation import (
     is_main_package,
     get_outputs,
+    get_inputs,
     get_self,
     InstallMethod,
     get_install_method,
@@ -62,48 +62,39 @@ def makeOutputs():
         ├── cli.js -> /nix/store/...-pname-1.0.0-lib/cli.js
         ├── ...
         ├── package.json -> /nix/store/...-pname-1.0.0-lib/package.json
-        └── node_modules -> /nix/store/...-pname-1.0.0-deps
+        └── node_modules -> /nix/store/...-pname-1.0.0-node_modules
     """
 
-    # get the outputs from env ($out, $lib, $deps)
     outputs = get_outputs()
+    inputs = get_inputs()
+    pkg = get_self()
 
-    # create empty deps path for packages without dependencies
-    if node_modules.exists():
-        # copy the tree and preserve symlinks
-        # copytree also checks for dangling symlinks and fails on broken links
-        shutil.copytree(node_modules, outputs.deps, symlinks=True)
-    else:
-        outputs.deps.mkdir(parents=True, exist_ok=True)
-
-    # copy package content only
-    # TODO: apply filter logic from npm ('files' entry in package-json)
-
-    # remove the leftover symlink from d2nNodeModules phase
-    Path("./node_modules").unlink(missing_ok=True)
-
-    # TODO: run scripts ? (pre-, post-, install scripts)
+    # create $lib output
     shutil.copytree(Path("."), outputs.lib)
 
+    # create $out output
     bin_out = outputs.out / Path("bin")
     lib_out = outputs.out / Path("lib")
     bin_out.mkdir(parents=True, exist_ok=True)
-
     install_method = get_install_method()
 
+    # create $out/lib
     if install_method == InstallMethod.copy:
         shutil.copytree(outputs.lib, lib_out, symlinks=True)
-        shutil.copytree(outputs.deps, lib_out / Path("node_modules"), symlinks=True)
+        shutil.copytree(
+            inputs.node_modules, lib_out / Path("node_modules"), symlinks=True
+        )
 
     elif install_method == InstallMethod.symlink:
         lib_out.mkdir(parents=True, exist_ok=True)
         for entry in os.listdir(outputs.lib):
             (lib_out / Path(entry)).symlink_to(outputs.lib / Path(entry))
 
-        (lib_out / Path("node_modules")).symlink_to(outputs.deps)
+        (lib_out / Path("node_modules")).symlink_to(inputs.node_modules)
 
-    # create binaries
-    pkg = get_self()
+    # create $out/bin
+    # collect all binaries declared from package
+    # and create symlinks to their sources e.g. $out/bin/cli -> $out/lib/cli.json
     dep = Dependency(name=pkg.name, version=pkg.version, derivation=outputs.lib)
     binaries = get_bins(dep)
     for name, rel_path in binaries.items():
