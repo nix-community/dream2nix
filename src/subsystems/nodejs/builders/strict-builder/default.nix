@@ -177,6 +177,15 @@
             fi
           '';
 
+          configurePhase = ''
+            runHook preConfigure
+
+            cp -r ${nodeModules} ./node_modules
+            chmod -R +w node_modules
+
+            runHook postConfigure
+          '';
+
           # only build the main package
           # deps only get unpacked, installed, patched, etc
           dontBuild = ! isMain;
@@ -187,6 +196,7 @@
             if [ "$(jq '.scripts.build' ./package.json)" != "null" ];
             then
               echo "running npm run build...."
+              ls -la .
               npm run build
             fi
 
@@ -218,7 +228,6 @@
             fi
             export NODE_MODULES_PATH=${nodeModules}
             ${nodejsBuilder}/bin/d2nMakeOutputs
-
 
             runHook postInstall
           '';

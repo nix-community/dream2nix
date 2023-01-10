@@ -3,7 +3,7 @@ from .derivation import get_env
 from .logger import logger
 
 # root is used to create the node_modules structure
-# defaults to $out,
+# might default to $out,
 # which will create the node_modules directly in
 # $out of the derivation, and saves copy time
 root = Path(get_env("out"))
