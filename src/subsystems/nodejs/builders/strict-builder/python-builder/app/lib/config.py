@@ -1,6 +1,5 @@
 from pathlib import Path
 from .derivation import get_env
-from .logger import logger
 
 # root is used to create the node_modules structure
 # might default to $out,

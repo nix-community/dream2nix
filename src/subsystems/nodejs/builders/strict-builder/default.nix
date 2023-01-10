@@ -116,13 +116,14 @@
       devShellNodeModules = mkNodeModules {
         isMain = true;
         installMethod = "copy";
-        reason = "devShell";
+        packageJSON = "${src}/package.json";
         inherit pname version depsTree nodeModulesTree;
       };
       # type: nodeModules :: Derivation
       nodeModules = mkNodeModules {
         inherit installMethod isMain depsTree nodeModulesTree;
         inherit pname version;
+        packageJSON = "${src}/package.json";
       };
 
       installMethod =
@@ -134,7 +135,7 @@
 
       pkg = produceDerivation name (
         pkgs.stdenv.mkDerivation
-        {
+        rec {
           inherit pname version src;
           inherit nodeSources installMethod isMain;
 
@@ -183,6 +184,9 @@
             cp -r ${nodeModules} ./node_modules
             chmod -R +w node_modules
 
+            export NODE_PATH="$NODE_PATH:./node_modules"
+            export PATH="$PATH:node_modules/.bin"
+
             runHook postConfigure
           '';
 
@@ -226,10 +230,13 @@
                 npm --production --offline --nodedir=$nodeSources run postinstall
               fi
             fi
+
             export NODE_MODULES_PATH=${nodeModules}
+
+
             ${nodejsBuilder}/bin/d2nMakeOutputs
 
-            echo "DONE!"
+
 
             runHook postInstall
           '';

@@ -2,7 +2,6 @@ from .lib.checks import check_platform
 from .lib.derivation import (
     is_main_package,
     get_outputs,
-    get_inputs,
     get_self,
     InstallMethod,
     get_install_method,
@@ -66,7 +65,6 @@ def makeOutputs():
     """
 
     outputs = get_outputs()
-    inputs = get_inputs()
     pkg = get_self()
 
     # create $lib output
@@ -78,19 +76,13 @@ def makeOutputs():
     bin_out.mkdir(parents=True, exist_ok=True)
     install_method = get_install_method()
 
-    # create $out/lib/node_modules
-    # if not (lib_out / Path("node_modules")).exists():
+    # create $out/lib/
     if install_method == InstallMethod.copy:
         shutil.copytree(outputs.lib, lib_out, symlinks=True)
-        # shutil.copytree(
-        #     inputs.node_modules, lib_out / Path("node_modules"), symlinks=True
-        # )
     elif install_method == InstallMethod.symlink:
         lib_out.mkdir(parents=True, exist_ok=True)
         for entry in os.listdir(outputs.lib):
             (lib_out / Path(entry)).symlink_to(outputs.lib / Path(entry))
-
-        # (lib_out / Path("node_modules")).symlink_to(inputs.node_modules)
 
     # create $out/bin
     # collect all binaries declared from package

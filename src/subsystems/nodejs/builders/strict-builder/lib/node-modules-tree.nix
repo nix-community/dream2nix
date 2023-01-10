@@ -111,7 +111,6 @@
       installMethod :: "copy" | "symlink",
       depsTree :: DependencyTree,
       nodeModulesTree :: NodeModulesTree,
-      installPath :: ? String,
     }
   */
   mkNodeModules = {
@@ -119,10 +118,9 @@
     installMethod,
     pname,
     version,
-    installPath ? "",
     depsTree,
     nodeModulesTree,
-    reason ? "default",
+    packageJSON,
   }:
   # dependency tree as JSON needed to build node_modules
   let
@@ -141,7 +139,7 @@
 
       export isMain=${b.toString isMain}
       export installMethod=${installMethod}
-      export REASON=${reason}
+      export packageJSON=${packageJSON}
 
       ${nodeModulesBuilder}
 
@@ -149,6 +147,10 @@
       if [ ! -d "$out" ]; then
         mkdir -p $out
       fi
+
+      # for debuging comment this out
+      # cp $depsTreeJSONPath $out/.d2n-resolved-dependency-tree.json
+      # cp $nmTreeJSONPath $out/.d2n-resolved-folder-structure.json
     '';
 in {
   inherit nodeModulesTree mkNodeModules;

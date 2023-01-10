@@ -54,6 +54,10 @@ def get_env(key: str) -> str:
     return value
 
 
+def get_package_json_path() -> Path:
+    return Path(get_env("packageJSON"))
+
+
 @dataclass
 class Info:
     name: str

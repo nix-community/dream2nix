@@ -1,23 +1,37 @@
 import json
-import os
 from pathlib import Path
-from typing import Any, Optional, TypedDict, Union
+from typing import Any, Optional, TypedDict
 
 from .dependencies import Dependency, DepsTree
-from .derivation import get_env
+from .derivation import get_env, env
 
-package_json_cache = {}
+package_json_cache: dict[Path, dict[str, Any]] = {}
 
 
-def get_package_json(path: Path = Path("")) -> Union[dict[str, Any], None]:
-    if path not in package_json_cache:
-        if not os.path.isfile(path / Path("package.json")):
+def get_package_json(
+    path: Path = Path(env.get("packageJSON", ""))
+) -> Optional[dict[str, Any]]:
+    finalPath = path
+    result: Optional[dict[str, Any]]
+
+    if "package.json" not in path.name:
+        finalPath = path / Path("package.json")
+
+    if finalPath not in package_json_cache:
+        if not finalPath.exists():
             # there is no package.json in the folder
-            return None
-        with open(f"{path}/package.json", encoding="utf-8-sig") as f:
-            package_json_cache[path] = json.load(f)
+            result = None
+        else:
+            with open(finalPath, encoding="utf-8-sig") as f:
+                parsed: dict[str, Any] = json.load(f)
 
-    return package_json_cache[path]
+                result = parsed
+                package_json_cache[path] = parsed
+
+    else:
+        result = package_json_cache[path]
+
+    return result
 
 
 def has_scripts(
@@ -27,10 +41,11 @@ def has_scripts(
         "install",
         "postinstall",
     ),
-):
-    return package_json and (
-        package_json.get("scripts", {}).keys() & set(lifecycle_scripts)
-    )
+) -> bool:
+    result = False
+    if package_json:
+        result = package_json.get("scripts", {}).keys() & set(lifecycle_scripts)
+    return result
 
 
 def get_bins(dep: Dependency) -> dict[str, Path]:
@@ -50,7 +65,7 @@ def get_bins(dep: Dependency) -> dict[str, Path]:
 
 def create_binary(target: Path, source: Path):
     target.parent.mkdir(parents=True, exist_ok=True)
-    if not os.path.lexists(target):
+    if not target.exists():
         target.symlink_to(Path("..") / source)
 
 
