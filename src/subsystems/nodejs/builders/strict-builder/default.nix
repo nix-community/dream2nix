@@ -229,6 +229,8 @@
             export NODE_MODULES_PATH=${nodeModules}
             ${nodejsBuilder}/bin/d2nMakeOutputs
 
+            echo "DONE!"
+
             runHook postInstall
           '';
         }

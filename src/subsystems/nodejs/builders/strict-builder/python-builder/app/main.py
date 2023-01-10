@@ -80,18 +80,17 @@ def makeOutputs():
 
     # create $out/lib/node_modules
     # if not (lib_out / Path("node_modules")).exists():
-    #     if install_method == InstallMethod.copy:
-    #         shutil.copytree(outputs.lib, lib_out, symlinks=True)
-    #         shutil.copytree(
-    #             inputs.node_modules, lib_out / Path("node_modules"), symlinks=True
-    #         )
+    if install_method == InstallMethod.copy:
+        shutil.copytree(outputs.lib, lib_out, symlinks=True)
+        # shutil.copytree(
+        #     inputs.node_modules, lib_out / Path("node_modules"), symlinks=True
+        # )
+    elif install_method == InstallMethod.symlink:
+        lib_out.mkdir(parents=True, exist_ok=True)
+        for entry in os.listdir(outputs.lib):
+            (lib_out / Path(entry)).symlink_to(outputs.lib / Path(entry))
 
-    #     elif install_method == InstallMethod.symlink:
-    #         lib_out.mkdir(parents=True, exist_ok=True)
-    #         for entry in os.listdir(outputs.lib):
-    #             (lib_out / Path(entry)).symlink_to(outputs.lib / Path(entry))
-
-    #         (lib_out / Path("node_modules")).symlink_to(inputs.node_modules)
+        # (lib_out / Path("node_modules")).symlink_to(inputs.node_modules)
 
     # create $out/bin
     # collect all binaries declared from package
