@@ -3,42 +3,45 @@
   t = l.types;
   mkOption = l.options.mkOption;
 
-  project.options = {
-    name = mkOption {
-      description = "Name of the project";
-      type = t.str;
-    };
+  project = {name, ...}: {
+    options = {
+      name = mkOption {
+        default = name;
+        description = "Name of the project";
+        type = t.str;
+      };
 
-    version = mkOption {
-      default = null;
-      description = "Version of the project";
-      type = t.nullOr t.str;
-    };
+      version = mkOption {
+        default = null;
+        description = "Version of the project";
+        type = t.nullOr t.str;
+      };
 
-    relPath = mkOption {
-      default = "";
-      description = "Relative path to project tree from source";
-      type = t.str;
-    };
+      relPath = mkOption {
+        default = "";
+        description = "Relative path to project tree from source";
+        type = t.str;
+      };
 
-    # TODO(antotocar34) make a smart enum of all available translators conditional on the given the subsystem? Is this possible?
-    translator = mkOption {
-      description = "Translators to use";
-      example = ["yarn-lock" "package-json"];
-      type = t.str;
-    };
+      # TODO(antotocar34) make a smart enum of all available translators conditional on the given the subsystem? Is this possible?
+      translator = mkOption {
+        description = "Translators to use";
+        example = ["yarn-lock" "package-json"];
+        type = t.str;
+      };
 
-    # TODO(antotocar34) make an enum of all available subsystems?
-    subsystem = mkOption {
-      description = ''Name of subsystem to use. Examples: rust, python, nodejs'';
-      example = "nodejs";
-      type = t.str;
-    };
+      # TODO(antotocar34) make an enum of all available subsystems?
+      subsystem = mkOption {
+        description = ''Name of subsystem to use. Examples: rust, python, nodejs'';
+        example = "nodejs";
+        type = t.str;
+      };
 
-    subsystemInfo = mkOption {
-      default = {};
-      description = "Translator specific arguments";
-      type = t.lazyAttrsOf (t.anything);
+      subsystemInfo = mkOption {
+        default = {};
+        description = "Translator specific arguments";
+        type = t.lazyAttrsOf (t.anything);
+      };
     };
   };
 in {

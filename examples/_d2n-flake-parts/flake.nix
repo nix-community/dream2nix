@@ -24,7 +24,6 @@
           source = src;
           projects = {
             prettier = {
-              name = "prettier";
               subsystem = "nodejs";
               translator = "yarn-lock";
             };
