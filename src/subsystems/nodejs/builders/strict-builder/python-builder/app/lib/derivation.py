@@ -13,11 +13,6 @@ env: dict[str, str] = os.environ.copy()
 
 
 @dataclass
-class Input:
-    node_modules: Path
-
-
-@dataclass
 class Output:
     out: Path
     lib: Path
@@ -29,11 +24,6 @@ def get_outputs() -> Output:
         "lib": Path(get_env("lib")),
     }
     return Output(outputs["out"], outputs["lib"])
-
-
-def get_inputs() -> Input:
-    node_modules_path = Path(get_env("NODE_MODULES_PATH"))
-    return Input(node_modules_path)
 
 
 def is_main_package() -> bool:

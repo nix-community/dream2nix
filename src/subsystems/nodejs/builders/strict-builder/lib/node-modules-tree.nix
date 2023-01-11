@@ -33,7 +33,6 @@
         dependencies :: Dependencies,
       }
     }
-
   */
   resolveChildren = {
     name,
@@ -84,6 +83,7 @@
   directDeps = getDependencies name version;
 
   # type: { ${name} :: String } # e.g  { "prettier" = "1.2.3"; }
+  # set with all direct dependencies contains every 'root' package with only one version
   directDepsAttrs = l.listToAttrs (b.map (dep: l.nameValuePair dep.name dep.version) directDeps);
 
   # build the node_modules tree from all known rootPackages
@@ -99,10 +99,10 @@
         inherit version dependencies;
       }
     )
+    # filter out the 'self' package (e.g. "my-app")
     (l.filterAttrs (n: v: n != name) rootPackages);
 
   /*
-
   Type:
     mkNodeModules :: {
       pname :: String,
@@ -111,6 +111,7 @@
       installMethod :: "copy" | "symlink",
       depsTree :: DependencyTree,
       nodeModulesTree :: NodeModulesTree,
+      packageJSON :: Path
     }
   */
   mkNodeModules = {
@@ -119,7 +120,6 @@
     pname,
     version,
     depsTree,
-    nodeModulesTree,
     packageJSON,
   }:
   # dependency tree as JSON needed to build node_modules
@@ -128,7 +128,7 @@
     nmTreeJSON = b.toJSON nodeModulesTree;
   in
     pkgs.runCommandLocal "node-modules" {
-      pname = "${pname}-node_modules";
+      pname = "node_modules-${pname}";
       inherit version;
 
       buildInputs = with pkgs; [python3];
@@ -147,11 +147,7 @@
       if [ ! -d "$out" ]; then
         mkdir -p $out
       fi
-
-      # for debuging comment this out
-      # cp $depsTreeJSONPath $out/.d2n-resolved-dependency-tree.json
-      # cp $nmTreeJSONPath $out/.d2n-resolved-folder-structure.json
     '';
 in {
-  inherit nodeModulesTree mkNodeModules;
+  inherit mkNodeModules;
 }

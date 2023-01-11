@@ -100,7 +100,6 @@
           inherit pkgs lib getDependencies packageVersions name version;
           nodeModulesBuilder = "${nodejsBuilder}/bin/d2nNodeModules";
         })
-        nodeModulesTree
         mkNodeModules
         ;
 
@@ -112,18 +111,29 @@
         depsTree
         ;
 
+      # path of the current package.json
+      # needed to check if a package has 'pre-/post-/install-scripts'
+      packageJSON = "${src}/package.json";
+
+      packageInfo = builtins.fromJSON (builtins.readFile packageJSON);
+      # type:
+      #   hasScripts :: Bool
+      # build flag shows if package has the pre-pos-install scripts.
+      # only sub-packages with those scripts need their own node_modules derivation
+      hasScripts = !(packageInfo ? scripts) || (l.any (script: l.any (q: script == q) ["install" "preinstall" "postinstall"]) (b.attrNames packageInfo.scripts));
+      needNodeModules = hasScripts || isMain;
+
       # type: devShellNodeModules :: Derivation
       devShellNodeModules = mkNodeModules {
         isMain = true;
         installMethod = "copy";
-        packageJSON = "${src}/package.json";
-        inherit pname version depsTree nodeModulesTree;
+        inherit pname version depsTree packageJSON;
       };
       # type: nodeModules :: Derivation
       nodeModules = mkNodeModules {
-        inherit installMethod isMain depsTree nodeModulesTree;
-        inherit pname version;
-        packageJSON = "${src}/package.json";
+        inherit installMethod;
+        inherit isMain;
+        inherit pname version depsTree packageJSON;
       };
 
       installMethod =
@@ -178,7 +188,7 @@
             fi
           '';
 
-          configurePhase = ''
+          configurePhase = l.optionalString needNodeModules ''
             runHook preConfigure
 
             cp -r ${nodeModules} ./node_modules
@@ -229,8 +239,6 @@
                 npm --production --offline --nodedir=$nodeSources run postinstall
               fi
             fi
-
-            export NODE_MODULES_PATH=${nodeModules}
 
             ${nodejsBuilder}/bin/d2nMakeOutputs
 
