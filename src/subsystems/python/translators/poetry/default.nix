@@ -2,7 +2,7 @@
 This is a pure translator which translates poetry's poetry.lock
   to a dream2nix dream-lock(.json).
 
-Example poetry.lock: https://github.com/python-poetry/poetry/blob/master/poetry.loc
+Example poetry.lock: https://github.com/python-poetry/poetry/blob/master/poetry.lock
 */
 {
   dlib,
