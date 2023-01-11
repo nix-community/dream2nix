@@ -200,7 +200,6 @@
             if [ "$(jq '.scripts.build' ./package.json)" != "null" ];
             then
               echo "running npm run build...."
-              ls -la .
               npm run build
             fi
 
@@ -233,10 +232,7 @@
 
             export NODE_MODULES_PATH=${nodeModules}
 
-
             ${nodejsBuilder}/bin/d2nMakeOutputs
-
-
 
             runHook postInstall
           '';
