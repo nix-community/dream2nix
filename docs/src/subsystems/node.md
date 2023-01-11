@@ -51,13 +51,13 @@ Features 🌈
 - Fully npm compatible
 - No Patches / Overrides required (if "installMethod = copy")
   - (Most) Complex building of node_modules is fully implemented as python application, because it requires a lot of control flow.
-  - Multiple outputs `["out" "lib" "deps"]` (explained below)
+  - Multiple outputs `["out" "lib"]` (explained below)
 - Dedicated flattening of node_modules:
   - Conflicts are resolved during flattening the node_modules folder in favor of the highest semver)
   - Creates node_modules tree directly from package-lock.json informations. (Through the translator)
   - Creates node_modules tree with other lock files (such as yarn-lock) most optimal.
 - consume itself:
-  - lets you override/inject a package into your dream2nix project which is built with dream2nix
+  - lets you override/inject a package into your dream2nix project which is built with dream2nix.
 
 #### Usage
 
@@ -71,21 +71,7 @@ in `projects.toml` set the `builder` attribute to `'strict-builder'`
 
 #### Multiple outputs
 
-##### passthru.nodeModules
-
-- content of `node_modules`
-- empty if package has no dependencies
-
-```bash
-    $deps
-    /nix/store/...-pname-node_modules-1.0.0
-    ├── .bin
-    ├── @babel
-    ├── ...
-    └── typescript
-```
-
-##### package
+##### `lib` - package
 
 - consumable as bare package
 - containing all files from the `source` ( _install-scripts_ already executed )
@@ -98,7 +84,7 @@ in `projects.toml` set the `builder` attribute to `'strict-builder'`
     └── package.json
 ```
 
-_install-scripts_ run in the following order:
+_install-scripts_ declared in `package.json` run in the following order:
 
 > preinstall ->  install -> postinstall
 >
@@ -106,7 +92,7 @@ _install-scripts_ run in the following order:
 >
 > if the isolation during installScript is causing you problems, let us know.
 
-##### standard composition
+##### `out` - standard composition
 
 - consumable by most users
 - `{pname}/bin/...` contains all executables of this package
@@ -122,3 +108,17 @@ _install-scripts_ run in the following order:
         ├── package.json 
         └── node_modules 
 ```
+
+#### DevShell - passthru.devShell
+
+Dedicated devShell with node_modules decoupled from the package.
+
+##### The Problem
+
+As you change lines in your codebase the input of the package changes.
+Which then could lead to a change in the `hash` of the `node_modules` even if the `packages` of your project didn't change.
+This basically means your nix shell / direnv could reload the shell every time you type.
+
+##### The Solution
+
+Decoupled `node_modules` from the inputs, dependending only on the current dependencies of the project and not on the source itself.
