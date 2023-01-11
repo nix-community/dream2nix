@@ -27,7 +27,6 @@
         dream2nix.inputs."my-project" = {
           source = src;
           projects.my-project = {
-            name = "my-project";
             subsystem = "python";
             translator = "poetry";
             subsystemInfo.system = system;

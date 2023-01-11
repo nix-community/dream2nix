@@ -27,7 +27,6 @@
         dream2nix.inputs."rosbags" = {
           source = src;
           projects.rosbags = {
-            name = "rosbags";
             subsystem = "python";
             translator = "pip-freeze";
             subsystemInfo.system = system;
