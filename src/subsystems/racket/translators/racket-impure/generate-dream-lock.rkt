@@ -1,6 +1,7 @@
 #lang racket/base
 
 (require json)
+(require pkg/name)
 (require racket/file)
 (require racket/function)
 (require racket/match)
@@ -35,6 +36,12 @@
               (info-procedure 'deps))
             (with-handlers ([exn:fail? ignore-error])
               (info-procedure 'build-deps)))))
+
+(define dependency->name+type
+  (match-lambda [(or (cons pkg-name _) pkg-name) (package-source->name+type pkg-name #f)]))
+
+(define (dependency->name dep)
+  (let-values ([(name _) (dependency->name+type dep)]) name))
 
 (define (remote-pkg->source name url rev)
 
@@ -98,9 +105,7 @@
             (cons name
                   (remove-duplicates
                    (filter-not pkg-in-stdlib?
-                               (map (match-lambda
-                                      [(or (cons pkg-name _) pkg-name)
-                                       pkg-name])
+                               (map dependency->name
                                     (dependencies dir))))))]
          [paths-from-repo
           ;; XXX: this probably doesn't capture every case since
