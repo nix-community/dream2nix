@@ -34,6 +34,29 @@
             (with-handlers ([exn:fail? ignore-error])
               (info-procedure 'build-deps)))))
 
+(define (remote-pkg->source name url rev)
+
+  (define (url->source url)
+    (let* ([source-with-removed-http-or-git-double-slash (regexp-replace #rx"^(?:git|http)://" url "https://")]
+           [left-trimmed-source (string-trim source-with-removed-http-or-git-double-slash "git+" #:right? #f)]
+           [maybe-match-path (regexp-match #rx"\\?path=([^#]+)" left-trimmed-source)]
+           [trimmed-source (regexp-replace #rx"(?:/tree/.+)?(?:\\?path=.+)?$" left-trimmed-source "")])
+      (cons `(url . ,trimmed-source)
+            (match maybe-match-path
+              [(list _match dir)
+               `((dir . ,(regexp-replace* #rx"%2F" dir "/")))]
+              [_ '()]))))
+
+  (cons (string->symbol name)
+        (make-immutable-hash
+         `((0.0.0 . ,(make-immutable-hash
+                      (append
+                       (url->source url)
+                       `((rev . ,rev)
+                         (type . "git")
+                         ;; TODO: sha256?
+                         ))))))))
+
 (define (generate-dream-lock pkgs-all-path)
   (let* ([src-path (getenv "RACKET_SOURCE")]
          [rel-path (getenv "RACKET_RELPATH")]
@@ -108,22 +131,7 @@
                                 (hash-table
                                  ('source_url url)))))
                              ('checksum rev)))
-                      (let* ([source-with-removed-http-or-git-double-slash (regexp-replace #rx"^(?:git|http)://" url "https://")]
-                             [left-trimmed-source (string-trim source-with-removed-http-or-git-double-slash "git+" #:right? #f)]
-                             [maybe-match-path (regexp-match #rx"\\?path=([^#]+)" left-trimmed-source)]
-                             [trimmed-source (regexp-replace #rx"(?:/tree/.+)?(?:\\?path=.+)?$" left-trimmed-source "")])
-                        (cons (string->symbol name)
-                              (make-immutable-hash
-                               `((0.0.0 . ,(make-immutable-hash
-                                            (append (match maybe-match-path
-                                                      [(list _match dir)
-                                                       `((dir . ,(regexp-replace* #rx"%2F" dir "/")))]
-                                                      [_ '()])
-                                                    `((url . ,trimmed-source)
-                                                      (rev . ,rev)
-                                                      (type . "git")
-                                                      ;; TODO: sha256?
-                                                      ))))))))]))]
+                      (remote-pkg->source name url rev)]))]
          [sources-from-repo (if (string=? rel-path "")
                                 (list (cons (string->symbol package-name)
                                             (make-immutable-hash
