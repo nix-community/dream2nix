@@ -1,6 +1,7 @@
 #lang racket/base
 
 (require json)
+(require pkg/lib)
 (require pkg/name)
 (require racket/file)
 (require racket/function)
@@ -42,6 +43,27 @@
 
 (define (dependency->name dep)
   (let-values ([(name _) (dependency->name+type dep)]) name))
+
+(define (fetch-git-repositories dep graph)
+
+  (define (package-source->git-url dep)
+  (let-values ([(_ type) (dependency->name+type dep)])
+    (and (eq? type 'git-url) dep)))
+
+  (define git-url (package-source->git-url dep))
+  (if git-url
+      (let-values ([(name dir checksum _del _paths) (pkg-stage
+                                                     (pkg-desc git-url 'git-url #f #f #f)
+                                                     #:use-cache? #t)])
+        (log-dream2nix-info "Staging git repository ~a in temporary directory ~a" git-url dir)
+        (define deps (dependencies dir))
+        (define next-graph (hash-set graph name
+                                     (make-immutable-hash
+                                      `([dependencies . ,(map dependency->name deps)]
+                                        [checksum . ,checksum]
+                                        [url . ,git-url]))))
+        (foldl fetch-git-repositories next-graph deps))
+      graph))
 
 (define (remote-pkg->source name url rev)
 
@@ -133,8 +155,23 @@
          [dep-list-overrides
           (map (match-lambda [(cons name path) (compute-overridden-dep-lists name path)]) paths-from-repo)]
          [names-of-overridden-packages (apply set (map car dep-list-overrides))]
+         [git-repositories
+          (let* ([deps (append-map (lambda (path) (dependencies (cdr path))) paths-from-repo)]
+                 [git-repositories (foldl fetch-git-repositories #hash() deps)]
+                 [names (hash-keys git-repositories)])
+            (log-dream2nix-info "Found ~a direct dependencies on git repositories." (length names))
+            (for-each (lambda (name)
+                                    (log-dream2nix-info "Found git repository dependency: ~a." name))
+                      names)
+            git-repositories)]
+         [dep-alist-from-git (hash-map git-repositories
+                                       (match-lambda**
+                                        [(name (hash-table ('dependencies dependencies)))
+                                         (let ([external-deps (filter-not pkg-in-stdlib? dependencies)])
+                                           (cons name external-deps))]))]
          [graph (make-immutable-hash (append dep-alist-from-catalog
-                                             dep-list-overrides))]
+                                             dep-list-overrides
+                                             dep-alist-from-git))]
          [dependency-subgraph (dfs graph package-name (make-immutable-hash))]
          [generic (make-immutable-hash
                    `((subsystem . "racket")
@@ -153,12 +190,20 @@
                                  ('source_url url)))))
                              ('checksum rev)))
                       (remote-pkg->source name url rev)]))]
+         [sources-from-git
+          (hash-map git-repositories
+                    (match-lambda**
+                     [(name (hash-table
+                             ('url url)
+                             ('checksum rev)))
+                      (remote-pkg->source name url rev)]))]
          [sources-from-repo (if (string=? rel-path "")
                                 (local-pkg->source package-name src-path)
                                 (set-map names-of-overridden-packages
                                          (lambda (name)
                                            (local-pkg->source name (path->string (build-path parent-path (string-append-immutable name "/")))))))]
          [sources-hash-table (make-immutable-hash (append sources-from-catalog
+                                                          sources-from-git
                                                           sources-from-repo))]
          [sources (make-immutable-hash (hash-map dependency-subgraph
                                                  (lambda (name _v)
