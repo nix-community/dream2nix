@@ -98,26 +98,25 @@
                                       [(or (cons pkg-name _) pkg-name)
                                        pkg-name])
                                     (dependencies dir))))))]
-         [dep-list-overrides
+         [paths-from-repo
           ;; XXX: this probably doesn't capture every case since
           ;; Racket doesn't seem to enforce much structure in a
           ;; multi-package repo, but it accounts for the only cases
           ;; that a sane person would choose
           (if (string=? rel-path "")
-              (list (compute-overridden-dep-lists package-name package-path))
+              (list (cons package-name package-path))
               (let* ([info-exists? (lambda (dir) (get-info/full dir))]
                      [sibling-paths (filter info-exists?
                                             (filter directory-exists?
                                                     (directory-list parent-path #:build? #t)))]
-                     [names-of-sibling-paths (map (lambda (p)
-                                                    ;; XXX: maybe not very DRY
-                                                    (path->string
-                                                     (match/values (split-path p)
-                                                       ((_base dir-fragment _must-be-dir?) dir-fragment))))
-                                                  sibling-paths)])
-                (filter-map compute-overridden-dep-lists
-                            names-of-sibling-paths
-                            sibling-paths)))]
+                     [dir-name (lambda (p)
+                                 ;; XXX: maybe not very DRY
+                                 (path->string
+                                  (match/values (split-path p)
+                                    ((_base dir-fragment _must-be-dir?) dir-fragment))))])
+                (map (lambda (p) (cons (dir-name p) p)) sibling-paths)))]
+         [dep-list-overrides
+          (map (match-lambda [(cons name path) (compute-overridden-dep-lists name path)]) paths-from-repo)]
          [names-of-overridden-packages (apply set (map car dep-list-overrides))]
          [graph (make-immutable-hash (append dep-alist-from-catalog
                                              dep-list-overrides))]
