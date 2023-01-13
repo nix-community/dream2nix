@@ -91,10 +91,12 @@
          [pkg-in-stdlib? (lambda (pkg-name)
                            (or ;; Some people add racket itself as a dependency for some reason
                             (string=? pkg-name "racket")
-                            (ormap (lambda (tag)
-                                     ;; XXX: would prefer to use memq, but tag is mutable for some reason
-                                     (member tag  '("main-distribution" "main-tests")))
-                                   (hash-ref (hash-ref pkgs-all pkg-name) 'tags))))]
+                            (let ([pkg (hash-ref pkgs-all pkg-name #f)])
+                              (and pkg
+                                   (ormap (lambda (tag)
+                                            ;; XXX: would prefer to use memq, but tag is mutable for some reason
+                                            (member tag  '("main-distribution" "main-tests")))
+                                          (hash-ref pkg 'tags))))))]
          [dep-alist-from-catalog (hash-map pkgs-all
                                            (match-lambda**
                                             [(name (hash-table ('dependencies dependencies)))
