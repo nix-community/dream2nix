@@ -57,6 +57,13 @@
                          ;; TODO: sha256?
                          ))))))))
 
+(define (local-pkg->source name path)
+  (list (cons (string->symbol name)
+              (make-immutable-hash
+               `((0.0.0 . ,(make-immutable-hash
+                            `((type . "path")
+                              (path . ,path)))))))))
+
 (define (generate-dream-lock pkgs-all-path)
   (let* ([src-path (getenv "RACKET_SOURCE")]
          [rel-path (getenv "RACKET_RELPATH")]
@@ -133,18 +140,10 @@
                              ('checksum rev)))
                       (remote-pkg->source name url rev)]))]
          [sources-from-repo (if (string=? rel-path "")
-                                (list (cons (string->symbol package-name)
-                                            (make-immutable-hash
-                                             `((0.0.0 . ,(make-immutable-hash
-                                                          `((type . "path")
-                                                            (path . ,src-path))))))))
+                                (local-pkg->source package-name src-path)
                                 (set-map names-of-overridden-packages
                                          (lambda (name)
-                                           (cons (string->symbol name)
-                                                 (make-immutable-hash
-                                                  `((0.0.0 . ,(make-immutable-hash
-                                                               `((type . "path")
-                                                                 (path . ,(path->string (build-path parent-path (string-append-immutable name "/")))))))))))))]
+                                           (local-pkg->source name (path->string (build-path parent-path (string-append-immutable name "/")))))))]
          [sources-hash-table (make-immutable-hash (append sources-from-catalog
                                                           sources-from-repo))]
          [sources (make-immutable-hash (hash-map dependency-subgraph
