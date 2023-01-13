@@ -26,6 +26,14 @@
                (hash-set dependency-subgraph u destinations)
                destinations))))
 
+(define (dependencies dir)
+  (let ([info-procedure (get-info/full dir)]
+        [ignore-error (lambda (_) '())])
+    (append (with-handlers ([exn:fail? ignore-error])
+              (info-procedure 'deps))
+            (with-handlers ([exn:fail? ignore-error])
+              (info-procedure 'build-deps)))))
+
 (define (generate-dream-lock pkgs-all-path)
   (let* ([src-path (getenv "RACKET_SOURCE")]
          [rel-path (getenv "RACKET_RELPATH")]
@@ -53,18 +61,13 @@
                                                (cons name external-deps))]))]
          [compute-overridden-dep-lists
           (lambda (name dir)
-            (let ([info-procedure (get-info/full dir)])
-              (and info-procedure
-                   (cons name
-                         (remove-duplicates
-                          (filter-not pkg-in-stdlib?
-                                      (map (match-lambda
-                                             [(or (cons pkg-name _) pkg-name)
-                                              pkg-name])
-                                           (append (with-handlers ([exn:fail? (lambda (_) '())])
-                                                     (info-procedure 'deps))
-                                                   (with-handlers ([exn:fail? (lambda (_) '())])
-                                                     (info-procedure 'build-deps))))))))))]
+            (cons name
+                  (remove-duplicates
+                   (filter-not pkg-in-stdlib?
+                               (map (match-lambda
+                                      [(or (cons pkg-name _) pkg-name)
+                                       pkg-name])
+                                    (dependencies dir))))))]
          [dep-list-overrides
           ;; XXX: this probably doesn't capture every case since
           ;; Racket doesn't seem to enforce much structure in a
@@ -72,8 +75,10 @@
           ;; that a sane person would choose
           (if (string=? rel-path "")
               (list (compute-overridden-dep-lists package-name package-path))
-              (let* ([sibling-paths (filter directory-exists?
-                                            (directory-list parent-path #:build? #t))]
+              (let* ([info-exists? (lambda (dir) (get-info/full dir))]
+                     [sibling-paths (filter info-exists?
+                                            (filter directory-exists?
+                                                    (directory-list parent-path #:build? #t)))]
                      [names-of-sibling-paths (map (lambda (p)
                                                     ;; XXX: maybe not very DRY
                                                     (path->string
