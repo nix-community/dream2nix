@@ -17,6 +17,8 @@
 ;; that we traverse foo-lib, and that subsequently generating the
 ;; foo-lib dream-lock requires repeating the same traversal of foo-lib. How can this be avoided?
 
+(define-logger dream2nix)
+
 ;; TODO: no effort is made to handle cycles right now
 (define (dfs graph u dependency-subgraph)
   (if (hash-has-key? dependency-subgraph u)
@@ -65,6 +67,7 @@
                               (path . ,path)))))))))
 
 (define (generate-dream-lock pkgs-all-path)
+  (log-dream2nix-info "Generating dream lock.")
   (let* ([src-path (getenv "RACKET_SOURCE")]
          [rel-path (getenv "RACKET_RELPATH")]
          [package-path (simplify-path (cleanse-path (build-path src-path (if (string=? rel-path "")
@@ -76,6 +79,7 @@
                            (path->string
                             (match/values (split-path package-path)
                               ((_base subdir _must-be-dir?) subdir))))]
+         [_ (log-dream2nix-info "Reading package catalog from file ~a." pkgs-all-path)]
          [pkgs-all (with-input-from-file pkgs-all-path read)]
          [pkg-in-stdlib? (lambda (pkg-name)
                            (or ;; Some people add racket itself as a dependency for some reason
@@ -109,6 +113,10 @@
                      [sibling-paths (filter info-exists?
                                             (filter directory-exists?
                                                     (directory-list parent-path #:build? #t)))]
+                     [_ (log-dream2nix-info "Found ~a sibling packages." (length sibling-paths))]
+                     [_ (for-each (lambda (path)
+                                    (log-dream2nix-info "Found sibling package: ~a." path))
+                                  sibling-paths)]
                      [dir-name (lambda (p)
                                  ;; XXX: maybe not very DRY
                                  (path->string
