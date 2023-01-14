@@ -5,7 +5,7 @@ This section documents the Python subsystem.
 ## Examples
 flake.nix
 ```nix
-{{#include ../../../examples/python_pip/flake.nix}}
+{{#include ../../../examples/python_pip_xxx/flake.nix}}
 ```
 ## Translators
 
