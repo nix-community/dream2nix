@@ -68,7 +68,7 @@ def makeOutputs():
     pkg = get_self()
 
     # create $lib output
-    shutil.copytree(Path("."), outputs.lib)
+    shutil.copytree(Path("."), outputs.lib, symlinks=True)
 
     # create $out output
     bin_out = outputs.out / Path("bin")
