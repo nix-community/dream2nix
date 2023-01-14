@@ -299,6 +299,17 @@
                   fi
                 '');
               };
+              build-docs = {
+                enable = true;
+                name = "build-docs";
+                entry = l.toString (pkgs.writeScript "build-docs" ''
+                  #!${pkgs.bash}/bin/bash
+                  errors=$(mdbook build docs/ 2>&1 | grep ERROR) # no better way?!
+                  if [ $errors ]; then
+                    exit 1
+                  fi
+                '');
+              };
             };
           };
         };
