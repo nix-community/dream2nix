@@ -41,7 +41,7 @@
       utils.mkBuildWithToolchain
       (toolchain: (mkCrane toolchain).buildPackage);
     defaultToolchain = {
-      inherit (pkgs) cargo;
+      inherit (pkgs) cargo rustc;
     };
 
     buildPackage = pname: version: let
@@ -148,7 +148,9 @@
         name: version: let
           pkg = allPackages.${name}.${version};
         in
-          mkShellForDrvs [pkg.passthru.dependencies pkg]
+          (mkShellForDrvs [pkg.passthru.dependencies pkg]).overrideAttrs (old: {
+            nativeBuildInputs = old.nativeBuildInputs ++ [pkg.passthru.rustToolchain.rustc];
+          })
       )
       args.packages;
 
