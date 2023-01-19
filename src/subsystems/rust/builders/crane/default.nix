@@ -136,11 +136,17 @@
       (name: version: {"${version}" = buildPackage name version;})
       args.packages;
 
-    mkShellForDrvs = drvs:
-      pkgs.callPackage ../devshell.nix {
+    mkShellForDrvs = drvs: let
+      shell = pkgs.callPackage ../devshell.nix {
         name = "devshell";
         inherit drvs;
       };
+    in
+      shell.overrideAttrs (old: {
+        nativeBuildInputs =
+          old.nativeBuildInputs
+          ++ [(l.head drvs).passthru.rustToolchain.rustc];
+      });
 
     pkgShells =
       l.mapAttrs
@@ -148,9 +154,7 @@
         name: version: let
           pkg = allPackages.${name}.${version};
         in
-          (mkShellForDrvs [pkg.passthru.dependencies pkg]).overrideAttrs (old: {
-            nativeBuildInputs = old.nativeBuildInputs ++ [pkg.passthru.rustToolchain.rustc];
-          })
+          mkShellForDrvs [pkg.passthru.dependencies pkg]
       )
       args.packages;
 
