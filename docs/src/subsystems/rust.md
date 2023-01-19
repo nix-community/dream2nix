@@ -95,7 +95,6 @@ You can also of course override the toolchain for only certain crates:
 
 #### `crane` notes
 
-The crane builder does not require a `rustc` package in the toolchain specified, only a `cargo` package is needed.
 If cross-compiling, keep in mind that it also takes `cargo` packages like so:
 
 ```nix
