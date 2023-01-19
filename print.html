@@ -667,8 +667,7 @@ This can be done like so:</p>
 }
 </code></pre>
 <h4 id="crane-notes"><a class="header" href="#crane-notes"><code>crane</code> notes</a></h4>
-<p>The crane builder does not require a <code>rustc</code> package in the toolchain specified, only a <code>cargo</code> package is needed.
-If cross-compiling, keep in mind that it also takes <code>cargo</code> packages like so:</p>
+<p>If cross-compiling, keep in mind that it also takes <code>cargo</code> packages like so:</p>
 <pre><code class="language-nix">{
   cargoHostTarget = cargo-package;
   cargoBuildBuild = other-cargo-package;
