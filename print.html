@@ -792,6 +792,9 @@ The downside of this approach is, that this translator cannot be used with a gra
 <div style="break-before: page; page-break-before: always;"></div><h1 id="nodejs-subsystem"><a class="header" href="#nodejs-subsystem">Node.js subsystem</a></h1>
 <p>This section documents the Node.js subsystem.</p>
 <h2 id="example"><a class="header" href="#example">Example</a></h2>
+<blockquote>
+<p>./flake.nix</p>
+</blockquote>
 <pre><code class="language-nix">{
   inputs = {
     dream2nix.url = &quot;github:nix-community/dream2nix&quot;;
@@ -815,6 +818,24 @@ The downside of this approach is, that this translator cannot be used with a gra
     };
 }
 </code></pre>
+<blockquote>
+<p>./projects.toml</p>
+</blockquote>
+<pre><code class="language-toml"># To re-generate this file, run:
+#   nix run github:nix-community/dream2nix#detect-projects $source
+# ... where `$source` points to the source of your project.
+
+[eslint]
+name = &quot;eslint&quot;
+relPath = &quot;&quot;
+subsystem = &quot;nodejs&quot;
+translator = &quot;package-json&quot;
+translators = [&quot;package-json&quot;]
+
+[eslint.subsystemInfo]
+noDev = true
+nodejs = 18
+</code></pre>
 <h2 id="translators-2"><a class="header" href="#translators-2">Translators</a></h2>
 <h3 id="package-lock-pure"><a class="header" href="#package-lock-pure">package-lock (pure)</a></h3>
 <p>Translates <code>package-lock.json</code> into a dream2nix lockfile.</p>
@@ -830,6 +851,88 @@ dream2nix lockfile.</p>
 package.
 At the end copies over all dependencies into <code>node_modules</code> and writes
 symlinks for the bins into <code>node_modules/.bin</code>.</p>
+<h3 id="strict-pure--best-compatibility-experimental"><a class="header" href="#strict-pure--best-compatibility-experimental">strict (pure + best compatibility) (experimental)</a></h3>
+<p>Works almost the same as the granular builder. Not bulletproof stable yet.
+Recommended: Try it out, it should work better than the current default builder, but is not yet released as default.</p>
+<p>Features 🌈</p>
+<ul>
+<li>Fully npm compatible</li>
+<li>No Patches / Overrides required (if &quot;installMethod = copy&quot;)
+<ul>
+<li>(Most) Complex building of node_modules is fully implemented as python application, because it requires a lot of control flow.</li>
+<li>Multiple outputs <code>[&quot;out&quot; &quot;lib&quot;]</code> (explained below)</li>
+</ul>
+</li>
+<li>Dedicated flattening of node_modules:
+<ul>
+<li>Conflicts are resolved during flattening the node_modules folder in favor of the highest semver)</li>
+<li>Creates node_modules tree directly from package-lock.json informations. (Through the translator)</li>
+<li>Creates node_modules tree with other lock files (such as yarn-lock) most optimal.</li>
+</ul>
+</li>
+<li>consume itself:
+<ul>
+<li>lets you override/inject a package into your dream2nix project which is built with dream2nix.</li>
+</ul>
+</li>
+</ul>
+<h4 id="usage"><a class="header" href="#usage">Usage</a></h4>
+<p>in <code>projects.toml</code> set the <code>builder</code> attribute to <code>'strict-builder'</code></p>
+<blockquote>
+<p>./projects.toml</p>
+</blockquote>
+<pre><code class="language-toml"># To re-generate this file, run:
+#   nix run github:nix-community/dream2nix#detect-projects $source
+# ... where `$source` points to the source of your project.
+
+[prettier]
+name = &quot;prettier&quot;
+relPath = &quot;&quot;
+subsystem = &quot;nodejs&quot;
+translator = &quot;yarn-lock&quot;
+builder = &quot;strict-builder&quot;
+</code></pre>
+<h4 id="multiple-outputs"><a class="header" href="#multiple-outputs">Multiple outputs</a></h4>
+<h5 id="lib---package"><a class="header" href="#lib---package"><code>lib</code> - package</a></h5>
+<ul>
+<li>consumable as bare package</li>
+<li>containing all files from the <code>source</code> ( <em>install-scripts</em> already executed )</li>
+</ul>
+<pre><code class="language-bash">    $lib
+    /nix/store/...-pname-1.0.0-lib
+    ├── cli.js
+    ├── ...
+    └── package.json
+</code></pre>
+<p><em>install-scripts</em> declared in <code>package.json</code> run in the following order:</p>
+<blockquote>
+<p>preinstall -&gt;  install -&gt; postinstall</p>
+<p>isolated from other packages</p>
+<p>if the isolation during installScript is causing you problems, let us know.</p>
+</blockquote>
+<h5 id="out---standard-composition"><a class="header" href="#out---standard-composition"><code>out</code> - standard composition</a></h5>
+<ul>
+<li>consumable by most users</li>
+<li><code>{pname}/bin/...</code> contains all executables of this package</li>
+</ul>
+<pre><code class="language-bash">    $out:
+    /nix/store/...-pname-1.0.0
+    ├── bin
+    │   └── cli -&gt; ../lib/cli.js
+    └── lib
+        ├── cli.js 
+        ├── ...
+        ├── package.json 
+        └── node_modules 
+</code></pre>
+<h4 id="devshell---passthrudevshell"><a class="header" href="#devshell---passthrudevshell">DevShell - passthru.devShell</a></h4>
+<p>Dedicated devShell with node_modules decoupled from the package.</p>
+<h5 id="the-problem"><a class="header" href="#the-problem">The Problem</a></h5>
+<p>As you change lines in your codebase the input of the package changes.
+Which then could lead to a change in the <code>hash</code> of the <code>node_modules</code> even if the <code>packages</code> of your project didn't change.
+This basically means your nix shell / direnv could reload the shell every time you type.</p>
+<h5 id="the-solution"><a class="header" href="#the-solution">The Solution</a></h5>
+<p>Decoupled <code>node_modules</code> from the inputs, dependending only on the current dependencies of the project and not on the source itself.</p>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="haskell-subsystem"><a class="header" href="#haskell-subsystem">Haskell subsystem</a></h1>
 <p>This section documents the Haskell subsystem.</p>
 <p>Get involved:</p>
