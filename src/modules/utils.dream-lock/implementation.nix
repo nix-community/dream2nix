@@ -113,7 +113,7 @@
 
     packageVersions =
       l.zipAttrsWith
-      (name: versions: l.flatten versions)
+      (name: versions: l.unique (l.flatten versions))
       [
         allDependants
         allDependencies

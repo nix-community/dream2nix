@@ -1,0 +1,21 @@
+[tool.poetry]
+name = "app"
+version = "0.1.0"
+description = ""
+authors = ["hsjobeki <hsjobeki@gmail.com>"]
+
+[tool.poetry.scripts]
+d2nNodeModules = 'app.main:d2nNodeModules'
+checkPlatform = 'app.main:checkPlatform'
+d2nMakeOutputs = 'app.main:makeOutputs'
+
+[tool.poetry.dependencies]
+python = "^3.10"
+
+[tool.poetry.dev-dependencies]
+mypy = "^0.991"
+black = "flake8"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
