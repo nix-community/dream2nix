@@ -47,8 +47,8 @@
 (define (fetch-git-repositories dep graph)
 
   (define (package-source->git-url dep)
-  (let-values ([(_ type) (dependency->name+type dep)])
-    (and (eq? type 'git-url) dep)))
+    (let-values ([(_ type) (dependency->name+type dep)])
+      (and (eq? type 'git-url) dep)))
 
   (define git-url (package-source->git-url dep))
   (if git-url
@@ -161,7 +161,7 @@
                  [names (hash-keys git-repositories)])
             (log-dream2nix-info "Found ~a direct dependencies on git repositories." (length names))
             (for-each (lambda (name)
-                                    (log-dream2nix-info "Found git repository dependency: ~a." name))
+                        (log-dream2nix-info "Found git repository dependency: ~a." name))
                       names)
             git-repositories)]
          [dep-alist-from-git (hash-map git-repositories
