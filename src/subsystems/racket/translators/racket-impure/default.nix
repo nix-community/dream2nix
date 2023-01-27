@@ -1,6 +1,7 @@
 {
   utils,
   pkgs,
+  inputs,
   ...
 }: {
   type = "impure";
@@ -17,17 +18,7 @@
   # The output file must contain the dream lock data encoded as json.
   # See /src/specifications/dream-lock-example.json
   translateBin = let
-    pruned-racket-catalog = let
-      src = pkgs.fetchurl {
-        url = "https://github.com/nix-community/pruned-racket-catalog/tarball/9f11e5ea5765c8a732c5e3129ca2b71237ae2bac";
-        sha256 = "sha256-/n30lailqSndoqPGWcFquCpQWVQcciMiypXYLhNmFUo=";
-      };
-    in
-      pkgs.runCommandLocal "pruned-racket-catalog" {} ''
-        mkdir $out
-        cd $out
-        tar --strip-components 1 -xf ${src}
-      '';
+    pruned-racket-catalog = inputs.pruned-racket-catalog;
   in
     utils.writePureShellScript
     (with pkgs; [
