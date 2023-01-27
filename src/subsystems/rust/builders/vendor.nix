@@ -49,18 +49,21 @@ in rec {
     sources = l.map makeSource deps;
 
     findCrateSource = source: let
-      inherit (pkgs) cargo jq;
+      cargo = "${pkgs.cargo}/bin/cargo";
+      jq = "${pkgs.jq}/bin/jq";
+      yj = "${pkgs.yj}/bin/yj";
+      sponge = "${pkgs.moreutils}/bin/sponge";
       pkg = source.dep;
     in ''
       # If the target package is in a workspace, or if it's the top-level
       # crate, we should find the crate path using `cargo metadata`.
-      crateCargoTOML=$(${cargo}/bin/cargo metadata --format-version 1 --no-deps --manifest-path $tree/Cargo.toml | \
-        ${jq}/bin/jq -r '.packages[] | select(.name == "${pkg.name}") | .manifest_path')
+      crateCargoTOML=$(${cargo} metadata --format-version 1 --no-deps --manifest-path $tree/Cargo.toml | \
+        ${jq} -r '.packages[] | select(.name == "${pkg.name}") | .manifest_path')
       # If the repository is not a workspace the package might be in a subdirectory.
       if [[ -z $crateCargoTOML ]]; then
         for manifest in $(find $tree -name "Cargo.toml"); do
           echo Looking at $manifest
-          crateCargoTOML=$(${cargo}/bin/cargo metadata --format-version 1 --no-deps --manifest-path "$manifest" | ${jq}/bin/jq -r '.packages[] | select(.name == "${pkg.name}") | .manifest_path' || :)
+          crateCargoTOML=$(${cargo} metadata --format-version 1 --no-deps --manifest-path "$manifest" | ${jq} -r '.packages[] | select(.name == "${pkg.name}") | .manifest_path' || :)
           if [[ ! -z $crateCargoTOML ]]; then
             break
           fi
@@ -68,6 +71,20 @@ in rec {
         if [[ -z $crateCargoTOML ]]; then
           >&2 echo "Cannot find path for crate '${pkg.name}-${pkg.version}' in the tree in: $tree"
           exit 1
+        fi
+      else
+        # we need to patch dependencies with `workspace = true` (workspace inheritance)
+        workspaceDependencies="$(cat "$tree/Cargo.toml" | ${yj} -tj | ${jq} -cr '.workspace.dependencies')"
+        if [[ "$workspaceDependencies" != "null" ]]; then
+          tree="$(pwd)/${pkg.name}-${pkg.version}"
+          cp -prd --no-preserve=mode,ownership "$(dirname $crateCargoTOML)" "$tree"
+          crateCargoTOML="$tree/Cargo.toml"
+          cat "$crateCargoTOML" \
+          | ${yj} -tj \
+          | ${jq} -cr --argjson workspaceDependencies "$workspaceDependencies" \
+            --from-file ${./patch-workspace-deps.jq} \
+          | ${yj} -jt \
+          | ${sponge} "$crateCargoTOML"
         fi
       fi
       echo Found crate ${pkg.name} at $crateCargoTOML
