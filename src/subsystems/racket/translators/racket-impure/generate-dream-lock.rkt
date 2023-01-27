@@ -205,18 +205,17 @@
          [sources-hash-table (make-immutable-hash (append sources-from-catalog
                                                           sources-from-git
                                                           sources-from-repo))]
-         [sources (make-immutable-hash (hash-map dependency-subgraph
-                                                 (lambda (name _v)
-                                                   (cons (string->symbol name) (hash-ref sources-hash-table (string->symbol name))))))]
+         [sources (hash-map/copy dependency-subgraph
+                                 (lambda (name _v)
+                                   (values (string->symbol name) (hash-ref sources-hash-table (string->symbol name)))))]
          [dream-lock (make-immutable-hash
                       `((_generic . ,generic)
                         (sources . ,sources)
                         (_subsystem . ,(make-immutable-hash))
-                        (dependencies . ,(make-immutable-hash
-                                          (hash-map dependency-subgraph
-                                                    (lambda (name dep-list)
-                                                      (cons (string->symbol name)
-                                                            (make-immutable-hash `((0.0.0 . ,(map (lambda (dep-name) (list dep-name "0.0.0")) dep-list)))))))))))])
+                        (dependencies . ,(hash-map/copy dependency-subgraph
+                                                        (lambda (name dep-list)
+                                                          (values (string->symbol name)
+                                                                  (make-immutable-hash `((0.0.0 . ,(map (lambda (dep-name) (list dep-name "0.0.0")) dep-list))))))))))])
     (make-parent-directory* (getenv "RACKET_OUTPUT_FILE"))
     (with-output-to-file (getenv "RACKET_OUTPUT_FILE")
       (lambda () (write-json dream-lock))
