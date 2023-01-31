@@ -29,6 +29,9 @@
             };
           };
         };
+        packages = {
+          inherit (config.dream2nix.outputs.prettier.packages) prettier;
+        };
       };
     };
 }
