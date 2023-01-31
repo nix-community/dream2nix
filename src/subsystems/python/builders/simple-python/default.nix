@@ -37,6 +37,13 @@
       (src: src.original or src)
       allDependencySources';
 
+    buildRequirements =
+      l.map
+      # We strip the version constraint, because we currently use the version in nixpkgs.
+      (requirement:
+        python.pkgs.${l.head (builtins.match "([^<>=]+).*" requirement)})
+      (subsystemAttrs.buildRequirements or []);
+
     package = produceDerivation defaultPackageName (buildFunc {
       name = defaultPackageName;
       src = getSource defaultPackageName defaultPackageVersion;
@@ -46,9 +53,9 @@
         [pkgs.autoPatchelfHook]
         ++ (with python.pkgs; [
           pip
-          poetry-core
           wheel
-        ]);
+        ])
+        ++ buildRequirements;
       propagatedBuildInputs = [python.pkgs.setuptools];
       doCheck = false;
       dontStrip = true;
@@ -61,17 +68,32 @@
           fname=$(stripHash $fname)
           cp $file dist/$fname
         done
-        ${python}/bin/python -m pip install \
-          --find-links ./dist/ \
+
+        mkdir -p "$out/${python.sitePackages}"
+        export PYTHONPATH="$out/${python.sitePackages}:$PYTHONPATH"
+        ${python.interpreter} -m pip wheel --verbose --no-index --no-deps --no-clean --no-build-isolation --wheel-dir dist .
+      '';
+
+      installPhase = let
+        # Some packages have another package as a dependency *and* as a buildRequirement.
+        # In this case, pip tries to uninstall the buildRequirement before installing the dependency and fails
+        # as it can't delete something in the nix store. So we patch PYTHONPATH to remove the buildRequirement in installPhase.
+        removeBuildRequirements =
+          l.concatMapStringsSep "\n"
+          (requirement: "export PYTHONPATH=\${PYTHONPATH//\"${requirement}/lib/${python.libPrefix}/site-packages\"}")
+          buildRequirements;
+      in ''
+        ${removeBuildRequirements}
+
+        pipInstallFlags="--find-links ./dist/ \
           --no-build-isolation \
           --no-index \
           --no-warn-script-location \
           --prefix="$out" \
           --no-cache \
-          . \
-          $pipInstallFlags
+          $pipInstallFlags"
+        ${python.interpreter} -m pip install $pipInstallFlags dist/*
       '';
-      installPhase = "true";
     });
 
     devShell = pkgs.mkShell {

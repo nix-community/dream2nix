@@ -115,6 +115,7 @@ in {
         application = false;
         pythonAttr = "python3";
         sourceFormats = {};
+        buildRequirements = pyproject.build-system.requires or [];
       };
 
       cyclicDependencies = {};
