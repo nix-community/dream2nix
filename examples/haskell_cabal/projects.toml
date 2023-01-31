@@ -2,8 +2,8 @@
 #   nix run github:nix-community/dream2nix#detect-projects $source
 # ... where `$source` points to the source of your project.
 
-[main]
-name = "main"
+[cabal2json]
+name = "cabal2json"
 relPath = ""
 subsystem = "haskell"
 translator = "cabal"
