@@ -232,6 +232,12 @@ If you want to support more platforms later, just add more lines to that file.</
 }
 </code></pre>
 <p>This has the advantage of keeping all the configuration in a single file.</p>
+<h2 id="populating-projectstoml"><a class="header" href="#populating-projectstoml">Populating projects.toml</a></h2>
+<p>dream2nix also needs to know things about the project(s) at hand. 
+In the <code>flake.nix</code> file you can see it's expecting a <code>./projects.toml</code>. 
+The easiest way to create and populate this <code>./projects.toml</code> is with the helper function </p>
+<pre><code class="language-command">nix run github:nix-community/dream2nix#detect-projects . &gt; projects.toml
+</code></pre>
 <h2 id="explore-the-outputs"><a class="header" href="#explore-the-outputs">Explore the outputs</a></h2>
 <p>We have setup the flake, defined our target system(s), now we are ready
 to use it. Let's start by listing out what is available to us (actual

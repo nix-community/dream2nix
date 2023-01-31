@@ -272,6 +272,12 @@ If you want to support more platforms later, just add more lines to that file.</
 }
 </code></pre>
 <p>This has the advantage of keeping all the configuration in a single file.</p>
+<h2 id="populating-projectstoml"><a class="header" href="#populating-projectstoml">Populating projects.toml</a></h2>
+<p>dream2nix also needs to know things about the project(s) at hand. 
+In the <code>flake.nix</code> file you can see it's expecting a <code>./projects.toml</code>. 
+The easiest way to create and populate this <code>./projects.toml</code> is with the helper function </p>
+<pre><code class="language-command">nix run github:nix-community/dream2nix#detect-projects . &gt; projects.toml
+</code></pre>
 <h2 id="list-the-available-packages"><a class="header" href="#list-the-available-packages">List the available packages</a></h2>
 <p>Let's get an overview of what the <code>flake.nix</code> allows us to do with our project.</p>
 <pre><code class="language-command">&gt; nix flake show
@@ -431,6 +437,12 @@ If you want to support more platforms later, just add more lines to that file.</
 }
 </code></pre>
 <p>This has the advantage of keeping all the configuration in a single file.</p>
+<h2 id="populating-projectstoml-1"><a class="header" href="#populating-projectstoml-1">Populating projects.toml</a></h2>
+<p>dream2nix also needs to know things about the project(s) at hand. 
+In the <code>flake.nix</code> file you can see it's expecting a <code>./projects.toml</code>. 
+The easiest way to create and populate this <code>./projects.toml</code> is with the helper function </p>
+<pre><code class="language-command">nix run github:nix-community/dream2nix#detect-projects . &gt; projects.toml
+</code></pre>
 <h2 id="explore-the-outputs"><a class="header" href="#explore-the-outputs">Explore the outputs</a></h2>
 <p>We have setup the flake, defined our target system(s), now we are ready
 to use it. Let's start by listing out what is available to us (actual
@@ -753,7 +765,28 @@ in
 <p>This section documents the Python subsystem.</p>
 <h2 id="examples-1"><a class="header" href="#examples-1">Examples</a></h2>
 <p>flake.nix</p>
-<pre><code class="language-nix">{{#include ../../../examples/python_aiohttp/flake.nix}}
+<pre><code class="language-nix">{
+  inputs = {
+    dream2nix.url = &quot;github:nix-community/dream2nix&quot;;
+    src.url = &quot;https://files.pythonhosted.org/packages/5a/86/5f63de7a202550269a617a5d57859a2961f3396ecd1739a70b92224766bc/aiohttp-3.8.1.tar.gz&quot;;
+    src.flake = false;
+  };
+
+  outputs = {
+    self,
+    dream2nix,
+    src,
+  } @ inp:
+    (dream2nix.lib.makeFlakeOutputs {
+      systems = [&quot;x86_64-linux&quot;];
+      config.projectRoot = ./.;
+      source = src;
+      projects = ./projects.toml;
+    })
+    // {
+      checks.x86_64-linux = self.packages.x86_64-linux;
+    };
+}
 </code></pre>
 <h2 id="translators-1"><a class="header" href="#translators-1">Translators</a></h2>
 <h3 id="pip-impure"><a class="header" href="#pip-impure">pip (impure)</a></h3>

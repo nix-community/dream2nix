@@ -138,7 +138,28 @@
 <p>This section documents the Python subsystem.</p>
 <h2 id="examples"><a class="header" href="#examples">Examples</a></h2>
 <p>flake.nix</p>
-<pre><code class="language-nix">{{#include ../../../examples/python_aiohttp/flake.nix}}
+<pre><code class="language-nix">{
+  inputs = {
+    dream2nix.url = &quot;github:nix-community/dream2nix&quot;;
+    src.url = &quot;https://files.pythonhosted.org/packages/5a/86/5f63de7a202550269a617a5d57859a2961f3396ecd1739a70b92224766bc/aiohttp-3.8.1.tar.gz&quot;;
+    src.flake = false;
+  };
+
+  outputs = {
+    self,
+    dream2nix,
+    src,
+  } @ inp:
+    (dream2nix.lib.makeFlakeOutputs {
+      systems = [&quot;x86_64-linux&quot;];
+      config.projectRoot = ./.;
+      source = src;
+      projects = ./projects.toml;
+    })
+    // {
+      checks.x86_64-linux = self.packages.x86_64-linux;
+    };
+}
 </code></pre>
 <h2 id="translators"><a class="header" href="#translators">Translators</a></h2>
 <h3 id="pip-impure"><a class="header" href="#pip-impure">pip (impure)</a></h3>
