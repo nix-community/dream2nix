@@ -313,9 +313,14 @@
           docs =
             pkgs.runCommand
             "dream2nix-docs"
-            {nativeBuildInputs = [pkgs.mdbook];}
+            {nativeBuildInputs = [pkgs.bash pkgs.mdbook];}
             ''
-              mdbook build -d $out ${./.}/docs
+              bash -c "
+              errors=$(mdbook build -d $out ${./.}/docs |& grep ERROR)
+              if [ \"$errors\" ]; then
+                exit 1
+              fi
+              "
             '';
         };
       };

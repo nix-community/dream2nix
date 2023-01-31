@@ -38,3 +38,12 @@ Alternatively, we can define the targets in the `flake.nix` like so:
 ```
 
 This has the advantage of keeping all the configuration in a single file.
+
+## Populating projects.toml 
+
+dream2nix also needs to know things about the project(s) at hand. 
+In the `flake.nix` file you can see it's expecting a `./projects.toml`. 
+The easiest way to create and populate this `./projects.toml` is with the helper function 
+```command
+nix run github:nix-community/dream2nix#detect-projects . > projects.toml
+```
