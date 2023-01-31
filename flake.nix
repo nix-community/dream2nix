@@ -66,6 +66,12 @@
       url = "git+https://gitlab.haskell.org/bgamari/ghc-utils";
       flake = false;
     };
+
+    # required for Racket translators
+    pruned-racket-catalog = {
+      url = "github:nix-community/pruned-racket-catalog/catalog";
+      flake = false;
+    };
   };
 
   outputs = {
@@ -81,6 +87,7 @@
     crane,
     all-cabal-json,
     ghc-utils,
+    pruned-racket-catalog,
     ...
   } @ inp: let
     l = lib // builtins;
