@@ -71,7 +71,7 @@
 
         mkdir -p "$out/${python.sitePackages}"
         export PYTHONPATH="$out/${python.sitePackages}:$PYTHONPATH"
-        ${python}/bin/python -m pip wheel --verbose --no-index --no-deps --no-clean --no-build-isolation --wheel-dir dist .
+        ${python.interpreter} -m pip wheel --verbose --no-index --no-deps --no-clean --no-build-isolation --wheel-dir dist .
       '';
 
       installPhase = let
@@ -92,7 +92,7 @@
           --prefix="$out" \
           --no-cache \
           $pipInstallFlags"
-        ${python}/bin/python -m pip install $pipInstallFlags dist/*
+        ${python.interpreter} -m pip install $pipInstallFlags dist/*
       '';
     });
 
