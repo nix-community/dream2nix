@@ -70,7 +70,7 @@ Our flake.nix imported external libraries. The versions of these libraries have 
 Let's try building our project.
 If you get an error about `unresolved impurities`, see [Resolve Impurities](#resolve-impurities)
 ```command
-> nix build .#default
+> nix build .#main
 ```
 Congratulations, your build artifacts will now be accessible via the `./result` directory. If your project contains executables, you can run these via `./result/bin/executable-name`.
 If you want to develop on your python project, see [Create a development shell](#create-a-development-shell)
@@ -86,7 +86,7 @@ The `-c $SHELL` part is only necessary if you use a different shell than bash an
 ## Resolve impurities
 If you try to build, you might run into the following error.
 ```command
-> nix build .#default
+> nix build .#main
 error: The python package main contains unresolved impurities.
        Resolve by running the .resolve attribute of this derivation
        or by resolving all impure projects by running the `resolveImpure` package
