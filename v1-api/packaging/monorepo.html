@@ -1,0 +1,262 @@
+<!DOCTYPE HTML>
+<html lang="en" class="sidebar-visible no-js light">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>v1 packaging: monorepo - dream2nix documentation</title>
+        <!-- Custom HTML head -->
+        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff" />
+
+        <link rel="icon" href="../../favicon.svg">
+        <link rel="shortcut icon" href="../../favicon.png">
+        <link rel="stylesheet" href="../../css/variables.css">
+        <link rel="stylesheet" href="../../css/general.css">
+        <link rel="stylesheet" href="../../css/chrome.css">
+        <link rel="stylesheet" href="../../css/print.css" media="print">
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../../fonts/fonts.css">
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" href="../../highlight.css">
+        <link rel="stylesheet" href="../../tomorrow-night.css">
+        <link rel="stylesheet" href="../../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+    </head>
+    <body>
+        <!-- Provide site root to javascript -->
+        <script type="text/javascript">
+            var path_to_root = "../../";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
+        </script>
+
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script type="text/javascript">
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script type="text/javascript">
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            var html = document.querySelector('html');
+            html.classList.remove('no-js')
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add('js');
+        </script>
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script type="text/javascript">
+            var html = document.querySelector('html');
+            var sidebar = 'hidden';
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            }
+            html.classList.remove('sidebar-visible');
+            html.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <div class="sidebar-scrollbox">
+                <ol class="chapter"><li class="chapter-item expanded "><a href="../../intro.html"><strong aria-hidden="true">1.</strong> Introduction</a></li><li class="chapter-item expanded affix "><li class="part-title">Guides</li><li class="chapter-item expanded "><a href="../../guides/getting-started-python.html"><strong aria-hidden="true">2.</strong> Python: getting started in 10 minutes</a></li><li class="chapter-item expanded "><a href="../../guides/getting-started-nodejs.html"><strong aria-hidden="true">3.</strong> Node.js: quickstart</a></li><li class="chapter-item expanded affix "><li class="part-title">Subsystems</li><li class="chapter-item expanded "><a href="../../subsystems/rust.html"><strong aria-hidden="true">4.</strong> Rust</a></li><li class="chapter-item expanded "><a href="../../subsystems/python.html"><strong aria-hidden="true">5.</strong> Python</a></li><li class="chapter-item expanded "><a href="../../subsystems/node.html"><strong aria-hidden="true">6.</strong> Node.js</a></li><li class="chapter-item expanded "><a href="../../subsystems/haskell.html"><strong aria-hidden="true">7.</strong> Haskell</a></li><li class="chapter-item expanded "><a href="../../subsystems/php.html"><strong aria-hidden="true">8.</strong> PHP</a></li><li class="chapter-item expanded affix "><li class="part-title">Concepts / API</li><li class="chapter-item expanded "><a href="../../intro/architecture.html"><strong aria-hidden="true">9.</strong> Architecture</a></li><li class="chapter-item expanded "><a href="../../intro/translators.html"><strong aria-hidden="true">10.</strong> Translators</a></li><li class="chapter-item expanded "><a href="../../api/generic-lock.html"><strong aria-hidden="true">11.</strong> Generic Lockfile</a></li><li class="chapter-item expanded "><a href="../../intro/indexers.html"><strong aria-hidden="true">12.</strong> Indexers</a></li><li class="chapter-item expanded "><a href="../../intro/fetchers.html"><strong aria-hidden="true">13.</strong> Fetchers</a></li><li class="chapter-item expanded "><div><strong aria-hidden="true">14.</strong> Builders</div></li><li class="chapter-item expanded "><a href="../../intro/override-system.html"><strong aria-hidden="true">15.</strong> Override system</a></li><li class="chapter-item expanded affix "><li class="part-title">Correlation with nixpkgs</li><li class="chapter-item expanded "><a href="../../intro/nixpkgs-improvements.html"><strong aria-hidden="true">16.</strong> Nixpkgs improvements</a></li><li class="chapter-item expanded affix "><li class="part-title">Contributing</li><li class="chapter-item expanded "><a href="../../extending-dream2nix.html"><strong aria-hidden="true">17.</strong> Extending dream2nix</a></li><li class="chapter-item expanded "><a href="../../contributing/contributing.html"><strong aria-hidden="true">18.</strong> Contributing</a></li><li class="chapter-item expanded affix "><li class="part-title">Development Roundups</li><li class="chapter-item expanded "><a href="../../development-roundups/2022-april-june.html"><strong aria-hidden="true">19.</strong> April - June 2022</a></li><li class="chapter-item expanded "><a href="../../development-roundups/2022-july-september.html"><strong aria-hidden="true">20.</strong> July - September 2022</a></li><li class="chapter-item expanded affix "><li class="part-title">WIP</li><li class="chapter-item expanded "><a href="../../v1-api/summary.html"><strong aria-hidden="true">21.</strong> v1 API</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../../v1-api/problems.html"><strong aria-hidden="true">21.1.</strong> problems of the current dream2nix</a></li><li class="chapter-item expanded "><a href="../../v1-api/users.html"><strong aria-hidden="true">21.2.</strong> users of dream2nix</a></li><li class="chapter-item expanded "><a href="../../v1-api/packaging/nodejs-init-project.html"><strong aria-hidden="true">21.3.</strong> v1 packaging: project initialization</a></li><li class="chapter-item expanded "><a href="../../v1-api/packaging/nodejs-workspaces.html"><strong aria-hidden="true">21.4.</strong> v1 packaging: workspaces</a></li><li class="chapter-item expanded "><a href="../../v1-api/packaging/nodejs-multiple-repos.html"><strong aria-hidden="true">21.5.</strong> v1 packaging: multiple repos</a></li><li class="chapter-item expanded "><a href="../../v1-api/packaging/monorepo.html" class="active"><strong aria-hidden="true">21.6.</strong> v1 packaging: monorepo</a></li><li class="chapter-item expanded "><a href="../../v1-api/consuming/inspect-options.html"><strong aria-hidden="true">21.7.</strong> v1 consuming: inspect package options</a></li><li class="chapter-item expanded "><a href="../../v1-api/consuming/override.html"><strong aria-hidden="true">21.8.</strong> v1 consuming: override packages</a></li><li class="chapter-item expanded "><a href="../../v1-api/integrating/integrate-lang2nix-pure.html"><strong aria-hidden="true">21.9.</strong> v1 integrating: lang2nix tool (pure)</a></li><li class="chapter-item expanded "><a href="../../v1-api/integrating/integrate-lang2nix-impure.html"><strong aria-hidden="true">21.10.</strong> v1 integrating: lang2nix tool (code-gen/impure)</a></li></ol></li></ol>
+            </div>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky bordered">
+                    <div class="left-buttons">
+                        <button id="sidebar-toggle" class="icon-button" type="button" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </button>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light (default)</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">dream2nix documentation</h1>
+
+                    <div class="right-buttons">
+                        <a href="../../print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script type="text/javascript">
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h1 id="build-packages-in-a-monorepo"><a class="header" href="#build-packages-in-a-monorepo">build packages in a monorepo</a></h1>
+<p>The example mono repo has 3 packages: <code>nodejs-app</code>, <code>python-tool</code>, <code>rust-tool</code>.</p>
+<p>The packages <code>python-tool</code> and <code>rust-tool</code> might or might not be built with dream2nix.</p>
+<p>The package <code>nodejs-app</code> is built with dream2nix and depends on <code>python-tool</code> and <code>rust-tool</code>.</p>
+<h2 id="assuming-this-repo-structure"><a class="header" href="#assuming-this-repo-structure">Assuming this repo structure</a></h2>
+<pre><code>├── default.nix
+├── overrides
+│  ├── nodejs
+│  ├── python
+│  └── rust
+├── nodejs-app
+│  └── default.nix
+├── python-tool
+│  └── default.nix
+└── rust-tool
+   └── default.nix
+</code></pre>
+<h2 id="contents-of-nodejs-appdefaultnix"><a class="header" href="#contents-of-nodejs-appdefaultnix">Contents of <code>./nodejs-app/default.nix</code></a></h2>
+<p><code>./nodejs-app/default.nix</code></p>
+<pre><code class="language-nix">{config, lib, dream2nix, ...}: {
+
+  imports = [
+    # default module to create a nodejs package
+    dream2nix.modules.nodejs.mkDerivation
+    # get package dependencies from package-lock
+    dream2nix.modules.nodejs.package-lock
+  ];
+
+  # Overrides allow to manipulate dependency builds
+  overrides.local.path = ../overrides/nodejs;
+
+  src = ./.;
+  
+  # include dependencies from nixpkgs and the local monorepo
+  # see definition of `packageSets` in ../default.nix
+  deps = {nixpkgs, monorepo, ...} @ packageSets: {
+    inherit (nixpkgs)
+      hello
+      ;
+    inherit (monorepo)
+      python-tool
+      rust-tool
+      ;
+  };
+
+  nativeBuildInputs = [
+    config.deps.hello
+    config.deps.python-tool
+    config.deps.rust-tool
+  ];
+
+  configurePhase = ''
+    hello --version
+    python-tool --version
+    rust-tool --version
+  '';
+
+  # add more mkDerivation attributes here to customize...
+}
+</code></pre>
+<h2 id="contents-of-defaultnix"><a class="header" href="#contents-of-defaultnix">Contents of <code>./default.nix</code></a></h2>
+<p><code>./default.nix</code></p>
+<pre><code class="language-nix">{
+  nixpkgs ? import &lt;nixpkgs&gt; {},
+  dream2nix ?
+    import
+    (builtins.fetchTarball &quot;https://dream2nix.dev/tarball/1.0&quot;)
+    {inherit nixpkgs;},
+
+} @ inputs: let
+
+  makePackage = modules: dream2ix.mkDerivation
+    # Package sets available to each package's `deps` function
+    {packageSets = {inherit monorepo nixpkgs;};}
+    modules;
+
+  monorepo = {
+    nodejs-app = makePackage ./nodejs-app;
+    python-tool = makePackage ./python-tool;
+    rust-tool = makePackage ./rust-tool;
+  };
+
+in {
+  packages = monorepo;
+}
+</code></pre>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../../v1-api/packaging/nodejs-multiple-repos.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+                            <a rel="next" href="../../v1-api/consuming/inspect-options.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../../v1-api/packaging/nodejs-multiple-repos.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+                    <a rel="next" href="../../v1-api/consuming/inspect-options.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+        <script type="text/javascript">
+            window.playground_copyable = true;
+        </script>
+        <script src="../../elasticlunr.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../../mark.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../../searcher.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../../clipboard.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../../highlight.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../../book.js" type="text/javascript" charset="utf-8"></script>
+
+        <!-- Custom JS scripts -->
+    </body>
+</html>
