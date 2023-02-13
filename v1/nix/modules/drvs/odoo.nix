@@ -27,8 +27,9 @@ in {
 
   pythonSources = config.deps.fetchPythonRequirements {
     inherit (config.deps) python;
+    name = config.pname;
     requirementsFiles = ["${config.src}/requirements.txt"];
-    hash = "sha256-4ZdbcWXylNzfqhkOu2Gn2i7TOCUU3/TwLkPZ+E5vV2E=";
+    hash = "sha256-fxvuknvfNQxRnUo8UWyvLdqAHrKxQMsWYXeKtEV0rns=";
     maxDate = "2023-01-01";
     nativeBuildInputs = (with config.deps; [
       postgresql

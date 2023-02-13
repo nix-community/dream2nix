@@ -27,10 +27,11 @@ in {
 
   pythonSources = config.deps.fetchPythonRequirements {
     inherit (config.deps) python;
+    name = config.pname;
     requirementsList = [
       "apache-airflow"
     ];
-    hash = "sha256-ZEeIVAsHoKq9g25+b7XWUSOf2/HUYMUAPl30IRG+Zak=";
+    hash = "sha256-Wu4NdRmT+0wi7qmReULemjPD4sFf6z9tUnfRmSlup0c=";
     maxDate = "2023-01-01";
   };
 
