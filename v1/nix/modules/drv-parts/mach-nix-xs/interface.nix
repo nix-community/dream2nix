@@ -16,7 +16,7 @@ in {
     };
 
     substitutions = l.mkOption {
-      type = t.attrsOf t.package;
+      type = t.lazyAttrsOf t.package;
       description = ''
         Substitute individual python packages from nixpkgs.
       '';
@@ -24,7 +24,7 @@ in {
     };
 
     manualSetupDeps = l.mkOption {
-      type = t.attrsOf (t.listOf t.str);
+      type = t.lazyAttrsOf (t.listOf t.str);
       description = ''
         Replace the default setup dependencies from nixpkgs for sdist based builds
       '';
@@ -41,7 +41,7 @@ in {
     };
 
     overrides = l.mkOption {
-      type = t.attrsOf (t.functionTo t.attrs);
+      type = t.lazyAttrsOf (t.functionTo t.attrs);
       description = ''
         Overrides for sdist package builds
       '';
