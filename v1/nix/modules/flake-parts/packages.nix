@@ -15,6 +15,7 @@
         ];
         specialArgs.dependencySets = {
           nixpkgs = inputs'.nixpkgsPython.legacyPackages;
+          nixpkgsStable = inputs'.nixpkgsStable.legacyPackages;
         };
         specialArgs.drv-parts = inputs.drv-parts;
       };

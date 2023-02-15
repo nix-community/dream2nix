@@ -1,6 +1,9 @@
 {config, lib, drv-parts, ...}: let
   l = lib // builtins;
   python = config.deps.python;
+  extractPythonAttrs = config.mach-nix.lib.extractPythonAttrs;
+
+  nixpkgsAttrs = extractPythonAttrs python.pkgs.apache-airflow;
 
 in {
 
@@ -8,8 +11,12 @@ in {
     ../../drv-parts/mach-nix-xs
   ];
 
-  deps = {nixpkgs, ...}: {
-    inherit (nixpkgs) fetchFromGitHub;
+  deps = {nixpkgs, nixpkgsStable, ...}: {
+    inherit (nixpkgs)
+      git
+      fetchFromGitHub
+      ;
+    python = l.mkForce nixpkgsStable.python3;
   };
 
   pname = "apache-airflow";
@@ -31,7 +38,7 @@ in {
     requirementsList = [
       "apache-airflow"
     ];
-    hash = "sha256-Wu4NdRmT+0wi7qmReULemjPD4sFf6z9tUnfRmSlup0c=";
+    hash = "sha256-sj1UILnWbUyTcpgEEy8QtQEk+lTgBOJKa+NEUD3xVBs=";
     maxDate = "2023-01-01";
   };
 
@@ -40,5 +47,29 @@ in {
   substitutions = {
     cron-descriptor = python.pkgs.cron-descriptor;
     python-nvd3 = python.pkgs.python-nvd3;
+    pendulum = python.pkgs.pendulum;
   };
+
+  nativeBuildInputs = [
+    python.pkgs.GitPython
+  ];
+
+  env = {
+    inherit (nixpkgsAttrs)
+      INSTALL_PROVIDERS_FROM_SOURCES
+      disabledTests
+      makeWrapperArgs
+      pytestFlagsArray
+      pythonImportsCheck
+      ;
+  };
+
+  inherit (nixpkgsAttrs)
+    buildInputs
+    checkInputs
+    postPatch
+    postInstall
+    preCheck
+    ;
+
 }
