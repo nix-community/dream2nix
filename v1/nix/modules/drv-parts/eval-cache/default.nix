@@ -39,18 +39,16 @@
 
   file = cfg.repoRoot + cfg.cacheFileRel;
 
-  buildCacheCommand = ''
-    To generate a new cache file, execute:
-      cat $(nix-build ${cfg.newFile.drvPath}) > $(git rev-parse --show-toplevel)/${cfg.cacheFileRel}
-  '';
+  refreshCommand =
+    "cat $(nix-build ${cfg.newFile.drvPath}) > $(git rev-parse --show-toplevel)/${cfg.cacheFileRel}";
 
-  ifdInfoMsg = ''
-    Information on how to fix this is shown in the error below if evaluated with `--allow-import-from-derivation`
-  '';
+  newFileMsg = "To generate a new cache file, execute:\n  ${refreshCommand}";
 
-  cacheMissingMsg = ''
-    The cache file ${cfg.cacheFileRel} for drv-parts module '${packageName}' doesn't exist, please create it.
-  '';
+  ifdInfoMsg =
+    "Information on how to fix this is shown below if evaluated with `--allow-import-from-derivation`";
+
+  cacheMissingMsg =
+    "The cache file ${cfg.cacheFileRel} for drv-parts module '${packageName}' doesn't exist, please create it.";
 
   cacheMissingError =
     l.trace ''
@@ -58,10 +56,9 @@
       ${cacheMissingMsg}
       ${ifdInfoMsg}
     ''
-    throw ''
+    l.trace ''
       ${"\n"}
-      ${cacheMissingMsg}
-      ${buildCacheCommand}
+      ${newFileMsg}
     '';
 
   cacheInvalidMsg =
@@ -73,26 +70,27 @@
       ${cacheInvalidMsg}
       ${ifdInfoMsg}
     ''
-    throw ''
+    l.trace ''
       ${"\n"}
-      ${cacheInvalidMsg}
-      ${buildCacheCommand}
+      ${newFileMsg}
     '';
 
   cachePrio = l.modules.defaultOverridePriority + 1;
 
   mapCachePrio = l.mapAttrs (key: val: l.mkOverride cachePrio val);
 
-  load = file: let
-    cache = l.fromJSON (l.readFile file);
-    attrs = cache.content;
-    isValid = cache.invalidationHash == invalidationHash;
-  in
-    if ! l.pathExists file
-    then cacheMissingError
-    else if ! isValid
-    then cacheInvalidError
-    else mapCachePrio attrs;
+  cache = l.fromJSON (l.readFile file);
+  cacheFileExists = l.pathExists file;
+  cacheFileValid = cache.invalidationHash == invalidationHash;
+
+  # Return either the content from cache.json, or if it's invalid or missing,
+  #   use the content without going through the cache.
+  loadedContent =
+    if ! cacheFileExists
+    then cacheMissingError content
+    else if ! cacheFileValid
+    then cacheInvalidError content
+    else mapCachePrio cache.content;
 
   configIfEnabled = l.mkIf (cfg.enable) {
     eval-cache = {
@@ -101,12 +99,13 @@
         ;
     };
 
-    eval-cache.content = load file;
+    eval-cache.content = loadedContent;
 
     passthru.eval-cache = {
       inherit
         newFile
         ;
+      refresh = refreshCommand;
     };
 
     deps = {nixpkgs, ...}: {
