@@ -47,5 +47,12 @@ in {
       '';
       default = {};
     };
+
+    mach-nix-dists = l.mkOption {
+      type = t.lazyAttrsOf t.anything;
+      description = ''
+        Attrs which depend onf IFD and therefore should be cached
+      '';
+    };
   };
 }
