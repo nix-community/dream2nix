@@ -5,7 +5,7 @@
 in {
 
   imports = [
-    ../drv-parts/mach-nix-xs
+    ../../drv-parts/mach-nix-xs
   ];
 
   deps = {nixpkgs, ...}: {

@@ -5,7 +5,7 @@
 in {
 
   imports = [
-    ../drv-parts/mach-nix-xs
+    ../../drv-parts/mach-nix-xs
   ];
 
   deps = {nixpkgs, ...}: {
@@ -21,8 +21,9 @@ in {
   src = config.deps.fetchFromGitHub {
     owner = "odoo";
     repo = "odoo";
-    rev = "16.0";
-    hash = "sha256-0lO3lyjxXlvg5+1/l+j7Q1UaCWY+uQZG23Je3SQnlCw=";
+    # ref: 16.0
+    rev = "2d42fd69cada3b1f2716c3d0a20bec6170f9b226";
+    hash = "sha256-ZlPH+RaRZbWooe+kpiFYZtvuVmXtOMHeCW+Z74ZscXY=";
   };
 
   pythonSources = config.deps.fetchPythonRequirements {
@@ -52,4 +53,8 @@ in {
       doCheck = false;
     };
   };
+
+  manualSetupDeps.libsass = [
+    "six"
+  ];
 }
