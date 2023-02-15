@@ -5,6 +5,11 @@
 in {
   options.eval-cache = {
 
+    enable = l.mkEnableOption {
+      description =
+        "Whether to enable the evaluation cache for this derivation";
+    };
+
     content = l.mkOption {
       type = t.submodule {
         freeformType = t.anything;
@@ -28,8 +33,8 @@ in {
       '';
     };
 
-    fileRel = l.mkOption {
-      type = t.path;
+    cacheFileRel = l.mkOption {
+      type = t.str;
       description = "Location of the cache file";
       example = lib.literalExample ''
         /rel/path/to/my/package/cache.json
@@ -52,16 +57,5 @@ in {
         version = true;
       };
     };
-
-    # cache.Module = l.mkOption {
-    #   type = t.deferredModule;
-    #   default = {config, ...}: {};
-    # };
-
-    # load = l.mkOption {
-    #   type = t.functionTo t.anything;
-    #   description = "Function to convert a cache file to a module that can be imported";
-    #   readOnly = true;
-    # };
   };
 }
