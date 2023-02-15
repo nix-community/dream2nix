@@ -48,11 +48,23 @@ in {
       default = {};
     };
 
+    mach-nix.lib.extractPythonAttrs = l.mkOption {
+      type = t.functionTo t.attrs;
+      description = ''
+        Helper function to extract python attrs from nixpkgs to be re-used as overrides.
+      '';
+      readOnly = true;
+    };
+
+    # INTERNAL
+
     mach-nix-dists = l.mkOption {
       type = t.lazyAttrsOf t.anything;
       description = ''
         Attrs which depend onf IFD and therefore should be cached
       '';
+      internal = true;
+      readOnly = true;
     };
   };
 }

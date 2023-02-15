@@ -3,6 +3,23 @@
   l = lib // builtins;
   python = config.deps.python;
 
+  packageName =
+    if config.name != null
+    then config.name
+    else config.pname;
+
+  unknownSubstitutions = l.attrNames
+    (l.removeAttrs config.substitutions (l.attrNames wheels));
+
+  # Validate Substitutions. Allow only names that we actually depend on.
+  substitutions =
+    if unknownSubstitutions == []
+    then config.substitutions
+    else throw ''
+      ${"\n"}The following substitutions for python derivation '${packageName}' will not have any effect. There are no dependencies with such names:
+        - ${lib.concatStringsSep "\n  - " unknownSubstitutions}
+    '';
+
   manualSetupDeps =
     lib.mapAttrs
     (name: deps: map (dep: wheels.${dep}) deps)
@@ -23,14 +40,14 @@
     (name: null);
 
   # Extracts derivation args from a nixpkgs python package.
-  nixpkgsAttrsFor = pname: let
-    nixpkgsAttrs =
-      (python.pkgs.${pname}.overridePythonAttrs (old: {passthru.old = old;}))
+  extractPythonAttrs = pythonPackage: let
+    extractOverrideAttrs = overrideFunc:
+      (pythonPackage.${overrideFunc} (old: {passthru.old = old;}))
       .old;
+    pythonAttrs = extractOverrideAttrs "overridePythonAttrs";
+    allAttrs = pythonAttrs;
   in
-    if ! python.pkgs ? ${pname}
-    then {}
-    else l.filterAttrs (name: _: ! excludedNixpkgsAttrs ? ${name}) nixpkgsAttrs;
+    l.filterAttrs (name: _: ! excludedNixpkgsAttrs ? ${name}) allAttrs;
 
   # (IFD) Get the dist file for a given name by looking inside (pythonSources)
   distFile = name: let
@@ -68,7 +85,7 @@
   If a wheel is given, do nothing but return its parent dir.
   */
   ensureWheel = name: version: distDir:
-    config.substitutions.${name}.dist or (
+    substitutions.${name}.dist or (
       if version == "wheel"
       then distDir
       else mkWheelDist name version distDir
@@ -93,7 +110,8 @@
 
       # re-use package attrs from nixpkgs
       # (treat nixpkgs as a source of community overrides)
-      (nixpkgsAttrsFor pname)
+      (l.optionalAttrs (python.pkgs ? ${pname})
+          extractPythonAttrs python.pkgs.${pname})
 
       # python attributes
       // (makePackageAttrs pname version distDir)
@@ -126,12 +144,14 @@ in {
 
   config = {
 
+    mach-nix.lib = {inherit extractPythonAttrs;};
+
     deps = {nixpkgs, ...}: {
       inherit (nixpkgs)
         autoPatchelfHook
         fetchPythonRequirements
         ;
-      python = nixpkgs.python38;
+      python = nixpkgs.python3;
       manylinuxPackages = nixpkgs.pythonManylinuxPackages.manylinux1;
     };
 
