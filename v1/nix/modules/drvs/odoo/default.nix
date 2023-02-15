@@ -30,7 +30,7 @@ in {
     inherit (config.deps) python;
     name = config.pname;
     requirementsFiles = ["${config.src}/requirements.txt"];
-    hash = "sha256-fxvuknvfNQxRnUo8UWyvLdqAHrKxQMsWYXeKtEV0rns=";
+    hash = "sha256-Ag4qTsgCTnnbK//T6OwME/OfknfNz5zDX3nSlCnIhSc=";
     maxDate = "2023-01-01";
     nativeBuildInputs = (with config.deps; [
       postgresql
