@@ -175,7 +175,12 @@ in {
     };
 
     doCheck = false;
-    dontPatchELF = true;
+    dontPatchELF = l.mkDefault true;
+    dontStrip = l.mkDefault true;
+
+    nativeBuildInputs = [
+      config.deps.autoPatchelfHook
+    ];
 
     buildInputs = with config.deps; [
       manylinuxPackages
