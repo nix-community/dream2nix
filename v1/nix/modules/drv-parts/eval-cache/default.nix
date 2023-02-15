@@ -15,7 +15,6 @@
   invalidationData = l.intersectAttrs invalidationFields config;
 
   invalidationHash = l.hashString "sha256"
-    # (l.toJSON invalidationData);
     (l.toJSON (invalidationData // cfg.fields));
 
   fields = filterTrue cfg.fields;
@@ -24,31 +23,43 @@
 
   content = l.intersectAttrs fields config;
 
-  cache = {
+  cache-content = {
     inherit
       content
       invalidationHash
       ;
-    # content = mapCachePrio content;
   };
 
-  newFile = config.deps.writeText "cache.json" (l.toJSON cache);
+  newFile' = config.deps.writeText "cache.json" (l.toJSON cache-content);
+  newFile = config.deps.runCommand "cache.json" {} ''
+    cat ${newFile'} | ${config.deps.jq}/bin/jq > $out
+  '';
 
   # LOAD
 
   file = cfg.repoRoot + cfg.cacheFileRel;
 
   buildCacheCommand = ''
-    To build a new cache file execute:
+    To generate a new cache file, execute:
       cat $(nix-build ${cfg.newFile.drvPath}) > $(git rev-parse --show-toplevel)/${cfg.cacheFileRel}
   '';
 
-  cacheMissingMsg =
-    "The cache file ${cfg.cacheFileRel} for drv-parts module '${packageName}' doesn't exist, please create it.";
+  ifdInfoMsg = ''
+    Information on how to fix this is shown in the error below if evaluated with `--allow-import-from-derivation`
+  '';
+
+  cacheMissingMsg = ''
+    The cache file ${cfg.cacheFileRel} for drv-parts module '${packageName}' doesn't exist, please create it.
+  '';
 
   cacheMissingError =
-    l.trace cacheMissingMsg
+    l.trace ''
+      ${"\n"}
+      ${cacheMissingMsg}
+      ${ifdInfoMsg}
+    ''
     throw ''
+      ${"\n"}
       ${cacheMissingMsg}
       ${buildCacheCommand}
     '';
@@ -57,8 +68,13 @@
     "The cache file ${cfg.cacheFileRel} for drv-parts module '${packageName}' is outdated, please update it.";
 
   cacheInvalidError =
-    l.trace cacheInvalidMsg
+    l.trace ''
+      ${"\n"}
+      ${cacheInvalidMsg}
+      ${ifdInfoMsg}
+    ''
     throw ''
+      ${"\n"}
       ${cacheInvalidMsg}
       ${buildCacheCommand}
     '';
@@ -94,7 +110,11 @@
     };
 
     deps = {nixpkgs, ...}: {
-      inherit (nixpkgs) writeText;
+      inherit (nixpkgs)
+        jq
+        runCommand
+        writeText
+        ;
     };
   };
 
