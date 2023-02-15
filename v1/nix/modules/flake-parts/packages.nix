@@ -1,8 +1,8 @@
 { self, lib, inputs, ... }: {
-  perSystem = { config, self', inputs', pkgs, ... }: let
+  perSystem = { config, self', inputs', pkgs, system, ... }: let
 
     evalCacheSetup = {config,...}: {
-      eval-cache.cacheFileRel = "/nix/modules/drvs/${config.pname}/cache.json";
+      eval-cache.cacheFileRel = "/nix/modules/drvs/${config.pname}/cache-${system}.json";
       eval-cache.repoRoot = self;
       eval-cache.enable = true;
     };
