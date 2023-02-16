@@ -28,6 +28,9 @@
             translator = "my-pure-translator";
           };
         };
+        packages = {
+          inherit (config.dream2nix.outputs.niv.packages) default;
+        };
       };
     };
 }
