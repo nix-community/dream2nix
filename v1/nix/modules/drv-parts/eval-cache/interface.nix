@@ -8,7 +8,7 @@ in {
     # GLOBAL OPTIONS
     repoRoot = l.mkOption {
       type = t.path;
-      description = "The root of the own repo. Eg. 'self' in a flake";
+      description = "The root of the current repo. Eg. 'self' in a flake";
       example = lib.literalExample ''
         self
       '';

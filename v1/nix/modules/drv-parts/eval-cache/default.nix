@@ -29,16 +29,14 @@
 
   # SAVE
 
-  content = intersectAttrsRecursive fields config;
+  currentContent = intersectAttrsRecursive fields config;
 
-  cache-content = {
-    inherit
-      content
-      invalidationHash
-      ;
+  newCache = {
+    inherit invalidationHash;
+    content = currentContent;
   };
 
-  newFile' = config.deps.writeText "cache.json" (l.toJSON cache-content);
+  newFile' = config.deps.writeText "cache.json" (l.toJSON newCache);
   newFile = config.deps.runCommand "cache.json" {} ''
     cat ${newFile'} | ${config.deps.jq}/bin/jq > $out
   '';
@@ -95,9 +93,9 @@
   #   use the content without going through the cache.
   loadedContent =
     if ! cacheFileExists
-    then cacheMissingError content
+    then cacheMissingError currentContent
     else if ! cacheFileValid
-    then cacheInvalidError content
+    then cacheInvalidError currentContent
     else mapCachePrio cache.content;
 
   configIfEnabled = l.mkIf (cfg.enable) {
@@ -126,7 +124,7 @@
   };
 
   configIfDisabled = l.mkIf (! cfg.enable) {
-    eval-cache.content = content;
+    eval-cache.content = currentContent;
   };
 
 in {
