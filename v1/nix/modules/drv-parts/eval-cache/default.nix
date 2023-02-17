@@ -40,7 +40,7 @@
   file = cfg.repoRoot + cfg.cacheFileRel;
 
   refreshCommand =
-    "cat $(nix-build ${cfg.newFile.drvPath}) > $(git rev-parse --show-toplevel)/${cfg.cacheFileRel}";
+    "cat ${cfg.newFile} > $(git rev-parse --show-toplevel)/${cfg.cacheFileRel}";
 
   newFileMsg = "To generate a new cache file, execute:\n  ${refreshCommand}";
 
