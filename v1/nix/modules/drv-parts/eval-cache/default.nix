@@ -46,7 +46,7 @@
   file = cfg.repoRoot + cfg.cacheFileRel;
 
   refreshCommand = l.unsafeDiscardStringContext
-    "cat $(nix-build ${cfg.newFile.drvPath}) > $(git rev-parse --show-toplevel)/${cfg.cacheFileRel}";
+    "cat $(nix-build ${cfg.newFile.drvPath} --no-link) > $(git rev-parse --show-toplevel)/${cfg.cacheFileRel}";
 
   newFileMsg = "To generate a new cache file, execute:\n  ${refreshCommand}";
 
