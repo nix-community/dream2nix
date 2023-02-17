@@ -37,6 +37,14 @@
         type = t.str;
       };
 
+      # TODO make an enum of all available builders?
+      builder = mkOption {
+        default = null;
+        description = ''Name of builder to use'';
+        example = "strict-builder";
+        type = t.nullOr t.str;
+      };
+
       subsystemInfo = mkOption {
         default = {};
         description = "Translator specific arguments";
