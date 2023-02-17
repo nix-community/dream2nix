@@ -1,0 +1,21 @@
+{
+  "content": {
+    "mach-nix": {
+      "dists": {
+        "ansible": "2.7.1",
+        "bcrypt": "wheel",
+        "cffi": "wheel",
+        "cryptography": "wheel",
+        "jinja2": "wheel",
+        "markupsafe": "wheel",
+        "paramiko": "wheel",
+        "pycparser": "wheel",
+        "pynacl": "wheel",
+        "pyyaml": "wheel",
+        "setuptools": "wheel",
+        "six": "wheel"
+      }
+    }
+  },
+  "invalidationHash": "6e6b7a60133740c7579f4bb2004f4a2a2f28c5172b00da170ec4664264b73cf7"
+}

@@ -26,7 +26,7 @@ in {
     hash = "sha256-ZlPH+RaRZbWooe+kpiFYZtvuVmXtOMHeCW+Z74ZscXY=";
   };
 
-  pythonSources = config.deps.fetchPythonRequirements {
+  mach-nix.pythonSources = config.deps.fetchPythonRequirements {
     inherit (config.deps) python;
     name = config.pname;
     requirementsFiles = ["${config.src}/requirements.txt"];
@@ -39,13 +39,13 @@ in {
 
   # Replace some python packages entirely with candidates from nixpkgs, because
   #   they are hard to fix
-  substitutions = {
+  mach-nix.substitutions = {
     python-ldap = python.pkgs.python-ldap;
     pillow = python.pkgs.pillow;
   };
 
   # fix some builds via overrides
-  overrides = {
+  mach-nix.overrides = {
     libsass = old: {
       doCheck = false;
     };
@@ -54,7 +54,7 @@ in {
     };
   };
 
-  manualSetupDeps.libsass = [
+  mach-nix.manualSetupDeps.libsass = [
     "six"
   ];
 }

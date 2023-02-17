@@ -32,7 +32,7 @@ in {
     hash = "sha256-QWUXSG+RSHkF5kP1ZYtx+tHjO0n7hfya9CFA3lBhJHk=";
   };
 
-  pythonSources = config.deps.fetchPythonRequirements {
+  mach-nix.pythonSources = config.deps.fetchPythonRequirements {
     inherit (config.deps) python;
     name = config.pname;
     requirementsList = [
@@ -44,7 +44,7 @@ in {
 
   # Replace some python packages entirely with candidates from nixpkgs, because
   #   they are hard to fix
-  substitutions = {
+  mach-nix.substitutions = {
     cron-descriptor = python.pkgs.cron-descriptor;
     python-nvd3 = python.pkgs.python-nvd3;
     pendulum = python.pkgs.pendulum;

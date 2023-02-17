@@ -22,10 +22,10 @@ in {
   ];
 
   preUnpack = ''
-    export src=$(ls ${config.pythonSources}/names/${config.pname}/*);
+    export src=$(ls ${config.mach-nix.pythonSources}/names/${config.pname}/*);
   '';
 
-  pythonSources = config.deps.fetchPythonRequirements {
+  mach-nix.pythonSources = config.deps.fetchPythonRequirements {
     inherit (config.deps) python;
     name = config.pname;
     requirementsList = ["${config.pname}==${config.version}"];

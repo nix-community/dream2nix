@@ -5,7 +5,7 @@
 
 in {
 
-  options = {
+  options.mach-nix = {
 
     pythonSources = l.mkOption {
       type = t.package;
@@ -48,7 +48,7 @@ in {
       default = {};
     };
 
-    mach-nix.lib.extractPythonAttrs = l.mkOption {
+    lib.extractPythonAttrs = l.mkOption {
       type = t.functionTo t.attrs;
       description = ''
         Helper function to extract python attrs from nixpkgs to be re-used as overrides.
@@ -58,7 +58,7 @@ in {
 
     # INTERNAL
 
-    mach-nix-dists = l.mkOption {
+    dists = l.mkOption {
       type = t.lazyAttrsOf t.anything;
       description = ''
         Attrs which depend onf IFD and therefore should be cached

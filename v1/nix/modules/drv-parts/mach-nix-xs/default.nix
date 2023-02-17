@@ -2,6 +2,7 @@
 
   l = lib // builtins;
   python = config.deps.python;
+  cfg = config.mach-nix;
 
   packageName =
     if config.name != null
@@ -9,12 +10,12 @@
     else config.pname;
 
   unknownSubstitutions = l.attrNames
-    (l.removeAttrs config.substitutions (l.attrNames wheels));
+    (l.removeAttrs cfg.substitutions (l.attrNames wheels));
 
   # Validate Substitutions. Allow only names that we actually depend on.
   substitutions =
     if unknownSubstitutions == []
-    then config.substitutions
+    then cfg.substitutions
     else throw ''
       ${"\n"}The following substitutions for python derivation '${packageName}' will not have any effect. There are no dependencies with such names:
         - ${lib.concatStringsSep "\n  - " unknownSubstitutions}
@@ -23,7 +24,7 @@
   manualSetupDeps =
     lib.mapAttrs
     (name: deps: map (dep: wheels.${dep}) deps)
-    config.manualSetupDeps;
+    cfg.manualSetupDeps;
 
   # Attributes we never want to copy from nixpkgs
   excludedNixpkgsAttrs = l.genAttrs
@@ -51,7 +52,7 @@
 
   # (IFD) Get the dist file for a given name by looking inside (pythonSources)
   distFile = name: let
-    distDir = "${config.pythonSources.names}/${name}";
+    distDir = "${cfg.pythonSources.names}/${name}";
   in
     "${distDir}/${l.head (l.attrNames (builtins.readDir distDir))}";
 
@@ -124,15 +125,15 @@
     );
 
     finalPackage =
-      package.overridePythonAttrs config.overrides.${pname} or (_: {});
+      package.overridePythonAttrs cfg.overrides.${pname} or (_: {});
   in
     finalPackage.dist;
 
   # all fetched dists converted to wheels
   wheels =
     l.mapAttrs
-    (name: version: ensureWheel name version (config.pythonSources.names + "/${name}"))
-    (config.eval-cache.content.mach-nix-dists);
+    (name: version: ensureWheel name version (cfg.pythonSources.names + "/${name}"))
+    (config.eval-cache.content.mach-nix.dists);
 
 in {
 
@@ -156,17 +157,17 @@ in {
     };
 
     eval-cache.fields = {
-      mach-nix-dists = true;
+      mach-nix.dists = true;
     };
 
     eval-cache.invalidationFields = {
-      pythonSources = true;
+      mach-nix.pythonSources = true;
     };
 
-    mach-nix-dists =
+    mach-nix.dists =
       l.mapAttrs
       (name: _: getDistInfo name)
-      (l.readDir config.pythonSources.names);
+      (l.readDir cfg.pythonSources.names);
 
     env = {
       pipInstallFlags =
