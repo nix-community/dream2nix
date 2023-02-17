@@ -16,8 +16,8 @@ in {
       };
     };
 
-    invalidationFields = l.mkOption {
-      type = t.attrsOf t.bool;
+    invalidationFields = l.mkOption rec {
+      type = t.attrsOf (t.oneOf [t.bool type]);
       description = "Fields, when changed, require refreshing the cache";
       default = {};
       example = {
@@ -48,8 +48,8 @@ in {
       readOnly = true;
     };
 
-    fields = l.mkOption {
-      type = t.attrsOf t.bool;
+    fields = l.mkOption rec {
+      type = t.attrsOf (t.oneOf [t.bool type]);
       description = "Fields for which to cache evaluation";
       default = {};
       example = {

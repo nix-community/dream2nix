@@ -7,21 +7,29 @@
     then config.name
     else config.pname;
 
-  filterTrue = l.filterAttrs (key: val: val == true);
+  filterTrue = l.filterAttrsRecursive (key: val: l.isAttrs val || val == true);
 
   invalidationFields = (filterTrue cfg.invalidationFields);
 
-  # TODO: make this recursive
-  invalidationData = l.intersectAttrs invalidationFields config;
+  intersectAttrsRecursive = a: b:
+    l.mapAttrs
+    (key: valB:
+      if l.isAttrs valB && l.isAttrs a.${key}
+      then intersectAttrsRecursive a.${key} valB
+      else valB
+    )
+    (l.intersectAttrs a b);
+
+  invalidationData = intersectAttrsRecursive invalidationFields config;
 
   invalidationHash = l.hashString "sha256"
-    (l.toJSON (invalidationData // cfg.fields));
+    (l.toJSON [invalidationData cfg.fields]);
 
   fields = filterTrue cfg.fields;
 
   # SAVE
 
-  content = l.intersectAttrs fields config;
+  content = intersectAttrsRecursive fields config;
 
   cache-content = {
     inherit
@@ -39,8 +47,8 @@
 
   file = cfg.repoRoot + cfg.cacheFileRel;
 
-  refreshCommand =
-    "cat ${cfg.newFile} > $(git rev-parse --show-toplevel)/${cfg.cacheFileRel}";
+  refreshCommand = l.unsafeDiscardStringContext
+    "cat $(nix-build ${cfg.newFile.drvPath}) > $(git rev-parse --show-toplevel)/${cfg.cacheFileRel}";
 
   newFileMsg = "To generate a new cache file, execute:\n  ${refreshCommand}";
 
