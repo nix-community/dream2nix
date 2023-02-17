@@ -59,7 +59,7 @@ in {
     # INTERNAL
 
     dists = l.mkOption {
-      type = t.lazyAttrsOf t.anything;
+      type = t.lazyAttrsOf t.str;
       description = ''
         Attrs which depend onf IFD and therefore should be cached
       '';
