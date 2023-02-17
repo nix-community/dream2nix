@@ -18,8 +18,6 @@ in {
   pname = "tensorflow";
   version = "2.11.0";
 
-  # src = "";
-
   env.format = "wheel";
 
   env.pythonImportsCheck = [

@@ -146,7 +146,7 @@ in {
 
     mach-nix.lib = {inherit extractPythonAttrs;};
 
-    deps = {nixpkgs, ...}: {
+    deps = {nixpkgs, ...}: l.mapAttrs (_: l.mkDefault) {
       inherit (nixpkgs)
         autoPatchelfHook
         fetchPythonRequirements
