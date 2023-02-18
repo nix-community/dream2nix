@@ -26,7 +26,7 @@ in {
   '';
 
   mach-nix.pythonSources = config.deps.fetchPythonRequirements {
-    inherit (config.deps) python;
+    inherit python;
     name = config.pname;
     requirementsList = ["${config.pname}==${config.version}"];
     hash = "sha256-Wdu4A9nFfVhHwj2rYrhb6A5xtZ2VytEc4F8Bo6kgFtg=";
