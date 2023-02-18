@@ -20,7 +20,7 @@
         specialArgs.drv-parts = inputs.drv-parts;
       };
     in
-      evaled // evaled.config.final.derivation;
+      evaled // evaled.config.final.package;
 
   in {
     packages = lib.mapAttrs (_: drvModule: makeDrv drvModule) self.modules.drvs;

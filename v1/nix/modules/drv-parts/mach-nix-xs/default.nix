@@ -192,6 +192,6 @@ in {
       inherit wheels;
     };
 
-    final.derivation-func = config.deps.python.pkgs.buildPythonPackage;
+  final.package-func = config.deps.python.pkgs.buildPythonPackage;
   };
 }
