@@ -13,6 +13,7 @@ in {
       postgresql
       fetchFromGitHub
       ;
+    python = nixpkgs.python38;
   };
 
   pname = "odoo";
@@ -30,7 +31,7 @@ in {
     inherit (config.deps) python;
     name = config.pname;
     requirementsFiles = ["${config.src}/requirements.txt"];
-    hash = "sha256-Ag4qTsgCTnnbK//T6OwME/OfknfNz5zDX3nSlCnIhSc=";
+    hash = "sha256-fxvuknvfNQxRnUo8UWyvLdqAHrKxQMsWYXeKtEV0rns=";
     maxDate = "2023-01-01";
     nativeBuildInputs = (with config.deps; [
       postgresql
@@ -45,16 +46,14 @@ in {
   };
 
   # fix some builds via overrides
-  mach-nix.overrides = {
-    libsass = old: {
+  mach-nix.drvs = {
+    libsass = {
       doCheck = false;
+      doInstallCheck = l.mkForce false;
     };
-    pypdf2 = old: {
+    pypdf2 = {
       doCheck = false;
+      doInstallCheck = l.mkForce false;
     };
   };
-
-  mach-nix.manualSetupDeps.libsass = [
-    "six"
-  ];
 }

@@ -10,7 +10,7 @@
     else config.pname;
 
   unknownSubstitutions = l.attrNames
-    (l.removeAttrs cfg.substitutions (l.attrNames wheels));
+    (l.removeAttrs cfg.substitutions (l.attrNames wheelDists));
 
   # Validate Substitutions. Allow only names that we actually depend on.
   substitutions =
@@ -23,7 +23,7 @@
 
   manualSetupDeps =
     lib.mapAttrs
-    (name: deps: map (dep: wheels.${dep}) deps)
+    (name: deps: map (dep: finalDists.${dep}) deps)
     cfg.manualSetupDeps;
 
   # Attributes we never want to copy from nixpkgs
@@ -86,7 +86,7 @@
   If a wheel is given, do nothing but return its parent dir.
   */
   ensureWheel = name: version: distDir:
-    substitutions.${name}.dist or (
+    substitutions.${name} or (
       if version == "wheel"
       then distDir
       else mkWheelDist name version distDir
@@ -127,13 +127,19 @@
     finalPackage =
       package.overridePythonAttrs cfg.overrides.${pname} or (_: {});
   in
-    finalPackage.dist;
+    finalPackage;
 
   # all fetched dists converted to wheels
-  wheels =
+  wheelDists =
     l.mapAttrs
     (name: version: ensureWheel name version (cfg.pythonSources.names + "/${name}"))
     (config.eval-cache.content.mach-nix.dists);
+
+  drvDists = l.filterAttrs (_: l.isDerivation) wheelDists;
+
+  drvPackages = (l.mapAttrs (_: drv: drv.final.package) config.mach-nix.drvs);
+
+  finalDists = wheelDists // (l.mapAttrs (_: pkg: pkg.dist) drvPackages);
 
 in {
 
@@ -147,14 +153,28 @@ in {
 
     mach-nix.lib = {inherit extractPythonAttrs;};
 
-    deps = {nixpkgs, ...}: l.mapAttrs (_: l.mkDefault) {
-      inherit (nixpkgs)
-        autoPatchelfHook
-        fetchPythonRequirements
-        ;
-      python = nixpkgs.python3;
-      manylinuxPackages = nixpkgs.pythonManylinuxPackages.manylinux1;
-    };
+    mach-nix.drvs = l.flip l.mapAttrs drvDists (name: dist:
+      # A fake module to import other modules
+      (_: {
+        imports = [
+          # generate a module from a package func
+          (drv-parts.lib.makeModule (_: drvDists.${name}))
+          {deps = {inherit (config.deps) stdenv;};}
+        ];
+      })
+    );
+
+    deps = {nixpkgs, ...}: l.mapAttrs (_: l.mkDefault) (
+      {
+        inherit (nixpkgs)
+          autoPatchelfHook
+          fetchPythonRequirements
+          stdenv
+          ;
+        python = nixpkgs.python3;
+        manylinuxPackages = nixpkgs.pythonManylinuxPackages.manylinux1;
+      }
+    );
 
     eval-cache.fields = {
       mach-nix.dists = true;
@@ -172,7 +192,7 @@ in {
     env = {
       pipInstallFlags =
         ["--ignore-installed"]
-        ++ (map (distDir: "--find-links ${distDir}") (l.attrValues wheels));
+        ++ (map (distDir: "--find-links ${distDir}") (l.attrValues finalDists));
     };
 
     doCheck = false;
@@ -189,9 +209,9 @@ in {
 
     passthru = {
       inherit (config) pythonSources;
-      inherit wheels;
+      dists = finalDists;
     };
 
-  final.package-func = config.deps.python.pkgs.buildPythonPackage;
+    final.package-func = config.deps.python.pkgs.buildPythonPackage;
   };
 }

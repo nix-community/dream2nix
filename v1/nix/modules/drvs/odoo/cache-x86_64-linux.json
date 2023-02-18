@@ -16,7 +16,7 @@
         "docutils": "wheel",
         "ebaysdk": "2.1.5",
         "freezegun": "wheel",
-        "gevent": "21.8.0",
+        "gevent": "wheel",
         "greenlet": "wheel",
         "idna": "wheel",
         "isodate": "wheel",
@@ -25,7 +25,7 @@
         "lxml": "wheel",
         "markupsafe": "1.1.0",
         "num2words": "wheel",
-        "ofxparse": "0.21",
+        "ofxparse": "0.19",
         "passlib": "wheel",
         "pillow": "wheel",
         "polib": "wheel",
@@ -45,7 +45,7 @@
         "pytz": "wheel",
         "pyusb": "1.0.2",
         "qrcode": "wheel",
-        "reportlab": "3.5.59",
+        "reportlab": "wheel",
         "requests": "wheel",
         "requests-toolbelt": "wheel",
         "setuptools": "wheel",
@@ -63,5 +63,5 @@
       }
     }
   },
-  "invalidationHash": "8cba86630b33c4917536e287be19213b7ce0f33df9b11107111f95bb7862b530"
+  "invalidationHash": "3882027968fd63cc913b3943d0f6c5596bacc70191eadf21c728cd3105036e44"
 }
