@@ -10,6 +10,7 @@
     nixpkgs.url = "nixpkgs/nixos-unstable";
 
     flake-parts.url = "github:hercules-ci/flake-parts";
+    flake-parts.inputs.nixpkgs-lib.follows = "nixpkgs";
 
     ### dev dependencies
     alejandra.url = "github:kamadorueda/alejandra";
@@ -337,7 +338,7 @@
       };
     };
   in
-    flake-parts.lib.mkFlake {inherit self;} {
+    flake-parts.lib.mkFlake {inherit inputs;} {
       imports = [
         ./tests
         ./templates
