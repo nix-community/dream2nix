@@ -43,7 +43,8 @@
   #   - donwloaded wheels
   #   - downloaded sdists built into wheels (see above)
   #   - substitutions from nixpkgs patched for compat with autoPatchelfHook
-  finalDistsPaths = wheel-dists-paths // (l.mapAttrs getDistDir drv-parts-dists);
+  finalDistsPaths =
+    wheel-dists-paths // (l.mapAttrs getDistDir drv-parts-dists);
 
   packageName =
     if config.name != null
@@ -121,39 +122,31 @@
     then "wheel"
     else getVersion file;
 
-  # derivation attributes for building a wheel
-  makePackageAttrs = pname: version: distDir: {
-    inherit pname;
-    inherit version;
-    format = "setuptools";
-    pipInstallFlags =
-      map (distDir: "--find-links ${distDir}") manualSetupDeps.${pname} or [];
-
-    # distDir will contain a single file which is the src
-    preUnpack = ''export src="${distDir}"/*'';
-  };
-
   # build a wheel for a given sdist
-  mkWheelDist = pname: version: distDir: let
+  mkWheelDist = pname: version: distDir: python.pkgs.buildPythonPackage (
+    # re-use package attrs from nixpkgs
+    # (treat nixpkgs as a source of community overrides)
+    (l.optionalAttrs (python.pkgs ? ${pname})
+        extractPythonAttrs python.pkgs.${pname})
 
-    package = python.pkgs.buildPythonPackage (
+    # package attributes
+    // {
+      inherit pname;
+      inherit version;
+      format = "setuptools";
+      # distDir will contain a single file which is the src
+      preUnpack = ''export src="${distDir}"/*'';
+      # install manualSetupDeps
+      pipInstallFlags =
+        map (distDir: "--find-links ${distDir}") manualSetupDeps.${pname} or [];
+    }
 
-      # re-use package attrs from nixpkgs
-      # (treat nixpkgs as a source of community overrides)
-      (l.optionalAttrs (python.pkgs ? ${pname})
-          extractPythonAttrs python.pkgs.${pname})
-
-      # python attributes
-      // (makePackageAttrs pname version distDir)
-
-      # If setup deps have been specified manually, we need to remove the
-      #   propagatedBuildInputs from nixpkgs to prevent collisions.
-      // lib.optionalAttrs (manualSetupDeps ? ${pname}) {
-        propagatedBuildInputs = [];
-      }
-    );
-  in
-    package;
+    # If setup deps have been specified manually, we need to remove the
+    #   propagatedBuildInputs from nixpkgs to prevent collisions.
+    // lib.optionalAttrs (manualSetupDeps ? ${pname}) {
+      propagatedBuildInputs = [];
+    }
+  );
 
 in {
 
@@ -206,7 +199,10 @@ in {
     env = {
       pipInstallFlags =
         ["--ignore-installed"]
-        ++ (map (distDir: "--find-links ${distDir}") (l.attrValues finalDistsPaths));
+        ++ (
+          map (distDir: "--find-links ${distDir}")
+          (l.attrValues finalDistsPaths)
+        );
     };
 
     doCheck = false;
