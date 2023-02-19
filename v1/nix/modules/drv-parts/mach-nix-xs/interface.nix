@@ -40,14 +40,6 @@ in {
       };
     };
 
-    # overrides = l.mkOption {
-    #   type = t.lazyAttrsOf (t.functionTo t.attrs);
-    #   description = ''
-    #     Overrides for sdist package builds
-    #   '';
-    #   default = {};
-    # };
-
     drvs = l.mkOption {
       type = t.attrsOf (t.submoduleWith {
         modules = [drv-parts.modules.drv-parts.package];

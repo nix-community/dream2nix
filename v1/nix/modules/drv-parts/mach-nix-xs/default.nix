@@ -161,14 +161,15 @@ in {
     mach-nix.lib = {inherit extractPythonAttrs;};
 
     mach-nix.drvs = l.flip l.mapAttrs all-dists-compat-patchelf (name: dist:
-      # A fake module to import other modules
-      (_: {
-        imports = [
-          # generate a module from a package func
-          (drv-parts.lib.makeModule (_: dist))
+      drv-parts.lib.makeModule {
+        packageFunc = dist;
+        # TODO: if `overridePythonAttrs` is used here, the .dist output is missing
+        #   Maybe a bug in drv-parts?
+        overrideFuncName = "overrideAttrs";
+        modules = [
           {deps = {inherit (config.deps) stdenv;};}
         ];
-      })
+      }
     );
 
     deps = {nixpkgs, ...}: l.mapAttrs (_: l.mkDefault) (
