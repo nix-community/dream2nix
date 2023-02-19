@@ -4,13 +4,54 @@
   python = config.deps.python;
   cfg = config.mach-nix;
 
+  # For a given name, return the path containing the downloaded file
+  getFetchedDistPath = name: cfg.pythonSources.names + "/${name}";
+
+  # For a given name, return the dist output from nixpkgs.buildPythonPackage
+  getDistDir = name: dist: dist.dist;
+
+  # separate 2 types of downloaded files: sdist, wheel
+  # key: name; val: {version or "wheel"}
+  all-info = config.eval-cache.content.mach-nix.dists;
+  wheel-info = l.filterAttrs (name: ver: ver == "wheel") all-info;
+  sdist-info = l.filterAttrs (name: ver: ! wheel-info ? ${name}) all-info;
+
+  # get the paths of all downlosded wheels
+  wheel-dists-paths =
+    l.mapAttrs (name: ver: getFetchedDistPath name) wheel-info;
+
+  # Build sdist sources.
+  # Only build sdists which are not substituted via config.substitutions.
+  sdists-to-build =
+    l.filterAttrs (name: ver: ! substitutions ? ${name}) sdist-info;
+  new-dists = l.flip l.mapAttrs sdists-to-build
+    (name: ver: mkWheelDist name ver (getFetchedDistPath name));
+  all-dists = new-dists // substitutions;
+
+  # patch all-dists to ensure build inputs are propagated for autopPatchelflHook
+  all-dists-compat-patchelf = l.flip l.mapAttrs all-dists (name: dist:
+    dist.overridePythonAttrs (old: {postFixup = "ln -s $out $dist/out";})
+  );
+
+  # Convert all-dists to drv-parts drvs.
+  # The conversion is done via config.drvs (see below).
+  drv-parts-dists = l.flip l.mapAttrs config.mach-nix.drvs
+    (_: drv: drv.final.package);
+
+  # The final dists we want to install.
+  # A mix of:
+  #   - donwloaded wheels
+  #   - downloaded sdists built into wheels (see above)
+  #   - substitutions from nixpkgs patched for compat with autoPatchelfHook
+  finalDistsPaths = wheel-dists-paths // (l.mapAttrs getDistDir drv-parts-dists);
+
   packageName =
     if config.name != null
     then config.name
     else config.pname;
 
   unknownSubstitutions = l.attrNames
-    (l.removeAttrs cfg.substitutions (l.attrNames wheelDists));
+    (l.removeAttrs cfg.substitutions (l.attrNames all-info));
 
   # Validate Substitutions. Allow only names that we actually depend on.
   substitutions =
@@ -23,7 +64,7 @@
 
   manualSetupDeps =
     lib.mapAttrs
-    (name: deps: map (dep: finalDists.${dep}) deps)
+    (name: deps: map (dep: finalDistsPaths.${dep}) deps)
     cfg.manualSetupDeps;
 
   # Attributes we never want to copy from nixpkgs
@@ -80,18 +121,6 @@
     then "wheel"
     else getVersion file;
 
-  /*
-  Ensures that a given dist is a wheel.
-  If an sdist dist is given, build a wheel and return its parent directory.
-  If a wheel is given, do nothing but return its parent dir.
-  */
-  ensureWheel = name: version: distDir:
-    substitutions.${name} or (
-      if version == "wheel"
-      then distDir
-      else mkWheelDist name version distDir
-    );
-
   # derivation attributes for building a wheel
   makePackageAttrs = pname: version: distDir: {
     inherit pname;
@@ -123,23 +152,8 @@
         propagatedBuildInputs = [];
       }
     );
-
-    finalPackage =
-      package.overridePythonAttrs cfg.overrides.${pname} or (_: {});
   in
-    finalPackage;
-
-  # all fetched dists converted to wheels
-  wheelDists =
-    l.mapAttrs
-    (name: version: ensureWheel name version (cfg.pythonSources.names + "/${name}"))
-    (config.eval-cache.content.mach-nix.dists);
-
-  drvDists = l.filterAttrs (_: l.isDerivation) wheelDists;
-
-  drvPackages = (l.mapAttrs (_: drv: drv.final.package) config.mach-nix.drvs);
-
-  finalDists = wheelDists // (l.mapAttrs (_: pkg: pkg.dist) drvPackages);
+    package;
 
 in {
 
@@ -153,12 +167,12 @@ in {
 
     mach-nix.lib = {inherit extractPythonAttrs;};
 
-    mach-nix.drvs = l.flip l.mapAttrs drvDists (name: dist:
+    mach-nix.drvs = l.flip l.mapAttrs all-dists-compat-patchelf (name: dist:
       # A fake module to import other modules
       (_: {
         imports = [
           # generate a module from a package func
-          (drv-parts.lib.makeModule (_: drvDists.${name}))
+          (drv-parts.lib.makeModule (_: dist))
           {deps = {inherit (config.deps) stdenv;};}
         ];
       })
@@ -192,7 +206,7 @@ in {
     env = {
       pipInstallFlags =
         ["--ignore-installed"]
-        ++ (map (distDir: "--find-links ${distDir}") (l.attrValues finalDists));
+        ++ (map (distDir: "--find-links ${distDir}") (l.attrValues finalDistsPaths));
     };
 
     doCheck = false;
@@ -203,13 +217,14 @@ in {
       config.deps.autoPatchelfHook
     ];
 
-    buildInputs = with config.deps; [
-      manylinuxPackages
-    ];
+    buildInputs =
+      (with config.deps; [
+        manylinuxPackages
+      ]);
 
     passthru = {
       inherit (config) pythonSources;
-      dists = finalDists;
+      dists = finalDistsPaths;
     };
 
     final.package-func = config.deps.python.pkgs.buildPythonPackage;
