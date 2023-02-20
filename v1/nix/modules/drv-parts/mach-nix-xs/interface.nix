@@ -11,7 +11,7 @@ in {
       type = t.package;
       description = ''
         A package that contains fetched python sources.
-        Each single python source must be located ina subdirectory named after the package name.
+        Each single python source must be located in a subdirectory named after the package name.
       '';
     };
 
@@ -63,7 +63,7 @@ in {
     dists = l.mkOption {
       type = t.lazyAttrsOf t.str;
       description = ''
-        Attrs which depend onf IFD and therefore should be cached
+        Attrs which depend on IFD and therefore should be cached
       '';
       internal = true;
       readOnly = true;
