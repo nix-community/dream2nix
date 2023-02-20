@@ -1,0 +1,10 @@
+{
+  "content": {
+    "mach-nix": {
+      "dists": {
+        "pillow": "9.3.0"
+      }
+    }
+  },
+  "invalidationHash": "fdc99ee4445b96e19a326eb1a028ee5783d5fc74cb0111c64739e930585e761e"
+}
