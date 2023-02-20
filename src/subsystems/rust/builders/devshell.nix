@@ -11,20 +11,31 @@
   l = lib // builtins;
 
   # illegal env names to be removed and not be added to the devshell
-  illegalEnvNames = [
-    "name"
-    "pname"
-    "version"
-    "all"
-    "args"
-    "drvPath"
-    "drvAttrs"
-    "outPath"
-    "stdenv"
-    "cargoArtifacts"
-    "dream2nixVendorDir"
-    "cargoVendorDir"
-  ];
+  illegalEnvNames =
+    [
+      "name"
+      "pname"
+      "version"
+      "all"
+      "args"
+      "drvPath"
+      "drvAttrs"
+      "outPath"
+      "stdenv"
+      "cargoArtifacts"
+      "dream2nixVendorDir"
+      "cargoVendorDir"
+    ]
+    ++ (
+      l.map
+      (phase: "${phase}Phase")
+      ["configure" "build" "check" "install" "fixup" "unpack"]
+    )
+    ++ l.flatten (
+      l.map
+      (phase: ["pre${phase}" "post${phase}"])
+      ["Configure" "Build" "Check" "Install" "Fixup" "Unpack"]
+    );
   isIllegalEnv = name: l.elem name illegalEnvNames;
   getEnvs = drv:
   # filter out attrsets, functions and illegal environment vars
@@ -38,7 +49,7 @@
           then v
           else null
       )
-      drv
+      drv.drvAttrs
     );
   combineEnvs = envs:
     l.foldl'
