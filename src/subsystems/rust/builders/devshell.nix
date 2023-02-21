@@ -13,15 +13,17 @@
   # illegal env names to be removed and not be added to the devshell
   illegalEnvNames =
     [
+      "src"
       "name"
       "pname"
       "version"
-      "all"
       "args"
-      "drvPath"
-      "drvAttrs"
-      "outPath"
       "stdenv"
+      "builder"
+      "outputs"
+      "phases"
+      # cargo artifact and vendoring derivations
+      # we don't need these in the devshell
       "cargoArtifacts"
       "dream2nixVendorDir"
       "cargoVendorDir"
@@ -54,12 +56,16 @@
   combineEnvs = envs:
     l.foldl'
     (
-      all: env:
+      all: env: let
+        mergeInputs = name: (all.${name} or []) ++ (env.${name} or []);
+      in
         all
         // env
         // {
-          buildInputs = (all.buildInputs or []) ++ (env.buildInputs or []);
-          nativeBuildInputs = (all.nativeBuildInputs or []) ++ (env.nativeBuildInputs or []);
+          buildInputs = mergeInputs "buildInputs";
+          nativeBuildInputs = mergeInputs "nativeBuildInputs";
+          propagatedBuildInputs = mergeInputs "propagatedBuildInputs";
+          propagatedNativeBuildInputs = mergeInputs "propagatedNativeBuildInputs";
         }
     )
     {}
