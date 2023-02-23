@@ -147,12 +147,20 @@
   );
 
   makePackage = {name, dependencies}:
-    # TODO replace with drv-parts
-    config.deps.stdenv.mkDerivation {
-      inherit name;
-      src = distFile name;
+    drv-parts.lib.derivationFromModules {
+      inherit (config) deps;
+    }
+      ({config, ...}: let
+        src = distFile name;
+        version = getVersion src;
+      in {
+        imports = [drv-parts.modules.drv-parts.mkDerivation];
+        inherit name src version;
+        deps = {deps, ...}: {
+          inherit (deps) stdenv autoPatchelfHook python pip;
+        };
+
       unpackPhase = "true";
-      buildPhase = "true";
 
       nativeBuildInputs = [
         config.deps.autoPatchelfHook
@@ -178,7 +186,7 @@
                 echo "PYTHONPATH" $PYTHONPATH
                 ${pythonInterpreter} -m pip install $src --no-index --no-warn-script-location --prefix="$out" --no-cache $pipInstallFlags
             '';
-    };
+      });
   # TODO don't depend on config.deps.python for this, because the script should
   # also be able to run for packages using ancient python, without "packaging".
   packagingPython = config.deps.python.withPackages(p: [p.pkginfo p.packaging]);
