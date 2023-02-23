@@ -20,10 +20,11 @@
   wheel-dists-paths =
     l.mapAttrs (name: ver: getFetchedDistPath name) wheel-info;
 
-  # Build sdist sources.
-  # Only build sdists which are not substituted via config.substitutions.
+  # Build sdist dependencies.
+  # Only build sdists which are not substituted via config.substitutions and which aren't the toplevel
+  # package.
   sdists-to-build =
-    l.filterAttrs (name: ver: ! substitutions ? ${name}) sdist-info;
+    l.filterAttrs (name: ver: (! substitutions ? ${name}) && name != packageName) sdist-info;
   new-dists = l.flip l.mapAttrs sdists-to-build
     (name: ver: mkWheelDist name ver (getFetchedDistPath name));
   all-dists = new-dists // substitutions;
