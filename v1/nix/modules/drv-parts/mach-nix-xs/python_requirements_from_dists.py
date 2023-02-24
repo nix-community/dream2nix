@@ -33,18 +33,31 @@ from pathlib import Path
 
 from pkginfo import SDist, Wheel
 from packaging.requirements import Requirement
-from packaging.utils import parse_sdist_filename, canonicalize_name
+from packaging.utils import parse_sdist_filename, parse_wheel_filename, canonicalize_name
 
 
 def _is_source_dist(pkg_file):
     return pkg_file.suffixes[-2:] == ['.tar', '.gz']
 
 
+def _get_name_version(pkg_file):
+    if _is_source_dist(pkg_file):
+        name, *_  = parse_sdist_filename(pkg_file.name)
+    else:
+        name, *_ = parse_wheel_filename(pkg_file.name)
+    return canonicalize_name(name)
+
+
 def get_pkg_info(pkg_file):
-    if pkg_file.suffix == '.whl':
-        return Wheel(str(pkg_file))
-    elif _is_source_dist(pkg_file):
-        return SDist(str(pkg_file))
+    try:
+       if pkg_file.suffix == '.whl':
+           return Wheel(str(pkg_file))
+       elif _is_source_dist(pkg_file):
+           return SDist(str(pkg_file))
+       else:
+           raise NotImplemented(f"Unknown file format: {pkg_file}")
+    except ValueError:
+        pass
 
 
 def _is_required_dependency(requirement):
@@ -53,21 +66,17 @@ def _is_required_dependency(requirement):
     return not requirement.marker or requirement.marker.evaluate({'extra': ""})
 
 
-def get_requirements(pkg_file):
-    requirements = [Requirement(req) for req in info.requires_dist]
-    # For source distributions which do *not* specify requires_dist,
-    # we fallback to parsing requirements.txt
-    if not requirements and _is_source_dist(pkg_file):
-        if requirements_txt := get_requirements_txt(pkg_file):
-            requirements = [
-                Requirement(req)
-                            for req in requirements_txt.split("\n")
-                            if req and not req.startswith("#")]
-    requirements = filter(_is_required_dependency, requirements)
+def parse_requirements_txt(pkg_file):
+    requirements = []
+    if requirements_txt := read_requirements_txt(pkg_file):
+        requirements = [
+            Requirement(req)
+            for req in requirements_txt.split("\n")
+            if req and not req.startswith("#")]
     return requirements
 
 
-def get_requirements_txt(source_dist_file):
+def read_requirements_txt(source_dist_file):
     name, version = parse_sdist_filename(source_dist_file.name)
     with tarfile.open(source_dist_file) as tar:
         try:
@@ -92,9 +101,20 @@ if __name__ == '__main__':
     dependencies = []
     for pkg_file in pkgs_path.iterdir():
         info = get_pkg_info(pkg_file)
-        if not info:
-            continue
-        name = canonicalize_name(info.name)
-        dependencies.append((name, [canonicalize_name(req.name) for req in get_requirements(pkg_file)]))
+        name = _get_name_version(pkg_file)
+        if info:
+            requirements = [Requirement(req) for req in info.requires_dist]
+        else:
+            requirements = []
+
+        # For source distributions which do *not* specify requires_dist,
+        # we fallback to parsing requirements.txt
+        if not requirements and _is_source_dist(pkg_file):
+            requirements = parse_requirements_txt(pkg_file)
+
+        requirements = filter(_is_required_dependency, requirements)
+        dependencies.append((name, [canonicalize_name(req.name) for req in requirements]))
+
+
     dependencies = sorted(dependencies, key=lambda d: len(d[1]))
     print(json.dumps(dependencies, indent=2))
