@@ -1,7 +1,7 @@
 def normalizeWorkspaceDep:
   if ($workspaceDependencies."\(.key)" | type) == "object"
-  then [., $workspaceDependencies."\(.key)"] | add
-  else [., {"version":$workspaceDependencies."\(.key)"}] | add
+  then [.value, $workspaceDependencies."\(.key)"] | add
+  else [.value, {"version":$workspaceDependencies."\(.key)"}] | add
   end
   # remove workspace option from the dependency
   | del(.workspace)
@@ -16,7 +16,7 @@ def mapWorkspaceDepsFor(name):
       | to_entries
       | map(
         if (.value | type) == "object" and .value.workspace == true
-        then .value = (.value | normalizeWorkspaceDep)
+        then .value = (. | normalizeWorkspaceDep)
         else .
         end
       )
