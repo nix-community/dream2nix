@@ -1,6 +1,10 @@
 {
-  perSystem = { config, lib, pkgs, ... }: {
-
+  perSystem = {
+    config,
+    lib,
+    pkgs,
+    ...
+  }: {
     options.writers = {
       writePureShellScript = lib.mkOption {
         type = lib.types.functionTo lib.types.anything;
@@ -9,7 +13,6 @@
         type = lib.types.functionTo lib.types.anything;
       };
     };
-
 
     /*
     create a script that runs in a `pure` environment, in the sense that:
@@ -37,13 +40,31 @@
 
       # list taken from nix source: src/nix-build/nix-build.cc
       keepVars = lib.concatStringsSep " " [
-        "HOME" "XDG_RUNTIME_DIR" "USER" "LOGNAME" "DISPLAY"
-        "WAYLAND_DISPLAY" "WAYLAND_SOCKET" "PATH" "TERM" "IN_NIX_SHELL"
-        "NIX_SHELL_PRESERVE_PROMPT" "TZ" "PAGER" "NIX_BUILD_SHELL" "SHLVL"
-        "http_proxy" "https_proxy" "ftp_proxy" "all_proxy" "no_proxy"
+        "HOME"
+        "XDG_RUNTIME_DIR"
+        "USER"
+        "LOGNAME"
+        "DISPLAY"
+        "WAYLAND_DISPLAY"
+        "WAYLAND_SOCKET"
+        "PATH"
+        "TERM"
+        "IN_NIX_SHELL"
+        "NIX_SHELL_PRESERVE_PROMPT"
+        "TZ"
+        "PAGER"
+        "NIX_BUILD_SHELL"
+        "SHLVL"
+        "http_proxy"
+        "https_proxy"
+        "ftp_proxy"
+        "all_proxy"
+        "no_proxy"
 
         # We want to keep our own variables as well
-        "IMPURE" "KEEP_VARS" "NIX_PATH"
+        "IMPURE"
+        "KEEP_VARS"
+        "NIX_PATH"
       ];
 
       cleanEnv = ''
@@ -59,7 +80,6 @@
         echo -e "unsetting ENV variables:\n$(echo $unsetVars | tr "\n" " ")"
         unset $unsetVars
       '';
-
     in {
       writePureShellScript = PATH: script:
         pkgs.writeScript "script.sh" (mkScript PATH script);
