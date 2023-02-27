@@ -96,7 +96,7 @@ let
 
       # we use mitmproxy to filter the pypi responses
       pythonWithMitmproxy =
-        python3.withPackages (ps: [ ps.mitmproxy ps.python-dateutil ]);
+        python3.withPackages (ps: [ ps.mitmproxy ps.python-dateutil ps.packaging]);
 
       # fixed output derivation containing downloaded packages,
       # each being symlinked from it's normalized name
@@ -165,7 +165,7 @@ let
 
         pythonBin = python.interpreter;
         filterPypiResponsesScript = ./filter-pypi-responses.py;
-        buildScript = ./fetch-python-requirements.sh;
+        buildScript = ./fetch-python-requirements.py;
         inherit
           pythonWithMitmproxy
           pipVersion
@@ -183,7 +183,7 @@ let
           '' -r ${lib.concatStringsSep " -r " (map toString finalAttrs.requirementsFiles)}'';
 
         buildPhase = ''
-          bash $buildScript
+          $pythonWithMitmproxy/bin/python $buildScript
         '';
       });
     in self;

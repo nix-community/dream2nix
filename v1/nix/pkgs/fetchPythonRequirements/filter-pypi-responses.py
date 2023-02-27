@@ -9,7 +9,10 @@ It has to do one extra api request for each queried package name
 """
 import json
 import os
+import sys
+import ssl
 from urllib.request import Request, urlopen
+from pathlib import Path
 import dateutil.parser
 import gzip
 
@@ -21,11 +24,17 @@ Query the pypi json api to get timestamps for all release files of the given pna
 return all file names which are newer than the given timestamp
 """
 def get_files_to_hide(pname, max_ts):
+    ca_file = Path(os.getenv('HOME')) / ".ca-cert.pem"
+    context = ssl.create_default_context(cafile=ca_file)
+    if not ca_file.exists():
+        print("mitmproxy ca not found")
+        sys.exit(1)
+
     # query the api
     url = f"https://pypi.org/pypi/{pname}/json"
     req = Request(url)
     req.add_header('Accept-Encoding', 'gzip')
-    with urlopen(req) as response:
+    with urlopen(req, context=context) as response:
         content = gzip.decompress(response.read())
         resp = json.loads(content)
 
