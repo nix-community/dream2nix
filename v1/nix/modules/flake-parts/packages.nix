@@ -15,7 +15,7 @@
           evalCacheSetup
         ];
         specialArgs.dependencySets = {
-          nixpkgs = inputs'.nixpkgsPython.legacyPackages;
+          nixpkgs = inputs'.nixpkgs.legacyPackages;
           nixpkgsStable = inputs'.nixpkgsStable.legacyPackages;
         };
         specialArgs.drv-parts = inputs.drv-parts;

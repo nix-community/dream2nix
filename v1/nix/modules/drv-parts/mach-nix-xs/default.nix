@@ -177,11 +177,11 @@ in {
       {
         inherit (nixpkgs)
           autoPatchelfHook
-          fetchPythonRequirements
           stdenv
           ;
         python = nixpkgs.python3;
         manylinuxPackages = nixpkgs.pythonManylinuxPackages.manylinux1;
+        fetchPythonRequirements = nixpkgs.callPackage ../../../pkgs/fetchPythonRequirements {};
       }
     );
 
