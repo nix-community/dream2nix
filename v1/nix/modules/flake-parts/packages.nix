@@ -10,6 +10,7 @@
     makeDrv = module: let
       evaled = lib.evalModules {
         modules = [
+          inputs.drv-parts.modules.drv-parts.docs
           module
           evalCacheSetup
         ];

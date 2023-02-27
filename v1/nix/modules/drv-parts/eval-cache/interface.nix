@@ -9,7 +9,7 @@ in {
     repoRoot = l.mkOption {
       type = t.path;
       description = "The root of the current repo. Eg. 'self' in a flake";
-      example = lib.literalExample ''
+      example = lib.literalExpression ''
         self
       '';
     };
@@ -17,16 +17,13 @@ in {
     cacheFileRel = l.mkOption {
       type = t.str;
       description = "Location of the cache file relative to the repoRoot";
-      example = lib.literalExample ''
+      example = lib.literalExpression ''
         /rel/path/to/my/package/cache.json
       '';
     };
 
     # LOCAL OPTIONS
-    enable = l.mkEnableOption {
-      description =
-        "Whether to enable the evaluation cache for this derivation";
-    };
+    enable = l.mkEnableOption "the evaluation cache for this derivation";
 
     content = l.mkOption {
       type = t.submodule {
