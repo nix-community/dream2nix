@@ -183,7 +183,6 @@
                 buildPythonPath "$propagatedBuildInputs"
                 echo $propagatedBuildInputs > $out/nix-support/propagated-build-inputs
                 export PYTHONPATH="$program_PYTHONPATH:$out/${pythonSitePackages}:$PYTHONPATH"
-                echo "PYTHONPATH" $PYTHONPATH
                 ${pythonInterpreter} -m pip install $src --no-index --no-warn-script-location --prefix="$out" --no-cache $pipInstallFlags
             '';
       });
@@ -193,17 +192,15 @@
   dependenciesFile = config.deps.runCommand
     "${packageName}-dependency-tree" {}
     ''${packagingPython}/bin/python ${./python_requirements_from_dists.py} ${cfg.pythonSources.dist} > $out'';
-  dependencies = l.filter (d: (l.head d) != packageName) (l.fromJSON (l.readFile dependenciesFile));
-  dependencyTree = l.listToAttrs (map
-    (d:
-      let
-        name = l.head d;
-        dependencies = map (p: dependencyTree.${p}) (l.elemAt d 1);
-      in
-        l.nameValuePair name (makePackage {
-          inherit name dependencies;
-        })
-    ) dependencies);
+  dependencies = l.filter (d: d.name != packageName) (l.fromJSON (l.readFile dependenciesFile));
+
+  dependencyTree = l.listToAttrs (
+    (l.flip map) dependencies
+      (dep: l.nameValuePair dep.name (
+        makePackage {
+          name = dep.name;
+          dependencies = map (pkg: dependencyTree.${pkg}) dep.dependencies;
+        })));
 in {
 
   imports = [
