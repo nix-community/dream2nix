@@ -189,9 +189,7 @@
   # TODO don't depend on config.deps.python for this, because the script should
   # also be able to run for packages using ancient python, without "packaging".
   packagingPython = config.deps.python.withPackages(p: [p.pkginfo p.packaging]);
-  dependenciesFile = config.deps.runCommand
-    "${packageName}-dependency-tree" {}
-    ''${packagingPython}/bin/python ${./python_requirements_from_dists.py} ${cfg.pythonSources.dist} > $out'';
+  dependenciesFile = "${cfg.pythonSources}/dependencies.json";
   dependencies = l.filter (d: d.name != packageName) (l.fromJSON (l.readFile dependenciesFile));
 
   dependencyTree = l.listToAttrs (

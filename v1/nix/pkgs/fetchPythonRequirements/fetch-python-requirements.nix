@@ -57,6 +57,9 @@ let
     # It's better to not refer to python.pkgs.pip directly, as we want to reduce
     #   the times we have to update the output hash
     pipVersion ? "23.0",
+
+    # Write "dependencies.json" to $out, documenting which package depends on which.
+    writeDependencyTree ? true,
   }:
     # specifying `--platform` for pip download is only allowed in combination with `--only-binary :all:`
     # therefore, if onlyBinary is disabled, we must enforce targetPlatform == buildPlatform to ensure reproducibility
@@ -96,7 +99,7 @@ let
 
       # we use mitmproxy to filter the pypi responses
       pythonWithMitmproxy =
-        python3.withPackages (ps: [ ps.mitmproxy ps.python-dateutil ps.packaging]);
+        python3.withPackages (ps: [ ps.mitmproxy ps.python-dateutil ps.pkginfo ps.packaging]);
 
       # fixed output derivation containing downloaded packages,
       # each being symlinked from it's normalized name
@@ -123,6 +126,7 @@ let
             ${finalAttrs.onlyBinaryFlags}
             ${finalAttrs.pipVersion}
             ${finalAttrs.pipFlags}
+            ${toString writeDependencyTree}
 
             # Include requirements
             # We hash the content, as store paths might change more often
@@ -133,6 +137,7 @@ let
             # changes with every nixpkgs commit
             ${builtins.readFile finalAttrs.filterPypiResponsesScript}
             ${builtins.readFile finalAttrs.buildScript}
+            ${builtins.readFile finalAttrs.writeDependencyTreeScript}
           '';
 
           invalidationHashShort = lib.substring 0 10
@@ -166,6 +171,7 @@ let
         pythonBin = python.interpreter;
         filterPypiResponsesScript = ./filter-pypi-responses.py;
         buildScript = ./fetch-python-requirements.py;
+        writeDependencyTreeScript = ./write-dependency-tree.py;
         inherit
           pythonWithMitmproxy
           pipVersion
@@ -184,6 +190,7 @@ let
 
         buildPhase = ''
           $pythonWithMitmproxy/bin/python $buildScript
+          ${lib.optionalString writeDependencyTree "$pythonWithMitmproxy/bin/python $writeDependencyTreeScript $out/dist > $out/dependencies.json"}
         '';
       });
     in self;
