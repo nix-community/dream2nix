@@ -42,9 +42,10 @@ in rec {
     makeSource = dep: let
       path = getSource dep.name dep.version;
       spec = getSourceSpec dep.name dep.version;
+      stripUniqSuffix = version: l.removeSuffix ("$" + spec.type) version;
     in {
       inherit path spec dep;
-      name = "${dep.name}-${dep.version}";
+      name = "${dep.name}-${stripUniqSuffix dep.version}";
     };
     sources = l.map makeSource deps;
 
@@ -112,9 +113,15 @@ in rec {
         tree="${source.path}"
         ${l.optionalString isGit (findCrateSource source)}
         echo Vendoring crate ${source.name}
-        cp -prd "$tree" $out/${source.name}
-        chmod u+w $out/${source.name}
-        ${l.optionalString isGit "printf '{\"files\":{},\"package\":null}' > \"$out/${source.name}/.cargo-checksum.json\""}
+        if [ -d $out/${source.name} ]; then
+          echo Crate is already vendored
+          echo Crates with duplicate versions cannot be vendored as Cargo does not support this behaviour
+          exit 1
+        else
+          cp -prd "$tree" $out/${source.name}
+          chmod u+w $out/${source.name}
+          ${l.optionalString isGit "printf '{\"files\":{},\"package\":null}' > $out/${source.name}/.cargo-checksum.json"}
+        fi
       '';
   in
     pkgs.runCommandLocal "vendor" {} ''

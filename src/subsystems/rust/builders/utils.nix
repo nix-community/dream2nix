@@ -119,8 +119,7 @@ in rec {
       version,
       ...
     } @ args: let
-      getSource = name: version: let
-        sourceSpec = getSourceSpec name version;
+      makeSource = sourceSpec: let
         source =
           if sourceSpec.type == "crates-io"
           then "registry+https://github.com/rust-lang/crates.io-index"
@@ -139,19 +138,15 @@ in rec {
           else null;
       in
         source;
-      # TODO: this is currently unused but will be used in the future, see
-      # comment down below in dependencies.
-      getDepSource = name: version: let
-        sourceSpec = getSourceSpec name version;
-      in
+      makeDepSource = sourceSpec:
         if sourceSpec.type == "crates-io"
-        then null
+        then makeSource sourceSpec
         else if sourceSpec.type == "git"
-        then l.head (l.splitString "#" (getSource name version))
+        then l.concatStringsSep "#" (l.init (l.splitString "#" (makeSource sourceSpec)))
         else null;
       sourceSpec = getSourceSpec name version;
       source = let
-        src = getSource name version;
+        src = makeSource sourceSpec;
       in
         if src == null
         then throw "source type '${sourceSpec.type}' not supported"
@@ -160,28 +155,28 @@ in rec {
         l.map
         (
           dep: let
-            # only put version if there are different versions of the dep
+            depSourceSpec = getSourceSpec dep.name dep.version;
+            depSource = makeDepSource depSourceSpec;
             hasMultipleVersions =
-              (l.length (l.attrValues dreamLock.sources.${dep.name})) > 1;
+              l.length (l.attrValues dreamLock.sources.${dep.name}) > 1;
+            hasDuplicateVersions =
+              l.hasSuffix ("$" + depSourceSpec.type) dep.version;
+            # only put version if there are different versions of the dep
             versionString =
-              l.optionalString hasMultipleVersions " ${dep.version}";
-            # TODO: we need to comment out this and put the srcString only
-            # if there are duplicate versions of a dependency. This currently
-            # doesn't matter for us since the two Rust builders we have
-            # (brp and crane) use cargo, and cargo vendor does not support
-            # duplicate dependency versions. However if we get a more granular
-            # builder that does not use cargo, we would be able to test and
-            # support this, since we wouldn't be limited to cargo's functionality.
-            # src = getDepSource dep.name dep.version;
-            src = null;
-            srcString = l.optionalString (src != null) " (${src})";
-          in "${dep.name}${versionString}${srcString}"
+              l.optionalString hasMultipleVersions " ${depSourceSpec.version}";
+            # only put source if there are duplicate versions of the dep
+            # cargo vendor does not support this anyway and so builds will fail
+            # until https://github.com/rust-lang/cargo/issues/10310 is resolved.
+            srcString =
+              l.optionalString hasDuplicateVersions " (${depSource})";
+          in "${depSourceSpec.pname}${versionString}${srcString}"
         )
         args.dependencies;
       isMainPackage = isInPackages name version;
     in
       {
-        inherit name version;
+        name = sourceSpec.pname;
+        version = sourceSpec.version;
       }
       # put dependencies like how cargo expects them
       // (

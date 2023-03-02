@@ -97,17 +97,58 @@ in {
     parsedLock = projectTree.files."Cargo.lock".tomlContent;
     parsedDeps = parsedLock.package;
 
+    makeDepId = dep: "${dep.name} ${dep.version} (${dep.source or ""})";
+
     # Gets a checksum from the [metadata] table of the lockfile
-    getChecksum = dep: let
-      key = "checksum ${dep.name} ${dep.version} (${dep.source})";
-    in
-      parsedLock.metadata."${key}";
+    getChecksum = dep: parsedLock.metadata."checksum ${makeDepId dep}";
 
     # map of dependency names to versions
     depNamesToVersions =
-      l.listToAttrs
-      (l.map (dep: l.nameValuePair dep.name dep.version) parsedDeps);
-    # This parses a "package-name version" entry in the "dependencies"
+      l.foldl'
+      (
+        all: el:
+          if l.hasAttr el.name all
+          then all // {${el.name} = all.${el.name} ++ [el];}
+          else all // {${el.name} = [el];}
+      )
+      {}
+      parsedDeps;
+    findUniqDep = let
+      # tests whether if el contains all elements from dep
+      compareAttrsets = dep: el:
+        l.foldl'
+        (all: el: all && el)
+        true
+        (
+          l.mapAttrsToList
+          (
+            name: value:
+              if l.hasAttr name el
+              then
+                if name == "source" && l.hasPrefix "git+" el.source
+                then l.concatStringsSep "#" (l.init (l.splitString "#" el.source)) == value
+                else el.${name} == value
+              else false
+          )
+          dep
+        );
+    in
+      dep: let
+        notFoundError = "no dependency found with name ${dep.name} in Cargo.lock";
+        foundCount = l.length depNamesToVersions.${dep.name};
+        found =
+          if foundCount == 1
+          then l.head depNamesToVersions.${dep.name}
+          else if foundCount > 1
+          then
+            l.findFirst
+            (el: compareAttrsets dep el)
+            (throw notFoundError)
+            depNamesToVersions.${dep.name}
+          else throw notFoundError;
+      in
+        found;
+    # This parses a "package-name version (source)" entry in the "dependencies"
     # field of a dependency in Cargo.lock
     parseDepEntryImpl = entry: let
       parsed = l.splitString " " entry;
@@ -116,17 +157,17 @@ in {
         if l.length parsed > 1
         then l.elemAt parsed 1
         else null;
-    in {
-      inherit name;
-      version =
-        # If there is no version, search through the lockfile to
-        # find the dependency's version
-        if maybeVersion != null
-        then maybeVersion
-        else
-          depNamesToVersions.${name}
-          or (throw "no dependency found with name ${name} in Cargo.lock");
-    };
+      source =
+        if l.length parsed > 2
+        then l.removePrefix "(" (l.removeSuffix ")" (l.elemAt parsed 2))
+        else null;
+      foundDep = findUniqDep (
+        {inherit name;}
+        // l.optionalAttrs (source != null) {inherit source;}
+        // l.optionalAttrs (maybeVersion != null) {version = maybeVersion;}
+      );
+    in
+      foundDep;
     depNameVersionAttrs = let
       makePair = entry: l.nameValuePair entry (parseDepEntryImpl entry);
       depEntries = l.flatten (l.map (dep: dep.dependencies or []) parsedDeps);
@@ -135,50 +176,43 @@ in {
     parseDepEntry = entry: depNameVersionAttrs.${entry};
 
     # Parses a git source, taken straight from nixpkgs.
-    parseGitSourceImpl = src: let
-      parts = builtins.match ''git\+([^?]+)(\?(rev|tag|branch)=(.*))?#(.*)'' src;
-      type = builtins.elemAt parts 2; # rev, tag or branch
-      value = builtins.elemAt parts 3;
+    parseSourceImpl = src: let
+      parts = l.match ''git\+([^?]+)(\?(rev|tag|branch)=(.*))?#(.*)'' src;
+      type = l.elemAt parts 2; # rev, tag or branch
+      value = l.elemAt parts 3;
+      checkType = type: l.hasPrefix "${type}+" src;
     in
-      if parts == null
-      then null
-      else
-        {
-          url = builtins.elemAt parts 0;
-          sha = builtins.elemAt parts 4;
-        }
-        // (lib.optionalAttrs (type != null) {inherit type value;});
-    parsedGitSources = let
-      makePair = dep:
-        l.nameValuePair
-        "${dep.name}-${dep.version}"
-        (parseGitSourceImpl (dep.source or ""));
-    in
-      l.listToAttrs (l.map makePair parsedDeps);
-    parseGitSource = dep: parsedGitSources."${dep.name}-${dep.version}";
-
-    # Extracts a source type from a dependency.
-    getSourceTypeFromImpl = dependencyObject: let
-      checkType = type: l.hasPrefix "${type}+" dependencyObject.source;
-    in
-      if !(l.hasAttr "source" dependencyObject)
-      then "path"
-      else if checkType "git"
-      then "git"
-      else if checkType "registry"
+      if checkType "registry"
       then
-        if dependencyObject.source == "registry+https://github.com/rust-lang/crates.io-index"
-        then "crates-io"
+        if src == "registry+https://github.com/rust-lang/crates.io-index"
+        then {
+          type = "crates-io";
+          value = null;
+        }
         else throw "registries other than crates.io are not supported yet"
-      else throw "unknown or unsupported source type: ${dependencyObject.source}";
-    depSourceTypes = let
-      makePair = dep:
-        l.nameValuePair
-        "${dep.name}-${dep.version}"
-        (getSourceTypeFromImpl dep);
-    in
-      l.listToAttrs (l.map makePair parsedDeps);
-    getSourceTypeFrom = dep: depSourceTypes."${dep.name}-${dep.version}";
+      else if parts != null
+      then {
+        type = "git";
+        value =
+          {
+            url = l.elemAt parts 0;
+            sha = l.elemAt parts 4;
+          }
+          // (lib.optionalAttrs (type != null) {inherit type value;});
+      }
+      else throw "unknown or unsupported source type: ${src}";
+    parsedSources = l.listToAttrs (
+      l.map
+      (dep: l.nameValuePair dep.source (parseSourceImpl dep.source))
+      (l.filter (dep: dep ? source) parsedDeps)
+    );
+    parseSource = dep:
+      if dep ? source
+      then parsedSources.${dep.source}
+      else {
+        type = "path";
+        value = null;
+      };
 
     package = rec {
       toml = packageToml.value;
@@ -187,6 +221,17 @@ in {
         toml.package.version
         or (l.warn "no version found in Cargo.toml for ${name}, defaulting to unknown" "unknown");
     };
+
+    extractVersionFromDep = rawObj: let
+      source = parseSource rawObj;
+      duplicateVersions =
+        l.filter
+        (dep: dep.version == rawObj.version)
+        depNamesToVersions.${rawObj.name};
+    in
+      if l.length duplicateVersions > 1 && source.type != "path"
+      then rawObj.version + "$" + source.type
+      else rawObj.version;
   in
     dlib.simpleTranslate2.translate
     ({...}: {
@@ -256,10 +301,11 @@ in {
             cargoPackages;
         in
           l.foldl' l.recursiveUpdate {} allPackageReplacements;
-        gitSources = let
-          gitDeps = l.filter (dep: (getSourceTypeFrom dep) == "git") parsedDeps;
-        in
-          l.unique (l.map (dep: parseGitSource dep) gitDeps);
+        gitSources = l.map (src: src.value) (
+          l.filter
+          (src: src.type == "git")
+          (l.map parseSource parsedDeps)
+        );
         meta = l.foldl' l.recursiveUpdate {} (
           l.map
           (
@@ -312,13 +358,19 @@ in {
       extractors = {
         name = rawObj: finalObj: rawObj.name;
 
-        version = rawObj: finalObj: rawObj.version;
+        version = rawObj: finalObj: extractVersionFromDep rawObj;
 
         dependencies = rawObj: finalObj:
-          l.map parseDepEntry (rawObj.dependencies or []);
+          l.map
+          (dep: dep // {version = extractVersionFromDep dep;})
+          (l.map parseDepEntry (rawObj.dependencies or []));
 
         sourceSpec = rawObj: finalObj: let
-          sourceType = getSourceTypeFrom rawObj;
+          source = parseSource rawObj;
+          depNameVersion = {
+            pname = rawObj.name;
+            version = l.removeSuffix ("$" + source.type) rawObj.version;
+          };
           sourceConstructors = {
             path = dependencyObject: let
               findCrate =
@@ -340,34 +392,36 @@ in {
                 cargoPackages;
               workspaceCrate = findCrate workspaceCrates;
               nonWorkspaceCrate = findCrate allCrates;
+              final =
+                if
+                  (package.name == dependencyObject.name)
+                  && (package.version == dependencyObject.version)
+                then
+                  dlib.construct.pathSource {
+                    path = project.relPath;
+                    rootName = null;
+                    rootVersion = null;
+                  }
+                else if workspaceCrate != null
+                then
+                  dlib.construct.pathSource {
+                    path = workspaceCrate.relPath;
+                    rootName = package.name;
+                    rootVersion = package.version;
+                  }
+                else if nonWorkspaceCrate != null
+                then
+                  dlib.construct.pathSource {
+                    path = nonWorkspaceCrate.relPath;
+                    rootName = null;
+                    rootVersion = null;
+                  }
+                else throw "could not find crate '${dependencyObject.name}-${dependencyObject.version}'";
             in
-              if
-                (package.name == dependencyObject.name)
-                && (package.version == dependencyObject.version)
-              then
-                dlib.construct.pathSource {
-                  path = project.relPath;
-                  rootName = null;
-                  rootVersion = null;
-                }
-              else if workspaceCrate != null
-              then
-                dlib.construct.pathSource {
-                  path = workspaceCrate.relPath;
-                  rootName = package.name;
-                  rootVersion = package.version;
-                }
-              else if nonWorkspaceCrate != null
-              then
-                dlib.construct.pathSource {
-                  path = nonWorkspaceCrate.relPath;
-                  rootName = null;
-                  rootVersion = null;
-                }
-              else throw "could not find crate '${dependencyObject.name}-${dependencyObject.version}'";
+              final // depNameVersion;
 
             git = dependencyObject: let
-              parsed = parseGitSource dependencyObject;
+              parsed = source.value;
               maybeRef =
                 if parsed.type or null == "branch"
                 then {ref = "refs/heads/${parsed.value}";}
@@ -376,19 +430,22 @@ in {
                 else {};
             in
               maybeRef
+              // depNameVersion
               // {
                 type = "git";
                 url = parsed.url;
                 rev = parsed.sha;
               };
 
-            crates-io = dependencyObject: {
-              type = "crates-io";
-              hash = dependencyObject.checksum or (getChecksum dependencyObject);
-            };
+            crates-io = dependencyObject:
+              depNameVersion
+              // {
+                type = "crates-io";
+                hash = dependencyObject.checksum or (getChecksum dependencyObject);
+              };
           };
         in
-          sourceConstructors."${sourceType}" rawObj;
+          sourceConstructors."${source.type}" rawObj;
       };
     });
 
