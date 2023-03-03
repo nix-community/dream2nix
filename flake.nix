@@ -73,6 +73,9 @@
       url = "github:nix-community/pruned-racket-catalog/catalog";
       flake = false;
     };
+
+    # required for old PHP versions
+    phps.url = "github:fossar/nix-phps";
   };
 
   outputs = {

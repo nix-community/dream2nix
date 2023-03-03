@@ -2,6 +2,7 @@
   lib,
   pkgs,
   externals,
+  inputs,
   ...
 }: {
   type = "pure";
@@ -36,26 +37,30 @@
 
     inherit (pkgs.callPackage ../../semver.nix {}) satisfies;
 
-    # php with required extensions
-    php =
-      if satisfies pkgs.php81.version subsystemAttrs.phpSemver
+    phpPackages = l.attrValues inputs.phps.packages.x86_64-linux;
+    phpPackage = let
+      matchingVersions = l.filter (phpAttrs: satisfies phpAttrs.version subsystemAttrs.phpSemver) phpPackages;
+    in
+      if matchingVersions == []
       then
-        pkgs.php81.withExtensions (
-          {
-            all,
-            enabled,
-          }:
-            l.unique (enabled
-              ++ (l.attrValues (l.filterAttrs (e: _: l.elem e subsystemAttrs.phpExtensions) all)))
-        )
-      else
         l.abort ''
           Error: incompatible php versions.
           Package "${defaultPackageName}" defines required php version:
             "php": "${subsystemAttrs.phpSemver}"
-          Using php version "${pkgs.php81.version}" from attribute "pkgs.php81".
-        '';
-    composer = php.packages.composer;
+          No matching php version was found in known versions: ${toString (l.map (attrs: attrs.version) phpPackages)}.
+        ''
+      else l.head matchingVersions;
+
+    # php with required extensions
+    php = phpPackage.withExtensions (
+      {
+        all,
+        enabled,
+      }:
+        l.unique (enabled
+          ++ (l.attrValues (l.filterAttrs (e: _: l.elem e subsystemAttrs.phpExtensions) all)))
+    );
+    composer = phpPackage.packages.composer;
 
     # packages to export
     packages =
