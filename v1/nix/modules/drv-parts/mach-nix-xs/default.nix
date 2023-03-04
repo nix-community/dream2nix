@@ -150,8 +150,8 @@ in {
 
   imports = [
     drv-parts.modules.drv-parts.mkDerivation
+    (drv-parts.lib.mkDerivation-based "buildPythonPackage")
     ./interface.nix
-    ../buildPythonPackage
     ../eval-cache
   ];
 
@@ -183,6 +183,7 @@ in {
           stdenv
           ;
         python = nixpkgs.python3;
+        buildPythonPackage = config.deps.python.pkgs.buildPythonPackage;
         manylinuxPackages = nixpkgs.pythonManylinuxPackages.manylinux1;
         fetchPythonRequirements = nixpkgs.callPackage ../../../pkgs/fetchPythonRequirements {};
       }
