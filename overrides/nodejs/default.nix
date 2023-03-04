@@ -966,21 +966,6 @@ in
       };
     };
 
-    # This should not be necessary, as this plugin claims to
-    # respect the `preserveSymlinks` option of rollup.
-    # Adding the NODE_PATH to the module directories fixes it for now.
-    "@rollup/plugin-node-resolve" = {
-      respect-node-path = {
-        postPatch = ''
-          for f in $(find -name '*.js'); do
-            substituteInPlace $f --replace \
-              "moduleDirectories: ['node_modules']," \
-              "moduleDirectories: ['node_modules'].concat(process.env.NODE_PATH.split( /[;:]/ )),"
-          done
-        '';
-      };
-    };
-
     "@sentry/cli" = {
       add-binary = {
         buildScript = ''
