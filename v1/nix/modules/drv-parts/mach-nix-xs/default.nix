@@ -37,7 +37,7 @@
   # Convert all-dists to drv-parts drvs.
   # The conversion is done via config.drvs (see below).
   drv-parts-dists = l.flip l.mapAttrs config.mach-nix.drvs
-    (_: drv: drv.final.package);
+    (_: drv: drv.public);
 
   # The final dists we want to install.
   # A mix of:
@@ -47,7 +47,7 @@
   finalDistsPaths =
     wheel-dists-paths // (l.mapAttrs getDistDir drv-parts-dists);
 
-  packageName = config.final.package.name;
+  packageName = config.public.name;
 
   unknownSubstitutions = l.attrNames
     (l.removeAttrs cfg.substitutions (l.attrNames all-info));

@@ -12,25 +12,30 @@ in {
     python = nixpkgs.python39;
   };
 
-  mkDerivation = {
-    pname = "ansible";
+  public = {
+    name = "ansible";
     version = "2.7.1";
+  };
+
+  mkDerivation = {
 
     preUnpack = ''
-      export src=$(ls ${config.mach-nix.pythonSources}/names/${config.mkDerivation.pname}/*);
+      export src=$(ls ${config.mach-nix.pythonSources}/names/${config.public.name}/*);
     '';
   };
 
-  env.format = "setuptools";
+  env = {
+    format = "setuptools";
 
-  env.pythonImportsCheck = [
-    config.mkDerivation.pname
-  ];
+    pythonImportsCheck = [
+      config.public.name
+    ];
+  };
 
   mach-nix.pythonSources = config.deps.fetchPythonRequirements {
     inherit python;
-    name = config.mkDerivation.pname;
-    requirementsList = ["${config.mkDerivation.pname}==${config.mkDerivation.version}"];
+    name = config.public.name;
+    requirementsList = ["${config.public.name}==${config.public.version}"];
     hash = "sha256-Wdu4A9nFfVhHwj2rYrhb6A5xtZ2VytEc4F8Bo6kgFtg=";
     maxDate = "2023-01-01";
   };

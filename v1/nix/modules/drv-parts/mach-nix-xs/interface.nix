@@ -42,7 +42,7 @@ in {
 
     drvs = l.mkOption {
       type = t.attrsOf (t.submoduleWith {
-        modules = [drv-parts.modules.drv-parts.package];
+        modules = [drv-parts.modules.drv-parts.core];
         specialArgs = {inherit dependencySets;};
       });
       description = "drv-parts modules that define python dependencies";

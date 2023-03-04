@@ -2,7 +2,7 @@
   perSystem = { config, self', inputs', pkgs, system, ... }: let
 
     evalCacheSetup = {config,...}: {
-      eval-cache.cacheFileRel = "/nix/modules/drvs/${config.final.package.name}/cache-${system}.json";
+      eval-cache.cacheFileRel = "/nix/modules/drvs/${config.public.name}/cache-${system}.json";
       eval-cache.repoRoot = self;
       eval-cache.enable = true;
     };
@@ -10,6 +10,7 @@
     makeDrv = module: let
       evaled = lib.evalModules {
         modules = [
+          inputs.drv-parts.modules.drv-parts.core
           inputs.drv-parts.modules.drv-parts.docs
           module
           evalCacheSetup
@@ -21,7 +22,7 @@
         specialArgs.drv-parts = inputs.drv-parts;
       };
     in
-      evaled // evaled.config.final.package;
+      evaled // evaled.config.public;
 
   in {
     packages = lib.mapAttrs (_: drvModule: makeDrv drvModule) self.modules.drvs;

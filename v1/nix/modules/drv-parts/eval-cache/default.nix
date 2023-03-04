@@ -2,7 +2,7 @@
   l = lib // builtins;
   cfg = config.eval-cache;
 
-  packageName = config.final.package.name;
+  packageName = config.public.name;
 
   filterTrue = l.filterAttrsRecursive (key: val: l.isAttrs val || val == true);
 
@@ -102,7 +102,7 @@
         ;
       refresh =
         config.deps.writeScript
-        "refresh-${config.final.package.name}"
+        "refresh-${config.public.name}"
         refreshCommand;
     };
 

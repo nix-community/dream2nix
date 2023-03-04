@@ -16,9 +16,12 @@ in {
     python = nixpkgs.python38;
   };
 
-  mkDerivation = {
-    pname = "odoo";
+  public = {
+    name = "odoo";
     version = "16.0";
+  };
+
+  mkDerivation = {
 
     src = config.deps.fetchFromGitHub {
       owner = "odoo";
@@ -31,7 +34,7 @@ in {
 
   mach-nix.pythonSources = config.deps.fetchPythonRequirements {
     inherit (config.deps) python;
-    name = config.mkDerivation.pname;
+    name = config.public.name;
     requirementsFiles = ["${config.mkDerivation.src}/requirements.txt"];
     hash = "sha256-fxvuknvfNQxRnUo8UWyvLdqAHrKxQMsWYXeKtEV0rns=";
     maxDate = "2023-01-01";

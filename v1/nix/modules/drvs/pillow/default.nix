@@ -18,11 +18,10 @@ in {
       libjpeg;
   };
 
-  env.format = "setuptools";
-
-  env.pythonImportsCheck = [
-    "PIL"
-  ];
+  public = {
+    name = "pillow";
+    version = "9.3.0";
+  };
 
   mkDerivation = {
     nativeBuildInputs = [
@@ -32,19 +31,24 @@ in {
       config.deps.zlib config.deps.libjpeg
     ];
 
-    pname = "pillow";
-    version = "9.3.0";
-
     preUnpack = ''
-      export src=$(ls ${config.mach-nix.pythonSources}/names/${config.mkDerivation.pname}/*);
+      export src=$(ls ${config.mach-nix.pythonSources}/names/${config.public.name}/*);
     '';
+  };
+
+  env = {
+    format = "setuptools";
+
+    pythonImportsCheck = [
+      "PIL"
+    ];
   };
 
 
   mach-nix.pythonSources = config.deps.fetchPythonRequirements {
     inherit python;
-    name = config.mkDerivation.pname;
-    requirementsList = ["${config.mkDerivation.pname}==${config.mkDerivation.version}"];
+    name = config.public.name;
+    requirementsList = ["${config.public.name}==${config.public.version}"];
     hash = "sha256-/7MQ/hi+G3Q+xiDpEIw76chcwFmhKpipAq/4pkSvlm4=";
     maxDate = "2023-01-01";
     pipFlags = [
