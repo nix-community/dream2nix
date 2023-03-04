@@ -5,7 +5,7 @@
 
     allNewFileCommands = l.flatten
       (l.mapAttrsToList
-      (name: pkg: pkg.eval-cache.refresh or [])
+      (name: pkg: pkg.config.eval-cache.refresh or [])
       self'.packages);
 
     update-caches = config.writers.writePureShellScript

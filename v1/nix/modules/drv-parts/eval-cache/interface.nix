@@ -57,5 +57,11 @@ in {
       internal = true;
       readOnly = true;
     };
+
+    refresh = l.mkOption {
+      type = t.path;
+      description = "Script to refresh the cache file of this package";
+      readOnly = true;
+    };
   };
 }

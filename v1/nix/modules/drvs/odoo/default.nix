@@ -16,21 +16,23 @@ in {
     python = nixpkgs.python38;
   };
 
-  pname = "odoo";
-  version = "16.0";
+  mkDerivation = {
+    pname = "odoo";
+    version = "16.0";
 
-  src = config.deps.fetchFromGitHub {
-    owner = "odoo";
-    repo = "odoo";
-    # ref: 16.0
-    rev = "2d42fd69cada3b1f2716c3d0a20bec6170f9b226";
-    hash = "sha256-ZlPH+RaRZbWooe+kpiFYZtvuVmXtOMHeCW+Z74ZscXY=";
+    src = config.deps.fetchFromGitHub {
+      owner = "odoo";
+      repo = "odoo";
+      # ref: 16.0
+      rev = "2d42fd69cada3b1f2716c3d0a20bec6170f9b226";
+      hash = "sha256-ZlPH+RaRZbWooe+kpiFYZtvuVmXtOMHeCW+Z74ZscXY=";
+    };
   };
 
   mach-nix.pythonSources = config.deps.fetchPythonRequirements {
     inherit (config.deps) python;
-    name = config.pname;
-    requirementsFiles = ["${config.src}/requirements.txt"];
+    name = config.mkDerivation.pname;
+    requirementsFiles = ["${config.mkDerivation.src}/requirements.txt"];
     hash = "sha256-fxvuknvfNQxRnUo8UWyvLdqAHrKxQMsWYXeKtEV0rns=";
     maxDate = "2023-01-01";
     nativeBuildInputs = (with config.deps; [
@@ -47,11 +49,11 @@ in {
 
   # fix some builds via overrides
   mach-nix.drvs = {
-    libsass = {
+    libsass.mkDerivation = {
       doCheck = false;
       doInstallCheck = l.mkForce false;
     };
-    pypdf2 = {
+    pypdf2.mkDerivation = {
       doCheck = false;
       doInstallCheck = l.mkForce false;
     };

@@ -10,7 +10,7 @@
         "flatbuffers": "wheel",
         "gast": "wheel",
         "google-auth": "wheel",
-        "google-auth_oauthlib": "wheel",
+        "google-auth-oauthlib": "wheel",
         "google-pasta": "wheel",
         "grpcio": "wheel",
         "h5py": "wheel",
@@ -32,11 +32,11 @@
         "setuptools": "wheel",
         "six": "wheel",
         "tensorboard": "wheel",
-        "tensorboard-data_server": "wheel",
-        "tensorboard-plugin_wit": "wheel",
+        "tensorboard-data-server": "wheel",
+        "tensorboard-plugin-wit": "wheel",
         "tensorflow": "wheel",
         "tensorflow-estimator": "wheel",
-        "tensorflow-io_gcs_filesystem": "wheel",
+        "tensorflow-io-gcs-filesystem": "wheel",
         "termcolor": "wheel",
         "typing-extensions": "wheel",
         "urllib3": "wheel",
@@ -46,5 +46,5 @@
       }
     }
   },
-  "invalidationHash": "be615f13c79e520c97aef008baf52d6dc25132e91b81c4a9346afd4994df462d"
+  "invalidationHash": "0f1efe4838023fa0c508cf9e4e2ac5814876c8448487bdfc3f70d32b68836dd9"
 }

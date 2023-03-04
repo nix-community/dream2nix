@@ -19,26 +19,40 @@ in {
     python = l.mkForce nixpkgsStable.python3;
   };
 
-  pname = "apache-airflow";
-  version = "2.5.0";
+  mkDerivation = {
+    pname = "apache-airflow";
+    version = "2.5.0";
 
-  src = config.deps.fetchFromGitHub {
-    owner = "apache";
-    repo = "airflow";
-    rev = "refs/tags/${config.version}";
-    # Download using the git protocol rather than using tarballs, because the
-    # GitHub archive tarballs don't appear to include tests
-    forceFetchGit = true;
-    hash = "sha256-QWUXSG+RSHkF5kP1ZYtx+tHjO0n7hfya9CFA3lBhJHk=";
+    src = config.deps.fetchFromGitHub {
+      owner = "apache";
+      repo = "airflow";
+      rev = "refs/tags/${config.mkDerivation.version}";
+      # Download using the git protocol rather than using tarballs, because the
+      # GitHub archive tarballs don't appear to include tests
+      forceFetchGit = true;
+      hash = "sha256-QWUXSG+RSHkF5kP1ZYtx+tHjO0n7hfya9CFA3lBhJHk=";
+    };
+
+    nativeBuildInputs = [
+      python.pkgs.GitPython
+    ];
+
+    inherit (nixpkgsAttrs)
+      buildInputs
+      checkInputs
+      postPatch
+      postInstall
+      preCheck
+      ;
   };
 
   mach-nix.pythonSources = config.deps.fetchPythonRequirements {
     inherit (config.deps) python;
-    name = config.pname;
+    name = config.mkDerivation.pname;
     requirementsList = [
       "apache-airflow"
     ];
-    hash = "sha256-sj1UILnWbUyTcpgEEy8QtQEk+lTgBOJKa+NEUD3xVBs=";
+    hash = "sha256-0aZ+woHkxZe6f5oQ04W+Ce48B23vHSqOJaF4nntvLHU=";
     maxDate = "2023-01-01";
   };
 
@@ -50,10 +64,6 @@ in {
     pendulum = python.pkgs.pendulum;
   };
 
-  nativeBuildInputs = [
-    python.pkgs.GitPython
-  ];
-
   env = {
     inherit (nixpkgsAttrs)
       INSTALL_PROVIDERS_FROM_SOURCES
@@ -63,13 +73,5 @@ in {
       pythonImportsCheck
       ;
   };
-
-  inherit (nixpkgsAttrs)
-    buildInputs
-    checkInputs
-    postPatch
-    postInstall
-    preCheck
-    ;
 
 }

@@ -47,10 +47,7 @@
   finalDistsPaths =
     wheel-dists-paths // (l.mapAttrs getDistDir drv-parts-dists);
 
-  packageName =
-    if config.name != null
-    then config.name
-    else config.pname;
+  packageName = config.final.package.name;
 
   unknownSubstitutions = l.attrNames
     (l.removeAttrs cfg.substitutions (l.attrNames all-info));
@@ -173,6 +170,11 @@ in {
       }
     );
 
+    mach-nix.dists =
+      l.mapAttrs
+      (name: _: getDistInfo name)
+      (l.readDir cfg.pythonSources.names);
+
     deps = {nixpkgs, ...}: l.mapAttrs (_: l.mkDefault) (
       {
         inherit (nixpkgs)
@@ -193,11 +195,6 @@ in {
       mach-nix.pythonSources = true;
     };
 
-    mach-nix.dists =
-      l.mapAttrs
-      (name: _: getDistInfo name)
-      (l.readDir cfg.pythonSources.names);
-
     env = {
       pipInstallFlags =
         ["--ignore-installed"]
@@ -207,22 +204,24 @@ in {
         );
     };
 
-    doCheck = false;
-    dontPatchELF = l.mkDefault true;
-    dontStrip = l.mkDefault true;
+    mkDerivation = {
+      doCheck = false;
+      dontPatchELF = l.mkDefault true;
+      dontStrip = l.mkDefault true;
 
-    nativeBuildInputs = [
-      config.deps.autoPatchelfHook
-    ];
+      nativeBuildInputs = [
+        config.deps.autoPatchelfHook
+      ];
 
-    buildInputs =
-      (with config.deps; [
-        manylinuxPackages
-      ]);
+      buildInputs =
+        (with config.deps; [
+          manylinuxPackages
+        ]);
 
-    passthru = {
-      inherit (config) pythonSources;
-      dists = finalDistsPaths;
+      passthru = {
+        inherit (config.mach-nix) pythonSources;
+        dists = finalDistsPaths;
+      };
     };
 
     final.package-func = config.deps.python.pkgs.buildPythonPackage;

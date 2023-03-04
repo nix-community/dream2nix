@@ -2,10 +2,7 @@
   l = lib // builtins;
   cfg = config.eval-cache;
 
-  packageName =
-    if config.name != null
-    then config.name
-    else config.pname;
+  packageName = config.final.package.name;
 
   filterTrue = l.filterAttrsRecursive (key: val: l.isAttrs val || val == true);
 
@@ -103,22 +100,20 @@
       inherit
         newFile
         ;
+      refresh =
+        config.deps.writeScript
+        "refresh-${config.final.package.name}"
+        refreshCommand;
     };
 
     eval-cache.content = loadedContent;
-
-    passthru.eval-cache = {
-      inherit
-        newFile
-        ;
-      refresh = refreshCommand;
-    };
 
     deps = {nixpkgs, ...}: {
       inherit (nixpkgs)
         jq
         runCommand
         writeText
+        writeScript
         ;
     };
   };

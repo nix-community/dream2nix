@@ -15,24 +15,26 @@ in {
       ;
   };
 
-  pname = "tensorflow";
-  version = "2.11.0";
-
   env.format = "wheel";
 
   env.pythonImportsCheck = [
-    config.pname
+    config.mkDerivation.pname
   ];
 
-  preUnpack = ''
-    export src=$(ls ${config.mach-nix.pythonSources}/names/${config.pname}/*);
-  '';
+  mkDerivation = {
+    pname = "tensorflow";
+    version = "2.11.0";
+
+    preUnpack = ''
+      export src=$(ls ${config.mach-nix.pythonSources}/names/${config.mkDerivation.pname}/*);
+    '';
+  };
 
   mach-nix.pythonSources = config.deps.fetchPythonRequirements {
     inherit (config.deps) python;
-    name = config.pname;
-    requirementsList = ["${config.pname}==${config.version}"];
-    hash = "sha256-x5LpkZxs4McZFoyGCXtvHJo0RxIHdCWRoWmZ9Q3tqTw=";
+    name = config.mkDerivation.pname;
+    requirementsList = ["${config.mkDerivation.pname}==${config.mkDerivation.version}"];
+    hash = "sha256-hnUe+iED9Q/6MjrDIHR8dNDUMZGPl+KBhHRs4NOnk88=";
     maxDate = "2023-01-01";
   };
 }
