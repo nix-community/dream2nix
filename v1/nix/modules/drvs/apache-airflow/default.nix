@@ -67,7 +67,7 @@ in {
     pendulum = python.pkgs.pendulum;
   };
 
-  env = {
+  buildPythonPackage = {
     inherit (nixpkgsAttrs)
       INSTALL_PROVIDERS_FROM_SOURCES
       disabledTests

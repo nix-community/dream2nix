@@ -24,7 +24,7 @@ in {
     '';
   };
 
-  env = {
+  buildPythonPackage = {
     format = "setuptools";
 
     pythonImportsCheck = [

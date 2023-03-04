@@ -151,6 +151,7 @@ in {
   imports = [
     drv-parts.modules.drv-parts.mkDerivation
     ./interface.nix
+    ../buildPythonPackage
     ../eval-cache
   ];
 
@@ -223,7 +224,5 @@ in {
         dists = finalDistsPaths;
       };
     };
-
-    final.package-func = config.deps.python.pkgs.buildPythonPackage;
   };
 }

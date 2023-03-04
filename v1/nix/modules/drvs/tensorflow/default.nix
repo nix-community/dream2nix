@@ -26,7 +26,7 @@ in {
     '';
   };
 
-  env = {
+  buildPythonPackage = {
     format = "wheel";
     pythonImportsCheck = [
       config.public.name
