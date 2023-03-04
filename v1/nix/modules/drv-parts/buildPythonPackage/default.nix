@@ -10,8 +10,8 @@
   };
 
   # pass options for buildPythonPackage to the final function call
-  config.final.package-func-args = config.buildPythonPackage;
+  config.package-func.args = config.buildPythonPackage;
 
   # set nixpkgs.buildPythonPackage as the final package function
-  config.final.package-func = config.deps.python.pkgs.buildPythonPackage;
+  config.package-func.func = config.deps.python.pkgs.buildPythonPackage;
 }
