@@ -137,6 +137,7 @@
       # install manualSetupDeps
       pipInstallFlags =
         map (distDir: "--find-links ${distDir}") manualSetupDeps.${pname} or [];
+      nativeBuildInputs = [config.deps.autoPatchelfHook];
     }
 
     # If setup deps have been specified manually, we need to remove the
@@ -151,33 +152,42 @@
       inherit (config) deps;
     }
       ({config, ...}: let
-        src = distFile name;
-        version = getVersion src;
+        file = distFile name;
+        version = getVersion file;
+        src =
+          if isWheel file
+          then file
+          else mkWheelDist name version (getFetchedDistPath name);
       in {
         imports = [drv-parts.modules.drv-parts.mkDerivation];
-        inherit name src version;
         deps = {deps, ...}: {
           inherit (deps) stdenv autoPatchelfHook python pip;
         };
 
-      unpackPhase = "true";
+        public = {
+          inherit name version;
+        };
 
-      nativeBuildInputs = [
-        config.deps.autoPatchelfHook
-      ];
+        mkDerivation = {
+          inherit src;
 
-      propagatedBuildInputs = dependencies;
+          nativeBuildInputs = [
+            config.deps.autoPatchelfHook
+          ];
 
-      buildInputs = [
-        config.deps.python
-        config.deps.python.pkgs.wrapPython
-        config.deps.pip
-      ];
+          propagatedBuildInputs = dependencies;
 
-      installPhase = let
-        pythonInterpreter = config.deps.python.pythonForBuild.interpreter;
-        pythonSitePackages = config.deps.python.sitePackages;
-      in ''
+          buildInputs = [
+            config.deps.python
+            config.deps.python.pkgs.wrapPython
+            config.deps.pip
+          ];
+
+          unpackPhase = "true";
+          installPhase = let
+            pythonInterpreter = config.deps.python.pythonForBuild.interpreter;
+            pythonSitePackages = config.deps.python.sitePackages;
+          in ''
                 # TODO there's propably a cleaner way to set PATHs here, this ist just a PoC
                 mkdir -p "$out/${pythonSitePackages}" "$out/nix-support"
                 buildPythonPath "$propagatedBuildInputs"
