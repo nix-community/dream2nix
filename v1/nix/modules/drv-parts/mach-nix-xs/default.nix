@@ -146,6 +146,56 @@
     }
   );
 
+  makePackage = {name, dependencies}:
+    # TODO replace with drv-parts
+    config.deps.stdenv.mkDerivation {
+      inherit name;
+      src = distFile name;
+      unpackPhase = "true";
+      buildPhase = "true";
+
+      nativeBuildInputs = [
+        config.deps.autoPatchelfHook
+      ];
+
+      propagatedBuildInputs = dependencies;
+
+      buildInputs = [
+        config.deps.python
+        config.deps.python.pkgs.wrapPython
+        config.deps.pip
+      ];
+
+      installPhase = let
+        pythonInterpreter = config.deps.python.pythonForBuild.interpreter;
+        pythonSitePackages = config.deps.python.sitePackages;
+      in ''
+                # TODO there's propably a cleaner way to set PATHs here, this ist just a PoC
+                mkdir -p "$out/${pythonSitePackages}" "$out/nix-support"
+                buildPythonPath "$propagatedBuildInputs"
+                echo $propagatedBuildInputs > $out/nix-support/propagated-build-inputs
+                export PYTHONPATH="$program_PYTHONPATH:$out/${pythonSitePackages}:$PYTHONPATH"
+                echo "PYTHONPATH" $PYTHONPATH
+                ${pythonInterpreter} -m pip install $src --no-index --no-warn-script-location --prefix="$out" --no-cache $pipInstallFlags
+            '';
+    };
+  # TODO don't depend on config.deps.python for this, because the script should
+  # also be able to run for packages using ancient python, without "packaging".
+  packagingPython = config.deps.python.withPackages(p: [p.pkginfo p.packaging]);
+  dependenciesFile = config.deps.runCommand
+    "${packageName}-dependency-tree" {}
+    ''${packagingPython}/bin/python ${./python_requirements_from_dists.py} ${cfg.pythonSources.dist} > $out'';
+  dependencies = l.filter (d: (l.head d) != packageName) (l.fromJSON (l.readFile dependenciesFile));
+  dependencyTree = l.listToAttrs (map
+    (d:
+      let
+        name = l.head d;
+        dependencies = map (p: dependencyTree.${p}) (l.elemAt d 1);
+      in
+        l.nameValuePair name (makePackage {
+          inherit name dependencies;
+        })
+    ) dependencies);
 in {
 
   imports = [
@@ -186,6 +236,9 @@ in {
         buildPythonPackage = config.deps.python.pkgs.buildPythonPackage;
         manylinuxPackages = nixpkgs.pythonManylinuxPackages.manylinux1;
         fetchPythonRequirements = nixpkgs.callPackage ../../../pkgs/fetchPythonRequirements {};
+
+        runCommand = nixpkgs.runCommand;
+        pip = nixpkgs.python3Packages.pip;
       }
     );
 
@@ -196,20 +249,11 @@ in {
     eval-cache.invalidationFields = {
       mach-nix.pythonSources = true;
     };
-
-    env = {
-      pipInstallFlags =
-        ["--ignore-installed"]
-        ++ (
-          map (distDir: "--find-links ${distDir}")
-          (l.attrValues finalDistsPaths)
-        );
-    };
-
     mkDerivation = {
       doCheck = false;
       dontPatchELF = l.mkDefault true;
       dontStrip = l.mkDefault true;
+
 
       nativeBuildInputs = [
         config.deps.autoPatchelfHook
@@ -219,6 +263,8 @@ in {
         (with config.deps; [
           manylinuxPackages
         ]);
+
+      propagatedBuildInputs = l.attrValues dependencyTree;
 
       passthru = {
         inherit (config.mach-nix) pythonSources;
