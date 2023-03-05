@@ -102,7 +102,7 @@ in {
     # Gets a checksum from the [metadata] table of the lockfile
     getChecksum = dep: parsedLock.metadata."checksum ${makeDepId dep}";
 
-    # map of dependency names to versions
+    # map of dependency names to a list of the possible versions
     depNamesToVersions =
       l.foldl'
       (
@@ -113,21 +113,25 @@ in {
       )
       {}
       parsedDeps;
-    findUniqDep = let
-      # tests whether if el contains all elements from dep
-      compareAttrsets = dep: el:
+    # takes a parsed dependency entry and finds the original dependency from `Cargo.lock`
+    findOriginalDep = let
+      # checks dep against another dep to see if they are the same
+      # this is only for checking entries from a `dependencies` list
+      # against a dependency entry under `package` from Cargo.lock
+      isSameDependency = dep: againstDep:
         l.foldl'
-        (all: el: all && el)
+        (previousResult: result: previousResult && result)
         true
         (
           l.mapAttrsToList
           (
             name: value:
-              if l.hasAttr name el
+              if l.hasAttr name againstDep
               then
-                if name == "source" && l.hasPrefix "git+" el.source
-                then l.concatStringsSep "#" (l.init (l.splitString "#" el.source)) == value
-                else el.${name} == value
+                # if git source, we need to get rid of the revision part
+                if name == "source" && l.hasPrefix "git+" againstDep.source
+                then l.concatStringsSep "#" (l.init (l.splitString "#" againstDep.source)) == value
+                else againstDep.${name} == value
               else false
           )
           dep
@@ -137,12 +141,14 @@ in {
         notFoundError = "no dependency found with name ${dep.name} in Cargo.lock";
         foundCount = l.length depNamesToVersions.${dep.name};
         found =
+          # if found one version, then that's the dependency we are looking for
           if foundCount == 1
           then l.head depNamesToVersions.${dep.name}
+          # if found multiple, then we need to check which dependency we are looking for
           else if foundCount > 1
           then
             l.findFirst
-            (el: compareAttrsets dep el)
+            (otherDep: isSameDependency dep otherDep)
             (throw notFoundError)
             depNamesToVersions.${dep.name}
           else throw notFoundError;
@@ -152,28 +158,33 @@ in {
     # field of a dependency in Cargo.lock
     parseDepEntryImpl = entry: let
       parsed = l.splitString " " entry;
+      # name is always at the beginning
       name = l.head parsed;
+      # parse the version if it exists
       maybeVersion =
         if l.length parsed > 1
         then l.elemAt parsed 1
         else null;
+      # parse the source if it exists
       source =
         if l.length parsed > 2
         then l.removePrefix "(" (l.removeSuffix ")" (l.elemAt parsed 2))
         else null;
-      foundDep = findUniqDep (
+      # find the original dependency from the information we have
+      foundDep = findOriginalDep (
         {inherit name;}
         // l.optionalAttrs (source != null) {inherit source;}
         // l.optionalAttrs (maybeVersion != null) {version = maybeVersion;}
       );
     in
       foundDep;
-    depNameVersionAttrs = let
+    # dependency entries mapped to their original dependency
+    entryToDependencyAttrs = let
       makePair = entry: l.nameValuePair entry (parseDepEntryImpl entry);
       depEntries = l.flatten (l.map (dep: dep.dependencies or []) parsedDeps);
     in
       l.listToAttrs (l.map makePair (l.unique depEntries));
-    parseDepEntry = entry: depNameVersionAttrs.${entry};
+    parseDepEntry = entry: entryToDependencyAttrs.${entry};
 
     # Parses a git source, taken straight from nixpkgs.
     parseSourceImpl = src: let
