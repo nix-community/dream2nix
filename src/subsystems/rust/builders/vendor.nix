@@ -42,10 +42,10 @@ in rec {
     makeSource = dep: let
       path = getSource dep.name dep.version;
       spec = getSourceSpec dep.name dep.version;
-      stripUniqSuffix = version: l.removeSuffix ("$" + spec.type) version;
+      normalizeVersion = version: l.removeSuffix ("$" + spec.type) version;
     in {
       inherit path spec dep;
-      name = "${dep.name}-${stripUniqSuffix dep.version}";
+      name = "${dep.name}-${normalizeVersion dep.version}";
     };
     sources = l.map makeSource deps;
 

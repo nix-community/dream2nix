@@ -429,7 +429,7 @@ in {
                   }
                 else throw "could not find crate '${dependencyObject.name}-${dependencyObject.version}'";
             in
-              final // depNameVersion;
+              final;
 
             git = dependencyObject: let
               parsed = source.value;
@@ -441,7 +441,6 @@ in {
                 else {};
             in
               maybeRef
-              // depNameVersion
               // {
                 type = "git";
                 url = parsed.url;

@@ -119,6 +119,7 @@ in rec {
       version,
       ...
     } @ args: let
+      # constructs source string for dependency
       makeSource = sourceSpec: let
         source =
           if sourceSpec.type == "crates-io"
@@ -138,13 +139,20 @@ in rec {
           else null;
       in
         source;
+      # constructs source string for dependency entry
       makeDepSource = sourceSpec:
         if sourceSpec.type == "crates-io"
         then makeSource sourceSpec
         else if sourceSpec.type == "git"
         then l.concatStringsSep "#" (l.init (l.splitString "#" (makeSource sourceSpec)))
         else null;
+      # removes source type information from the version
+      normalizeVersion = version: srcType: l.removeSuffix ("$" + srcType) version;
+
       sourceSpec = getSourceSpec name version;
+
+      normalizedVersion = normalizeVersion version sourceSpec.type;
+
       source = let
         src = makeSource sourceSpec;
       in
@@ -157,26 +165,30 @@ in rec {
           dep: let
             depSourceSpec = getSourceSpec dep.name dep.version;
             depSource = makeDepSource depSourceSpec;
+
+            normalizedDepVersion = normalizeVersion dep.version depSourceSpec.type;
+
             hasMultipleVersions =
               l.length (l.attrValues dreamLock.sources.${dep.name}) > 1;
-            hasDuplicateVersions =
-              l.hasSuffix ("$" + depSourceSpec.type) dep.version;
+            hasDuplicateVersions = dep.version != normalizedDepVersion;
+
             # only put version if there are different versions of the dep
             versionString =
-              l.optionalString hasMultipleVersions " ${depSourceSpec.version}";
+              l.optionalString hasMultipleVersions " ${normalizedDepVersion}";
             # only put source if there are duplicate versions of the dep
             # cargo vendor does not support this anyway and so builds will fail
             # until https://github.com/rust-lang/cargo/issues/10310 is resolved.
             srcString =
               l.optionalString hasDuplicateVersions " (${depSource})";
-          in "${depSourceSpec.pname}${versionString}${srcString}"
+          in "${dep.name}${versionString}${srcString}"
         )
         args.dependencies;
+
       isMainPackage = isInPackages name version;
     in
       {
-        name = sourceSpec.pname;
-        version = sourceSpec.version;
+        name = sourceSpec.pname or name;
+        version = sourceSpec.version or normalizedVersion;
       }
       # put dependencies like how cargo expects them
       // (
