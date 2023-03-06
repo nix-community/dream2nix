@@ -121,31 +121,37 @@
     else getVersion file;
 
   # build a wheel for a given sdist
-  mkWheelDist = pname: version: distDir: python.pkgs.buildPythonPackage (
+  mkWheelDist = pname: version: distDir: let
     # re-use package attrs from nixpkgs
     # (treat nixpkgs as a source of community overrides)
-    (l.optionalAttrs (python.pkgs ? ${pname})
-        extractPythonAttrs python.pkgs.${pname})
+    extractedAttrs = l.optionalAttrs (python.pkgs ? ${pname})
+      extractPythonAttrs python.pkgs.${pname};
+  in
+    python.pkgs.buildPythonPackage (
+      # nixpkgs attrs
+      extractedAttrs
 
-    # package attributes
-    // {
-      inherit pname;
-      inherit version;
-      format = "setuptools";
-      # distDir will contain a single file which is the src
-      preUnpack = ''export src="${distDir}"/*'';
-      # install manualSetupDeps
-      pipInstallFlags =
-        map (distDir: "--find-links ${distDir}") manualSetupDeps.${pname} or [];
-      nativeBuildInputs = [config.deps.autoPatchelfHook];
-    }
+      # package attributes
+      // {
+        inherit pname;
+        inherit version;
+        format = "setuptools";
+        # distDir will contain a single file which is the src
+        preUnpack = ''export src="${distDir}"/*'';
+        # install manualSetupDeps
+        pipInstallFlags =
+          map (distDir: "--find-links ${distDir}") manualSetupDeps.${pname} or [];
+        nativeBuildInputs =
+          extractedAttrs.nativeBuildInputs or []
+          ++ [config.deps.autoPatchelfHook];
+      }
 
-    # If setup deps have been specified manually, we need to remove the
-    #   propagatedBuildInputs from nixpkgs to prevent collisions.
-    // lib.optionalAttrs (manualSetupDeps ? ${pname}) {
-      propagatedBuildInputs = [];
-    }
-  );
+      # If setup deps have been specified manually, we need to remove the
+      #   propagatedBuildInputs from nixpkgs to prevent collisions.
+      // lib.optionalAttrs (manualSetupDeps ? ${pname}) {
+        propagatedBuildInputs = [];
+      }
+    );
 
   makePackage = {name, dependencies}:
     drv-parts.lib.derivationFromModules {
@@ -195,6 +201,7 @@
                 export PYTHONPATH="$program_PYTHONPATH:$out/${pythonSitePackages}:$PYTHONPATH"
                 ${pythonInterpreter} -m pip install $src --no-index --no-warn-script-location --prefix="$out" --no-cache $pipInstallFlags
             '';
+        };
       });
   # TODO don't depend on config.deps.python for this, because the script should
   # also be able to run for packages using ancient python, without "packaging".
