@@ -7,8 +7,6 @@
   # For a given name, return the path containing the downloaded file
   getFetchedDistPath = name: cfg.pythonSources.names + "/${name}";
 
-  # For a given name, return the dist output from nixpkgs.buildPythonPackage
-  getDistDir = name: dist: dist.dist;
 
   # separate 2 types of downloaded files: sdist, wheel
   # key: name; val: {version or "wheel"}
@@ -45,7 +43,7 @@
   #   - downloaded sdists built into wheels (see above)
   #   - substitutions from nixpkgs patched for compat with autoPatchelfHook
   finalDistsPaths =
-    wheel-dists-paths // (l.mapAttrs getDistDir overridden-built-wheels);
+    wheel-dists-paths // (l.mapAttrs (name: dist: dist.dist) overridden-built-wheels);
 
   packageName = config.public.name;
 
