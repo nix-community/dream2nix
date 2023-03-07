@@ -3,10 +3,52 @@
   l = lib // builtins;
   python = config.deps.python;
   cfg = config.mach-nix;
+  packageName = config.public.name;
 
   # For a given name, return the path containing the downloaded file
-  getFetchedDistPath = name: cfg.pythonSources.names + "/${name}";
+  getDistDir = name: "${cfg.pythonSources.names}/${name}";
 
+  # (IFD) Get the dist file for a given name by looking inside (pythonSources)
+  getDistFile = name: let
+    distDir = getDistDir name;
+    distFile = l.head (l.attrNames (builtins.readDir distDir));
+  in
+    "${distDir}/${distFile}";
+
+  # Extract the version from a dist's file name
+  getVersion = file: let
+    base = l.pipe file [
+      (l.removeSuffix ".tgx")
+      (l.removeSuffix ".tar.gz")
+      (l.removeSuffix ".zip")
+      (l.removeSuffix ".whl")
+    ];
+    version = l.last (l.splitString "-" base);
+  in
+    version;
+
+  # (IFD) For each dist we need to recall:
+  #   - the type (wheel or sdist)
+  #   - the version (only needed for sdist, so we can build a wheel)
+  getDistInfo = name: let
+    file = getDistFile name;
+  in
+    if l.hasSuffix ".whl" file
+    then "wheel"
+    else getVersion file;
+
+
+  # Validate Substitutions. Allow only names that we actually depend on.
+  substitutions =
+    let
+        unknownSubstitutions = l.attrNames (l.removeAttrs cfg.substitutions (l.attrNames all-info));
+    in
+    if unknownSubstitutions == []
+    then cfg.substitutions
+    else throw ''
+      ${"\n"}The following substitutions for python derivation '${packageName}' will not have any effect. There are no dependencies with such names:
+        - ${lib.concatStringsSep "\n  - " unknownSubstitutions}
+    '';
 
   # separate 2 types of downloaded files: sdist, wheel
   # key: name; val: {version or "wheel"}
@@ -16,7 +58,7 @@
 
   # get the paths of all downloaded wheels
   wheel-dists-paths =
-    l.mapAttrs (name: ver: getFetchedDistPath name) wheel-info;
+    l.mapAttrs (name: ver: getDistDir name) wheel-info;
 
   # Build sdist dependencies.
   # Only build sdists which are not substituted via config.substitutions and which aren't the toplevel
@@ -24,7 +66,7 @@
   sdists-to-build =
     l.filterAttrs (name: ver: (! substitutions ? ${name}) && name != packageName) sdist-info;
   built-wheels = l.flip l.mapAttrs sdists-to-build
-    (name: ver: mkWheelDist name ver (getFetchedDistPath name));
+    (name: ver: mkWheelDist name ver (getDistDir name));
   all-built-wheels = built-wheels // substitutions;
 
   # patch all-dists to ensure build inputs are propagated for autopPatchelflHook
@@ -45,19 +87,6 @@
   finalDistsPaths =
     wheel-dists-paths // (l.mapAttrs (name: dist: dist.dist) overridden-built-wheels);
 
-  packageName = config.public.name;
-
-  unknownSubstitutions = l.attrNames
-    (l.removeAttrs cfg.substitutions (l.attrNames all-info));
-
-  # Validate Substitutions. Allow only names that we actually depend on.
-  substitutions =
-    if unknownSubstitutions == []
-    then cfg.substitutions
-    else throw ''
-      ${"\n"}The following substitutions for python derivation '${packageName}' will not have any effect. There are no dependencies with such names:
-        - ${lib.concatStringsSep "\n  - " unknownSubstitutions}
-    '';
 
   manualSetupDeps =
     lib.mapAttrs
@@ -87,36 +116,6 @@
     allAttrs = pythonAttrs;
   in
     l.filterAttrs (name: _: ! excludedNixpkgsAttrs ? ${name}) allAttrs;
-
-  # (IFD) Get the dist file for a given name by looking inside (pythonSources)
-  distFile = name: let
-    distDir = "${cfg.pythonSources.names}/${name}";
-  in
-    "${distDir}/${l.head (l.attrNames (builtins.readDir distDir))}";
-
-  isWheel = l.hasSuffix ".whl";
-
-  # Extract the version from a dist's file name
-  getVersion = file: let
-    base = l.pipe file [
-      (l.removeSuffix ".tgx")
-      (l.removeSuffix ".tar.gz")
-      (l.removeSuffix ".zip")
-      (l.removeSuffix ".whl")
-    ];
-    version = l.last (l.splitString "-" base);
-  in
-    version;
-
-  # For each dist we need to recall:
-  #   - the type (wheel or sdist)
-  #   - the version (only needed for sdist, so we can build a wheel)
-  getDistInfo = name: let
-    file = distFile name;
-  in
-    if isWheel file
-    then "wheel"
-    else getVersion file;
 
   # build a wheel for a given sdist
   mkWheelDist = pname: version: distDir: let
