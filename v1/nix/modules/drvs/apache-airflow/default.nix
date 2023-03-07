@@ -55,7 +55,7 @@ in {
     requirementsList = [
       "apache-airflow"
     ];
-    hash = "sha256-0aZ+woHkxZe6f5oQ04W+Ce48B23vHSqOJaF4nntvLHU=";
+    hash = "sha256-9lwchei0Y5RhP8OLODsioDELZ3Dg7nk6OOaiJwBaNok=";
     maxDate = "2023-01-01";
   };
 
