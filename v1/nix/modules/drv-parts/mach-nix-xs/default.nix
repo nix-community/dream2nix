@@ -16,7 +16,7 @@
   wheel-info = l.filterAttrs (name: ver: ver == "wheel") all-info;
   sdist-info = l.filterAttrs (name: ver: ! wheel-info ? ${name}) all-info;
 
-  # get the paths of all downlosded wheels
+  # get the paths of all downloaded wheels
   wheel-dists-paths =
     l.mapAttrs (name: ver: getFetchedDistPath name) wheel-info;
 
@@ -25,27 +25,27 @@
   # package.
   sdists-to-build =
     l.filterAttrs (name: ver: (! substitutions ? ${name}) && name != packageName) sdist-info;
-  new-dists = l.flip l.mapAttrs sdists-to-build
+  built-wheels = l.flip l.mapAttrs sdists-to-build
     (name: ver: mkWheelDist name ver (getFetchedDistPath name));
-  all-dists = new-dists // substitutions;
+  all-built-wheels = built-wheels // substitutions;
 
   # patch all-dists to ensure build inputs are propagated for autopPatchelflHook
-  all-dists-compat-patchelf = l.flip l.mapAttrs all-dists (name: dist:
+  all-wheels-compat-patchelf = l.flip l.mapAttrs all-built-wheels (name: dist:
     dist.overridePythonAttrs (old: {postFixup = "ln -s $out $dist/out";})
   );
 
   # Convert all-dists to drv-parts drvs.
   # The conversion is done via config.drvs (see below).
-  drv-parts-dists = l.flip l.mapAttrs config.mach-nix.drvs
+  overridden-built-wheels = l.flip l.mapAttrs config.mach-nix.drvs
     (_: drv: drv.public);
 
   # The final dists we want to install.
   # A mix of:
-  #   - donwloaded wheels
+  #   - downloaded wheels
   #   - downloaded sdists built into wheels (see above)
   #   - substitutions from nixpkgs patched for compat with autoPatchelfHook
   finalDistsPaths =
-    wheel-dists-paths // (l.mapAttrs getDistDir drv-parts-dists);
+    wheel-dists-paths // (l.mapAttrs getDistDir overridden-built-wheels);
 
   packageName = config.public.name;
 
@@ -139,8 +139,9 @@
         # distDir will contain a single file which is the src
         preUnpack = ''export src="${distDir}"/*'';
         # install manualSetupDeps
-        pipInstallFlags =
-          map (distDir: "--find-links ${distDir}") manualSetupDeps.${pname} or [];
+        pipInstallFlags = l.trace dependencyTree.${pname}
+          (map (distDir: "--find-links ${distDir}") manualSetupDeps.${pname} or [])
+          ++ (map (dep: "--find-links ${dep.name}") dependencyTree.${pname} or []);
         nativeBuildInputs =
           extractedAttrs.nativeBuildInputs or []
           ++ [config.deps.autoPatchelfHook];
@@ -153,69 +154,14 @@
       }
     );
 
-  makePackage = {name, dependencies}:
-    drv-parts.lib.derivationFromModules {
-      inherit (config) deps;
-    }
-      ({config, ...}: let
-        file = distFile name;
-        version = getVersion file;
-        src =
-          if isWheel file
-          then file
-          else mkWheelDist name version (getFetchedDistPath name);
-      in {
-        imports = [drv-parts.modules.drv-parts.mkDerivation];
-        deps = {deps, ...}: {
-          inherit (deps) stdenv autoPatchelfHook python pip;
-        };
-
-        public = {
-          inherit name version;
-        };
-
-        mkDerivation = {
-          inherit src;
-
-          nativeBuildInputs = [
-            config.deps.autoPatchelfHook
-          ];
-
-          propagatedBuildInputs = dependencies;
-
-          buildInputs = [
-            config.deps.python
-            config.deps.python.pkgs.wrapPython
-            config.deps.pip
-          ];
-
-          unpackPhase = "true";
-          installPhase = let
-            pythonInterpreter = config.deps.python.pythonForBuild.interpreter;
-            pythonSitePackages = config.deps.python.sitePackages;
-          in ''
-                # TODO there's propably a cleaner way to set PATHs here, this ist just a PoC
-                mkdir -p "$out/${pythonSitePackages}" "$out/nix-support"
-                buildPythonPath "$propagatedBuildInputs"
-                echo $propagatedBuildInputs > $out/nix-support/propagated-build-inputs
-                export PYTHONPATH="$program_PYTHONPATH:$out/${pythonSitePackages}:$PYTHONPATH"
-                ${pythonInterpreter} -m pip install $src --no-index --no-warn-script-location --prefix="$out" --no-cache $pipInstallFlags
-            '';
-        };
-      });
   # TODO don't depend on config.deps.python for this, because the script should
   # also be able to run for packages using ancient python, without "packaging".
   packagingPython = config.deps.python.withPackages(p: [p.pkginfo p.packaging]);
   dependenciesFile = "${cfg.pythonSources}/dependencies.json";
   dependencies = l.filter (d: d.name != packageName) (l.fromJSON (l.readFile dependenciesFile));
-
   dependencyTree = l.listToAttrs (
     (l.flip map) dependencies
-      (dep: l.nameValuePair dep.name (
-        makePackage {
-          name = dep.name;
-          dependencies = map (pkg: dependencyTree.${pkg}) dep.dependencies;
-        })));
+      (dep: l.nameValuePair dep.name dependencies));
 in {
 
   imports = [
@@ -229,7 +175,7 @@ in {
 
     mach-nix.lib = {inherit extractPythonAttrs;};
 
-    mach-nix.drvs = l.flip l.mapAttrs all-dists-compat-patchelf (name: dist:
+    mach-nix.drvs = l.flip l.mapAttrs all-wheels-compat-patchelf (name: dist:
       drv-parts.lib.makeModule {
         packageFunc = dist;
         # TODO: if `overridePythonAttrs` is used here, the .dist output is missing
@@ -269,6 +215,16 @@ in {
     eval-cache.invalidationFields = {
       mach-nix.pythonSources = true;
     };
+
+    buildPythonPackage = {
+      pipInstallFlags =
+        ["--ignore-installed"]
+        ++ (
+          map (distDir: "--find-links ${distDir}")
+          (l.attrValues finalDistsPaths)
+        );
+    };
+
     mkDerivation = {
       doCheck = false;
       dontPatchELF = l.mkDefault true;
@@ -283,8 +239,6 @@ in {
         (with config.deps; [
           manylinuxPackages
         ]);
-
-      propagatedBuildInputs = l.attrValues dependencyTree;
 
       passthru = {
         inherit (config.mach-nix) pythonSources;
