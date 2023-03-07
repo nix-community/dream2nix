@@ -67,13 +67,18 @@ in {
     pendulum = python.pkgs.pendulum;
   };
 
-  buildPythonPackage = {
+  env = {
     inherit (nixpkgsAttrs)
       INSTALL_PROVIDERS_FROM_SOURCES
-      disabledTests
       makeWrapperArgs
-      pytestFlagsArray
+      ;
+  };
+
+  buildPythonPackage = {
+    inherit (nixpkgsAttrs)
+      disabledTests
       pythonImportsCheck
+      pytestFlagsArray
       ;
   };
 
