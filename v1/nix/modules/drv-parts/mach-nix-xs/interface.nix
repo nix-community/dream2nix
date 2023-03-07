@@ -68,5 +68,14 @@ in {
       internal = true;
       readOnly = true;
     };
+
+    dependencyTree = l.mkOption {
+      type = t.lazyAttrsOf t.anything;
+      description = ''
+        Dependency tree of the python environment
+      '';
+      internal = true;
+      readOnly = true;
+    };
   };
 }

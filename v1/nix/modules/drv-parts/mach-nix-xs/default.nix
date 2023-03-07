@@ -139,9 +139,9 @@
         # distDir will contain a single file which is the src
         preUnpack = ''export src="${distDir}"/*'';
         # install manualSetupDeps
-        pipInstallFlags = l.trace dependencyTree.${pname}
+        pipInstallFlags =
           (map (distDir: "--find-links ${distDir}") manualSetupDeps.${pname} or [])
-          ++ (map (dep: "--find-links ${dep.name}") dependencyTree.${pname} or []);
+          ++ (map (dep: "--find-links ${finalDistsPaths.${dep}}") dependencyTree.${pname} or []);
         nativeBuildInputs =
           extractedAttrs.nativeBuildInputs or []
           ++ [config.deps.autoPatchelfHook];
@@ -154,19 +154,17 @@
       }
     );
 
-  # TODO don't depend on config.deps.python for this, because the script should
-  # also be able to run for packages using ancient python, without "packaging".
-  packagingPython = config.deps.python.withPackages(p: [p.pkginfo p.packaging]);
   dependenciesFile = "${cfg.pythonSources}/dependencies.json";
   dependencies = l.filter (d: d.name != packageName) (l.fromJSON (l.readFile dependenciesFile));
   dependencyTree = l.listToAttrs (
     (l.flip map) dependencies
-      (dep: l.nameValuePair dep.name dependencies));
+      (dep: l.nameValuePair dep.name dep.dependencies));
+
 in {
 
   imports = [
     drv-parts.modules.drv-parts.mkDerivation
-    (drv-parts.lib.mkDerivation-based "buildPythonPackage")
+    ../buildPythonPackage
     ./interface.nix
     ../eval-cache
   ];
@@ -192,14 +190,14 @@ in {
       (name: _: getDistInfo name)
       (l.readDir cfg.pythonSources.names);
 
+    mach-nix.dependencyTree = dependencyTree;
+
     deps = {nixpkgs, ...}: l.mapAttrs (_: l.mkDefault) (
       {
         inherit (nixpkgs)
           autoPatchelfHook
           stdenv
           ;
-        python = nixpkgs.python3;
-        buildPythonPackage = config.deps.python.pkgs.buildPythonPackage;
         manylinuxPackages = nixpkgs.pythonManylinuxPackages.manylinux1;
         fetchPythonRequirements = nixpkgs.callPackage ../../../pkgs/fetchPythonRequirements {};
 
@@ -210,6 +208,7 @@ in {
 
     eval-cache.fields = {
       mach-nix.dists = true;
+      mach-nix.dependencyTree = true;
     };
 
     eval-cache.invalidationFields = {
