@@ -87,36 +87,12 @@
     (name: deps: map (dep: finalDistsPaths.${dep}) deps)
     cfg.manualSetupDeps;
 
-  # Attributes we never want to copy from nixpkgs
-  excludedNixpkgsAttrs = l.genAttrs
-    [
-      "all"
-      "args"
-      "builder"
-      "name"
-      "pname"
-      "version"
-      "src"
-      "outputs"
-    ]
-    (name: null);
-
-  # Extracts derivation args from a nixpkgs python package.
-  extractPythonAttrs = pythonPackage: let
-    extractOverrideAttrs = overrideFunc:
-      (pythonPackage.${overrideFunc} (old: {passthru.old = old;}))
-      .old;
-    pythonAttrs = extractOverrideAttrs "overridePythonAttrs";
-    allAttrs = pythonAttrs;
-  in
-    l.filterAttrs (name: _: ! excludedNixpkgsAttrs ? ${name}) allAttrs;
-
   # build a wheel for a given sdist
   mkWheelDist = pname: version: distDir: let
     # re-use package attrs from nixpkgs
     # (treat nixpkgs as a source of community overrides)
     extractedAttrs = l.optionalAttrs (python.pkgs ? ${pname})
-      extractPythonAttrs python.pkgs.${pname};
+      config.attrs-from-nixpkgs.lib.extractPythonAttrs python.pkgs.${pname};
   in
     python.pkgs.buildPythonPackage (
       # nixpkgs attrs
@@ -158,11 +134,10 @@ in {
     ../buildPythonPackage
     ./interface.nix
     ../eval-cache
+    ../attrs-from-nixpkgs
   ];
 
   config = {
-
-    mach-nix.lib = {inherit extractPythonAttrs;};
 
     mach-nix.drvs = l.flip l.mapAttrs preparedWheels.patchedWheels (name: dist:
       drv-parts.lib.makeModule {

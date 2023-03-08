@@ -48,16 +48,6 @@ in {
       description = "drv-parts modules that define python dependencies";
     };
 
-    # LIB
-
-    lib.extractPythonAttrs = l.mkOption {
-      type = t.functionTo t.attrs;
-      description = ''
-        Helper function to extract python attrs from nixpkgs to be re-used as overrides.
-      '';
-      readOnly = true;
-    };
-
     # INTERNAL
 
     dists = l.mkOption {

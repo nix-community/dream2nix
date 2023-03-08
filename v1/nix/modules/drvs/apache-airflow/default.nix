@@ -1,7 +1,7 @@
 {config, lib, drv-parts, ...}: let
   l = lib // builtins;
   python = config.deps.python;
-  extractPythonAttrs = config.mach-nix.lib.extractPythonAttrs;
+  extractPythonAttrs = config.attrs-from-nixpkgs.lib.extractPythonAttrs;
 
   nixpkgsAttrs = extractPythonAttrs python.pkgs.apache-airflow;
 
