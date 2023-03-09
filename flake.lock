@@ -222,6 +222,22 @@
         "type": "indirect"
       }
     },
+    "phps": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1677386056,
+        "narHash": "sha256-7zjqCeKW7YWjqR6EsUOqd2JzyCioYGVbbqmTgHTytBs=",
+        "owner": "fossar",
+        "repo": "nix-phps",
+        "rev": "98c16af0f9c329de8d62ef4817a5356c7685fffb",
+        "type": "github"
+      },
+      "original": {
+        "owner": "fossar",
+        "repo": "nix-phps",
+        "type": "github"
+      }
+    },
     "poetry2nix": {
       "flake": false,
       "locked": {
@@ -292,6 +308,7 @@
         "mach-nix": "mach-nix",
         "nix-pypi-fetcher": "nix-pypi-fetcher",
         "nixpkgs": "nixpkgs",
+        "phps": "phps",
         "poetry2nix": "poetry2nix",
         "pre-commit-hooks": "pre-commit-hooks",
         "pruned-racket-catalog": "pruned-racket-catalog"
