@@ -82,17 +82,16 @@
     preparedWheels.downloadedWheels // (l.mapAttrs (_: drv: drv.public.dist) config.mach-nix.drvs);
 
 
-  manualSetupDeps =
-    lib.mapAttrs
-    (name: deps: map (dep: finalDistsPaths.${dep}) deps)
-    cfg.manualSetupDeps;
-
   # build a wheel for a given sdist
   mkWheelDist = pname: version: distDir: let
     # re-use package attrs from nixpkgs
     # (treat nixpkgs as a source of community overrides)
     extractedAttrs = l.optionalAttrs (python.pkgs ? ${pname})
       config.attrs-from-nixpkgs.lib.extractPythonAttrs python.pkgs.${pname};
+    manualSetupDeps =
+      lib.mapAttrs
+        (name: deps: map (dep: finalDistsPaths.${dep}) deps)
+        cfg.manualSetupDeps;
   in
     python.pkgs.buildPythonPackage (
       # nixpkgs attrs
