@@ -126,6 +126,18 @@
     (l.flip map) dependencies
       (dep: l.nameValuePair dep.name dep.dependencies));
 
+
+makeModuleFromDerivation = _name: drv:
+  drv-parts.lib.makeModule {
+    packageFunc = drv;
+    # TODO: if `overridePythonAttrs` is used here, the .dist output is missing
+    #   Maybe a bug in drv-parts?
+    overrideFuncName = "overrideAttrs";
+    modules = [
+      {deps = {inherit (config.deps) stdenv;};}
+    ];
+  };
+
 in {
 
   imports = [
@@ -138,18 +150,7 @@ in {
 
   config = {
 
-    mach-nix.drvs = l.flip l.mapAttrs preparedWheels.patchedWheels (name: dist:
-      drv-parts.lib.makeModule {
-        packageFunc = dist;
-        # TODO: if `overridePythonAttrs` is used here, the .dist output is missing
-        #   Maybe a bug in drv-parts?
-        overrideFuncName = "overrideAttrs";
-        modules = [
-          {deps = {inherit (config.deps) stdenv;};}
-        ];
-      }
-    );
-
+    mach-nix.drvs = l.mapAttrs makeModuleFromDerivation preparedWheels.patchedWheels;
     mach-nix.dists =
       l.mapAttrs
       (name: _: getDistInfo name)
