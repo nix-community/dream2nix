@@ -37,7 +37,7 @@ in {
     inherit (config.deps) python;
     name = config.public.name;
     requirementsList = ["${config.public.name}==${config.public.version}"];
-    hash = "sha256-hnUe+iED9Q/6MjrDIHR8dNDUMZGPl+KBhHRs4NOnk88=";
+    hash = "sha256-YsKp5U5WyQ77U32vf8LJcQVF+cBkxEVErP6BOVldb50=";
     maxDate = "2023-01-01";
   };
 }

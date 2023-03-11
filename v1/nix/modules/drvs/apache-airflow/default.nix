@@ -16,7 +16,6 @@ in {
       git
       fetchFromGitHub
       ;
-    python = l.mkForce nixpkgsStable.python3;
   };
 
   public = {
