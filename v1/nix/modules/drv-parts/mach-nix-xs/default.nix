@@ -65,8 +65,9 @@
       sdistsToBuild = filterAttrs sdistInfos (name: ver: (! substitutions ? ${name}) && name != packageName);
       builtWheels = mapAttrs sdistsToBuild (name: ver: mkWheelDist name ver (getDistDir name));
 
-      # patch wheels to ensure build inputs are propagated for autopPatchelfHook
-      # TODO: explain why this is necessary
+      # Usually references to buildInputs would get lost in the dist output.
+      # Patch wheels to ensure build inputs remain dependencies of the `dist` output
+      # Those references are needed for the final autoPatchelfHook to find the required deps.
       patchedWheels = mapAttrs substitutions (name: dist: dist.overridePythonAttrs (old: {postFixup = "ln -s $out $dist/out";}));
     in
       { inherit patchedWheels downloadedWheels builtWheels; };
@@ -82,10 +83,6 @@
 
   # build a wheel for a given sdist
   mkWheelDist = name: version: distDir: let
-    #TODO  re-use package attrs from nixpkgs
-    # (treat nixpkgs as a source of community overrides)
-    #extractedAttrs = l.optionalAttrs (python.pkgs ? ${name})
-    #  config.attrs-from-nixpkgs.lib.extractPythonAttrs python.pkgs.${name};
     manualSetupDeps =
       lib.mapAttrs
         (name: deps: map (dep: finalDistsPaths.${dep}) deps)
@@ -96,9 +93,10 @@
       ../buildPythonPackage
       ./interface.nix
       ../eval-cache
-      ../attrs-from-nixpkgs
+      ../nixpkgs-overrides
     ];
     config = {
+      nixpkgs-overrides.enable = true;
       deps = {nixpkgs, ...}: l.mapAttrs (_: l.mkDefault) ({
         inherit python;
         inherit (nixpkgs)
@@ -120,6 +118,8 @@
         # distDir will contain a single file which is the src
         preUnpack = ''export src="${distDir}"/*'';
         nativeBuildInputs = [config.deps.autoPatchelfHook];
+        # ensure build inputs are propagated for autopPatchelfHook
+        postFixup = "ln -s $out $dist/out";
       };
       # TODO If setup deps have been specified manually, we need to remove the
       #   propagatedBuildInputs from nixpkgs to prevent collisions.
@@ -154,7 +154,6 @@ in {
     ../buildPythonPackage
     ./interface.nix
     ../eval-cache
-    ../attrs-from-nixpkgs
   ];
 
   config = {

@@ -9,6 +9,7 @@ in {
 
   imports = [
     ../../drv-parts/mach-nix-xs
+    ../../drv-parts/attrs-from-nixpkgs
   ];
 
   deps = {nixpkgs, nixpkgsStable, ...}: {
