@@ -1,5 +1,8 @@
-{config, lib, ...}: let
-
+{
+  config,
+  lib,
+  ...
+}: let
   modulesDir = ../.;
 
   moduleKinds = builtins.readDir modulesDir;
@@ -17,9 +20,7 @@
     (modName: _: modName != "all-modules")
     (mapModules "flake-parts")
   );
-
 in {
-
   imports = flakePartsModules;
 
   options.flake.modules = lib.mkOption {

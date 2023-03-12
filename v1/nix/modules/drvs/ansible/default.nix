@@ -1,9 +1,11 @@
-{config, lib, ...}: let
+{
+  config,
+  lib,
+  ...
+}: let
   l = lib // builtins;
   python = config.deps.python;
-
 in {
-
   imports = [
     ../../drv-parts/mach-nix-xs
   ];
@@ -18,7 +20,6 @@ in {
   };
 
   mkDerivation = {
-
     preUnpack = ''
       export src=$(ls ${config.mach-nix.pythonSources}/names/${config.public.name}/*);
     '';

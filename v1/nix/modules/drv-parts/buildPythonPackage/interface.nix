@@ -1,4 +1,8 @@
-{config, lib, ...}: let
+{
+  config,
+  lib,
+  ...
+}: let
   l = lib // builtins;
   t = l.types;
 
@@ -6,61 +10,71 @@
     type = t.bool;
     default = false;
   };
-
 in {
-
   options.deps.python = l.mkOption {
     type = t.package;
     description = "The python interpreter package to use";
   };
 
   options.buildPythonPackage = {
-    disabled = boolOpt // {
-      description = ''
-        used to disable derivation, useful for specific python versions
-      '';
-    };
+    disabled =
+      boolOpt
+      // {
+        description = ''
+          used to disable derivation, useful for specific python versions
+        '';
+      };
 
-    catchConflicts = boolOpt // {
-      description = ''
-        Raise an error if two packages are installed with the same name
-        TODO: For cross we probably need a different PYTHONPATH, or not
-        add the runtime deps until after buildPhase.
-      '';
-      default =
-        config.deps.python.stdenv.hostPlatform
-        == config.deps.python.stdenv.buildPlatform;
-    };
+    catchConflicts =
+      boolOpt
+      // {
+        description = ''
+          Raise an error if two packages are installed with the same name
+          TODO: For cross we probably need a different PYTHONPATH, or not
+          add the runtime deps until after buildPhase.
+        '';
+        default =
+          config.deps.python.stdenv.hostPlatform
+          == config.deps.python.stdenv.buildPlatform;
+      };
 
-    dontWrapPythonPrograms = boolOpt // {
-      description = ''
-        Skip wrapping of python programs altogether
-      '';
-    };
+    dontWrapPythonPrograms =
+      boolOpt
+      // {
+        description = ''
+          Skip wrapping of python programs altogether
+        '';
+      };
 
-    dontUsePipInstall = boolOpt // {
-      description = ''
-        Don't use Pip to install a wheel
-        Note this is actually a variable for the pipInstallPhase in pip's setupHook.
-        It's included here to prevent an infinite recursion.
-      '';
-    };
+    dontUsePipInstall =
+      boolOpt
+      // {
+        description = ''
+          Don't use Pip to install a wheel
+          Note this is actually a variable for the pipInstallPhase in pip's setupHook.
+          It's included here to prevent an infinite recursion.
+        '';
+      };
 
-    permitUserSite = boolOpt // {
-      description = ''
-        Skip setting the PYTHONNOUSERSITE environment variable in wrapped programs
-      '';
-    };
+    permitUserSite =
+      boolOpt
+      // {
+        description = ''
+          Skip setting the PYTHONNOUSERSITE environment variable in wrapped programs
+        '';
+      };
 
-    removeBinBytecode = boolOpt // {
-      default = true;
-      decsription = ''
-        Remove bytecode from bin folder.
-        When a Python script has the extension `.py`, bytecode is generated
-        Typically, executables in bin have no extension, so no bytecode is generated.
-        However, some packages do provide executables with extensions, and thus bytecode is generated.
-      '';
-    };
+    removeBinBytecode =
+      boolOpt
+      // {
+        default = true;
+        decsription = ''
+          Remove bytecode from bin folder.
+          When a Python script has the extension `.py`, bytecode is generated
+          Typically, executables in bin have no extension, so no bytecode is generated.
+          However, some packages do provide executables with extensions, and thus bytecode is generated.
+        '';
+      };
 
     format = l.mkOption {
       type = t.str;
@@ -83,7 +97,6 @@ in {
         Test paths to ignore in checkPhase
       '';
     };
-
 
     # previously only set via env
     disabledTests = l.mkOption {

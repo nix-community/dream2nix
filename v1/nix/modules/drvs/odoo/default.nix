@@ -1,15 +1,18 @@
-{config, lib, ...}: let
+{
+  config,
+  lib,
+  ...
+}: let
   l = lib // builtins;
   python = config.deps.python;
-
 in {
-
   imports = [
     ../../drv-parts/mach-nix-xs
   ];
 
   deps = {nixpkgs, ...}: {
-    inherit (nixpkgs)
+    inherit
+      (nixpkgs)
       postgresql
       fetchFromGitHub
       ;
@@ -22,7 +25,6 @@ in {
   };
 
   mkDerivation = {
-
     src = config.deps.fetchFromGitHub {
       owner = "odoo";
       repo = "odoo";
@@ -38,9 +40,9 @@ in {
     requirementsFiles = ["${config.mkDerivation.src}/requirements.txt"];
     hash = "sha256-zo3FgjcDgYLmNaX7sizrRSrGhf3acIirkR9wccJPTSo=";
     maxDate = "2023-01-01";
-    nativeBuildInputs = (with config.deps; [
+    nativeBuildInputs = with config.deps; [
       postgresql
-    ]);
+    ];
   };
 
   # Replace some python packages entirely with candidates from nixpkgs, because

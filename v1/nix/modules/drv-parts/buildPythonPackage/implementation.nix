@@ -1,6 +1,9 @@
-{config, lib, ...}: let
+{
+  config,
+  lib,
+  ...
+}: let
   l = lib // builtins;
-
 in {
   config = {
     package-func.func = config.deps.python.pkgs.buildPythonPackage;

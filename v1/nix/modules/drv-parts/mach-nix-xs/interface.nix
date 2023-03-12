@@ -1,12 +1,14 @@
-{config, lib, drv-parts, dependencySets, ...}: let
-
+{
+  config,
+  lib,
+  drv-parts,
+  dependencySets,
+  ...
+}: let
   l = lib // builtins;
   t = l.types;
-
 in {
-
   options.mach-nix = {
-
     pythonSources = l.mkOption {
       type = t.package;
       description = ''

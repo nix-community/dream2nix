@@ -1,19 +1,27 @@
-{config, lib, drv-parts, ...}: let
+{
+  config,
+  lib,
+  drv-parts,
+  ...
+}: let
   l = lib // builtins;
   python = config.deps.python;
   extractPythonAttrs = config.attrs-from-nixpkgs.lib.extractPythonAttrs;
 
   nixpkgsAttrs = extractPythonAttrs python.pkgs.apache-airflow;
-
 in {
-
   imports = [
     ../../drv-parts/mach-nix-xs
     ../../drv-parts/attrs-from-nixpkgs
   ];
 
-  deps = {nixpkgs, nixpkgsStable, ...}: {
-    inherit (nixpkgs)
+  deps = {
+    nixpkgs,
+    nixpkgsStable,
+    ...
+  }: {
+    inherit
+      (nixpkgs)
       git
       fetchFromGitHub
       ;
@@ -25,7 +33,6 @@ in {
   };
 
   mkDerivation = {
-
     src = config.deps.fetchFromGitHub {
       owner = "apache";
       repo = "airflow";
@@ -40,7 +47,8 @@ in {
       python.pkgs.GitPython
     ];
 
-    inherit (nixpkgsAttrs)
+    inherit
+      (nixpkgsAttrs)
       buildInputs
       checkInputs
       postPatch
@@ -68,18 +76,19 @@ in {
   };
 
   env = {
-    inherit (nixpkgsAttrs)
+    inherit
+      (nixpkgsAttrs)
       INSTALL_PROVIDERS_FROM_SOURCES
       makeWrapperArgs
       ;
   };
 
   buildPythonPackage = {
-    inherit (nixpkgsAttrs)
+    inherit
+      (nixpkgsAttrs)
       disabledTests
       pythonImportsCheck
       pytestFlagsArray
       ;
   };
-
 }

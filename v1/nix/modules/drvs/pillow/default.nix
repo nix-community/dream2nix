@@ -1,21 +1,25 @@
 # Build Pillow from source, without a wheel, and rather
 # minimal features - only zlib and libjpeg as dependencies.
-{config, lib, ...}: let
+{
+  config,
+  lib,
+  ...
+}: let
   l = lib // builtins;
   python = config.deps.python;
-
 in {
-
   imports = [
     ../../drv-parts/mach-nix-xs
   ];
 
   deps = {nixpkgs, ...}: {
     python = nixpkgs.python39;
-    inherit (nixpkgs)
+    inherit
+      (nixpkgs)
       pkg-config
       zlib
-      libjpeg;
+      libjpeg
+      ;
   };
 
   public = {
@@ -28,7 +32,8 @@ in {
       config.deps.pkg-config
     ];
     propagatedBuildInputs = [
-      config.deps.zlib config.deps.libjpeg
+      config.deps.zlib
+      config.deps.libjpeg
     ];
 
     preUnpack = ''
@@ -44,7 +49,6 @@ in {
     ];
   };
 
-
   mach-nix.pythonSources = config.deps.fetchPythonRequirements {
     inherit python;
     name = config.public.name;
@@ -52,7 +56,8 @@ in {
     hash = "sha256-2Wt+dFxVY2xn6sxZlDO0Fe2j1a9Ne8EIVGOovw+bBu4=";
     maxDate = "2023-01-01";
     pipFlags = [
-      "--no-binary" ":all:"
+      "--no-binary"
+      ":all:"
     ];
   };
 }

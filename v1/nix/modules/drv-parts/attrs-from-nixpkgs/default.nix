@@ -1,9 +1,14 @@
-{config, lib, ...}: let
+{
+  config,
+  lib,
+  ...
+}: let
   l = lib // builtins;
   t = l.types;
 
   # Attributes we never want to copy from nixpkgs
-  excludedNixpkgsAttrs = l.genAttrs
+  excludedNixpkgsAttrs =
+    l.genAttrs
     [
       "all"
       "args"
@@ -18,17 +23,16 @@
 
   extractOverrideAttrs = overrideFunc:
     (overrideFunc (old: {passthru.old = old;}))
-      .old;
+    .old;
 
   extractPythonAttrs = pythonPackage: let
     pythonAttrs = extractOverrideAttrs pythonPackage.overridePythonAttrs;
   in
     l.filterAttrs (name: _: ! excludedNixpkgsAttrs ? ${name}) pythonAttrs;
-
 in {
   imports = [
     ./interface.nix
   ];
 
-  config.attrs-from-nixpkgs.lib = { inherit extractOverrideAttrs extractPythonAttrs; };
+  config.attrs-from-nixpkgs.lib = {inherit extractOverrideAttrs extractPythonAttrs;};
 }

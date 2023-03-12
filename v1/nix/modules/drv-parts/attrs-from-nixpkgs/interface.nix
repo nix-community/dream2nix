@@ -1,10 +1,12 @@
-{config, lib, ...}: let
+{
+  config,
+  lib,
+  ...
+}: let
   l = lib // builtins;
   t = l.types;
-
 in {
   options.attrs-from-nixpkgs = {
-
     lib.extractOverrideAttrs = l.mkOption {
       type = t.functionTo t.attrs;
       description = ''
@@ -21,6 +23,5 @@ in {
       '';
       readOnly = true;
     };
-
   };
 }

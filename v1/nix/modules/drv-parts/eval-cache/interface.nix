@@ -1,10 +1,12 @@
-{config, lib, ...}: let
+{
+  config,
+  lib,
+  ...
+}: let
   l = lib // builtins;
   t = l.types;
-
 in {
   options.eval-cache = {
-
     # GLOBAL OPTIONS
     repoRoot = l.mkOption {
       type = t.path;

@@ -1,8 +1,19 @@
-{ self, lib, inputs, ... }: {
-  perSystem = { config, self', inputs', pkgs, system, ... }: let
-
+{
+  self,
+  lib,
+  inputs,
+  ...
+}: {
+  perSystem = {
+    config,
+    self',
+    inputs',
+    pkgs,
+    system,
+    ...
+  }: let
     # A module imported into every package setting up the eval cache
-    evalCacheSetup = {config,...}: {
+    evalCacheSetup = {config, ...}: {
       eval-cache.cacheFileRel = "/nix/modules/drvs/${config.public.name}/cache-${system}.json";
       eval-cache.repoRoot = self;
       eval-cache.enable = true;
@@ -25,7 +36,6 @@
       };
     in
       evaled // evaled.config.public;
-
   in {
     # map all modules in ../drvs to a package output in the flake.
     packages = lib.mapAttrs (_: drvModule: makeDrv drvModule) self.modules.drvs;

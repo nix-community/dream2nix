@@ -1,4 +1,8 @@
-{config, lib, ...}: let
+{
+  config,
+  lib,
+  ...
+}: let
   l = lib // builtins;
   cfg = config.eval-cache;
 
@@ -6,20 +10,22 @@
 
   filterTrue = l.filterAttrsRecursive (key: val: l.isAttrs val || val == true);
 
-  invalidationFields = (filterTrue cfg.invalidationFields);
+  invalidationFields = filterTrue cfg.invalidationFields;
 
   intersectAttrsRecursive = a: b:
     l.mapAttrs
-    (key: valB:
-      if l.isAttrs valB && l.isAttrs a.${key}
-      then intersectAttrsRecursive a.${key} valB
-      else valB
+    (
+      key: valB:
+        if l.isAttrs valB && l.isAttrs a.${key}
+        then intersectAttrsRecursive a.${key} valB
+        else valB
     )
     (l.intersectAttrs a b);
 
   invalidationData = intersectAttrsRecursive invalidationFields config;
 
-  invalidationHash = l.hashString "sha256"
+  invalidationHash =
+    l.hashString "sha256"
     (l.toJSON [invalidationData cfg.fields]);
 
   fields = filterTrue cfg.fields;
@@ -42,16 +48,15 @@
 
   file = cfg.repoRoot + cfg.cacheFileRel;
 
-  refreshCommand = l.unsafeDiscardStringContext
+  refreshCommand =
+    l.unsafeDiscardStringContext
     "cat $(nix-build ${cfg.newFile.drvPath} --no-link) > $(git rev-parse --show-toplevel)/${cfg.cacheFileRel}";
 
   newFileMsg = "To generate a new cache file, execute:\n  ${refreshCommand}";
 
-  ifdInfoMsg =
-    "Information on how to fix this is shown below if evaluated with `--allow-import-from-derivation`";
+  ifdInfoMsg = "Information on how to fix this is shown below if evaluated with `--allow-import-from-derivation`";
 
-  cacheMissingMsg =
-    "The cache file ${cfg.cacheFileRel} for drv-parts module '${packageName}' doesn't exist, please create it.";
+  cacheMissingMsg = "The cache file ${cfg.cacheFileRel} for drv-parts module '${packageName}' doesn't exist, please create it.";
 
   cacheMissingError =
     l.trace ''
@@ -64,8 +69,7 @@
       ${newFileMsg}
     '';
 
-  cacheInvalidMsg =
-    "The cache file ${cfg.cacheFileRel} for drv-parts module '${packageName}' is outdated, please update it.";
+  cacheInvalidMsg = "The cache file ${cfg.cacheFileRel} for drv-parts module '${packageName}' is outdated, please update it.";
 
   cacheInvalidError =
     l.trace ''
@@ -109,7 +113,8 @@
     eval-cache.content = loadedContent;
 
     deps = {nixpkgs, ...}: {
-      inherit (nixpkgs)
+      inherit
+        (nixpkgs)
         jq
         runCommand
         writeText
@@ -121,13 +126,10 @@
   configIfDisabled = l.mkIf (! cfg.enable) {
     eval-cache.content = currentContent;
   };
-
 in {
-
   imports = [
     ./interface.nix
   ];
 
   config = l.mkMerge [configIfEnabled configIfDisabled];
-
 }
