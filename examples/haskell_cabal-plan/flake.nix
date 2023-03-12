@@ -1,7 +1,7 @@
 {
   inputs = {
     dream2nix.url = "github:nix-community/dream2nix";
-    src.url = "github:davhau/cabal2json/plan-json";
+    src.url = "github:NorfairKing/cabal2json/plan-json";
     src.flake = false;
   };
 

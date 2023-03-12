@@ -14,7 +14,7 @@ in {
   */
   generateUnitTestsForProjects = [
     (builtins.fetchTarball {
-      url = "https://github.com/davhau/cabal2json/tarball/plan-json";
+      url = "https://github.com/NorfairKing/cabal2json/tarball/plan-json";
       sha256 = "1d0mfq8q92kikasxds20fshnwcjkm416vc2kf7l3rhmfm443snwg";
     })
   ];
