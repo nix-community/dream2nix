@@ -8,9 +8,14 @@
 
   inputs = {
     nixpkgs.url = "nixpkgs/nixos-unstable";
+    nixpkgsV1.url = "nixpkgs/nixos-22.11";
 
     flake-parts.url = "github:hercules-ci/flake-parts";
     flake-parts.inputs.nixpkgs-lib.follows = "nixpkgs";
+
+    drv-parts.url = "github:davhau/drv-parts";
+    drv-parts.inputs.nixpkgs.follows = "nixpkgs";
+    drv-parts.inputs.flake-parts.follows = "flake-parts";
 
     ### dev dependencies
     alejandra.url = "github:kamadorueda/alejandra";
@@ -342,6 +347,7 @@
       imports = [
         ./tests
         ./templates
+        ./v1/nix/modules/flake-parts/all-modules.nix
       ];
       systems = [
         "x86_64-linux"

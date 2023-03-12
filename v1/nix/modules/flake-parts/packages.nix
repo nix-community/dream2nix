@@ -19,7 +19,7 @@
           evalCacheSetup
         ];
         specialArgs.dependencySets = {
-          nixpkgs = inputs'.nixpkgs.legacyPackages;
+          nixpkgs = inputs'.nixpkgsV1.legacyPackages;
         };
         specialArgs.drv-parts = inputs.drv-parts;
       };
