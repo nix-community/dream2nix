@@ -23,8 +23,10 @@ from mitmproxy import http
 Query the pypi json api to get timestamps for all release files of the given pname.
 return all file names which are newer than the given timestamp
 """
+
+
 def get_files_to_hide(pname, max_ts):
-    ca_file = Path(os.getenv('HOME')) / ".ca-cert.pem"
+    ca_file = Path(os.getenv("HOME")) / ".ca-cert.pem"
     context = ssl.create_default_context(cafile=ca_file)
     if not ca_file.exists():
         print("mitmproxy ca not found")
@@ -33,18 +35,18 @@ def get_files_to_hide(pname, max_ts):
     # query the api
     url = f"https://pypi.org/pypi/{pname}/json"
     req = Request(url)
-    req.add_header('Accept-Encoding', 'gzip')
+    req.add_header("Accept-Encoding", "gzip")
     with urlopen(req, context=context) as response:
         content = gzip.decompress(response.read())
         resp = json.loads(content)
 
     # collect files to hide
     files = set()
-    for ver, releases in resp['releases'].items():
+    for ver, releases in resp["releases"].items():
         for release in releases:
-            ts = dateutil.parser.parse(release['upload_time']).timestamp()
+            ts = dateutil.parser.parse(release["upload_time"]).timestamp()
             if ts > max_ts:
-                files.add(release['filename'])
+                files.add(release["filename"])
     return files
 
 
@@ -80,14 +82,16 @@ Response format:
     }
 }
 """
+
+
 def response(flow: http.HTTPFlow) -> None:
     if not "/simple/" in flow.request.url:
         return
-    pname = flow.request.url.strip('/').split('/')[-1]
+    pname = flow.request.url.strip("/").split("/")[-1]
     badFiles = get_files_to_hide(pname, max_ts)
-    keepFile = lambda file: file['filename'] not in badFiles
+    keepFile = lambda file: file["filename"] not in badFiles
     data = json.loads(flow.response.text)
     if badFiles:
         print(f"removing the following files form the API response:\n  {badFiles}")
-        data['files'] = list(filter(keepFile, data['files']))
+        data["files"] = list(filter(keepFile, data["files"]))
     flow.response.text = json.dumps(data)

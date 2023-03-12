@@ -1,6 +1,6 @@
 #!/usr/bin/env nix-shell
 #! nix-shell -i python3 -p python3 python3Packages.pkginfo python3Packages.packaging
-'''
+"""
 Given a directory of python source distributions (.tar.gz) and wheels,
 return a JSON representation of their dependency tree.
 
@@ -24,7 +24,7 @@ dependency declarations.
 The output is a list of tuples. First element in each tuple is the package name,
 second a list of dependencies. Output is sorted by the number of dependencies,
 so that leafs of the dependency tree come first, the package to install last.
-'''
+"""
 
 import sys
 import tarfile
@@ -33,16 +33,20 @@ from pathlib import Path
 
 from pkginfo import SDist, Wheel
 from packaging.requirements import Requirement
-from packaging.utils import parse_sdist_filename, parse_wheel_filename, canonicalize_name
+from packaging.utils import (
+    parse_sdist_filename,
+    parse_wheel_filename,
+    canonicalize_name,
+)
 
 
 def _is_source_dist(pkg_file):
-    return pkg_file.suffixes[-2:] == ['.tar', '.gz']
+    return pkg_file.suffixes[-2:] == [".tar", ".gz"]
 
 
 def _get_name_version(pkg_file):
     if _is_source_dist(pkg_file):
-        name, *_  = parse_sdist_filename(pkg_file.name)
+        name, *_ = parse_sdist_filename(pkg_file.name)
     else:
         name, *_ = parse_wheel_filename(pkg_file.name)
     return canonicalize_name(name)
@@ -50,12 +54,12 @@ def _get_name_version(pkg_file):
 
 def get_pkg_info(pkg_file):
     try:
-       if pkg_file.suffix == '.whl':
-           return Wheel(str(pkg_file))
-       elif _is_source_dist(pkg_file):
-           return SDist(str(pkg_file))
-       else:
-           raise NotImplemented(f"Unknown file format: {pkg_file}")
+        if pkg_file.suffix == ".whl":
+            return Wheel(str(pkg_file))
+        elif _is_source_dist(pkg_file):
+            return SDist(str(pkg_file))
+        else:
+            raise NotImplemented(f"Unknown file format: {pkg_file}")
     except ValueError:
         pass
 
@@ -63,7 +67,7 @@ def get_pkg_info(pkg_file):
 def _is_required_dependency(requirement):
     # We set the extra field to an empty string to effectively ignore all optional
     # dependencies for now.
-    return not requirement.marker or requirement.marker.evaluate({'extra': ""})
+    return not requirement.marker or requirement.marker.evaluate({"extra": ""})
 
 
 def parse_requirements_txt(pkg_file):
@@ -72,7 +76,8 @@ def parse_requirements_txt(pkg_file):
         requirements = [
             Requirement(req)
             for req in requirements_txt.split("\n")
-            if req and not req.startswith("#")]
+            if req and not req.startswith("#")
+        ]
     return requirements
 
 
@@ -80,18 +85,18 @@ def read_requirements_txt(source_dist_file):
     name, version = parse_sdist_filename(source_dist_file.name)
     with tarfile.open(source_dist_file) as tar:
         try:
-            with tar.extractfile(f'{name}-{version}/requirements.txt') as f:
-                return f.read().decode('utf-8')
+            with tar.extractfile(f"{name}-{version}/requirements.txt") as f:
+                return f.read().decode("utf-8")
         except KeyError as e:
             return
 
 
 def usage():
-    print(f'{sys.argv[0]} <pkgs-directory>')
+    print(f"{sys.argv[0]} <pkgs-directory>")
     sys.exit(1)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     if len(sys.argv) != 2:
         usage()
     pkgs_path = Path(sys.argv[1])
@@ -113,8 +118,12 @@ if __name__ == '__main__':
             requirements = parse_requirements_txt(pkg_file)
 
         requirements = filter(_is_required_dependency, requirements)
-        dependencies.append({'name': name, 'dependencies': [canonicalize_name(req.name) for req in requirements]})
-
+        dependencies.append(
+            {
+                "name": name,
+                "dependencies": [canonicalize_name(req.name) for req in requirements],
+            }
+        )
 
     dependencies = sorted(dependencies, key=lambda d: len(d["dependencies"]))
     print(json.dumps(dependencies, indent=2))
