@@ -134,11 +134,7 @@
     };
 
   dependenciesFile = "${cfg.pythonSources}/dependencies.json";
-  dependencies = l.filter (d: d.name != packageName) (l.fromJSON (l.readFile dependenciesFile));
-  dependencyTree = l.listToAttrs (
-    (l.flip map) dependencies
-    (dep: l.nameValuePair dep.name dep.dependencies)
-  );
+  dependencyTree = l.fromJSON (l.readFile dependenciesFile);
 
   makeModuleFromDerivation = _name: drv:
     drv-parts.lib.makeModule {

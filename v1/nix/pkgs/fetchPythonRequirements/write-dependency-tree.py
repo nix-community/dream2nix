@@ -103,7 +103,7 @@ if __name__ == "__main__":
     if not (pkgs_path.exists and pkgs_path.is_dir()):
         usage()
 
-    dependencies = []
+    dependencies = {}
     for pkg_file in pkgs_path.iterdir():
         info = get_pkg_info(pkg_file)
         name = _get_name_version(pkg_file)
@@ -118,12 +118,8 @@ if __name__ == "__main__":
             requirements = parse_requirements_txt(pkg_file)
 
         requirements = filter(_is_required_dependency, requirements)
-        dependencies.append(
-            {
-                "name": name,
-                "dependencies": [canonicalize_name(req.name) for req in requirements],
-            }
-        )
+        dependencies[name] = \
+            sorted([canonicalize_name(req.name) for req in requirements])
 
-    dependencies = sorted(dependencies, key=lambda d: len(d["dependencies"]))
+    dependencies = dict(sorted(dependencies.items()))
     print(json.dumps(dependencies, indent=2))
