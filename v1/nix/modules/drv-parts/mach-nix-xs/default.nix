@@ -116,7 +116,10 @@
           format = "setuptools";
           pipInstallFlags =
             (map (distDir: "--find-links ${distDir}") manualSetupDeps.${name} or [])
-            ++ (map (dep: "--find-links ${finalDistsPaths.${dep}}") dependencyTree.${name} or []);
+            ++ (
+              map (dep: "--find-links ${finalDistsPaths.${dep}}")
+              config.eval-cache.content.mach-nix.dependencyTree.${name} or []
+            );
         };
         mkDerivation = {
           # distDir will contain a single file which is the src

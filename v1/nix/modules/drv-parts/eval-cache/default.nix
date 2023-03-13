@@ -82,7 +82,7 @@
       ${newFileMsg}
     '';
 
-  cachePrio = l.modules.defaultOverridePriority + 1;
+  cachePrio = l.modules.defaultPriority + 1;
 
   mapCachePrio = l.mapAttrs (key: val: l.mkOverride cachePrio val);
 

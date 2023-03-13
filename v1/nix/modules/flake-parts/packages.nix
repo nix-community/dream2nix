@@ -8,7 +8,7 @@
   system = "x86_64-linux";
   # A module imported into every package setting up the eval cache
   evalCacheSetup = {config, ...}: {
-    eval-cache.cacheFileRel = "/nix/modules/drvs/${config.public.name}/cache-${system}.json";
+    eval-cache.cacheFileRel = "/v1/nix/modules/drvs/${config.public.name}/cache-${system}.json";
     eval-cache.repoRoot = self;
     eval-cache.enable = true;
   };
