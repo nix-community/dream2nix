@@ -1,10 +1,13 @@
 {
   "content": {
     "mach-nix": {
+      "dependencyTree": {
+        "pillow": []
+      },
       "dists": {
         "pillow": "9.3.0"
       }
     }
   },
-  "invalidationHash": "e1ece9073ddf95d33101e8b8929ac5698d06271db5b3c278bfd2f241e473e130"
+  "invalidationHash": "88dbd64243b8ebf37d1176dacd6c5d3c9b47b932af62f0132522d36850626fb1"
 }

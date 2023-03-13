@@ -1,6 +1,116 @@
 {
   "content": {
     "mach-nix": {
+      "dependencyTree": {
+        "absl-py": [],
+        "astunparse": [
+          "six",
+          "wheel"
+        ],
+        "cachetools": [],
+        "certifi": [],
+        "charset-normalizer": [],
+        "flatbuffers": [],
+        "gast": [],
+        "google-auth": [
+          "cachetools",
+          "pyasn1-modules",
+          "rsa",
+          "six"
+        ],
+        "google-auth-oauthlib": [
+          "google-auth",
+          "requests-oauthlib"
+        ],
+        "google-pasta": [
+          "six"
+        ],
+        "grpcio": [],
+        "h5py": [
+          "numpy"
+        ],
+        "idna": [],
+        "keras": [],
+        "libclang": [],
+        "markdown": [],
+        "markupsafe": [],
+        "numpy": [],
+        "oauthlib": [],
+        "opt-einsum": [
+          "numpy"
+        ],
+        "packaging": [],
+        "protobuf": [],
+        "pyasn1": [],
+        "pyasn1-modules": [
+          "pyasn1"
+        ],
+        "requests": [
+          "certifi",
+          "charset-normalizer",
+          "idna",
+          "urllib3"
+        ],
+        "requests-oauthlib": [
+          "oauthlib",
+          "requests"
+        ],
+        "rsa": [
+          "pyasn1"
+        ],
+        "setuptools": [],
+        "six": [],
+        "tensorboard": [
+          "absl-py",
+          "google-auth",
+          "google-auth-oauthlib",
+          "grpcio",
+          "markdown",
+          "numpy",
+          "protobuf",
+          "requests",
+          "setuptools",
+          "tensorboard-data-server",
+          "tensorboard-plugin-wit",
+          "werkzeug",
+          "wheel"
+        ],
+        "tensorboard-data-server": [],
+        "tensorboard-plugin-wit": [],
+        "tensorflow": [
+          "absl-py",
+          "astunparse",
+          "flatbuffers",
+          "gast",
+          "google-pasta",
+          "grpcio",
+          "h5py",
+          "keras",
+          "libclang",
+          "numpy",
+          "opt-einsum",
+          "packaging",
+          "protobuf",
+          "setuptools",
+          "six",
+          "tensorboard",
+          "tensorflow-estimator",
+          "tensorflow-io-gcs-filesystem",
+          "termcolor",
+          "typing-extensions",
+          "wrapt"
+        ],
+        "tensorflow-estimator": [],
+        "tensorflow-io-gcs-filesystem": [],
+        "termcolor": [],
+        "typing-extensions": [],
+        "urllib3": [],
+        "werkzeug": [
+          "markupsafe"
+        ],
+        "wheel": [],
+        "wrapt": []
+      },
       "dists": {
         "absl-py": "wheel",
         "astunparse": "wheel",
@@ -46,5 +156,5 @@
       }
     }
   },
-  "invalidationHash": "0f1efe4838023fa0c508cf9e4e2ac5814876c8448487bdfc3f70d32b68836dd9"
+  "invalidationHash": "d8bab42c0570e3e283d273278d0cd6ababd1d9ee0c1aafec91dcd3c56521dd35"
 }

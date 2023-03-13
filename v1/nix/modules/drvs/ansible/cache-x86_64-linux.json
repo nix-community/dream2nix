@@ -1,6 +1,39 @@
 {
   "content": {
     "mach-nix": {
+      "dependencyTree": {
+        "ansible": [
+          "cryptography",
+          "jinja2",
+          "paramiko",
+          "pyyaml",
+          "setuptools"
+        ],
+        "bcrypt": [],
+        "cffi": [
+          "pycparser"
+        ],
+        "cryptography": [
+          "cffi"
+        ],
+        "jinja2": [
+          "markupsafe"
+        ],
+        "markupsafe": [],
+        "paramiko": [
+          "bcrypt",
+          "cryptography",
+          "pynacl",
+          "six"
+        ],
+        "pycparser": [],
+        "pynacl": [
+          "cffi"
+        ],
+        "pyyaml": [],
+        "setuptools": [],
+        "six": []
+      },
       "dists": {
         "ansible": "2.7.1",
         "bcrypt": "wheel",
@@ -17,5 +50,5 @@
       }
     }
   },
-  "invalidationHash": "b6030e7f0a88cb0fb14fbd6df213b4da4134dbecfd9427ce211254e09c3aa1cb"
+  "invalidationHash": "89487ce745f0e952fb4a67fa51cf4866663de7a57bb3067ed00c2137a80bd501"
 }

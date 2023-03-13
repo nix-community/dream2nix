@@ -1,6 +1,338 @@
 {
   "content": {
     "mach-nix": {
+      "dependencyTree": {
+        "alembic": [
+          "mako",
+          "sqlalchemy"
+        ],
+        "anyio": [
+          "idna",
+          "sniffio"
+        ],
+        "apache-airflow": [
+          "alembic",
+          "apache-airflow-providers-common-sql",
+          "apache-airflow-providers-ftp",
+          "apache-airflow-providers-http",
+          "apache-airflow-providers-imap",
+          "apache-airflow-providers-sqlite",
+          "argcomplete",
+          "attrs",
+          "blinker",
+          "cattrs",
+          "colorlog",
+          "configupdater",
+          "connexion",
+          "cron-descriptor",
+          "croniter",
+          "cryptography",
+          "deprecated",
+          "dill",
+          "flask",
+          "flask-appbuilder",
+          "flask-caching",
+          "flask-login",
+          "flask-session",
+          "flask-wtf",
+          "graphviz",
+          "gunicorn",
+          "httpx",
+          "itsdangerous",
+          "jinja2",
+          "jsonschema",
+          "lazy-object-proxy",
+          "linkify-it-py",
+          "lockfile",
+          "markdown",
+          "markdown-it-py",
+          "markupsafe",
+          "marshmallow-oneofschema",
+          "mdit-py-plugins",
+          "packaging",
+          "pathspec",
+          "pendulum",
+          "pluggy",
+          "psutil",
+          "pygments",
+          "pyjwt",
+          "python-daemon",
+          "python-dateutil",
+          "python-nvd3",
+          "python-slugify",
+          "rich",
+          "setproctitle",
+          "sqlalchemy",
+          "sqlalchemy-jsonfield",
+          "tabulate",
+          "tenacity",
+          "termcolor",
+          "typing-extensions",
+          "unicodecsv",
+          "werkzeug"
+        ],
+        "apache-airflow-providers-common-sql": [
+          "sqlparse"
+        ],
+        "apache-airflow-providers-ftp": [],
+        "apache-airflow-providers-http": [
+          "requests",
+          "requests-toolbelt"
+        ],
+        "apache-airflow-providers-imap": [],
+        "apache-airflow-providers-sqlite": [
+          "apache-airflow-providers-common-sql"
+        ],
+        "apispec": [],
+        "argcomplete": [],
+        "attrs": [],
+        "babel": [
+          "pytz"
+        ],
+        "blinker": [],
+        "cachelib": [],
+        "cattrs": [
+          "attrs",
+          "exceptiongroup"
+        ],
+        "certifi": [],
+        "cffi": [
+          "pycparser"
+        ],
+        "charset-normalizer": [],
+        "click": [],
+        "clickclick": [
+          "click",
+          "pyyaml"
+        ],
+        "colorama": [],
+        "colorlog": [],
+        "commonmark": [],
+        "configupdater": [],
+        "connexion": [
+          "clickclick",
+          "flask",
+          "inflection",
+          "itsdangerous",
+          "jsonschema",
+          "packaging",
+          "pyyaml",
+          "requests",
+          "werkzeug"
+        ],
+        "cron-descriptor": [],
+        "croniter": [
+          "python-dateutil"
+        ],
+        "cryptography": [
+          "cffi"
+        ],
+        "deprecated": [
+          "wrapt"
+        ],
+        "dill": [],
+        "dnspython": [],
+        "docutils": [],
+        "email-validator": [
+          "dnspython",
+          "idna"
+        ],
+        "exceptiongroup": [],
+        "flask": [
+          "click",
+          "itsdangerous",
+          "jinja2",
+          "werkzeug"
+        ],
+        "flask-appbuilder": [
+          "apispec",
+          "click",
+          "colorama",
+          "email-validator",
+          "flask",
+          "flask-babel",
+          "flask-jwt-extended",
+          "flask-login",
+          "flask-sqlalchemy",
+          "flask-wtf",
+          "jsonschema",
+          "marshmallow",
+          "marshmallow-enum",
+          "marshmallow-sqlalchemy",
+          "prison",
+          "pyjwt",
+          "python-dateutil",
+          "sqlalchemy",
+          "sqlalchemy-utils",
+          "wtforms"
+        ],
+        "flask-babel": [
+          "babel",
+          "flask",
+          "jinja2",
+          "pytz"
+        ],
+        "flask-caching": [
+          "cachelib",
+          "flask"
+        ],
+        "flask-jwt-extended": [
+          "flask",
+          "pyjwt",
+          "werkzeug"
+        ],
+        "flask-login": [
+          "flask",
+          "werkzeug"
+        ],
+        "flask-session": [
+          "cachelib",
+          "flask"
+        ],
+        "flask-sqlalchemy": [
+          "flask",
+          "sqlalchemy"
+        ],
+        "flask-wtf": [
+          "flask",
+          "itsdangerous",
+          "wtforms"
+        ],
+        "graphviz": [],
+        "greenlet": [],
+        "gunicorn": [
+          "setuptools"
+        ],
+        "h11": [],
+        "httpcore": [
+          "anyio",
+          "certifi",
+          "h11",
+          "sniffio"
+        ],
+        "httpx": [
+          "certifi",
+          "httpcore",
+          "rfc3986",
+          "sniffio"
+        ],
+        "idna": [],
+        "inflection": [],
+        "itsdangerous": [],
+        "jinja2": [
+          "markupsafe"
+        ],
+        "jsonschema": [
+          "attrs",
+          "pyrsistent"
+        ],
+        "lazy-object-proxy": [],
+        "linkify-it-py": [
+          "uc-micro-py"
+        ],
+        "lockfile": [],
+        "mako": [
+          "markupsafe"
+        ],
+        "markdown": [],
+        "markdown-it-py": [
+          "mdurl"
+        ],
+        "markupsafe": [],
+        "marshmallow": [
+          "packaging"
+        ],
+        "marshmallow-enum": [
+          "marshmallow"
+        ],
+        "marshmallow-oneofschema": [
+          "marshmallow"
+        ],
+        "marshmallow-sqlalchemy": [
+          "marshmallow",
+          "sqlalchemy"
+        ],
+        "mdit-py-plugins": [
+          "markdown-it-py"
+        ],
+        "mdurl": [],
+        "packaging": [],
+        "pathspec": [],
+        "pendulum": [
+          "python-dateutil",
+          "pytzdata"
+        ],
+        "pluggy": [],
+        "prison": [
+          "six"
+        ],
+        "psutil": [],
+        "pycparser": [],
+        "pygments": [],
+        "pyjwt": [],
+        "pyrsistent": [],
+        "python-daemon": [
+          "docutils",
+          "lockfile",
+          "setuptools"
+        ],
+        "python-dateutil": [
+          "six"
+        ],
+        "python-nvd3": [],
+        "python-slugify": [
+          "text-unidecode"
+        ],
+        "pytz": [],
+        "pytzdata": [],
+        "pyyaml": [],
+        "requests": [
+          "certifi",
+          "charset-normalizer",
+          "idna",
+          "urllib3"
+        ],
+        "requests-toolbelt": [
+          "requests"
+        ],
+        "rfc3986": [],
+        "rich": [
+          "commonmark",
+          "pygments"
+        ],
+        "setproctitle": [],
+        "setuptools": [],
+        "six": [],
+        "sniffio": [],
+        "sqlalchemy": [
+          "greenlet"
+        ],
+        "sqlalchemy-jsonfield": [
+          "sqlalchemy"
+        ],
+        "sqlalchemy-utils": [
+          "sqlalchemy"
+        ],
+        "sqlparse": [],
+        "swagger-ui-bundle": [
+          "jinja2"
+        ],
+        "tabulate": [],
+        "tenacity": [],
+        "termcolor": [],
+        "text-unidecode": [],
+        "typing-extensions": [],
+        "uc-micro-py": [],
+        "unicodecsv": [],
+        "urllib3": [],
+        "werkzeug": [
+          "markupsafe"
+        ],
+        "wrapt": [],
+        "wtforms": [
+          "markupsafe"
+        ]
+      },
       "dists": {
         "alembic": "wheel",
         "anyio": "wheel",
@@ -113,5 +445,5 @@
       }
     }
   },
-  "invalidationHash": "d232e9e0e5b49fa084ed9f5a1f76c43d0dcd7c46f6f2fb0f7f51dbe8791875e9"
+  "invalidationHash": "5c4ce66375d559fafc21946cf72047315b17d8c1fe64881076fcf939a3626e18"
 }
