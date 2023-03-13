@@ -118,8 +118,9 @@ if __name__ == "__main__":
             requirements = parse_requirements_txt(pkg_file)
 
         requirements = filter(_is_required_dependency, requirements)
-        dependencies[name] = \
-            sorted([canonicalize_name(req.name) for req in requirements])
+        dependencies[name] = sorted(
+            [canonicalize_name(req.name) for req in requirements]
+        )
 
     dependencies = dict(sorted(dependencies.items()))
     print(json.dumps(dependencies, indent=2))
