@@ -8,13 +8,14 @@
 
   inputs = {
     nixpkgs.url = "nixpkgs/nixos-unstable";
+    nixpkgsV1.url = "nixpkgs/nixos-22.11";
 
     flake-parts.url = "github:hercules-ci/flake-parts";
     flake-parts.inputs.nixpkgs-lib.follows = "nixpkgs";
 
-    ### dev dependencies
-    alejandra.url = "github:kamadorueda/alejandra";
-    alejandra.inputs.nixpkgs.follows = "nixpkgs";
+    drv-parts.url = "github:davhau/drv-parts";
+    drv-parts.inputs.nixpkgs.follows = "nixpkgs";
+    drv-parts.inputs.flake-parts.follows = "flake-parts";
 
     pre-commit-hooks.url = "github:cachix/pre-commit-hooks.nix";
     pre-commit-hooks.inputs.nixpkgs.follows = "nixpkgs";
@@ -77,7 +78,6 @@
 
   outputs = {
     self,
-    alejandra,
     devshell,
     flake-parts,
     gomod2nix,
@@ -187,7 +187,7 @@
             format.type = "app";
             format.program = let
               path = lib.makeBinPath [
-                alejandra.defaultPackage.${system}
+                pkgs.alejandra
                 pkgs.python3.pkgs.black
               ];
             in
@@ -219,7 +219,7 @@
             devshell.name = "dream2nix-devshell";
 
             packages = [
-              alejandra.defaultPackage.${system}
+              pkgs.alejandra
               pkgs.python3.pkgs.black
             ];
 
@@ -281,7 +281,7 @@
                 pass_filenames = false;
                 entry = l.toString (pkgs.writeScript "treefmt" ''
                   #!${pkgs.bash}/bin/bash
-                  export PATH="$PATH:${alejandra.defaultPackage.${system}}/bin"
+                  export PATH="$PATH:${pkgs.alejandra}/bin"
                   ${pkgs.treefmt}/bin/treefmt --clear-cache --fail-on-change
                 '');
               };
@@ -342,6 +342,7 @@
       imports = [
         ./tests
         ./templates
+        ./v1/nix/modules/flake-parts/all-modules.nix
       ];
       systems = [
         "x86_64-linux"
