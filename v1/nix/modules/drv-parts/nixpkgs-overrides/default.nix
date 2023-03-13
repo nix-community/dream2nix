@@ -7,20 +7,8 @@
   l = lib // builtins;
   cfg = config.nixpkgs-overrides;
 
-  # Attributes we never want to copy from nixpkgs
   excludedNixpkgsAttrs =
-    l.genAttrs
-    [
-      "all"
-      "args"
-      "builder"
-      "name"
-      "pname"
-      "version"
-      "src"
-      "outputs"
-    ]
-    (name: null);
+    l.genAttrs cfg.excludedNixpkgsAttrs (name: null);
 
   extractOverrideAttrs = overrideFunc:
     (overrideFunc (old: {passthru.old = old;}))
@@ -37,7 +25,12 @@ in {
     ./interface.nix
   ];
 
-  config = l.mkIf cfg.enable {
-    package-func.args = extracted;
-  };
+  config = l.mkMerge [
+    (l.mkIf cfg.enable {
+      package-func.args = extracted;
+    })
+    {
+      nixpkgs-overrides.lib = {inherit extractOverrideAttrs extractPythonAttrs;};
+    }
+  ];
 }
