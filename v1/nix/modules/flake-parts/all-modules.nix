@@ -1,3 +1,6 @@
+# Automatically exports modules from the `/**/modules` directory to:
+#   `flake.modules.<kind>.<name>`
+# Automatically imports all flake-parts modules from `/**/modules/flake-parts`
 {
   config,
   lib,

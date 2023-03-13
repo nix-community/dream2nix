@@ -1,3 +1,4 @@
+# evaluate packages from `/**/modules/drvs` and export them via `flake.packages`
 {
   self,
   lib,
