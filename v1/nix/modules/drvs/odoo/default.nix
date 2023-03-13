@@ -38,7 +38,7 @@ in {
     inherit (config.deps) python;
     name = config.public.name;
     requirementsFiles = ["${config.mkDerivation.src}/requirements.txt"];
-    hash = "sha256-zo3FgjcDgYLmNaX7sizrRSrGhf3acIirkR9wccJPTSo=";
+    hash = "sha256-E9wNvBakm+R5TSsFsnGpSaziYpi2otm0iBiyphUVSFI=";
     maxDate = "2023-01-01";
     nativeBuildInputs = with config.deps; [
       postgresql

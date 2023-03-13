@@ -53,7 +53,7 @@ in {
     inherit python;
     name = config.public.name;
     requirementsList = ["${config.public.name}==${config.public.version}"];
-    hash = "sha256-2Wt+dFxVY2xn6sxZlDO0Fe2j1a9Ne8EIVGOovw+bBu4=";
+    hash = "sha256-eS81pqSjU6mgBL6tXadSxkGdafsVFThByOQcOf8FkF0=";
     maxDate = "2023-01-01";
     pipFlags = [
       "--no-binary"
