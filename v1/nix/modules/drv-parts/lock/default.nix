@@ -64,6 +64,35 @@
         json.dump(lock_data, out_file, indent=2)
   '';
 
+  updateFODHash = fod: let
+    unhashedFOD = fod.overrideAttrs (old: {
+      outputHash = l.fakeSha256;
+    });
+  in
+    config.deps.writePython3 "update-FOD-hash-${config.public.name}" {} ''
+      import os
+      import json
+      import subprocess
+
+      out_path = os.getenv("out")
+      drv_path = "${l.unsafeDiscardStringContext unhashedFOD.drvPath}"  # noqa: E501
+      nix_build = ["${config.deps.nix}/bin/nix", "build", "-L", drv_path]  # noqa: E501
+      with subprocess.Popen(nix_build, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True) as process:  # noqa: E501
+          for line in process.stdout:
+              line = line.strip()
+              if line == f"error: hash mismatch in fixed-output derivation '{drv_path}':":  # noqa: E501
+                  specified = next(process.stdout).strip().split(" ", 1)
+                  got = next(process.stdout).strip().split(" ", 1)
+                  assert specified[0].strip() == "specified:"
+                  assert got[0].strip() == "got:"
+                  hash = got[1].strip()
+                  print(f"Found hash: {hash}")
+                  break
+              print(line)
+      with open(out_path, 'w') as f:
+          json.dump(hash, f, indent=2)
+    '';
+
   missingError = ''
     The lock file ${cfg.lockFileRel} for drv-parts module '${packageName}' is missing, please update it.
     To create the lock file, execute:\n  ${config.lock.refresh}
@@ -82,6 +111,8 @@ in {
     lock.refresh = refresh;
 
     lock.content = loadedContent;
+
+    lock.lib = {inherit updateFODHash;};
 
     deps = {nixpkgs, ...}:
       l.mapAttrs (_: l.mkDefault) {

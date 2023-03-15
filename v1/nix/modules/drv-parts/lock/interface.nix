@@ -45,5 +45,13 @@ in {
       description = "Script to refresh the cache file of this package";
       readOnly = true;
     };
+
+    lib.updateFODHash = l.mkOption {
+      type = t.functionTo t.path;
+      description = ''
+        Helper function to write the hash of a given FOD to $out.
+      '';
+      readOnly = true;
+    };
   };
 }
