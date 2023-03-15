@@ -23,29 +23,45 @@
   data = l.fromJSON (l.readFile file);
   fileExist = l.pathExists file;
 
-  refreshOne = path': script: let
-    path = path';
-  in
-    config.deps.writeScript "refresh-${packageName}" ''
-      export out=$TMPDIR/${l.concatStringsSep "." path}
-      ${script}
-      ${config.deps.jq}/bin/jq -n --argjson path '${l.toJSON path}' --argfile data "$out" '{} | setpath($path; $data)' > "$out.tmp"
-      mv "$out.tmp" "$out"
-    '';
+  refresh = config.deps.writePython3Bin "refresh-${packageName}" {} ''
+    import tempfile
+    import subprocess
+    import json
+    from pathlib import Path
 
-  fieldsAsScripts =
-    l.mapAttrsRecursiveCond
-    (val: ! l.isDerivation val)
-    refreshOne
-    config.lock.fields;
+    refresh_scripts = json.loads('${l.toJSON config.lock.fields}')  # noqa: E501
+    repo_path = Path(subprocess.run(
+        ['git', 'rev-parse', '--show-toplevel'],
+        check=True, text=True, capture_output=True)
+        .stdout.strip())
+    lock_path_rel = Path('${cfg.lockFileRel}')
+    lock_path = repo_path / lock_path_rel.relative_to(lock_path_rel.anchor)
 
-  allScripts = l.collect l.isDerivation fieldsAsScripts;
 
-  refresh = config.deps.writeScriptBin "refresh-${packageName}" ''
-    export TMPDIR=$(mktemp -d)
-    export out=$(git rev-parse --show-toplevel)/${cfg.lockFileRel}
-    ${l.concatStringsSep "\n" allScripts}
-    jq -s 'reduce .[] as $x ({}; . * $x)' $TMPDIR/* > $out
+    def run_refresh_script(script):
+        with tempfile.NamedTemporaryFile() as out_file:
+            subprocess.run(
+                [script],
+                check=True, shell=True, env={"out": out_file.name})
+            return json.load(out_file)
+
+
+    def run_refresh_scripts(refresh_scripts):
+        """
+          recursively iterate over a nested dict and replace all values,
+          executable scripts, with the content of their $out files.
+        """
+        for name, value in refresh_scripts.items():
+            if isinstance(value, dict):
+                refresh_scripts[name] = run_refresh_scripts(value)
+            else:
+                refresh_scripts[name] = run_refresh_script(value)
+        return refresh_scripts
+
+
+    lock_data = run_refresh_scripts(refresh_scripts)
+    with open(lock_path, 'w') as out_file:
+        json.dump(lock_data, out_file, indent=2)
   '';
 
   missingError = ''
@@ -70,7 +86,7 @@ in {
     deps = {nixpkgs, ...}:
       l.mapAttrs (_: l.mkDefault) {
         inherit (nixpkgs) nix;
-        inherit (nixpkgs) writeScriptBin;
+        inherit (nixpkgs.writers) writePython3Bin;
       };
   };
 }
