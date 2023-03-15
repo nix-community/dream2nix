@@ -15,12 +15,6 @@ in {
     safeFOD = config.mach-nix.pythonSources.overrideAttrs (old: {
       outputHash = l.fakeSha256;
     });
-
-    deps = safeFOD.overrideAttrs (old: {
-      outputHash = null;
-      phases = ["foo"];
-      foo = "touch $out";
-    });
   in
     config.deps.writePython3 "update-FOD-hash-${config.public.name}" {} ''
       import os
@@ -29,12 +23,8 @@ in {
 
       out_path = os.getenv("out")
       drv_path = "${l.unsafeDiscardStringContext safeFOD.drvPath}"  # noqa: E501
-      nix_build = ["${config.deps.nix}/bin/nix", "build", "-L"]  # noqa: E501
-      nix_build_deps = nix_build + ["${l.unsafeDiscardStringContext deps.drvPath}"]  # noqa: E501
-      nix_build_failing = nix_build + [drv_path]  # noqa: E501
-
-      subprocess.run(nix_build_deps, check=True)
-      with subprocess.Popen(nix_build_failing, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True) as process:  # noqa: E501
+      nix_build = ["${config.deps.nix}/bin/nix", "build", "-L", drv_path]  # noqa: E501
+      with subprocess.Popen(nix_build, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True) as process:  # noqa: E501
           for line in process.stdout:
               line = line.strip()
               if line == f"error: hash mismatch in fixed-output derivation '{drv_path}':":  # noqa: E501
@@ -43,7 +33,7 @@ in {
                   assert specified[0].strip() == "specified:"
                   assert got[0].strip() == "got:"
                   hash = got[1].strip()
-                  print(f"Found new hash: {hash}")
+                  print(f"Found hash: {hash}")
                   break
               print(line)
       with open(out_path, 'w') as f:
