@@ -46,4 +46,5 @@ In the `flake.nix` file you can see it's expecting a `./projects.toml`.
 The easiest way to create and populate this `./projects.toml` is with the helper function 
 ```command
 nix run github:nix-community/dream2nix#detect-projects . > projects.toml
+git add projects.toml
 ```

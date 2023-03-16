@@ -80,10 +80,10 @@
 
     To generate a projects.toml file automatically:
       1. execute:
-        nix run .#detect-projects ${source} > projects.toml
+        nix run .#detect-projects ${source} > projects.toml && git add projects.toml
 
         or alternatively:
-        nix run github:nix-community/dream2nix#detect-projects ${source} > projects.toml
+        nix run github:nix-community/dream2nix#detect-projects ${source} > projects.toml && git add projects.toml
 
       2. review the ./projects.toml and edit it if necessary.
       3. pass `projects = ./projects.toml` to makeFlakeOutputs.
