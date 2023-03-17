@@ -1,0 +1,13 @@
+{
+    "name": "raboof/php_transitive_with_target_dir",
+    "type": "project",
+    "require": {
+        "ml/json-ld": "^1.1"
+    },
+    "authors": [
+        {
+            "name": "Arnout Engelen",
+            "email": "arnout@bzzt.net"
+        }
+    ]
+}
