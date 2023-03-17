@@ -34,3 +34,5 @@ Below are some examples of the sources written in the dream-lock file
 
 The `type` field tells dream2nix what [fetchers](../intro/fetchers.md) to invoke to get this
 source, the rest of the attributes are simply passed to the fetcher.
+
+You can `nix run` the `.resolve` attribute of a dream2nix package to save the generic lockfile for inspection.
