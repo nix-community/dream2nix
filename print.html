@@ -1297,6 +1297,7 @@ dependencies: so it can fetch them later during building.</p>
 </code></pre>
 <p>The <code>type</code> field tells dream2nix what <a href="api/../intro/fetchers.html">fetchers</a> to invoke to get this
 source, the rest of the attributes are simply passed to the fetcher.</p>
+<p>You can <code>nix run</code> the <code>.resolve</code> attribute of a dream2nix package to save the generic lockfile for inspection.</p>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="indexers"><a class="header" href="#indexers">Indexers</a></h1>
 <p>Indexers are programs that can query a package repository (think of npm, or crates.io) for package information.
 This information mainly consists of the package name, the package version, and anything extra that might be useful / needed to fetch / translate it.
