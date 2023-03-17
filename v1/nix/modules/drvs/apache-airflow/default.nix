@@ -6,13 +6,12 @@
 }: let
   l = lib // builtins;
   python = config.deps.python;
-  extractPythonAttrs = config.attrs-from-nixpkgs.lib.extractPythonAttrs;
-
+  extractPythonAttrs = config.nixpkgs-overrides.lib.extractPythonAttrs;
   nixpkgsAttrs = extractPythonAttrs python.pkgs.apache-airflow;
 in {
   imports = [
     ../../drv-parts/mach-nix-xs
-    ../../drv-parts/attrs-from-nixpkgs
+    ../../drv-parts/nixpkgs-overrides
   ];
 
   deps = {
