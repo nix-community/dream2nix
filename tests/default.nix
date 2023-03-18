@@ -43,7 +43,7 @@
         b.toString
         (config.d2n.utils.writePureShellScript
           [
-            inputs.alejandra.defaultPackage.${system}
+            pkgs.alejandra
             pkgs.coreutils
             pkgs.gitMinimal
             pkgs.nix
