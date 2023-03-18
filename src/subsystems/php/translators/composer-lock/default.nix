@@ -306,8 +306,8 @@ in {
           then {
             inherit (rawObj.dist) type;
             path = rawObj.dist.url;
-            rootName = finalObj.name;
-            rootVersion = finalObj.version;
+            rootName = null;
+            rootVersion = null;
           }
           else
             l.abort ''
