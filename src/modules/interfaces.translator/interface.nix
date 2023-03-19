@@ -1,5 +1,4 @@
-{framework, ...}: let
-  lib = framework.lib;
+{lib, ...}: let
   t = lib.types;
 in {
   options = {

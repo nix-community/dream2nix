@@ -1,8 +1,6 @@
 {
   lib,
-  dlib,
   pkgs,
-  externals,
   ...
 } @ topArgs: {
   type = "pure";
@@ -27,6 +25,7 @@
     buildWithToolchain =
       utils.mkBuildWithToolchain
       (toolchain: (pkgs.makeRustPlatform toolchain).buildRustPackage);
+
     defaultToolchain = {
       inherit (pkgs) cargo rustc;
     };
