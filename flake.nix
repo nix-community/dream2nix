@@ -225,7 +225,6 @@
 
             commands =
               [
-                {package = pkgs.nix;}
                 {
                   package = pkgs.mdbook;
                   category = "documentation";
