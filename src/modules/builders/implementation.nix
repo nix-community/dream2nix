@@ -14,7 +14,7 @@
   collectedModules = funcs.collect "builders";
 in {
   config = {
-    # The user can add more translators by extending this attribute
+    # The user can add more builders by extending this attribute
     builders = funcs.import_ collectedModules;
 
     buildersBySubsystem =
