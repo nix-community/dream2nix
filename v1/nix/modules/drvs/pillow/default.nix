@@ -22,10 +22,8 @@ in {
       ;
   };
 
-  public = {
-    name = "pillow";
-    version = "9.3.0";
-  };
+  name = "pillow";
+  version = "9.3.0";
 
   mkDerivation = {
     nativeBuildInputs = [
@@ -37,7 +35,7 @@ in {
     ];
 
     preUnpack = ''
-      export src=$(ls ${config.mach-nix.pythonSources}/names/${config.public.name}/*);
+      export src=$(ls ${config.mach-nix.pythonSources}/names/${config.name}/*);
     '';
   };
 
@@ -51,8 +49,8 @@ in {
 
   mach-nix.pythonSources = config.deps.fetchPythonRequirements {
     inherit python;
-    name = config.public.name;
-    requirementsList = ["${config.public.name}==${config.public.version}"];
+    name = config.name;
+    requirementsList = ["${config.name}==${config.version}"];
     hash = "sha256-eS81pqSjU6mgBL6tXadSxkGdafsVFThByOQcOf8FkF0=";
     maxDate = "2023-01-01";
     pipFlags = [

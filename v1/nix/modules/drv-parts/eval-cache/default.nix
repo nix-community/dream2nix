@@ -6,7 +6,7 @@
   l = lib // builtins;
   cfg = config.eval-cache;
 
-  packageName = config.public.name;
+  packageName = config.name;
 
   filterTrue = l.filterAttrsRecursive (key: val: l.isAttrs val || val == true);
 
@@ -106,7 +106,7 @@
         ;
       refresh =
         config.deps.writeScript
-        "refresh-${config.public.name}"
+        "refresh-${config.name}"
         refreshCommand;
     };
 

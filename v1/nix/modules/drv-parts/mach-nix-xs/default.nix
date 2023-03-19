@@ -7,7 +7,7 @@
   l = lib // builtins;
   python = config.deps.python;
   cfg = config.mach-nix;
-  packageName = config.public.name;
+  packageName = config.name;
 
   # For a given name, return the path containing the downloaded file
   getDistDir = name: "${cfg.pythonSources.names}/${name}";
@@ -109,9 +109,8 @@
               ;
           };
 
-        public = {
-          inherit name version;
-        };
+        inherit name version;
+
         buildPythonPackage = {
           format = "setuptools";
           pipInstallFlags =

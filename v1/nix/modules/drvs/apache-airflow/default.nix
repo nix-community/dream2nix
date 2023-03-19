@@ -26,16 +26,14 @@ in {
       ;
   };
 
-  public = {
-    name = "apache-airflow";
-    version = "2.5.0";
-  };
+  name = "apache-airflow";
+  version = "2.5.0";
 
   mkDerivation = {
     src = config.deps.fetchFromGitHub {
       owner = "apache";
       repo = "airflow";
-      rev = "refs/tags/${config.public.version}";
+      rev = "refs/tags/${config.version}";
       # Download using the git protocol rather than using tarballs, because the
       # GitHub archive tarballs don't appear to include tests
       forceFetchGit = true;
@@ -58,7 +56,7 @@ in {
 
   mach-nix.pythonSources = config.deps.fetchPythonRequirements {
     inherit (config.deps) python;
-    name = config.public.name;
+    name = config.name;
     requirementsList = [
       "apache-airflow"
     ];
