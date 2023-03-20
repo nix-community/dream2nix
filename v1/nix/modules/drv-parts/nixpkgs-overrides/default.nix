@@ -19,7 +19,10 @@
   in
     l.filterAttrs (name: _: ! excludedNixpkgsAttrs ? ${name}) pythonAttrs;
 
-  extracted = extractPythonAttrs config.deps.python.pkgs.${config.name};
+  extracted =
+    if config.deps.python.pkgs ? config.name
+    then extractPythonAttrs config.deps.python.pkgs.${config.name}
+    else {};
 in {
   imports = [
     ./interface.nix
