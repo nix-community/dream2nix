@@ -47,7 +47,7 @@ in {
     ];
   };
 
-  mach-nix.pythonSources = config.deps.fetchPythonRequirements {
+  mach-nix.pythonSources = config.deps.fetchPip {
     inherit python;
     name = config.name;
     requirementsList = ["${config.name}==${config.version}"];

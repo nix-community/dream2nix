@@ -32,7 +32,7 @@ in {
     };
   };
 
-  mach-nix.pythonSources = config.deps.fetchPythonRequirements {
+  mach-nix.pythonSources = config.deps.fetchPip {
     inherit (config.deps) python;
     name = config.name;
     requirementsFiles = ["${config.mkDerivation.src}/requirements.txt"];

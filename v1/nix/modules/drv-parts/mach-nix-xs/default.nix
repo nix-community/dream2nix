@@ -173,7 +173,7 @@ in {
           stdenv
           ;
         manylinuxPackages = nixpkgs.pythonManylinuxPackages.manylinux1;
-        fetchPythonRequirements = nixpkgs.callPackage ../../../pkgs/fetchPythonRequirements {};
+        fetchPip = nixpkgs.callPackage ../../../pkgs/fetchPip {};
 
         runCommand = nixpkgs.runCommand;
         pip = nixpkgs.python3Packages.pip;

@@ -1,4 +1,4 @@
-# fetchPythonRequirements downloads python packages specified by executing
+# fetchPip downloads python packages specified by executing
 #   `pip download` on a source tree, or a list of requirements.
 # This fetcher requires a maximum date 'maxDate' being specified.
 # The result will be the same as if `pip download` would have been executed
@@ -39,7 +39,7 @@
   # maximum release date for packages
   maxDate ?
     throw ''
-      'maxDate' must be specified for fetchPythonRequirements.
+      'maxDate' must be specified for fetchPip.
       Choose any date from the past.
       Example value: "2023-01-01"
     '',
@@ -56,7 +56,7 @@
     if ! onlyBinary && stdenv.system != stdenv.buildPlatform.system
     then
       throw ''
-        fetchPythonRequirements cannot fetch sdist packages for ${stdenv.system} on a ${stdenv.buildPlatform.system}.
+        fetchPip cannot fetch sdist packages for ${stdenv.system} on a ${stdenv.buildPlatform.system}.
         Either build on a ${stdenv.system} or set `onlyBinary = true`.
       ''
     else result;
@@ -168,7 +168,7 @@
 
     # python scripts
     filterPypiResponsesScript = ./filter-pypi-responses.py;
-    buildScript = ./fetch-python-requirements.py;
+    buildScript = ./fetchPip.py;
     writeDependencyTreeScript = ./write-dependency-tree.py;
 
     # the python interpreter used to run the build script
