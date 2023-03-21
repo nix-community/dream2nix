@@ -24,14 +24,14 @@ PIP_VERSION = os.getenv("pipVersion")
 PIP_FLAGS = os.getenv("pipFlags")
 ONLY_BINARY_FLAGS = os.getenv("onlyBinaryFlags")
 REQUIREMENTS_LIST = os.getenv("requirementsList")
-REQUIREMENTS_FLAGS = os.getenv("requirementsFlags")
+REQUIREMENTS_FILES = os.getenv("requirementsFiles")
 
 
 def get_max_date():
     try:
-        return int(os.getenv("MAX_DATE"))
+        return int(os.getenv("maxDate"))
     except ValueError:
-        return dateutil.parser.parse(os.getenv("MAX_DATE"))
+        return dateutil.parser.parse(os.getenv("maxDate"))
 
 
 def get_free_port():
@@ -53,7 +53,7 @@ def start_mitmproxy(port):
             "--script",
             FILTER_PYPI_RESPONSE_SCRIPTS,
         ],
-        env={"MAX_DATE": os.getenv("MAX_DATE"), "HOME": HOME},
+        env={"maxDate": os.getenv("maxDate"), "HOME": HOME},
     )
     return proc
 
@@ -121,8 +121,10 @@ if __name__ == "__main__":
         PIP_FLAGS,
         ONLY_BINARY_FLAGS,
         REQUIREMENTS_LIST,
-        REQUIREMENTS_FLAGS,
     ]
+    if REQUIREMENTS_FILES:
+        optional_flags += ["-r " + " -r ".join(REQUIREMENTS_FILES.split())]
+
     optional_flags = " ".join(filter(None, optional_flags)).split(" ")
     pip(
         venv_path,

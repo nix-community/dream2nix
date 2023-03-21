@@ -2,7 +2,7 @@
 This script is part of fetchPythonRequirements
 It is meant to be used with mitmproxy via `--script`
 It will filter api repsonses from the pypi.org api (used by pip),
-to only contain files with release date < MAX_DATE
+to only contain files with release date < maxDate
 
 For retrieving the release dates for files, it uses the pypi.org json api
 It has to do one extra api request for each queried package name
@@ -52,9 +52,9 @@ def get_files_to_hide(pname, max_ts):
 
 # accept unix timestamp or human readable format
 try:
-    max_ts = int(os.getenv("MAX_DATE"))
+    max_ts = int(os.getenv("maxDate"))
 except ValueError:
-    max_date = dateutil.parser.parse(os.getenv("MAX_DATE"))
+    max_date = dateutil.parser.parse(os.getenv("maxDate"))
     max_ts = max_date.timestamp()
 
 
