@@ -28,6 +28,7 @@ so that leafs of the dependency tree come first, the package to install last.
 
 import sys
 import tarfile
+import zipfile
 import json
 from pathlib import Path
 
@@ -40,8 +41,16 @@ from packaging.utils import (
 )
 
 
-def _is_source_dist(pkg_file):
+def _is_tar(pkg_file):
     return pkg_file.suffixes[-2:] == [".tar", ".gz"]
+
+
+def _is_zip(pkg_file):
+    return pkg_file.suffixes[-1] == ".zip"
+
+
+def _is_source_dist(pkg_file):
+    return _is_tar(pkg_file) or _is_zip(pkg_file)
 
 
 def _get_name_version(pkg_file):
@@ -59,7 +68,7 @@ def get_pkg_info(pkg_file):
         elif _is_source_dist(pkg_file):
             return SDist(str(pkg_file))
         else:
-            raise NotImplemented(f"Unknown file format: {pkg_file}")
+            raise NotImplementedError(f"Unknown file format: {pkg_file}")
     except ValueError:
         pass
 
@@ -83,12 +92,21 @@ def parse_requirements_txt(pkg_file):
 
 def read_requirements_txt(source_dist_file):
     name, version = parse_sdist_filename(source_dist_file.name)
-    with tarfile.open(source_dist_file) as tar:
-        try:
-            with tar.extractfile(f"{name}-{version}/requirements.txt") as f:
-                return f.read().decode("utf-8")
-        except KeyError as e:
-            return
+
+    if _is_tar(source_dist_file):
+        with tarfile.open(source_dist_file) as tar:
+            try:
+                with tar.extractfile(f"{name}-{version}/requirements.txt") as f:
+                    return f.read().decode("utf-8")
+            except KeyError as e:
+                return
+    elif _is_zip(source_dist_file):
+        with zipfile.ZipFile(source_dist_file) as zip:
+            try:
+                with zip.open(f"{name}-{version}/requirements.txt") as f:
+                    return f.read().decode("utf-8")
+            except KeyError as e:
+                return
 
 
 def usage():
