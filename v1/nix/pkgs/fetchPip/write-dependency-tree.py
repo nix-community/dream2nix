@@ -121,14 +121,26 @@ if __name__ == "__main__":
         # For source distributions which do *not* include modern metadata,
         # we fallback to reading egg-info.
         if not requirements and _is_source_dist(pkg_file):
-            egg_requires = read_source_dist_file(
+            if egg_requires := read_source_dist_file(
                 pkg_file,
                 f"{name}-{version}/{name.replace('-', '_')}.egg-info/requires.txt",
-            )
-            if egg_requires:
-                requirements += [
+            ):
+                requirements = [
                     Requirement(req)
                     for req in Distribution._deps_from_requires_text(egg_requires)
+                ]
+
+        # For source distributions which  include neither, we fallback to reading requirements.txt
+        # This might be re-considered in the future but is currently needed to make things like
+        # old ansible releases work.
+        if not requirements and _is_source_dist(pkg_file):
+            if requirements_txt := read_source_dist_file(
+                pkg_file, f"{name}-{version}/requirements.txt"
+            ):
+                requirements = [
+                    Requirement(req)
+                    for req in requirements_txt.split("\n")
+                    if req and not req.startswith("#")
                 ]
 
         requirements = filter(_is_required_dependency, requirements)
