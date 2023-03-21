@@ -81,7 +81,7 @@ in {
         list of requirements.txt files
       '';
     };
-    writeDependencyTree = l.mkOption {
+    writeMetaData = l.mkOption {
       type = t.bool;
       default = true;
       description = ''

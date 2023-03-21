@@ -111,10 +111,11 @@ if __name__ == "__main__":
 
     dependencies = {}
     for pkg_file in pkgs_path.iterdir():
-        info = get_pkg_info(pkg_file)
+        pkg_info = get_pkg_info(pkg_file)
         name, version = _get_name_version(pkg_file)
-        if info:
-            requirements = [Requirement(req) for req in info.requires_dist]
+
+        if pkg_info:
+            requirements = [Requirement(req) for req in pkg_info.requires_dist]
         else:
             requirements = []
 
@@ -144,8 +145,10 @@ if __name__ == "__main__":
                 ]
 
         requirements = filter(_is_required_dependency, requirements)
-        dependencies[name] = sorted(
-            [canonicalize_name(req.name) for req in requirements]
+        dependencies[name] = dict(
+            version=str(version),
+            file=str(pkg_file.relative_to(pkgs_path)),
+            dependencies=sorted([canonicalize_name(req.name) for req in requirements]),
         )
 
     dependencies = dict(sorted(dependencies.items()))
