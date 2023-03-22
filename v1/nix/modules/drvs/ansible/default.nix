@@ -36,8 +36,8 @@ in {
 
   mach-nix.pythonSources = config.deps.fetchPip {
     inherit python;
-    name = config.public.name;
-    requirementsList = ["${config.public.name}==${config.public.version}"];
+    name = config.name;
+    requirementsList = ["${config.name}==${config.version}"];
     hash = config.lock.content.mach-nix.pythonSources;
     maxDate = "2023-01-01";
   };

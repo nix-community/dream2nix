@@ -6,7 +6,7 @@
   l = lib // builtins;
   cfg = config.lock;
 
-  packageName = config.public.name;
+  packageName = config.name;
 
   intersectAttrsRecursive = a: b:
     l.mapAttrs
@@ -69,7 +69,7 @@
       outputHash = l.fakeSha256;
     });
   in
-    config.deps.writePython3 "update-FOD-hash-${config.public.name}" {} ''
+    config.deps.writePython3 "update-FOD-hash-${config.name}" {} ''
       import os
       import json
       import subprocess
