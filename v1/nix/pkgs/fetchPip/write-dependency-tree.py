@@ -31,6 +31,7 @@ import tarfile
 import zipfile
 import json
 from pathlib import Path
+from importlib.metadata import Distribution
 
 from pkginfo import SDist, Wheel
 from packaging.requirements import Requirement
@@ -55,10 +56,10 @@ def _is_source_dist(pkg_file):
 
 def _get_name_version(pkg_file):
     if _is_source_dist(pkg_file):
-        name, *_ = parse_sdist_filename(pkg_file.name)
+        name, version, *_ = parse_sdist_filename(pkg_file.name)
     else:
-        name, *_ = parse_wheel_filename(pkg_file.name)
-    return canonicalize_name(name)
+        name, version, *_ = parse_wheel_filename(pkg_file.name)
+    return canonicalize_name(name), version
 
 
 def get_pkg_info(pkg_file):
@@ -79,31 +80,18 @@ def _is_required_dependency(requirement):
     return not requirement.marker or requirement.marker.evaluate({"extra": ""})
 
 
-def parse_requirements_txt(pkg_file):
-    requirements = []
-    if requirements_txt := read_requirements_txt(pkg_file):
-        requirements = [
-            Requirement(req)
-            for req in requirements_txt.split("\n")
-            if req and not req.startswith("#")
-        ]
-    return requirements
-
-
-def read_requirements_txt(source_dist_file):
-    name, version = parse_sdist_filename(source_dist_file.name)
-
+def read_source_dist_file(source_dist_file, filename):
     if _is_tar(source_dist_file):
         with tarfile.open(source_dist_file) as tar:
             try:
-                with tar.extractfile(f"{name}-{version}/requirements.txt") as f:
+                with tar.extractfile(filename) as f:
                     return f.read().decode("utf-8")
             except KeyError as e:
                 return
     elif _is_zip(source_dist_file):
         with zipfile.ZipFile(source_dist_file) as zip:
             try:
-                with zip.open(f"{name}-{version}/requirements.txt") as f:
+                with zip.open(filename) as f:
                     return f.read().decode("utf-8")
             except KeyError as e:
                 return
@@ -124,16 +112,36 @@ if __name__ == "__main__":
     dependencies = {}
     for pkg_file in pkgs_path.iterdir():
         info = get_pkg_info(pkg_file)
-        name = _get_name_version(pkg_file)
+        name, version = _get_name_version(pkg_file)
         if info:
             requirements = [Requirement(req) for req in info.requires_dist]
         else:
             requirements = []
 
-        # For source distributions which do *not* specify requires_dist,
-        # we fallback to parsing requirements.txt
+        # For source distributions which do *not* include modern metadata,
+        # we fallback to reading egg-info.
         if not requirements and _is_source_dist(pkg_file):
-            requirements = parse_requirements_txt(pkg_file)
+            if egg_requires := read_source_dist_file(
+                pkg_file,
+                f"{name}-{version}/{name.replace('-', '_')}.egg-info/requires.txt",
+            ):
+                requirements = [
+                    Requirement(req)
+                    for req in Distribution._deps_from_requires_text(egg_requires)
+                ]
+
+        # For source distributions which  include neither, we fallback to reading requirements.txt
+        # This might be re-considered in the future but is currently needed to make things like
+        # old ansible releases work.
+        if not requirements and _is_source_dist(pkg_file):
+            if requirements_txt := read_source_dist_file(
+                pkg_file, f"{name}-{version}/requirements.txt"
+            ):
+                requirements = [
+                    Requirement(req)
+                    for req in requirements_txt.split("\n")
+                    if req and not req.startswith("#")
+                ]
 
         requirements = filter(_is_required_dependency, requirements)
         dependencies[name] = sorted(
