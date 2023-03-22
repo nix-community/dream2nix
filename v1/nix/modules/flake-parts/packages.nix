@@ -7,7 +7,9 @@
 }: let
   system = "x86_64-linux";
   # A module imported into every package setting up the eval cache
-  evalCacheSetup = {config, ...}: {
+  setup = {config, ...}: {
+    lock.lockFileRel = "/v1/nix/modules/drvs/${config.name}/lock-${system}.json";
+    lock.repoRoot = self;
     eval-cache.cacheFileRel = "/v1/nix/modules/drvs/${config.name}/cache-${system}.json";
     eval-cache.repoRoot = self;
     eval-cache.enable = true;
@@ -21,7 +23,8 @@
         inputs.drv-parts.modules.drv-parts.docs
         module
         ../drv-parts/eval-cache
-        evalCacheSetup
+        ../drv-parts/lock
+        setup
       ];
       specialArgs.dependencySets = {
         nixpkgs = inputs.nixpkgsV1.legacyPackages.${system};
@@ -29,7 +32,7 @@
       specialArgs.drv-parts = inputs.drv-parts;
     };
   in
-    evaled // evaled.config.public;
+    evaled.config.public;
 in {
   # map all modules in ../drvs to a package output in the flake.
   flake.packages.${system} = lib.mapAttrs (_: drvModule: makeDrv drvModule) self.modules.drvs;

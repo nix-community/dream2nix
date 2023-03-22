@@ -10,8 +10,13 @@ in {
     ../../drv-parts/mach-nix-xs
   ];
 
+  # use lock file to manage hash for fetchPip
+  lock.fields.fetchPipHash =
+    config.lock.lib.computeFODHash config.mach-nix.pythonSources;
+
   deps = {nixpkgs, ...}: {
     python = nixpkgs.python39;
+    inherit (nixpkgs.writers) writePython3;
   };
 
   name = "ansible";
@@ -35,7 +40,7 @@ in {
     inherit python;
     name = config.name;
     requirementsList = ["${config.name}==${config.version}"];
-    hash = "sha256-dCo1llHcCiFrBOEd6mWhwqwVglsN2grSbcdBj8OzKDY=";
+    hash = config.lock.content.fetchPipHash;
     maxDate = "2023-01-01";
   };
 }
