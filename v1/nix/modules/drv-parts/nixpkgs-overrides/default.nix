@@ -20,7 +20,7 @@
     l.filterAttrs (name: _: ! excludedNixpkgsAttrs ? ${name}) pythonAttrs;
 
   extracted =
-    if config.deps.python.pkgs ? config.name
+    if config.deps.python.pkgs ? ${config.name}
     then extractPythonAttrs config.deps.python.pkgs.${config.name}
     else {};
 in {
