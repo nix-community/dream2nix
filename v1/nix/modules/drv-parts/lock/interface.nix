@@ -46,7 +46,7 @@ in {
       readOnly = true;
     };
 
-    lib.updateFODHash = l.mkOption {
+    lib.computeFODHash = l.mkOption {
       type = t.functionTo t.path;
       description = ''
         Helper function to write the hash of a given FOD to $out.

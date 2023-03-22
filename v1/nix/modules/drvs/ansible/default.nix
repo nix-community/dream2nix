@@ -8,10 +8,12 @@
 in {
   imports = [
     ../../drv-parts/mach-nix-xs
-    ../../drv-parts/lock
   ];
 
-  lock.fields.mach-nix.pythonSources = config.lock.lib.updateFODHash config.mach-nix.pythonSources;
+  # use lock file to manage hash for fetchPip
+  lock.fields.fetchPipHash =
+    config.lock.lib.computeFODHash config.mach-nix.pythonSources;
+
   deps = {nixpkgs, ...}: {
     python = nixpkgs.python39;
     inherit (nixpkgs.writers) writePython3;
@@ -38,7 +40,7 @@ in {
     inherit python;
     name = config.name;
     requirementsList = ["${config.name}==${config.version}"];
-    hash = config.lock.content.mach-nix.pythonSources;
+    hash = config.lock.content.fetchPipHash;
     maxDate = "2023-01-01";
   };
 }

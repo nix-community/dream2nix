@@ -6,30 +6,18 @@
   l = lib // builtins;
   cfg = config.lock;
 
-  packageName = config.name;
-
-  intersectAttrsRecursive = a: b:
-    l.mapAttrs
-    (
-      key: valB:
-        if l.isAttrs valB && l.isAttrs a.${key}
-        then intersectAttrsRecursive a.${key} valB
-        else valB
-    )
-    (l.intersectAttrs a b);
-
   # LOAD
   file = cfg.repoRoot + cfg.lockFileRel;
   data = l.fromJSON (l.readFile file);
   fileExist = l.pathExists file;
 
-  refresh = config.deps.writePython3Bin "refresh-${packageName}" {} ''
+  refresh = config.deps.writePython3Bin "refresh" {} ''
     import tempfile
     import subprocess
     import json
     from pathlib import Path
 
-    refresh_scripts = json.loads('${l.toJSON config.lock.fields}')  # noqa: E501
+    refresh_scripts = json.loads('${l.toJSON cfg.fields}')  # noqa: E501
     repo_path = Path(subprocess.run(
         ['git', 'rev-parse', '--show-toplevel'],
         check=True, text=True, capture_output=True)
@@ -64,44 +52,72 @@
         json.dump(lock_data, out_file, indent=2)
   '';
 
-  updateFODHash = fod: let
+  computeFODHash = fod: let
     unhashedFOD = fod.overrideAttrs (old: {
       outputHash = l.fakeSha256;
+      name = "${old.name}-UNHASHED_FOD";
     });
+    drvPath = l.unsafeDiscardStringContext unhashedFOD.drvPath;
   in
     config.deps.writePython3 "update-FOD-hash-${config.name}" {} ''
-      import os
       import json
+      import os
+      import re
       import subprocess
+      import sys
 
       out_path = os.getenv("out")
-      drv_path = "${l.unsafeDiscardStringContext unhashedFOD.drvPath}"  # noqa: E501
+      drv_path = "${drvPath}"  # noqa: E501
       nix_build = ["${config.deps.nix}/bin/nix", "build", "-L", drv_path]  # noqa: E501
       with subprocess.Popen(nix_build, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True) as process:  # noqa: E501
           for line in process.stdout:
               line = line.strip()
-              if line == f"error: hash mismatch in fixed-output derivation '{drv_path}':":  # noqa: E501
+              print(line)
+              search = r"error: hash mismatch in fixed-output derivation '.*UNHASHED_FOD.*':"  # noqa: E501
+              if re.match(search, line):
+                  print("line matched")
                   specified = next(process.stdout).strip().split(" ", 1)
                   got = next(process.stdout).strip().split(" ", 1)
                   assert specified[0].strip() == "specified:"
                   assert got[0].strip() == "got:"
-                  hash = got[1].strip()
-                  print(f"Found hash: {hash}")
-                  break
-              print(line)
-      with open(out_path, 'w') as f:
-          json.dump(hash, f, indent=2)
+                  checksum = got[1].strip()
+                  print(f"Found hash: {checksum}")
+                  with open(out_path, 'w') as f:
+                      json.dump(checksum, f, indent=2)
+                  exit(0)
+      print("Could not determine hash", file=sys.stdout)
+      exit(1)
     '';
 
-  missingError = ''
-    The lock file ${cfg.lockFileRel} for drv-parts module '${packageName}' is missing, please update it.
-    To create the lock file, execute:\n  ${config.lock.refresh}
+  errorMissingFile = ''
+    The lock file ${cfg.lockFileRel} for drv-parts module '${config.name}' is missing, please update it.
+    To create the lock file, execute:
+      bash -c $(nix-build ${config.lock.refresh.drvPath})/bin/refresh
   '';
 
-  loadedContent =
+  errorOutdated = path': let
+    path = l.concatStringsSep "." path';
+  in ''
+    The lock file ${cfg.lockFileRel} for drv-parts module '${config.name}' misses expected attribute `${path}`.
+    To update the lock file, execute:
+      bash -c $(nix-build ${config.lock.refresh.drvPath})/bin/refresh
+  '';
+
+  fileContent =
     if ! fileExist
-    then throw missingError
+    then throw errorMissingFile
     else data;
+
+  loadField = path: val:
+    if l.hasAttrByPath path fileContent
+    then (l.getAttrFromPath path fileContent)
+    else throw (errorOutdated path);
+
+  loadedContent =
+    l.mapAttrsRecursiveCond
+    (val: ! l.isDerivation val)
+    loadField
+    cfg.fields;
 in {
   imports = [
     ./interface.nix
@@ -112,7 +128,7 @@ in {
 
     lock.content = loadedContent;
 
-    lock.lib = {inherit updateFODHash;};
+    lock.lib = {inherit computeFODHash;};
 
     deps = {nixpkgs, ...}:
       l.mapAttrs (_: l.mkDefault) {
