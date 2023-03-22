@@ -11,10 +11,7 @@
 # TODO: Error if maxDate points to the future
 {
   buildPackages,
-  cacert,
-  curl,
   lib,
-  python3,
   stdenv,
 }: {
   # Specify the python version for which the packages should be downloaded.
@@ -92,7 +89,7 @@
 
   # we use mitmproxy to filter the pypi responses
   pythonWithMitmproxy =
-    python3.withPackages
+    python.withPackages
     (ps: [ps.mitmproxy ps.python-dateutil ps.pkginfo ps.packaging]);
 
   pythonMajorAndMinorVer =
@@ -162,9 +159,7 @@
     dontFixup = true;
 
     # build inputs
-    nativeBuildInputs =
-      nativeBuildInputs
-      ++ [pythonWithMitmproxy curl cacert];
+    nativeBuildInputs = nativeBuildInputs ++ [pythonWithMitmproxy];
 
     # python scripts
     filterPypiResponsesScript = ./filter-pypi-responses.py;
