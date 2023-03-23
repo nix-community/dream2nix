@@ -53,6 +53,7 @@
     drvPath = l.unsafeDiscardStringContext fod.drvPath;
   in
     config.deps.writePython3 "update-FOD-hash-${config.name}" {} ''
+      import codecs
       import json
       import os
       import re
@@ -88,6 +89,8 @@
       result = subprocess.run(show_derivation, stdout=subprocess.PIPE)
       drv = json.loads(result.stdout.decode())
       checksum = drv[drv_path]["outputs"]["out"]["hash"]
+      checksum = codecs.encode(codecs.decode(checksum, 'hex'), 'base64').decode()
+      checksum = f"sha256-{checksum}".strip()
       print(f"Found hash: {checksum}")
       with open(out_path, 'w') as f:
           json.dump(checksum, f, indent=2)
