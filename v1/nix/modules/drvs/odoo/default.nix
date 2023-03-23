@@ -32,15 +32,16 @@ in {
     };
   };
 
-  mach-nix.pythonSources = config.deps.fetchPip {
-    inherit (config.deps) python;
-    name = config.name;
-    requirementsFiles = ["${config.mkDerivation.src}/requirements.txt"];
-    hash = "sha256-E9wNvBakm+R5TSsFsnGpSaziYpi2otm0iBiyphUVSFI=";
-    maxDate = "2023-01-01";
-    nativeBuildInputs = with config.deps; [
-      postgresql
-    ];
+  mach-nix.pythonSources = {
+    fetch-pip = {
+      maxDate = "2023-01-01";
+      requirementsFiles = ["${config.mkDerivation.src}/requirements.txt"];
+    };
+    mkDerivation = {
+      nativeBuildInputs = with config.deps; [
+        postgresql
+      ];
+    };
   };
 
   # Replace some python packages entirely with candidates from nixpkgs, because

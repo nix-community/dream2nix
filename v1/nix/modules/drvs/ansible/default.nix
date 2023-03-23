@@ -4,7 +4,6 @@
   ...
 }: let
   l = lib // builtins;
-  python = config.deps.python;
 in {
   imports = [
     ../../drv-parts/mach-nix-xs
@@ -12,7 +11,6 @@ in {
 
   deps = {nixpkgs, ...}: {
     python = nixpkgs.python39;
-    inherit (nixpkgs.writers) writePython3;
   };
 
   name = "ansible";
@@ -32,10 +30,8 @@ in {
     ];
   };
 
-  mach-nix.pythonSources = {
-    fetch-pip = {
-      maxDate = "2023-01-01";
-      requirementsList = ["${config.name}==${config.version}"];
-    };
+  mach-nix.pythonSources.fetch-pip = {
+    maxDate = "2023-01-01";
+    requirementsList = ["${config.name}==${config.version}"];
   };
 }

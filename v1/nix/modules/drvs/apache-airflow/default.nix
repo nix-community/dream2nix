@@ -1,7 +1,6 @@
 {
   config,
   lib,
-  drv-parts,
   ...
 }: let
   l = lib // builtins;
@@ -54,14 +53,11 @@ in {
       ;
   };
 
-  mach-nix.pythonSources = config.deps.fetchPip {
-    inherit (config.deps) python;
-    name = config.name;
+  mach-nix.pythonSources.fetch-pip = {
+    maxDate = "2023-01-01";
     requirementsList = [
       "apache-airflow"
     ];
-    hash = "sha256-o5Gu069nB54/cI1muPfzrMX4m/Nm+pPOu1nUarNqeHM=";
-    maxDate = "2023-01-01";
   };
 
   # Replace some python packages entirely with candidates from nixpkgs, because

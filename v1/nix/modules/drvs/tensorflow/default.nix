@@ -4,7 +4,6 @@
   ...
 }: let
   l = lib // builtins;
-  python = config.deps.python;
 in {
   imports = [
     ../../drv-parts/mach-nix-xs
@@ -34,11 +33,8 @@ in {
     ];
   };
 
-  mach-nix.pythonSources = config.deps.fetchPip {
-    inherit (config.deps) python;
-    name = config.name;
-    requirementsList = ["${config.name}==${config.version}"];
-    hash = "sha256-PDUrECFjoPznqXwqi2e1djx63t+kn/kAyM9JqQrTmd0=";
+  mach-nix.pythonSources.fetch-pip = {
     maxDate = "2023-01-01";
+    requirementsList = ["${config.name}==${config.version}"];
   };
 }
