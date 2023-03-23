@@ -96,7 +96,11 @@
   # we use mitmproxy to filter the pypi responses
   pythonWithMitmproxy =
     python3.withPackages
-    (ps: [ps.mitmproxy ps.python-dateutil ps.packaging]);
+    (ps: [ps.mitmproxy ps.dateutil]);
+
+  pythonWithPackaging =
+    python.withPackages
+    (ps: [ps.packaging ps.certifi ps.dateutil]);
 
   pythonMajorAndMinorVer =
     lib.concatStringsSep "."
@@ -172,7 +176,7 @@
     buildScript = ./fetchPip.py;
 
     # the python interpreter used to run the build script
-    pythonBin = python.interpreter;
+    inherit pythonWithPackaging;
 
     # the python interpreter used to run the proxy script
     inherit pythonWithMitmproxy;
@@ -198,7 +202,7 @@
     # - Execute `pip download` through the filtering proxy.
     # - optionally add a file to the FOD containing metadata of the packages involved
     buildPhase = ''
-      $pythonWithMitmproxy/bin/python $buildScript
+      $pythonWithPackaging/bin/python $buildScript
     '';
   });
 in

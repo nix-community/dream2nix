@@ -19,7 +19,7 @@ from packaging.utils import (
 
 HOME = Path(os.getcwd())
 OUT = Path(os.getenv("out"))
-PYTHON_BIN = os.getenv("pythonBin")
+PYTHON_WITH_PACKAGING = os.getenv("pythonWithPackaging")
 PYTHON_WITH_MITM_PROXY = os.getenv("pythonWithMitmproxy")
 FILTER_PYPI_RESPONSE_SCRIPTS = os.getenv("filterPypiResponsesScript")
 PIP_VERSION = os.getenv("pipVersion")
@@ -52,6 +52,7 @@ def start_mitmproxy(port):
             f"{PYTHON_WITH_MITM_PROXY}/bin/mitmdump",
             "--listen-port",
             str(port),
+            "--anticache",
             "--ignore-hosts",
             ".*files.pythonhosted.org.*",
             "--script",
@@ -95,7 +96,9 @@ def generate_ca_bundle(path):
 
 
 def create_venv(path):
-    subprocess.run([PYTHON_BIN, "-m", "venv", path], check=True)
+    subprocess.run(
+        [f"{PYTHON_WITH_PACKAGING}/bin/python", "-m", "venv", path], check=True
+    )
 
 
 def pip(venv_path, *args):
