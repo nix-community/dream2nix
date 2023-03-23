@@ -14,6 +14,7 @@
       (config.deps)
       buildPackages
       stdenv
+      python3 # only used for proxy script
       ;
   };
 in {
@@ -32,6 +33,7 @@ in {
         (nixpkgs)
         buildPackages
         stdenv
+        python3 # only used for proxy script
         ;
       python = nixpkgs.python3;
     };
@@ -41,6 +43,9 @@ in {
     config.fetch-pip
     // {
       inherit (config) name;
+    }
+    // lib.optionalAttrs (config.mkDerivation.nativeBuildInputs != null) {
+      inherit (config.mkDerivation) nativeBuildInputs;
     }
   );
 }
