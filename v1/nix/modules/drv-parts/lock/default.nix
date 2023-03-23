@@ -9,7 +9,7 @@
   # LOAD
   file = cfg.repoRoot + cfg.lockFileRel;
   data = l.fromJSON (l.readFile file);
-  fileExist = l.pathExists file;
+  fileExists = l.pathExists file;
 
   refresh = config.deps.writePython3Bin "refresh" {} ''
     import tempfile
@@ -22,7 +22,7 @@
         ['git', 'rev-parse', '--show-toplevel'],
         check=True, text=True, capture_output=True)
         .stdout.strip())
-    lock_path_rel = Path('${cfg.lockFileRel}')
+    lock_path_rel = Path('${cfg.lockFileRel}')  # noqa: E501
     lock_path = repo_path / lock_path_rel.relative_to(lock_path_rel.anchor)
 
 
@@ -40,10 +40,7 @@
           executable scripts, with the content of their $out files.
         """
         for name, value in refresh_scripts.items():
-            if isinstance(value, dict):
-                refresh_scripts[name] = run_refresh_scripts(value)
-            else:
-                refresh_scripts[name] = run_refresh_script(value)
+            refresh_scripts[name] = run_refresh_script(value["script"])
         return refresh_scripts
 
 
@@ -81,6 +78,7 @@
                   with open(out_path, 'w') as f:
                       json.dump(checksum, f, indent=2)
                   exit(0)
+          process.wait()
           if process.returncode:
               print("Could not determine hash", file=sys.stdout)
               exit(1)
@@ -97,8 +95,7 @@
 
   errorMissingFile = ''
     The lock file ${cfg.lockFileRel} for drv-parts module '${config.name}' is missing, please update it.
-    To create the lock file, execute:
-      bash -c $(nix-build ${config.lock.refresh.drvPath})/bin/refresh
+    To create the lock file run the `.config.lock.refresh` attribute of the ${config.name} package.
   '';
 
   errorOutdated = field: ''
@@ -108,12 +105,18 @@
   '';
 
   fileContent =
-    if ! fileExist
+    if ! fileExists
     then throw errorMissingFile
     else data;
 
   loadField = field: val:
-    if fileContent ? ${field}
+    if
+      # load the default value (if specified) whenever the field is not found in
+      #   the lock file or the lock file doesn't exist.
+      (cfg.fields.${field}.default != null)
+      && (! fileExists || ! fileContent ? ${field})
+    then cfg.fields.${field}.default
+    else if fileContent ? ${field}
     then fileContent.${field}
     else throw (errorOutdated field);
 
@@ -133,7 +136,7 @@ in {
     deps = {nixpkgs, ...}:
       l.mapAttrs (_: l.mkDefault) {
         inherit (nixpkgs) nix;
-        inherit (nixpkgs.writers) writePython3Bin;
+        inherit (nixpkgs.writers) writePython3 writePython3Bin;
       };
   };
 }
