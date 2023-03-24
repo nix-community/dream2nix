@@ -112,7 +112,7 @@
         inherit name version;
 
         buildPythonPackage = {
-          format = "setuptools";
+          format = l.mkDefault "setuptools";
           pipInstallFlags =
             (map (distDir: "--find-links ${distDir}") manualSetupDeps.${name} or [])
             ++ (
