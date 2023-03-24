@@ -51,7 +51,9 @@
     },
     "drv-parts": {
       "inputs": {
-        "flake-compat": "flake-compat",
+        "flake-compat": [
+          "flake-compat"
+        ],
         "flake-parts": [
           "flake-parts"
         ],
@@ -280,6 +282,7 @@
         "crane": "crane",
         "devshell": "devshell",
         "drv-parts": "drv-parts",
+        "flake-compat": "flake-compat",
         "flake-parts": "flake-parts",
         "flake-utils-pre-commit": "flake-utils-pre-commit",
         "ghc-utils": "ghc-utils",

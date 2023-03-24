@@ -13,9 +13,13 @@
     flake-parts.url = "github:hercules-ci/flake-parts";
     flake-parts.inputs.nixpkgs-lib.follows = "nixpkgs";
 
+    flake-compat.url = "github:edolstra/flake-compat";
+    flake-compat.flake = false;
+
     drv-parts.url = "github:davhau/drv-parts";
     drv-parts.inputs.nixpkgs.follows = "nixpkgs";
     drv-parts.inputs.flake-parts.follows = "flake-parts";
+    drv-parts.inputs.flake-compat.follows = "flake-compat";
 
     pre-commit-hooks.url = "github:cachix/pre-commit-hooks.nix";
     pre-commit-hooks.inputs.nixpkgs.follows = "nixpkgs";
