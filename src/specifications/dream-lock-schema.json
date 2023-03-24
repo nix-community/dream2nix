@@ -161,7 +161,9 @@
                   "then": {
                     "properties": {
                       "hash": { "type": "string" },
-                      "type": { "type": "string" }
+                      "type": { "type": "string" },
+                      "pname": { "type": "string" },
+                      "version": { "type": "string" }
                     },
                     "required": ["type"],
                     "additionalProperties": false
