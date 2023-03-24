@@ -23,6 +23,28 @@
     if config.deps.python.pkgs ? ${config.name}
     then extractPythonAttrs config.deps.python.pkgs.${config.name}
     else {};
+
+  extractedMkDerivation =
+    l.intersectAttrs
+    options.mkDerivation
+    extracted;
+
+  extractedBuildPythonPackage =
+    l.intersectAttrs
+    options.buildPythonPackage
+    extracted;
+
+  extractedEnv =
+    l.filterAttrs
+    (
+      name: _:
+        ! (
+          extractedMkDerivation
+          ? ${name}
+          || extractedBuildPythonPackage ? ${name}
+        )
+    )
+    extracted;
 in {
   imports = [
     ./interface.nix
@@ -30,7 +52,9 @@ in {
 
   config = l.mkMerge [
     (l.mkIf cfg.enable {
-      package-func.args = extracted;
+      mkDerivation = extractedMkDerivation;
+      buildPythonPackage = extractedBuildPythonPackage;
+      env = extractedEnv;
     })
     {
       nixpkgs-overrides.lib = {inherit extractOverrideAttrs extractPythonAttrs;};
