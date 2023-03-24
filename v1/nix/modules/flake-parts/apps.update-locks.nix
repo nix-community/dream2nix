@@ -5,6 +5,9 @@
   inputs,
   ...
 }: {
+  imports = [
+    ./writers.nix
+  ];
   perSystem = {
     config,
     self',
