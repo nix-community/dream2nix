@@ -9,7 +9,7 @@
   # LOAD
   file = cfg.repoRoot + cfg.lockFileRel;
   data = l.fromJSON (l.readFile file);
-  fileExist = l.pathExists file;
+  fileExists = l.pathExists file;
 
   refresh = config.deps.writePython3Bin "refresh" {} ''
     import tempfile
@@ -22,7 +22,7 @@
         ['git', 'rev-parse', '--show-toplevel'],
         check=True, text=True, capture_output=True)
         .stdout.strip())
-    lock_path_rel = Path('${cfg.lockFileRel}')
+    lock_path_rel = Path('${cfg.lockFileRel}')  # noqa: E501
     lock_path = repo_path / lock_path_rel.relative_to(lock_path_rel.anchor)
 
 
@@ -40,10 +40,7 @@
           executable scripts, with the content of their $out files.
         """
         for name, value in refresh_scripts.items():
-            if isinstance(value, dict):
-                refresh_scripts[name] = run_refresh_scripts(value)
-            else:
-                refresh_scripts[name] = run_refresh_script(value)
+            refresh_scripts[name] = run_refresh_script(value["script"])
         return refresh_scripts
 
 
@@ -53,13 +50,10 @@
   '';
 
   computeFODHash = fod: let
-    unhashedFOD = fod.overrideAttrs (old: {
-      outputHash = l.fakeSha256;
-      name = "${old.name}-UNHASHED_FOD";
-    });
-    drvPath = l.unsafeDiscardStringContext unhashedFOD.drvPath;
+    drvPath = l.unsafeDiscardStringContext fod.drvPath;
   in
     config.deps.writePython3 "update-FOD-hash-${config.name}" {} ''
+      import codecs
       import json
       import os
       import re
@@ -73,7 +67,7 @@
           for line in process.stdout:
               line = line.strip()
               print(line)
-              search = r"error: hash mismatch in fixed-output derivation '.*UNHASHED_FOD.*':"  # noqa: E501
+              search = r"error: hash mismatch in fixed-output derivation '.*${fod.name}.*':"  # noqa: E501
               if re.match(search, line):
                   print("line matched")
                   specified = next(process.stdout).strip().split(" ", 1)
@@ -85,39 +79,52 @@
                   with open(out_path, 'w') as f:
                       json.dump(checksum, f, indent=2)
                   exit(0)
-      print("Could not determine hash", file=sys.stdout)
-      exit(1)
+          process.wait()
+          if process.returncode:
+              print("Could not determine hash", file=sys.stdout)
+              exit(1)
+      # At this point the derivation was built successfully and we can just read
+      #   the hash from the drv file.
+      show_derivation = ["${config.deps.nix}/bin/nix", "show-derivation", drv_path]  # noqa: E501
+      result = subprocess.run(show_derivation, stdout=subprocess.PIPE, text=True)
+      drv = json.loads(result.stdout)
+      checksum = drv[drv_path]["outputs"]["out"]["hash"]
+      checksum =\
+          codecs.encode(codecs.decode(checksum, 'hex'), 'base64').decode().strip()
+      checksum = f"sha256-{checksum}"
+      print(f"Found hash: {checksum}")
+      with open(out_path, 'w') as f:
+          json.dump(checksum, f, indent=2)
     '';
 
   errorMissingFile = ''
     The lock file ${cfg.lockFileRel} for drv-parts module '${config.name}' is missing, please update it.
-    To create the lock file, execute:
-      bash -c $(nix-build ${config.lock.refresh.drvPath})/bin/refresh
+    To create the lock file run the `.config.lock.refresh` attribute of the ${config.name} package.
   '';
 
-  errorOutdated = path': let
-    path = l.concatStringsSep "." path';
-  in ''
-    The lock file ${cfg.lockFileRel} for drv-parts module '${config.name}' misses expected attribute `${path}`.
+  errorOutdated = field: ''
+    The lock file ${cfg.lockFileRel} for drv-parts module '${config.name}' does not contain field `${field}`.
     To update the lock file, execute:
       bash -c $(nix-build ${config.lock.refresh.drvPath})/bin/refresh
   '';
 
   fileContent =
-    if ! fileExist
+    if ! fileExists
     then throw errorMissingFile
     else data;
 
-  loadField = path: val:
-    if l.hasAttrByPath path fileContent
-    then (l.getAttrFromPath path fileContent)
-    else throw (errorOutdated path);
+  loadField = field: val:
+    if
+      # load the default value (if specified) whenever the field is not found in
+      #   the lock file or the lock file doesn't exist.
+      (cfg.fields.${field}.default != null)
+      && (! fileExists || ! fileContent ? ${field})
+    then cfg.fields.${field}.default
+    else if fileContent ? ${field}
+    then fileContent.${field}
+    else throw (errorOutdated field);
 
-  loadedContent =
-    l.mapAttrsRecursiveCond
-    (val: ! l.isDerivation val)
-    loadField
-    cfg.fields;
+  loadedContent = l.mapAttrs loadField cfg.fields;
 in {
   imports = [
     ./interface.nix
@@ -133,7 +140,7 @@ in {
     deps = {nixpkgs, ...}:
       l.mapAttrs (_: l.mkDefault) {
         inherit (nixpkgs) nix;
-        inherit (nixpkgs.writers) writePython3Bin;
+        inherit (nixpkgs.writers) writePython3 writePython3Bin;
       };
   };
 }

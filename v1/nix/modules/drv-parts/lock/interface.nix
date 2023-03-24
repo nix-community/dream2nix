@@ -31,8 +31,27 @@ in {
     };
 
     fields = l.mkOption {
-      type = t.attrs;
-      description = "Fields to manage via a lock file";
+      type = t.attrsOf (t.submodule [
+        {
+          options = {
+            script = l.mkOption {
+              type = t.path;
+              description = ''
+                A script to refresh the value of this lock file field.
+                The script should write the result as json file to $out.
+              '';
+            };
+            default = l.mkOption {
+              type = t.nullOr t.anything;
+              description = ''
+                The default value in case the lock file doesn't exist or doesn't yet contain the field.
+              '';
+              default = null;
+            };
+          };
+        }
+      ]);
+      description = "Fields of the lock file";
       default = {};
       example = {
         pname = true;

@@ -13,6 +13,10 @@
   buildPackages,
   lib,
   stdenv,
+  # Use the nixpkgs default python version for the proxy script.
+  # The python version select by the user below might be too old for the
+  #   dependencies required by the proxy
+  python3,
 }: {
   # Specify the python version for which the packages should be downloaded.
   # Pip needs to be executed from that specific python version.
@@ -89,7 +93,7 @@
 
   # we use mitmproxy to filter the pypi responses
   pythonWithMitmproxy =
-    python.withPackages
+    python3.withPackages
     (ps: [ps.mitmproxy ps.python-dateutil ps.pkginfo ps.packaging]);
 
   pythonMajorAndMinorVer =

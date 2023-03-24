@@ -157,6 +157,14 @@ in {
   ];
 
   config = {
+    # use lock file to manage hash for fetchPip
+    lock.fields.fetchPipHash = {
+      script =
+        config.lock.lib.computeFODHash
+        config.mach-nix.pythonSources;
+      default = l.fakeSha256;
+    };
+
     mach-nix.drvs = (l.mapAttrs makeModuleFromDerivation preparedWheels.patchedWheels) // preparedWheels.builtWheels;
     mach-nix.dists =
       l.mapAttrs
@@ -164,6 +172,14 @@ in {
       (l.readDir cfg.pythonSources.names);
 
     mach-nix.dependencyTree = dependencyTree;
+
+    mach-nix.pythonSources = {
+      imports = [../../drv-parts/fetch-pip];
+      deps.python = config.deps.python;
+      fetch-pip = {
+        hash = config.lock.content.fetchPipHash;
+      };
+    };
 
     deps = {nixpkgs, ...}:
       l.mapAttrs (_: l.mkDefault) {

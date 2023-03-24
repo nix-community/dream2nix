@@ -35,15 +35,7 @@
     evaled.config.public;
 
   packages = lib.mapAttrs (_: drvModule: makeDrv drvModule) self.modules.drvs;
-
-  packagesFiltered =
-    builtins.intersectAttrs
-    {
-      ansible = true;
-      pillow = true;
-    }
-    packages;
 in {
   # map all modules in ../drvs to a package output in the flake.
-  flake.packages.${system} = packagesFiltered;
+  flake.packages.${system} = packages;
 }

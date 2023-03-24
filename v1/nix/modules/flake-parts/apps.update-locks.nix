@@ -18,10 +18,10 @@
     scripts =
       l.flatten
       (l.mapAttrsToList
-        (name: pkg: pkg.config.eval-cache.refresh or [])
+        (name: pkg: pkg.config.lock.refresh or [])
         self'.packages);
 
-    update-caches =
+    update-locks =
       config.writers.writePureShellScript
       (with pkgs; [
         coreutils
@@ -30,7 +30,8 @@
       ])
       (
         "set -x\n"
-        + (l.concatStringsSep "\n" scripts)
+        + (l.concatStringsSep "/bin/refresh\n" scripts)
+        + "/bin/refresh"
       );
 
     toApp = script: {
@@ -40,7 +41,7 @@
   in {
     apps = l.mapAttrs (_: toApp) {
       inherit
-        update-caches
+        update-locks
         ;
     };
   };

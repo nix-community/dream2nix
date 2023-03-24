@@ -4,19 +4,13 @@
   ...
 }: let
   l = lib // builtins;
-  python = config.deps.python;
 in {
   imports = [
     ../../drv-parts/mach-nix-xs
   ];
 
-  # use lock file to manage hash for fetchPip
-  lock.fields.fetchPipHash =
-    config.lock.lib.computeFODHash config.mach-nix.pythonSources;
-
   deps = {nixpkgs, ...}: {
     python = nixpkgs.python39;
-    inherit (nixpkgs.writers) writePython3;
   };
 
   name = "ansible";
@@ -36,11 +30,8 @@ in {
     ];
   };
 
-  mach-nix.pythonSources = config.deps.fetchPip {
-    inherit python;
-    name = config.name;
-    requirementsList = ["${config.name}==${config.version}"];
-    hash = config.lock.content.fetchPipHash;
+  mach-nix.pythonSources.fetch-pip = {
     maxDate = "2023-01-01";
+    requirementsList = ["${config.name}==${config.version}"];
   };
 }

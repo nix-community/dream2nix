@@ -40,7 +40,10 @@ jobs:
         name: nix-community
         authToken: '${{ secrets.CACHIX_AUTH_TOKEN }}'
 
-    - run: nix flake check
+    - run: |
+        nix run .#update-locks
+        git add .
+        nix flake check
 
   tests-integration:
     runs-on: ubuntu-latest
