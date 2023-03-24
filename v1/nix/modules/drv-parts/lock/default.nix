@@ -86,11 +86,12 @@
       # At this point the derivation was built successfully and we can just read
       #   the hash from the drv file.
       show_derivation = ["${config.deps.nix}/bin/nix", "show-derivation", drv_path]  # noqa: E501
-      result = subprocess.run(show_derivation, stdout=subprocess.PIPE)
-      drv = json.loads(result.stdout.decode())
+      result = subprocess.run(show_derivation, stdout=subprocess.PIPE, text=True)
+      drv = json.loads(result.stdout)
       checksum = drv[drv_path]["outputs"]["out"]["hash"]
-      checksum = codecs.encode(codecs.decode(checksum, 'hex'), 'base64').decode()
-      checksum = f"sha256-{checksum}".strip()
+      checksum =\
+          codecs.encode(codecs.decode(checksum, 'hex'), 'base64').decode().strip()
+      checksum = f"sha256-{checksum}"
       print(f"Found hash: {checksum}")
       with open(out_path, 'w') as f:
           json.dump(checksum, f, indent=2)
