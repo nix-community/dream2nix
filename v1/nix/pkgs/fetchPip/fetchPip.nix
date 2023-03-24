@@ -1,14 +1,14 @@
 # fetchPip downloads python packages specified by executing
 #   `pip download` on a source tree, or a list of requirements.
-# This fetcher requires a maximum date 'maxDate' being specified.
+# This fetcher requires a maximum date 'pypiSnapshotDate' being specified.
 # The result will be the same as if `pip download` would have been executed
-#   at the point in time specified by maxDate.
+#   at the point in time specified by pypiSnapshotDate.
 # This is ensured by putting pip behind a local proxy filtering the
 #   api responses from pypi.org to only contain files for which the
-#   release date is lower than the specified maxDate.
+#   release date is lower than the specified pypiSnapshotDate.
 # TODO: ignore if packages are yanked
-# TODO: for maxDate only allow timestamp or format 2023-01-01
-# TODO: Error if maxDate points to the future
+# TODO: for pypiSnapshotDate only allow timestamp or format 2023-01-01
+# TODO: Error if pypiSnapshotDate points to the future
 {
   buildPackages,
   lib,
@@ -38,9 +38,9 @@
   nameSuffix ? "python-requirements",
   nativeBuildInputs ? [],
   # maximum release date for packages
-  maxDate ?
+  pypiSnapshotDate ?
     throw ''
-      'maxDate' must be specified for fetchPip.
+      'pypiSnapshotDate' must be specified for fetchPip.
       Choose any date from the past.
       Example value: "2023-01-01"
     '',
@@ -109,7 +109,7 @@
       ${stdenv.system}
 
       # All variables that might influence the output
-      ${finalAttrs.maxDate}
+      ${finalAttrs.pypiSnapshotDate}
       ${finalAttrs.onlyBinaryFlags}
       ${finalAttrs.pipVersion}
       ${finalAttrs.pipFlags}
@@ -176,8 +176,8 @@
     # the python interpreter used to run the proxy script
     inherit pythonWithMitmproxy;
 
-    # convert maxDate to string and integrate into finalAttrs
-    maxDate = builtins.toString maxDate;
+    # convert pypiSnapshotDate to string and integrate into finalAttrs
+    pypiSnapshotDate = builtins.toString pypiSnapshotDate;
 
     # add some variables to the derivation to integrate them into finalAttrs
     inherit

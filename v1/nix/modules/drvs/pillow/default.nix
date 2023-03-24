@@ -47,7 +47,7 @@ in {
   };
 
   mach-nix.pythonSources.fetch-pip = {
-    maxDate = "2023-01-01";
+    pypiSnapshotDate = "2023-01-01";
     requirementsList = ["${config.name}==${config.version}"];
     pipFlags = [
       "--no-binary"

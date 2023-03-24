@@ -29,9 +29,9 @@ REQUIREMENTS_FILES = os.getenv("requirementsFiles")
 
 def get_max_date():
     try:
-        return int(os.getenv("maxDate"))
+        return int(os.getenv("pypiSnapshotDate"))
     except ValueError:
-        return dateutil.parser.parse(os.getenv("maxDate"))
+        return dateutil.parser.parse(os.getenv("pypiSnapshotDate"))
 
 
 def get_free_port():
@@ -53,7 +53,7 @@ def start_mitmproxy(port):
             "--script",
             FILTER_PYPI_RESPONSE_SCRIPTS,
         ],
-        env={"maxDate": os.getenv("maxDate"), "HOME": HOME},
+        env={"pypiSnapshotDate": os.getenv("pypiSnapshotDate"), "HOME": HOME},
     )
     return proc
 

@@ -13,7 +13,7 @@ in {
         hash for the fixed output derivation
       '';
     };
-    maxDate = l.mkOption {
+    pypiSnapshotDate = l.mkOption {
       type = t.str;
       description = ''
         maximum release date for packages
