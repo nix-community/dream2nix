@@ -373,7 +373,10 @@ in {
 
         dependencies = rawObj: finalObj:
           l.map
-          (dep: dep // {version = extractVersionFromDep dep;})
+          (dep: {
+            name = dep.name;
+            version = extractVersionFromDep dep;
+          })
           (l.map parseDepEntry (rawObj.dependencies or []));
 
         sourceSpec = rawObj: finalObj: let
