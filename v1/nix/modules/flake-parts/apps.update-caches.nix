@@ -15,7 +15,7 @@
   }: let
     l = lib // builtins;
 
-    allNewFileCommands =
+    scripts =
       l.flatten
       (l.mapAttrsToList
         (name: pkg: pkg.config.eval-cache.refresh or [])
@@ -30,7 +30,7 @@
       ])
       (
         "set -x\n"
-        + (l.concatStringsSep "\n" allNewFileCommands)
+        + (l.concatStringsSep "\n" scripts)
       );
 
     toApp = script: {

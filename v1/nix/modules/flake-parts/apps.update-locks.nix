@@ -15,7 +15,7 @@
   }: let
     l = lib // builtins;
 
-    allNewFileCommands =
+    scripts =
       l.flatten
       (l.mapAttrsToList
         (name: pkg: pkg.config.lock.refresh or [])
@@ -30,7 +30,7 @@
       ])
       (
         "set -x\n"
-        + (l.concatStringsSep "/bin/refresh\n" allNewFileCommands)
+        + (l.concatStringsSep "/bin/refresh\n" scripts)
         + "/bin/refresh"
       );
 
