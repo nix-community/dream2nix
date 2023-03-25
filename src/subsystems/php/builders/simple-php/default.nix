@@ -176,20 +176,11 @@
           # set name & version
           jq \
             "(.name = \"${name}\") | \
-             (.version = \"${versionString}\")" \
+             (.version = \"${versionString}\") | \
+             (.extra.patches = {})" \
              composer.json | sponge composer.json
 
           runHook postUnpack
-        '';
-        patchPhase = ''
-          runHook prePatch
-
-          # fixup composer.json
-          jq \
-             "(.extra.patches = {})" \
-             composer.json | sponge composer.json
-
-          runHook postPatch
         '';
         configurePhase = ''
           runHook preConfigure
