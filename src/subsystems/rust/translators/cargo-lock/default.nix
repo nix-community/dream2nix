@@ -312,10 +312,12 @@ in {
             cargoPackages;
         in
           l.foldl' l.recursiveUpdate {} allPackageReplacements;
-        gitSources = l.map (src: src.value) (
-          l.filter
-          (src: src.type == "git")
-          (l.map parseSource parsedDeps)
+        gitSources = l.unique (
+          l.map (src: src.value) (
+            l.filter
+            (src: src.type == "git")
+            (l.map parseSource parsedDeps)
+          )
         );
         meta = l.foldl' l.recursiveUpdate {} (
           l.map
