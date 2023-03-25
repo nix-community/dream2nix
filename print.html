@@ -1562,6 +1562,28 @@ patches
   };
 }
 </code></pre>
+<h1 id="example-for-php-flake-override"><a class="header" href="#example-for-php-flake-override">Example for PHP flake override</a></h1>
+<p>This example overrides <code>prePatch</code> for the <code>ml/iri</code> package to drop the
+unsupported <code>target-dir</code> attribute from composer.json:</p>
+<pre><code>{
+  inputs.dream2nix.url = &quot;github:nix-community/dream2nix&quot;;
+
+  outputs = inp:
+    inp.dream2nix.lib.makeFlakeOutputs {
+      systems = [&quot;x86_64-linux&quot;];
+      config.projectRoot = ./.;
+      source = ./.;
+      projects = ./projects.toml;
+      packageOverrides = {
+        &quot;^ml.iri.*&quot;.updated.overrideAttrs = old: {
+          prePatch = ''
+            cat composer.json | grep -v target-dir | sponge composer.json
+          '';
+        };
+      };
+    };
+}
+</code></pre>
 <div style="break-before: page; page-break-before: always;"></div><h2 id="list-of-problems-which-currently-exist-in-nixpkgs"><a class="header" href="#list-of-problems-which-currently-exist-in-nixpkgs">List of problems which currently exist in nixpkgs</a></h2>
 <h3 id="generated-code-sizeduplication"><a class="header" href="#generated-code-sizeduplication">Generated Code Size/Duplication</a></h3>
 <h4 id="problem"><a class="header" href="#problem">Problem</a></h4>
