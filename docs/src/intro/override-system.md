@@ -132,3 +132,29 @@ patches
   };
 }
 ```
+
+# Example for PHP flake override
+
+This example overrides `prePatch` for the `ml/iri` package to drop the
+unsupported `target-dir` attribute from composer.json:
+
+```
+{
+  inputs.dream2nix.url = "github:nix-community/dream2nix";
+
+  outputs = inp:
+    inp.dream2nix.lib.makeFlakeOutputs {
+      systems = ["x86_64-linux"];
+      config.projectRoot = ./.;
+      source = ./.;
+      projects = ./projects.toml;
+      packageOverrides = {
+        "^ml.iri.*".updated.overrideAttrs = old: {
+          prePatch = ''
+            cat composer.json | grep -v target-dir | sponge composer.json
+          '';
+        };
+      };
+    };
+}
+```
