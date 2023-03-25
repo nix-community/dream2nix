@@ -31,6 +31,7 @@ in rec {
     '';
     entries = l.map makeEntry subsystemAttrs.gitSources;
   in ''
+    echo "Writing git vendor entries to $CARGO_HOME/config.toml"
     mkdir -p $CARGO_HOME && touch $CARGO_HOME/config.toml
     cat >> $CARGO_HOME/config.toml <<EOF
     ${l.concatStringsSep "\n" entries}
