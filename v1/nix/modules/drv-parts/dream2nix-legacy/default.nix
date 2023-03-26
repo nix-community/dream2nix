@@ -29,7 +29,9 @@
     (l.evalModules {
       modules = [
         ../../../../../src/modules/utils
+        ../../../../../src/modules/utils.override
         ../../../../../src/modules/utils.toTOML
+        ../../../../../src/modules/utils.translator
         ../../../../../src/modules/dlib
         libModule
       ];
@@ -89,29 +91,58 @@
       modules = [
         ../../../../../src/modules/interfaces.translator/interface.nix
         (../../../../.. + "/src/subsystems/${cfg.subsystem}/translators/${cfg.translator}")
+        libModule
       ];
       specialArgs = {
-        inherit dlib;
+        inherit dlib utils;
       };
     })
     .config;
 
-  tree = dlib.prepareSourceTree {source = config.mkDerivation.src;};
+  tree = dlib.prepareSourceTree {inherit (cfg) source;};
 
   project = {
+    inherit (config) name;
     relPath = cfg.relPath;
     subsystemInfo = cfg.subsystemInfo;
   };
 
-  result = translator.translate {
-    inherit project tree;
+  result =
+    translator.translate
+    (cfg.subsystemInfo
+      // {
+        inherit project tree;
+        inherit (cfg) source;
+      });
+
+  dreamLock = result.result or result;
+
+  defaultSourceOverride = dreamLock: let
+    defaultPackage = dreamLock._generic.defaultPackage;
+    defaultPackageVersion =
+      dreamLock._generic.packages."${defaultPackage}";
+  in {
+    "${defaultPackage}"."${defaultPackageVersion}" = "${cfg.source}/${dreamLock._generic.location}";
   };
 
-  dreamLock = result.result;
+  dreamOverrides = let
+    overridesDirs = [../../../../../overrides];
+  in
+    utils.loadOverridesDirs overridesDirs pkgs;
 
   outputs = legacy-interface.makeOutputsForDreamLock {
     inherit dreamLock;
-    sourceRoot = config.mkDerivation.src;
+    sourceRoot = cfg.source;
+    sourceOverrides = oldSources:
+      dlib.recursiveUpdateUntilDepth
+      1
+      (defaultSourceOverride dreamLock)
+      (cfg.sourceOverrides oldSources);
+    packageOverrides =
+      l.trace dreamOverrides.nodejs
+      l.recursiveUpdate
+      (dreamOverrides."${dreamLock._generic.subsystem}" or {})
+      (cfg.packageOverrides or {});
   };
 
   drvModule = drv-parts.lib.makeModule {
