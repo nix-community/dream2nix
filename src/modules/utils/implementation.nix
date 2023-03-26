@@ -20,7 +20,7 @@
     writeScriptBin
     ;
 
-  poetry2nixSemver = import "${config.externalSources.poetry2nix}/semver.nix" {
+  poetry2nixSemver = import ./poetry2nix/semver.nix {
     inherit (config) lib;
     # copied from poetry2nix
     ireplace = idx: value: list: (

@@ -5,6 +5,7 @@ excludes = [
   "overrides/nodejs/electron/*",
   "src/templates/translators/*",
   "src/modules/_template/*",
+  "src/modules/utils/poetry2nix/semver.nix",
 ]
 
 [formatter.py]
