@@ -8,7 +8,7 @@
   python $installDeps
 
   echo "Symlinking transitive executables to $nodeModules/.bin"
-  for dep in ${lib.toString nodeDeps}; do
+  for dep in ${toString nodeDeps}; do
     binDir=$dep/lib/node_modules/.bin
     if [ -e $binDir ]; then
       for bin in $(ls $binDir/); do\
