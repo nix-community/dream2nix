@@ -11,7 +11,7 @@ in {
     ../../drv-parts/dream2nix-legacy
   ];
 
-  legacy = {
+  dream2nix-legacy = {
     subsystem = "rust";
     translator = "cargo-lock";
     builder = "build-rust-package";

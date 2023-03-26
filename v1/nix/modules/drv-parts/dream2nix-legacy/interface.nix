@@ -6,7 +6,7 @@
   l = lib // builtins;
   t = l.types;
 in {
-  options.legacy = {
+  options.dream2nix-legacy = {
     builder = l.mkOption {
       description = "Builder to use";
       example = ["build-rust-package"];

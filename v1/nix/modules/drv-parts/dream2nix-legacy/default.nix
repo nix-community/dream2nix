@@ -8,7 +8,7 @@
 }: let
   l = lib // builtins;
 
-  cfg = config.legacy;
+  cfg = config.dream2nix-legacy;
 
   pkgs = drv-parts.inputs.nixpkgs.legacyPackages.x86_64-linux;
 
@@ -139,7 +139,6 @@
       (defaultSourceOverride dreamLock)
       (cfg.sourceOverrides oldSources);
     packageOverrides =
-      l.trace dreamOverrides.nodejs
       l.recursiveUpdate
       (dreamOverrides."${dreamLock._generic.subsystem}" or {})
       (cfg.packageOverrides or {});

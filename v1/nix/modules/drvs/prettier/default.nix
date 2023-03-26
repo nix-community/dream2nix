@@ -11,7 +11,7 @@ in {
     ../../drv-parts/dream2nix-legacy
   ];
 
-  legacy = {
+  dream2nix-legacy = {
     subsystem = "nodejs";
     translator = "yarn-lock";
     builder = "granular-nodejs";
