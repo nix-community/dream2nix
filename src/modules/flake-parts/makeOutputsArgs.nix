@@ -25,7 +25,7 @@
 
       # TODO(antotocar34) make a smart enum of all available translators conditional on the given the subsystem? Is this possible?
       translator = mkOption {
-        description = "Translators to use";
+        description = "Translator to use";
         example = ["yarn-lock" "package-json"];
         type = t.str;
       };

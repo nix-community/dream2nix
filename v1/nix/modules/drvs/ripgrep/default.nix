@@ -8,18 +8,22 @@
 in {
   imports = [
     drv-parts.modules.drv-parts.mkDerivation
-    ../../drv-parts/rust-cargo-lock-legacy
+    ../../drv-parts/dream2nix-legacy
   ];
+
+  legacy = {
+    subsystem = "rust";
+    translator = "cargo-lock";
+    builder = "build-rust-package";
+  };
 
   deps = {nixpkgs, ...}: {
     inherit (nixpkgs) fetchFromGitHub;
     inherit (nixpkgs) stdenv;
   };
 
-  # public = {
   name = l.mkForce "ripgrep";
   version = l.mkForce "13.0.0";
-  # };
 
   mkDerivation = {
     src = config.deps.fetchFromGitHub {

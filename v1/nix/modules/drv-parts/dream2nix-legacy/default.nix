@@ -8,6 +8,8 @@
 }: let
   l = lib // builtins;
 
+  cfg = config.legacy;
+
   pkgs = drv-parts.inputs.nixpkgs.legacyPackages.x86_64-linux;
 
   dlib =
@@ -77,7 +79,7 @@
     config.pkgs = pkgs;
   };
 
-  buildersBySubsystem.rust.default = import ../../../../../src/subsystems/rust/builders/build-rust-package/default.nix {
+  buildersBySubsystem.${cfg.subsystem}.default = import (../../../../.. + "/src/subsystems/${cfg.subsystem}/builders/${cfg.builder}/default.nix") {
     inherit lib pkgs utils;
     dlib = {};
   };
@@ -86,7 +88,7 @@
     (l.evalModules {
       modules = [
         ../../../../../src/modules/interfaces.translator/interface.nix
-        ../../../../../src/subsystems/rust/translators/cargo-lock
+        (../../../../.. + "/src/subsystems/${cfg.subsystem}/translators/${cfg.translator}")
       ];
       specialArgs = {
         inherit dlib;
@@ -97,8 +99,8 @@
   tree = dlib.prepareSourceTree {source = config.mkDerivation.src;};
 
   project = {
-    relPath = "";
-    subsystemInfo = {};
+    relPath = cfg.relPath;
+    subsystemInfo = cfg.subsystemInfo;
   };
 
   result = translator.translate {
