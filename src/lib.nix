@@ -269,5 +269,4 @@
 in {
   inherit init makeFlakeOutputs makeFlakeOutputsForIndexes;
   dlib = import ./modules/dlib.nix {inherit lib;};
-  riseAndShine = throw "Use makeFlakeOutputs instead of riseAndShine.";
 }

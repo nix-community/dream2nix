@@ -146,11 +146,6 @@
       };
   in
     formattedOutputs;
-
-  riseAndShine = throw ''
-    `riseAndShine` is deprecated. See usage in readme.md.
-  '';
-
   makeOutputsForDreamLock = {
     dreamLock,
     sourceRoot ? null,
@@ -516,7 +511,6 @@ in {
       fetchSources
       realizeProjects
       translateProjects
-      riseAndShine
       makeOutputsForDreamLock
       makeOutputs
       ;
