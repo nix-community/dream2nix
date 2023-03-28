@@ -30,6 +30,7 @@
         nixpkgs = inputs.nixpkgsV1.legacyPackages.${system};
       };
       specialArgs.drv-parts = inputs.drv-parts;
+      specialArgs.dream2nix = self;
     };
   in
     evaled.config.public;
