@@ -28,6 +28,7 @@
   utils =
     (l.evalModules {
       modules = [
+        ../../../../../src/modules/functions.fetchers
         ../../../../../src/modules/utils
         ../../../../../src/modules/utils.override
         ../../../../../src/modules/utils.toTOML
