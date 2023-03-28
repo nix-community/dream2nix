@@ -33,6 +33,7 @@
           specialArgs = {
             inherit packageSets;
             dream2nix.modules.drv-parts = self.modules.drv-parts;
+            drv-parts = inputs.drv-parts;
           };
         }
       );
