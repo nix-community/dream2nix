@@ -153,10 +153,16 @@
   eval = drvModule {
     inherit config options extendModules;
   };
+
+  public =
+    eval.config.public
+    // l.optionalAttrs (outputs ? devShells.default) {
+      devShell = outputs.devShells.default;
+    };
 in {
   imports = [
     ./interface.nix
   ];
 
-  public = l.mkForce eval.config.public;
+  public = l.mkForce public;
 }
