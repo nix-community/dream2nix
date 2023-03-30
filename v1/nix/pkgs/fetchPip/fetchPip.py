@@ -22,6 +22,7 @@ PYTHON_WITH_MITM_PROXY = os.getenv("pythonWithMitmproxy")
 FILTER_PYPI_RESPONSE_SCRIPTS = os.getenv("filterPypiResponsesScript")
 PIP_VERSION = os.getenv("pipVersion")
 PIP_FLAGS = os.getenv("pipFlags")
+NO_BINARY = os.getenv("noBinary")
 ONLY_BINARY_FLAGS = os.getenv("onlyBinaryFlags")
 REQUIREMENTS_LIST = os.getenv("requirementsList")
 REQUIREMENTS_FILES = os.getenv("requirementsFiles")
@@ -124,6 +125,8 @@ if __name__ == "__main__":
     ]
     if REQUIREMENTS_FILES:
         optional_flags += ["-r " + " -r ".join(REQUIREMENTS_FILES.split())]
+    if NO_BINARY:
+        optional_flags += ["--no-binary " + " --no-binary ".join(NO_BINARY.split())]
 
     optional_flags = " ".join(filter(None, optional_flags)).split(" ")
     pip(

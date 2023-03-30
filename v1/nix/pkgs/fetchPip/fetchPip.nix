@@ -28,6 +28,8 @@
   requirementsList ? [],
   # list of requirements.txt files
   requirementsFiles ? [],
+  # enforce source downloads for these package names
+  noBinary ? [],
   # restrict to binary releases (.whl)
   # this allows buildPlatform independent fetching
   onlyBinary ? false,
@@ -110,6 +112,7 @@
 
       # All variables that might influence the output
       ${finalAttrs.pypiSnapshotDate}
+      ${toString finalAttrs.noBinary}
       ${finalAttrs.onlyBinaryFlags}
       ${finalAttrs.pipVersion}
       ${finalAttrs.pipFlags}
@@ -181,6 +184,7 @@
 
     # add some variables to the derivation to integrate them into finalAttrs
     inherit
+      noBinary
       pipVersion
       requirementsFiles
       requirementsList

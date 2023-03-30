@@ -28,6 +28,13 @@ in {
         suffix of the fetcher derivation name
       '';
     };
+    noBinary = l.mkOption {
+      type = t.listOf t.str;
+      default = [];
+      description = ''
+        enforce source downloads for these package names
+      '';
+    };
     onlyBinary = l.mkOption {
       type = t.bool;
       default = false;
