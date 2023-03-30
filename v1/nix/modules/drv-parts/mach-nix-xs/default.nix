@@ -154,6 +154,7 @@ in {
     ../buildPythonPackage
     ./interface.nix
     ../eval-cache
+    ../lock
   ];
 
   config = {

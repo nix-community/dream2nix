@@ -20,6 +20,7 @@
 in {
   imports = [
     ./interface.nix
+    ../lock
     drv-parts.modules.drv-parts.mkDerivation
   ];
 
