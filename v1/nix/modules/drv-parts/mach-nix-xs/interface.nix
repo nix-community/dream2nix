@@ -2,7 +2,7 @@
   config,
   lib,
   drv-parts,
-  dependencySets,
+  packageSets,
   ...
 }: let
   l = lib // builtins;
@@ -11,7 +11,7 @@
   drvPartsTypes = import (drv-parts + /types) {
     inherit lib;
     specialArgs = {
-      inherit dependencySets drv-parts;
+      inherit packageSets drv-parts;
       inherit (config) name version;
     };
   };
@@ -55,7 +55,7 @@ in {
     drvs = l.mkOption {
       type = t.attrsOf (t.submoduleWith {
         modules = [drv-parts.modules.drv-parts.core];
-        specialArgs = {inherit dependencySets;};
+        specialArgs = {inherit packageSets;};
       });
       description = "drv-parts modules that define python dependencies";
     };

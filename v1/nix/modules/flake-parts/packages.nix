@@ -26,7 +26,7 @@
         ../drv-parts/lock
         setup
       ];
-      specialArgs.dependencySets = {
+      specialArgs.packageSets = {
         nixpkgs = inputs.nixpkgsV1.legacyPackages.${system};
       };
       specialArgs.drv-parts = inputs.drv-parts;
