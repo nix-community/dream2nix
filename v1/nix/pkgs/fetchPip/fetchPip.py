@@ -3,11 +3,13 @@ import socket
 import ssl
 import subprocess
 import time
+import json
 import dateutil.parser
 import urllib.request
 from pathlib import Path
 
 import certifi
+from packaging.requirements import Requirement
 from packaging.utils import (
     canonicalize_name,
     parse_sdist_filename,
@@ -26,6 +28,7 @@ NO_BINARY = os.getenv("noBinary")
 ONLY_BINARY_FLAGS = os.getenv("onlyBinaryFlags")
 REQUIREMENTS_LIST = os.getenv("requirementsList")
 REQUIREMENTS_FILES = os.getenv("requirementsFiles")
+WRITE_METADATA = os.getenv("writeMetaData")
 
 
 def get_max_date():
@@ -105,6 +108,8 @@ if __name__ == "__main__":
     names_path = OUT / "names"
     dist_path.mkdir()
     names_path.mkdir()
+    cache_path = Path("/build/pip_cache")
+    cache_path.mkdir()
 
     print(f"selected maximum release date for python packages: {get_max_date()}")
     proxy_port = get_free_port()
@@ -113,35 +118,55 @@ if __name__ == "__main__":
 
     venv_path = Path(".venv").absolute()
     create_venv(venv_path)
-    pip(venv_path, "install", "--upgrade", f"pip=={PIP_VERSION}")
+    pip(
+        venv_path,
+        "install",
+        "--upgrade",
+        f"pip=={PIP_VERSION}",
+    )
 
     cafile = generate_ca_bundle(HOME / ".ca-cert.pem")
     wait_for_proxy(proxy_port, cafile)
 
-    optional_flags = [
+    flags = [
         PIP_FLAGS,
         ONLY_BINARY_FLAGS,
-        REQUIREMENTS_LIST,
+        "--proxy",
+        f"https://localhost:{proxy_port}",
+        "--progress-bar",
+        "off",
+        "--cert",
+        cafile,
+        "--cache-dir",
+        cache_path,
     ]
-    if REQUIREMENTS_FILES:
-        optional_flags += ["-r " + " -r ".join(REQUIREMENTS_FILES.split())]
     if NO_BINARY:
         optional_flags += ["--no-binary " + " --no-binary ".join(NO_BINARY.split())]
+    if WRITE_METADATA:
+        metadata_flags = ["--report", "/build/report.json"]
 
-    optional_flags = " ".join(filter(None, optional_flags)).split(" ")
+    for req in REQUIREMENTS_LIST.split(" "):
+        if req:
+            flags.append(req)
+    for req in REQUIREMENTS_FILES.split(" "):
+        if req:
+            flags += ["-r", req]
+
+    flags = " ".join(map(str, filter(None, flags))).split(" ")
+    pip(
+        venv_path,
+        "install",
+        "--dry-run",
+        "--ignore-installed",
+        *metadata_flags,
+        *flags,
+    )
     pip(
         venv_path,
         "download",
-        "--no-cache",
         "--dest",
         dist_path,
-        "--progress-bar",
-        "off",
-        "--proxy",
-        f"https://localhost:{proxy_port}",
-        "--cert",
-        cafile,
-        *optional_flags,
+        *flags,
     )
 
     proxy.kill()
@@ -156,3 +181,36 @@ if __name__ == "__main__":
         print(f"creating link {name_path} -> {dist_file}")
         name_path.mkdir()
         (name_path / dist_file.name).symlink_to(f"../../dist/{dist_file.name}")
+
+    if WRITE_METADATA:
+        packages = dict()
+
+        with open("/build/report.json", "r") as f:
+            report = json.load(f)
+
+        for install in report["install"]:
+            metadata = install["metadata"]
+            name = canonicalize_name(metadata["name"])
+
+            download_info = install["download_info"]
+            file = download_info["url"].split("/")[-1]
+            hash = download_info.get("archive_info", {}).get("hashes", {}).get("sha256")
+            requirements = [
+                Requirement(req) for req in metadata.get("requires_dist", [])
+            ]
+            extras = ""
+            dependencies = sorted(
+                [
+                    canonicalize_name(req.name)
+                    for req in requirements
+                    if not req.marker or req.marker.evaluate({"extra": extras})
+                ]
+            )
+            packages[name] = dict(
+                version=metadata["version"],
+                dependencies=dependencies,
+                file=file,
+                hash=hash,
+            )
+        with open(OUT / "metadata.json", "w") as f:
+            json.dump(packages, f, indent=2)

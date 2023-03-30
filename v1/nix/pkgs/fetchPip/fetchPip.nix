@@ -48,7 +48,7 @@
     '',
   # It's better to not refer to python.pkgs.pip directly, as we want to reduce
   #   the times we have to update the output hash
-  pipVersion ? "23.0",
+  pipVersion ? "23.0.1",
   # Write "metadata.json" to $out, including which package depends on which.
   writeMetaData ? true,
 }: let
@@ -96,7 +96,7 @@
   # we use mitmproxy to filter the pypi responses
   pythonWithMitmproxy =
     python3.withPackages
-    (ps: [ps.mitmproxy ps.python-dateutil ps.pkginfo ps.packaging]);
+    (ps: [ps.mitmproxy ps.python-dateutil ps.packaging]);
 
   pythonMajorAndMinorVer =
     lib.concatStringsSep "."
@@ -127,7 +127,6 @@
       # changes with every nixpkgs commit
       ${builtins.readFile finalAttrs.filterPypiResponsesScript}
       ${builtins.readFile finalAttrs.buildScript}
-      ${builtins.readFile finalAttrs.writeMetaDataScript}
     '';
 
   invalidationHashShort = finalAttrs:
@@ -171,7 +170,6 @@
     # python scripts
     filterPypiResponsesScript = ./filter-pypi-responses.py;
     buildScript = ./fetchPip.py;
-    writeMetaDataScript = ./write-meta-data.py;
 
     # the python interpreter used to run the build script
     pythonBin = python.interpreter;
@@ -188,6 +186,7 @@
       pipVersion
       requirementsFiles
       requirementsList
+      writeMetaData
       ;
 
     # prepare flags for `pip download`
@@ -200,7 +199,6 @@
     # - optionally add a file to the FOD containing metadata of the packages involved
     buildPhase = ''
       $pythonWithMitmproxy/bin/python $buildScript
-      ${lib.optionalString writeMetaData "$pythonWithMitmproxy/bin/python $writeMetaDataScript $out/dist > $out/metadata.json"}
     '';
   });
 in
