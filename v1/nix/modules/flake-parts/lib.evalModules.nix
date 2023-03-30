@@ -10,7 +10,7 @@
   flake.config.lib.evalModules = args @ {
     packageSets,
     modules,
-    # Ff set, returns the result coming form nixpgs.lib.evalModules as is,
+    # If set, returns the result coming form nixpgs.lib.evalModules as is,
     # otherwise it returns the derivation only (.config.public).
     raw ? false,
     ...
@@ -30,11 +30,13 @@
             ++ [
               inputs.drv-parts.modules.drv-parts.core
             ];
-          specialArgs = {
-            inherit packageSets;
-            dream2nix.modules.drv-parts = self.modules.drv-parts;
-            drv-parts = inputs.drv-parts;
-          };
+          specialArgs =
+            args.specialArgs
+            // {
+              inherit packageSets;
+              dream2nix.modules.drv-parts = self.modules.drv-parts;
+              drv-parts = inputs.drv-parts;
+            };
         }
       );
 
