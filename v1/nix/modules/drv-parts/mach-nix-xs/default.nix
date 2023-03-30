@@ -117,7 +117,7 @@
             (map (distDir: "--find-links ${distDir}") manualSetupDeps.${name} or [])
             ++ (
               map (dep: "--find-links ${finalDistsPaths.${dep}}")
-              config.eval-cache.content.mach-nix.dependencyTree.${name} or []
+              config.eval-cache.content.mach-nix.dependencyTree.${name}.dependencies or []
             );
         };
         mkDerivation = {
@@ -135,7 +135,7 @@
       };
     };
 
-  dependenciesFile = "${cfg.pythonSources}/dependencies.json";
+  dependenciesFile = "${cfg.pythonSources}/metadata.json";
   dependencyTree = l.fromJSON (l.readFile dependenciesFile);
 
   makeModuleFromDerivation = _name: drv:
