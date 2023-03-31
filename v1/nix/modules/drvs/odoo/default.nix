@@ -5,9 +5,16 @@
 }: let
   l = lib // builtins;
   python = config.deps.python;
+  src = config.deps.fetchFromGitHub {
+    owner = "odoo";
+    repo = "odoo";
+    # ref: 16.0
+    rev = "2d42fd69cada3b1f2716c3d0a20bec6170f9b226";
+    hash = "sha256-ZlPH+RaRZbWooe+kpiFYZtvuVmXtOMHeCW+Z74ZscXY=";
+  };
 in {
   imports = [
-    ../../drv-parts/mach-nix-xs
+    ../../drv-parts/buildPythonEnv
   ];
 
   deps = {nixpkgs, ...}: {
@@ -23,43 +30,33 @@ in {
   version = "16.0";
 
   mkDerivation = {
-    src = config.deps.fetchFromGitHub {
-      owner = "odoo";
-      repo = "odoo";
-      # ref: 16.0
-      rev = "2d42fd69cada3b1f2716c3d0a20bec6170f9b226";
-      hash = "sha256-ZlPH+RaRZbWooe+kpiFYZtvuVmXtOMHeCW+Z74ZscXY=";
-    };
+    inherit src;
   };
 
-  mach-nix.pythonSources = {
-    fetch-pip = {
-      pypiSnapshotDate = "2023-01-01";
-      requirementsFiles = ["${config.mkDerivation.src}/requirements.txt"];
-    };
-    mkDerivation = {
-      nativeBuildInputs = with config.deps; [
-        postgresql
-      ];
-    };
-  };
+  buildPythonEnv = {
+    pypiSnapshotDate = "2023-01-01";
+    requirementsList = ["${src}"];
+    requirementsFiles = ["${config.mkDerivation.src}/requirements.txt"];
 
-  # Replace some python packages entirely with candidates from nixpkgs, because
-  #   they are hard to fix
-  mach-nix.substitutions = {
-    python-ldap = python.pkgs.python-ldap;
-    pillow = python.pkgs.pillow;
-  };
-
-  # fix some builds via overrides
-  mach-nix.drvs = {
-    libsass.mkDerivation = {
-      doCheck = false;
-      doInstallCheck = l.mkForce false;
+    nativeBuildInputs = [config.deps.postgresql];
+    substitutions = {
+      python-ldap = python.pkgs.python-ldap;
+      pillow = python.pkgs.pillow;
     };
-    pypdf2.mkDerivation = {
-      doCheck = false;
-      doInstallCheck = l.mkForce false;
+
+    # fix some builds via overrides
+    drvs = {
+      psycopg2.mkDerivation = {
+        nativeBuildInputs = [config.deps.postgresql];
+      };
+      libsass.mkDerivation = {
+        doCheck = false;
+        doInstallCheck = l.mkForce false;
+      };
+      pypdf2.mkDerivation = {
+        doCheck = false;
+        doInstallCheck = l.mkForce false;
+      };
     };
   };
 }
