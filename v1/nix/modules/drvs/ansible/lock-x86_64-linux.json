@@ -1,3 +1,95 @@
 {
-  "fetchPipHash": "sha256-CGUJGoACDq9WABXZk5BRwG+qGgPq5ghoNl1L11gukNM="
+  "fetchPipMetadata": {
+    "ansible": {
+      "version": "2.7.1",
+      "dependencies": [
+        "cryptography",
+        "jinja2",
+        "paramiko",
+        "pyyaml",
+        "setuptools"
+      ],
+      "url": "https://files.pythonhosted.org/packages/ec/ee/1494474b59c6e9cccdfde32da1364b94cdb280ff96b1493deaf4f3ae55f8/ansible-2.7.1.tar.gz",
+      "sha256": "e7953472347fcc6dca10839111b576a9f790e00056344f2dcf448e6c452fe939"
+    },
+    "cryptography": {
+      "version": "38.0.4",
+      "dependencies": [
+        "cffi"
+      ],
+      "url": "https://files.pythonhosted.org/packages/26/f8/a81170a816679fca9ccd907b801992acfc03c33f952440421c921af2cc57/cryptography-38.0.4-cp36-abi3-manylinux_2_28_x86_64.whl",
+      "sha256": "ce127dd0a6a0811c251a6cddd014d292728484e530d80e872ad9806cfb1c5b3c"
+    },
+    "jinja2": {
+      "version": "3.1.2",
+      "dependencies": [
+        "markupsafe"
+      ],
+      "url": "https://files.pythonhosted.org/packages/bc/c3/f068337a370801f372f2f8f6bad74a5c140f6fda3d9de154052708dd3c65/Jinja2-3.1.2-py3-none-any.whl",
+      "sha256": "6088930bfe239f0e6710546ab9c19c9ef35e29792895fed6e6e31a023a182a61"
+    },
+    "paramiko": {
+      "version": "2.12.0",
+      "dependencies": [
+        "bcrypt",
+        "cryptography",
+        "pynacl",
+        "six"
+      ],
+      "url": "https://files.pythonhosted.org/packages/71/6d/95777fd66507106d2f8f81d005255c237187951644f85a5bd0baeec8a88f/paramiko-2.12.0-py2.py3-none-any.whl",
+      "sha256": "b2df1a6325f6996ef55a8789d0462f5b502ea83b3c990cbb5bbe57345c6812c4"
+    },
+    "pyyaml": {
+      "version": "6.0",
+      "dependencies": [],
+      "url": "https://files.pythonhosted.org/packages/12/fc/a4d5a7554e0067677823f7265cb3ae22aed8a238560b5133b58cda252dad/PyYAML-6.0-cp39-cp39-manylinux_2_5_x86_64.manylinux1_x86_64.manylinux_2_12_x86_64.manylinux2010_x86_64.whl",
+      "sha256": "40527857252b61eacd1d9af500c3337ba8deb8fc298940291486c465c8b46ec0"
+    },
+    "bcrypt": {
+      "version": "4.0.1",
+      "dependencies": [],
+      "url": "https://files.pythonhosted.org/packages/64/fe/da28a5916128d541da0993328dc5cf4b43dfbf6655f2c7a2abe26ca2dc88/bcrypt-4.0.1-cp36-abi3-manylinux_2_28_x86_64.whl",
+      "sha256": "ca3204d00d3cb2dfed07f2d74a25f12fc12f73e606fcaa6975d1f7ae69cacbb2"
+    },
+    "cffi": {
+      "version": "1.15.1",
+      "dependencies": [
+        "pycparser"
+      ],
+      "url": "https://files.pythonhosted.org/packages/2d/86/3ca57cddfa0419f6a95d1c8478f8f622ba597e3581fd501bbb915b20eb75/cffi-1.15.1-cp39-cp39-manylinux_2_17_x86_64.manylinux2014_x86_64.whl",
+      "sha256": "5d598b938678ebf3c67377cdd45e09d431369c3b1a5b331058c338e201f12b27"
+    },
+    "markupsafe": {
+      "version": "2.1.1",
+      "dependencies": [],
+      "url": "https://files.pythonhosted.org/packages/df/06/c515c5bc43b90462e753bc768e6798193c6520c9c7eb2054c7466779a9db/MarkupSafe-2.1.1-cp39-cp39-manylinux_2_17_x86_64.manylinux2014_x86_64.whl",
+      "sha256": "56442863ed2b06d19c37f94d999035e15ee982988920e12a5b4ba29b62ad1f77"
+    },
+    "pynacl": {
+      "version": "1.5.0",
+      "dependencies": [
+        "cffi"
+      ],
+      "url": "https://files.pythonhosted.org/packages/ee/87/f1bb6a595f14a327e8285b9eb54d41fef76c585a0edef0a45f6fc95de125/PyNaCl-1.5.0-cp36-abi3-manylinux_2_17_x86_64.manylinux2014_x86_64.manylinux_2_24_x86_64.whl",
+      "sha256": "0c84947a22519e013607c9be43706dd42513f9e6ae5d39d3613ca1e142fba44d"
+    },
+    "six": {
+      "version": "1.16.0",
+      "dependencies": [],
+      "url": "https://files.pythonhosted.org/packages/d9/5a/e7c31adbe875f2abbb91bd84cf2dc52d792b5a01506781dbcf25c91daf11/six-1.16.0-py2.py3-none-any.whl",
+      "sha256": "8abb2f1d86890a2dfb989f9a77cfcfd3e47c2a354b01111771326f8aa26e0254"
+    },
+    "pycparser": {
+      "version": "2.21",
+      "dependencies": [],
+      "url": "https://files.pythonhosted.org/packages/62/d5/5f610ebe421e85889f2e55e33b7f9a6795bd982198517d912eb1c76e1a53/pycparser-2.21-py2.py3-none-any.whl",
+      "sha256": "8ee45429555515e1f6b185e78100aea234072576aa43ab53aefcae078162fca9"
+    },
+    "setuptools": {
+      "version": "65.6.3",
+      "dependencies": [],
+      "url": "https://files.pythonhosted.org/packages/ef/e3/29d6e1a07e8d90ace4a522d9689d03e833b67b50d1588e693eec15f26251/setuptools-65.6.3-py3-none-any.whl",
+      "sha256": "57f6f22bde4e042978bcd50176fdb381d7c21a9efa4041202288d3737a0c6a54"
+    }
+  }
 }
