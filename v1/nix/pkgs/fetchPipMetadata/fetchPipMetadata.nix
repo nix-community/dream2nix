@@ -28,13 +28,6 @@
   requirementsList ? [],
   # list of requirements.txt files
   requirementsFiles ? [],
-  # enforce source downloads for these package names
-  noBinary ? [],
-  # restrict to binary releases (.whl)
-  # this allows buildPlatform independent fetching
-  onlyBinary ? false,
-  # additional flags for `pip download`.
-  # for reference see: https://pip.pypa.io/en/stable/cli/pip_download/
   pipFlags ? [],
   name ? null,
   nameSuffix ? "python-requirements",
@@ -50,47 +43,6 @@
   #   the times we have to update the output hash
   pipVersion ? "23.0.1",
 }: let
-  # throws an error if pipDownload is executed with unsafe arguments
-  validateArgs = result:
-  # specifying `--platform` for pip download is only allowed in combination with `--only-binary :all:`
-  # therefore, if onlyBinary is disabled, we must enforce targetPlatform == buildPlatform to ensure reproducibility
-    if ! onlyBinary && stdenv.system != stdenv.buildPlatform.system
-    then
-      throw ''
-        fetchPip cannot fetch sdist packages for ${stdenv.system} on a ${stdenv.buildPlatform.system}.
-        Either build on a ${stdenv.system} or set `onlyBinary = true`.
-      ''
-    else result;
-
-  # map nixos system strings to python platforms
-  sysToPlatforms = {
-    "x86_64-linux" = [
-      "manylinux1_x86_64"
-      "manylinux2010_x86_64"
-      "manylinux2014_x86_64"
-      "linux_x86_64"
-    ];
-    "x86_64-darwin" =
-      lib.forEach (lib.range 0 15)
-      (minor: "macosx_10_${builtins.toString minor}_x86_64");
-    "aarch64-linux" = [
-      "manylinux1_aarch64"
-      "manylinux2010_aarch64"
-      "manylinux2014_aarch64"
-      "linux_aarch64"
-    ];
-  };
-
-  platforms =
-    if sysToPlatforms ? "${stdenv.system}"
-    then sysToPlatforms."${stdenv.system}"
-    else throw errorNoBinaryFetchingForTarget;
-
-  errorNoBinaryFetchingForTarget = ''
-    'onlyBinary' fetching is currently not supported for target ${stdenv.system}.
-    You could set 'onlyBinary = false' and execute the build on a ${stdenv.system}.
-  '';
-
   # We use nixpkgs python3 to run mitmproxy, see function parameters
   pythonWithMitmproxy =
     python3.withPackages
@@ -116,8 +68,6 @@
 
       # All variables that might influence the output
       ${finalAttrs.pypiSnapshotDate}
-      ${toString finalAttrs.noBinary}
-      ${finalAttrs.onlyBinaryFlags}
       ${finalAttrs.pipVersion}
       ${finalAttrs.pipFlags}
 
@@ -180,7 +130,6 @@
 
     # add some variables to the derivation to integrate them into finalAttrs
     inherit
-      noBinary
       pipVersion
       requirementsFiles
       requirementsList
@@ -188,10 +137,6 @@
 
     # prepare flags for `pip download`
     pipFlags = lib.concatStringsSep " " pipFlags;
-    onlyBinaryFlags = lib.optionalString onlyBinary "--only-binary :all: ${
-      lib.concatStringsSep " " (lib.forEach platforms (pf: "--platform ${pf}"))
-    }";
-
     # - Execute `pip download` through the filtering proxy.
     # - optionally add a file to the FOD containing metadata of the packages involved
     buildPhase = ''
@@ -199,4 +144,4 @@
     '';
   });
 in
-  validateArgs pipDownload
+  pipDownload

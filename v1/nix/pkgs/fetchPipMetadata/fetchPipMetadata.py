@@ -24,11 +24,8 @@ PYTHON_WITH_MITM_PROXY = os.getenv("pythonWithMitmproxy")
 FILTER_PYPI_RESPONSE_SCRIPTS = os.getenv("filterPypiResponsesScript")
 PIP_VERSION = os.getenv("pipVersion")
 PIP_FLAGS = os.getenv("pipFlags")
-NO_BINARY = os.getenv("noBinary")
-ONLY_BINARY_FLAGS = os.getenv("onlyBinaryFlags")
 REQUIREMENTS_LIST = os.getenv("requirementsList")
 REQUIREMENTS_FILES = os.getenv("requirementsFiles")
-WRITE_METADATA = os.getenv("writeMetaData")
 
 
 def get_max_date():
@@ -127,7 +124,6 @@ if __name__ == "__main__":
 
     flags = [
         PIP_FLAGS,
-        ONLY_BINARY_FLAGS,
         "--proxy",
         f"https://localhost:{proxy_port}",
         "--progress-bar",
@@ -137,9 +133,6 @@ if __name__ == "__main__":
         "--report",
         str(OUT / "report.json"),
     ]
-    if NO_BINARY:
-        flags += ["--no-binary " + " --no-binary ".join(NO_BINARY.split())]
-
     for req in REQUIREMENTS_LIST.split(" "):
         if req:
             flags.append(req)
