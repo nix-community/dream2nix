@@ -22,15 +22,12 @@
   # Pip needs to be executed from that specific python version.
   # Pip accepts '--python-version', but this works only for wheel packages.
   python,
-  # hash for the fixed output derivation
-  hash,
   # list of strings of requirements.txt entries
   requirementsList ? [],
   # list of requirements.txt files
   requirementsFiles ? [],
   pipFlags ? [],
-  name ? null,
-  nameSuffix ? "python-requirements",
+  name ? "pip-metadata",
   nativeBuildInputs ? [],
   # maximum release date for packages
   pypiSnapshotDate ?
@@ -58,39 +55,6 @@
     lib.concatStringsSep "."
     (lib.sublist 0 2 (lib.splitString "." python.version));
 
-  invalidationHash = finalAttrs:
-    builtins.hashString "sha256" ''
-
-      # Ignore the python minor version. It should not affect resolution
-      ${python.implementation}
-      ${pythonMajorAndMinorVer}
-      ${stdenv.system}
-
-      # All variables that might influence the output
-      ${finalAttrs.pypiSnapshotDate}
-      ${finalAttrs.pipVersion}
-      ${finalAttrs.pipFlags}
-
-      # Include requirements
-      # We hash the content, as store paths might change more often
-      ${toString finalAttrs.requirementsList}
-      ${toString finalAttrs.requirementsFiles}
-
-      # Only hash the content of the python scripts, as the store path
-      # changes with every nixpkgs commit
-      ${builtins.readFile finalAttrs.filterPypiResponsesScript}
-      ${builtins.readFile finalAttrs.buildScript}
-    '';
-
-  invalidationHashShort = finalAttrs:
-    lib.substring 0 10
-    (builtins.unsafeDiscardStringContext (invalidationHash finalAttrs));
-
-  namePrefix =
-    if name == null
-    then ""
-    else name + "-";
-
   # A fixed output derivation containing all downloaded packages.
   # each single file is located inside a directory named like the package.
   # Example:
@@ -100,12 +64,7 @@
     # An invalidation hash is embedded into the `name`.
     # This will prevent `forgot to update the hash` scenarios, as any change
     #   in the derivaiton name enforces a re-build.
-    name = "${namePrefix}${nameSuffix}-${invalidationHashShort finalAttrs}";
-
-    # setup FOD
-    outputHashMode = "recursive";
-    outputHashAlgo = "sha256";
-    outputHash = hash;
+    inherit name;
 
     # disable some phases
     dontUnpack = true;
