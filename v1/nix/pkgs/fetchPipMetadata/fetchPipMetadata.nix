@@ -157,11 +157,6 @@
     outputHashAlgo = "sha256";
     outputHash = hash;
 
-    # Multiple outputs are not allowed in an FOD, therefore use passthru
-    #   to export $dist and $names
-    passthru.dist = "${finalAttrs.finalPackage}/dist";
-    passthru.names = "${finalAttrs.finalPackage}/names";
-
     # disable some phases
     dontUnpack = true;
     dontInstall = true;

@@ -26,7 +26,7 @@ in {
 
   inherit name version;
 
-  package-func.outputs = ["out" "names"];
+  package-func.outputs = ["out"];
 
   deps = {nixpkgs, ...}:
     l.mapAttrs (_: l.mkDefault) {
