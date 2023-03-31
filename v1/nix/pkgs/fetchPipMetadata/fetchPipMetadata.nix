@@ -27,6 +27,7 @@
   # list of requirements.txt files
   requirementsFiles ? [],
   pipFlags ? [],
+  pipVersion ? "22.3.1",
   nativeBuildInputs ? [],
   # maximum release date for packages
   pypiSnapshotDate ?
@@ -65,6 +66,7 @@
     inherit
       requirementsFiles
       requirementsList
+      pipVersion
       pipFlags
       ;
   });

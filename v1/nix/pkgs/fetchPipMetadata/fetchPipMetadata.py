@@ -82,15 +82,6 @@ def generate_ca_bundle(home, path):
     return path
 
 
-def pip(*params):
-    subprocess.run(
-        [sys.executable, "-m", "pip", *params],
-        check=True,
-        stdout=sys.stderr,
-        stderr=sys.stderr,
-    )
-
-
 if __name__ == "__main__":
     with open(sys.argv[1], "r") as f:
         args = json.load(f)
@@ -107,6 +98,20 @@ if __name__ == "__main__":
         proxy = start_mitmproxy(args, home, proxy_port)
         wait_for_proxy(proxy_port)
         cafile = generate_ca_bundle(home, ".ca-cert.pem")
+
+        venv_path = (home / ".venv").absolute()
+        subprocess.run([sys.executable, "-m", "venv", venv_path], check=True)
+        subprocess.run(
+            [
+                f"{venv_path}/bin/pip",
+                "install",
+                "--upgrade",
+                f"pip=={args['pipVersion']}",
+            ],
+            check=True,
+            stdout=sys.stderr,
+            stderr=sys.stderr,
+        )
 
         flags = args["pipFlags"] + [
             "--proxy",
@@ -125,11 +130,17 @@ if __name__ == "__main__":
             if req:
                 flags += ["-r", req]
 
-        pip(
-            "install",
-            "--dry-run",
-            "--ignore-installed",
-            *flags,
+        subprocess.run(
+            [
+                f"{venv_path}/bin/pip",
+                "install",
+                "--dry-run",
+                "--ignore-installed",
+                *flags,
+            ],
+            check=True,
+            stdout=sys.stderr,
+            stderr=sys.stderr,
         )
         proxy.kill()
 
@@ -137,18 +148,19 @@ if __name__ == "__main__":
         extras = ""
         with open(home / "report.json", "r") as f:
             report = json.load(f)
-
         for install in report["install"]:
             metadata = install["metadata"]
             name = canonicalize_name(metadata["name"])
 
             download_info = install["download_info"]
             url = download_info["url"]
-            sha256 = (
+            hash = (
                 download_info.get("archive_info", {})
-                .get("hashes", {})
-                .get("sha256")  # noqa: E501
+                .get("hash", "")
+                .split("=", 1)  # noqa: 501
             )
+            assert hash[0] == "sha256"
+            sha256 = hash[1]
             requirements = [
                 Requirement(req) for req in metadata.get("requires_dist", [])
             ]  # noqa: E501
