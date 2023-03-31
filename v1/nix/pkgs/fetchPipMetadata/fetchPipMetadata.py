@@ -1,6 +1,5 @@
 import os
 import socket
-import ssl
 import subprocess
 import time
 import json
@@ -12,8 +11,6 @@ import certifi
 from packaging.requirements import Requirement
 from packaging.utils import (
     canonicalize_name,
-    parse_sdist_filename,
-    parse_wheel_filename,
 )
 
 
@@ -62,14 +59,13 @@ def wait_for_proxy(proxy_port):
     timeout = time.time() + 60 * 5
     req = urllib.request.Request("http://pypi.org")
     req.set_proxy(f"127.0.0.1:{proxy_port}", "http")
-    req.set_proxy(f"127.0.0.1:{proxy_port}", "https")
 
     while time.time() < timeout:
         try:
             res = urllib.request.urlopen(req, None, 5)
             if res.status < 400:
                 break
-        except urllib.error.URLError as e:
+        except urllib.error.URLError:
             pass
         finally:
             time.sleep(1)
@@ -90,13 +86,13 @@ def generate_ca_bundle(path):
 
 
 def pip(*args):
-    subprocess.run([f"pip", *args], check=True)
+    subprocess.run(["pip", *args], check=True)
 
 
 if __name__ == "__main__":
-    OUT.mkdir()
-
-    print(f"selected maximum release date for python packages: {get_max_date()}")
+    print(
+        f"selected maximum release date for python packages: {get_max_date()}"
+    )  # noqa: E501
     proxy_port = get_free_port()
 
     proxy = start_mitmproxy(proxy_port)
@@ -141,8 +137,14 @@ if __name__ == "__main__":
 
         download_info = install["download_info"]
         url = download_info["url"]
-        sha256 = download_info.get("archive_info", {}).get("hashes", {}).get("sha256")
-        requirements = [Requirement(req) for req in metadata.get("requires_dist", [])]
+        sha256 = (
+            download_info.get("archive_info", {})
+            .get("hashes", {})
+            .get("sha256")  # noqa: E501
+        )
+        requirements = [
+            Requirement(req) for req in metadata.get("requires_dist", [])
+        ]  # noqa: E501
         dependencies = sorted(
             [
                 canonicalize_name(req.name)
