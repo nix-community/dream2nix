@@ -17,13 +17,33 @@
   };
 in {
   options.buildPythonEnv = {
-    pythonSources = l.mkOption {
-      type = drvPartsTypes.drvPartOrPackage;
-      # if module given, convert to derivation
-      apply = val: val.public or val;
+    pypiSnapshotDate = l.mkOption {
+      type = t.str;
       description = ''
-        A derivation or drv-part that outputs fetched python sources.
-        Each single python source must be located in a subdirectory named after the package name.
+        maximum release date for packages
+        Choose any date from the past.
+      '';
+      example = "2023-01-01";
+    };
+    pipFlags = l.mkOption {
+      type = t.listOf t.str;
+      description = ''
+        list of flags for pip install
+      '';
+      default = [];
+    };
+    requirementsList = l.mkOption {
+      type = t.listOf t.str;
+      default = [];
+      description = ''
+        list of strings of requirements.txt entries
+      '';
+    };
+    requirementsFiles = l.mkOption {
+      type = t.listOf t.str;
+      default = [];
+      description = ''
+        list of requirements.txt files
       '';
     };
 
@@ -41,19 +61,6 @@ in {
         specialArgs = {inherit packageSets;};
       });
       description = "drv-parts modules that define python dependencies";
-    };
-
-    # INTERNAL
-
-    metadata = l.mkOption {
-      type = t.lazyAttrsOf t.anything;
-      # TODO submodule type definition
-      description = ''
-        metadata of python packages in cfg.pythonSources.
-        depends on IFD and therefore should be cached
-      '';
-      internal = true;
-      readOnly = true;
     };
   };
 }

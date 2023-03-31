@@ -9,8 +9,7 @@
   python = config.deps.python;
   cfg = config.buildPythonEnv;
   packageName = config.name;
-  metadata = config.eval-cache.content.buildPythonEnv.metadata;
-  getDistFile = name: "${cfg.pythonSources}/dist/${metadata.${name}.file}";
+  metadata = config.lock.content.fetchPipMetadata;
 
   drvs =
     l.mapAttrs (
@@ -62,7 +61,7 @@
         );
       };
       mkDerivation = {
-        src = l.mkDefault (getDistFile config.name);
+        src = l.mkDefault (l.fetchurl {inherit (metadata.${config.name}) url sha256;});
         doCheck = l.mkDefault false;
 
         nativeBuildInputs = [config.deps.autoPatchelfHook];
@@ -104,45 +103,29 @@ in {
   imports = [
     commonModule
     ./interface.nix
-    ../eval-cache
     ../lock
   ];
 
   config = {
     deps = {nixpkgs, ...}:
       l.mapAttrs (_: l.mkDefault) {
+        fetchPipMetadata = nixpkgs.callPackage ../../../pkgs/fetchPipMetadata {};
         runCommand = nixpkgs.runCommand;
         pip = nixpkgs.python3Packages.pip;
         setuptools = nixpkgs.python3Packages.setuptools;
       };
 
-    # use lock file to manage hash for fetchPip
-    lock.fields.fetchPipHash = {
-      script =
-        config.lock.lib.computeFODHash
-        config.buildPythonEnv.pythonSources;
-      default = l.fakeSha256;
+    # Keep package metadata fetched by Pip in our lockfile
+    lock.fields.fetchPipMetadata = {
+      script = config.deps.fetchPipMetadata {
+        inherit (cfg) pypiSnapshotDate pipFlags requirementsList requirementsFiles;
+        inherit (config.deps) python;
+      };
+      default = {};
     };
 
     buildPythonEnv = {
-      metadata = l.fromJSON (l.readFile "${cfg.pythonSources}/metadata.json");
       drvs = drvs // patchedSubstitutions;
-      pythonSources = {
-        imports = [../../drv-parts/fetch-pip-metadata];
-        deps.python = config.deps.python;
-        fetch-pip-metadata = {
-          hash = config.lock.content.fetchPipHash;
-        };
-      };
-    };
-
-    eval-cache = {
-      fields = {
-        buildPythonEnv.metadata = true;
-      };
-      invalidationFields = {
-        buildPythonEnv.pythonSources = true;
-      };
     };
 
     mkDerivation = {
@@ -150,12 +133,12 @@ in {
       dontStrip = l.mkDefault true;
 
       passthru = {
-        inherit (config.buildPythonEnv) pythonSources;
         # The final dists we want to install.
         # A mix of:
         #   - downloaded wheels
         #   - downloaded sdists built into wheels (see above)
         #   - substitutions from nixpkgs patched for compat with autoPatchelfHook
+        # TODO still useful? rename to "wheels"?
         dists = l.mapAttrs (_: drv: drv.public.out.dist) config.buildPythonEnv.drvs;
       };
     };
