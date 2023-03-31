@@ -55,6 +55,14 @@ in {
       default = {};
     };
 
+    nativeBuildInputs = l.mkOption {
+      type = t.listOf t.package;
+      default = [];
+      description = ''
+        list of native packages to include during metadata generation
+      '';
+    };
+
     drvs = l.mkOption {
       type = t.lazyAttrsOf (t.submoduleWith {
         modules = [drv-parts.modules.drv-parts.core];
