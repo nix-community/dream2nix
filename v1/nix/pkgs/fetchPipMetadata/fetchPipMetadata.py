@@ -19,10 +19,8 @@ from packaging.utils import (
 
 HOME = Path(os.getcwd())
 OUT = Path(os.getenv("out"))
-PYTHON_WITH_PACKAGING = os.getenv("pythonWithPackaging")
 PYTHON_WITH_MITM_PROXY = os.getenv("pythonWithMitmproxy")
 FILTER_PYPI_RESPONSE_SCRIPTS = os.getenv("filterPypiResponsesScript")
-PIP_VERSION = os.getenv("pipVersion")
 PIP_FLAGS = os.getenv("pipFlags")
 REQUIREMENTS_LIST = os.getenv("requirementsList")
 REQUIREMENTS_FILES = os.getenv("requirementsFiles")
@@ -60,16 +58,15 @@ def start_mitmproxy(port):
     return proc
 
 
-def wait_for_proxy(proxy_port, cafile):
+def wait_for_proxy(proxy_port):
     timeout = time.time() + 60 * 5
-    req = urllib.request.Request("https://pypi.org")
+    req = urllib.request.Request("http://pypi.org")
     req.set_proxy(f"127.0.0.1:{proxy_port}", "http")
     req.set_proxy(f"127.0.0.1:{proxy_port}", "https")
 
-    context = ssl.create_default_context(cafile=cafile)
     while time.time() < timeout:
         try:
-            res = urllib.request.urlopen(req, None, 5, context=context)
+            res = urllib.request.urlopen(req, None, 5)
             if res.status < 400:
                 break
         except urllib.error.URLError as e:
@@ -92,14 +89,8 @@ def generate_ca_bundle(path):
     return path
 
 
-def create_venv(path):
-    subprocess.run(
-        [f"{PYTHON_WITH_PACKAGING}/bin/python", "-m", "venv", path], check=True
-    )
-
-
-def pip(venv_path, *args):
-    subprocess.run([f"{venv_path}/bin/pip", *args], check=True)
+def pip(*args):
+    subprocess.run([f"pip", *args], check=True)
 
 
 if __name__ == "__main__":
@@ -109,18 +100,8 @@ if __name__ == "__main__":
     proxy_port = get_free_port()
 
     proxy = start_mitmproxy(proxy_port)
-
-    venv_path = Path(".venv").absolute()
-    create_venv(venv_path)
-    pip(
-        venv_path,
-        "install",
-        "--upgrade",
-        f"pip=={PIP_VERSION}",
-    )
-
+    wait_for_proxy(proxy_port)
     cafile = generate_ca_bundle(HOME / ".ca-cert.pem")
-    wait_for_proxy(proxy_port, cafile)
 
     flags = [
         PIP_FLAGS,
@@ -142,7 +123,6 @@ if __name__ == "__main__":
 
     flags = " ".join(map(str, filter(None, flags))).split(" ")
     pip(
-        venv_path,
         "install",
         "--dry-run",
         "--ignore-installed",

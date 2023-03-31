@@ -36,9 +36,6 @@
       Choose any date from the past.
       Example value: "2023-01-01"
     '',
-  # It's better to not refer to python.pkgs.pip directly, as we want to reduce
-  #   the times we have to update the output hash
-  pipVersion ? "23.0.1",
 }: let
   # We use nixpkgs python3 to run mitmproxy, see function parameters
   pythonWithMitmproxy =
@@ -49,7 +46,7 @@
   # that version-related markers are resolved correctly.
   pythonWithPackaging =
     python.withPackages
-    (ps: [ps.packaging ps.certifi ps.dateutil]);
+    (ps: [ps.packaging ps.certifi ps.dateutil ps.pip]);
 
   pythonMajorAndMinorVer =
     lib.concatStringsSep "."
@@ -89,7 +86,6 @@
 
     # add some variables to the derivation to integrate them into finalAttrs
     inherit
-      pipVersion
       requirementsFiles
       requirementsList
       ;
