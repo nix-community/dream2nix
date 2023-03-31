@@ -81,12 +81,5 @@ in {
         list of requirements.txt files
       '';
     };
-    writeMetaData = l.mkOption {
-      type = t.bool;
-      default = true;
-      description = ''
-        Write "metadata.json" to $out, documenting which package depends on which.
-      '';
-    };
   };
 }

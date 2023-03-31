@@ -49,8 +49,6 @@
   # It's better to not refer to python.pkgs.pip directly, as we want to reduce
   #   the times we have to update the output hash
   pipVersion ? "23.0.1",
-  # Write "metadata.json" to $out, including which package depends on which.
-  writeMetaData ? true,
 }: let
   # throws an error if pipDownload is executed with unsafe arguments
   validateArgs = result:
@@ -122,7 +120,6 @@
       ${finalAttrs.onlyBinaryFlags}
       ${finalAttrs.pipVersion}
       ${finalAttrs.pipFlags}
-      ${toString writeMetaData}
 
       # Include requirements
       # We hash the content, as store paths might change more often
@@ -192,7 +189,6 @@
       pipVersion
       requirementsFiles
       requirementsList
-      writeMetaData
       ;
 
     # prepare flags for `pip download`
