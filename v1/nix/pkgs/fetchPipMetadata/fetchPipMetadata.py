@@ -107,12 +107,6 @@ def pip(venv_path, *args):
 
 if __name__ == "__main__":
     OUT.mkdir()
-    dist_path = OUT / "dist"
-    names_path = OUT / "names"
-    dist_path.mkdir()
-    names_path.mkdir()
-    cache_path = Path("/build/pip_cache")
-    cache_path.mkdir()
 
     print(f"selected maximum release date for python packages: {get_max_date()}")
     proxy_port = get_free_port()
@@ -144,9 +138,7 @@ if __name__ == "__main__":
         "/build/report.json",
     ]
     if NO_BINARY:
-        optional_flags += ["--no-binary " + " --no-binary ".join(NO_BINARY.split())]
-    if WRITE_METADATA:
-        metadata_flags = ["--report", "/build/report.json"]
+        flags += ["--no-binary " + " --no-binary ".join(NO_BINARY.split())]
 
     for req in REQUIREMENTS_LIST.split(" "):
         if req:
@@ -161,59 +153,35 @@ if __name__ == "__main__":
         "install",
         "--dry-run",
         "--ignore-installed",
-        *metadata_flags,
         *flags,
     )
-    pip(
-        venv_path,
-        "download",
-        "--dest",
-        dist_path,
-        *flags,
-    )
-
     proxy.kill()
 
-    for dist_file in dist_path.iterdir():
-        if dist_file.suffix == ".whl":
-            name = parse_wheel_filename(dist_file.name)[0]
-        else:
-            name = parse_sdist_filename(dist_file.name)[0]
-        pname = canonicalize_name(name)
-        name_path = names_path / pname
-        print(f"creating link {name_path} -> {dist_file}")
-        name_path.mkdir()
-        (name_path / dist_file.name).symlink_to(f"../../dist/{dist_file.name}")
+    packages = dict()
+    with open("/build/report.json", "r") as f:
+        report = json.load(f)
 
-    if WRITE_METADATA:
-        packages = dict()
+    for install in report["install"]:
+        metadata = install["metadata"]
+        name = canonicalize_name(metadata["name"])
 
-        with open("/build/report.json", "r") as f:
-            report = json.load(f)
-
-        for install in report["install"]:
-            metadata = install["metadata"]
-            name = canonicalize_name(metadata["name"])
-
-            download_info = install["download_info"]
-            file = download_info["url"].split("/")[-1]
-            hash = download_info.get("archive_info", {}).get("hashes", {}).get("sha256")
-            requirements = [
-                Requirement(req) for req in metadata.get("requires_dist", [])
+        download_info = install["download_info"]
+        file = download_info["url"].split("/")[-1]
+        hash = download_info.get("archive_info", {}).get("hashes", {}).get("sha256")
+        requirements = [Requirement(req) for req in metadata.get("requires_dist", [])]
+        extras = ""
+        dependencies = sorted(
+            [
+                canonicalize_name(req.name)
+                for req in requirements
+                if not req.marker or req.marker.evaluate({"extra": extras})
             ]
-            extras = ""
-            dependencies = sorted(
-                [
-                    canonicalize_name(req.name)
-                    for req in requirements
-                    if not req.marker or req.marker.evaluate({"extra": extras})
-                ]
-            )
-            packages[name] = dict(
-                version=metadata["version"],
-                dependencies=dependencies,
-                file=file,
-                hash=hash,
-            )
-        with open(OUT / "metadata.json", "w") as f:
-            json.dump(packages, f, indent=2)
+        )
+        packages[name] = dict(
+            version=metadata["version"],
+            dependencies=dependencies,
+            file=file,
+            hash=hash,
+        )
+    with open(OUT / "metadata.json", "w") as f:
+        json.dump(packages, f, indent=2)
