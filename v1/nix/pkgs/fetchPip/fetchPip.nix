@@ -93,11 +93,13 @@
     You could set 'onlyBinary = false' and execute the build on a ${stdenv.system}.
   '';
 
-  # we use mitmproxy to filter the pypi responses
+  # We use nixpkgs python3 to run mitmproxy, see function parameters
   pythonWithMitmproxy =
     python3.withPackages
     (ps: [ps.mitmproxy ps.dateutil]);
 
+  # We use the user-selected python to run pip and friends, this ensures
+  # that version-related markers are resolved correctly.
   pythonWithPackaging =
     python.withPackages
     (ps: [ps.packaging ps.certifi ps.dateutil]);
