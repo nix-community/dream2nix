@@ -1,7 +1,9 @@
 import os
+import sys
 import socket
 import subprocess
 import time
+import tempfile
 import json
 import dateutil.parser
 import urllib.request
@@ -14,20 +16,11 @@ from packaging.utils import (
 )
 
 
-HOME = Path(os.getcwd())
-OUT = Path(os.getenv("out"))
-PYTHON_WITH_MITM_PROXY = os.getenv("pythonWithMitmproxy")
-FILTER_PYPI_RESPONSE_SCRIPTS = os.getenv("filterPypiResponsesScript")
-PIP_FLAGS = os.getenv("pipFlags")
-REQUIREMENTS_LIST = os.getenv("requirementsList")
-REQUIREMENTS_FILES = os.getenv("requirementsFiles")
-
-
-def get_max_date():
+def get_max_date(args):
     try:
-        return int(os.getenv("pypiSnapshotDate"))
+        return int(args["pypiSnapshotDate"])
     except ValueError:
-        return dateutil.parser.parse(os.getenv("pypiSnapshotDate"))
+        return dateutil.parser.parse(args["pypiSnapshotDate"])
 
 
 def get_free_port():
@@ -38,19 +31,22 @@ def get_free_port():
     return port
 
 
-def start_mitmproxy(port):
+def start_mitmproxy(args, home, port):
     proc = subprocess.Popen(
         [
-            f"{PYTHON_WITH_MITM_PROXY}/bin/mitmdump",
+            args["mitmProxy"],
             "--listen-port",
             str(port),
+            "--quiet",
             "--anticache",
             "--ignore-hosts",
             ".*files.pythonhosted.org.*",
             "--script",
-            FILTER_PYPI_RESPONSE_SCRIPTS,
+            args["filterPypiResponsesScript"],
         ],
-        env={"pypiSnapshotDate": os.getenv("pypiSnapshotDate"), "HOME": HOME},
+        stdout=sys.stderr,
+        stderr=sys.stderr,
+        env={"pypiSnapshotDate": args["pypiSnapshotDate"], "HOME": home},
     )
     return proc
 
@@ -73,8 +69,9 @@ def wait_for_proxy(proxy_port):
 
 # as we only proxy *some* calls, we need to combine upstream
 # ca certificates and the one from mitm proxy
-def generate_ca_bundle(path):
-    with open(HOME / ".mitmproxy/mitmproxy-ca-cert.pem", "r") as f:
+def generate_ca_bundle(home, path):
+    path = home / path
+    with open(home / ".mitmproxy/mitmproxy-ca-cert.pem", "r") as f:
         mitmproxy_cacert = f.read()
     with open(certifi.where(), "r") as f:
         certifi_cacert = f.read()
@@ -85,78 +82,88 @@ def generate_ca_bundle(path):
     return path
 
 
-def pip(*args):
-    subprocess.run(["pip", *args], check=True)
+def pip(*params):
+    subprocess.run(
+        [sys.executable, "-m", "pip", *params],
+        check=True,
+        stdout=sys.stderr,
+        stderr=sys.stderr,
+    )
 
 
 if __name__ == "__main__":
-    print(
-        f"selected maximum release date for python packages: {get_max_date()}"
-    )  # noqa: E501
-    proxy_port = get_free_port()
+    with open(sys.argv[1], "r") as f:
+        args = json.load(f)
 
-    proxy = start_mitmproxy(proxy_port)
-    wait_for_proxy(proxy_port)
-    cafile = generate_ca_bundle(HOME / ".ca-cert.pem")
+    with tempfile.TemporaryDirectory() as home:
+        home = Path(home)
 
-    flags = [
-        PIP_FLAGS,
-        "--proxy",
-        f"https://localhost:{proxy_port}",
-        "--progress-bar",
-        "off",
-        "--cert",
-        cafile,
-        "--report",
-        str(OUT / "report.json"),
-    ]
-    for req in REQUIREMENTS_LIST.split(" "):
-        if req:
-            flags.append(req)
-    for req in REQUIREMENTS_FILES.split(" "):
-        if req:
-            flags += ["-r", req]
-
-    flags = " ".join(map(str, filter(None, flags))).split(" ")
-    pip(
-        "install",
-        "--dry-run",
-        "--ignore-installed",
-        *flags,
-    )
-    proxy.kill()
-
-    packages = dict()
-    extras = ""
-    with open(OUT / "report.json", "r") as f:
-        report = json.load(f)
-
-    for install in report["install"]:
-        metadata = install["metadata"]
-        name = canonicalize_name(metadata["name"])
-
-        download_info = install["download_info"]
-        url = download_info["url"]
-        sha256 = (
-            download_info.get("archive_info", {})
-            .get("hashes", {})
-            .get("sha256")  # noqa: E501
+        print(
+            f"selected maximum release date for python packages: {get_max_date(args)}",  # noqa: E501
+            file=sys.stderr,
         )
-        requirements = [
-            Requirement(req) for req in metadata.get("requires_dist", [])
-        ]  # noqa: E501
-        dependencies = sorted(
-            [
-                canonicalize_name(req.name)
-                for req in requirements
-                if not req.marker or req.marker.evaluate({"extra": extras})
-            ]
+        proxy_port = get_free_port()
+
+        proxy = start_mitmproxy(args, home, proxy_port)
+        wait_for_proxy(proxy_port)
+        cafile = generate_ca_bundle(home, ".ca-cert.pem")
+
+        flags = args["pipFlags"] + [
+            "--proxy",
+            f"https://localhost:{proxy_port}",
+            "--progress-bar",
+            "off",
+            "--cert",
+            cafile,
+            "--report",
+            str(home / "report.json"),
+        ]
+        for req in args["requirementsList"]:
+            if req:
+                flags.append(req)
+        for req in args["requirementsFiles"]:
+            if req:
+                flags += ["-r", req]
+
+        pip(
+            "install",
+            "--dry-run",
+            "--ignore-installed",
+            *flags,
         )
-        packages[name] = dict(
-            version=metadata["version"],
-            dependencies=dependencies,
-            url=url,
-            sha256=sha256,
-        )
-    with open(OUT / "metadata.json", "w") as f:
-        json.dump(packages, f, indent=2)
+        proxy.kill()
+
+        packages = dict()
+        extras = ""
+        with open(home / "report.json", "r") as f:
+            report = json.load(f)
+
+        for install in report["install"]:
+            metadata = install["metadata"]
+            name = canonicalize_name(metadata["name"])
+
+            download_info = install["download_info"]
+            url = download_info["url"]
+            sha256 = (
+                download_info.get("archive_info", {})
+                .get("hashes", {})
+                .get("sha256")  # noqa: E501
+            )
+            requirements = [
+                Requirement(req) for req in metadata.get("requires_dist", [])
+            ]  # noqa: E501
+            dependencies = sorted(
+                [
+                    canonicalize_name(req.name)
+                    for req in requirements
+                    if not req.marker or req.marker.evaluate({"extra": extras})
+                ]
+            )
+            packages[name] = dict(
+                version=metadata["version"],
+                dependencies=dependencies,
+                url=url,
+                sha256=sha256,
+            )
+        with open(os.getenv("out"), "w") as f:
+            json.dump(packages, f, indent=2)
