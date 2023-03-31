@@ -159,8 +159,7 @@ if __name__ == "__main__":
                 .get("hash", "")
                 .split("=", 1)  # noqa: 501
             )
-            assert hash[0] == "sha256"
-            sha256 = hash[1]
+            sha256 = hash[1] if hash[0] == "sha256" else None
             requirements = [
                 Requirement(req) for req in metadata.get("requires_dist", [])
             ]  # noqa: E501
