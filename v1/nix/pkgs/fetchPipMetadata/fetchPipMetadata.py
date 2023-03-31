@@ -135,7 +135,7 @@ if __name__ == "__main__":
         "--cert",
         cafile,
         "--report",
-        "/build/report.json",
+        str(OUT / "report.json"),
     ]
     if NO_BINARY:
         flags += ["--no-binary " + " --no-binary ".join(NO_BINARY.split())]
@@ -158,7 +158,8 @@ if __name__ == "__main__":
     proxy.kill()
 
     packages = dict()
-    with open("/build/report.json", "r") as f:
+    extras = ""
+    with open(OUT / "report.json", "r") as f:
         report = json.load(f)
 
     for install in report["install"]:
@@ -166,10 +167,9 @@ if __name__ == "__main__":
         name = canonicalize_name(metadata["name"])
 
         download_info = install["download_info"]
-        file = download_info["url"].split("/")[-1]
-        hash = download_info.get("archive_info", {}).get("hashes", {}).get("sha256")
+        url = download_info["url"]
+        sha256 = download_info.get("archive_info", {}).get("hashes", {}).get("sha256")
         requirements = [Requirement(req) for req in metadata.get("requires_dist", [])]
-        extras = ""
         dependencies = sorted(
             [
                 canonicalize_name(req.name)
@@ -180,8 +180,8 @@ if __name__ == "__main__":
         packages[name] = dict(
             version=metadata["version"],
             dependencies=dependencies,
-            file=file,
-            hash=hash,
+            url=url,
+            sha256=sha256,
         )
     with open(OUT / "metadata.json", "w") as f:
         json.dump(packages, f, indent=2)
