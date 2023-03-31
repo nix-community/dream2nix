@@ -48,9 +48,9 @@
     '',
   # It's better to not refer to python.pkgs.pip directly, as we want to reduce
   #   the times we have to update the output hash
-  pipVersion ? "23.0",
-  # Write "dependencies.json" to $out, documenting which package depends on which.
-  writeDependencyTree ? true,
+  pipVersion ? "23.0.1",
+  # Write "metadata.json" to $out, including which package depends on which.
+  writeMetaData ? true,
 }: let
   # throws an error if pipDownload is executed with unsafe arguments
   validateArgs = result:
@@ -93,10 +93,16 @@
     You could set 'onlyBinary = false' and execute the build on a ${stdenv.system}.
   '';
 
-  # we use mitmproxy to filter the pypi responses
+  # We use nixpkgs python3 to run mitmproxy, see function parameters
   pythonWithMitmproxy =
     python3.withPackages
-    (ps: [ps.mitmproxy ps.python-dateutil ps.pkginfo ps.packaging]);
+    (ps: [ps.mitmproxy ps.dateutil]);
+
+  # We use the user-selected python to run pip and friends, this ensures
+  # that version-related markers are resolved correctly.
+  pythonWithPackaging =
+    python.withPackages
+    (ps: [ps.packaging ps.certifi ps.dateutil]);
 
   pythonMajorAndMinorVer =
     lib.concatStringsSep "."
@@ -116,7 +122,7 @@
       ${finalAttrs.onlyBinaryFlags}
       ${finalAttrs.pipVersion}
       ${finalAttrs.pipFlags}
-      ${toString writeDependencyTree}
+      ${toString writeMetaData}
 
       # Include requirements
       # We hash the content, as store paths might change more often
@@ -127,7 +133,6 @@
       # changes with every nixpkgs commit
       ${builtins.readFile finalAttrs.filterPypiResponsesScript}
       ${builtins.readFile finalAttrs.buildScript}
-      ${builtins.readFile finalAttrs.writeDependencyTreeScript}
     '';
 
   invalidationHashShort = finalAttrs:
@@ -171,10 +176,9 @@
     # python scripts
     filterPypiResponsesScript = ./filter-pypi-responses.py;
     buildScript = ./fetchPip.py;
-    writeDependencyTreeScript = ./write-dependency-tree.py;
 
     # the python interpreter used to run the build script
-    pythonBin = python.interpreter;
+    inherit pythonWithPackaging;
 
     # the python interpreter used to run the proxy script
     inherit pythonWithMitmproxy;
@@ -188,6 +192,7 @@
       pipVersion
       requirementsFiles
       requirementsList
+      writeMetaData
       ;
 
     # prepare flags for `pip download`
@@ -197,10 +202,9 @@
     }";
 
     # - Execute `pip download` through the filtering proxy.
-    # - optionally add a file to the FOD containing the dependency tree
+    # - optionally add a file to the FOD containing metadata of the packages involved
     buildPhase = ''
-      $pythonWithMitmproxy/bin/python $buildScript
-      ${lib.optionalString writeDependencyTree "$pythonWithMitmproxy/bin/python $writeDependencyTreeScript $out/dist > $out/dependencies.json"}
+      $pythonWithPackaging/bin/python $buildScript
     '';
   });
 in
