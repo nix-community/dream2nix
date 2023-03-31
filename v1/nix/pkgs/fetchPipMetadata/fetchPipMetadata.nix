@@ -10,9 +10,13 @@
 # TODO: for pypiSnapshotDate only allow timestamp or format 2023-01-01
 # TODO: Error if pypiSnapshotDate points to the future
 {
+  stdenv,
   lib,
   writers,
   writeText,
+  writeShellScriptBin,
+  makeWrapper,
+  symlinkJoin,
   # Use the nixpkgs default python version for the proxy script.
   # The python version select by the user below might be too old for the
   #   dependencies required by the proxy
@@ -70,7 +74,13 @@
       pipFlags
       ;
   });
-in
-  writers.writeBash "fetch_pip_metadata" ''
+  script = writeShellScriptBin "fetch_pip_metadata" ''
     ${fetchPipMetadata} ${args}
-  ''
+  '';
+  env = symlinkJoin {
+    name = "fetch_pip_metadata";
+    paths = [script] ++ nativeBuildInputs;
+    buildInputs = [makeWrapper];
+    postBuild = "wrapProgram $out/bin/fetch_pip_metadata --prefix PATH : $out/bin";
+  };
+in "${env}/bin/fetch_pip_metadata"
