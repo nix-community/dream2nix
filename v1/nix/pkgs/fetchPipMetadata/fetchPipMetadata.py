@@ -177,4 +177,4 @@ if __name__ == "__main__":
                 sha256=sha256,
             )
         with open(os.getenv("out"), "w") as f:
-            json.dump(packages, f, indent=2)
+            json.dump(packages, f, indent=2, sort_keys=True)
