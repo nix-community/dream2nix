@@ -82,6 +82,55 @@ def generate_ca_bundle(home, path):
     return path
 
 
+def process_dependencies(report):
+    """
+    Pre-process pips report.json for easier consumation by nix.
+    We extract name, version, url and hash of the source distribution or
+    wheel. We also preprocess requirements and their environment markers to
+    the effective, platform-specific dependencies of each package. This makes
+    heavy use of `packaging` which is hard to impossible to re-implement
+    correctly in nix.
+    """
+    packages = dict()
+    package_names = [
+        canonicalize_name(install["metadata"]["name"])
+        for install in report["install"]  # noqa: 501
+    ]
+    for install in report["install"]:
+        metadata = install["metadata"]
+        name = canonicalize_name(metadata["name"])
+        version = metadata["version"]
+
+        download_info = install["download_info"]
+        url = download_info["url"]
+        hash = (
+            download_info.get("archive_info", {}).get("hash", "").split("=", 1)
+        )  # noqa: 501
+        sha256 = hash[1] if hash[0] == "sha256" else None
+
+        dependencies = set()
+        for requirement in map(Requirement, metadata.get("requires_dist", [])):
+            # Correctly resolving this requirements with metadata only would
+            # require us to parse and evaluate "extra" markers. This is tricky
+            # as we would need to reconstruct the dependency tree and
+            # evaluate from the root down, as the set of "extras" for a given
+            # node is only known after we know whether its parent is optional
+            # or not.
+            # We assume that pip resolved them correctly already, so we just
+            # include a requirement whenever it's included in the report.
+            req_name = canonicalize_name(requirement.name)
+            if req_name in package_names:
+                dependencies.add(req_name)
+
+        packages[name] = dict(
+            url=url,
+            version=version,
+            sha256=sha256,
+            dependencies=list(dependencies),
+        )
+    return packages
+
+
 if __name__ == "__main__":
     with open(sys.argv[1], "r") as f:
         args = json.load(f)
@@ -136,6 +185,7 @@ if __name__ == "__main__":
                 "install",
                 "--dry-run",
                 "--ignore-installed",
+                # "--use-feature=fast-deps",
                 *flags,
             ],
             check=True,
@@ -144,37 +194,8 @@ if __name__ == "__main__":
         )
         proxy.kill()
 
-        packages = dict()
-        extras = ""
         with open(home / "report.json", "r") as f:
             report = json.load(f)
-        for install in report["install"]:
-            metadata = install["metadata"]
-            name = canonicalize_name(metadata["name"])
-
-            download_info = install["download_info"]
-            url = download_info["url"]
-            hash = (
-                download_info.get("archive_info", {})
-                .get("hash", "")
-                .split("=", 1)  # noqa: 501
-            )
-            sha256 = hash[1] if hash[0] == "sha256" else None
-            requirements = [
-                Requirement(req) for req in metadata.get("requires_dist", [])
-            ]  # noqa: E501
-            dependencies = sorted(
-                [
-                    canonicalize_name(req.name)
-                    for req in requirements
-                    if not req.marker or req.marker.evaluate({"extra": extras})
-                ]
-            )
-            packages[name] = dict(
-                version=metadata["version"],
-                dependencies=dependencies,
-                url=url,
-                sha256=sha256,
-            )
         with open(os.getenv("out"), "w") as f:
+            packages = process_dependencies(report)
             json.dump(packages, f, indent=2, sort_keys=True)
