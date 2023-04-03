@@ -82,6 +82,13 @@ def generate_ca_bundle(home, path):
     return path
 
 
+def evaluate_extras(req, extras, env):
+    if not extras:
+        return req.marker.evaluate({**env, "extra": ""})
+    else:
+        return any({req.marker.evaluate({**env, "extra": e}) for e in extras})
+
+
 def process_dependencies(report):
     """
     Pre-process pips report.json for easier consumation by nix.
@@ -91,43 +98,41 @@ def process_dependencies(report):
     heavy use of `packaging` which is hard to impossible to re-implement
     correctly in nix.
     """
+
     packages = dict()
-    package_names = [
-        canonicalize_name(install["metadata"]["name"])
-        for install in report["install"]  # noqa: 501
-    ]
+    installs_by_name = dict()
+    env = report["environment"]
+    roots = filter(lambda p: p.get("requested", False), report["install"])
     for install in report["install"]:
-        metadata = install["metadata"]
-        name = canonicalize_name(metadata["name"])
-        version = metadata["version"]
+        name = canonicalize_name(install["metadata"]["name"])
+        installs_by_name[name] = install
 
         download_info = install["download_info"]
-        url = download_info["url"]
         hash = (
-            download_info.get("archive_info", {}).get("hash", "").split("=", 1)
-        )  # noqa: 501
-        sha256 = hash[1] if hash[0] == "sha256" else None
-
-        dependencies = set()
-        for requirement in map(Requirement, metadata.get("requires_dist", [])):
-            # Correctly resolving this requirements with metadata only would
-            # require us to parse and evaluate "extra" markers. This is tricky
-            # as we would need to reconstruct the dependency tree and
-            # evaluate from the root down, as the set of "extras" for a given
-            # node is only known after we know whether its parent is optional
-            # or not.
-            # We assume that pip resolved them correctly already, so we just
-            # include a requirement whenever it's included in the report.
-            req_name = canonicalize_name(requirement.name)
-            if req_name in package_names:
-                dependencies.add(req_name)
-
-        packages[name] = dict(
-            url=url,
-            version=version,
-            sha256=sha256,
-            dependencies=list(dependencies),
+            download_info.get("archive_info", {})
+            .get("hash", "")
+            .split("=", 1)  # noqa: 501
         )
+        sha256 = hash[1] if hash[0] == "sha256" else None
+        packages[name] = dict(
+            url=download_info["url"],
+            version=install["metadata"]["version"],
+            sha256=sha256,
+            dependencies=[],
+        )
+
+    def walker(root, extras):
+        root_name = canonicalize_name(root["metadata"]["name"])
+        reqs = map(Requirement, root["metadata"].get("requires_dist", []))
+        for req in reqs:
+            if (not req.marker) or evaluate_extras(req, extras, env):
+                req_name = canonicalize_name(req.name)
+                if req_name not in packages[root_name]["dependencies"]:
+                    packages[root_name]["dependencies"].append(req_name)
+                walker(installs_by_name[req_name], req.extras)
+
+    for root in roots:
+        walker(root, root.get("requested_extras", set()))
     return packages
 
 
