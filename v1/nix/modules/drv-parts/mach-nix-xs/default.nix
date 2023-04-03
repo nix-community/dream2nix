@@ -106,6 +106,7 @@
               (nixpkgs)
               autoPatchelfHook
               stdenv
+              unzip
               ;
           };
 
@@ -123,7 +124,10 @@
         mkDerivation = {
           # distDir will contain a single file which is the src
           preUnpack = ''export src="${distDir}"/*'';
-          nativeBuildInputs = [config.deps.autoPatchelfHook];
+          nativeBuildInputs = [
+            config.deps.autoPatchelfHook
+            config.deps.unzip
+          ];
           # ensure build inputs are propagated for autopPatchelfHook
           postFixup = "ln -s $out $dist/out";
         };
