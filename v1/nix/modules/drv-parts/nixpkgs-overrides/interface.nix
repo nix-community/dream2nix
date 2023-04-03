@@ -7,9 +7,9 @@
   t = l.types;
 in {
   options.nixpkgs-overrides = {
-    enable = l.mkEnableOption "Whether to copy attributes, except those in `excludedNixpkgsAttrs` from nixpkgs";
+    enable = l.mkEnableOption "Whether to copy attributes, except those in `excluded` from nixpkgs";
 
-    excludedNixpkgsAttrs = l.mkOption {
+    exclude = l.mkOption {
       type = t.listOf t.str;
       description = "Attributes we do not want to copy from nixpkgs";
       default = [
