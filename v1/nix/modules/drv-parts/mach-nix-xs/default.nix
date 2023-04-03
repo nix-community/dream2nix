@@ -118,7 +118,7 @@
             (map (distDir: "--find-links ${distDir}") manualSetupDeps.${name} or [])
             ++ (
               map (dep: "--find-links ${finalDistsPaths.${dep}}")
-              config.eval-cache.content.mach-nix.dependencyTree.${name}.dependencies or []
+              (getTransitiveDeps name)
             );
         };
         mkDerivation = {
@@ -141,6 +141,14 @@
 
   dependenciesFile = "${cfg.pythonSources}/metadata.json";
   dependencyTree = l.fromJSON (l.readFile dependenciesFile);
+
+  getTransitiveDeps' = name: let
+    directDeps = dependencyTree.${name}.dependencies or [];
+  in
+    directDeps
+    ++ (l.concatMap getTransitiveDeps' directDeps);
+
+  getTransitiveDeps = name: l.unique (getTransitiveDeps' name);
 
   makeModuleFromDerivation = _name: drv:
     drv-parts.lib.makeModule {
