@@ -98,7 +98,7 @@
         ../nixpkgs-overrides
       ];
       config = {
-        nixpkgs-overrides.enable = true;
+        nixpkgs-overrides.enable = l.mkDefault true;
         deps = {nixpkgs, ...}:
           l.mapAttrs (_: l.mkDefault) {
             inherit python;
