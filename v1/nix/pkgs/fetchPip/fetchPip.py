@@ -85,7 +85,10 @@ def wait_for_proxy(proxy_port, cafile):
 # as we only proxy *some* calls, we need to combine upstream
 # ca certificates and the one from mitm proxy
 def generate_ca_bundle(path):
-    with open(HOME / ".mitmproxy/mitmproxy-ca-cert.pem", "r") as f:
+    proxy_cert = HOME / ".mitmproxy/mitmproxy-ca-cert.pem"
+    while not os.path.exists(proxy_cert):
+        time.sleep(0.1)
+    with open(proxy_cert, "r") as f:
         mitmproxy_cacert = f.read()
     with open(certifi.where(), "r") as f:
         certifi_cacert = f.read()
@@ -122,6 +125,10 @@ if __name__ == "__main__":
 
     venv_path = Path(".venv").absolute()
     create_venv(venv_path)
+
+    cafile = generate_ca_bundle(HOME / ".ca-cert.pem")
+    wait_for_proxy(proxy_port, cafile)
+
     pip(
         venv_path,
         "install",
@@ -129,8 +136,17 @@ if __name__ == "__main__":
         f"pip=={PIP_VERSION}",
     )
 
-    cafile = generate_ca_bundle(HOME / ".ca-cert.pem")
-    wait_for_proxy(proxy_port, cafile)
+    # some legacy setup.py based packages require wheel in order to be inspected
+    pip(
+        venv_path,
+        "install",
+        "--proxy",
+        f"https://localhost:{proxy_port}",
+        "--cert",
+        cafile,
+        "--upgrade",
+        f"wheel",
+    )
 
     flags = [
         PIP_FLAGS,
