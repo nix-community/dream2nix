@@ -29,6 +29,7 @@ ONLY_BINARY_FLAGS = os.getenv("onlyBinaryFlags")
 REQUIREMENTS_LIST = os.getenv("requirementsList")
 REQUIREMENTS_FILES = os.getenv("requirementsFiles")
 WRITE_METADATA = os.getenv("writeMetaData")
+TMPDIR = os.getenv("TMPDIR")
 
 
 def get_max_date():
@@ -111,7 +112,7 @@ if __name__ == "__main__":
     names_path = OUT / "names"
     dist_path.mkdir()
     names_path.mkdir()
-    cache_path = Path("/build/pip_cache")
+    cache_path = Path(f"{TMPDIR}/pip_cache")
     cache_path.mkdir()
 
     print(f"selected maximum release date for python packages: {get_max_date()}")
@@ -146,7 +147,7 @@ if __name__ == "__main__":
     if NO_BINARY:
         optional_flags += ["--no-binary " + " --no-binary ".join(NO_BINARY.split())]
     if WRITE_METADATA:
-        metadata_flags = ["--report", "/build/report.json"]
+        metadata_flags = ["--report", f"{TMPDIR}/report.json"]
 
     for req in REQUIREMENTS_LIST.split(" "):
         if req:
@@ -188,7 +189,7 @@ if __name__ == "__main__":
     if WRITE_METADATA:
         packages = dict()
 
-        with open("/build/report.json", "r") as f:
+        with open(f"{TMPDIR}/report.json", "r") as f:
             report = json.load(f)
 
         for install in report["install"]:
