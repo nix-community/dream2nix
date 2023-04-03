@@ -58,6 +58,16 @@ in {
     })
     {
       nixpkgs-overrides.lib = {inherit extractOverrideAttrs extractPythonAttrs;};
+      nixpkgs-overrides.exclude = [
+        "all"
+        "args"
+        "builder"
+        "name"
+        "pname"
+        "version"
+        "src"
+        "outputs"
+      ];
     }
   ];
 }

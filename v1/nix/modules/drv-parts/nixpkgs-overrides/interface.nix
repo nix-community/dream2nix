@@ -12,16 +12,6 @@ in {
     exclude = l.mkOption {
       type = t.listOf t.str;
       description = "Attributes we do not want to copy from nixpkgs";
-      default = [
-        "all"
-        "args"
-        "builder"
-        "name"
-        "pname"
-        "version"
-        "src"
-        "outputs"
-      ];
     };
 
     lib.extractOverrideAttrs = l.mkOption {
