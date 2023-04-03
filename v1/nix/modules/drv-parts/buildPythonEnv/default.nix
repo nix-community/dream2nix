@@ -125,6 +125,8 @@ in {
     };
 
     buildPythonEnv = {
+      # TODO: substitutions might lead to conflicts due to duplicated dependencies. We'd probably
+      # need to substitute each given package *and* its transistive dependencies.
       drvs = drvs // patchedSubstitutions;
     };
 
