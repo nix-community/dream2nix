@@ -37,6 +37,7 @@
     imports = [
       drv-parts.modules.drv-parts.mkDerivation
       ../buildPythonPackage
+      ../nixpkgs-overrides
     ];
     config = {
       deps = {nixpkgs, ...}:
