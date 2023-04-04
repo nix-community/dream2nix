@@ -118,7 +118,7 @@ def process_dependencies(report):
             url=download_info["url"],
             version=install["metadata"]["version"],
             sha256=sha256,
-            dependencies=[],
+            dependencies=set(),
         )
 
     def walker(root, seen, extras):
@@ -138,11 +138,16 @@ def process_dependencies(report):
             if (not req.marker) or evaluate_extras(req, extras, env):
                 req_name = canonicalize_name(req.name)
                 if req_name not in packages[root_name]["dependencies"]:
-                    packages[root_name]["dependencies"].append(req_name)
+                    packages[root_name]["dependencies"].add(req_name)
                 walker(installs_by_name[req_name], seen, req.extras)
 
     for root in roots:
         walker(root, list(), root.get("requested_extras", set()))
+
+    packages = {
+        name: {**pkg, "dependencies": sorted(list(pkg["dependencies"]))}
+        for name, pkg in packages.items()
+    }
     return packages
 
 
