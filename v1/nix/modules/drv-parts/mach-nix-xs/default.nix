@@ -71,7 +71,11 @@
     # Usually references to buildInputs would get lost in the dist output.
     # Patch wheels to ensure build inputs remain dependencies of the `dist` output
     # Those references are needed for the final autoPatchelfHook to find the required deps.
-    patchedWheels = mapAttrs substitutions (name: dist: dist.overridePythonAttrs (old: {postFixup = "ln -s $out $dist/out";}));
+    linkOutToDistOverride = old: {
+      linkOutToDist = "ln -s $out $dist/out";
+      postPhases = ["linkOutToDist"];
+    };
+    patchedWheels = mapAttrs substitutions (name: dist: dist.overridePythonAttrs linkOutToDistOverride);
   in {inherit patchedWheels downloadedWheels builtWheels;};
 
   # The final dists we want to install.
@@ -128,8 +132,9 @@
             config.deps.unzip
           ];
           # ensure build inputs are propagated for autopPatchelfHook
-          postFixup = "ln -s $out $dist/out";
+          postPhases = ["linkOutToDist"];
         };
+        env.linkOutToDist = "ln -s $out $dist/out";
         # TODO If setup deps have been specified manually, we need to remove the
         #   propagatedBuildInputs from nixpkgs to prevent collisions.
         #// lib.optionalAttrs (manualSetupDeps ? ${name}) {
