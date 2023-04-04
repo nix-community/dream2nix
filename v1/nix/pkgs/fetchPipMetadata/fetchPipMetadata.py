@@ -121,18 +121,28 @@ def process_dependencies(report):
             dependencies=[],
         )
 
-    def walker(root, extras):
+    def walker(root, seen, extras):
         root_name = canonicalize_name(root["metadata"]["name"])
+
+        if root_name in seen:
+            print(f"cycle detected: {root_name} ({' '.join(seen)})")
+            sys.exit(1)
+
+        # we copy "seen", because we want to track cycles per tree-branch
+        # and the original would be visible for all branches.
+        seen = seen.copy()
+        seen.append(root_name)
+
         reqs = map(Requirement, root["metadata"].get("requires_dist", []))
         for req in reqs:
             if (not req.marker) or evaluate_extras(req, extras, env):
                 req_name = canonicalize_name(req.name)
                 if req_name not in packages[root_name]["dependencies"]:
                     packages[root_name]["dependencies"].append(req_name)
-                walker(installs_by_name[req_name], req.extras)
+                walker(installs_by_name[req_name], seen, req.extras)
 
     for root in roots:
-        walker(root, root.get("requested_extras", set()))
+        walker(root, list(), root.get("requested_extras", set()))
     return packages
 
 
