@@ -69,31 +69,6 @@
       };
     };
   };
-
-  # Validate Substitutions. Allow only names that we actually depend on.
-  unknownSubstitutions = l.attrNames (l.removeAttrs cfg.substitutions (l.attrNames metadata));
-  substitutions =
-    if unknownSubstitutions == []
-    then cfg.substitutions
-    else
-      throw ''
-        ${"\n"}The following substitutions for python derivation '${packageName}' will not have any effect. There are no dependencies with such names:
-        - ${lib.concatStringsSep "\n  - " unknownSubstitutions}
-      '';
-  # Usually references to buildInputs would get lost in the dist output.
-  # Patch wheels to ensure build inputs remain dependencies of the `dist` output
-  # Those references are needed for the final autoPatchelfHook to find the required deps.
-  patchedSubstitutions = l.mapAttrs (name: drv:
-    drv-parts.lib.makeModule {
-      packageFunc = drv.overridePythonAttrs (old: {postFixup = "ln -s $out $dist/out";});
-      # TODO: if `overridePythonAttrs` is used here, the .dist output is missing
-      #   Maybe a bug in drv-parts?
-      #      overrideFuncName = "overrideAttrs";
-      modules = [
-        {deps = {inherit (config.deps) stdenv;};}
-      ];
-    })
-  substitutions;
 in {
   imports = [
     commonModule
@@ -119,9 +94,7 @@ in {
     };
 
     buildPythonEnv = {
-      # TODO: substitutions might lead to conflicts due to duplicated dependencies. We'd probably
-      # need to substitute each given package *and* its transistive dependencies.
-      drvs = drvs // patchedSubstitutions;
+      drvs = drvs;
     };
 
     mkDerivation = {
