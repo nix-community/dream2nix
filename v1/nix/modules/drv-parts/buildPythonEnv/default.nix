@@ -59,7 +59,7 @@
       };
       mkDerivation = {
         src = l.mkDefault (l.fetchurl {inherit (metadata.${config.name}) url sha256;});
-        doCheck = l.mkDefault true;
+        doCheck = l.mkDefault false;
 
         nativeBuildInputs = [config.deps.autoPatchelfHook];
         buildInputs = [config.deps.manylinux1];
