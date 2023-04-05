@@ -16,7 +16,7 @@
     };
   };
 in {
-  options.buildPythonEnv = {
+  options.pip = {
     pypiSnapshotDate = l.mkOption {
       type = t.str;
       description = ''

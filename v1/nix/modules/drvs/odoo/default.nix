@@ -14,7 +14,7 @@
   };
 in {
   imports = [
-    ../../drv-parts/buildPythonEnv
+    ../../drv-parts/pip
   ];
 
   deps = {nixpkgs, ...}: {
@@ -33,7 +33,7 @@ in {
     inherit src;
   };
 
-  buildPythonEnv = {
+  pip = {
     pypiSnapshotDate = "2023-04-01";
     requirementsList = [
       "${src}"

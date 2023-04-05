@@ -6,7 +6,7 @@
   l = lib // builtins;
 in {
   imports = [
-    ../../drv-parts/buildPythonEnv
+    ../../drv-parts/pip
   ];
 
   deps = {nixpkgs, ...}: {
@@ -22,7 +22,7 @@ in {
     ];
   };
 
-  buildPythonEnv = {
+  pip = {
     pypiSnapshotDate = "2023-01-01";
     requirementsList = ["${config.name}==${config.version}"];
   };

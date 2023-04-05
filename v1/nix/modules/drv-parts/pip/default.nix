@@ -1,4 +1,3 @@
-# TODO replace former manualSetupDeps with PEP 518 impl
 {
   config,
   lib,
@@ -7,7 +6,7 @@
 }: let
   l = lib // builtins;
   python = config.deps.python;
-  cfg = config.buildPythonEnv;
+  cfg = config.pip;
   packageName = config.name;
   metadata = config.lock.content.fetchPipMetadata;
 
@@ -93,7 +92,7 @@ in {
       default = {};
     };
 
-    buildPythonEnv = {
+    pip = {
       drvs = drvs;
     };
 
