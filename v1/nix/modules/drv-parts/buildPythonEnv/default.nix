@@ -66,8 +66,6 @@
         propagatedBuildInputs =
           l.map (name: cfg.drvs.${name}.public.out)
           metadata.${config.name}.dependencies;
-        # ensure build inputs are propagated for autopPatchelfHook
-        postFixup = "ln -s $out $dist/out";
       };
     };
   };
