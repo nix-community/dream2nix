@@ -137,8 +137,7 @@ def process_dependencies(report):
         for req in reqs:
             if (not req.marker) or evaluate_extras(req, extras, env):
                 req_name = canonicalize_name(req.name)
-                if req_name not in packages[root_name]["dependencies"]:
-                    packages[root_name]["dependencies"].add(req_name)
+                packages[root_name]["dependencies"].add(req_name)
                 walker(installs_by_name[req_name], seen, req.extras)
 
     for root in roots:
