@@ -89,7 +89,6 @@ in {
         inherit (cfg) pypiSnapshotDate pipFlags requirementsList requirementsFiles nativeBuildInputs;
         inherit (config.deps) python;
       };
-      default = {};
     };
 
     pip = {
