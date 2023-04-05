@@ -126,16 +126,6 @@ in {
 
     mkDerivation = {
       dontStrip = l.mkDefault true;
-
-      passthru = {
-        # The final dists we want to install.
-        # A mix of:
-        #   - downloaded wheels
-        #   - downloaded sdists built into wheels (see above)
-        #   - substitutions from nixpkgs patched for compat with autoPatchelfHook
-        # TODO still useful? rename to "wheels"?
-        dists = l.mapAttrs (_: drv: drv.public.out.dist) config.buildPythonEnv.drvs;
-      };
     };
   };
 }
