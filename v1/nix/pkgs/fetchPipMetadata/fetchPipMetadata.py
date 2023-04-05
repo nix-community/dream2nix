@@ -7,7 +7,6 @@ import tempfile
 import json
 import dateutil.parser
 import urllib.request
-import urllib.parse
 from pathlib import Path
 
 import certifi
@@ -97,40 +96,77 @@ class Proxy:
         self.proc.kill()
 
 
-def call_nix(nix, *args):
+def call_nix(nix, *args, check=True):
     return subprocess.run(
         [nix, *args],
-        check=True,
+        check=check,
         text=True,
         stdout=subprocess.PIPE,
-        stderr=sys.stderr,  # noqa: E501
+        stderr=sys.stderr if check else subprocess.PIPE,
+        # TODO pass git from config.deps, as nix flakes require it
+        env={"PATH": "/run/current-system/sw/bin/"},
     )
 
 
-def lock_info_from_url(url):
-    url = urllib.parse.urlparse(url)
-    if url.scheme != "file":
-        return urllib.parse.urlunparse(url), None
-    if not url.path.startswith("/nix/store"):
+def lock_info_from_store_path(path):
+    if not Path("/nix/store") in path.parents:
         print(
-            f"fatal: requirement url '{f}' refers to something outside /nix/store",  # noqa: E501
+            f"fatal: requirement '{path}' refers to something outside /nix/store",  # noqa: E501
             file=sys.stderr,
         )
         sys.exit(1)
 
     nix = "/run/current-system/sw/bin/nix"  # TODO pass from config.deps
+    # get just the "top-level" store path /nix/store/$hash-name/
+    store_path = Path("/").joinpath(*path.parts[:4])
     # use nix to print the derivation of our out_path in json
     show_derivation = call_nix(
-        nix, "show-derivation", "--derivation", url.path
+        nix, "show-derivation", "--derivation", store_path, check=False
     )  # noqa: E501
-    drv_json = list(json.loads(show_derivation.stdout).values())[0]
 
-    drv_out = drv_json.get("outputs", {}).get("out", {})
-    assert url.path == drv_out.get("path")
-    assert "r:sha256" == drv_out.get("hashAlgo")
-    url = drv_json.get("env", {}).get("urls")  # TODO multiple? commas?
-    sha256 = drv_out.get("hash")
-    return url, sha256
+    # Assume it's a FOD and get its url and sha256
+    if show_derivation.returncode == 0:
+        # attrs are keyed by derivation path, which we don't know,
+        # but there should be only one in our case.
+        drv_json = list(json.loads(show_derivation.stdout).values())[0]
+
+        drv_out = drv_json.get("outputs", {}).get("out", {})
+        assert str(store_path) == drv_out.get("path")
+        assert "r:sha256" == drv_out.get("hashAlgo")
+        url = drv_json.get("env", {}).get("urls")  # TODO multiple? commas?
+        sha256 = drv_out.get("hash")
+        if not (url and sha256):
+            print(
+                f"fatal: requirement '{path}' does not seem to be a FOD.\n",
+                f"No URL ({url}) or hash ({sha256}) found.",
+                file=sys.stderr,
+            )
+            sys.exit(1)
+        return url, sha256
+    # See whether it's a flake, and if so write the relative path into the lock
+    # file.
+    else:
+        flake_src = call_nix(nix, "eval", "--raw", ".#src")
+        if flake_src and flake_src.stdout.strip() == str(path):
+            url = str(path.relative_to(store_path))
+            return url, None
+        else:
+            print(
+                f"fatal: requirement '{path}' seems to refer to a flake which isn't ours.\n",  # noqa: E501
+                "...or something else that is not yet supported, please open an issue.",  # noqa: E501
+                file=sys.stderr,
+            )
+            sys.exit(1)
+
+
+def lock_info_from_url(url):
+    file_scheme = "file://"
+    prefix_len = len(file_scheme)
+    if url.startswith(file_scheme):
+        path = Path(url[prefix_len:]).absolute()
+        return lock_info_from_store_path(path)
+    else:
+        return url, None
 
 
 def lock_entry_from_report_entry(install):
