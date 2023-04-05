@@ -40,6 +40,8 @@
       Choose any date from the past.
       Example value: "2023-01-01"
     '',
+  nix,
+  git,
 }: let
   # We use nixpkgs python3 to run mitmproxy, see function parameters
   pythonWithMitmproxy =
@@ -79,7 +81,7 @@
   '';
   env = symlinkJoin {
     name = "fetch_pip_metadata";
-    paths = [script] ++ nativeBuildInputs;
+    paths = [script nix git] ++ nativeBuildInputs;
     buildInputs = [makeWrapper];
     postBuild = "wrapProgram $out/bin/fetch_pip_metadata --prefix PATH : $out/bin";
   };

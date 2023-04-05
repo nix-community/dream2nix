@@ -96,15 +96,13 @@ class Proxy:
         self.proc.kill()
 
 
-def call_nix(nix, *args, check=True):
+def call_nix(*args, check=True):
     return subprocess.run(
-        [nix, *args],
+        ["nix", "--experimental-features", "nix-command flakes", *args],
         check=check,
         text=True,
         stdout=subprocess.PIPE,
         stderr=sys.stderr if check else subprocess.PIPE,
-        # TODO pass git from config.deps, as nix flakes require it
-        env={"PATH": "/run/current-system/sw/bin/"},
     )
 
 
@@ -116,12 +114,11 @@ def lock_info_from_store_path(path):
         )
         sys.exit(1)
 
-    nix = "/run/current-system/sw/bin/nix"  # TODO pass from config.deps
     # get just the "top-level" store path /nix/store/$hash-name/
     store_path = Path("/").joinpath(*path.parts[:4])
     # use nix to print the derivation of our out_path in json
     show_derivation = call_nix(
-        nix, "show-derivation", "--derivation", store_path, check=False
+        "show-derivation", "--derivation", store_path, check=False
     )  # noqa: E501
 
     # Assume it's a FOD and get its url and sha256
@@ -146,7 +143,7 @@ def lock_info_from_store_path(path):
     # See whether it's a flake, and if so write the relative path into the lock
     # file.
     else:
-        flake_src = call_nix(nix, "eval", "--raw", ".#src")
+        flake_src = call_nix("eval", "--raw", ".#src")
         if flake_src and flake_src.stdout.strip() == str(path):
             url = str(path.relative_to(store_path))
             return url, None
