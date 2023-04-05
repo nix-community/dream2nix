@@ -48,11 +48,7 @@
             autoPatchelfHook
             stdenv
             ;
-          manylinuxPackages = with nixpkgs.pythonManylinuxPackages; [
-            manylinux1
-            manylinux2010
-            manylinux2014
-          ];
+          inherit (nixpkgs.pythonManylinuxPackages) manylinux1;
         };
       buildPythonPackage = {
         format = l.mkDefault (
@@ -66,7 +62,7 @@
         doCheck = l.mkDefault false;
 
         nativeBuildInputs = [config.deps.autoPatchelfHook];
-        buildInputs = config.deps.manylinuxPackages;
+        buildInputs = [config.deps.manylinux1];
         propagatedBuildInputs =
           l.map (name: cfg.drvs.${name}.public.out)
           metadata.${config.name}.dependencies;
