@@ -7,6 +7,7 @@ import tempfile
 import json
 import dateutil.parser
 import urllib.request
+import urllib.parse
 from pathlib import Path
 
 import certifi
@@ -96,6 +97,42 @@ class Proxy:
         self.proc.kill()
 
 
+def call_nix(nix, *args):
+    return subprocess.run(
+        [nix, *args],
+        check=True,
+        text=True,
+        stdout=subprocess.PIPE,
+        stderr=sys.stderr,  # noqa: E501
+    )
+
+
+def lock_info_from_url(url):
+    url = urllib.parse.urlparse(url)
+    if url.scheme != "file":
+        return urllib.parse.urlunparse(url), None
+    if not url.path.startswith("/nix/store"):
+        print(
+            f"fatal: requirement url '{f}' refers to something outside /nix/store",  # noqa: E501
+            file=sys.stderr,
+        )
+        sys.exit(1)
+
+    nix = "/run/current-system/sw/bin/nix"  # TODO pass from config.deps
+    # use nix to print the derivation of our out_path in json
+    show_derivation = call_nix(
+        nix, "show-derivation", "--derivation", url.path
+    )  # noqa: E501
+    drv_json = list(json.loads(show_derivation.stdout).values())[0]
+
+    drv_out = drv_json.get("outputs", {}).get("out", {})
+    assert url.path == drv_out.get("path")
+    assert "r:sha256" == drv_out.get("hashAlgo")
+    url = drv_json.get("env", {}).get("urls")  # TODO multiple? commas?
+    sha256 = drv_out.get("hash")
+    return url, sha256
+
+
 def lock_entry_from_report_entry(install):
     """
     Convert an entry of report['install'] to an object we want to store
@@ -103,12 +140,16 @@ def lock_entry_from_report_entry(install):
     """
     name = canonicalize_name(install["metadata"]["name"])
     download_info = install["download_info"]
-    hash = (
-        download_info.get("archive_info", {}).get("hash", "").split("=", 1)  # noqa: 501
-    )
-    sha256 = hash[1] if hash[0] == "sha256" else None
+    url, sha256 = lock_info_from_url(download_info["url"])
+    if not sha256:
+        hash = (
+            download_info.get("archive_info", {})
+            .get("hash", "")
+            .split("=", 1)  # noqa: 501
+        )
+        sha256 = hash[1] if hash[0] == "sha256" else None
     return name, dict(
-        url=download_info["url"],
+        url=url,
         version=install["metadata"]["version"],
         sha256=sha256,
         dependencies=set(),
@@ -137,7 +178,10 @@ def evaluate_requirements(env, reqs, packages, root_name, extras, seen):
     A circuit breaker is included to avoid infinite recursion in nix.
     """
     if root_name in seen:
-        print(f"fatal: cycle detected: {root_name} ({' '.join(seen)})", file=sys.stderr)
+        print(
+            f"fatal: cycle detected: {root_name} ({' '.join(seen)})",
+            file=sys.stderr,  # noqa: E501
+        )
         sys.exit(1)
     # we copy "seen", because we want to track cycles per
     # tree-branch and the original would be visible for all branches.
