@@ -125,7 +125,6 @@ in {
     };
 
     mkDerivation = {
-      dontPatchELF = l.mkDefault true;
       dontStrip = l.mkDefault true;
 
       passthru = {
