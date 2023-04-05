@@ -137,7 +137,7 @@ def evaluate_requirements(env, reqs, packages, root_name, extras, seen):
     A circuit breaker is included to avoid infinite recursion in nix.
     """
     if root_name in seen:
-        print(f"cycle detected: {root_name} ({' '.join(seen)})")
+        print(f"fatal: cycle detected: {root_name} ({' '.join(seen)})", file=sys.stderr)
         sys.exit(1)
     # we copy "seen", because we want to track cycles per
     # tree-branch and the original would be visible for all branches.
