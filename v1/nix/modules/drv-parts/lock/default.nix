@@ -99,7 +99,9 @@
 
   errorMissingFile = ''
     The lock file ${cfg.lockFileRel} for drv-parts module '${config.name}' is missing, please update it.
-    To create the lock file run the `.config.lock.refresh` attribute of the ${config.name} package.
+    To create the lock file run the `.config.lock.refresh` attribute of the ${config.name} package, i.e.:
+      nix run -L .#ansible.config.lock.refresh
+    if using flakes.
   '';
 
   errorOutdated = field: ''
