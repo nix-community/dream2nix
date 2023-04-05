@@ -96,13 +96,6 @@ class Proxy:
         self.proc.kill()
 
 
-def get_max_date(args):
-    try:
-        return int(args["pypiSnapshotDate"])
-    except ValueError:
-        return dateutil.parser.parse(args["pypiSnapshotDate"])
-
-
 def evaluate_extras(req, extras, env):
     if not extras:
         return req.marker.evaluate({**env, "extra": ""})
@@ -171,6 +164,29 @@ def process_dependencies(report):
     return packages
 
 
+def get_max_date(snapshot_date):
+    try:
+        return int(snapshot_date)
+    except ValueError:
+        return dateutil.parser.parse(snapshot_date)
+
+
+def prepare_venv(venv_path, pip_version):
+    subprocess.run([sys.executable, "-m", "venv", venv_path], check=True)
+    subprocess.run(
+        [
+            f"{venv_path}/bin/pip",
+            "install",
+            "--upgrade",
+            f"pip=={pip_version}",
+        ],
+        check=True,
+        stdout=sys.stderr,
+        stderr=sys.stderr,
+    )
+    return venv_path
+
+
 if __name__ == "__main__":
     with open(sys.argv[1], "r") as f:
         args = json.load(f)
@@ -179,7 +195,7 @@ if __name__ == "__main__":
         home = Path(home)
 
         print(
-            f"selected maximum release date for python packages: {get_max_date(args)}",  # noqa: E501
+            f"selected maximum release date for python packages: {get_max_date(args['pypiSnapshotDate'])}",  # noqa: E501
             file=sys.stderr,
         )
 
@@ -194,19 +210,9 @@ if __name__ == "__main__":
             env={"pypiSnapshotDate": args["pypiSnapshotDate"], "HOME": home},
         )
 
-        venv_path = (home / ".venv").absolute()
-        subprocess.run([sys.executable, "-m", "venv", venv_path], check=True)
-        subprocess.run(
-            [
-                f"{venv_path}/bin/pip",
-                "install",
-                "--upgrade",
-                f"pip=={args['pipVersion']}",
-            ],
-            check=True,
-            stdout=sys.stderr,
-            stderr=sys.stderr,
-        )
+        venv_path = prepare_venv(
+            (home / ".venv").absolute(), args["pipVersion"]
+        )  # noqa: 501
 
         flags = args["pipFlags"] + [
             "--proxy",
