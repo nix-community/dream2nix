@@ -105,7 +105,6 @@ in {
     deps = {nixpkgs, ...}:
       l.mapAttrs (_: l.mkDefault) {
         fetchPipMetadata = nixpkgs.callPackage ../../../pkgs/fetchPipMetadata {};
-        runCommand = nixpkgs.runCommand;
         pip = nixpkgs.python3Packages.pip;
         setuptools = nixpkgs.python3Packages.setuptools;
       };
