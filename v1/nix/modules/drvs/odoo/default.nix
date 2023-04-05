@@ -34,15 +34,12 @@ in {
   };
 
   buildPythonEnv = {
-    pypiSnapshotDate = "2023-01-01";
-    requirementsList = ["${src}"];
-    requirementsFiles = ["${config.mkDerivation.src}/requirements.txt"];
+    pypiSnapshotDate = "2023-04-01";
+    requirementsList = [
+      "${src}"
+    ];
 
     nativeBuildInputs = [config.deps.postgresql];
-    substitutions = {
-      python-ldap = python.pkgs.python-ldap;
-      pillow = python.pkgs.pillow;
-    };
 
     # fix some builds via overrides
     drvs = {
