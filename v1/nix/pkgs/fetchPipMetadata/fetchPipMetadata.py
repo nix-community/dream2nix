@@ -96,14 +96,64 @@ class Proxy:
         self.proc.kill()
 
 
+def lock_entry_from_report_entry(install):
+    """
+    Convert an entry of report['install'] to an object we want to store
+    in our lock file, but don't add dependencies yet.
+    """
+    name = canonicalize_name(install["metadata"]["name"])
+    download_info = install["download_info"]
+    hash = (
+        download_info.get("archive_info", {}).get("hash", "").split("=", 1)  # noqa: 501
+    )
+    sha256 = hash[1] if hash[0] == "sha256" else None
+    return name, dict(
+        url=download_info["url"],
+        version=install["metadata"]["version"],
+        sha256=sha256,
+        dependencies=set(),
+    )
+
+
 def evaluate_extras(req, extras, env):
+    """
+    Given a python requirement string, a dictionary representing a python
+    platform environment as in report['environment'], and a set of extras,
+    we want to check if this package is required on this platform with the
+    requested extras.
+    """
     if not extras:
         return req.marker.evaluate({**env, "extra": ""})
     else:
         return any({req.marker.evaluate({**env, "extra": e}) for e in extras})
 
 
-def process_dependencies(report):
+def evaluate_requirements(env, reqs, packages, root_name, extras, seen):
+    """
+    Recursively walk the dependency tree and check if requirements
+    are needed for our current platform with our requested set of extras.
+    If so, add them to our lock files dependencies field and delete
+    requirements to save space in the file.
+    A circuit breaker is included to avoid infinite recursion in nix.
+    """
+    if root_name in seen:
+        print(f"cycle detected: {root_name} ({' '.join(seen)})")
+        sys.exit(1)
+    # we copy "seen", because we want to track cycles per
+    # tree-branch and the original would be visible for all branches.
+    seen = seen.copy()
+    seen.append(root_name)
+
+    for req in reqs[root_name]:
+        if (not req.marker) or evaluate_extras(req, extras, env):
+            req_name = canonicalize_name(req.name)
+            packages[root_name]["dependencies"].add(req_name)
+            evaluate_requirements(
+                env, reqs, packages, req_name, req.extras, seen
+            )  # noqa: 501
+
+
+def lock_file_from_report(report):
     """
     Pre-process pips report.json for easier consumation by nix.
     We extract name, version, url and hash of the source distribution or
@@ -111,52 +161,46 @@ def process_dependencies(report):
     the effective, platform-specific dependencies of each package. This makes
     heavy use of `packaging` which is hard to impossible to re-implement
     correctly in nix.
+
+    We output a dictionary mapping normalized package names to a dict
+    of version, url, sha256 and a list of normalized names of the packages
+    effective dependencies on this platform and with the extras requested.
+
+    This function can be further improved by also locking dependencies for
+    non-selected extras, provided by our toplevel packages aka "roots".
     """
-
     packages = dict()
-    installs_by_name = dict()
+    # environment to evaluate pythons requirement markers in, contains
+    # things such as your operating system, platform and python interpreter.
     env = report["environment"]
-    roots = filter(lambda p: p.get("requested", False), report["install"])
+    # trace packages directly requested from pip to know where to start
+    # walking the dependency tree.
+    roots = dict()
+    # packages in the report are a list, so we cache their requirement
+    # strings in a list for faster lookups while we walk the tree below.
+    requirements = dict()
+
+    # iterate over all packages pip installed to find roots
+    # of the tree and gather basic information, such as urls
     for install in report["install"]:
-        name = canonicalize_name(install["metadata"]["name"])
-        installs_by_name[name] = install
-
-        download_info = install["download_info"]
-        hash = (
-            download_info.get("archive_info", {})
-            .get("hash", "")
-            .split("=", 1)  # noqa: 501
+        name, package = lock_entry_from_report_entry(install)
+        packages[name] = package
+        requirements[name] = map(
+            Requirement, install["metadata"].get("requires_dist", [])
         )
-        sha256 = hash[1] if hash[0] == "sha256" else None
-        packages[name] = dict(
-            url=download_info["url"],
-            version=install["metadata"]["version"],
-            sha256=sha256,
-            dependencies=set(),
-        )
+        if install.get("requested", False):
+            roots[name] = install.get("requested_extras", set())
 
-    def walker(root, seen, extras):
-        root_name = canonicalize_name(root["metadata"]["name"])
+    # recursively iterate over the dependency tree from top to bottom
+    # to evaluate optional requirements (extras) correctly
+    for root_name, extras in roots.items():
+        evaluate_requirements(
+            env, requirements, packages, root_name, extras, list()
+        )  # noqa: 501
 
-        if root_name in seen:
-            print(f"cycle detected: {root_name} ({' '.join(seen)})")
-            sys.exit(1)
-
-        # we copy "seen", because we want to track cycles per tree-branch
-        # and the original would be visible for all branches.
-        seen = seen.copy()
-        seen.append(root_name)
-
-        reqs = map(Requirement, root["metadata"].get("requires_dist", []))
-        for req in reqs:
-            if (not req.marker) or evaluate_extras(req, extras, env):
-                req_name = canonicalize_name(req.name)
-                packages[root_name]["dependencies"].add(req_name)
-                walker(installs_by_name[req_name], seen, req.extras)
-
-    for root in roots:
-        walker(root, list(), root.get("requested_extras", set()))
-
+    # iterate over the packages a third and final time to ensure that
+    # dependencies are a stable sorted list, no matter in which order the
+    # tree has been walked through.
     packages = {
         name: {**pkg, "dependencies": sorted(list(pkg["dependencies"]))}
         for name, pkg in packages.items()
@@ -249,5 +293,5 @@ if __name__ == "__main__":
         with open(home / "report.json", "r") as f:
             report = json.load(f)
         with open(os.getenv("out"), "w") as f:
-            packages = process_dependencies(report)
-            json.dump(packages, f, indent=2, sort_keys=True)
+            lock = lock_file_from_report(report)
+            json.dump(lock, f, indent=2, sort_keys=True)
