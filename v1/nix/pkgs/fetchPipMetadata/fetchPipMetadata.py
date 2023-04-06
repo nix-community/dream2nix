@@ -106,16 +106,50 @@ def call_nix(*args, check=True):
     )
 
 
-def lock_info_from_store_path(path):
-    if not Path("/nix/store") in path.parents:
+def lock_info_from_fod(store_path, drv_path):
+    # attrs are keyed by derivation path, which we don't know,
+    # but there should be only one in our case.
+    drv_json = list(json.loads(drv_path).values())[0]
+
+    drv_out = drv_json.get("outputs", {}).get("out", {})
+    assert str(store_path) == drv_out.get("path")
+    assert "r:sha256" == drv_out.get("hashAlgo")
+    url = drv_json.get("env", {}).get("urls")  # TODO multiple? commas?
+    sha256 = drv_out.get("hash")
+    if not (url and sha256):
         print(
-            f"fatal: requirement '{path}' refers to something outside /nix/store",  # noqa: E501
+            f"fatal: requirement '{store_path}' does not seem to be a FOD.\n",
+            f"No URL ({url}) or hash ({sha256}) found.",
+            file=sys.stderr,
+        )
+        sys.exit(1)
+    return url, sha256
+
+
+def lock_info_from_flake(store_path, full_path):
+    flake_src = call_nix("eval", "--raw", ".#src")
+    if flake_src and flake_src.stdout.strip() == str(full_path):
+        url = str(full_path.relative_to(store_path))
+        return url, None
+    else:
+        print(
+            f"fatal: requirement '{full_path}' seems to refer to a flake which isn't ours.\n",  # noqa: E501
+            "...or something else that is not yet supported, please open an issue.",  # noqa: E501
+            file=sys.stderr,
+        )
+        sys.exit(1)
+
+
+def lock_info_from_store_path(full_path):
+    if not Path("/nix/store") in full_path.parents:
+        print(
+            f"fatal: requirement '{full_path}' refers to something outside /nix/store",  # noqa: E501
             file=sys.stderr,
         )
         sys.exit(1)
 
     # get just the "top-level" store path /nix/store/$hash-name/
-    store_path = Path("/").joinpath(*path.parts[:4])
+    store_path = Path("/").joinpath(*full_path.parts[:4])
     # use nix to print the derivation of our out_path in json
     show_derivation = call_nix(
         "show-derivation", "--derivation", store_path, check=False
@@ -123,47 +157,20 @@ def lock_info_from_store_path(path):
 
     # Assume it's a FOD and get its url and sha256
     if show_derivation.returncode == 0:
-        # attrs are keyed by derivation path, which we don't know,
-        # but there should be only one in our case.
-        drv_json = list(json.loads(show_derivation.stdout).values())[0]
-
-        drv_out = drv_json.get("outputs", {}).get("out", {})
-        assert str(store_path) == drv_out.get("path")
-        assert "r:sha256" == drv_out.get("hashAlgo")
-        url = drv_json.get("env", {}).get("urls")  # TODO multiple? commas?
-        sha256 = drv_out.get("hash")
-        if not (url and sha256):
-            print(
-                f"fatal: requirement '{path}' does not seem to be a FOD.\n",
-                f"No URL ({url}) or hash ({sha256}) found.",
-                file=sys.stderr,
-            )
-            sys.exit(1)
-        return url, sha256
+        return lock_info_from_fod(store_path, show_derivation.stdout)
     # See whether it's a flake, and if so write the relative path into the lock
     # file.
     else:
-        flake_src = call_nix("eval", "--raw", ".#src")
-        if flake_src and flake_src.stdout.strip() == str(path):
-            url = str(path.relative_to(store_path))
-            return url, None
-        else:
-            print(
-                f"fatal: requirement '{path}' seems to refer to a flake which isn't ours.\n",  # noqa: E501
-                "...or something else that is not yet supported, please open an issue.",  # noqa: E501
-                file=sys.stderr,
-            )
-            sys.exit(1)
+        return lock_info_from_flake(store_path, full_path)
 
 
 def lock_info_from_url(url):
     file_scheme = "file://"
     prefix_len = len(file_scheme)
-    if url.startswith(file_scheme):
-        path = Path(url[prefix_len:]).absolute()
-        return lock_info_from_store_path(path)
-    else:
+    if not url.startswith(file_scheme):
         return url, None
+    full_path = Path(url[prefix_len:]).absolute()
+    return lock_info_from_store_path(full_path)
 
 
 def lock_entry_from_report_entry(install):
