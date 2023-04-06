@@ -60,7 +60,6 @@
 
   args = writeText "pip-args" (builtins.toJSON {
     filterPypiResponsesScript = ../fetchPip/filter-pypi-responses.py;
-    buildScript = ./fetchPipMetadata.py;
 
     # the python interpreter used to run the proxy script
     mitmProxy = "${pythonWithMitmproxy}/bin/mitmdump";
@@ -76,13 +75,18 @@
       pipFlags
       ;
   });
-  script = writeShellScriptBin "fetch_pip_metadata" ''
-    ${fetchPipMetadata} ${args}
-  '';
-  env = symlinkJoin {
+  script = stdenv.mkDerivation {
     name = "fetch_pip_metadata";
-    paths = [script nix git] ++ nativeBuildInputs;
     buildInputs = [makeWrapper];
-    postBuild = "wrapProgram $out/bin/fetch_pip_metadata --prefix PATH : $out/bin";
+    phases = ["buildPhase" "postBuild"];
+    buildPhase = ''
+      mkdir -p $out/bin
+      echo "${fetchPipMetadata} ${args}" > $out/bin/fetch_pip_metadata
+      chmod +x $out/bin/fetch_pip_metadata
+    '';
+    postBuild = ''
+      wrapProgram $out/bin/fetch_pip_metadata \
+        --prefix PATH : ${lib.makeBinPath ([nix git] ++ nativeBuildInputs)} \
+    '';
   };
-in "${env}/bin/fetch_pip_metadata"
+in "${script}/bin/fetch_pip_metadata"
