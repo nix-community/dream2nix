@@ -289,15 +289,15 @@ def lock_file_from_report(report):
     # packages in the report are a list, so we cache their requirement
     # strings in a list for faster lookups while we walk the tree below.
     requirements = dict()
-
     # iterate over all packages pip installed to find roots
     # of the tree and gather basic information, such as urls
     for install in report["install"]:
         name, package = lock_entry_from_report_entry(install)
         packages[name] = package
-        requirements[name] = map(
-            Requirement, install["metadata"].get("requires_dist", [])
-        )
+        requirements[name] = [
+            Requirement(r)
+            for r in install["metadata"].get("requires_dist", [])  # noqa: 501
+        ]
         if install.get("requested", False):
             roots[name] = install.get("requested_extras", set())
 
