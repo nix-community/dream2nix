@@ -29,6 +29,7 @@ ONLY_BINARY_FLAGS = os.getenv("onlyBinaryFlags")
 REQUIREMENTS_LIST = os.getenv("requirementsList")
 REQUIREMENTS_FILES = os.getenv("requirementsFiles")
 WRITE_METADATA = os.getenv("writeMetaData")
+TMPDIR = os.getenv("TMPDIR")
 
 
 def get_max_date():
@@ -84,7 +85,10 @@ def wait_for_proxy(proxy_port, cafile):
 # as we only proxy *some* calls, we need to combine upstream
 # ca certificates and the one from mitm proxy
 def generate_ca_bundle(path):
-    with open(HOME / ".mitmproxy/mitmproxy-ca-cert.pem", "r") as f:
+    proxy_cert = HOME / ".mitmproxy/mitmproxy-ca-cert.pem"
+    while not os.path.exists(proxy_cert):
+        time.sleep(0.1)
+    with open(proxy_cert, "r") as f:
         mitmproxy_cacert = f.read()
     with open(certifi.where(), "r") as f:
         certifi_cacert = f.read()
@@ -111,7 +115,7 @@ if __name__ == "__main__":
     names_path = OUT / "names"
     dist_path.mkdir()
     names_path.mkdir()
-    cache_path = Path("/build/pip_cache")
+    cache_path = Path(f"{TMPDIR}/pip_cache")
     cache_path.mkdir()
 
     print(f"selected maximum release date for python packages: {get_max_date()}")
@@ -121,6 +125,10 @@ if __name__ == "__main__":
 
     venv_path = Path(".venv").absolute()
     create_venv(venv_path)
+
+    cafile = generate_ca_bundle(HOME / ".ca-cert.pem")
+    wait_for_proxy(proxy_port, cafile)
+
     pip(
         venv_path,
         "install",
@@ -128,8 +136,17 @@ if __name__ == "__main__":
         f"pip=={PIP_VERSION}",
     )
 
-    cafile = generate_ca_bundle(HOME / ".ca-cert.pem")
-    wait_for_proxy(proxy_port, cafile)
+    # some legacy setup.py based packages require wheel in order to be inspected
+    pip(
+        venv_path,
+        "install",
+        "--proxy",
+        f"https://localhost:{proxy_port}",
+        "--cert",
+        cafile,
+        "--upgrade",
+        f"wheel",
+    )
 
     flags = [
         PIP_FLAGS,
@@ -146,7 +163,7 @@ if __name__ == "__main__":
     if NO_BINARY:
         optional_flags += ["--no-binary " + " --no-binary ".join(NO_BINARY.split())]
     if WRITE_METADATA:
-        metadata_flags = ["--report", "/build/report.json"]
+        metadata_flags = ["--report", f"{TMPDIR}/report.json"]
 
     for req in REQUIREMENTS_LIST.split(" "):
         if req:
@@ -188,7 +205,7 @@ if __name__ == "__main__":
     if WRITE_METADATA:
         packages = dict()
 
-        with open("/build/report.json", "r") as f:
+        with open(f"{TMPDIR}/report.json", "r") as f:
             report = json.load(f)
 
         for install in report["install"]:

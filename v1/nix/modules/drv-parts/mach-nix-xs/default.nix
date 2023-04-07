@@ -71,7 +71,11 @@
     # Usually references to buildInputs would get lost in the dist output.
     # Patch wheels to ensure build inputs remain dependencies of the `dist` output
     # Those references are needed for the final autoPatchelfHook to find the required deps.
-    patchedWheels = mapAttrs substitutions (name: dist: dist.overridePythonAttrs (old: {postFixup = "ln -s $out $dist/out";}));
+    linkOutToDistOverride = old: {
+      linkOutToDist = "ln -s $out $dist/out";
+      postPhases = ["linkOutToDist"];
+    };
+    patchedWheels = mapAttrs substitutions (name: dist: dist.overridePythonAttrs linkOutToDistOverride);
   in {inherit patchedWheels downloadedWheels builtWheels;};
 
   # The final dists we want to install.
@@ -98,7 +102,7 @@
         ../nixpkgs-overrides
       ];
       config = {
-        nixpkgs-overrides.enable = true;
+        nixpkgs-overrides.enable = l.mkDefault true;
         deps = {nixpkgs, ...}:
           l.mapAttrs (_: l.mkDefault) {
             inherit python;
@@ -106,6 +110,7 @@
               (nixpkgs)
               autoPatchelfHook
               stdenv
+              unzip
               ;
           };
 
@@ -117,16 +122,19 @@
             (map (distDir: "--find-links ${distDir}") manualSetupDeps.${name} or [])
             ++ (
               map (dep: "--find-links ${finalDistsPaths.${dep}}")
-              config.eval-cache.content.mach-nix.dependencyTree.${name}.dependencies or []
+              (getTransitiveDeps name)
             );
         };
         mkDerivation = {
           # distDir will contain a single file which is the src
           preUnpack = ''export src="${distDir}"/*'';
-          nativeBuildInputs = [config.deps.autoPatchelfHook];
+          nativeBuildInputs = [
+            config.deps.unzip
+          ];
           # ensure build inputs are propagated for autopPatchelfHook
-          postFixup = "ln -s $out $dist/out";
+          postPhases = ["linkOutToDist"];
         };
+        env.linkOutToDist = "ln -s $out $dist/out";
         # TODO If setup deps have been specified manually, we need to remove the
         #   propagatedBuildInputs from nixpkgs to prevent collisions.
         #// lib.optionalAttrs (manualSetupDeps ? ${name}) {
@@ -137,6 +145,14 @@
 
   dependenciesFile = "${cfg.pythonSources}/metadata.json";
   dependencyTree = l.fromJSON (l.readFile dependenciesFile);
+
+  getTransitiveDeps' = name: let
+    directDeps = dependencyTree.${name}.dependencies or [];
+  in
+    directDeps
+    ++ (l.concatMap getTransitiveDeps' directDeps);
+
+  getTransitiveDeps = name: l.unique (getTransitiveDeps' name);
 
   makeModuleFromDerivation = _name: drv:
     drv-parts.lib.makeModule {

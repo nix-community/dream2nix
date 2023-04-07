@@ -7,8 +7,8 @@
   l = lib // builtins;
   cfg = config.nixpkgs-overrides;
 
-  excludedNixpkgsAttrs =
-    l.genAttrs cfg.excludedNixpkgsAttrs (name: null);
+  exclude =
+    l.genAttrs cfg.exclude (name: null);
 
   extractOverrideAttrs = overrideFunc:
     (overrideFunc (old: {passthru.old = old;}))
@@ -17,7 +17,7 @@
   extractPythonAttrs = pythonPackage: let
     pythonAttrs = extractOverrideAttrs pythonPackage.overridePythonAttrs;
   in
-    l.filterAttrs (name: _: ! excludedNixpkgsAttrs ? ${name}) pythonAttrs;
+    l.filterAttrs (name: _: ! exclude ? ${name}) pythonAttrs;
 
   extracted =
     if config.deps.python.pkgs ? ${config.name}
@@ -58,6 +58,16 @@ in {
     })
     {
       nixpkgs-overrides.lib = {inherit extractOverrideAttrs extractPythonAttrs;};
+      nixpkgs-overrides.exclude = [
+        "all"
+        "args"
+        "builder"
+        "name"
+        "pname"
+        "version"
+        "src"
+        "outputs"
+      ];
     }
   ];
 }

@@ -32,6 +32,7 @@
             ];
           specialArgs =
             args.specialArgs
+            or {}
             // {
               inherit packageSets;
               dream2nix.modules.drv-parts = self.modules.drv-parts;
