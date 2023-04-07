@@ -179,8 +179,8 @@
         "xlwt",
         "zeep"
       ],
-      "sha256": null,
-      "url": "file:///nix/store/wjh4pzma9i3z8r4yxydi4gbsyar0hiyc-source",
+      "sha256": "6653c7f9169165b5a8a1efa4a6215866dbee5665ed38c1de096f99ef866c7176",
+      "url": "https://github.com/odoo/odoo/archive/2d42fd69cada3b1f2716c3d0a20bec6170f9b226.tar.gz",
       "version": "16.0"
     },
     "ofxparse": {
