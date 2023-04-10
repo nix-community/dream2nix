@@ -12,11 +12,8 @@
 {
   stdenv,
   lib,
-  writers,
   writeText,
-  writeShellScriptBin,
   makeWrapper,
-  symlinkJoin,
   # Use the nixpkgs default python version for the proxy script.
   # The python version select by the user below might be too old for the
   #   dependencies required by the proxy
@@ -47,17 +44,6 @@
   pythonWithMitmproxy =
     python3.withPackages
     (ps: [ps.mitmproxy ps.python-dateutil]);
-
-  # We use the user-selected python to run pip and friends, this ensures
-  # that version-related markers are resolved correctly.
-  writePython = writers.makePythonWriter python python.pkgs python.pkgs;
-
-  fetchPipMetadata =
-    writePython
-    "fetch_pip_metadata"
-    {libraries = with python.pkgs; [packaging certifi python-dateutil pip];}
-    ./fetchPipMetadata.py;
-
   args = writeText "pip-args" (builtins.toJSON {
     filterPypiResponsesScript = ../fetchPip/filter-pypi-responses.py;
 
@@ -75,18 +61,15 @@
       pipFlags
       ;
   });
-  script = stdenv.mkDerivation {
+  script = python.pkgs.buildPythonPackage {
     name = "fetch_pip_metadata";
+    format = "flit";
+    src = ./src;
     buildInputs = [makeWrapper];
-    phases = ["buildPhase" "postBuild"];
-    buildPhase = ''
-      mkdir -p $out/bin
-      echo "${fetchPipMetadata} ${args}" > $out/bin/fetch_pip_metadata
-      chmod +x $out/bin/fetch_pip_metadata
-    '';
-    postBuild = ''
+    propagatedBuildInputs = with python.pkgs; [packaging certifi python-dateutil pip];
+    postInstall = ''
       wrapProgram $out/bin/fetch_pip_metadata \
         --prefix PATH : ${lib.makeBinPath ([nix git] ++ nativeBuildInputs)} \
     '';
   };
-in "${script}/bin/fetch_pip_metadata"
+in "${script}/bin/fetch_pip_metadata ${args}"
