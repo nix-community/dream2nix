@@ -32,6 +32,13 @@ in {
       '';
       default = [];
     };
+    pipVersion = l.mkOption {
+      type = t.str;
+      description = ''
+        pip version to use to generate the report
+      '';
+      default = "23.1";
+    };
     requirementsList = l.mkOption {
       type = t.listOf t.str;
       default = [];

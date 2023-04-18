@@ -28,7 +28,7 @@
   # list of requirements.txt files
   requirementsFiles ? [],
   pipFlags ? [],
-  pipVersion ? "23.0.1",
+  pipVersion ? "23.1",
   nativeBuildInputs ? [],
   # maximum release date for packages
   pypiSnapshotDate ?
