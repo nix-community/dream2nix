@@ -14,14 +14,14 @@
     then ''
       mkdir -p $out/bin
       makeWrapper \
-        $electronDist/electron \
+        $out/lib/node_modules/$packageName/node_modules/electron/dist/electron \
         $out/bin/$(basename "$packageName") \
         --add-flags "$(realpath $electronAppDir)"
     ''
     else ''
       mkdir -p $out/bin
       makeWrapper \
-        $electronDist/Electron.app/Contents/MacOS/Electron \
+        $out/lib/node_modules/$packageName/node_modules/electron/dist/Electron.app/Contents/MacOS/Electron \
         $out/bin/$(basename "$packageName") \
         --add-flags "$(realpath $electronAppDir)"
     '';
