@@ -8,7 +8,7 @@
   l = lib // builtins;
 in {
   imports = [
-    ../../drv-parts/mach-nix-xs
+    ../../drv-parts/pip
   ];
 
   deps = {nixpkgs, ...}: {
@@ -22,7 +22,7 @@ in {
   };
 
   name = "pillow";
-  version = "9.3.0";
+  version = "9.5.0";
 
   mkDerivation = {
     nativeBuildInputs = [
@@ -32,22 +32,16 @@ in {
       config.deps.zlib
       config.deps.libjpeg
     ];
-
-    preUnpack = ''
-      export src=$(ls ${config.mach-nix.pythonSources}/names/${config.name}/*);
-    '';
   };
 
   buildPythonPackage = {
-    format = "setuptools";
-
     pythonImportsCheck = [
       "PIL"
     ];
   };
 
-  mach-nix.pythonSources.fetch-pip = {
-    pypiSnapshotDate = "2023-01-01";
+  pip = {
+    pypiSnapshotDate = "2023-04-02";
     requirementsList = ["${config.name}==${config.version}"];
     pipFlags = [
       "--no-binary"
