@@ -10,25 +10,22 @@ from packaging.utils import (
 )
 
 
-def nix_run(*args, check=True):
+def git_repo_root():
     return subprocess.run(
-        ["nix", "--experimental-features", "nix-command flakes", *args],
-        check=check,
+        ["git", "rev-parse", "--show-toplevel"],
+        check=True,
         text=True,
         stdout=subprocess.PIPE,
-        stderr=sys.stderr if check else subprocess.PIPE,
-    )
-
-
-def nix_flake_metadata(path):
-    proc = nix_run("flake", "metadata", "--json", path, check=False)
-    if proc.returncode != 0:
-        return None
-    return json.loads(proc.stdout)
+    ).stdout.strip()
 
 
 def nix_show_derivation(path):
-    proc = nix_run("show-derivation", path, check=False)
+    proc = subprocess.run(
+        ["show-derivation", path],
+        check=False,
+        text=True,
+        stdout=subprocess.PIPE,
+    )
     if proc.returncode != 0:
         return None
     # attrs are keyed by derivation path, which we don't know,
@@ -60,42 +57,24 @@ def path_from_file_url(url):
 
 
 def lock_info_from_path(full_path):
-    current_flake = nix_flake_metadata(os.getcwd())
-    assert current_flake
+    # See whether the path is relative to our local repo
+    repo_root = Path(git_repo_root())
+    if full_path.is_relative_to(repo_root):
+        return str(full_path.relative_to(repo_root)), None
 
-    # See whether it's a flake, and if so write the relative path into the lock
-    # file.
-    requested_flake = nix_flake_metadata(full_path)
-    if requested_flake:
-        if current_flake.get("path") == requested_flake.get("path"):
-            flake_path = path_from_file_url(
-                requested_flake.get("original", {}).get("url")
-            )
-            relative_path = full_path.relative_to(flake_path)
-            del requested_flake["locks"]
-            return str(relative_path), None
-        else:
-            print("requested flake")
-            del requested_flake["locks"]
-            print(json.dumps(requested_flake, indent=2))
-            print(
-                f"fatal: requirement '{full_path}' seems to refer to a flake which isn't ours.\n",  # noqa: E501
-                file=sys.stderr,
-            )
-            sys.exit(1)
-
-    # get just the "top-level" store path /nix/store/$hash-name/
+    # Otherwise, we assume its in /nix/store and just the "top-level"
+    # store path /nix/store/$hash-name/
     store_path = Path("/").joinpath(*full_path.parts[:4])
     if not Path("/nix/store") == store_path.parent:
         print(
             f"fatal: requirement '{full_path}' refers to something outside",
-            "/nix/store which isn't a flake.",
+            f"/nix/store and our local repo '{repo_root}'",
             file=sys.stderr,
         )
         sys.exit(1)
 
-    # use nix to print the derivation of our out_path in json
-    # Assume it's a FOD and get its url and sha256
+    # Check if its a FOD, if so use nix to print the derivation of our
+    # out_path in json and get hash and url from that
     drv_json = nix_show_derivation(store_path)
     if drv_json:
         return lock_info_from_fod(store_path, drv_json)
