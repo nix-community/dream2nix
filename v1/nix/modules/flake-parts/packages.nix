@@ -36,6 +36,7 @@
           ];
           specialArgs.packageSets = {
             nixpkgs = inputs.nixpkgsV1.legacyPackages.${system};
+            writers = config.writers;
           };
           specialArgs.drv-parts = inputs.drv-parts;
           specialArgs.dream2nix = self;

@@ -40,11 +40,22 @@
     '',
   nix,
   git,
+  writePureShellScript,
 }: let
   # We use nixpkgs python3 to run mitmproxy, see function parameters
   pythonWithMitmproxy =
     python3.withPackages
     (ps: [ps.mitmproxy ps.python-dateutil]);
+
+  path = [nix git] ++ nativeBuildInputs;
+
+  fetchPipMetadata = python.pkgs.buildPythonPackage {
+    name = "fetch_pip_metadata";
+    format = "flit";
+    src = ./src;
+    propagatedBuildInputs = with python.pkgs; [packaging certifi python-dateutil pip];
+  };
+
   args = writeText "pip-args" (builtins.toJSON {
     filterPypiResponsesScript = ../fetchPip/filter-pypi-responses.py;
 
@@ -63,15 +74,7 @@
       pipFlags
       ;
   });
-  script = python.pkgs.buildPythonPackage {
-    name = "fetch_pip_metadata";
-    format = "flit";
-    src = ./src;
-    buildInputs = [makeWrapper];
-    propagatedBuildInputs = with python.pkgs; [packaging certifi python-dateutil pip];
-    postInstall = ''
-      wrapProgram $out/bin/fetch_pip_metadata \
-        --prefix PATH : ${lib.makeBinPath ([nix git] ++ nativeBuildInputs)} \
-    '';
-  };
-in "${script}/bin/fetch_pip_metadata ${args}"
+in
+  writePureShellScript
+  path
+  "${fetchPipMetadata}/bin/fetch_pip_metadata ${args}"

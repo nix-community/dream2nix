@@ -76,18 +76,23 @@ in {
   ];
 
   config = {
-    deps = {nixpkgs, ...}:
+    deps = {
+      nixpkgs,
+      writers,
+      ...
+    }:
       l.mapAttrs (_: l.mkDefault) {
         fetchPipMetadata = nixpkgs.callPackage ../../../pkgs/fetchPipMetadata {};
         setuptools = nixpkgs.python3Packages.setuptools;
         inherit (nixpkgs) git;
+        inherit (writers) writePureShellScript;
       };
 
     # Keep package metadata fetched by Pip in our lockfile
     lock.fields.fetchPipMetadata = {
       script = config.deps.fetchPipMetadata {
         inherit (cfg) pypiSnapshotDate pipFlags pipVersion requirementsList requirementsFiles nativeBuildInputs;
-        inherit (config.deps) python nix git;
+        inherit (config.deps) writePureShellScript python nix git;
       };
     };
 
