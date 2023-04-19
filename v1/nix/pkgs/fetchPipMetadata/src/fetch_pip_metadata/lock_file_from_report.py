@@ -21,7 +21,7 @@ def git_repo_root():
 
 def nix_show_derivation(path):
     proc = subprocess.run(
-        ["show-derivation", path],
+        ["nix", "show-derivation", path],
         check=False,
         text=True,
         stdout=subprocess.PIPE,
@@ -59,7 +59,7 @@ def path_from_file_url(url):
 def lock_info_from_path(full_path):
     # See whether the path is relative to our local repo
     repo_root = Path(git_repo_root())
-    if full_path.is_relative_to(repo_root):
+    if repo_root in full_path.parents or repo_root == full_path:
         return str(full_path.relative_to(repo_root)), None
 
     # Otherwise, we assume its in /nix/store and just the "top-level"
