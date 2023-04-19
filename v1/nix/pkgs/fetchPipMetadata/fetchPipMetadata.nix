@@ -29,6 +29,7 @@
   requirementsFiles ? [],
   pipFlags ? [],
   pipVersion ? "23.1",
+  wheelVersion ? "0.40.0",
   nativeBuildInputs ? [],
   # maximum release date for packages
   pypiSnapshotDate ?
@@ -58,6 +59,7 @@
       requirementsFiles
       requirementsList
       pipVersion
+      wheelVersion
       pipFlags
       ;
   });
