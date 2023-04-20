@@ -6,7 +6,7 @@
   l = lib // builtins;
 in {
   imports = [
-    ../../drv-parts/mach-nix-xs
+    ../../drv-parts/pip
   ];
 
   deps = {nixpkgs, ...}: {
@@ -16,21 +16,13 @@ in {
   name = "ansible";
   version = "2.7.1";
 
-  mkDerivation = {
-    preUnpack = ''
-      export src=$(ls ${config.mach-nix.pythonSources}/names/${config.name}/*);
-    '';
-  };
-
   buildPythonPackage = {
-    format = "setuptools";
-
     pythonImportsCheck = [
       config.name
     ];
   };
 
-  mach-nix.pythonSources.fetch-pip = {
+  pip = {
     pypiSnapshotDate = "2023-01-01";
     requirementsList = ["${config.name}==${config.version}"];
   };

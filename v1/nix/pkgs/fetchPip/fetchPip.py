@@ -65,7 +65,7 @@ def start_mitmproxy(port):
 
 
 def wait_for_proxy(proxy_port, cafile):
-    timeout = time.time() + 60 * 5
+    timeout = time.time() + 10
     req = urllib.request.Request("https://pypi.org")
     req.set_proxy(f"127.0.0.1:{proxy_port}", "http")
     req.set_proxy(f"127.0.0.1:{proxy_port}", "https")

@@ -1,0 +1,211 @@
+import os
+import sys
+import subprocess
+import json
+from pathlib import Path
+
+from packaging.requirements import Requirement
+from packaging.utils import (
+    canonicalize_name,
+)
+
+
+def git_repo_root():
+    return subprocess.run(
+        ["git", "rev-parse", "--show-toplevel"],
+        check=True,
+        text=True,
+        stdout=subprocess.PIPE,
+    ).stdout.strip()
+
+
+def nix_show_derivation(path):
+    proc = subprocess.run(
+        ["nix", "show-derivation", path],
+        check=False,
+        text=True,
+        stdout=subprocess.PIPE,
+    )
+    if proc.returncode != 0:
+        return None
+    # attrs are keyed by derivation path, which we don't know,
+    # but there should be only one in our case.
+    return list(json.loads(proc.stdout).values())[0]
+
+
+def lock_info_from_fod(store_path, drv_json):
+    drv_out = drv_json.get("outputs", {}).get("out", {})
+    assert str(store_path) == drv_out.get("path")
+    assert "r:sha256" == drv_out.get("hashAlgo")
+    url = drv_json.get("env", {}).get("urls")  # TODO multiple? commas?
+    sha256 = drv_out.get("hash")
+    if not (url and sha256):
+        print(
+            f"fatal: requirement '{store_path}' does not seem to be a FOD.\n",
+            f"No URL ({url}) or hash ({sha256}) found.",
+            file=sys.stderr,
+        )
+        sys.exit(1)
+    return url, sha256
+
+
+def path_from_file_url(url):
+    prefix = "file://"
+    prefix_len = len(prefix)
+    if url.startswith(prefix):
+        return Path(url[prefix_len:]).absolute()
+
+
+def lock_info_from_path(full_path):
+    # See whether the path is relative to our local repo
+    repo_root = Path(git_repo_root())
+    if repo_root in full_path.parents or repo_root == full_path:
+        return str(full_path.relative_to(repo_root)), None
+
+    # Otherwise, we assume its in /nix/store and just the "top-level"
+    # store path /nix/store/$hash-name/
+    store_path = Path("/").joinpath(*full_path.parts[:4])
+    if not Path("/nix/store") == store_path.parent:
+        print(
+            f"fatal: requirement '{full_path}' refers to something outside",
+            f"/nix/store and our local repo '{repo_root}'",
+            file=sys.stderr,
+        )
+        sys.exit(1)
+
+    # Check if its a FOD, if so use nix to print the derivation of our
+    # out_path in json and get hash and url from that
+    drv_json = nix_show_derivation(store_path)
+    if drv_json:
+        return lock_info_from_fod(store_path, drv_json)
+    else:
+        print(
+            f"fatal: requirement '{full_path}' refers to something we",
+            "can't understand",
+            file=sys.stderr,
+        )
+        sys.exit(1)
+
+
+def lock_entry_from_report_entry(install):
+    """
+    Convert an entry of report['install'] to an object we want to store
+    in our lock file, but don't add dependencies yet.
+    """
+    name = canonicalize_name(install["metadata"]["name"])
+    download_info = install["download_info"]
+
+    url, sha256 = download_info["url"], None
+    full_path = path_from_file_url(url)
+    if full_path:
+        url, sha256 = lock_info_from_path(full_path)
+
+    if not sha256:
+        hash = (
+            download_info.get("archive_info", {})
+            .get("hash", "")
+            .split("=", 1)  # noqa: 501
+        )
+        sha256 = hash[1] if hash[0] == "sha256" else None
+    return name, dict(
+        url=url,
+        version=install["metadata"]["version"],
+        sha256=sha256,
+        dependencies=set(),
+    )
+
+
+def evaluate_extras(req, extras, env):
+    """
+    Given a python requirement string, a dictionary representing a python
+    platform environment as in report['environment'], and a set of extras,
+    we want to check if this package is required on this platform with the
+    requested extras.
+    """
+    if not extras:
+        return req.marker.evaluate({**env, "extra": ""})
+    else:
+        return any({req.marker.evaluate({**env, "extra": e}) for e in extras})
+
+
+def evaluate_requirements(env, reqs, packages, root_name, extras, seen):
+    """
+    Recursively walk the dependency tree and check if requirements
+    are needed for our current platform with our requested set of extras.
+    If so, add them to our lock files dependencies field and delete
+    requirements to save space in the file.
+    A circuit breaker is included to avoid infinite recursion in nix.
+    """
+    if root_name in seen:
+        print(
+            f"fatal: cycle detected: {root_name} ({' '.join(seen)})",
+            file=sys.stderr,  # noqa: E501
+        )
+        sys.exit(1)
+    # we copy "seen", because we want to track cycles per
+    # tree-branch and the original would be visible for all branches.
+    seen = seen.copy()
+    seen.append(root_name)
+
+    for req in reqs[root_name]:
+        if (not req.marker) or evaluate_extras(req, extras, env):
+            req_name = canonicalize_name(req.name)
+            packages[root_name]["dependencies"].add(req_name)
+            evaluate_requirements(
+                env, reqs, packages, req_name, req.extras, seen
+            )  # noqa: 501
+
+
+def lock_file_from_report(report):
+    """
+    Pre-process pips report.json for easier consumation by nix.
+    We extract name, version, url and hash of the source distribution or
+    wheel. We also preprocess requirements and their environment markers to
+    the effective, platform-specific dependencies of each package. This makes
+    heavy use of `packaging` which is hard to impossible to re-implement
+    correctly in nix.
+
+    We output a dictionary mapping normalized package names to a dict
+    of version, url, sha256 and a list of normalized names of the packages
+    effective dependencies on this platform and with the extras requested.
+
+    This function can be further improved by also locking dependencies for
+    non-selected extras, provided by our toplevel packages aka "roots".
+    """
+    packages = dict()
+    # environment to evaluate pythons requirement markers in, contains
+    # things such as your operating system, platform and python interpreter.
+    env = report["environment"]
+    # trace packages directly requested from pip to know where to start
+    # walking the dependency tree.
+    roots = dict()
+    # packages in the report are a list, so we cache their requirement
+    # strings in a list for faster lookups while we walk the tree below.
+    requirements = dict()
+    # iterate over all packages pip installed to find roots
+    # of the tree and gather basic information, such as urls
+    for install in report["install"]:
+        name, package = lock_entry_from_report_entry(install)
+        packages[name] = package
+        requirements[name] = [
+            Requirement(r)
+            for r in install["metadata"].get("requires_dist", [])  # noqa: 501
+        ]
+        if install.get("requested", False):
+            roots[name] = install.get("requested_extras", set())
+
+    # recursively iterate over the dependency tree from top to bottom
+    # to evaluate optional requirements (extras) correctly
+    for root_name, extras in roots.items():
+        evaluate_requirements(
+            env, requirements, packages, root_name, extras, list()
+        )  # noqa: 501
+
+    # iterate over the packages a third and final time to ensure that
+    # dependencies are a stable sorted list, no matter in which order the
+    # tree has been walked through.
+    packages = {
+        name: {**pkg, "dependencies": sorted(list(pkg["dependencies"]))}
+        for name, pkg in packages.items()
+    }
+    return packages
