@@ -123,7 +123,7 @@ in {
 
     inject = mkOption {
       default = {};
-      type = t.lazyAttrsOf (t.listOf (t.listOf t.str));
+      type = t.lazyAttrsOf (t.lazyAttrsOf (t.listOf (t.listOf t.str)));
       description = "Inject missing dependencies into the dependency tree"; # TODO(antotocar34) find a suitable description
       example =
         l.literalExpression
