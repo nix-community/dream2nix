@@ -98,16 +98,20 @@
     '';
 
   errorMissingFile = ''
-    The lock file ${cfg.lockFileRel} for drv-parts module '${config.name}' is missing, please update it.
-    To create the lock file run the `.config.lock.refresh` attribute of the ${config.name} package, i.e.:
-      nix run -L .#ansible.config.lock.refresh
-    if using flakes.
+    The lock file ${cfg.repoRoot}${cfg.lockFileRel} for drv-parts module '${config.name}' is missing.
+    To create it run
+      nix run -L .#${config.name}.config.lock.refresh
+    if using flakes, otherwise:
+      $(nix-build -A packages.${config.name}.config.lock.refresh --no-out-link)/bin/refresh
   '';
 
   errorOutdated = field: ''
-    The lock file ${cfg.lockFileRel} for drv-parts module '${config.name}' does not contain field `${field}`.
-    To update the lock file, execute:
-      bash -c $(nix-build ${config.lock.refresh.drvPath})/bin/refresh
+    The lock file ${cfg.repoRoot}${cfg.lockFileRel} for drv-parts module '${config.name}' does not contain field `${field}`.
+    To update it run
+      nix run -L .#${config.name}.config.lock.refresh
+    if using flakes, otherwise:
+      $(nix-build -A packages.${config.name}.config.lock.refresh --no-out-link)/bin/refresh
+
   '';
 
   fileContent =
