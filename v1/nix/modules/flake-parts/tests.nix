@@ -18,6 +18,8 @@
   }: let
     python = pkgs.python3.withPackages (p: [
       p.pytest
+      p.pytest-timeout
+      p.pexpect
     ]);
     script =
       config.writers.writePureShellScriptBin "test-runner"
