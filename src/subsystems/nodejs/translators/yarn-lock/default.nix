@@ -18,7 +18,7 @@
     # extraArgs
     nodejs,
     noDev,
-    workspacesInheritParentDeps,
+    workspacesInheritParentDeps ? false,
     ...
   } @ args: let
     b = builtins;
