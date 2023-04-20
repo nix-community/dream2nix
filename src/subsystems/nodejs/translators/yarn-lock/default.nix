@@ -18,6 +18,7 @@
     # extraArgs
     nodejs,
     noDev,
+    workspacesInheritParentDeps,
     ...
   } @ args: let
     b = builtins;
@@ -53,6 +54,13 @@
         json = workspacesPackageJson."${workspace}";
         name = json.name or workspace;
         version = json.version or "unknown";
+        packageJsonDeps =
+          if workspacesInheritParentDeps
+          then
+            (nodejsUtils.getPackageJsonDeps json noDev)
+            # add deps of parent
+            // (nodejsUtils.getPackageJsonDeps packageJson noDev)
+          else nodejsUtils.getPackageJsonDeps json noDev;
       in {
         inherit name version;
 
@@ -79,7 +87,7 @@
                 name = depName;
                 version = depObject.version;
               })
-          (nodejsUtils.getPackageJsonDeps json noDev);
+          packageJsonDeps;
 
         sourceSpec = {
           type = "path";
@@ -394,6 +402,11 @@ in {
         "16"
       ];
       type = "argument";
+    };
+
+    workspacesInheritParentDeps = {
+      description = "Make all workspaces inherit the dependencies of the top-level";
+      type = "flag";
     };
   };
 }
