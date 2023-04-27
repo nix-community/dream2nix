@@ -8,7 +8,7 @@
   Automate reproducible packaging for various language ecosystems
   <br>
   <a href="https://nix-community.github.io/dream2nix/">Documentation</a> |
-  <a href="https://nix-community.github.io/dream2nix/contributing.html">Contributing</a> |
+  <a href="https://nix-community.github.io/dream2nix/contributing/contributing.html">Contributing</a> |
   <a href="https://nix-community.github.io/dream2nix/intro/override-system.html">Overriding Packages</a> |
   <a href="https://github.com/nix-community/dream2nix/tree/main/examples">Examples</a>
 </p>
