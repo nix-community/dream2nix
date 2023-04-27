@@ -10,7 +10,7 @@
   fetcherModules =
     l.genAttrs
     fetcherNames
-    (name: import "${fetchersDir}/${name}" config);
+    (name: import "${fetchersDir}/${name}" (config.pkgs // config));
 in {
   config = {
     fetchers = fetcherModules;

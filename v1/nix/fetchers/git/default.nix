@@ -1,7 +1,7 @@
 {
-  pkgs,
-  lib,
-  utils,
+  utils ? null,
+  hashPath ? utils.hashPath,
+  fetchgit,
   ...
 }: let
   b = builtins;
@@ -53,7 +53,7 @@ in {
         else {rev = inp.rev;};
     in {
       calcHash = algo:
-        utils.hashPath algo
+        hashPath algo
         (b.fetchGit
           (refAndRev
             // {
@@ -79,7 +79,7 @@ in {
                 inherit submodules;
               })
         else
-          pkgs.fetchgit
+          fetchgit
           (refAndRev
             // {
               inherit url;
