@@ -1,7 +1,9 @@
 {
-  pkgs,
+  utils ? null,
+  fetchurl,
   lib,
-  utils,
+  hashFile ? utils.hashFile,
+  extractSource ? utils.extractSource,
   ...
 }: {
   inputs = [
@@ -12,7 +14,7 @@
     b = builtins;
   in {
     calcHash = algo:
-      utils.hashFile algo (b.fetchurl {
+      hashFile algo (b.fetchurl {
         inherit url;
       });
 
@@ -20,12 +22,12 @@
       drv =
         if hash != null && lib.stringLength hash == 40
         then
-          pkgs.fetchurl {
+          fetchurl {
             inherit url;
             sha1 = hash;
           }
         else
-          pkgs.fetchurl {
+          fetchurl {
             inherit url hash;
           };
 
@@ -33,7 +35,7 @@
         name = lib.strings.sanitizeDerivationName old.name;
       });
 
-      extracted = utils.extractSource {
+      extracted = extractSource {
         source = drvSanitized;
       };
     in
