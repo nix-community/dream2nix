@@ -14,7 +14,7 @@ in {
         readOnly = true;
         description = ''
           The system-less dream2nix library.
-          This should be the the `lib` attribute of the dream2nix flake.
+          This should be the `lib` attribute of the dream2nix flake.
         '';
       };
       config = l.mkOption {
