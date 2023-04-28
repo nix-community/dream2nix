@@ -75,6 +75,7 @@ in {
             inherit crateNameFromCargoToml vendorCargoDeps;
           };
           buildDepsOnly = importLibFile "buildDepsOnly" {
+            inherit (pkgs) lib;
             inherit
               mkCargoDerivation
               crateNameFromCargoToml

@@ -58,7 +58,7 @@
 
     # required for builder rust/crane
     crane = {
-      url = "github:ipetkov/crane";
+      url = "github:ipetkov/crane/v0.12.1";
       flake = false;
     };
 
