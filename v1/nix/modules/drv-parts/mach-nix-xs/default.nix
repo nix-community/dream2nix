@@ -235,9 +235,8 @@ in {
       dontPatchELF = l.mkDefault true;
       dontStrip = l.mkDefault true;
 
-      nativeBuildInputs = [
-        config.deps.autoPatchelfHook
-      ];
+      nativeBuildInputs =
+        l.optionals config.deps.stdenv.isLinux [config.deps.autoPatchelfHook];
 
       buildInputs =
         l.optionals config.deps.stdenv.isLinux [config.deps.manylinuxPackages];
