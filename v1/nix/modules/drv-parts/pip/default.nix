@@ -61,7 +61,8 @@
         doCheck = l.mkDefault false;
 
         nativeBuildInputs = [config.deps.autoPatchelfHook];
-        buildInputs = [config.deps.manylinux1];
+        buildInputs =
+          l.optionals config.deps.stdenv.isLinux [config.deps.manylinux1];
         propagatedBuildInputs =
           l.map (name: cfg.drvs.${name}.public.out)
           metadata.${config.name}.dependencies;

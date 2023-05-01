@@ -239,9 +239,8 @@ in {
         config.deps.autoPatchelfHook
       ];
 
-      buildInputs = with config.deps; [
-        manylinuxPackages
-      ];
+      buildInputs =
+        l.optionals config.deps.stdenv.isLinux [config.deps.manylinuxPackages];
 
       passthru = {
         inherit (config.mach-nix) pythonSources;
