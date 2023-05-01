@@ -60,7 +60,8 @@
         src = l.mkDefault (l.fetchurl {inherit (metadata.${config.name}) url sha256;});
         doCheck = l.mkDefault false;
 
-        nativeBuildInputs = [config.deps.autoPatchelfHook];
+        nativeBuildInputs =
+          l.optionals config.deps.stdenv.isLinux [config.deps.autoPatchelfHook];
         buildInputs =
           l.optionals config.deps.stdenv.isLinux [config.deps.manylinux1];
         propagatedBuildInputs =
