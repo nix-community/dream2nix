@@ -1,0 +1,54 @@
+{
+  "fetchPipMetadata": {
+    "asgiref": {
+      "dependencies": [],
+      "sha256": "71e68008da809b957b7ee4b43dbccff33d1b23519fb8344e33f049897077afac",
+      "url": "https://files.pythonhosted.org/packages/8f/29/38d10a47b322a77b2d12c2b79c789f52956f733cb701d4d5157c76b5f238/asgiref-3.6.0-py3-none-any.whl",
+      "version": "3.6.0"
+    },
+    "django": {
+      "dependencies": [
+        "asgiref",
+        "sqlparse"
+      ],
+      "sha256": "ad33ed68db9398f5dfb33282704925bce044bef4261cd4fb59e4e7f9ae505a78",
+      "url": "https://files.pythonhosted.org/packages/d9/40/6012f98b14b64b4d3dc47b0c2f116fccbd0795ab35515d0c40dac73b81b8/Django-4.2-py3-none-any.whl",
+      "version": "4.2"
+    },
+    "lxml": {
+      "dependencies": [],
+      "sha256": "1ab8f1f932e8f82355e75dda5413a57612c6ea448069d4fb2e217e9a4bed13d4",
+      "url": "https://files.pythonhosted.org/packages/89/9c/be3ebeb6053c6625c0497f282e0d8acc36c309212d47201e9cb1198ffb54/lxml-4.9.2-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.manylinux_2_24_x86_64.whl",
+      "version": "4.9.2"
+    },
+    "my-package": {
+      "dependencies": [
+        "django",
+        "lxml",
+        "psycopg2",
+        "setuptools"
+      ],
+      "sha256": null,
+      "url": ".",
+      "version": "0.0.0"
+    },
+    "psycopg2": {
+      "dependencies": [],
+      "sha256": "f15158418fd826831b28585e2ab48ed8df2d0d98f502a2b4fe619e7d5ca29011",
+      "url": "https://files.pythonhosted.org/packages/af/c4/5726cddb53fe52f0e839eb3da04322364f14493217ebd5818cc5e4c948a5/psycopg2-2.9.6.tar.gz",
+      "version": "2.9.6"
+    },
+    "setuptools": {
+      "dependencies": [],
+      "sha256": "23aaf86b85ca52ceb801d32703f12d77517b2556af839621c641fca11287952b",
+      "url": "https://files.pythonhosted.org/packages/2f/8c/f336a966d4097c7cef6fc699b2ecb83b5fb63fd698198c1b5c7905a74f0f/setuptools-67.7.2-py3-none-any.whl",
+      "version": "67.7.2"
+    },
+    "sqlparse": {
+      "dependencies": [],
+      "sha256": "5430a4fe2ac7d0f93e66f1efc6e1338a41884b7ddf2a350cedd20ccc4d9d28f3",
+      "url": "https://files.pythonhosted.org/packages/98/5a/66d7c9305baa9f11857f247d4ba761402cea75db6058ff850ed7128957b7/sqlparse-0.4.4-py3-none-any.whl",
+      "version": "0.4.4"
+    }
+  }
+}

@@ -1,0 +1,15 @@
+[project]
+name = "my_package"
+description = "my_package"
+requires-python = "~=3.10"
+dynamic = ["version", "dependencies"]
+
+[project.scripts]
+hello = "my_package:hello"
+
+[build-system]
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.dynamic]
+dependencies = {file = ["requirements.txt"]}
