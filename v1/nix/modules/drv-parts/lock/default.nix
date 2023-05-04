@@ -47,6 +47,7 @@
     lock_data = run_refresh_scripts(refresh_scripts)
     with open(lock_path, 'w') as out_file:
         json.dump(lock_data, out_file, indent=2)
+    print(f"lock file written to {out_file.name}")
   '';
 
   computeFODHash = fod: let
@@ -99,18 +100,18 @@
 
   errorMissingFile = ''
     The lock file ${cfg.repoRoot}${cfg.lockFileRel} for drv-parts module '${config.name}' is missing.
-    To create it run
+    To update it using flakes:
       nix run -L .#${config.name}.config.lock.refresh
-    if using flakes, otherwise:
-      $(nix-build -A packages.${config.name}.config.lock.refresh --no-out-link)/bin/refresh
+    To update is without flakes:
+      bash -c $(nix-build ${config.lock.refresh.drvPath} --no-link)/bin/refresh
   '';
 
   errorOutdated = field: ''
     The lock file ${cfg.repoRoot}${cfg.lockFileRel} for drv-parts module '${config.name}' does not contain field `${field}`.
-    To update it run
+    To update it using flakes:
       nix run -L .#${config.name}.config.lock.refresh
-    if using flakes, otherwise:
-      $(nix-build -A packages.${config.name}.config.lock.refresh --no-out-link)/bin/refresh
+    To update is without flakes:
+      bash -c $(nix-build ${config.lock.refresh.drvPath} --no-link)/bin/refresh
 
   '';
 
