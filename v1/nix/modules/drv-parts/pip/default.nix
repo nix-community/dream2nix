@@ -1,14 +1,26 @@
 {
   config,
   lib,
-  drv-parts,
+  dream2nix,
   ...
 }: let
   l = lib // builtins;
   python = config.deps.python;
   cfg = config.pip;
-  packageName = config.name;
   metadata = config.lock.content.fetchPipMetadata;
+
+  writers = import ../../../pkgs/writers {
+    inherit lib;
+    inherit
+      (config.deps)
+      bash
+      coreutils
+      gawk
+      path
+      writeScript
+      writeScriptBin
+      ;
+  };
 
   drvs =
     l.mapAttrs (
@@ -34,7 +46,7 @@
 
   commonModule = {config, ...}: {
     imports = [
-      drv-parts.modules.drv-parts.mkDerivation
+      dream2nix.modules.drv-parts.mkDerivation
       ../buildPythonPackage
       ../nixpkgs-overrides
     ];
@@ -45,7 +57,13 @@
           inherit
             (nixpkgs)
             autoPatchelfHook
+            bash
+            coreutils
+            gawk
+            path
             stdenv
+            writeScript
+            writeScriptBin
             ;
           inherit (nixpkgs.pythonManylinuxPackages) manylinux1;
         };
@@ -78,11 +96,7 @@ in {
   ];
 
   config = {
-    deps = {
-      nixpkgs,
-      writers,
-      ...
-    }:
+    deps = {nixpkgs, ...}:
       l.mapAttrs (_: l.mkDefault) {
         fetchPipMetadata = nixpkgs.callPackage ../../../pkgs/fetchPipMetadata {};
         setuptools = nixpkgs.python3Packages.setuptools;
