@@ -46,6 +46,14 @@ in {
         '';
       };
 
+    makeWrapperArgs = l.mkOption {
+      type = t.listOf t.str;
+      default = [];
+      description = ''
+        Additional arguments to pass to the makeWrapper function, which wraps generated binaries.
+      '';
+    };
+
     dontUsePipInstall =
       boolOpt
       // {
