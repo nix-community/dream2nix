@@ -1,4 +1,7 @@
-{pkgs}: let
+{
+  jq,
+  moreutils,
+}: let
   # This is only executed for electron based packages.
   # Electron ships its own version of node, requiring a rebuild of native
   # extensions.
@@ -32,14 +35,14 @@
     chmod -R +w $TMP/electron
 
     # configure electron toolchain
-    ${pkgs.jq}/bin/jq ".build.electronDist = \"$TMP/electron\"" package.json \
-        | ${pkgs.moreutils}/bin/sponge package.json
+    ${jq}/bin/jq ".build.electronDist = \"$TMP/electron\"" package.json \
+        | ${moreutils}/bin/sponge package.json
 
-    ${pkgs.jq}/bin/jq ".build.linux.target = \"dir\"" package.json \
-        | ${pkgs.moreutils}/bin/sponge package.json
+    ${jq}/bin/jq ".build.linux.target = \"dir\"" package.json \
+        | ${moreutils}/bin/sponge package.json
 
-    ${pkgs.jq}/bin/jq ".build.npmRebuild = false" package.json \
-        | ${pkgs.moreutils}/bin/sponge package.json
+    ${jq}/bin/jq ".build.npmRebuild = false" package.json \
+        | ${moreutils}/bin/sponge package.json
 
     # execute electron-rebuild if available
     export headers=http://localhost:45034/
