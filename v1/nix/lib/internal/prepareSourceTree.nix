@@ -1,6 +1,38 @@
 {lib, ...}: let
   l = builtins // lib;
 
+  /*
+  Transforms a source tree into a nix attrset for simplicity and performance.
+  It's simpler to traverse an attrset than having to readDir manually.
+  It's more performant because it allows to parse a json or toml by accessing
+    attributes like `.jsonContent` or `.tomlContent` which ensures that the file
+    is only parsed once, even if the parsed content is used in multiple places.
+
+  produces this structure:
+  {
+    files = {
+      "package.json" = {
+        relPath = "package.json"
+        fullPath = "${source}/package.json"
+        content = ;
+        jsonContent = ;
+        tomlContent = ;
+      }
+    };
+    directories = {
+      "packages" = {
+        relPath = "packages";
+        fullPath = "${source}/packages";
+        files = {
+
+        };
+        directories = {
+
+        };
+      };
+    };
+  }
+  */
   prepareSourceTree = {
     source,
     depth ? 10,
