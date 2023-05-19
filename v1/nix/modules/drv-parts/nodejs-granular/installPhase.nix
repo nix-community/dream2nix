@@ -3,29 +3,7 @@
   # this function needs the following arguments via env
   # packageName,
   # nodeModules,
-  # electronDist,
-  # electronAppDir,
-  # electronHeaders
-}: let
-  # Only executed for electron based packages.
-  # Creates an executable script under /bin starting the electron app
-  electronWrap =
-    if stdenv.isLinux
-    then ''
-      mkdir -p $out/bin
-      makeWrapper \
-        $out/lib/node_modules/$packageName/node_modules/electron/dist/electron \
-        $out/bin/$(basename "$packageName") \
-        --add-flags "$(realpath $electronAppDir)"
-    ''
-    else ''
-      mkdir -p $out/bin
-      makeWrapper \
-        $out/lib/node_modules/$packageName/node_modules/electron/dist/Electron.app/Contents/MacOS/Electron \
-        $out/bin/$(basename "$packageName") \
-        --add-flags "$(realpath $electronAppDir)"
-    '';
-in ''
+}: ''
   runHook preInstall
   mkdir -p $out/lib
   cp -r $nodeModules $out/lib/node_modules
@@ -47,12 +25,6 @@ in ''
           ln -s $page $out/share/man/$(basename "$dir")
       done
     done
-  fi
-
-  # wrap electron app
-  if [ -n "$electronHeaders" ]; then
-    echo "Wrapping electron app"
-    ${electronWrap}
   fi
 
   runHook postInstall
