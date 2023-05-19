@@ -1,5 +1,5 @@
 {
-  pkgs,
+  stdenv,
   # this function needs the following arguments via env
   # packageName,
   # nodeModules,
@@ -10,7 +10,7 @@
   # Only executed for electron based packages.
   # Creates an executable script under /bin starting the electron app
   electronWrap =
-    if pkgs.stdenv.isLinux
+    if stdenv.isLinux
     then ''
       mkdir -p $out/bin
       makeWrapper \

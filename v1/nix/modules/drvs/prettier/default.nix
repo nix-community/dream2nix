@@ -8,28 +8,25 @@
 in {
   imports = [
     drv-parts.modules.drv-parts.mkDerivation
-    ../../drv-parts/dream2nix-legacy
+    ../../drv-parts/nodejs-package-lock
+    ../../drv-parts/nodejs-granular
   ];
 
-  dream2nix-legacy = {
-    subsystem = "nodejs";
-    translator = "yarn-lock";
-    builder = "granular-nodejs";
-    subsystemInfo = {
-      nodejs = "16";
-      noDev = false;
-    };
-    source = config.deps.fetchFromGitHub {
-      owner = "prettier";
+  mkDerivation = {
+    src = config.deps.fetchFromGitHub {
+      owner = "davhau";
       repo = "prettier";
-      rev = config.version;
-      sha256 = "sha256-gHFzUjTHsEcxTJtFflqSOCthKW4Wa+ypuTeGxodmh0o=";
+      rev = "2.8.7-package-lock";
+      sha256 = "sha256-zo+WRV3VHja8/noC+iPydtbte93s5GGc3cYaQgNhlEY=";
     };
   };
 
   deps = {nixpkgs, ...}: {
-    inherit (nixpkgs) fetchFromGitHub;
-    inherit (nixpkgs) stdenv;
+    inherit
+      (nixpkgs)
+      fetchFromGitHub
+      stdenv
+      ;
   };
 
   name = l.mkForce "prettier";
