@@ -12,10 +12,6 @@
     {inherit lib;};
   getDreamLockSource = import ../../../lib/getDreamLockSource.nix {inherit lib;};
   readDreamLock = import ../../../lib/readDreamLock.nix {inherit lib;};
-  extractSource = import ../../../lib/extractSource.nix {
-    inherit lib;
-    inherit (config.deps.stdenv) mkDerivation;
-  };
   hashPath = import ../../../lib/hashPath.nix {
     inherit lib;
     inherit (config.deps) runCommandLocal nix;
@@ -32,7 +28,8 @@
       inherit (config.deps) fetchgit;
     };
     http = import ../../../fetchers/http {
-      inherit extractSource hashFile lib;
+      inherit hashFile lib;
+      inherit (config.deps.stdenv) mkDerivation;
       inherit (config.deps) fetchurl;
     };
   };

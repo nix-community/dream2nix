@@ -1,6 +1,12 @@
 {
+  lib,
   pkgs,
-  utils,
+  stdenv,
+  extractSource ?
+    import ../extractSource.nix {
+      inherit lib;
+      inherit (stdenv) mkDerivation;
+    },
   ...
 }: {
   inputs = ["pname" "version"];
@@ -27,7 +33,7 @@
         sha256 = hash;
       };
     in
-      utils.extractSource {
+      extractSource {
         inherit source;
       };
   };

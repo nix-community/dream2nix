@@ -2,6 +2,12 @@
   pkgs,
   lib,
   utils,
+  stdenv,
+  extractSource ?
+    import ../extractSource.nix {
+      inherit lib;
+      inherit (stdenv) mkDerivation;
+    },
   ...
 }: let
   b = builtins;
@@ -64,7 +70,7 @@ in rec {
           outputHashMode = "recursive";
         });
     in
-      utils.extractSource {
+      extractSource {
         inherit source;
       };
   };
