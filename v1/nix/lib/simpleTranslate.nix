@@ -1,4 +1,6 @@
-# This is legacy code, don't use it in newer modules.
+# This is currently only used for legacy modules ported to v1.
+# The dream-lock concept might be deprecated together with this module at some
+#   point.
 {lib, ...}: let
   l = builtins // lib;
 
