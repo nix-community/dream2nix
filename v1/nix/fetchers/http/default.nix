@@ -3,7 +3,12 @@
   fetchurl,
   lib,
   hashFile ? utils.hashFile,
-  extractSource ? utils.extractSource,
+  stdenv,
+  extractSource ?
+    import ../extractSource.nix {
+      inherit lib;
+      inherit (stdenv) mkDerivation;
+    },
   ...
 }: {
   inputs = [
