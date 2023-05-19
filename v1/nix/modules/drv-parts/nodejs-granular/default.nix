@@ -112,26 +112,6 @@
         (l.map
           (dep: lib.nameValuePair dep.name dep.version)
           deps));
-
-    electronDep =
-      if ! isMainPackage name config.version
-      then null
-      else
-        lib.findFirst
-        (dep: dep.name == "electron")
-        null
-        deps;
-
-    electronVersionMajor =
-      lib.versions.major electronDep.version;
-
-    electronHeaders =
-      if
-        (electronDep == null)
-        # hashes seem unavailable for electron < 4
-        || ((l.toInt electronVersionMajor) <= 2)
-      then null
-      else config.deps."electron_${electronVersionMajor}".headers;
   in {
     deps = {nixpkgs, ...}:
       l.mapAttrs (_: l.mkDefault) {
@@ -195,12 +175,8 @@
     };
 
     env = {
-      # inherit pname;
-      # electronAppDir = ".";
-
       inherit
         dependenciesJson
-        electronHeaders
         nodeDeps
         nodeSources
         ;
