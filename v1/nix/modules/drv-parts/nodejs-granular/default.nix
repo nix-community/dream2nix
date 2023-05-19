@@ -8,15 +8,15 @@
   cfg = config.nodejs-granular;
 
   fetchDreamLockSources =
-    import ../../../lib/fetchDreamLockSources.nix
+    import ../../../lib/internal/fetchDreamLockSources.nix
     {inherit lib;};
-  getDreamLockSource = import ../../../lib/getDreamLockSource.nix {inherit lib;};
-  readDreamLock = import ../../../lib/readDreamLock.nix {inherit lib;};
-  hashPath = import ../../../lib/hashPath.nix {
+  getDreamLockSource = import ../../../lib/internal/getDreamLockSource.nix {inherit lib;};
+  readDreamLock = import ../../../lib/internal/readDreamLock.nix {inherit lib;};
+  hashPath = import ../../../lib/internal/hashPath.nix {
     inherit lib;
     inherit (config.deps) runCommandLocal nix;
   };
-  hashFile = import ../../../lib/hashFile.nix {
+  hashFile = import ../../../lib/internal/hashFile.nix {
     inherit lib;
     inherit (config.deps) runCommandLocal nix;
   };

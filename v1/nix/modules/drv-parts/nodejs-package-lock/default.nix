@@ -6,11 +6,11 @@
   l = lib // builtins;
   cfg = config.nodejs-package-lock;
 
-  dreamLockUtils = import ../../../lib/dreamLockUtils.nix {inherit lib;};
-  nodejsUtils = import ../../../lib/nodejsUtils.nix {inherit lib parseSpdxId;};
-  parseSpdxId = import ../../../lib/parseSpdxId.nix {inherit lib;};
-  prepareSourceTree = import ../../../lib/prepareSourceTree.nix {inherit lib;};
-  simpleTranslate = import ../../../lib/simpleTranslate.nix {inherit lib;};
+  dreamLockUtils = import ../../../lib/internal/dreamLockUtils.nix {inherit lib;};
+  nodejsUtils = import ../../../lib/internal/nodejsUtils.nix {inherit lib parseSpdxId;};
+  parseSpdxId = import ../../../lib/internal/parseSpdxId.nix {inherit lib;};
+  prepareSourceTree = import ../../../lib/internal/prepareSourceTree.nix {inherit lib;};
+  simpleTranslate = import ../../../lib/internal/simpleTranslate.nix {inherit lib;};
 
   translate = import ./translate.nix {
     inherit lib dreamLockUtils nodejsUtils parseSpdxId simpleTranslate;
