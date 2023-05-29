@@ -24,6 +24,7 @@
         .stdout.strip())
     lock_path_rel = Path('${cfg.lockFileRel}')  # noqa: E501
     lock_path = repo_path / lock_path_rel.relative_to(lock_path_rel.anchor)
+    lock_path.parent.mkdir(parents=True, exist_ok=True)
 
 
     def run_refresh_script(script):
@@ -31,13 +32,15 @@
             subprocess.run(
                 [script],
                 check=True, shell=True, env={"out": out_file.name})
-            return json.load(out_file)
+            # open the file again via its name (it might have been replaced)
+            with open(out_file.name) as out:
+                return json.load(out)
 
 
     def run_refresh_scripts(refresh_scripts):
         """
           recursively iterate over a nested dict and replace all values,
-          executable scripts, with the content of their $out files.
+          executable scripts, with the content of their $out$out files.
         """
         for name, value in refresh_scripts.items():
             refresh_scripts[name] = run_refresh_script(value["script"])
@@ -48,6 +51,7 @@
     with open(lock_path, 'w') as out_file:
         json.dump(lock_data, out_file, indent=2)
     print(f"lock file written to {out_file.name}")
+    print("Add this file to git if flakes is used.")
   '';
 
   computeFODHash = fod: let
