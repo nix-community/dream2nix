@@ -6,16 +6,16 @@
   l = lib // builtins;
 in {
   imports = [
-    ../../drv-parts/nodejs-package-lock
+    ../../drv-parts/nodejs-package-json
     ../../drv-parts/nodejs-granular
   ];
 
   mkDerivation = {
     src = config.deps.fetchFromGitHub {
-      owner = "davhau";
+      owner = "prettier";
       repo = "prettier";
-      rev = "2.8.7-package-lock";
-      sha256 = "sha256-zo+WRV3VHja8/noC+iPydtbte93s5GGc3cYaQgNhlEY=";
+      rev = config.version;
+      sha256 = "sha256-gHFzUjTHsEcxTJtFflqSOCthKW4Wa+ypuTeGxodmh0o=";
     };
   };
 
