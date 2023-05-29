@@ -1,7 +1,6 @@
 {
   lib,
   nodejsUtils,
-  dreamLockUtils,
   simpleTranslate,
   ...
 }: let
@@ -224,7 +223,7 @@
 
         http = dependencyObject:
           if lib.hasPrefix "https://" dependencyObject.version
-          then rec {
+          then {
             version = getVersion dependencyObject;
             url = dependencyObject.version;
             hash = dependencyObject.integrity;
@@ -237,7 +236,7 @@
             // {
               hash = dependencyObject.integrity;
             }
-          else rec {
+          else {
             url = dependencyObject.resolved;
             hash = dependencyObject.integrity;
           };
@@ -245,21 +244,21 @@
         path = dependencyObject:
         # in case of an entry with missing resolved field
           if ! lib.hasPrefix "file:" dependencyObject.version
-          then
-            dreamLockUtils.mkPathSource {
-              path = let
-                module = l.elemAt (l.splitString "/" dependencyObject.pname) 0;
-              in "node_modules/${module}";
-              rootName = projectName;
-              rootVersion = packageVersion;
-            }
+          then {
+            type = "path";
+            path = let
+              module = l.elemAt (l.splitString "/" dependencyObject.pname) 0;
+            in "node_modules/${module}";
+            rootName = projectName;
+            rootVersion = packageVersion;
+          }
           # in case of a "file:" entry
-          else
-            dreamLockUtils.mkPathSource {
-              path = getPath dependencyObject;
-              rootName = projectName;
-              rootVersion = packageVersion;
-            };
+          else {
+            type = "path";
+            path = getPath dependencyObject;
+            rootName = projectName;
+            rootVersion = packageVersion;
+          };
       };
 
       getDependencies = dependencyObject:
