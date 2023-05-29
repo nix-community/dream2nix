@@ -45,6 +45,9 @@ in {
   nodejs-package-lock = {
     inherit dreamLock;
     packageJson = l.fromJSON (l.readFile cfg.packageJsonFile);
-    packageLock = l.fromJSON (l.readFile cfg.packageLockFile);
+    packageLock =
+      if cfg.packageLockFile != null
+      then l.fromJSON (l.readFile cfg.packageLockFile)
+      else lib.mkDefault {};
   };
 }
