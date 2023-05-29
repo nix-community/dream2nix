@@ -1,6 +1,7 @@
 {
   config,
   lib,
+  dream2nix,
   ...
 }: let
   l = lib // builtins;
@@ -250,6 +251,7 @@
 in {
   imports = [
     ./interface.nix
+    dream2nix.modules.drv-parts.mkDerivation
     (commonModule config.name)
   ];
   deps = {nixpkgs, ...}: {

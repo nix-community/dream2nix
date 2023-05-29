@@ -26,7 +26,7 @@ in {
       description = "The content of the package.json";
     };
     packageLockFile = {
-      type = t.path;
+      type = t.nullOr t.path;
       description = ''
         The package.json file to use.
       '';
