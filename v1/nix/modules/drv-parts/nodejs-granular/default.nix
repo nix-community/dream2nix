@@ -24,11 +24,11 @@
 
   # fetchers
   fetchers = {
-    git = import ../../../fetchers/git {
+    git = import ../../../lib/internal/fetchers/git {
       inherit hashPath;
       inherit (config.deps) fetchgit;
     };
-    http = import ../../../fetchers/http {
+    http = import ../../../lib/internal/fetchers/http {
       inherit hashFile lib;
       inherit (config.deps.stdenv) mkDerivation;
       inherit (config.deps) fetchurl;
