@@ -1,13 +1,11 @@
 {
   lib,
   config,
-  drv-parts,
   ...
 }: let
   l = lib // builtins;
 in {
   imports = [
-    drv-parts.modules.drv-parts.mkDerivation
     ../../drv-parts/nodejs-package-lock
     ../../drv-parts/nodejs-granular
   ];
