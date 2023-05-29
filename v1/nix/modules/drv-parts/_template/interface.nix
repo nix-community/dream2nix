@@ -6,6 +6,7 @@
   l = lib // builtins;
   t = l.types;
 in {
-  options = {
+  options = l.mapAttrs (_: l.mkOption) {
+    # put options here
   };
 }
