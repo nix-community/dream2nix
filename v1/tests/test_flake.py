@@ -8,7 +8,7 @@ import pytest
 
 @pytest.mark.timeout(5)
 def test_flake_output(nix_eval):
-    assert nix_eval(":lf .") == "Added 23 variables."
+    assert nix_eval(":lf .") == "Added 26 variables."
     assert nix_eval("3+7") == "10"
     ansible = nix_eval("packages.x86_64-linux.ansible")
     assert ansible.startswith("«derivation /nix/store/")
