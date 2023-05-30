@@ -242,7 +242,7 @@ We can see that it contains packages for my current platform <code>x86_64-linux<
 <h2 id="build-the-project"><a class="header" href="#build-the-project">Build the project</a></h2>
 <p>Let's try building our project.
 If you get an error about <code>unresolved impurities</code>, see <a href="#resolve-impurities">Resolve Impurities</a></p>
-<pre><code class="language-command">&gt; nix build .#default
+<pre><code class="language-command">&gt; nix build .#main
 </code></pre>
 <p>Congratulations, your build artifacts will now be accessible via the <code>./result</code> directory. If your project contains executables, you can run these via <code>./result/bin/executable-name</code>.
 If you want to develop on your python project, see <a href="#create-a-development-shell">Create a development shell</a></p>
@@ -254,7 +254,7 @@ First, ensure that your project <a href="#resolve-impurities">is resolved</a>, t
 <p>The <code>-c $SHELL</code> part is only necessary if you use a different shell than bash and would like to bring that shell with you into the dev environment.</p>
 <h2 id="resolve-impurities"><a class="header" href="#resolve-impurities">Resolve impurities</a></h2>
 <p>If you try to build, you might run into the following error.</p>
-<pre><code class="language-command">&gt; nix build .#default
+<pre><code class="language-command">&gt; nix build .#main
 error: The python package main contains unresolved impurities.
        Resolve by running the .resolve attribute of this derivation
        or by resolving all impure projects by running the `resolveImpure` package
