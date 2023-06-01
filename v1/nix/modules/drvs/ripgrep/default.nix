@@ -7,6 +7,7 @@
 in {
   imports = [
     ../../drv-parts/rust-cargo-lock
+    ../../drv-parts/buildRustPackage
   ];
 
   deps = {nixpkgs, ...}: {
