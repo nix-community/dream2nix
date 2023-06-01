@@ -105,6 +105,7 @@ in {
       type = t.functionTo (t.lazyAttrsOf (t.attrsOf t.package));
       description = ''
         Override the sources of dependencies or top-level packages.
+        Refer to the `dream-lock.json` for the package version to override.
         For more details, refer to
         https://nix-community.github.io/dream2nix/intro/override-system.html
       '';
