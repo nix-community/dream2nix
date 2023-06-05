@@ -19,7 +19,7 @@ in {
       description = ''
         The package.json file to use.
       '';
-      default = cfg.source + /package.json;
+      default = cfg.source + "/package.json";
     };
     packageJson = {
       type = t.attrs;
@@ -30,7 +30,7 @@ in {
       description = ''
         The package.json file to use.
       '';
-      default = cfg.source + /package-lock.json;
+      default = cfg.source + "/package-lock.json";
     };
     packageLock = {
       type = t.attrs;
