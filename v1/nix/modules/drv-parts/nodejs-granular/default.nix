@@ -182,7 +182,11 @@
         nodeSources
         ;
 
-      inherit (config.nodejs-granular) runBuild;
+      inherit
+        (config.nodejs-granular)
+        installMethod
+        runBuild
+        ;
 
       # The python script wich is executed in this phase:
       #   - ensures that the package is compatible to the current system
@@ -272,5 +276,6 @@ in {
   nodejs-granular = {
     inherit nodejsDeps;
     runBuild = l.mkDefault true;
+    installMethod = l.mkDefault "copy";
   };
 }
