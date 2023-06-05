@@ -182,6 +182,8 @@
         nodeSources
         ;
 
+      inherit (config.nodejs-granular) runBuild;
+
       # The python script wich is executed in this phase:
       #   - ensures that the package is compatible to the current system
       #   - ensures the main version in package.json matches the expected
@@ -241,7 +243,7 @@
         else "symlink";
 
       # only run build on the main package
-      runBuild = isMainPackage name config.version;
+      runBuild = l.mkOptionDefault (isMainPackage name config.version);
 
       # can be overridden to define alternative install command
       # (defaults to 'npm run postinstall')
@@ -269,5 +271,6 @@ in {
   };
   nodejs-granular = {
     inherit nodejsDeps;
+    runBuild = l.mkDefault true;
   };
 }
