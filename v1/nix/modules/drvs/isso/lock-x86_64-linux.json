@@ -1,0 +1,97 @@
+{
+  "fetchPipMetadata": {
+    "bleach": {
+      "dependencies": [
+        "six",
+        "webencodings"
+      ],
+      "sha256": "33c16e3353dbd13028ab4799a0f89a83f113405c766e9c122df8a06f5b85b3f4",
+      "url": "https://files.pythonhosted.org/packages/ac/e2/dfcab68c9b2e7800c8f06b85c76e5f978d05b195a958daa9b1dda54a1db6/bleach-6.0.0-py3-none-any.whl",
+      "version": "6.0.0"
+    },
+    "cffi": {
+      "dependencies": [
+        "pycparser"
+      ],
+      "sha256": "dd86c085fae2efd48ac91dd7ccffcfc0571387fe1193d33b6394db7ef31fe2a4",
+      "url": "https://files.pythonhosted.org/packages/88/89/c34caf63029fb7628ec2ebd5c88ae0c9bd17db98c812e4065a4d020ca41f/cffi-1.15.1-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl",
+      "version": "1.15.1"
+    },
+    "html5lib": {
+      "dependencies": [
+        "six",
+        "webencodings"
+      ],
+      "sha256": "0d78f8fde1c230e99fe37986a60526d7049ed4bf8a9fadbad5f00e22e58e041d",
+      "url": "https://files.pythonhosted.org/packages/6c/dd/a834df6482147d48e225a49515aabc28974ad5a4ca3215c18a882565b028/html5lib-1.1-py2.py3-none-any.whl",
+      "version": "1.1"
+    },
+    "isso": {
+      "dependencies": [
+        "bleach",
+        "html5lib",
+        "itsdangerous",
+        "jinja2",
+        "misaka",
+        "werkzeug"
+      ],
+      "sha256": "ab514c5ebddd1af8329b13eeaa6ddf90a9a68303603653e7daffb7b89f092834",
+      "url": "https://files.pythonhosted.org/packages/27/a0/068411a0be2bdf2e5b8d569ac5c71f9199be4223620dc600264c2c69d5a9/isso-0.13.0-py3-none-any.whl",
+      "version": "0.13.0"
+    },
+    "itsdangerous": {
+      "dependencies": [],
+      "sha256": "2c2349112351b88699d8d4b6b075022c0808887cb7ad10069318a8b0bc88db44",
+      "url": "https://files.pythonhosted.org/packages/68/5f/447e04e828f47465eeab35b5d408b7ebaaaee207f48b7136c5a7267a30ae/itsdangerous-2.1.2-py3-none-any.whl",
+      "version": "2.1.2"
+    },
+    "jinja2": {
+      "dependencies": [
+        "markupsafe"
+      ],
+      "sha256": "6088930bfe239f0e6710546ab9c19c9ef35e29792895fed6e6e31a023a182a61",
+      "url": "https://files.pythonhosted.org/packages/bc/c3/f068337a370801f372f2f8f6bad74a5c140f6fda3d9de154052708dd3c65/Jinja2-3.1.2-py3-none-any.whl",
+      "version": "3.1.2"
+    },
+    "markupsafe": {
+      "dependencies": [],
+      "sha256": "28057e985dace2f478e042eaa15606c7efccb700797660629da387eb289b9323",
+      "url": "https://files.pythonhosted.org/packages/3d/66/2f636ba803fd6eb4cee7b3106ae02538d1e84a7fb7f4f8775c6528a87d31/MarkupSafe-2.1.2-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl",
+      "version": "2.1.2"
+    },
+    "misaka": {
+      "dependencies": [
+        "cffi"
+      ],
+      "sha256": "62f35254550095d899fc2ab8b33e156fc5e674176f074959cbca43cf7912ecd7",
+      "url": "https://files.pythonhosted.org/packages/fa/87/b1020510a00aba1b936477e54180b143df654c565b84936b0b3e85272cf2/misaka-2.1.1.tar.gz",
+      "version": "2.1.1"
+    },
+    "pycparser": {
+      "dependencies": [],
+      "sha256": "8ee45429555515e1f6b185e78100aea234072576aa43ab53aefcae078162fca9",
+      "url": "https://files.pythonhosted.org/packages/62/d5/5f610ebe421e85889f2e55e33b7f9a6795bd982198517d912eb1c76e1a53/pycparser-2.21-py2.py3-none-any.whl",
+      "version": "2.21"
+    },
+    "six": {
+      "dependencies": [],
+      "sha256": "8abb2f1d86890a2dfb989f9a77cfcfd3e47c2a354b01111771326f8aa26e0254",
+      "url": "https://files.pythonhosted.org/packages/d9/5a/e7c31adbe875f2abbb91bd84cf2dc52d792b5a01506781dbcf25c91daf11/six-1.16.0-py2.py3-none-any.whl",
+      "version": "1.16.0"
+    },
+    "webencodings": {
+      "dependencies": [],
+      "sha256": "a0af1213f3c2226497a97e2b3aa01a7e4bee4f403f95be16fc9acd2947514a78",
+      "url": "https://files.pythonhosted.org/packages/f4/24/2a3e3df732393fed8b3ebf2ec078f05546de641fe1b667ee316ec1dcf3b7/webencodings-0.5.1-py2.py3-none-any.whl",
+      "version": "0.5.1"
+    },
+    "werkzeug": {
+      "dependencies": [
+        "markupsafe"
+      ],
+      "sha256": "48e5e61472fee0ddee27ebad085614ebedb7af41e88f687aaf881afb723a162f",
+      "url": "https://files.pythonhosted.org/packages/c2/2f/f0dc628295bd23571c962d5a349307d9c8796a05bfca6571659eaded38e2/Werkzeug-2.3.4-py3-none-any.whl",
+      "version": "2.3.4"
+    }
+  }
+}
