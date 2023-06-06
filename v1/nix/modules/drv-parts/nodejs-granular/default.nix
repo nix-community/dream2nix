@@ -184,6 +184,7 @@
 
       inherit
         (config.nodejs-granular)
+        buildScript
         installMethod
         runBuild
         ;
