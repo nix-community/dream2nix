@@ -45,6 +45,11 @@ in {
       relPath = project.relPath;
       value = projectTree.files."Cargo.toml".tomlContent;
     };
+    workspacePackage = rootToml.value.workspace.package or null;
+    getVersion = package:
+      if package.version.workspace or false
+      then workspacePackage.version or (l.warn "no workspace version found in root Cargo.toml for ${package.name}, defaulting to unknown" "unknown")
+      else package.version or (l.warn "no version found in Cargo.toml for ${package.name}, defaulting to unknown" "unknown");
 
     # use workspace members from discover phase
     # or discover them again ourselves
@@ -228,9 +233,7 @@ in {
     package = rec {
       toml = packageToml.value;
       name = toml.package.name;
-      version =
-        toml.package.version
-        or (l.warn "no version found in Cargo.toml for ${name}, defaulting to unknown" "unknown");
+      version = getVersion toml.package;
     };
 
     extractVersionFromDep = rawObj: let
@@ -307,7 +310,7 @@ in {
               package: let
                 pkg = package.value.package;
                 replacements = findReplacements package;
-              in {${pkg.name}.${pkg.version} = replacements;}
+              in {${pkg.name}.${getVersion pkg} = replacements;}
             )
             cargoPackages;
         in
@@ -325,7 +328,7 @@ in {
             package: let
               pkg = package.value.package;
             in {
-              ${pkg.name}.${pkg.version} =
+              ${pkg.name}.${getVersion pkg} =
                 {license = dlib.parseSpdxId (pkg.license or "");}
                 // (
                   l.filterAttrs
@@ -349,7 +352,7 @@ in {
         makePair = p: let
           pkg = p.value.package;
         in
-          l.nameValuePair pkg.name pkg.version;
+          l.nameValuePair pkg.name (getVersion pkg);
       in
         l.listToAttrs (l.map makePair cargoPackages);
 
@@ -401,8 +404,10 @@ in {
                 l.map
                 (
                   pkg: {
-                    inherit (pkg.value.package) name version;
+                    inherit (pkg.value.package) name;
                     inherit (pkg) relPath;
+
+                    version = getVersion pkg.value.package;
                   }
                 )
                 cargoPackages;
