@@ -2,6 +2,7 @@
   config,
   lib,
   drv-parts,
+  dream2nix,
   packageSets,
   ...
 }: let
@@ -73,7 +74,7 @@ in {
     drvs = l.mkOption {
       type = t.lazyAttrsOf (t.submoduleWith {
         modules = [drv-parts.modules.drv-parts.core];
-        specialArgs = {inherit packageSets;};
+        specialArgs = {inherit packageSets dream2nix;};
       });
       description = "drv-parts modules that define python dependencies";
     };
