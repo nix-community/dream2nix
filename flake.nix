@@ -78,6 +78,12 @@
       url = "github:nix-community/pruned-racket-catalog/catalog";
       flake = false;
     };
+
+    # required for v1/nodejs-floco translator
+    floco = {
+      url = "github:aakropotkin/floco";
+      flake = false;
+    };
   };
 
   outputs = {
@@ -93,6 +99,7 @@
     all-cabal-json,
     ghc-utils,
     pruned-racket-catalog,
+    floco,
     ...
   } @ inp: let
     l = lib // builtins;
