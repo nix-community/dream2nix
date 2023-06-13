@@ -9,6 +9,17 @@ in {
     ../../drv-parts/nodejs-floco
   ];
 
+  name = l.mkForce "prettier-floco";
+  version = l.mkForce "2.8.8";
+
+  deps = {nixpkgs, ...}: {
+    inherit
+      (nixpkgs)
+      fetchFromGitHub
+      stdenv
+      ;
+  };
+
   mkDerivation = {
     src = config.deps.fetchFromGitHub {
       owner = "prettier";
@@ -20,14 +31,10 @@ in {
     };
   };
 
-  deps = {nixpkgs, ...}: {
-    inherit
-      (nixpkgs)
-      fetchFromGitHub
-      stdenv
-      ;
-  };
-
-  name = l.mkForce "prettier-floco";
-  version = l.mkForce "2.8.8";
+  nodejs-floco.modules = [
+    {
+      floco.settings.basedir = ./.;
+      floco.pdefs.prettier."3.0.0-alpha.6".fetchInfo.path = l.mkForce config.mkDerivation.src.outPath;
+    }
+  ];
 }

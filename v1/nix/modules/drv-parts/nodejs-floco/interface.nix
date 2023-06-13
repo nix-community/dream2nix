@@ -17,6 +17,10 @@ in {
       description = "Source of the package";
       default = config.mkDerivation.src;
     };
+    modules = {
+      type = t.listOf t.anything;
+      description = "floco modules to add";
+    };
     drv = {
       type = t.attrs;
     };

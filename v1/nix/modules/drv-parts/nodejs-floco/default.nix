@@ -39,15 +39,13 @@ in {
     };
 
     nodejs-floco.drv = floco.lib.evalModules {
-      modules = [
-        floco.nixosModules.default
-        {inherit (config.lock.content) floco;}
-        {floco.pdefs.prettier."3.0.0-alpha.6".fetchInfo.path = l.mkForce "${config.mkDerivation.src}";}
-        {
-          config.floco.settings.system = system;
-          config.floco.settings.basedir = /home/phaer/src/dream2nix/v1/nix/modules/drvs/prettier-floco; #l.traceValSeq config.lock.repoRoot;
-        }
-      ];
+      modules =
+        [
+          floco.nixosModules.default
+          {config = {inherit (config.lock.content) floco;};}
+          {floco.settings.system = system;}
+        ]
+        ++ cfg.modules;
     };
   };
 }
