@@ -34,6 +34,7 @@
             ../drv-parts/lock
             setup
           ];
+          specialArgs.system = system;
           specialArgs.packageSets = {
             nixpkgs = inputs.nixpkgsV1.legacyPackages.${system};
             writers = config.writers;
