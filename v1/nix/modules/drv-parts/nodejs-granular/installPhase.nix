@@ -4,7 +4,6 @@
   # packageName,
   # nodeModules,
 }: ''
-  runHook preInstall
   mkdir -p $out/lib
   cp -r $nodeModules $out/lib/node_modules
   nodeModules=$out/lib/node_modules
@@ -26,6 +25,4 @@
       done
     done
   fi
-
-  runHook postInstall
 ''

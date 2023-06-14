@@ -95,6 +95,8 @@
         phases.
       Dependencies from npmjs.org are delivered pre-built and cleaned,
         therefore running `make` usually leads to errors.
+      The problem with this hack is it can prevent setup-hooks from setting
+        buildPhase and installPhase because those are already defined here.
       */
       buildPhase = "runHook preBuild && runHook postBuild";
       installPhase = "runHook preInstall && runHook postInstall";
@@ -150,7 +152,11 @@
       # prevents running into ulimits
       passAsFile = ["dependenciesJson" "nodeDeps"];
 
-      nativeBuildInputs = [config.deps.makeWrapper];
+      nativeBuildInputs = [
+        config.deps.makeWrapper
+        config.deps.jq
+        config.deps.nodejs
+      ];
       buildInputs = with config.deps; [jq nodejs python3];
       preConfigurePhases = ["patchPhaseNodejs"];
       preBuildPhases = ["buildPhaseNodejs"];
@@ -254,10 +260,7 @@
       reduces errors with build tooling that doesn't cope well with
       symlinking.
       */
-      installMethod =
-        if isMainPackage name config.version
-        then "copy"
-        else "symlink";
+      installMethod = l.mkOptionDefault "symlink";
 
       # only run build on the main package
       runBuild = l.mkOptionDefault (isMainPackage name config.version);

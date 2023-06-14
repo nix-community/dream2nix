@@ -17,7 +17,6 @@ in {
   deps = {nixpkgs, ...}: {
     stdenv = l.mkForce nixpkgs.stdenv;
     jq = l.mkForce nixpkgs.jq;
-    npm = nixpkgs.nodePackages.npm;
     fetchFromGitHub = nixpkgs.fetchFromGitHub;
   };
 
@@ -28,10 +27,6 @@ in {
       rev = "refs/tags/${config.version}";
       sha256 = "sha256-kZNf7Rlb1DZtQe4dK1B283OkzQQcCX+pbvZzfL65gsA=";
     };
-    nativeBuildInputs = [
-      config.deps.jq
-      config.deps.npm
-    ];
   };
 
   nodejs-granular = {

@@ -2,8 +2,6 @@
   jq,
   moreutils,
 }: ''
-  runHook preBuild
-
   # execute install command
   if [ -n "$buildScript" ]; then
     if [ -f "$buildScript" ]; then
@@ -27,6 +25,4 @@
       npm --production --offline --nodedir=$nodeSources run postinstall
     fi
   fi
-
-  runHook postBuild
 ''
