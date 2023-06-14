@@ -2,6 +2,8 @@
   jq,
   moreutils,
 }: ''
+  echo "executing buildPhaseNodejs"
+
   # execute install command
   if [ -n "$buildScript" ]; then
     if [ -f "$buildScript" ]; then
