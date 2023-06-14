@@ -33,7 +33,7 @@ in {
         Whether to run a package's build script (aka. `npm run build`)
       '';
     };
-    nodejsDeps = {
+    deps = {
       type = t.attrsOf (t.attrsOf (t.submodule {
         imports = [
           dream2nix.modules.drv-parts.core

@@ -4,60 +4,45 @@
   ...
 }: let
   l = lib // builtins;
-  name = "isso";
-  version = "0.13.0";
-  src = config.deps.fetchFromGitHub {
-    owner = "posativ";
-    repo = name;
-    rev = "refs/tags/${version}";
-    sha256 = "sha256-kZNf7Rlb1DZtQe4dK1B283OkzQQcCX+pbvZzfL65gsA=";
-  };
-  frontend = {config, ...}: {
-    imports = [
-      ../../drv-parts/nodejs-package-lock
-      ../../drv-parts/nodejs-granular
-    ];
-
-    name = "${name}-frontend";
-    inherit version;
-
-    deps = {nixpkgs, ...}: {
-      jq = l.mkForce nixpkgs.jq;
-      npm = nixpkgs.nodePackages.npm;
-    };
-
-    mkDerivation = {
-      inherit src;
-      buildInputs = [
-        config.deps.jq
-        config.deps.npm
-      ];
-    };
-    nodejs-granular = {
-      installMethod = l.mkForce "copy";
-      buildScript = l.mkForce "npm run build-prod";
-      runBuild = true;
-    };
-  };
 in {
   imports = [
+    ../../drv-parts/nodejs-package-lock
+    ../../drv-parts/nodejs-granular
     ../../drv-parts/pip
   ];
 
-  inherit name version;
+  name = "isso";
+  version = "0.13.0";
 
   deps = {nixpkgs, ...}: {
-    python = nixpkgs.python3;
+    stdenv = l.mkForce nixpkgs.stdenv;
+    jq = l.mkForce nixpkgs.jq;
+    npm = nixpkgs.nodePackages.npm;
     fetchFromGitHub = nixpkgs.fetchFromGitHub;
   };
 
   mkDerivation = {
-    inherit src;
-    # Isso implicitly depends on setuptools via pkg_resources
-    propagatedBuildInputs = [
-      config.deps.python.pkgs.setuptools
-      config.pip.drvs.frontend.public
+    src = config.deps.fetchFromGitHub {
+      owner = "posativ";
+      repo = config.name;
+      rev = "refs/tags/${config.version}";
+      sha256 = "sha256-kZNf7Rlb1DZtQe4dK1B283OkzQQcCX+pbvZzfL65gsA=";
+    };
+    nativeBuildInputs = [
+      config.deps.jq
+      config.deps.npm
     ];
+  };
+
+  nodejs-granular = {
+    installMethod = l.mkForce "copy";
+    buildScript = l.mkForce "npm run build-prod";
+    # runBuild = true;
+    # TODO: create a better interface for overrides
+    deps.delayed-stream."1.0.0" = {
+      mkDerivation.preBuildPhases = ["removeMakefilePhase"];
+      env.removeMakefilePhase = "rm Makefile";
+    };
   };
 
   buildPythonPackage = {
@@ -67,9 +52,10 @@ in {
   };
 
   pip = {
-    # FIXME this will be changed to depsModules or so
-    drvs = {inherit frontend;};
     pypiSnapshotDate = "2023-05-30";
-    requirementsList = ["${config.name}==${config.version}"];
+    requirementsList = [
+      "${config.name}==${config.version}"
+      "setuptools"
+    ];
   };
 }
