@@ -75,11 +75,11 @@
       lib.genAttrs
       versions
       (version:
-        makePackage name version))
+        makeDependencyModule name version))
     packageVersions;
 
   # Generates a derivation for a specific package name + version
-  makePackage = name: version: {config, ...}: {
+  makeDependencyModule = name: version: {config, ...}: {
     imports = [
       (commonModule name version)
     ];
@@ -90,6 +90,14 @@
     };
     mkDerivation = {
       src = getSource name version;
+      /*
+      This prevents nixpkg's setup.sh to run make during build and install
+        phases.
+      Dependencies from npmjs.org are delivered pre-built and cleaned,
+        therefore running `make` usually leads to errors.
+      */
+      buildPhase = "runHook preBuild && runHook postBuild";
+      installPhase = "runHook preInstall && runHook postInstall";
     };
   };
 
