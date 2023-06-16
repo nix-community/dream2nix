@@ -9,7 +9,7 @@
   nixpkgsAttrs = extractPythonAttrs python.pkgs.apache-airflow;
 in {
   imports = [
-    ../../drv-parts/mach-nix-xs
+    ../../drv-parts/pip
     ../../drv-parts/nixpkgs-overrides
   ];
 
@@ -23,6 +23,7 @@ in {
       git
       fetchFromGitHub
       ;
+    python = nixpkgs.python3;
   };
 
   name = "apache-airflow";
@@ -53,19 +54,30 @@ in {
       ;
   };
 
-  mach-nix.pythonSources.fetch-pip = {
+  pip = {
     pypiSnapshotDate = "2023-01-01";
     requirementsList = [
       "apache-airflow"
+      "setuptools-scm"
     ];
-  };
 
-  # Replace some python packages entirely with candidates from nixpkgs, because
-  #   they are hard to fix
-  mach-nix.substitutions = {
-    cron-descriptor = python.pkgs.cron-descriptor;
-    python-nvd3 = python.pkgs.python-nvd3;
-    pendulum = python.pkgs.pendulum;
+    drvs = {
+      # We include fixes from nixpkgs for pendulum, but keep
+      # our dependencies to avoid version conflicts
+      pendulum.nixpkgs-overrides = {
+        enable = true;
+        exclude = ["propagatedBuildInputs"];
+      };
+      lazy-object-proxy.mkDerivation = {
+        # setuptools-scm is required by lazy-object-proxy,
+        # we include it in our requirements above instead of
+        # using the version from nixpkgs to ensure that
+        # transistive dependencies (i.e. typing-extensions) are
+        # compatible with the rest of our lock file.
+
+        buildInputs = [config.pip.drvs.setuptools-scm.public];
+      };
+    };
   };
 
   env = {
