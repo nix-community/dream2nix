@@ -1,5 +1,5 @@
 """
-This script is part of fetchPip
+This script is part of fetchPipMetadata
 It is meant to be used with mitmproxy via `--script`
 It will filter api repsonses from the pypi.org api (used by pip),
 to only contain files with release date < pypiSnapshotDate
