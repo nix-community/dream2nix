@@ -55,14 +55,6 @@ in {
       '';
     };
 
-    substitutions = l.mkOption {
-      type = t.lazyAttrsOf t.package;
-      description = ''
-        Substitute individual python packages from nixpkgs.
-      '';
-      default = {};
-    };
-
     nativeBuildInputs = l.mkOption {
       type = t.listOf t.package;
       default = [];
