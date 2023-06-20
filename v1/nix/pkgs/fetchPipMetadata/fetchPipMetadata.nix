@@ -1,4 +1,4 @@
-# fetchPip downloads python packages specified by executing
+# fetchPipMetadata downloads python packages specified by executing
 #   `pip download` on a source tree, or a list of requirements.
 # This fetcher requires a maximum date 'pypiSnapshotDate' being specified.
 # The result will be the same as if `pip download` would have been executed
@@ -34,7 +34,7 @@
   # maximum release date for packages
   pypiSnapshotDate ?
     throw ''
-      'pypiSnapshotDate' must be specified for fetchPip.
+      'pypiSnapshotDate' must be specified for fetchPipMetadata.
       Choose any date from the past.
       Example value: "2023-01-01"
     '',
@@ -57,7 +57,7 @@
   };
 
   args = writeText "pip-args" (builtins.toJSON {
-    filterPypiResponsesScript = ../fetchPip/filter-pypi-responses.py;
+    filterPypiResponsesScript = ./filter-pypi-responses.py;
 
     # the python interpreter used to run the proxy script
     mitmProxy = "${pythonWithMitmproxy}/bin/mitmdump";
