@@ -55,6 +55,15 @@ in {
       '';
     };
 
+    buildExtras = l.mkOption {
+      type = t.listOf t.str;
+      default = [];
+      description = ''
+        list of python "extras" to build with. This can be a subset of the
+        extras in your lock file.
+      '';
+    };
+
     nativeBuildInputs = l.mkOption {
       type = t.listOf t.package;
       default = [];
