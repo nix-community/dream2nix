@@ -187,12 +187,14 @@ def lock_file_from_report(report):
     for install in report["install"]:
         name, package = lock_entry_from_report_entry(install)
         packages[name] = package
-        requirements[name] = [
-            Requirement(r)
-            for r in install["metadata"].get("requires_dist", [])  # noqa: 501
-        ]
+        metadata = install["metadata"]
+        requirements[name] = [Requirement(r) for r in metadata.get("requires_dist", [])]
+        # (directly) "requested" packages are those at the root of our tree.
         if install.get("requested", False):
-            roots[name] = install.get("requested_extras", set())
+            # If no set of extras was explicitly requested, we default
+            # to all extras provided by this package.
+            provided_extras = set(metadata.get("provides_extra", []))
+            roots[name] = install.get("requested_extras", provided_extras)
 
     # recursively iterate over the dependency tree from top to bottom
     # to evaluate optional requirements (extras) correctly
