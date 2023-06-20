@@ -15,14 +15,10 @@ in {
     source = {
       type = t.either t.path t.package;
       description = "Source of the package";
-      default = config.mkDerivation.src;
     };
     modules = {
-      type = t.listOf t.anything;
+      type = t.listOf t.raw;
       description = "floco modules to add";
-    };
-    drv = {
-      type = t.attrs;
     };
   };
 }
