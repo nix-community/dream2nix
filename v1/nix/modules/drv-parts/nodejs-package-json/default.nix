@@ -24,15 +24,6 @@
       ;
   };
 
-  npm_8 = nodejs:
-    nodejs.pkgs.npm.override (old: rec {
-      version = "8.19.4";
-      src = builtins.fetchTarball {
-        url = "https://registry.npmjs.org/npm/-/npm-${version}.tgz";
-        sha256 = "0xmvjkxgfavlbm8cj3jx66mlmc20f9kqzigjqripgj71j6b2m9by";
-      };
-    });
-
   npmArgs = l.concatStringsSep " " (map (arg: "'${arg}'") cfg.npmArgs);
 in {
   imports = [
