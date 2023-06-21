@@ -91,7 +91,7 @@
                       "type": { "type": "string" },
                       "dir": { "type": "string" }
                     },
-                    "required": ["type", "url"],
+                      "required": ["type", "url", "hash"],
                     "additionalProperties": false
                   }
                 },
