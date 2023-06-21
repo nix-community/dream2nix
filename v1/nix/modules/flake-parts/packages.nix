@@ -21,6 +21,13 @@
         eval-cache.cacheFileRel = "/v1/nix/modules/drvs/${config.name}/cache-${system}.json";
         eval-cache.repoRoot = self;
         eval-cache.enable = true;
+        deps.npm = inputs.nixpkgsV1.legacyPackages.${system}.nodejs.pkgs.npm.override (old: rec {
+          version = "8.19.4";
+          src = builtins.fetchTarball {
+            url = "https://registry.npmjs.org/npm/-/npm-${version}.tgz";
+            sha256 = "0xmvjkxgfavlbm8cj3jx66mlmc20f9kqzigjqripgj71j6b2m9by";
+          };
+        });
       };
 
       # evalautes the package behind a given module
