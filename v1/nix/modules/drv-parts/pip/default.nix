@@ -3,7 +3,7 @@
   lib,
   dream2nix,
   ...
-} @ topLevel: let
+}: let
   l = lib // builtins;
   cfg = config.pip;
   metadata = config.lock.content.fetchPipMetadata;
@@ -20,10 +20,6 @@
       writeScriptBin
       ;
   };
-
-  depNamesTopLevel =
-    l.attrNames
-    (l.removeAttrs config.lock.content.fetchPipMetadata [config.name]);
 
   drvs =
     l.mapAttrs (
@@ -48,14 +44,7 @@
     };
   };
 
-  commonModule = {config, ...}: let
-    depNames =
-      metadata.${config.name}.dependencies
-      ++ (
-        l.optionals (config.name == topLevel.config.name)
-        depNamesTopLevel
-      );
-  in {
+  commonModule = {config, ...}: {
     imports = [
       dream2nix.modules.drv-parts.mkDerivation
       ../buildPythonPackage
@@ -92,7 +81,8 @@
         buildInputs =
           l.optionals config.deps.stdenv.isLinux [config.deps.manylinux1];
         propagatedBuildInputs =
-          l.map (name: cfg.drvs.${name}.public.out) depNames;
+          l.map (name: cfg.drvs.${name}.public.out)
+          metadata.${config.name}.dependencies;
       };
     };
   };
