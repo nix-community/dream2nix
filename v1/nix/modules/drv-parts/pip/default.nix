@@ -38,6 +38,7 @@
   }: {config, ...}: {
     imports = [
       commonModule
+      ../nixpkgs-overrides
     ];
     config = {
       inherit name version;
@@ -48,7 +49,6 @@
     imports = [
       dream2nix.modules.drv-parts.mkDerivation
       ../buildPythonPackage
-      ../nixpkgs-overrides
     ];
     config = {
       deps = {nixpkgs, ...}:

@@ -4,6 +4,7 @@
   ...
 }: let
   l = lib // builtins;
+  system = config.deps.stdenv.system;
 in {
   imports = [
     ../../drv-parts/nodejs-package-json
@@ -29,4 +30,7 @@ in {
 
   name = l.mkForce "prettier";
   version = l.mkForce "2.8.7";
+
+  lock.lockFileRel =
+    l.mkForce "/v1/nix/modules/drvs/prettier-no-lock/lock-${system}.json";
 }

@@ -15,13 +15,15 @@
     .old;
 
   extractPythonAttrs = pythonPackage: let
-    pythonAttrs = extractOverrideAttrs pythonPackage.overridePythonAttrs;
+    pythonAttrs =
+      extractOverrideAttrs
+      (pythonPackage.overridePythonAttrs or pythonPackage.overrideAttrs);
   in
     l.filterAttrs (name: _: ! exclude ? ${name}) pythonAttrs;
 
   extracted =
-    if config.deps.python.pkgs ? ${config.name}
-    then extractPythonAttrs config.deps.python.pkgs.${config.name}
+    if cfg.from != null
+    then extractPythonAttrs cfg.from
     else {};
 
   extractedMkDerivation =

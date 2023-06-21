@@ -6,6 +6,11 @@
   l = lib // builtins;
   cfg = config.nodejs-package-json;
 
+  npm =
+    if l.versionOlder config.deps.npm.version "9"
+    then config.deps.npm
+    else throw "The version of config.deps.npm must be < 9";
+
   writers = import ../../../pkgs/writers {
     inherit lib;
     inherit
@@ -38,15 +43,14 @@ in {
           writeScript
           writeScriptBin
           ;
-        inherit (nixpkgs.nodePackages) npm;
       };
 
     lock.fields.package-lock.script =
       writers.writePureShellScript
-      (with config.deps; [
-        coreutils
+      [
+        config.deps.coreutils
         npm
-      ])
+      ]
       ''
         source=${cfg.source}
 

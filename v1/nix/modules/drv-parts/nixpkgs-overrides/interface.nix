@@ -14,6 +14,12 @@ in {
       description = "Attributes we do not want to copy from nixpkgs";
     };
 
+    from = l.mkOption {
+      type = t.nullOr t.package;
+      description = "package from which to extract the attributes";
+      default = config.deps.python.pkgs.${config.name} or null;
+    };
+
     lib.extractOverrideAttrs = l.mkOption {
       type = t.functionTo t.attrs;
       description = ''

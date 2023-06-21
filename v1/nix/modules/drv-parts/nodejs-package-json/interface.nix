@@ -21,4 +21,10 @@ in {
       default = [];
     };
   };
+  options.deps = l.mapAttrs (_: l.mkOption) {
+    npm = {
+      type = t.package;
+      description = "The npm package used to build the lock file";
+    };
+  };
 }
