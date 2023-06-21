@@ -6,7 +6,7 @@
   l = lib // builtins;
   python = config.deps.python;
   extractPythonAttrs = config.nixpkgs-overrides.lib.extractPythonAttrs;
-  nixpkgsAttrs = extractPythonAttrs python.pkgs.apache-airflow;
+  nixpkgsAttrs = extractPythonAttrs config.deps.apache-airflow;
 in {
   imports = [
     ../../drv-parts/pip
@@ -20,6 +20,7 @@ in {
   }: {
     inherit
       (nixpkgs)
+      apache-airflow
       git
       fetchFromGitHub
       ;
@@ -47,7 +48,6 @@ in {
     inherit
       (nixpkgsAttrs)
       buildInputs
-      checkInputs
       postPatch
       postInstall
       preCheck
@@ -96,4 +96,7 @@ in {
       pytestFlagsArray
       ;
   };
+
+  nixpkgs-overrides.from =
+    config.deps.apache-airflow.pythonPackages.apache-airflow;
 }
