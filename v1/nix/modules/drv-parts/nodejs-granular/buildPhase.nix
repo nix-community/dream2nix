@@ -2,7 +2,7 @@
   jq,
   moreutils,
 }: ''
-  runHook preBuild
+  echo "executing buildPhaseNodejs"
 
   # execute install command
   if [ -n "$buildScript" ]; then
@@ -27,6 +27,4 @@
       npm --production --offline --nodedir=$nodeSources run postinstall
     fi
   fi
-
-  runHook postBuild
 ''

@@ -5,8 +5,8 @@
   ...
 }: let
   l = lib // builtins;
-  python = config.deps.python;
   cfg = config.pip;
+  python = config.deps.python;
   metadata = config.lock.content.fetchPipMetadata;
 
   writers = import ../../../pkgs/writers {
@@ -42,6 +42,9 @@
     ];
     config = {
       inherit name version;
+      # deps.python cannot be defined in commonModule as this would trigger an
+      #   infinite recursion.
+      deps = {inherit python;};
     };
   };
 
@@ -53,7 +56,6 @@
     config = {
       deps = {nixpkgs, ...}:
         l.mapAttrs (_: l.mkDefault) {
-          inherit python;
           inherit
             (nixpkgs)
             autoPatchelfHook
@@ -99,7 +101,7 @@ in {
     deps = {nixpkgs, ...}:
       l.mapAttrs (_: l.mkDefault) {
         fetchPipMetadata = nixpkgs.callPackage ../../../pkgs/fetchPipMetadata {};
-        setuptools = nixpkgs.python3Packages.setuptools;
+        setuptools = config.deps.python.pkgs.setuptools;
         inherit (nixpkgs) git;
         inherit (writers) writePureShellScript;
       };

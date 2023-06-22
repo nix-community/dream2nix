@@ -4,7 +4,8 @@
   # packageName,
   # nodeModules,
 }: ''
-  runHook preInstall
+  echo "executing installPhaseNodejs"
+
   mkdir -p $out/lib
   cp -r $nodeModules $out/lib/node_modules
   nodeModules=$out/lib/node_modules
@@ -26,6 +27,4 @@
       done
     done
   fi
-
-  runHook postInstall
 ''

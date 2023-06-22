@@ -39,6 +39,8 @@
     readDreamLock {inherit (config.nodejs-package-lock) dreamLock;};
   dreamLockInterface = dreamLockLoaded.interface;
 
+  inherit (dreamLockInterface) defaultPackageName defaultPackageVersion;
+
   fetchedSources = fetchDreamLockSources {
     inherit (dreamLockInterface) defaultPackageName defaultPackageVersion;
     inherit (dreamLockLoaded.lock) sources;
@@ -73,13 +75,13 @@
       lib.genAttrs
       versions
       (version:
-        makePackage name version))
+        makeDependencyModule name version))
     packageVersions;
 
   # Generates a derivation for a specific package name + version
-  makePackage = name: version: {config, ...}: {
+  makeDependencyModule = name: version: {config, ...}: {
     imports = [
-      (commonModule name)
+      (commonModule name version)
     ];
     name = lib.replaceStrings ["@" "/"] ["__at__" "__slash__"] name;
     inherit version;
@@ -88,16 +90,26 @@
     };
     mkDerivation = {
       src = getSource name version;
+      /*
+      This prevents nixpkg's setup.sh to run make during build and install
+        phases.
+      Dependencies from npmjs.org are delivered pre-built and cleaned,
+        therefore running `make` usually leads to errors.
+      The problem with this hack is it can prevent setup-hooks from setting
+        buildPhase and installPhase because those are already defined here.
+      */
+      buildPhase = "runHook preBuild && runHook postBuild";
+      installPhase = "runHook preInstall && runHook postInstall";
     };
   };
 
-  commonModule = name: {config, ...}: let
-    deps = getDependencies name config.version;
+  commonModule = name: version: {config, ...}: let
+    deps = getDependencies name version;
 
     nodeDeps =
       lib.forEach
       deps
-      (dep: cfg.nodejsDeps."${dep.name}"."${dep.version}".public);
+      (dep: cfg.deps."${dep.name}"."${dep.version}".public);
 
     passthruDeps =
       l.listToAttrs
@@ -105,7 +117,7 @@
         (dep:
           l.nameValuePair
           dep.name
-          cfg.nodejsDeps."${dep.name}"."${dep.version}".public));
+          cfg.deps."${dep.name}"."${dep.version}".public));
 
     dependenciesJson =
       l.toJSON
@@ -140,9 +152,15 @@
       # prevents running into ulimits
       passAsFile = ["dependenciesJson" "nodeDeps"];
 
-      nativeBuildInputs = [config.deps.makeWrapper];
+      nativeBuildInputs = [
+        config.deps.makeWrapper
+        config.deps.jq
+        config.deps.nodejs
+      ];
       buildInputs = with config.deps; [jq nodejs python3];
-      preConfigurePhases = ["d2nPatchPhase"];
+      preConfigurePhases = ["patchPhaseNodejs"];
+      preBuildPhases = ["buildPhaseNodejs"];
+      preInstallPhases = ["installPhaseNodejs"];
       dontStrip = true;
 
       # TODO: upstream fix to nixpkgs
@@ -161,17 +179,6 @@
       # TODO: don't install dev dependencies. Load into NODE_PATH instead
       configurePhase = import ./configurePhase.nix {
         inherit lib nodeDeps;
-      };
-
-      # Runs the install command which defaults to 'npm run postinstall'.
-      # Allows using custom install command by overriding 'buildScript'.
-      buildPhase = import ./buildPhase.nix {
-        inherit (config.deps) jq moreutils;
-      };
-
-      # Symlinks executables and manual pages to correct directories
-      installPhase = import ./installPhase.nix {
-        inherit (config.deps) stdenv;
       };
     };
 
@@ -201,7 +208,7 @@
       #     with the parent package-lock.json.
 
       # costs performance and doesn't seem beneficial in most scenarios
-      d2nPatchPhase = ''
+      patchPhaseNodejs = ''
         # delete package-lock.json as it can lead to conflicts
         rm -f package-lock.json
 
@@ -225,6 +232,17 @@
         fi
       '';
 
+      # Runs the install command which defaults to 'npm run postinstall'.
+      # Allows using custom install command by overriding 'buildScript'.
+      buildPhaseNodejs = import ./buildPhase.nix {
+        inherit (config.deps) jq moreutils;
+      };
+
+      # Symlinks executables and manual pages to correct directories
+      installPhaseNodejs = import ./installPhase.nix {
+        inherit (config.deps) stdenv;
+      };
+
       # python script to modify some metadata to support installation
       # (see comments below on d2nPatchPhase)
       fixPackage = "${./fix-package.py}";
@@ -242,10 +260,7 @@
       reduces errors with build tooling that doesn't cope well with
       symlinking.
       */
-      installMethod =
-        if isMainPackage name config.version
-        then "copy"
-        else "symlink";
+      installMethod = l.mkOptionDefault "symlink";
 
       # only run build on the main package
       runBuild = l.mkOptionDefault (isMainPackage name config.version);
@@ -259,7 +274,7 @@ in {
   imports = [
     ./interface.nix
     dream2nix.modules.drv-parts.mkDerivation
-    (commonModule config.name)
+    (commonModule defaultPackageName defaultPackageVersion)
   ];
   deps = {nixpkgs, ...}: {
     inherit (nixpkgs) mkShell;
@@ -275,7 +290,7 @@ in {
     };
   };
   nodejs-granular = {
-    inherit nodejsDeps;
+    deps = nodejsDeps;
     runBuild = l.mkDefault true;
     installMethod = l.mkDefault "copy";
   };
