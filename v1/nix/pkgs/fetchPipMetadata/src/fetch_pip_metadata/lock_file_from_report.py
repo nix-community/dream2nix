@@ -205,7 +205,7 @@ def lock_file_from_report(report):
     # recursively iterate over the dependency tree from top to bottom
     # to evaluate optional requirements (extras) correctly
     for root_name, extras in roots.items():
-        for extra in extras.union(set(["default"])):
+        for extra in set(extras).union(set(["default"])):
             extras = [] if extra == "default" else [extra]
             dependencies = dict()
             evaluate_requirements(
