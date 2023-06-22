@@ -30,7 +30,7 @@
           inherit (info) version;
         }
     )
-    metadata;
+    metadata.sources;
 
   buildDependency = {
     name,
@@ -77,16 +77,19 @@
         );
       };
       mkDerivation = {
-        src = l.mkDefault (l.fetchurl {inherit (metadata.${config.name}) url sha256;});
+        src = l.mkDefault (l.fetchurl {inherit (metadata.sources.${config.name}) url sha256;});
         doCheck = l.mkDefault false;
 
         nativeBuildInputs =
           l.optionals config.deps.stdenv.isLinux [config.deps.autoPatchelfHook];
         buildInputs =
           l.optionals config.deps.stdenv.isLinux [config.deps.manylinux1];
-        propagatedBuildInputs =
-          l.map (name: cfg.drvs.${name}.public.out)
-          metadata.${config.name}.dependencies;
+        propagatedBuildInputs = let
+          depsByExtra = extra: metadata.targets.${extra}.${config.name} or [];
+          defaultDeps = metadata.targets.default.${config.name} or [];
+          deps = defaultDeps ++ (l.concatLists (l.map depsByExtra cfg.buildExtras));
+        in
+          l.map (name: cfg.drvs.${name}.public.out) deps;
       };
     };
   };

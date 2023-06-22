@@ -55,12 +55,13 @@ in {
       '';
     };
 
-    substitutions = l.mkOption {
-      type = t.lazyAttrsOf t.package;
+    buildExtras = l.mkOption {
+      type = t.listOf t.str;
+      default = [];
       description = ''
-        Substitute individual python packages from nixpkgs.
+        list of python "extras" to build with. This can be a subset of the
+        extras in your lock file.
       '';
-      default = {};
     };
 
     nativeBuildInputs = l.mkOption {

@@ -98,6 +98,7 @@ def fetch_pip_metadata():
 
         with open(home / "report.json", "r") as f:
             report = json.load(f)
+
         with open(os.getenv("out"), "w") as f:
             lock = lock_file_from_report(report)
             json.dump(lock, f, indent=2, sort_keys=True)

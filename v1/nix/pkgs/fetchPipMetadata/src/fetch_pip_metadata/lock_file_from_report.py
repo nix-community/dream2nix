@@ -111,7 +111,6 @@ def lock_entry_from_report_entry(install):
         url=url,
         version=install["metadata"]["version"],
         sha256=sha256,
-        dependencies=set(),
     )
 
 
@@ -128,7 +127,7 @@ def evaluate_extras(req, extras, env):
         return any({req.marker.evaluate({**env, "extra": e}) for e in extras})
 
 
-def evaluate_requirements(env, reqs, packages, root_name, extras, seen):
+def evaluate_requirements(env, reqs, dependencies, root_name, extras, seen):
     """
     Recursively walk the dependency tree and check if requirements
     are needed for our current platform with our requested set of extras.
@@ -147,13 +146,17 @@ def evaluate_requirements(env, reqs, packages, root_name, extras, seen):
     seen = seen.copy()
     seen.append(root_name)
 
+    if root_name not in dependencies:
+        dependencies[root_name] = set()
+
     for req in reqs[root_name]:
         if (not req.marker) or evaluate_extras(req, extras, env):
             req_name = canonicalize_name(req.name)
-            packages[root_name]["dependencies"].add(req_name)
+            dependencies[root_name].add(req_name)
             evaluate_requirements(
-                env, reqs, packages, req_name, req.extras, seen
+                env, reqs, dependencies, req_name, req.extras, seen
             )  # noqa: 501
+    return dependencies
 
 
 def lock_file_from_report(report):
@@ -182,30 +185,50 @@ def lock_file_from_report(report):
     # packages in the report are a list, so we cache their requirement
     # strings in a list for faster lookups while we walk the tree below.
     requirements = dict()
+    # targets to lock dependencies for, i.e. env markers like "dev" or "tests"
+    targets = dict()
+
     # iterate over all packages pip installed to find roots
     # of the tree and gather basic information, such as urls
     for install in report["install"]:
         name, package = lock_entry_from_report_entry(install)
         packages[name] = package
-        requirements[name] = [
-            Requirement(r)
-            for r in install["metadata"].get("requires_dist", [])  # noqa: 501
-        ]
+        metadata = install["metadata"]
+        requirements[name] = [Requirement(r) for r in metadata.get("requires_dist", [])]
+        # (directly) "requested" packages are those at the root of our tree.
         if install.get("requested", False):
+            # If no set of extras was explicitly requested, we default
+            # to all extras provided by this package.
+            provided_extras = set(metadata.get("provides_extra", []))
             roots[name] = install.get("requested_extras", set())
 
     # recursively iterate over the dependency tree from top to bottom
     # to evaluate optional requirements (extras) correctly
     for root_name, extras in roots.items():
-        evaluate_requirements(
-            env, requirements, packages, root_name, extras, list()
-        )  # noqa: 501
+        for extra in extras.union(set(["default"])):
+            extras = [] if extra == "default" else [extra]
+            dependencies = dict()
+            evaluate_requirements(
+                env, requirements, dependencies, root_name, extras, list()
+            )
+            targets[extra] = dependencies
 
-    # iterate over the packages a third and final time to ensure that
-    # dependencies are a stable sorted list, no matter in which order the
-    # tree has been walked through.
-    packages = {
-        name: {**pkg, "dependencies": sorted(list(pkg["dependencies"]))}
-        for name, pkg in packages.items()
+    # iterate over targets to deduplicate dependencies already in the default set
+    # with the same indirect deps
+    default_pkgs = targets["default"]
+    default_names = set(default_pkgs.keys())
+    for extra, pkgs in targets.items():
+        if extra == "default":
+            continue
+        names = set(pkgs.keys())
+        for name in default_names.intersection(names):
+            if pkgs[name] == default_pkgs[name]:
+                del pkgs[name]
+
+    return {
+        "sources": packages,
+        "targets": {
+            target: {pkg: sorted(list(deps)) for pkg, deps in pkgs.items()}
+            for target, pkgs in targets.items()
+        },
     }
-    return packages
