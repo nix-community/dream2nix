@@ -36,6 +36,7 @@
             // {
               inherit packageSets;
               dream2nix.modules.drv-parts = self.modules.drv-parts;
+              dream2nix.lib.evalModules = self.lib.evalModules;
               drv-parts = inputs.drv-parts;
             };
         }
