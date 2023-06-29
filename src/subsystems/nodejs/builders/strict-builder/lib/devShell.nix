@@ -18,13 +18,13 @@ pkgs.mkShell {
     # --chmod=+ug+w -> make folder writeable by user+group
 
     ID=${nodeModules}
-    currID=$("$(cat .dream2nix/.node_modules_id)" 2> /dev/null)
+    currID=$(cat .dream2nix/.node_modules_id 2> /dev/null)
 
     mkdir -p .dream2nix
     if [[ "$ID" != "$currID" || ! -d "node_modules"  ]];
     then
       ${pkgs.rsync}/bin/rsync -a --chmod=ug+w  --delete ${nodeModules}/ ./node_modules/
-      echo $ID > .dream2nix/.node_modules_id
+      echo -n $ID > .dream2nix/.node_modules_id
       echo "Ok: node_modules updated"
     fi
 
