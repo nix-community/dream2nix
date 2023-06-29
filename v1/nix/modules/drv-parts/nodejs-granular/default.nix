@@ -167,9 +167,12 @@
       # example which requires this:
       #   https://registry.npmjs.org/react-window-infinite-loader/-/react-window-infinite-loader-1.0.7.tgz
       unpackCmd =
-        if lib.hasSuffix ".tgz" config.mkDerivation.src
+        if
+          (config.mkDerivation.src or null != null)
+          && (lib.hasSuffix ".tgz" config.mkDerivation.src)
         then "tar --delay-directory-restore -xf $src"
         else null;
+
       unpackPhase = import ./unpackPhase.nix {};
 
       # - installs dependencies into the node_modules directory
@@ -276,9 +279,10 @@ in {
     dream2nix.modules.drv-parts.mkDerivation
     (commonModule defaultPackageName defaultPackageVersion)
   ];
-  deps = {nixpkgs, ...}: {
-    inherit (nixpkgs) mkShell;
-  };
+  deps = {nixpkgs, ...}:
+    l.mapAttrs (_: l.mkDefault) {
+      inherit (nixpkgs) mkShell;
+    };
   env = {
     packageName = config.name;
   };
