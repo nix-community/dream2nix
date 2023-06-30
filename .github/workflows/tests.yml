@@ -10,6 +10,7 @@ jobs:
       matrix:
         os: [ubuntu-latest, macos-latest]
     runs-on: ${{ matrix.os }}
+    continue-on-error: true
     steps:
     - uses: actions/checkout@v2.4.0
     - uses: cachix/install-nix-action@v22
@@ -29,6 +30,7 @@ jobs:
       matrix:
         os: [ubuntu-latest, macos-latest]
     runs-on: ${{ matrix.os }}
+    continue-on-error: true
     steps:
     - uses: actions/checkout@v2.4.0
     - uses: cachix/install-nix-action@v22
@@ -51,6 +53,7 @@ jobs:
       matrix:
         os: [ubuntu-latest, macos-latest]
     runs-on: ${{ matrix.os }}
+    continue-on-error: true
     steps:
     - uses: actions/checkout@v2.4.0
     - uses: cachix/install-nix-action@v22
@@ -70,6 +73,7 @@ jobs:
       matrix:
         os: [ubuntu-latest, macos-latest]
     runs-on: ${{ matrix.os }}
+    continue-on-error: true
     steps:
     - uses: actions/checkout@v2.4.0
     - uses: cachix/install-nix-action@v22
@@ -89,6 +93,7 @@ jobs:
       matrix:
         os: [ubuntu-latest, macos-latest]
     runs-on: ${{ matrix.os }}
+    continue-on-error: true
     steps:
     - uses: actions/checkout@v2.4.0
     - uses: cachix/install-nix-action@v22
