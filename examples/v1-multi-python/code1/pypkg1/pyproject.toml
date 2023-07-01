@@ -1,0 +1,20 @@
+[build-system]
+requires = ["setuptools>=65.4.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+
+[project]
+name = "pypkg1"
+version = "1.0.0"
+dependencies = [
+  "cryptography"
+]
+
+[project.optional-dependencies]
+dev = [
+  "ruff",
+]
+
+
+[tool.setuptools.packages.find]
+where = ["src"]
