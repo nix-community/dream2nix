@@ -46,7 +46,9 @@
         check=True, text=True, capture_output=True)
         .stdout.strip())
     lock_path_rel = Path('${cfg.lockFileRel}')  # noqa: E501
-    lock_path = repo_path / lock_path_rel.relative_to(lock_path_rel.anchor)
+    # lock_path = repo_path / lock_path_rel.relative_to(lock_path_rel.anchor)
+    lock_path = \
+        Path('.').absolute() / lock_path_rel.relative_to(lock_path_rel.anchor)
     lock_path.parent.mkdir(parents=True, exist_ok=True)
 
 
