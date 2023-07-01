@@ -76,7 +76,7 @@ in {
       boolOpt
       // {
         default = true;
-        decsription = ''
+        description = ''
           Remove bytecode from bin folder.
           When a Python script has the extension `.py`, bytecode is generated
           Typically, executables in bin have no extension, so no bytecode is generated.
