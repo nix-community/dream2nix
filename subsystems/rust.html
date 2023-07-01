@@ -241,7 +241,7 @@ in
   # ...
   packageOverrides = {
     # for crane builder
-    &quot;^.*&quot;.set-toolchain.overrideRustToolchain = old: {cargo = toolchain};
+    &quot;^.*&quot;.set-toolchain.overrideRustToolchain = old: {cargo = toolchain;};
     # for build-rust-package builder
     &quot;^.*&quot;.set-toolchain.overrideRustToolchain = old: {
       cargo = toolchain;
