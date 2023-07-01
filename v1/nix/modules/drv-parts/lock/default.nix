@@ -103,18 +103,28 @@
     '';
 
   errorMissingFile = ''
-    The lock file ${cfg.repoRoot}${cfg.lockFileRel} for drv-parts module '${config.name}' is missing.
+    The lock file ${cfg.repoRoot}${cfg.lockFileRel}
+      for drv-parts module '${config.name}' is missing.
+
     To update it using flakes:
+
       nix run -L .#${config.name}.config.lock.refresh
+
     To update it without flakes:
+
       bash -c $(nix-build ${config.lock.refresh.drvPath} --no-link)/bin/refresh
   '';
 
   errorOutdated = field: ''
-    The lock file ${cfg.repoRoot}${cfg.lockFileRel} for drv-parts module '${config.name}' does not contain field `${field}`.
+    The lock file ${cfg.repoRoot}${cfg.lockFileRel}
+      for drv-parts module '${config.name}' does not contain field `${field}`.
+
     To update it using flakes:
+
       nix run -L .#${config.name}.config.lock.refresh
+
     To update it without flakes:
+
       bash -c $(nix-build ${config.lock.refresh.drvPath} --no-link)/bin/refresh
 
   '';
