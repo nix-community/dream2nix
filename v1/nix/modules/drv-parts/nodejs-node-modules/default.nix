@@ -21,7 +21,7 @@ in {
     dontInstall = true;
     dontFixup = true;
     preBuildPhases = l.mkForce [];
-    preInstallPhases = l.mkForce [];
+    preInstallPhases = l.mkForce ["installPhaseNodejsNodeModules"];
   };
 
   env = {
@@ -30,6 +30,20 @@ in {
       nodeModules=$out/lib/node_modules
       mkdir -p $nodeModules/$packageName
       cd $nodeModules/$packageName
+    '';
+
+    # copy .bin entries
+    #   from $out/lib/node_modules/.bin
+    #   to   $out/lib/node_modules/<package-name>/node_modules/.bin
+    installPhaseNodejsNodeModules = ''
+      mkdir -p ./node_modules/.bin
+      localNodeModules=$nodeModules/$packageName/node_modules
+      for executablePath in $out/lib/node_modules/.bin/*; do
+        binaryName=$(basename $executablePath)
+        target=$(realpath --relative-to=$localNodeModules/.bin $executablePath)
+        echo linking binary $binaryName to nix store: $target
+        ln -s $target $localNodeModules/.bin/$binaryName
+      done
     '';
   };
 

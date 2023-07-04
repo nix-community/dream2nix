@@ -19,7 +19,6 @@
   };
 
   nodeModulesDir = "${nodeModulesDrv}/lib/node_modules/${config.name}/node_modules";
-  binDir = "${nodeModulesDrv}/lib/node_modules/.bin";
 in {
   imports = [
     dream2nix.modules.drv-parts.mkDerivation
@@ -43,13 +42,6 @@ in {
     if [[ "$ID" != "$currID" || ! -d "node_modules"  ]];
     then
       ${config.deps.rsync}/bin/rsync -a --chmod=ug+w  --delete ${nodeModulesDir}/ ./node_modules/
-      mkdir -p ./node_modules/.bin
-      for executablePath in ${binDir}/*; do
-        binaryName=$(basename $executablePath)
-        target=$(realpath $executablePath)
-        echo linking binary $binaryName to nix store: $target
-        ln -s $target ./node_modules/.bin/$binaryName
-      done
       echo -n $ID > .dream2nix/.node_modules_id
       echo "Ok: node_modules updated"
     fi
