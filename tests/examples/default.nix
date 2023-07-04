@@ -6,8 +6,10 @@
   coreutils,
   git,
   gnugrep,
+  gnused,
   jq,
   parallel,
+  moreutils,
   nix,
   pkgs,
   framework,
@@ -23,7 +25,9 @@
       coreutils
       git
       gnugrep
+      gnused
       jq
+      moreutils
       nix
     ]
     ''
@@ -37,6 +41,11 @@
       if [ -n "''${NIX:-}" ]; then
         PATH="$(dirname $NIX):$PATH"
       fi
+
+      # Override `systems` in the flake.nix to only contain the current one.
+      # We don't want to expose multiple systems to reduce evaluation overhead.
+      sed "s/x86_64-linux/$NIX_SYSTEM/g" flake.nix | sponge flake.nix
+
       nix flake lock --override-input dream2nix ${../../.}
       if nix flake show | grep -q resolveImpure; then
         nix run .#resolveImpure --show-trace
@@ -45,7 +54,7 @@
       # write to store at eval time
       evalBlockList=("haskell_cabal-plan" "haskell_stack-lock")
       if [[ ! ((''${evalBlockList[*]} =~ "$dir")) ]] \
-          && [ "$(nix flake show --json | jq 'select(.packages."x86_64-linux".default.name)')" != "" ]; then
+          && [ "$(nix flake show --json | jq 'select(.packages."$NIX_SYSTEM".default.name)')" != "" ]; then
         nix eval --read-only --no-allow-import-from-derivation .#default.name
       fi
       nix flake check "$@"
@@ -58,10 +67,12 @@ in
   framework.utils.writePureShellScript
   [
     coreutils
+    nix
     parallel
   ]
   ''
     export STATS_FILE=$(mktemp)
+    export NIX_SYSTEM=$(nix eval --impure --expr builtins.currentSystem --raw)
     if [ -z ''${1+x} ]; then
       JOBS=''${JOBS:-$(nproc)}
       parallel --halt now,fail=1 -j$JOBS -a <(ls ${examples}) ${testScript}

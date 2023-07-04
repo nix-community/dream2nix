@@ -5,7 +5,9 @@
   bash,
   coreutils,
   git,
+  gnused,
   parallel,
+  moreutils,
   nix,
   framework,
   ...
@@ -19,6 +21,8 @@
       bash
       coreutils
       git
+      gnused
+      moreutils
       nix
     ]
     ''
@@ -29,6 +33,11 @@
       start_time=$(date +%s)
       cp -r ${tests}/$dir/* .
       chmod -R +w .
+
+      # Override `systems` in the flake.nix to only contain the current one.
+      # We don't want to expose multiple systems to reduce evaluation overhead.
+      sed "s/x86_64-linux/$NIX_SYSTEM/g" flake.nix | sponge flake.nix
+
       nix flake lock --override-input dream2nix ${../../.}
       nix run .#resolveImpure || echo "no resolveImpure probably?"
       nix build
@@ -42,10 +51,12 @@ in
   framework.utils.writePureShellScript
   [
     coreutils
+    nix
     parallel
   ]
   ''
     export STATS_FILE=$(mktemp)
+    export NIX_SYSTEM=$(nix eval --impure --expr builtins.currentSystem --raw)
     if [ -z ''${1+x} ]; then
       JOBS=''${JOBS:-$(nproc)}
       parallel --halt now,fail=1 -j$JOBS -a <(ls ${tests}) ${testScript}
