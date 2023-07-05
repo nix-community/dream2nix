@@ -6,208 +6,214 @@
   ...
 }: let
   l = lib // builtins;
-
-  getPackageLockPath = tree: workspaceParent: let
-    parent = workspaceParent;
-    node = tree.getNodeFromPath parent;
-  in
-    if node.files ? "npm-shrinkwrap.json"
-    then "npm-shrinkwrap.json"
-    else "package-lock.json";
-
+  # translate from a given source and a project specification to a dream-lock.
   translate = {
     projectName,
     projectRelPath,
-    workspaces ? [],
-    workspaceParent ? projectRelPath,
-    source,
+    composerLock,
+    composerJson,
     tree,
-    # translator args
     noDev,
-    nodejs,
-    packageLock,
-    packageJson,
     ...
   } @ args: let
-    b = builtins;
+    inherit
+      (import ./semver.nix {inherit lib;})
+      satisfies
+      multiSatisfies
+      ;
 
-    noDev = args.noDev;
-    name = projectName;
-    tree = args.tree.getNodeFromPath projectRelPath;
-    relPath = projectRelPath;
-    source = "${args.source}/${relPath}";
+    # get the root source and project source
+    rootSource = tree.fullPath;
+    projectSource = "${tree.fullPath}/${projectRelPath}";
+    projectTree = tree.getNodeFromPath projectRelPath;
 
-    packageVersion = packageJson.version or "unknown";
+    composerJson = (projectTree.getNodeFromPath "composer.json").jsonContent;
+    composerLock = (projectTree.getNodeFromPath "composer.lock").jsonContent;
 
-    packageLockDeps =
-      if packageLock.lockfileVersion < 3
-      then packageLock.dependencies or {}
-      else
-        throw ''
-          package-lock.json files with version greater than 2 are not supported.
-        '';
-
-    rootDependencies = packageLockDeps;
-
-    parsedDependencies = packageLockDeps;
-
-    identifyGitSource = dependencyObject:
-    # TODO: when integrity is there, and git url is github then use tarball instead
-    # ! (dependencyObject ? integrity) &&
-      nodejsUtils.identifyGitUrl dependencyObject.version;
-
-    getVersion = dependencyObject: let
-      # example: "version": "npm:@tailwindcss/postcss7-compat@2.2.4",
-      npmMatch = b.match ''^npm:.*@(.*)$'' dependencyObject.version;
+    # toplevel php semver
+    phpSemver = composerJson.require."php" or "*";
+    # all the php extensions
+    phpExtensions = let
+      allDepNames = l.flatten (map (x: l.attrNames (getRequire x)) packages);
+      extensions = l.unique (l.filter (l.hasPrefix "ext-") allDepNames);
     in
-      if npmMatch != null
-      then b.elemAt npmMatch 0
-      else if identifyGitSource dependencyObject
-      then "0.0.0-rc.${b.substring 0 8 (nodejsUtils.parseGitUrl dependencyObject.version).rev}"
-      else if lib.hasPrefix "file:" dependencyObject.version
-      then let
-        path = getPath dependencyObject;
-      in
-        if ! (l.pathExists "${source}/${path}/package.json")
-        then
-          throw ''
-            The lock file references a sub-package residing at '${source}/${path}',
-            but that directory doesn't exist or doesn't contain a package.json
+      map (l.removePrefix "ext-") extensions;
 
-            The reason might be that devDependencies are not included in this package release.
-            Possible solutions:
-              - get full package source via git and translate from there
-              - disable devDependencies by passing `noDev` to the translator
-          ''
-        else
-          (
-            b.fromJSON
-            (b.readFile "${source}/${path}/package.json")
-          )
-          .version
-      else if lib.hasPrefix "https://" dependencyObject.version
-      then "unknown"
-      else dependencyObject.version;
-
-    getPath = dependencyObject:
-      lib.removePrefix "file:" dependencyObject.version;
-
-    pinVersions = dependencies: parentScopeDeps:
-      lib.mapAttrs
+    composerPluginApiSemver = l.listToAttrs (l.flatten (map
       (
-        pname: pdata: let
-          selfScopeDeps = parentScopeDeps // dependencies;
-          requires = pdata.requires or {};
-          dependencies = pdata.dependencies or {};
-
-          # this was required to in order to fix .#resolveImpure for this projet:
-          # https://gitlab.com/Shinobi-Systems/Shinobi/-/commit/a2faa40ab0e9952ff6a7fcf682534171614180c1
-          filteredRequires =
-            l.filterAttrs
-            (name: spec:
-              if selfScopeDeps ? ${name}
-              then true
-              else
-                l.trace
-                ''
-                  WARNING: could not find dependency ${name} in ${getPackageLockPath args.tree workspaceParent}
-                  This might be expected for bundled dependencies of sub-dependencies.
-                ''
-                false)
-            requires;
+        pkg: let
+          requires = getRequire pkg;
         in
-          pdata
-          // {
-            depsExact =
-              lib.forEach
-              (lib.attrNames filteredRequires)
-              (reqName: {
-                name = reqName;
-                version = getVersion selfScopeDeps."${reqName}";
-              });
-            dependencies = pinVersions dependencies selfScopeDeps;
+          l.optional (requires ? "composer-plugin-api")
+          {
+            name = "${pkg.name}@${pkg.version}";
+            value = requires."composer-plugin-api";
           }
       )
-      dependencies;
+      packages));
 
-    pinnedRootDeps =
-      pinVersions rootDependencies rootDependencies;
+    # get cleaned pkg attributes
+    getRequire = pkg:
+      l.mapAttrs
+      (_: version: resolvePkgVersion pkg version)
+      (pkg.require or {});
+    getProvide = pkg:
+      l.mapAttrs
+      (_: version: resolvePkgVersion pkg version)
+      (pkg.provide or {});
+    getReplace = pkg:
+      l.mapAttrs
+      (_: version: resolvePkgVersion pkg version)
+      (pkg.replace or {});
 
+    resolvePkgVersion = pkg: version:
+      if version == "self.version"
+      then pkg.version
+      else version;
+
+    # project package
+    toplevelPackage = {
+      name = projectName;
+      version = composerJson.version or "unknown";
+      source = {
+        type = "path";
+        path = rootSource;
+      };
+      require =
+        (l.optionalAttrs (!noDev) (composerJson.require-dev or {}))
+        // (composerJson.require or {});
+    };
+    getPath = dependencyObject:
+      lib.removePrefix "file:" dependencyObject.version;
+    # all the packages
+    packages =
+      # Add the top-level package, this is not written in composer.lock
+      [toplevelPackage]
+      ++ composerLock.packages
+      ++ (l.optionals (!noDev) (composerLock.packages-dev or []));
+    # packages with replace/provide applied
+    resolvedPackages = let
+      apply = pkg: dep: candidates: let
+        original = getRequire pkg;
+        applied =
+          l.filterAttrs
+          (
+            name: semver:
+              !((candidates ? "${name}") && (multiSatisfies candidates."${name}" semver))
+          )
+          original;
+      in
+        pkg
+        // {
+          require =
+            applied
+            // (
+              l.optionalAttrs
+              (applied != original)
+              {"${dep.name}" = "${dep.version}";}
+            );
+        };
+      dropMissing = pkgs: let
+        doDropMissing = pkg:
+          pkg
+          // {
+            require =
+              l.filterAttrs
+              (name: semver: l.any (pkg: (pkg.name == name) && (satisfies pkg.version semver)) pkgs)
+              (getRequire pkg);
+          };
+      in
+        map doDropMissing pkgs;
+      doReplace = pkg:
+        l.foldl
+        (pkg: dep: apply pkg dep (getProvide dep))
+        pkg
+        packages;
+      doProvide = pkg:
+        l.foldl
+        (pkg: dep: apply pkg dep (getReplace dep))
+        pkg
+        packages;
+    in
+      dropMissing (map (pkg: (doProvide (doReplace pkg))) packages);
+
+    # resolve semvers into exact versions
+    pinPackages = pkgs: let
+      clean = requires:
+        l.filterAttrs
+        (name: _:
+          !(l.elem name ["php" "composer-plugin-api" "composer-runtime-api"])
+          && !(l.strings.hasPrefix "ext-" name))
+        requires;
+      doPin = name: semver:
+        (l.head
+          (l.filter (dep: satisfies dep.version semver)
+            (l.filter (dep: dep.name == name)
+              resolvedPackages)))
+        .version;
+      doPins = pkg:
+        pkg
+        // {
+          require = l.mapAttrs doPin (clean pkg.require);
+        };
+    in
+      map doPins pkgs;
     createMissingSource = name: version: {
       type = "http";
       url = "https://registry.npmjs.org/${name}/-/${name}-${version}.tgz";
     };
+    inputData =
+      builtins.listToAttrs
+      (map
+        (k: {
+          name = k.name;
+          value = k // {version = k.version;};
+        })
+        (pinPackages resolvedPackages));
+    serializePackages = inputData: let
+      serialize = inputData:
+        lib.mapAttrsToList # returns list of lists
+        
+        (pname: pdata:
+          [
+            (pdata
+              // {
+                inherit pname;
+                depsExact =
+                  lib.filter
+                  (req: (! (pdata.require."${req.name}".bundled or false)))
+                  pdata.depsExact or [];
+              })
+          ]
+          ++ (lib.optionals (pdata ? dependencies)
+            (lib.flatten
+              (serialize
+                (lib.filterAttrs
+                  (pname: data: ! data.bundled or false)
+                  pdata.dependencies)))))
+        inputData;
+    in
+      lib.filter
+      (pdata:
+        ! noDev || ! (pdata.dev or false))
+      (lib.flatten (serialize inputData));
   in
     simpleTranslate
-    ({
-      getDepByNameVer,
-      dependenciesByOriginalID,
-      ...
-    }: rec {
-      translatorName = name;
-      location = relPath;
+    ({...}: rec {
+      translatorName = projectName;
 
-      # values
-      inputData = pinnedRootDeps;
+      location = projectRelPath;
 
-      defaultPackage = projectName;
-
-      packages =
-        {"${defaultPackage}" = packageVersion;}
-        // (nodejsUtils.getWorkspacePackages tree workspaces);
-
-      mainPackageDependencies =
-        lib.mapAttrsToList
-        (pname: pdata: {
-          name = pname;
-          version = getVersion pdata;
-        })
-        (lib.filterAttrs
-          (pname: pdata: ! (pdata.dev or false) || ! noDev)
-          parsedDependencies);
-
-      subsystemName = "nodejs";
+      subsystemName = "php";
 
       subsystemAttrs = {
-        nodejsVersion = b.toString args.nodejs;
-        meta = nodejsUtils.getMetaFromPackageJson packageJson;
+        inherit noDev;
+        inherit phpSemver phpExtensions;
+        inherit composerPluginApiSemver;
       };
 
-      # functions
-      serializePackages = inputData: let
-        serialize = inputData:
-          lib.mapAttrsToList # returns list of lists
-          
-          (pname: pdata:
-            [
-              (pdata
-                // {
-                  inherit pname;
-                  depsExact =
-                    lib.filter
-                    (req: (! (pdata.dependencies."${req.name}".bundled or false)))
-                    pdata.depsExact or {};
-                })
-            ]
-            ++ (lib.optionals (pdata ? dependencies)
-              (lib.flatten
-                (serialize
-                  (lib.filterAttrs
-                    (pname: data: ! data.bundled or false)
-                    pdata.dependencies)))))
-          inputData;
-      in
-        lib.filter
-        (pdata:
-          ! noDev || ! (pdata.dev or false))
-        (lib.flatten (serialize inputData));
-
-      getName = dependencyObject: dependencyObject.pname;
-
-      inherit getVersion;
-
       getSourceType = dependencyObject:
-        if identifyGitSource dependencyObject
+        if false
         then "git"
         else if
           (lib.hasPrefix "file:" dependencyObject.version)
@@ -217,6 +223,29 @@
           )
         then "path"
         else "http";
+
+      defaultPackage = toplevelPackage.name;
+
+      packages = {
+        "${defaultPackage}" = toplevelPackage.version;
+      };
+
+      mainPackageDependencies =
+        lib.mapAttrsToList
+        (pname: pdata: {
+          name = pname;
+          version = getVersion pdata;
+        })
+        (lib.filterAttrs
+          (pname: pdata: ! (pdata.dev or false) || ! noDev)
+          packages);
+
+      inherit inputData;
+
+      getName = dependencyObject: dependencyObject.name;
+      getVersion = resolvePkgVersion;
+
+      inherit serializePackages;
 
       sourceConstructors = {
         git = dependencyObject:
@@ -246,24 +275,25 @@
         # in case of an entry with missing resolved field
           if ! lib.hasPrefix "file:" dependencyObject.version
           then
-            dreamLockUtils.mkPathSource {
+            dreamLockUtils.mkPathSource
+            {
               path = let
                 module = l.elemAt (l.splitString "/" dependencyObject.pname) 0;
               in "node_modules/${module}";
               rootName = projectName;
-              rootVersion = packageVersion;
+              rootVersion = toplevelPackage.version;
             }
           # in case of a "file:" entry
           else
             dreamLockUtils.mkPathSource {
               path = getPath dependencyObject;
               rootName = projectName;
-              rootVersion = packageVersion;
+              rootVersion = toplevelPackage.version;
             };
       };
 
       getDependencies = dependencyObject:
-        dependencyObject.depsExact;
+        dependencyObject.require;
     });
 in
   translate
