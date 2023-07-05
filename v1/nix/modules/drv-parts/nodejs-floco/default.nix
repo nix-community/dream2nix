@@ -15,7 +15,7 @@
       [
         floco.nixosModules.default
         # set floco.pdefs via the lock file content
-        {config = {inherit (config.lock.content) floco;};}
+        {config.floco = {inherit (cfg) pdefs;};}
 
         {
           floco.settings = {
