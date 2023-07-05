@@ -130,11 +130,11 @@
     "floco": {
       "flake": false,
       "locked": {
-        "lastModified": 1684245865,
-        "narHash": "sha256-CJSxo7fvAAjdMaQWALyNG6LKMjOGZC/uxlbX1KuegWU=",
+        "lastModified": 1687616780,
+        "narHash": "sha256-zE/nvtbmXSE3Rwon6AkMU5JJcsCnyebZ5w4/96XNPlI=",
         "owner": "aakropotkin",
         "repo": "floco",
-        "rev": "e1231f054258f7d62652109725881767765b1efb",
+        "rev": "5bbf68892f97cda6ee87ae4d03f7558fc4f6648b",
         "type": "github"
       },
       "original": {

@@ -19,6 +19,7 @@ in {
     modules = {
       type = t.listOf t.raw;
       description = "floco modules to add";
+      default = [];
     };
   };
 }
