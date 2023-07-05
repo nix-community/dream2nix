@@ -1,6 +1,7 @@
 {
   config,
   lib,
+  extendModules,
   ...
 } @ topArgs: let
   l = lib // builtins;
@@ -191,7 +192,19 @@ in {
     # dream2nix.modules.drv-parts.mkDerivation
   ];
 
-  public = lib.mkForce packages.${dreamLockInterface.defaultPackageName}.${dreamLockInterface.defaultPackageVersion};
+  public = lib.mkForce {
+    type = "derivation";
+    inherit config extendModules;
+    inherit (config) name version;
+    inherit
+      (packages.${dreamLockInterface.defaultPackageName}.${dreamLockInterface.defaultPackageVersion})
+      drvPath
+      outPath
+      outputs
+      outputName
+      meta
+      ;
+  };
 
   deps = {nixpkgs, ...}: {
     inherit
