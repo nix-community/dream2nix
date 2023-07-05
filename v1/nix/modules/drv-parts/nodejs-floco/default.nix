@@ -14,7 +14,7 @@
     modules =
       [
         floco.nixosModules.default
-        {config = {inherit (config.lock.content) floco;};}
+        # {config = {inherit (config.lock.content) floco;};}
         {
           floco.settings = {
             system = system;
@@ -48,24 +48,24 @@ in {
         inherit (writers) writePureShellScript;
       };
 
-    lock.fields.floco = {
-      script =
-        config.deps.writePureShellScript
-        [
-          config.deps.coreutils
-          config.deps.git
-          config.deps.jq
-          config.deps.nix
-          config.deps.openssh
-        ]
-        ''
-          cd $TMPDIR
-          cp -r ${cfg.source}/* .
-          chmod +w -R .
-          nix run github:aakropotkin/floco -- translate -ptj
-          jq .floco ./pdefs.json > $out
-        '';
-    };
+    # lock.fields.floco = {
+    #   script =
+    #     config.deps.writePureShellScript
+    #     [
+    #       config.deps.coreutils
+    #       config.deps.git
+    #       config.deps.jq
+    #       config.deps.nix
+    #       config.deps.openssh
+    #     ]
+    #     ''
+    #       cd $TMPDIR
+    #       cp -r ${cfg.source}/* .
+    #       chmod +w -R .
+    #       nix run github:aakropotkin/floco -- translate -ptj
+    #       jq .floco ./pdefs.json > $out
+    #     '';
+    # };
 
     public =
       fmod.config.floco.packages.${config.name}.${config.version}.global
