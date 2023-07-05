@@ -19,12 +19,10 @@
   dreamLock = translate {
     projectName = config.name;
     projectRelPath = "";
-    workspaces = [];
-    workspaceParent = "";
     source = cfg.src;
     tree = prepareSourceTree {source = cfg.source;};
     noDev = ! cfg.withDevDependencies;
-    nodejs = "unknown";
+    php = "unknown";
     inherit (cfg) composerJson composerLock;
   };
 in {

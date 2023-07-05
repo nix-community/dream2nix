@@ -1,13 +1,15 @@
 {
   lib,
   config,
+  dream2nix,
   ...
 }: let
   l = lib // builtins;
 in {
   imports = [
-    ../../drv-parts/php-composer-lock
-    ../../drv-parts/php-granular
+    dream2nix.modules.drv-parts.mkDerivation
+    dream2nix.modules.drv-parts.php-composer-lock
+    # dream2nix.modules.drv-parts.php-granular
   ];
 
   mkDerivation = {
@@ -15,7 +17,7 @@ in {
       owner = "aszenz";
       repo = "dbal";
       rev = "3.6.x";
-      sha256 = "sha256-zo+WRV3VHja8/noC+iPydtbte93s5GGc3cYaQgNhlEY=";
+      sha256 = "sha256-mZcV8L/YFhJUhFJLpS7NHti43E9+nJbpopeSwcKtOm4=";
     };
   };
 
