@@ -53,7 +53,7 @@
       if !(l.isString nodejsVersion)
       then pkgs."nodejs-${defaultNodejsVersion}_x"
       else
-        pkgs."nodejs-${nodejsVersion}_x"
+        pkgs."nodejs_${nodejsVersion}"
         or (throw "Could not find nodejs version '${nodejsVersion}' in pkgs");
 
     nodeSources = pkgs.runCommandLocal "node-sources" {} ''
