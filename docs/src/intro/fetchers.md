@@ -28,7 +28,7 @@ fetched.
 
 The fetcher name corresponds to the source `type` used to invoke it.
 
-You can inspect the implementation of all the builders
+You can inspect the implementation of all the fetchers
 [here](https://github.com/nix-community/dream2nix/tree/main/src/fetchers).
 
 ### path
