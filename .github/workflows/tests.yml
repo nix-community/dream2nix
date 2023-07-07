@@ -6,14 +6,15 @@ on:
 jobs:
 
   tests-examples:
-    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macos-latest]
+    runs-on: ${{ matrix.os }}
+    continue-on-error: true
     steps:
     - uses: actions/checkout@v2.4.0
-    - uses: cachix/install-nix-action@v17
+    - uses: cachix/install-nix-action@v22
       with:
-        # version 2.11.0
-        install_url: https://nixos-nix-install-tests.cachix.org/serve/8i0c4nnvddybdq6a684ffybc5p7ziif0/install
-        install_options: '--tarball-url-prefix https://nixos-nix-install-tests.cachix.org/serve'
         extra_nix_config: |
           access-tokens = github.com=${{ secrets.GITHUB_TOKEN }}
           max-jobs = 10
@@ -25,13 +26,15 @@ jobs:
     - run: JOBS=10 nix run .#tests-examples
 
   tests-pure:
-    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macos-latest]
+    runs-on: ${{ matrix.os }}
+    continue-on-error: true
     steps:
     - uses: actions/checkout@v2.4.0
-    - uses: cachix/install-nix-action@v17
+    - uses: cachix/install-nix-action@v22
       with:
-        install_url: https://nixos-nix-install-tests.cachix.org/serve/8i0c4nnvddybdq6a684ffybc5p7ziif0/install
-        install_options: '--tarball-url-prefix https://nixos-nix-install-tests.cachix.org/serve'
         extra_nix_config: |
           access-tokens = github.com=${{ secrets.GITHUB_TOKEN }}
           max-jobs = 10
@@ -46,13 +49,15 @@ jobs:
         nix flake check
 
   tests-integration:
-    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macos-latest]
+    runs-on: ${{ matrix.os }}
+    continue-on-error: true
     steps:
     - uses: actions/checkout@v2.4.0
-    - uses: cachix/install-nix-action@v17
+    - uses: cachix/install-nix-action@v22
       with:
-        install_url: https://nixos-nix-install-tests.cachix.org/serve/8i0c4nnvddybdq6a684ffybc5p7ziif0/install
-        install_options: '--tarball-url-prefix https://nixos-nix-install-tests.cachix.org/serve'
         extra_nix_config: |
           access-tokens = github.com=${{ secrets.GITHUB_TOKEN }}
           max-jobs = 10
@@ -64,13 +69,15 @@ jobs:
     - run: JOBS=10 nix run .#tests-integration
 
   tests-integration-d2n-flakes:
-    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macos-latest]
+    runs-on: ${{ matrix.os }}
+    continue-on-error: true
     steps:
     - uses: actions/checkout@v2.4.0
-    - uses: cachix/install-nix-action@v17
+    - uses: cachix/install-nix-action@v22
       with:
-        install_url: https://nixos-nix-install-tests.cachix.org/serve/8i0c4nnvddybdq6a684ffybc5p7ziif0/install
-        install_options: '--tarball-url-prefix https://nixos-nix-install-tests.cachix.org/serve'
         extra_nix_config: |
           access-tokens = github.com=${{ secrets.GITHUB_TOKEN }}
           max-jobs = 10
@@ -82,13 +89,15 @@ jobs:
     - run: JOBS=10 nix run .#tests-integration-d2n-flakes
 
   tests-unit-nix:
-    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macos-latest]
+    runs-on: ${{ matrix.os }}
+    continue-on-error: true
     steps:
     - uses: actions/checkout@v2.4.0
-    - uses: cachix/install-nix-action@v17
+    - uses: cachix/install-nix-action@v22
       with:
-        install_url: https://nixos-nix-install-tests.cachix.org/serve/8i0c4nnvddybdq6a684ffybc5p7ziif0/install
-        install_options: '--tarball-url-prefix https://nixos-nix-install-tests.cachix.org/serve'
         extra_nix_config: |
           access-tokens = github.com=${{ secrets.GITHUB_TOKEN }}
           max-jobs = 10
@@ -103,10 +112,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2.4.0
-    - uses: cachix/install-nix-action@v17
+    - uses: cachix/install-nix-action@v22
       with:
-        install_url: https://nixos-nix-install-tests.cachix.org/serve/8i0c4nnvddybdq6a684ffybc5p7ziif0/install
-        install_options: '--tarball-url-prefix https://nixos-nix-install-tests.cachix.org/serve'
         extra_nix_config: |
           access-tokens = github.com=${{ secrets.GITHUB_TOKEN }}
           max-jobs = 10
