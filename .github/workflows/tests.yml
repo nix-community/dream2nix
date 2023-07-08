@@ -17,7 +17,7 @@ jobs:
         extra_nix_config: |
           access-tokens = github.com=${{ secrets.GITHUB_TOKEN }}
           max-jobs = 10
-    - uses: cachix/cachix-action@v10
+    - uses: cachix/cachix-action@v12
       with:
         name: nix-community
         authToken: '${{ secrets.CACHIX_AUTH_TOKEN }}'
@@ -35,7 +35,7 @@ jobs:
         extra_nix_config: |
           access-tokens = github.com=${{ secrets.GITHUB_TOKEN }}
           max-jobs = 10
-    - uses: cachix/cachix-action@v10
+    - uses: cachix/cachix-action@v12
       with:
         name: nix-community
         authToken: '${{ secrets.CACHIX_AUTH_TOKEN }}'
@@ -56,7 +56,7 @@ jobs:
         extra_nix_config: |
           access-tokens = github.com=${{ secrets.GITHUB_TOKEN }}
           max-jobs = 10
-    - uses: cachix/cachix-action@v10
+    - uses: cachix/cachix-action@v12
       with:
         name: nix-community
         authToken: '${{ secrets.CACHIX_AUTH_TOKEN }}'
@@ -74,7 +74,7 @@ jobs:
         extra_nix_config: |
           access-tokens = github.com=${{ secrets.GITHUB_TOKEN }}
           max-jobs = 10
-    - uses: cachix/cachix-action@v10
+    - uses: cachix/cachix-action@v12
       with:
         name: nix-community
         authToken: '${{ secrets.CACHIX_AUTH_TOKEN }}'
@@ -92,7 +92,7 @@ jobs:
         extra_nix_config: |
           access-tokens = github.com=${{ secrets.GITHUB_TOKEN }}
           max-jobs = 10
-    - uses: cachix/cachix-action@v10
+    - uses: cachix/cachix-action@v12
       with:
         name: nix-community
         authToken: '${{ secrets.CACHIX_AUTH_TOKEN }}'
@@ -110,7 +110,7 @@ jobs:
         extra_nix_config: |
           access-tokens = github.com=${{ secrets.GITHUB_TOKEN }}
           max-jobs = 10
-    - uses: cachix/cachix-action@v10
+    - uses: cachix/cachix-action@v12
       with:
         name: nix-community
         authToken: '${{ secrets.CACHIX_AUTH_TOKEN }}'
