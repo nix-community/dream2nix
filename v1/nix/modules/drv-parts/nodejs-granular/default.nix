@@ -270,7 +270,7 @@
 
       # can be overridden to define alternative install command
       # (defaults to 'npm run postinstall')
-      buildScript = null;
+      buildScript = l.mkOptionDefault null;
     };
   };
 in {
