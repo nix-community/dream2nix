@@ -10,19 +10,19 @@
   nodejsUtils = import ../../../lib/internal/nodejsUtils.nix {inherit lib parseSpdxId;};
   parseSpdxId = import ../../../lib/internal/parseSpdxId.nix {inherit lib;};
   prepareSourceTree = import ../../../lib/internal/prepareSourceTree.nix {inherit lib;};
-  simpleTranslate = import ../../../lib/internal/simpleTranslate.nix {inherit lib;};
+  simpleTranslate2 = import ../../../lib/internal/simpleTranslate2.nix {inherit lib;};
 
   translate = import ./translate.nix {
-    inherit lib dreamLockUtils nodejsUtils parseSpdxId simpleTranslate;
+    inherit lib dreamLockUtils nodejsUtils parseSpdxId simpleTranslate2;
   };
 
   dreamLock = translate {
     projectName = config.name;
     projectRelPath = "";
-    source = cfg.src;
+    source = cfg.source;
     tree = prepareSourceTree {source = cfg.source;};
     noDev = ! cfg.withDevDependencies;
-    php = "unknown";
+    # php = "unknown";
     inherit (cfg) composerJson composerLock;
   };
 in {
