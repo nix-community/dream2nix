@@ -11,7 +11,30 @@
   data = l.fromJSON (l.readFile file);
   fileExists = l.pathExists file;
 
-  refresh = config.deps.writePython3Bin "refresh" {} ''
+  refresh =
+    if cfg.fields == {}
+    then removeLockFileScript
+    else refresh';
+
+  # script to remove the lock file if no fields are defined
+  removeLockFileScript = config.deps.writePython3Bin "refresh" {} ''
+    import os
+    import subprocess
+    from pathlib import Path
+
+    repo_path = Path(subprocess.run(
+        ['git', 'rev-parse', '--show-toplevel'],
+        check=True, text=True, capture_output=True)
+        .stdout.strip())
+    lock_path_rel = Path('${cfg.lockFileRel}')  # noqa: E501
+    lock_path = repo_path / lock_path_rel.relative_to(lock_path_rel.anchor)
+
+    if lock_path.exists():
+        os.remove(lock_path)
+  '';
+
+  # script to re-compute all fields for the lock file and dump it to a file
+  refresh' = config.deps.writePython3Bin "refresh" {} ''
     import tempfile
     import subprocess
     import json
