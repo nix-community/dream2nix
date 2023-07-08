@@ -1,12 +1,16 @@
 {
   "package-lock": {
-    "name": "tmp.BeJiEGlOfL",
+    "name": "app",
     "lockfileVersion": 2,
     "requires": true,
     "packages": {
       "": {
+        "name": "app",
         "dependencies": {
           "typescript": "^5.1.6"
+        },
+        "bin": {
+          "app": "app.js"
         }
       },
       "node_modules/typescript": {
