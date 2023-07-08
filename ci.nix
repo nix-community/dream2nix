@@ -5,13 +5,7 @@ let
   pkgs = import flake.inputs.nixpkgs {};
   recurseIntoAll = b.mapAttrs (name: val: pkgs.recurseIntoAttrs val);
 in
-  # {
-  #   inherit flake;
-  # }
-  # // (recurseIntoAll {
-  #   checks = flake.checks.x86_64-linux;
-  # })
-  # hercules ci's nix version cannot fetch submodules and crashes
-  {
-    inherit (pkgs) hello;
+  recurseIntoAll {
+    checks = flake.checks.x86_64-linux;
+    packages = flake.packages.x86_64-linux;
   }
