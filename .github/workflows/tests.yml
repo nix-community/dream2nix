@@ -9,7 +9,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3.5.3
-    - uses: cachix/install-nix-action@v17
+    - uses: cachix/install-nix-action@v22
       with:
         # version 2.11.0
         install_url: https://nixos-nix-install-tests.cachix.org/serve/8i0c4nnvddybdq6a684ffybc5p7ziif0/install
@@ -28,7 +28,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3.5.3
-    - uses: cachix/install-nix-action@v17
+    - uses: cachix/install-nix-action@v22
       with:
         install_url: https://nixos-nix-install-tests.cachix.org/serve/8i0c4nnvddybdq6a684ffybc5p7ziif0/install
         install_options: '--tarball-url-prefix https://nixos-nix-install-tests.cachix.org/serve'
@@ -49,7 +49,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3.5.3
-    - uses: cachix/install-nix-action@v17
+    - uses: cachix/install-nix-action@v22
       with:
         install_url: https://nixos-nix-install-tests.cachix.org/serve/8i0c4nnvddybdq6a684ffybc5p7ziif0/install
         install_options: '--tarball-url-prefix https://nixos-nix-install-tests.cachix.org/serve'
@@ -67,7 +67,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3.5.3
-    - uses: cachix/install-nix-action@v17
+    - uses: cachix/install-nix-action@v22
       with:
         install_url: https://nixos-nix-install-tests.cachix.org/serve/8i0c4nnvddybdq6a684ffybc5p7ziif0/install
         install_options: '--tarball-url-prefix https://nixos-nix-install-tests.cachix.org/serve'
@@ -85,7 +85,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3.5.3
-    - uses: cachix/install-nix-action@v17
+    - uses: cachix/install-nix-action@v22
       with:
         install_url: https://nixos-nix-install-tests.cachix.org/serve/8i0c4nnvddybdq6a684ffybc5p7ziif0/install
         install_options: '--tarball-url-prefix https://nixos-nix-install-tests.cachix.org/serve'
@@ -103,7 +103,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3.5.3
-    - uses: cachix/install-nix-action@v17
+    - uses: cachix/install-nix-action@v22
       with:
         install_url: https://nixos-nix-install-tests.cachix.org/serve/8i0c4nnvddybdq6a684ffybc5p7ziif0/install
         install_options: '--tarball-url-prefix https://nixos-nix-install-tests.cachix.org/serve'
