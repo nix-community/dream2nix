@@ -224,7 +224,9 @@
 
             packages = [
               pkgs.alejandra
-              pkgs.python3.pkgs.black
+              (pkgs.python3.withPackages (ps: [
+                pkgs.python3.pkgs.black
+              ]))
             ];
 
             commands =
