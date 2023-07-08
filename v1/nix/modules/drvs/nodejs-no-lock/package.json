@@ -1,0 +1,7 @@
+{
+  "name": "app",
+  "dependencies": {
+    "typescript": "^5.1.6"
+  },
+  "bin": "app.js"
+}
