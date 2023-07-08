@@ -2,7 +2,7 @@
   lib,
   nodejsUtils,
   dreamLockUtils,
-  simpleTranslate,
+  simpleTranslate2,
   ...
 }: let
   l = lib // builtins;
@@ -198,102 +198,105 @@
         ! noDev || ! (pdata.dev or false))
       (lib.flatten (serialize inputData));
   in
-    simpleTranslate
-    ({...}: rec {
-      translatorName = projectName;
+    simpleTranslate2
+    ({objectsByKey, ...}: rec {
+      translatorName = "composer-lock";
 
+      # relative path of the project within the source tree.
       location = projectRelPath;
 
+      # the name of the subsystem
       subsystemName = "php";
 
+      # Extract subsystem specific attributes.
+      # The structure of this should be defined in:
+      #   ./src/specifications/{subsystem}
       subsystemAttrs = {
         inherit noDev;
         inherit phpSemver phpExtensions;
         inherit composerPluginApiSemver;
       };
 
-      getSourceType = dependencyObject:
-        if false
-        then "git"
-        else if
-          (lib.hasPrefix "file:" dependencyObject.version)
-          || (
-            (! lib.hasPrefix "https://" dependencyObject.version)
-            && (! dependencyObject ? resolved)
-          )
-        then "path"
-        else "http";
-
+      # name of the default package
       defaultPackage = toplevelPackage.name;
 
-      packages = {
+      /*
+      List the package candidates which should be exposed to the user.
+      Only top-level packages should be listed here.
+      Users will not be interested in all individual dependencies.
+      */
+      exportedPackages = {
         "${defaultPackage}" = toplevelPackage.version;
       };
 
-      mainPackageDependencies =
-        lib.mapAttrsToList
-        (pname: pdata: {
-          name = pname;
-          version = getVersion pdata;
-        })
-        (lib.filterAttrs
-          (pname: pdata: ! (pdata.dev or false) || ! noDev)
-          packages);
+      /*
+      a list of raw package objects
+      If the upstream format is a deep attrset, this list should contain
+      a flattened representation of all entries.
+      */
+      serializedRawObjects = pinPackages resolvedPackages;
 
-      inherit inputData;
+      /*
+      Define extractor functions which each extract one property from
+      a given raw object.
+      (Each rawObj comes from serializedRawObjects).
 
-      getName = dependencyObject: dependencyObject.name;
-      getVersion = resolvePkgVersion;
+      Extractors can access the fields extracted by other extractors
+      by accessing finalObj.
+      */
+      extractors = {
+        name = rawObj: finalObj:
+          rawObj.name;
 
-      inherit serializePackages;
+        version = rawObj: finalObj:
+          rawObj.version;
 
-      sourceConstructors = {
-        git = dependencyObject:
-          nodejsUtils.parseGitUrl dependencyObject.version;
+        dependencies = rawObj: finalObj:
+          l.attrsets.mapAttrsToList
+          (name: version: {inherit name version;})
+          (getRequire rawObj);
 
-        http = dependencyObject:
-          if lib.hasPrefix "https://" dependencyObject.version
-          then rec {
-            version = getVersion dependencyObject;
-            url = dependencyObject.version;
-            hash = dependencyObject.integrity;
+        sourceSpec = rawObj: finalObj:
+          if rawObj ? "source" && rawObj.source.type == "path"
+          then {
+            inherit (rawObj.source) type path;
+            rootName = finalObj.name;
+            rootVersion = finalObj.version;
           }
-          else if dependencyObject.resolved == false
-          then
-            (createMissingSource
-              (getName dependencyObject)
-              (getVersion dependencyObject))
-            // {
-              hash = dependencyObject.integrity;
-            }
-          else rec {
-            url = dependencyObject.resolved;
-            hash = dependencyObject.integrity;
-          };
-
-        path = dependencyObject:
-        # in case of an entry with missing resolved field
-          if ! lib.hasPrefix "file:" dependencyObject.version
-          then
-            dreamLockUtils.mkPathSource
-            {
-              path = let
-                module = l.elemAt (l.splitString "/" dependencyObject.pname) 0;
-              in "node_modules/${module}";
-              rootName = projectName;
-              rootVersion = toplevelPackage.version;
-            }
-          # in case of a "file:" entry
+          else if rawObj ? "source" && rawObj.source.type == "git"
+          then {
+            inherit (rawObj.source) type url;
+            rev = rawObj.source.reference;
+            submodules = false;
+          }
+          else if rawObj ? "dist" && rawObj.dist.type == "path"
+          then {
+            inherit (rawObj.dist) type;
+            path = rawObj.dist.url;
+            rootName = null;
+            rootVersion = null;
+          }
           else
-            dreamLockUtils.mkPathSource {
-              path = getPath dependencyObject;
-              rootName = projectName;
-              rootVersion = toplevelPackage.version;
-            };
+            l.abort ''
+              Cannot find source for ${finalObj.name}@${finalObj.version},
+              rawObj: ${l.toJSON rawObj}
+            '';
       };
 
-      getDependencies = dependencyObject:
-        dependencyObject.require;
+      /*
+      Optionally define extra extractors which will be used to key all
+      final objects, so objects can be accessed via:
+      `objectsByKey.${keyName}.${value}`
+      */
+      keys = {
+      };
+
+      /*
+      Optionally add extra objects (list of `finalObj`) to be added to
+      the dream-lock.
+      */
+      extraObjects = [
+      ];
     });
 in
   translate
