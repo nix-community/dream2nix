@@ -40,12 +40,10 @@ def lock_info_from_fod(store_path, drv_json):
     url = drv_json.get("env", {}).get("urls")  # TODO multiple? commas?
     sha256 = drv_out.get("hash")
     if not (url and sha256):
-        print(
-            f"fatal: requirement '{store_path}' does not seem to be a FOD.\n",
-            f"No URL ({url}) or hash ({sha256}) found.",
-            file=sys.stderr,
+        raise Exception(
+            f"fatal: requirement '{store_path}' does not seem to be a FOD.\n"
+            f"No URL ({url}) or hash ({sha256}) found."
         )
-        sys.exit(1)
     return url, sha256
 
 

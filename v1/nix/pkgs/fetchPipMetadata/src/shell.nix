@@ -14,6 +14,7 @@
       ++ [
         ps.black
         ps.pytest
+        ps.pytest-cov
       ]
   );
   devShell = pkgs.mkShell {
