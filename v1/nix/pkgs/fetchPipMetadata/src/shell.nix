@@ -7,6 +7,7 @@
   python = pkgs.python3;
   package = import ../package.nix {
     inherit lib python;
+    inherit (pkgs) git;
   };
   pythonWithDeps = python.withPackages (
     ps:
