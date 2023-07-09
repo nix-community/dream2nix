@@ -75,14 +75,14 @@ def test_path_in_repo(git_repo_path):
     assert l.lock_entry_from_report_entry(install) == expected
 
 
-def test_path_in_nix_store(fod_store_path):
+def test_path_in_nix_store():
     install = dict(
         metadata=dict(
             name="test",
             version="0.0.0",
         ),
         download_info=dict(
-            url=fod_store_path,
+            url="/nix/store/test",
         ),
     )
     expected = "test", dict(
