@@ -69,7 +69,40 @@
     },
     "targets": {
       "default": {
-        "setuptools": []
+        "bleach": [
+          "six",
+          "webencodings"
+        ],
+        "cffi": [
+          "pycparser"
+        ],
+        "html5lib": [
+          "six",
+          "webencodings"
+        ],
+        "isso": [
+          "bleach",
+          "html5lib",
+          "itsdangerous",
+          "jinja2",
+          "misaka",
+          "werkzeug"
+        ],
+        "itsdangerous": [],
+        "jinja2": [
+          "markupsafe"
+        ],
+        "markupsafe": [],
+        "misaka": [
+          "cffi"
+        ],
+        "pycparser": [],
+        "setuptools": [],
+        "six": [],
+        "webencodings": [],
+        "werkzeug": [
+          "markupsafe"
+        ]
       }
     }
   }
