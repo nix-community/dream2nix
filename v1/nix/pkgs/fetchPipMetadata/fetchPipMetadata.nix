@@ -18,7 +18,6 @@
   # The python version select by the user below might be too old for the
   #   dependencies required by the proxy
   python3,
-}: {
   # Specify the python version for which the packages should be downloaded.
   # Pip needs to be executed from that specific python version.
   # Pip accepts '--python-version', but this works only for wheel packages.
@@ -49,11 +48,8 @@
 
   path = [nix git] ++ nativeBuildInputs;
 
-  fetchPipMetadata = python.pkgs.buildPythonPackage {
-    name = "fetch_pip_metadata";
-    format = "flit";
-    src = ./src;
-    propagatedBuildInputs = with python.pkgs; [packaging certifi python-dateutil pip];
+  package = import ./package.nix {
+    inherit lib python;
   };
 
   args = writeText "pip-args" (builtins.toJSON {
@@ -74,7 +70,10 @@
       pipFlags
       ;
   });
+
+  script =
+    writePureShellScript
+    path
+    "${package}/bin/fetch_pip_metadata ${args}";
 in
-  writePureShellScript
-  path
-  "${fetchPipMetadata}/bin/fetch_pip_metadata ${args}"
+  script
