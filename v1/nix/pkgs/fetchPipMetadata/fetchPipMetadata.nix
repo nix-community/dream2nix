@@ -49,7 +49,7 @@
   path = [nix git] ++ nativeBuildInputs;
 
   package = import ./package.nix {
-    inherit lib python;
+    inherit git lib python;
   };
 
   args = writeText "pip-args" (builtins.toJSON {
