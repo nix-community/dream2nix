@@ -186,6 +186,10 @@ def lock_file_from_report(report):
     # targets to lock dependencies for, i.e. env markers like "dev" or "tests"
     targets = dict()
 
+    # ensure at least one package is requested
+    if not any(install.get("requested", False) for install in report["install"]):
+        raise Exception("Cannot determine roots, nothing requested")
+
     # iterate over all packages pip installed to find roots
     # of the tree and gather basic information, such as urls
     for install in report["install"]:
@@ -209,7 +213,10 @@ def lock_file_from_report(report):
             evaluate_requirements(
                 env, requirements, dependencies, root_name, extras, list()
             )
-            targets[extra] = dependencies
+            if extra not in targets:
+                targets[extra] = dependencies
+            else:
+                targets[extra].update(dependencies)
 
     # iterate over targets to deduplicate dependencies already in the default set
     # with the same indirect deps
