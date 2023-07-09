@@ -64,12 +64,10 @@ def lock_info_from_path(full_path):
     # store path /nix/store/$hash-name/
     store_path = Path("/").joinpath(*full_path.parts[:4])
     if not Path("/nix/store") == store_path.parent:
-        print(
-            f"fatal: requirement '{full_path}' refers to something outside",
-            f"/nix/store and our local repo '{repo_root}'",
-            file=sys.stderr,
+        raise Exception(
+            f"fatal: requirement '{full_path}' refers to something outside "
+            f"/nix/store and our local repo '{repo_root}'"
         )
-        sys.exit(1)
 
     # Check if its a FOD, if so use nix to print the derivation of our
     # out_path in json and get hash and url from that
@@ -77,12 +75,10 @@ def lock_info_from_path(full_path):
     if drv_json:
         return lock_info_from_fod(store_path, drv_json)
     else:
-        print(
-            f"fatal: requirement '{full_path}' refers to something we",
-            "can't understand",
-            file=sys.stderr,
+        raise Exception(
+            f"fatal: requirement '{full_path}' refers to something we "
+            "can't understand"
         )
-        sys.exit(1)
 
 
 def lock_entry_from_report_entry(install):
