@@ -10,13 +10,17 @@ from packaging.utils import (
 )
 
 
-def git_repo_root():
-    return subprocess.run(
+def git_repo_root(directory):
+    proc = subprocess.run(
         ["git", "rev-parse", "--show-toplevel"],
-        check=True,
         text=True,
         stdout=subprocess.PIPE,
-    ).stdout.strip()
+        cwd=directory,
+    )
+    # fall back to the current directory if not a git repo
+    if proc.returncode == 128:
+        return str(Path(".").absolute())
+    return proc.stdout.strip()
 
 
 def nix_show_derivation(path):
@@ -56,7 +60,7 @@ def path_from_file_url(url):
 
 def lock_info_from_path(full_path):
     # See whether the path is relative to our local repo
-    repo_root = Path(git_repo_root())
+    repo_root = Path(git_repo_root("."))
     if repo_root in full_path.parents or repo_root == full_path:
         return str(full_path.relative_to(repo_root)), None
 
