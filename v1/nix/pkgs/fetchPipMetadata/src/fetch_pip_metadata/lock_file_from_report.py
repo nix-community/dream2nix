@@ -10,7 +10,7 @@ from packaging.utils import (
 )
 
 
-def git_repo_root(directory):
+def repo_root(directory):
     proc = subprocess.run(
         ["git", "rev-parse", "--show-toplevel"],
         text=True,
@@ -60,9 +60,9 @@ def path_from_file_url(url):
 
 def lock_info_from_path(full_path):
     # See whether the path is relative to our local repo
-    repo_root = Path(git_repo_root("."))
-    if repo_root in full_path.parents or repo_root == full_path:
-        return str(full_path.relative_to(repo_root)), None
+    repo = Path(repo_root("."))
+    if repo in full_path.parents or repo == full_path:
+        return str(full_path.relative_to(repo)), None
 
     # Otherwise, we assume its in /nix/store and just the "top-level"
     # store path /nix/store/$hash-name/
@@ -70,7 +70,7 @@ def lock_info_from_path(full_path):
     if not Path("/nix/store") == store_path.parent:
         raise Exception(
             f"fatal: requirement '{full_path}' refers to something outside "
-            f"/nix/store and our local repo '{repo_root}'"
+            f"/nix/store and our local repo '{repo}'"
         )
 
     # Check if its a FOD, if so use nix to print the derivation of our

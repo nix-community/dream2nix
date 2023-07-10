@@ -5,10 +5,10 @@ import lock_file_from_report as l
 
 
 def test_path_in_repo_root(monkeypatch, git_repo_path):
-    def git_repo_root(path):
+    def repo_root(path):
         return git_repo_path
 
-    monkeypatch.setattr(l, "git_repo_root", git_repo_root)
+    monkeypatch.setattr(l, "repo_root", repo_root)
     assert l.lock_info_from_path(git_repo_path / "foo") == ("foo", None)
 
 
