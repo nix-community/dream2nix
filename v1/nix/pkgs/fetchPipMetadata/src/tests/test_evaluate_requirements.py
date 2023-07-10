@@ -57,7 +57,7 @@ def test_extra_selected():
 
 def test_platform_mismatch():
     result = l.evaluate_requirements(
-        env=dict(sys_paltform="linux"),
+        env=dict(sys_platform="linux"),
         reqs=dict(
             root_package={Requirement("requests; sys_platform == 'darwin'")},
             requests=set(),
