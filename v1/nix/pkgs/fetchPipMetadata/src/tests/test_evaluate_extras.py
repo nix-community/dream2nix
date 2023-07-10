@@ -17,7 +17,7 @@ def test_marker_match(env):
 
 def test_marker_mismatch(env):
     env = dict(python_version="3.10")
-    requirement = Requirement("requests; python_version >= '3.11'")
+    requirement = Requirement("requests; python_version == '3.11'")
     assert l.evaluate_extras(requirement, None, env) == False
 
 
