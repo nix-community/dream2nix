@@ -2,28 +2,26 @@
   config,
   lib,
   dream2nix,
-  packageSets,
   ...
 }: let
   l = lib // builtins;
 
   cfg = config.nodejs-devshell;
 
-  nodeModulesDrv = dream2nix.lib.evalModules {
-    inherit packageSets;
-    modules = [
-      dream2nix.modules.drv-parts.nodejs-node-modules
+  nodeModulesDir = "${cfg.nodeModules.public}/lib/node_modules/${config.name}/node_modules";
+in {
+  imports = [
+    ./interface.nix
+    dream2nix.modules.drv-parts.mkDerivation
+    dream2nix.modules.drv-parts.nodejs-package-lock
+  ];
+
+  nodejs-devshell.nodeModules = {
+    imports = [
       {inherit (config) nodejs-package-lock name version;}
       {mkDerivation.src = l.mkForce null;}
     ];
   };
-
-  nodeModulesDir = "${nodeModulesDrv}/lib/node_modules/${config.name}/node_modules";
-in {
-  imports = [
-    dream2nix.modules.drv-parts.mkDerivation
-    dream2nix.modules.drv-parts.nodejs-package-lock
-  ];
 
   # rsync the node_modules folder
   # - tracks node-modules store path via .dream2nix/.node_modules_id
