@@ -1,0 +1,37 @@
+{
+  "package-lock": {
+    "name": "app",
+    "lockfileVersion": 2,
+    "requires": true,
+    "packages": {
+      "": {
+        "name": "app",
+        "dependencies": {
+          "typescript": "^5.1.6"
+        },
+        "bin": {
+          "app": "app.js"
+        }
+      },
+      "node_modules/typescript": {
+        "version": "5.1.6",
+        "resolved": "https://registry.npmjs.org/typescript/-/typescript-5.1.6.tgz",
+        "integrity": "sha512-zaWCozRZ6DLEWAWFrVDz1H6FVXzUSfTy5FUMWsQlU8Ym5JP9eO4xkTIROFCQvhQf61z6O/G6ugw3SgAnvvm+HA==",
+        "bin": {
+          "tsc": "bin/tsc",
+          "tsserver": "bin/tsserver"
+        },
+        "engines": {
+          "node": ">=14.17"
+        }
+      }
+    },
+    "dependencies": {
+      "typescript": {
+        "version": "5.1.6",
+        "resolved": "https://registry.npmjs.org/typescript/-/typescript-5.1.6.tgz",
+        "integrity": "sha512-zaWCozRZ6DLEWAWFrVDz1H6FVXzUSfTy5FUMWsQlU8Ym5JP9eO4xkTIROFCQvhQf61z6O/G6ugw3SgAnvvm+HA=="
+      }
+    }
+  }
+}
