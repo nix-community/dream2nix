@@ -113,7 +113,7 @@
               exit(1)
       # At this point the derivation was built successfully and we can just read
       #   the hash from the drv file.
-      show_derivation = ["${config.deps.nix}/bin/nix", "show-derivation", drv_path]  # noqa: E501
+      show_derivation = ["${config.deps.nix}/bin/nix", "derivation show", drv_path]  # noqa: E501
       result = subprocess.run(show_derivation, stdout=subprocess.PIPE, text=True)
       drv = json.loads(result.stdout)
       checksum = drv[drv_path]["outputs"]["out"]["hash"]
