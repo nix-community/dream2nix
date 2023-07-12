@@ -1,3 +1,9 @@
+# This example builds https://isso-comments.de. It's meant as a relatively
+# simple demonstration on how to build applications consiting of a python
+# backend and a javascript frontend, built with nodejs.
+#
+# To actually run an isso server with this, you'd also need a configuration file,
+# see https://posativ.org/isso/docs/configuration/server/
 {
   config,
   lib,
@@ -27,6 +33,12 @@ in {
       rev = "refs/tags/${config.version}";
       sha256 = "sha256-kZNf7Rlb1DZtQe4dK1B283OkzQQcCX+pbvZzfL65gsA=";
     };
+
+    propagatedBuildInputs = [
+      # isso implicitly assumes that pkg_resources, which is
+      # part of setuptools.
+      config.deps.python.pkgs.setuptools
+    ];
   };
 
   nodejs-granular = {
