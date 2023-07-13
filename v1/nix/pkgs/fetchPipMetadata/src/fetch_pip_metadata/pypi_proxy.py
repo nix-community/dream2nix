@@ -19,23 +19,40 @@ class PypiProxy:
     besides pypi.org as well, but URLs for actual distribution files
     should not be intercepted for performance reasons and we
     currently just ignore files.pythonhosted.org by default.
+
+    It isn't necessary and will be made at least optional
+    if not removed. Depending on whether the feature of reproducible
+    lock files (as opposed to reproducible builds *from* lock-files)
+    is worthwile.
     """
 
-    def __init__(self, executable, args, env):
-        self.env = env
-        self.port = self.find_free_port()
+    def __enter__(self):
+        return self
 
+    def __exit__(self, exc_type, exc_value, exc_tb):
+        self.kill()
+
+    def __init__(self, home, args):
+        self.executable = args.mitm_proxy
+        self.args = [
+            "--ignore-hosts",
+            ".*files.pythonhosted.org.*",
+            "--script",
+            args.filter_pypi_responses_script,
+        ]
+        self.env = {"pypiSnapshotDate": args.pypi_snapshot_date, "HOME": home}
+        self.port = self.find_free_port()
         self.proc = subprocess.Popen(
             [
-                executable,
+                self.executable,
                 "--listen-port",
                 str(self.port),
                 "--anticache",
-                *args,
+                *self.args,
             ],
             stdout=sys.stderr,
             stderr=sys.stderr,
-            env=env,
+            env=self.env,
         )
         self.wait("http://pypi.org", 10)
         self.cafile = self.generate_ca_bundle(".ca-cert.pem")
