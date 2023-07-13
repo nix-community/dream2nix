@@ -74,6 +74,6 @@
   script =
     writePureShellScript
     path
-    "${package}/bin/fetch_pip_metadata ${args}";
+    "${package}/bin/fetch_pip_metadata --config-file ${args}";
 in
   script
