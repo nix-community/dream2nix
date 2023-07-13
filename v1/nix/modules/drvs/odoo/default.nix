@@ -39,12 +39,28 @@ in {
       "${src}"
     ];
 
+    # These buildInputs are only used during locking, well-behaved, i.e.
+    # PEP 518 packages should not those, but some packages like psycopg2
+    # require dependencies to be available during locking in order to execute
+    # setup.py. This is fixed in psycopg3
     nativeBuildInputs = [config.deps.postgresql];
 
-    # fix some builds via overrides
+    # fix some builds via package-specific overrides
     drvs = {
-      psycopg2.mkDerivation = {
-        nativeBuildInputs = [config.deps.postgresql];
+      psycopg2 = {
+        # We can bulk-inherit overrides from nixpkgs, to which often helps to
+        # get something working quickly. In this case it's needed for psycopg2
+        # to build on aarch64-darwin. We exclude propagatedBuildInputs to keep
+        # python deps from our lock file and avoid version conflicts
+        nixpkgs-overrides = {
+          enable = true;
+          exclude = ["propagatedBuildInputs"];
+        };
+        # packages-specific build inputs that are used for this
+        # package only. Included here for demonstration
+        # purposes, as nativeBuildInputs from nixpkgs-overrides
+        # should already include it
+        mkDerivation.nativeBuildInputs = [config.deps.postgresql];
       };
       libsass.mkDerivation = {
         doCheck = false;
