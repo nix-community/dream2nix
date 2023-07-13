@@ -5,7 +5,6 @@ import argparse
 import subprocess
 import tempfile
 import json
-import dateutil.parser
 from pathlib import Path
 
 from .lock_file_from_report import lock_file_from_report
@@ -13,13 +12,6 @@ from .pypi_proxy import PypiProxy
 
 
 __version__ = "1.0.0"
-
-
-def get_max_date(snapshot_date):
-    try:
-        return int(snapshot_date)
-    except ValueError:
-        return dateutil.parser.parse(snapshot_date)
 
 
 def prepare_venv(venv_path, pip_version, wheel_version):

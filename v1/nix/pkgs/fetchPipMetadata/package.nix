@@ -17,7 +17,6 @@
     propagatedBuildInputs = with python.pkgs; [
       packaging
       certifi
-      python-dateutil
       pip
     ];
   };

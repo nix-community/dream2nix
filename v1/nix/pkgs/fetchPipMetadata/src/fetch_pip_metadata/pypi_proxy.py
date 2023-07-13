@@ -42,6 +42,11 @@ class PypiProxy:
         ]
         self.env = {"pypiSnapshotDate": args.pypi_snapshot_date, "HOME": home}
         self.port = self.find_free_port()
+
+        print(
+            f"selected maximum release date for python packages: {args.pypi_snapshot_date}",
+            file=sys.stderr,
+        )
         self.proc = subprocess.Popen(
             [
                 self.executable,

@@ -11,7 +11,7 @@ name = "fetch_pip_metadata"
 description = "internal tooling of dream2nix python subsystem"
 authors = [{name = "Paul Haerle", email = "hello@phaer.org"}]
 dynamic = ["version"]
-dependencies = ["packaging", "certifi", "python-dateutil"]
+dependencies = ["packaging", "certifi"]
 scripts = {fetch_pip_metadata = "fetch_pip_metadata:main"}
 
 [tool.pytest.ini_options]
