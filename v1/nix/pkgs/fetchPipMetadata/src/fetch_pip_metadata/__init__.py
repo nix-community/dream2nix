@@ -31,51 +31,58 @@ def prepare_venv(venv_path, pip_version, wheel_version):
     return venv_path
 
 
+def run_pip(home, venv, proxy, args):
+    flags = args.pip_flags + [
+        "--proxy",
+        f"https://localhost:{proxy.port}",
+        "--progress-bar",
+        "off",
+        "--cert",
+        proxy.cafile,
+        "--report",
+        str(home / "report.json"),
+    ]
+    for req in args.requirements_list:
+        if req:
+            flags.append(req)
+    for req in args.requirements_files:
+        if req:
+            flags += ["-r", req]
+
+    subprocess.run(
+        [
+            f"{venv}/bin/pip",
+            "install",
+            "--dry-run",
+            "--ignore-installed",
+            *flags,
+        ],
+        check=True,
+        stdout=sys.stderr,
+        stderr=sys.stderr,
+    )
+
+
 def fetch_pip_metadata(args):
-    with tempfile.TemporaryDirectory() as home, PypiProxy(home, args) as proxy:
+    with tempfile.TemporaryDirectory() as home:
         home = Path(home)
 
-        print(
-            f"selected maximum release date for python packages: {get_max_date(args.pypi_snapshot_date)}",  # noqa: E501
-            file=sys.stderr,
-        )
+        if args.from_report:
+            with open(args.from_report, "r") as f:
+                report = json.load(f)
+        else:
+            venv = prepare_venv(
+                (home / ".venv").absolute(), args.pip_version, args.wheel_version
+            )
+            with PypiProxy(home, args) as proxy:
+                run_pip(home, venv, proxy, args)
 
-        venv_path = prepare_venv(
-            (home / ".venv").absolute(), args.pip_version, args.wheel_version
-        )  # noqa: 501
+            with open(home / "report.json", "r") as f:
+                report = json.load(f)
 
-        flags = args.pip_flags + [
-            "--proxy",
-            f"https://localhost:{proxy.port}",
-            "--progress-bar",
-            "off",
-            "--cert",
-            proxy.cafile,
-            "--report",
-            str(home / "report.json"),
-        ]
-        for req in args.requirements_list:
-            if req:
-                flags.append(req)
-        for req in args.requirements_files:
-            if req:
-                flags += ["-r", req]
-
-        subprocess.run(
-            [
-                f"{venv_path}/bin/pip",
-                "install",
-                "--dry-run",
-                "--ignore-installed",
-                *flags,
-            ],
-            check=True,
-            stdout=sys.stderr,
-            stderr=sys.stderr,
-        )
-
-        with open(home / "report.json", "r") as f:
-            report = json.load(f)
+        if args.report_out_file:
+            with open(args.report_out_file, "w") as f:
+                json.dump(report, f, indent=2)
 
         with open(args.out_file, "w") as f:
             lock = lock_file_from_report(report)
@@ -89,6 +96,13 @@ def parse_args():
         "--out-file",
         help="path to write the lock file to, defaults to $out",
         default=os.getenv("out"),
+    )
+    parser.add_argument(
+        "--report-out-file", help="save the raw pip report to this file"
+    )
+    parser.add_argument(
+        "--from-report",
+        help="skip ´pip install´ and generate a lock file from an existing report",
     )
     parser.add_argument("--filter-pypi-responses-script")
     parser.add_argument("--mitm-proxy")
