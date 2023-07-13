@@ -11,10 +11,13 @@ let
 in
   mapRecurse
   {
+    # FIXME: We can't lock via remote-builders yet, and I don't have a aarch64-linux
+    # machine here, so we lack lock files for the evaluation atm.
+    # aarch64-linux = {};
     x86_64-linux = {};
-    aarch64-linux = {};
     x86_64-darwin = {};
     aarch64-darwin = {
+      # FIXME: hercules requireFailure might be a better solution?
       knownIssues = {
         "odoo" = "TODO github issue link here";
       };
