@@ -16,12 +16,7 @@ in
     # aarch64-linux = {};
     x86_64-linux = {};
     x86_64-darwin = {};
-    aarch64-darwin = {
-      # FIXME: hercules requireFailure might be a better solution?
-      knownIssues = {
-        "odoo" = "TODO github issue link here";
-      };
-    };
+    aarch64-darwin = {};
   }
   (
     system: {knownIssues ? {}}:
