@@ -323,7 +323,6 @@
   in
     flake-parts.lib.mkFlake {inherit inputs;} {
       imports = [
-        ./tests
         ./templates
         ./v1/nix/modules/flake-parts/all-modules.nix
       ];
