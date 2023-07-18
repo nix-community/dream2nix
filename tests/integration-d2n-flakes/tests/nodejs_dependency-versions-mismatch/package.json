@@ -1,7 +1,0 @@
-{
-  "name": "test-git-versions",
-  "version": "1.0.0",
-  "dependencies": {
-    "browser-image-resizer": "git+https://github.com/misskey-dev/browser-image-resizer#v2.2.1-misskey.2"
-  }
-}
