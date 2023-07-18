@@ -6,41 +6,32 @@
   l = lib // builtins;
 in {
   flake = {
-    templates =
-      {
-        default = self.templates.simple;
-        simple = {
-          description = "Simple dream2nix flake";
-          path = ./simple;
-          welcomeText = ''
-            You just created a simple dream2nix package!
+    templates = {
+      default = self.templates.simple;
+      simple = {
+        description = "Simple dream2nix flake";
+        path = ./simple;
+        welcomeText = ''
+          You just created a simple dream2nix package!
 
-            start with typing `nix flake show` to discover the projects attributes.
+          start with typing `nix flake show` to discover the projects attributes.
 
-            commands:
+          commands:
 
-            - `nix develop` <-- enters the devShell
-            - `nix build .#` <-- builds the default package (`.#default`)
+          - `nix develop` <-- enters the devShell
+          - `nix build .#` <-- builds the default package (`.#default`)
 
 
-            Start hacking and -_- have some fun!
+          Start hacking and -_- have some fun!
 
-            > dont forget to add nix `result` folder to your `.gitignore`
+          > dont forget to add nix `result` folder to your `.gitignore`
 
-          '';
-        };
-        v1-python = {
-          description = "Simple dream2nix python project";
-          path = ./v1-python;
-        };
-      }
-      // (
-        l.genAttrs
-        (self.lib.dlib.listDirs ../examples)
-        (name: {
-          description = "Example: ${name} template";
-          path = ../examples/${name};
-        })
-      );
+        '';
+      };
+      v1-python = {
+        description = "Simple dream2nix python project";
+        path = ./v1-python;
+      };
+    };
   };
 }
