@@ -48,4 +48,3 @@ The intention is to integrate many existing 2nix converters into this framework,
 ### Community
 
 [👉 matrix chat room](https://matrix.to/#/#dream2nix:nixos.org)
-
