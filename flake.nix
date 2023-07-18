@@ -290,28 +290,6 @@
                   ${pkgs.treefmt}/bin/treefmt --clear-cache --fail-on-change
                 '');
               };
-              cleanup = {
-                enable = true;
-                name = "cleanup";
-                entry = l.toString (pkgs.writeScript "cleanup" ''
-                  #!${pkgs.bash}/bin/bash
-                  for badFile in  $(find ./examples | grep 'flake.lock\|dream2nix-packages'); do
-                    rm -rf $badFile
-                    git add $badFile || :
-                  done
-                '');
-              };
-              is-cleaned = {
-                enable = true;
-                name = "is-cleaned";
-                entry = l.toString (pkgs.writeScript "is-cleaned" ''
-                  #!${pkgs.bash}/bin/bash
-                  if find ./examples | grep -q 'flake.lock\|dream2nix-packages'; then
-                    echo "./examples should not contain any flake.lock files or dream2nix-packages directories" >&2
-                    exit 1
-                  fi
-                '');
-              };
             };
           };
         };

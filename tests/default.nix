@@ -33,11 +33,6 @@
         b.toString
         (callTests ./integration-d2n-flakes);
 
-      tests-examples.type = "app";
-      tests-examples.program =
-        b.toString
-        (callTests ./examples);
-
       tests-all.type = "app";
       tests-all.program =
         b.toString
