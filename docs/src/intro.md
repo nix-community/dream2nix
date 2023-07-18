@@ -1,20 +1,33 @@
-# dream2nix
-Automate reproducible packaging for various language ecosystems
+<p align="center">
+  <picture>
+    <source width="600" media="(prefers-color-scheme: dark)" srcset="https://gist.githubusercontent.com/DavHau/755fed3774e89c0b9b8953a0a25309fa/raw/0312cc4f785de36212f4303d23298f07c13549dc/dream2nix-dark.png">
+    <source width="600" media="(prefers-color-scheme: light)" srcset="https://gist.githubusercontent.com/DavHau/755fed3774e89c0b9b8953a0a25309fa/raw/e2a12a60ae49aa5eb11b42775abdd1652dbe63c0/dream2nix-01.png">
+    <img width="600" alt="dream2nix - A framework for automated nix packaging" src="https://gist.githubusercontent.com/DavHau/755fed3774e89c0b9b8953a0a25309fa/raw/e2a12a60ae49aa5eb11b42775abdd1652dbe63c0/dream2nix-01.png">
+  </picture>
+  <br>
+  Automate reproducible packaging for various language ecosystems
+  <br>
+  <a href="https://nix-community.github.io/dream2nix/">Documentation</a> |
+  <a href="https://github.com/nix-community/dream2nix/tree/main/v1/nix/modules/drvs">Examples</a>
+</p>
 
-{{#include ./warning.md}}
+!!! Warning: dream2nix is unstable software. While simple UX is one of our main focus points, the APIs  are still under development. Do expect changes that will break your setup.
 
-{{#include ./funding.md}}
+### Funding
+
+This project was funded through the [NGI Assure](https://nlnet.nl/assure) Fund, a fund established by [NLnet](https://nlnet.nl/) with financial support from the European Commission's [Next Generation Internet](https://ngi.eu/) programme, under the aegis of DG Communications Networks, Content and Technology under grant agreement No 957073. **Applications are still open, you can [apply today](https://nlnet.nl/propose)**.
+
+If your organization wants to support the project with extra funding in order to add support for more languages or new features, please contact one of the maintainers.
+
+## Goals
 
 dream2nix focuses on the following aspects:
 
 - Modularity
 - Customizability
 - Maintainability
-- Nixpkgs Compatibility, by not enforcing [IFD (import from derivation)][glossary]
-- Code de-duplication across 2nix converters
-- Code de-duplication in nixpkgs
-- Risk-free opt-in aggregated fetching (larger [FODs][glossary], less checksums)
-- Common UI across 2nix converters
+- Code de-duplication across 2nix solutions
+- Common UI across 2nix solutions
 - Reduce effort to develop new 2nix solutions
 - Exploration and adoption of new nix features
 - Simplified updating of packages
@@ -23,60 +36,15 @@ The goal of this project is to create a standardized, generic, modular framework
 
 The intention is to integrate many existing 2nix converters into this framework, thereby improving many of the previously named aspects and providing a unified UX for all 2nix solutions.
 
+### Documentation
 
-### Modularity:
-The following phases which are generic to basically all existing 2nix solutions:
-  - parsing project metadata
-  - resolving/locking dependencies (not always required)
-  - fetching sources
-  - building/installing packages
+[👉 To the docs](https://nix-community.github.io/dream2nix)
 
-... should be separated from each other with well defined interfaces.
+### Presentations
 
-This will allow for free composition of different approaches for these phases.
-The user should be able to freely choose between:
-  - input metadata formats (eg. lock file formats)
-  - metadata fetching/translation strategies: IFD vs. in-tree
-  - source fetching strategies: granular fetching vs fetching via single large FOD to minimize expression file size
-  - installation strategies: build dependencies individually vs inside a single derivation.
+- [👉 2021: Original dream2nix presentation](https://www.youtube.com/watch?v=jqCfHMvCsfQ) - Examples are outdated:
+- [👉 2023: dream2nix based on drv-parts](hhttps://www.youtube.com/watch?v=AsCvRZukX0E) - Examples are outdated:
 
-### Customizability
-Every Phase mentioned in the previous section should be customizable at a high degree via override functions. Practical examples:
-  - Inject extra requirements/dependencies
-  - fetch sources from alternative locations
-  - replace or modify sources
-  - customize the build/installation procedure
+### Community
 
-### Maintainability
-Due to the modular architecture with strict interfaces, contributors can add support for new lock-file formats or new strategies for fetching, building, installing more easily.
-
-### Compatibility
-Depending on where the nix code is used, different approaches are desired or discouraged. While IFD might be desired for some out of tree projects to achieve simplified UX, it is strictly prohibited in nixpkgs due to nix/hydra limitations.
-All solutions which follow the dream2nix specification will be compatible with both approaches without having to re-invent the tool.
-
-### Code de-duplication
-Common problems that apply to many 2nix solutions can be solved once by the framework. Examples:
-  - handling cyclic dependencies
-  - handling sources from various origins (http, git, local, ...)
-  - generate nixpkgs/hydra friendly output (no IFD)
-  - good user interface
-
-### Code de-duplication in nixpkgs
-Essential components like package update scripts or fetching and override logic are provided by the dream2nix framework and are stored only once in the source tree instead of several times.
-
-### Risk free opt-in FOD fetching
-Optionally, to save more storage space, individual hashes for source can be omitted and a single large FOD used instead.
-Due to a unified minimalistic fetching layer the risk of FOD hash breakages should be very low.
-
-### Common UI across many 2nix solutions
-2nix solutions which follow the dream2nix framework will have a unified UI for workflows like project initialization or code generation. This will allow quicker onboarding of new users by providing familiar workflows across different build systems.
-
-### Reduced effort to develop new 2nix solutions
-Since the framework already solves common problems and provides an interface for integrating new build systems, developers will have an easier time creating their next 2nix solution.
-
-### Further reading
-
-- [Architectural Considerations](./intro/architecture.md)
-- [Potential impact on nixpkgs](./intro/nixpkgs-improvements.md)
-
-[glossary]: https://nixos.wiki/wiki/Glossary "glossary"
+[👉 matrix chat room](https://matrix.to/#/#dream2nix:nixos.org)
