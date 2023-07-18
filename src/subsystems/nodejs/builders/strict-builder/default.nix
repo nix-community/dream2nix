@@ -192,7 +192,8 @@
             runHook preConfigure
 
             cp -r ${nodeModules} ./node_modules
-            chmod -R +w node_modules
+            chmod -R +xw node_modules
+            patchShebangs ./node_modules
 
             export NODE_PATH="$NODE_PATH:./node_modules"
             export PATH="$PATH:node_modules/.bin"
