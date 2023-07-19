@@ -149,7 +149,7 @@
     flake-parts.lib.mkFlake {inherit inputs;} {
       imports = [
         ./templates
-        ./v1/nix/modules/flake-parts/all-modules.nix
+        ./modules/flake-parts/all-modules.nix
       ];
       systems = [
         "x86_64-linux"
