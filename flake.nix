@@ -119,7 +119,10 @@
               pass_filenames = false;
               entry = l.toString (pkgs.writeScript "treefmt" ''
                 #!${pkgs.bash}/bin/bash
-                export PATH="$PATH:${pkgs.alejandra}/bin"
+                export PATH="$PATH:${l.makeBinPath [
+                  pkgs.alejandra
+                  pkgs.python3.pkgs.black
+                ]}"
                 ${pkgs.treefmt}/bin/treefmt --clear-cache --fail-on-change
               '');
             };
