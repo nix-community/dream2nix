@@ -19,7 +19,27 @@ This project was funded through the [NGI Assure](https://nlnet.nl/assure) Fund, 
 
 If your organization wants to support the project with extra funding in order to add support for more languages or new features, please contact one of the maintainers.
 
-## Goals
+### Documentation
+
+[👉 To the docs](https://nix-community.github.io/dream2nix)
+
+### Presentations
+
+- [👉 2023: dream2nix based on drv-parts](https://www.youtube.com/watch?v=AsCvRZukX0E)
+- [👉 2021: Original dream2nix presentation](https://www.youtube.com/watch?v=jqCfHMvCsfQ) (Examples are outdated)
+
+### Get in touch
+
+[👉 matrix chat room](https://matrix.to/#/#dream2nix:nixos.org)
+
+### Contribute
+
+[👉 GitHub repo](https://github.com/nix-community/dream2nix)
+
+[👉 issues](https://github.com/nix-community/dream2nix/issues)
+
+
+### Goals
 
 dream2nix focuses on the following aspects:
 
@@ -35,16 +55,3 @@ dream2nix focuses on the following aspects:
 The goal of this project is to create a standardized, generic, modular framework for automated packaging solutions, aiming for better flexibility, maintainability and usability.
 
 The intention is to integrate many existing 2nix converters into this framework, thereby improving many of the previously named aspects and providing a unified UX for all 2nix solutions.
-
-### Documentation
-
-[👉 To the docs](https://nix-community.github.io/dream2nix)
-
-### Presentations
-
-- [👉 2021: Original dream2nix presentation](https://www.youtube.com/watch?v=jqCfHMvCsfQ) - Examples are outdated:
-- [👉 2023: dream2nix based on drv-parts](hhttps://www.youtube.com/watch?v=AsCvRZukX0E) - Examples are outdated:
-
-### Community
-
-[👉 matrix chat room](https://matrix.to/#/#dream2nix:nixos.org)
