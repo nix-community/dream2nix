@@ -3,12 +3,10 @@ import json
 
 
 def replace_root_sources(lock, newSource):
-
     packages = lock["_generic"]["packages"]
     sources = lock["sources"]
 
     for name, version in packages.items():
-
         original = sources[name][version]
 
         fixed = newSource
@@ -24,7 +22,6 @@ def replace_root_sources(lock, newSource):
 
 
 if __name__ == "__main__":
-
     lockFile = sys.argv[1]
     newSourceFile = sys.argv[2]
 

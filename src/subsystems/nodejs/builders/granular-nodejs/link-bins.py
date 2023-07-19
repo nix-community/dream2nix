@@ -8,6 +8,7 @@ with open("package.json", encoding="utf-8-sig") as f:
 
 out = os.environ.get("out")
 
+
 # create symlinks for executables (bin entries from package.json)
 def symlink_bin(bin_dir, package_json):
     if "bin" in package_json and package_json["bin"]:

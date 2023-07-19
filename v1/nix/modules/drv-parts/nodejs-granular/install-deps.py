@@ -150,7 +150,6 @@ def dependency_satisfied(root, pname, version):
 def symlinks_to_copies(node_modules):
     sp.run(f"chmod +wx {node_modules}".split())
     for dep in collect_dependencies(node_modules, 0):
-
         # only handle symlinks to directories
         if not os.path.islink(dep) or os.path.isfile(dep):
             continue
