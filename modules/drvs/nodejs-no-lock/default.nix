@@ -42,5 +42,5 @@ in {
   version = l.mkForce "0.0.0";
 
   lock.lockFileRel =
-    l.mkForce "/v1/nix/modules/drvs/nodejs-no-lock/lock-${system}.json";
+    l.mkForce "/modules/drvs/nodejs-no-lock/lock-${system}.json";
 }

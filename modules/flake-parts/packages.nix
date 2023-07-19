@@ -13,9 +13,9 @@
   }: let
     # A module imported into every package setting up the eval cache
     setup = {config, ...}: {
-      lock.lockFileRel = "/v1/nix/modules/drvs/${config.name}/lock-${system}.json";
+      lock.lockFileRel = "/modules/drvs/${config.name}/lock-${system}.json";
       lock.repoRoot = self;
-      eval-cache.cacheFileRel = "/v1/nix/modules/drvs/${config.name}/cache-${system}.json";
+      eval-cache.cacheFileRel = "/modules/drvs/${config.name}/cache-${system}.json";
       eval-cache.repoRoot = self;
       eval-cache.enable = true;
       deps.npm = inputs.nixpkgs.legacyPackages.${system}.nodejs.pkgs.npm.override (old: rec {
