@@ -18,7 +18,7 @@
       eval-cache.cacheFileRel = "/v1/nix/modules/drvs/${config.name}/cache-${system}.json";
       eval-cache.repoRoot = self;
       eval-cache.enable = true;
-      deps.npm = inputs.nixpkgsV1.legacyPackages.${system}.nodejs.pkgs.npm.override (old: rec {
+      deps.npm = inputs.nixpkgs.legacyPackages.${system}.nodejs.pkgs.npm.override (old: rec {
         version = "8.19.4";
         src = builtins.fetchTarball {
           url = "https://registry.npmjs.org/npm/-/npm-${version}.tgz";
@@ -39,7 +39,7 @@
           setup
         ];
         specialArgs.packageSets = {
-          nixpkgs = inputs.nixpkgsV1.legacyPackages.${system};
+          nixpkgs = inputs.nixpkgs.legacyPackages.${system};
           writers = config.writers;
         };
         specialArgs.drv-parts = inputs.drv-parts;
