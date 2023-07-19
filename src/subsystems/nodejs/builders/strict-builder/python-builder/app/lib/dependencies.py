@@ -112,7 +112,6 @@ def recurse_deps_tree(
             dependencies.append(direct_dependency)
 
     for dependency in dependencies:
-
         if order == "top-down":
             accumulator = callback(accumulator, dependency, dependency.dependencies)
 
