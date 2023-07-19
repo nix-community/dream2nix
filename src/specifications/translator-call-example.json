@@ -1,7 +1,0 @@
-{
-  "source": "./some_project_src",
-
-  "outputFile": [
-    "./a/b/c/dream-lock.json"
-  ]
-}
