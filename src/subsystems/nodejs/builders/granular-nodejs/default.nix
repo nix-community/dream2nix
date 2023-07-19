@@ -50,7 +50,7 @@
         if args ? nodejs
         then b.toString args.nodejs
         else
-          pkgs."nodejs-${nodejsVersion}_x"
+          pkgs."nodejs_${nodejsVersion}"
           or (throw "Could not find nodejs version '${nodejsVersion}' in pkgs");
 
       nodeSources = runCommandLocal "node-sources" {} ''
