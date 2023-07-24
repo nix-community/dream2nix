@@ -15,7 +15,7 @@
 
 ### legacy dream2nix
 
-Dream2nix is currently in the process of being refactored to make use of drv-parts. Not all features and subsystems are migrated yet. If you prefer continue using the `makeFlakeOutputs` interface, please refer to the `[legacy branch](https://github.com/nix-community/dream2nix/tree/legacy) of dream2nix.
+Dream2nix is currently in the process of being refactored to make use of drv-parts. Not all features and subsystems are migrated yet. If you prefer continue using the `makeFlakeOutputs` interface, please refer to the [legacy branch](https://github.com/nix-community/dream2nix/tree/legacy) of dream2nix.
 
 ### Funding
 
