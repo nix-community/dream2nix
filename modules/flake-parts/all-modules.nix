@@ -31,7 +31,13 @@ in {
   };
 
   # generates future flake outputs: `modules.<kind>.<module-name>`
-  config.flake.modules = lib.mapAttrs (kind: _: mapModules kind) moduleKinds;
+  config.flake.modules =
+    let modules = lib.mapAttrs (kind: _: mapModules kind) moduleKinds;
+    in modules // {
+      flake-parts = modules.flake-parts // {
+        all-modules = { imports = flakePartsModules; _class = "flake-parts"; };
+      };
+    };
 
   # comapt to current schema: `nixosModules` / `darwinModules`
   config.flake.nixosModules = config.flake.modules.nixos or {};
