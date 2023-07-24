@@ -123,6 +123,12 @@ in {
 
     mkDerivation = {
       dontStrip = l.mkDefault true;
+      propagatedBuildInputs = l.mkForce (
+        let
+          topLevelDepNames = l.attrNames (metadata.targets.default);
+        in
+          l.map (name: cfg.drvs.${name}.public.out) topLevelDepNames
+      );
     };
   };
 }
