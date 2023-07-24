@@ -31,11 +31,8 @@
     makeDrv = module: let
       evaled = lib.evalModules {
         modules = [
-          inputs.drv-parts.modules.drv-parts.core
-          inputs.drv-parts.modules.drv-parts.docs
+          self.modules.drv-parts.core
           module
-          ../drv-parts/eval-cache
-          ../drv-parts/lock
           setup
         ];
         specialArgs.packageSets = {
