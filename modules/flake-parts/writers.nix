@@ -12,14 +12,14 @@
         type = lib.types.functionTo (lib.types.functionTo lib.types.package);
         description = ''
           Create a script that runs in a `pure` environment, in the sense that:
+            - the behavior is similar to `nix-shell --pure`
             - `PATH` only contains exactly the packages passed via the `PATH` arg
             - `NIX_PATH` is set to the path of the current `pkgs`
             - `TMPDIR` is set up and cleaned up even if the script fails
             - out, if set, is kept as-is
             - all environment variables are unset, except:
-            - the ones listed in `keepVars` below
-            - ones listed via the `KEEP_VARS` variable
-            - the behavior is similar to `nix-shell --pure`
+              - the ones listed in `keepVars` below
+              - ones listed via the `KEEP_VARS` variable
         '';
       };
       writePureShellScriptBin = lib.mkOption {
