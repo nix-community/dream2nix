@@ -9,19 +9,6 @@
   python = config.deps.python;
   metadata = config.lock.content.fetchPipMetadata;
 
-  writers = import ../../../pkgs/writers {
-    inherit lib;
-    inherit
-      (config.deps)
-      bash
-      coreutils
-      gawk
-      path
-      writeScript
-      writeScriptBin
-      ;
-  };
-
   drvs =
     l.mapAttrs (
       name: info:
@@ -59,13 +46,7 @@
           inherit
             (nixpkgs)
             autoPatchelfHook
-            bash
-            coreutils
-            gawk
-            path
             stdenv
-            writeScript
-            writeScriptBin
             ;
           inherit (nixpkgs.pythonManylinuxPackages) manylinux1;
         };
@@ -98,6 +79,7 @@ in {
     commonModule
     ./interface.nix
     ../lock
+    ../writers
   ];
 
   config = {
@@ -105,11 +87,11 @@ in {
       l.mapAttrs (_: l.mkDefault) {
         fetchPipMetadataScript = nixpkgs.callPackage ../../../pkgs/fetchPipMetadata {
           inherit (cfg) pypiSnapshotDate pipFlags pipVersion requirementsList requirementsFiles nativeBuildInputs;
-          inherit (config.deps) writePureShellScript python nix git;
+          inherit (config.deps) python nix git;
+          inherit (config.writers) writePureShellScript;
         };
         setuptools = config.deps.python.pkgs.setuptools;
         inherit (nixpkgs) git;
-        inherit (writers) writePureShellScript;
       };
 
     # Keep package metadata fetched by Pip in our lockfile

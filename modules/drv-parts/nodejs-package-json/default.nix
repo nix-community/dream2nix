@@ -11,42 +11,17 @@
     then config.deps.npm
     else throw "The version of config.deps.npm must be < 9";
 
-  writers = import ../../../pkgs/writers {
-    inherit lib;
-    inherit
-      (config.deps)
-      bash
-      coreutils
-      gawk
-      path
-      writeScript
-      writeScriptBin
-      ;
-  };
-
   npmArgs = l.concatStringsSep " " (map (arg: "'${arg}'") cfg.npmArgs);
 in {
   imports = [
     ./interface.nix
     ../nodejs-package-lock
     ../lock
+    ../writers
   ];
   config = {
-    deps = {nixpkgs, ...}:
-      l.mapAttrs (_: l.mkDefault) {
-        inherit
-          (nixpkgs)
-          bash
-          coreutils
-          gawk
-          path
-          writeScript
-          writeScriptBin
-          ;
-      };
-
     lock.fields.package-lock.script =
-      writers.writePureShellScript
+      config.writers.writePureShellScript
       [
         config.deps.coreutils
         npm
