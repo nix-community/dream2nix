@@ -96,7 +96,7 @@
           export PLTADDONDIR=$PLTCONFIGDIR;
 
           mkdir -p $out/bin
-          for EXE in $racket/bin/* $out/etc/bin/*;
+          for EXE in $racket/bin/* $out/etc/bin/* $out/etc/*/bin/*;
           do
             NAME=$(basename "$EXE")
             makeWrapper "$EXE" "$out/bin/$NAME" --set PLTCONFIGDIR "$PLTCONFIGDIR" --set PLTADDONDIR "$PLTADDONDIR"
