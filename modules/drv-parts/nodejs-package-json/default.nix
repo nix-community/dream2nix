@@ -29,7 +29,6 @@ in {
   imports = [
     ./interface.nix
     ../nodejs-package-lock
-    ../lock
   ];
   config = {
     deps = {nixpkgs, ...}:

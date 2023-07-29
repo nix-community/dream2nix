@@ -19,7 +19,6 @@
   };
 in {
   imports = [
-    ../public
     ../package-func/interface.nix
   ];
 

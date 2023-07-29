@@ -21,6 +21,7 @@ in {
         IOKit
         lm_sensors
         ncurses
+        stdenv
         systemd
         ;
     };

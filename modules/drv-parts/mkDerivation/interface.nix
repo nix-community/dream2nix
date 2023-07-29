@@ -222,7 +222,6 @@
   };
 in {
   imports = [
-    ../public/interface.nix
     ../package-func/interface.nix
   ];
 

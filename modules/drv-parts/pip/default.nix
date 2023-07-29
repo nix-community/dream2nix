@@ -97,7 +97,6 @@ in {
   imports = [
     commonModule
     ./interface.nix
-    ../lock
   ];
 
   config = {

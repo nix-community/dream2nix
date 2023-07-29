@@ -41,6 +41,7 @@
     });
 in {
   imports = [
+    ../core
     ../package-func/implementation.nix
   ];
 
