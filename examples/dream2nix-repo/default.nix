@@ -9,23 +9,15 @@
   nixpkgs = import dream2nix.inputs.nixpkgs {};
   lib = nixpkgs.lib;
 
-  callModule' = module:
+  _callModule = module:
     nixpkgs.lib.evalModules {
-      specialArgs = {
-        inherit dream2nix;
-        packageSets = {
-          inherit nixpkgs;
-        };
-      };
-      modules = [
-        dream2nix.modules.drv-parts.core
-        module
-        ./settings.nix
-      ];
+      specialArgs.dream2nix = dream2nix;
+      specialArgs.packageSets.nixpkgs = nixpkgs;
+      modules = [module ./settings.nix dream2nix.modules.drv-parts.core];
     };
 
   # like callPackage for modules
-  callModule = module: (callModule' module).config.public;
+  callModule = module: (_callModule module).config.public;
 
   packageModuleNames = builtins.attrNames (builtins.readDir ./packages);
 
