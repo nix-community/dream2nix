@@ -77,6 +77,7 @@
 
           packages = [
             pkgs.alejandra
+            pkgs.mdbook
             (pkgs.python3.withPackages (ps: [
               pkgs.python3.pkgs.black
             ]))
