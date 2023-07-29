@@ -19,9 +19,8 @@
     projectTree = rootTree.getNodeFromPath projectRelPath;
     rootSource = rootTree.fullPath;
     projectSource = sanitizePath "${rootSource}/${projectRelPath}";
-    # pull all crates from subsystemInfo, if not find all of them
-    # this is mainly helpful when `projects` is defined manually in which case
-    # crates won't be available, so we will reduce burden on the user here.
+    # find all of the crates
+    # this is used while resolving path dependencies
     allCrates =
       (import ./findAllCrates.nix {inherit lib;})
       {tree = rootTree;};
@@ -37,8 +36,9 @@
       then workspacePackage.version or (l.warn "no workspace version found in root Cargo.toml for ${package.name}, defaulting to unknown" "unknown")
       else package.version or (l.warn "no version found in Cargo.toml for ${package.name}, defaulting to unknown" "unknown");
 
-    # use workspace members from discover phase
-    # or discover them again ourselves
+    # find all the workspace members if we are in a workspace
+    # this is used to figure out what packages we can build
+    # and while resolving path dependencies
     workspaceMembers =
       l.flatten
       (
