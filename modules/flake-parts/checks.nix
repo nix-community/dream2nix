@@ -13,20 +13,22 @@
   }: let
     inherit
       (lib)
-      mapAttrs'
+      filterAttrs
       flip
+      foldl
+      hasPrefix
+      mapAttrs'
+      mapAttrsToList
+      removePrefix
       ;
     inherit
       (builtins)
-      mapAttrs
       readDir
       ;
 
     # A module imported into every package setting up the eval cache
     setup = {config, ...}: {
-      lock.lockFileRel = "/modules/drvs/${config.name}/lock-${system}.json";
       lock.repoRoot = self;
-      eval-cache.cacheFileRel = "/modules/drvs/${config.name}/cache-${system}.json";
       eval-cache.repoRoot = self;
       eval-cache.enable = true;
       deps.npm = inputs.nixpkgs.legacyPackages.${system}.nodejs.pkgs.npm.override (old: rec {
@@ -39,13 +41,9 @@
     };
 
     # evaluates the package behind a given module
-    makeDrv = module: let
+    makeDrv = modules: let
       evaled = lib.evalModules {
-        modules = [
-          self.modules.drv-parts.core
-          module
-          setup
-        ];
+        modules = modules ++ [self.modules.drv-parts.core];
         specialArgs.packageSets = {
           nixpkgs = inputs.nixpkgs.legacyPackages.${system};
           writers = config.writers;
@@ -55,22 +53,44 @@
     in
       evaled.config.public;
 
-    examples = readDir (self + /examples/dream2nix-packages);
+    examplePackagesDirs =
+      filterAttrs
+      (name: _: hasPrefix "dream2nix-packages" name)
+      (readDir (self + "/examples"));
 
-    exampleModules =
-      flip mapAttrs examples
-      (name: _: self + /examples/dream2nix-packages + "/${name}");
+    readExamples = dirName: let
+      prefix = removePrefix "dream2nix-packages-" dirName;
+      examplesPath = self + /examples + "/${dirName}";
+      examples = readDir examplesPath;
+    in
+      flip mapAttrs' examples
+      (name: _: {
+        name = "example-package-${prefix}-${name}";
+        value = examplesPath + "/${name}";
+      });
 
-    allModules' = self.modules.drvs // exampleModules;
+    allExamples = mapAttrsToList (dirName: _: readExamples dirName) examplePackagesDirs;
+
+    exampleModules = foldl (a: b: a // b) {} allExamples;
+
+    # TODO: remove this line once everything is migrated to the new structure
+    allModules' = self.modules.drvs or {} // exampleModules;
 
     allModules = flip mapAttrs' allModules' (name: module: {
-      name = "example-package-${name}";
-      value = module;
+      inherit name;
+      value = [
+        module
+        setup
+        {
+          lock.lockFileRel = "/locks/${name}/lock-${system}.json";
+          eval-cache.cacheFileRel = "/locks/${name}/cache-${system}.json";
+        }
+      ];
     });
   in {
-    # map all modules in ../drvs to a package output in the flake.
+    # map all modules in /examples to a package output in the flake.
     checks =
-      lib.mapAttrs (_: drvModule: makeDrv drvModule)
+      lib.mapAttrs (_: drvModules: makeDrv drvModules)
       allModules;
   };
 }

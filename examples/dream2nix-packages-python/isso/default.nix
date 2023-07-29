@@ -7,14 +7,15 @@
 {
   config,
   lib,
+  dream2nix,
   ...
 }: let
   l = lib // builtins;
 in {
   imports = [
-    ../../drv-parts/nodejs-package-lock
-    ../../drv-parts/nodejs-granular
-    ../../drv-parts/pip
+    dream2nix.modules.drv-parts.nodejs-package-lock
+    dream2nix.modules.drv-parts.nodejs-granular
+    dream2nix.modules.drv-parts.pip
   ];
 
   name = "isso";

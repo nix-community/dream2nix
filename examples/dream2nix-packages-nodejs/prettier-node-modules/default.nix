@@ -1,13 +1,13 @@
 {
   lib,
   config,
+  dream2nix,
   ...
 }: let
   l = lib // builtins;
 in {
   imports = [
-    ../../drv-parts/nodejs-package-lock
-    ../../drv-parts/nodejs-granular
+    dream2nix.modules.drv-parts.nodejs-node-modules
   ];
 
   mkDerivation = {
@@ -23,6 +23,7 @@ in {
     inherit
       (nixpkgs)
       fetchFromGitHub
+      mkShell
       stdenv
       ;
   };

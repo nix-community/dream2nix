@@ -1,13 +1,14 @@
 {
   config,
   lib,
+  dream2nix,
   ...
 }: let
   l = lib // builtins;
   python = config.deps.python;
 in {
   imports = [
-    ../../drv-parts/pip
+    dream2nix.modules.drv-parts.pip
   ];
 
   deps = {
