@@ -8,8 +8,8 @@
   Automate reproducible packaging for various language ecosystems
   <br>
   <a href="https://nix-community.github.io/dream2nix/">Documentation</a> |
-  <a href="https://github.com/nix-community/dream2nix/tree/main/examples/dream2nix-repo">Example Repo</a>
-  <a href="https://github.com/nix-community/dream2nix/tree/main/modules/drvs">Example Modules</a>
+  <a href="https://github.com/nix-community/dream2nix/tree/main/examples/dream2nix-repo">Example Repo</a> |
+  <a href="https://github.com/nix-community/dream2nix/tree/main/examples">Example Packages</a>
 </p>
 
 !!! Warning: dream2nix is unstable software. While simple UX is one of our main focus points, the APIs  are still under development. Do expect changes that will break your setup.

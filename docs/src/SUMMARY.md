@@ -1,7 +1,12 @@
 
 - [Introduction](./intro.md)
-# concepts
+
+# Examples
+- [dream2nix examples](./examples.md)
+# Concepts
 - [dream2nix modules](./modules.md)
+
+# Drafts
 - [DRAFT (outdated): modules based API](./v1-api/summary.md)
   - [problems of the legacy dream2nix](./v1-api/problems.md)
   - [users of dream2nix](./v1-api/users.md)
