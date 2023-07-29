@@ -27,7 +27,7 @@
       });
     };
 
-    # evalautes the package behind a given module
+    # evaluates the package behind a given module
     makeDrv = module: let
       evaled = lib.evalModules {
         modules = [
