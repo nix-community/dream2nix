@@ -84,7 +84,7 @@
 
         <nav id="sidebar" class="sidebar" aria-label="Table of contents">
             <div class="sidebar-scrollbox">
-                <ol class="chapter"><li class="chapter-item expanded "><a href="intro.html"><strong aria-hidden="true">1.</strong> Introduction</a></li><li class="chapter-item expanded affix "><li class="part-title">dream2nix concept</li><li class="chapter-item expanded "><a href="v1-api/summary.html"><strong aria-hidden="true">2.</strong> draft for modules based API</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="v1-api/problems.html"><strong aria-hidden="true">2.1.</strong> problems of the legacy dream2nix</a></li><li class="chapter-item expanded "><a href="v1-api/users.html"><strong aria-hidden="true">2.2.</strong> users of dream2nix</a></li><li class="chapter-item expanded "><a href="v1-api/packaging/nodejs-init-project.html"><strong aria-hidden="true">2.3.</strong> v1 packaging: project initialization</a></li><li class="chapter-item expanded "><a href="v1-api/packaging/nodejs-workspaces.html"><strong aria-hidden="true">2.4.</strong> v1 packaging: workspaces</a></li><li class="chapter-item expanded "><a href="v1-api/packaging/nodejs-multiple-repos.html"><strong aria-hidden="true">2.5.</strong> v1 packaging: multiple repos</a></li><li class="chapter-item expanded "><a href="v1-api/packaging/monorepo.html"><strong aria-hidden="true">2.6.</strong> v1 packaging: monorepo</a></li><li class="chapter-item expanded "><a href="v1-api/consuming/inspect-options.html"><strong aria-hidden="true">2.7.</strong> v1 consuming: inspect package options</a></li><li class="chapter-item expanded "><a href="v1-api/consuming/override.html"><strong aria-hidden="true">2.8.</strong> v1 consuming: override packages</a></li><li class="chapter-item expanded "><a href="v1-api/integrating/integrate-lang2nix-pure.html"><strong aria-hidden="true">2.9.</strong> v1 integrating: lang2nix tool (pure)</a></li><li class="chapter-item expanded "><a href="v1-api/integrating/integrate-lang2nix-impure.html"><strong aria-hidden="true">2.10.</strong> v1 integrating: lang2nix tool (code-gen/impure)</a></li></ol></li><li class="chapter-item expanded "><li class="part-title">Development Roundups</li><li class="chapter-item expanded "><a href="development-roundups/2022-april-june.html"><strong aria-hidden="true">3.</strong> April - June 2022</a></li><li class="chapter-item expanded "><a href="development-roundups/2022-july-september.html"><strong aria-hidden="true">4.</strong> July - September 2022</a></li></ol>
+                <ol class="chapter"><li class="chapter-item expanded "><a href="intro.html"><strong aria-hidden="true">1.</strong> Introduction</a></li><li class="chapter-item expanded affix "><li class="part-title">concepts</li><li class="chapter-item expanded "><a href="modules.html"><strong aria-hidden="true">2.</strong> dream2nix modules</a></li><li class="chapter-item expanded "><a href="v1-api/summary.html"><strong aria-hidden="true">3.</strong> DRAFT (outdated): modules based API</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="v1-api/problems.html"><strong aria-hidden="true">3.1.</strong> problems of the legacy dream2nix</a></li><li class="chapter-item expanded "><a href="v1-api/users.html"><strong aria-hidden="true">3.2.</strong> users of dream2nix</a></li><li class="chapter-item expanded "><a href="v1-api/packaging/nodejs-init-project.html"><strong aria-hidden="true">3.3.</strong> v1 packaging: project initialization</a></li><li class="chapter-item expanded "><a href="v1-api/packaging/nodejs-workspaces.html"><strong aria-hidden="true">3.4.</strong> v1 packaging: workspaces</a></li><li class="chapter-item expanded "><a href="v1-api/packaging/nodejs-multiple-repos.html"><strong aria-hidden="true">3.5.</strong> v1 packaging: multiple repos</a></li><li class="chapter-item expanded "><a href="v1-api/packaging/monorepo.html"><strong aria-hidden="true">3.6.</strong> v1 packaging: monorepo</a></li><li class="chapter-item expanded "><a href="v1-api/consuming/inspect-options.html"><strong aria-hidden="true">3.7.</strong> v1 consuming: inspect package options</a></li><li class="chapter-item expanded "><a href="v1-api/consuming/override.html"><strong aria-hidden="true">3.8.</strong> v1 consuming: override packages</a></li><li class="chapter-item expanded "><a href="v1-api/integrating/integrate-lang2nix-pure.html"><strong aria-hidden="true">3.9.</strong> v1 integrating: lang2nix tool (pure)</a></li><li class="chapter-item expanded "><a href="v1-api/integrating/integrate-lang2nix-impure.html"><strong aria-hidden="true">3.10.</strong> v1 integrating: lang2nix tool (code-gen/impure)</a></li></ol></li><li class="chapter-item expanded "><li class="part-title">Development Roundups</li><li class="chapter-item expanded "><a href="development-roundups/2022-april-june.html"><strong aria-hidden="true">4.</strong> April - June 2022</a></li><li class="chapter-item expanded "><a href="development-roundups/2022-july-september.html"><strong aria-hidden="true">5.</strong> July - September 2022</a></li></ol>
             </div>
             <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
         </nav>
@@ -190,7 +190,79 @@
 </ul>
 <p>The goal of this project is to create a standardized, generic, modular framework for automated packaging solutions, aiming for better flexibility, maintainability and usability.</p>
 <p>The intention is to integrate many existing 2nix converters into this framework, thereby improving many of the previously named aspects and providing a unified UX for all 2nix solutions.</p>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="why-modules"><a class="header" href="#why-modules">Why Modules?</a></h1>
+<p>Declaring derivations as modules solves a number of issues.
+For more details on the problems, visit <a href="https://github.com/DavHau/pkgs-modules">DavHau/pkgs-modules</a>.
+Also I recommend watching @edolstra 's <a href="https://www.youtube.com/watch?v=dTd499Y31ig">talk about this topic</a>.</p>
+<h1 id="benefits"><a class="header" href="#benefits">Benefits</a></h1>
+<h2 id="deprecate-override-functions"><a class="header" href="#deprecate-override-functions">Deprecate override functions</a></h2>
+<p>Changing options of packages in nixpkgs can require chaining different override functions like this:</p>
+<pre><code class="language-nix">{
+  htop-mod = let
+    htop-overridden = pkgs.htop.overrideAttrs (old: {
+      pname = &quot;htop-mod&quot;;
+    });
+  in
+    htop-overridden.override (old: {
+      sensorsSupport = false;
+    });
+}
+</code></pre>
+<p>... while doing the same using <code>dream2nix</code> looks like this:</p>
+<pre><code class="language-nix">{
+  htop-mod = {
+    imports = [./htop.nix];
+    name = lib.mkForce &quot;htop-mod&quot;;
+    flags.sensorsSupport = false;
+  };
+}
+</code></pre>
+<p>See htop module definition <a href="https://github.com/nix-community/dream2nix/blob/main/examples/dream2nix-packages/htop-with-flags/default.nix">here</a>.</p>
+<h2 id="type-safety"><a class="header" href="#type-safety">Type safety</a></h2>
+<p>The following code in nixpkgs mkDerivation mysteriously skips the patches:</p>
+<pre><code class="language-nix">mkDerivation {
+  # ...
+  dontPatch = &quot;false&quot;;
+}
+</code></pre>
+<p>... while doing the same using <code>dream2nix</code> raises an informative type error:</p>
+<pre><code>A definition for option `[...].dontPatch' is not of type `boolean' [...]
+</code></pre>
+<h2 id="catch-typos"><a class="header" href="#catch-typos">Catch typos</a></h2>
+<p>The following code in nixpkgs mkDerivation builds <strong>without</strong> openssl_3.</p>
+<pre><code class="language-nix">mkDerivation {
+  # ...
+  nativBuildInputs = [openssl_3];
+}
+</code></pre>
+<p>... while doing the same using <code>dream2nix</code> raises an informative error:</p>
+<pre><code>The option `[...].nativBuildInputs' does not exist
+</code></pre>
+<h2 id="environment-variables-clearly-defined"><a class="header" href="#environment-variables-clearly-defined">Environment variables clearly defined</a></h2>
+<p><code>dream2nix</code> requires a clear distinction between known parameters and user-defined variables.
+Defining <code>SOME_VARIABLE</code> at the top-level, would raise:</p>
+<pre><code>The option `[...].SOME_VARIABLE' does not exist
+</code></pre>
+<p>Instead it has to be defined under <code>env.</code>:</p>
+<pre><code class="language-nix">{
+  my-package = {
+    # ...
+    env.SOME_VARIABLE = &quot;example&quot;;
+  };
+}
+</code></pre>
+<h2 id="documentaiton--discoverability"><a class="header" href="#documentaiton--discoverability">Documentaiton / Discoverability</a></h2>
+<p>No more digging the source code to find possible options to override.</p>
+<p>Documentation similar to <a href="https://search.nixos.org">search.nixos.org</a> can be generated for packages declared via <code>dream2nix</code>.</p>
+<p>Every package built with <code>dream2nix</code> has a <code>.docs</code> attribute that builds an html documentation describing it's options.</p>
+<h2 id="package-blueprints"><a class="header" href="#package-blueprints">Package blueprints</a></h2>
+<p>With <code>dream2nix</code>, packages don't need to be fully declared. Options can be left without defaults, requiring the consumer to complete the definition.</p>
+<p>For example, this can be useful for lang2nix tools, where <code>src</code> and <code>version</code> are dynamically provided by a lock file parser.</p>
+<h2 id="flexibility"><a class="header" href="#flexibility">Flexibility</a></h2>
+<p>The nixos module system gives maintainers more freedom over how packages are split into modules. Separation of concerns can be implemented more easily.
+For example, the dependency tree of a package set can be factored out into a separate module, allowing for simpler modification.</p>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="dream2nix-v1-api"><a class="header" href="#dream2nix-v1-api">dream2nix v1 API</a></h1>
+<p>!!! This document does not resemble the current API of dream2nix. It is only a draft and the real implementation differs. More docs will follow.</p>
 <ul>
 <li><a href="v1-api/../v1-api/problems.html">problems of the current dream2nix</a></li>
 <li><a href="v1-api/../v1-api/users.html">users of dream2nix</a></li>
