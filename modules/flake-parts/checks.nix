@@ -11,6 +11,17 @@
     pkgs,
     ...
   }: let
+    inherit
+      (lib)
+      mapAttrs'
+      flip
+      ;
+    inherit
+      (builtins)
+      mapAttrs
+      readDir
+      ;
+
     # A module imported into every package setting up the eval cache
     setup = {config, ...}: {
       lock.lockFileRel = "/modules/drvs/${config.name}/lock-${system}.json";
@@ -43,8 +54,23 @@
       };
     in
       evaled.config.public;
+
+    examples = readDir (self + /examples/dream2nix-packages);
+
+    exampleModules =
+      flip mapAttrs examples
+      (name: _: self + /examples/dream2nix-packages + "/${name}");
+
+    allModules' = self.modules.drvs // exampleModules;
+
+    allModules = flip mapAttrs' allModules' (name: module: {
+      name = "example-package-${name}";
+      value = module;
+    });
   in {
     # map all modules in ../drvs to a package output in the flake.
-    packages = lib.mapAttrs (_: drvModule: makeDrv drvModule) self.modules.drvs;
+    checks =
+      lib.mapAttrs (_: drvModule: makeDrv drvModule)
+      allModules;
   };
 }

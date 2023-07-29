@@ -1,0 +1,20 @@
+{
+  config,
+  dream2nix,
+  lib,
+  ...
+}: {
+  # select builtins.derivation as a backend for this package
+  imports = [
+    dream2nix.modules.drv-parts.builtins-derivation
+  ];
+
+  name = "test";
+
+  # set options
+  builtins-derivation = {
+    builder = "/bin/sh";
+    args = ["-c" "echo $name > $out"];
+    system = "x86_64-linux";
+  };
+}
