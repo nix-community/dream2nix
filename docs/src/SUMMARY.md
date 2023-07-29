@@ -1,7 +1,8 @@
 
 - [Introduction](./intro.md)
-# dream2nix concept
-- [draft for modules based API](./v1-api/summary.md)
+# concepts
+- [dream2nix modules](./modules.md)
+- [DRAFT (outdated): modules based API](./v1-api/summary.md)
   - [problems of the legacy dream2nix](./v1-api/problems.md)
   - [users of dream2nix](./v1-api/users.md)
   - [v1 packaging: project initialization](./v1-api/packaging/nodejs-init-project.md)

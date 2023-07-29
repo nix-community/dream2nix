@@ -1,5 +1,7 @@
 # dream2nix v1 API
 
+!!! This document does not resemble the current API of dream2nix. It is only a draft and the real implementation differs. More docs will follow.
+
 - [problems of the current dream2nix](../v1-api/problems.md)
 - [users of dream2nix](../v1-api/users.md)
 - v1 API examples:
