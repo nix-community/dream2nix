@@ -1,12 +1,13 @@
 {
   lib,
   config,
+  dream2nix,
   ...
 }: let
   l = lib // builtins;
 in {
   imports = [
-    ../../drv-parts/nodejs-devshell
+    dream2nix.modules.drv-parts.nodejs-devshell
   ];
 
   mkDerivation = {

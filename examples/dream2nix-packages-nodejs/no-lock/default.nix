@@ -1,14 +1,15 @@
 {
   lib,
   config,
+  dream2nix,
   ...
 }: let
   l = lib // builtins;
   system = config.deps.stdenv.system;
 in {
   imports = [
-    ../../drv-parts/nodejs-package-json
-    ../../drv-parts/nodejs-granular
+    dream2nix.modules.drv-parts.nodejs-package-json
+    dream2nix.modules.drv-parts.nodejs-granular
   ];
 
   mkDerivation = {
@@ -42,5 +43,5 @@ in {
   version = l.mkForce "0.0.0";
 
   lock.lockFileRel =
-    l.mkForce "/modules/drvs/nodejs-no-lock/lock-${system}.json";
+    l.mkForce "/locks/example-package-nodejs-no-lock/lock-${system}.json";
 }
