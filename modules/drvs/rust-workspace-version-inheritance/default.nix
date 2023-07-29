@@ -8,7 +8,7 @@
 in {
   imports = [
     dream2nix.modules.drv-parts.rust-cargo-lock
-    dream2nix.modules.drv-parts.buildRustPackage
+    dream2nix.modules.drv-parts.rust-crane
   ];
 
   mkDerivation = {
@@ -23,5 +23,5 @@ in {
   };
 
   name = "app";
-  version = "1.0.0";
+  version = "0.1.0";
 }

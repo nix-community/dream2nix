@@ -7,12 +7,11 @@
 in {
   imports = [
     ../../drv-parts/rust-cargo-lock
-    ../../drv-parts/buildRustPackage
+    ../../drv-parts/rust-crane
   ];
 
   deps = {nixpkgs, ...}: {
     inherit (nixpkgs) fetchFromGitHub;
-    inherit (nixpkgs) stdenv;
   };
 
   name = l.mkForce "ripgrep";
