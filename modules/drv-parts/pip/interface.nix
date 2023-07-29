@@ -1,21 +1,12 @@
 {
   config,
   lib,
-  drv-parts,
   dream2nix,
   packageSets,
   ...
 }: let
   l = lib // builtins;
   t = l.types;
-
-  drvPartsTypes = import (drv-parts + /types) {
-    inherit lib;
-    specialArgs = {
-      inherit packageSets drv-parts;
-      inherit (config) name version;
-    };
-  };
 in {
   options.pip = {
     pypiSnapshotDate = l.mkOption {
@@ -74,7 +65,7 @@ in {
 
     drvs = l.mkOption {
       type = t.lazyAttrsOf (t.submoduleWith {
-        modules = [drv-parts.modules.drv-parts.core];
+        modules = [dream2nix.modules.drv-parts.core];
         specialArgs = {inherit packageSets dream2nix;};
       });
       description = "drv-parts modules that define python dependencies";
