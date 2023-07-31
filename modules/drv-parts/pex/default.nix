@@ -63,7 +63,6 @@
 in {
   imports = [
     dream2nix.modules.drv-parts.core
-    dream2nix.modules.drv-parts.lock
     dream2nix.modules.drv-parts.writers
     ./interface.nix
   ];

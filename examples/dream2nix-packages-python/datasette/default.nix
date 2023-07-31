@@ -7,7 +7,6 @@
   l = lib // builtins;
 in {
   imports = [
-    dream2nix.modules.drv-parts.lock
     dream2nix.modules.drv-parts.pex
     dream2nix.modules.drv-parts.buildPythonEnv
   ];
