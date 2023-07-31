@@ -155,11 +155,11 @@
     "pyproject-nix": {
       "flake": false,
       "locked": {
-        "lastModified": 1690540854,
-        "narHash": "sha256-YdUNkY9WW64m9BdrlObpKtIDoRDeBHOUhBu+yGUE3vU=",
+        "lastModified": 1690774839,
+        "narHash": "sha256-i0PtgbI3IGsAl61jCKynw5BHXz0vaGSfP5koHUXq9VQ=",
         "owner": "adisbladis",
         "repo": "pyproject.nix",
-        "rev": "09ee6ca2f05fd5aaf418478eec0454a928b0ef81",
+        "rev": "3c53855d3f49726138ccf6fdad2dff0390a94774",
         "type": "github"
       },
       "original": {
