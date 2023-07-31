@@ -6,6 +6,8 @@
   # lock data
   subsystemAttrs,
   packages,
+  # config
+  cfg,
   ...
 }: let
   l = lib // builtins;
@@ -33,8 +35,11 @@
         ${replacePaths}
       '';
 
-      cargoTestProfile = "release";
-      cargoBuildProfile = "release";
+      cargoBuildProfile = cfg.buildProfile;
+      cargoTestProfile = cfg.testProfile;
+      cargoBuildFlags = cfg.buildFlags;
+      cargoTestFlags = cfg.testFlags;
+      doCheck = cfg.runTests;
 
       # Make sure cargo only builds & tests the package we want
       cargoBuildCommand = "cargo build \${cargoBuildFlags:-} --profile \${cargoBuildProfile} --package ${pname}";
