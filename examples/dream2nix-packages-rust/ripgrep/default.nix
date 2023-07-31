@@ -1,13 +1,14 @@
 {
   lib,
   config,
+  dream2nix,
   ...
 }: let
   l = lib // builtins;
 in {
   imports = [
-    ../../drv-parts/rust-cargo-lock
-    ../../drv-parts/rust-crane
+    dream2nix.modules.drv-parts.rust-cargo-lock
+    dream2nix.modules.drv-parts.rust-crane
   ];
 
   deps = {nixpkgs, ...}: {
@@ -24,5 +25,11 @@ in {
       rev = config.version;
       sha256 = "sha256-udEh+Re2PeO3DnX4fQThsaT1Y3MBHFfrX5Q5EN2XrF0=";
     };
+  };
+
+  rust-crane = {
+    # buildProfile = "dev";
+    # buildFlags = ["--verbose"];
+    # runTests = false;
   };
 }

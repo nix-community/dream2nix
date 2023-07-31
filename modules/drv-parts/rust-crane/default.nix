@@ -95,13 +95,15 @@
   };
 
   allPackages = import ./build.nix {
-    inherit lib utils vendoring;
+    inherit lib utils vendoring cfg;
     inherit (dreamLockInterface) subsystemAttrs packages;
     inherit (config.deps) crane;
   };
 
   selectedPackage = allPackages.${config.name}.${config.version};
 in {
+  imports = [./interface.nix];
+
   public = lib.mkForce {
     type = "derivation";
     inherit config extendModules;
