@@ -152,6 +152,22 @@
         "type": "github"
       }
     },
+    "pyproject-nix": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1690540854,
+        "narHash": "sha256-YdUNkY9WW64m9BdrlObpKtIDoRDeBHOUhBu+yGUE3vU=",
+        "owner": "adisbladis",
+        "repo": "pyproject.nix",
+        "rev": "09ee6ca2f05fd5aaf418478eec0454a928b0ef81",
+        "type": "github"
+      },
+      "original": {
+        "owner": "adisbladis",
+        "repo": "pyproject.nix",
+        "type": "github"
+      }
+    },
     "root": {
       "inputs": {
         "devshell": "devshell",
@@ -159,7 +175,8 @@
         "flake-parts": "flake-parts",
         "nix-unit": "nix-unit",
         "nixpkgs": "nixpkgs",
-        "pre-commit-hooks": "pre-commit-hooks"
+        "pre-commit-hooks": "pre-commit-hooks",
+        "pyproject-nix": "pyproject-nix"
       }
     },
     "systems": {

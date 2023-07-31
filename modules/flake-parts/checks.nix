@@ -46,6 +46,7 @@
         modules = modules ++ [self.modules.drv-parts.core];
         specialArgs.packageSets = {
           nixpkgs = inputs.nixpkgs.legacyPackages.${system};
+          pyproject-nix = import "${inputs.pyproject-nix}/lib" {inherit (inputs.nixpkgs) lib;};
           writers = config.writers;
         };
         specialArgs.dream2nix = self;

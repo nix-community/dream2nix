@@ -22,6 +22,9 @@
     nix-unit.inputs.nixpkgs.follows = "nixpkgs";
     nix-unit.inputs.flake-parts.follows = "flake-parts";
 
+    pyproject-nix.url = "github:adisbladis/pyproject.nix";
+    pyproject-nix.flake = false;
+
     devshell = {
       url = "github:numtide/devshell";
       flake = false;
