@@ -35,7 +35,7 @@ Changing options of packages in nixpkgs can require chaining different override 
 }
 ```
 
-See htop module definition [here](https://github.com/nix-community/dream2nix/blob/main/examples/dream2nix-packages/htop-with-flags/default.nix).
+See htop module definition [here](https://github.com/nix-community/dream2nix/blob/main/examples/dream2nix-packages-simple/htop-with-flags/default.nix).
 
 ## Type safety
 
