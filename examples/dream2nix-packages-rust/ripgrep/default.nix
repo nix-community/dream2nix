@@ -28,8 +28,8 @@ in {
   };
 
   rust-crane = {
-    # buildProfile = "dev";
-    # buildFlags = ["--verbose"];
-    # runTests = false;
+    buildProfile = "dev";
+    buildFlags = ["--verbose"];
+    runTests = false;
   };
 }

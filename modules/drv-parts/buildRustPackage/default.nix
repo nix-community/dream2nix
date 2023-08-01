@@ -157,36 +157,6 @@
     l.mapAttrs
     (name: version: {"${version}" = buildPackage name version;})
     dreamLockInterface.packages;
-
-  mkShellForDrvs = drvs:
-    import ./devshell.nix {
-      inherit drvs lib;
-      inherit (config.deps) mkShell;
-      name = "devshell";
-    };
-
-  pkgShells =
-    l.mapAttrs
-    (
-      name: version: let
-        pkg = allPackages.${name}.${version};
-      in
-        mkShellForDrvs [pkg]
-    )
-    dreamLockInterface.packages;
-
-  allPackagesList =
-    l.mapAttrsToList
-    (name: version: allPackages.${name}.${version})
-    dreamLockInterface.packages;
-
-  packages = allPackages;
-
-  devShells =
-    pkgShells
-    // {
-      default = mkShellForDrvs allPackagesList;
-    };
 in {
   imports = [
     # dream2nix.modules.drv-parts.mkDerivation
@@ -197,7 +167,7 @@ in {
     inherit config extendModules;
     inherit (config) name version;
     inherit
-      (packages.${dreamLockInterface.defaultPackageName}.${dreamLockInterface.defaultPackageVersion})
+      (allPackages.${config.name}.${config.version})
       drvPath
       outPath
       outputs
