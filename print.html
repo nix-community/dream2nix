@@ -222,7 +222,7 @@ Also I recommend watching @edolstra 's <a href="https://www.youtube.com/watch?v=
   };
 }
 </code></pre>
-<p>See htop module definition <a href="https://github.com/nix-community/dream2nix/blob/main/examples/dream2nix-packages/htop-with-flags/default.nix">here</a>.</p>
+<p>See htop module definition <a href="https://github.com/nix-community/dream2nix/blob/main/examples/dream2nix-packages-simple/htop-with-flags/default.nix">here</a>.</p>
 <h2 id="type-safety"><a class="header" href="#type-safety">Type safety</a></h2>
 <p>The following code in nixpkgs mkDerivation mysteriously skips the patches:</p>
 <pre><code class="language-nix">mkDerivation {
@@ -300,7 +300,7 @@ For example, the dependency tree of a package set can be factored out into a sep
 <h2 id="integration-of-existing-lang2nix-tools"><a class="header" href="#integration-of-existing-lang2nix-tools">Integration of existing lang2nix tools</a></h2>
 <p>Until now, integrating existing 2nix solutions into dream2nix was hard because dream2nix imposed standards which are not met by most existing tools.
 With v1 we want to lift most of these restrictions to make integration a no-brainer</p>
-<p>(see sections <a href="v1-api/../v1-api/integrate-lang2nix-pure.html">integrate lang2nix tool (pure)</a> and <a href="v1-api/../v1-api/integrate-lang2nix-impure.html">integrate lang2ix tool (impure)</a>.</p>
+<p>(see sections <a href="v1-api/../v1-api/integrating/integrate-lang2nix-pure.html">integrate lang2nix tool (pure)</a> and <a href="v1-api/../v1-api/integrating/integrate-lang2nix-impure.html">integrate lang2ix tool (impure)</a>.</p>
 <h2 id="tied-to-flakes"><a class="header" href="#tied-to-flakes">Tied to flakes</a></h2>
 <p>The current api is tied to flakes. The v1 API should not depend on flakes anymore.</p>
 <h2 id="composability"><a class="header" href="#composability">Composability</a></h2>
