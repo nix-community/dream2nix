@@ -10,6 +10,8 @@
 
   dreamLock = config.rust-cargo-lock.dreamLock;
 
+  sourceRoot = config.mkDerivation.src;
+
   fetchDreamLockSources =
     import ../../../lib/internal/fetchDreamLockSources.nix
     {inherit lib;};
@@ -53,7 +55,7 @@
   fetchedSources =
     fetchedSources'
     // {
-      ${defaultPackageName}.${defaultPackageVersion} = config.mkDerivation.src;
+      ${defaultPackageName}.${defaultPackageVersion} = sourceRoot;
     };
 
   getSource = getDreamLockSource fetchedSources;
@@ -61,7 +63,7 @@
   toTOML = import ../../../lib/internal/toTOML.nix {inherit lib;};
 
   utils = import ./utils.nix {
-    inherit dreamLock getSource lib toTOML;
+    inherit dreamLock getSource lib toTOML sourceRoot;
     inherit
       (dreamLockInterface)
       getSourceSpec
@@ -73,7 +75,6 @@
       (config.deps)
       writeText
       ;
-    sourceRoot = config.mkDerivation.src;
   };
 
   vendoring = import ./vendor.nix {
@@ -94,29 +95,99 @@
       ;
   };
 
-  allPackages = import ./build.nix {
-    inherit lib utils vendoring cfg;
-    inherit (dreamLockInterface) subsystemAttrs packages;
-    inherit (config.deps) crane;
+  pname = config.name;
+  version = config.version;
+
+  replacePaths =
+    utils.replaceRelativePathsWithAbsolute
+    dreamLockInterface.subsystemAttrs.relPathReplacements.${pname}.${version};
+  writeGitVendorEntries = vendoring.writeGitVendorEntries "nix-sources";
+
+  # common args we use for both buildDepsOnly and buildPackage
+  common = {
+    src = utils.getRootSource pname version;
+
+    postUnpack = ''
+      export CARGO_HOME=$(pwd)/.cargo_home
+      export cargoVendorDir="$TMPDIR/nix-vendor"
+    '';
+    preConfigure = ''
+      ${writeGitVendorEntries}
+      ${replacePaths}
+    '';
+    inherit pname version;
+
+    cargoVendorDir = "$TMPDIR/nix-vendor";
+    installCargoArtifactsMode = "use-zstd";
+
+    cargoBuildProfile = cfg.buildProfile;
+    cargoTestProfile = cfg.testProfile;
+    cargoBuildFlags = cfg.buildFlags;
+    cargoTestFlags = cfg.testFlags;
+    doCheck = cfg.runTests;
+
+    # Make sure cargo only builds & tests the package we want
+    cargoBuildCommand = "cargo build \${cargoBuildFlags:-} --profile \${cargoBuildProfile} --package ${pname}";
+    cargoTestCommand = "cargo test \${cargoTestFlags:-} --profile \${cargoTestProfile} --package ${pname}";
   };
 
-  selectedPackage = allPackages.${config.name}.${config.version};
+  # The deps-only derivation will use this as a prefix to the `pname`
+  depsNameSuffix = "-deps";
+  depsArgs = {
+    preUnpack = ''
+      ${vendoring.copyVendorDir "$dream2nixVendorDir" common.cargoVendorDir}
+    '';
+    # move the vendored dependencies folder to $out for main derivation to use
+    postInstall = ''
+      mv $TMPDIR/nix-vendor $out/nix-vendor
+    '';
+    # we pass cargoLock path to buildDepsOnly
+    # so that crane's mkDummySrc adds it to the dummy source
+    inherit (utils) cargoLock;
+    pnameSuffix = depsNameSuffix;
+    # Make sure cargo only checks the package we want
+    cargoCheckCommand = "cargo check \${cargoBuildFlags:-} --profile \${cargoBuildProfile} --package ${pname}";
+    dream2nixVendorDir = vendoring.vendoredDependencies;
+  };
+
+  buildArgs = {
+    # link the vendor dir we used earlier to the correct place
+    preUnpack = ''
+      ${vendoring.copyVendorDir "$cargoArtifacts/nix-vendor" common.cargoVendorDir}
+    '';
+    # write our cargo lock
+    # note: we don't do this in buildDepsOnly since
+    # that uses a cargoLock argument instead
+    preConfigure = l.mkForce ''
+      ${common.preConfigure}
+      ${utils.writeCargoLock}
+    '';
+    cargoArtifacts = packageDeps;
+  };
+
+  checkedMkDerivationArgs = l.filterAttrs (_: v: v != null) (l.removeAttrs config.mkDerivation ["src"]);
+
+  packageDeps = config.deps.crane.buildDepsOnly cfg.depsDrvOptions;
+  package = config.deps.crane.buildPackage cfg.mainDrvOptions;
 in {
   imports = [./interface.nix];
+
+  rust-crane.mainDrvOptions = l.mkMerge [common buildArgs checkedMkDerivationArgs];
+  rust-crane.depsDrvOptions = l.mkMerge [common depsArgs checkedMkDerivationArgs];
 
   public = lib.mkForce {
     type = "derivation";
     inherit config extendModules;
     inherit (config) name version;
     inherit
-      (selectedPackage)
+      (package)
       drvPath
       outPath
       outputs
       outputName
-      meta
-      passthru
       ;
+    passthru = {dependencies = packageDeps;};
+    meta = utils.getMeta pname version;
   };
 
   deps = {nixpkgs, ...}:
