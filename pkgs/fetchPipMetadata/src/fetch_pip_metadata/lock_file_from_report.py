@@ -79,10 +79,20 @@ def lock_info_from_path(full_path):
     if drv_json:
         return lock_info_from_fod(store_path, drv_json)
     else:
-        raise Exception(
-            f"fatal: requirement '{full_path}' refers to something we "
-            "can't understand"
+        proc = subprocess.run(
+            ["nix", "hash", "path", store_path],
+            check=False,
+            text=True,
+            stdout=subprocess.PIPE,
         )
+        if proc.returncode == 0:
+            sha256 = proc.stdout
+            return "", sha256  # need to find a way to get the URL
+        else:
+            raise Exception(
+                f"fatal: requirement '{full_path}' refers to something we "
+                "can't understand"
+            )
 
 
 def lock_entry_from_report_entry(install):
