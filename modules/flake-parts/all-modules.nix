@@ -6,32 +6,51 @@
   lib,
   ...
 }: let
+  inherit
+    (builtins)
+    attrValues
+    mapAttrs
+    readDir
+    ;
+
+  # inherit all lib functions used below
+  inherit
+    (lib)
+    mapAttrs'
+    filterAttrs
+    nameValuePair
+    removeSuffix
+    mkOption
+    types
+    ;
+
   modulesDir = ../.;
 
-  moduleKinds = builtins.readDir modulesDir;
+  moduleKinds =
+    filterAttrs (_: type: type == "directory") (readDir modulesDir);
 
   mapModules = kind:
-    lib.mapAttrs'
+    mapAttrs'
     (fn: _:
-      lib.nameValuePair
-      (lib.removeSuffix ".nix" fn)
+      nameValuePair
+      (removeSuffix ".nix" fn)
       (modulesDir + "/${kind}/${fn}"))
-    (builtins.readDir (modulesDir + "/${kind}"));
+    (readDir (modulesDir + "/${kind}"));
 
-  flakePartsModules = lib.attrValues (
-    lib.filterAttrs
+  flakePartsModules = attrValues (
+    filterAttrs
     (modName: _: modName != "all-modules")
     (mapModules "flake-parts")
   );
 in {
   imports = flakePartsModules;
 
-  options.flake.modules = lib.mkOption {
-    type = lib.types.anything;
+  options.flake.modules = mkOption {
+    type = types.anything;
   };
 
   # generates future flake outputs: `modules.<kind>.<module-name>`
-  config.flake.modules = lib.mapAttrs (kind: _: mapModules kind) moduleKinds;
+  config.flake.modules = mapAttrs (kind: _: mapModules kind) moduleKinds;
 
   # comapt to current schema: `nixosModules` / `darwinModules`
   config.flake.nixosModules = config.flake.modules.nixos or {};
