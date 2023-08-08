@@ -14,16 +14,25 @@
   callModule = module: (_callModule module).config.public;
 
   numPkgs = lib.toInt (builtins.getEnv "NUM_PKGS");
+  numVars = lib.toInt (builtins.getEnv "NUM_VARS");
 
   pkg-funcs = lib.genAttrs (map toString (lib.range 0 numPkgs)) (
     num:
-      derivation {
-        name = "hello-${num}";
-        version = "2.12.1";
-        system = "x86_64-linux";
-        builder = "/bin/sh";
-        args = ["sh" "-c" "echo hello-${num} > $out"];
-      }
+      derivation (
+        {
+          name = "hello-${num}";
+          version = "2.12.1";
+          system = "x86_64-linux";
+          builder = "/bin/sh";
+          args = ["sh" "-c" "echo hello-${num} > $out"];
+        }
+        # generate env variables
+        // (
+          lib.genAttrs (map toString (lib.range 0 numVars)) (
+            num: "value-${num}"
+          )
+        )
+      )
   );
 
   modules = lib.genAttrs (map toString (lib.range 0 numPkgs)) (
@@ -39,6 +48,10 @@
           builder = "/bin/sh";
           args = ["sh" "-c" "echo hello-${num} > $out"];
         };
+        # generate env variables
+        env = lib.genAttrs (map toString (lib.range 0 numVars)) (
+          num: "value-${num}"
+        );
       }
   );
 in {
