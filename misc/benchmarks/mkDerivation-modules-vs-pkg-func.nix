@@ -14,18 +14,27 @@
   callModule = module: (_callModule module).config.public;
 
   numPkgs = lib.toInt (builtins.getEnv "NUM_PKGS");
+  numVars = lib.toInt (builtins.getEnv "NUM_VARS");
 
   pkg-funcs = lib.genAttrs (map toString (lib.range 0 numPkgs)) (
     num:
-      nixpkgs.stdenv.mkDerivation rec {
-        pname = "hello-${num}";
-        version = "2.12.1";
-        src = nixpkgs.fetchurl {
-          url = "mirror://gnu/hello/hello-${version}.tar.gz";
-          sha256 = "sha256-jZkUKv2SV28wsM18tCqNxoCZmLxdYH2Idh9RLibH2yA=";
-        };
-        doCheck = false;
-      }
+      nixpkgs.stdenv.mkDerivation (
+        rec {
+          pname = "hello-${num}";
+          version = "2.12.1";
+          src = nixpkgs.fetchurl {
+            url = "mirror://gnu/hello/hello-${version}.tar.gz";
+            sha256 = "sha256-jZkUKv2SV28wsM18tCqNxoCZmLxdYH2Idh9RLibH2yA=";
+          };
+          doCheck = false;
+        }
+        # generate env variables
+        // (
+          lib.genAttrs (map toString (lib.range 0 numVars)) (
+            num: "value-${num}"
+          )
+        )
+      )
   );
 
   modules = lib.genAttrs (map toString (lib.range 0 numPkgs)) (num:
@@ -42,6 +51,10 @@
           sha256 = "sha256-jZkUKv2SV28wsM18tCqNxoCZmLxdYH2Idh9RLibH2yA=";
         };
       };
+      # generate env variables
+      env = lib.genAttrs (map toString (lib.range 0 numVars)) (
+        num: "value-${num}"
+      );
     });
 in {
   inherit
