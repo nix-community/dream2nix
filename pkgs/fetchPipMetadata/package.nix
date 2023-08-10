@@ -5,6 +5,7 @@
   # Pip accepts '--python-version', but this works only for wheel packages.
   python,
   git,
+  nix-prefetch-scripts,
 }: let
   package = python.pkgs.buildPythonPackage {
     name = "fetch_pip_metadata";
@@ -13,6 +14,7 @@
     nativeBuildInputs = [
       git
       python.pkgs.pytestCheckHook
+      nix-prefetch-scripts
     ];
     propagatedBuildInputs = with python.pkgs; [
       packaging

@@ -40,16 +40,17 @@
   nix,
   git,
   writePureShellScript,
+  nix-prefetch-scripts,
 }: let
   # We use nixpkgs python3 to run mitmproxy, see function parameters
   pythonWithMitmproxy =
     python3.withPackages
     (ps: [ps.mitmproxy ps.python-dateutil]);
 
-  path = [nix git] ++ nativeBuildInputs;
+  path = [nix git nix-prefetch-scripts] ++ nativeBuildInputs;
 
   package = import ./package.nix {
-    inherit git lib python;
+    inherit git lib python nix-prefetch-scripts;
   };
 
   args = writeText "pip-args" (builtins.toJSON {
