@@ -7,7 +7,7 @@
   python = pkgs.python3;
   package = import ../package.nix {
     inherit lib python;
-    inherit (pkgs) git;
+    inherit (pkgs) git nix-prefetch-scripts;
   };
   pythonWithDeps = python.withPackages (
     ps:
