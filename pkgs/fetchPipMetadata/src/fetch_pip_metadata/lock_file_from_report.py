@@ -48,7 +48,7 @@ def lock_info_from_fod(store_path, drv_json):
             f"fatal: requirement '{store_path}' does not seem to be a FOD.\n"
             f"No URL ({url}) or hash ({sha256}) found."
         )
-    return url, sha256
+    return {"type": "url", "url": url, "sha256": sha256}
 
 
 def lock_info_from_file_url(download_info):
@@ -69,7 +69,7 @@ def lock_info_from_path(full_path):
     # See whether the path is relative to our local repo
     repo = Path(repo_root("."))
     if repo in full_path.parents or repo == full_path:
-        return str(full_path.relative_to(repo)), None
+        return {"type": "url", "url": str(full_path.relative_to(repo)), "sha256": None}
 
     # Otherwise, we assume its in /nix/store and just the "top-level"
     # store path /nix/store/$hash-name/
@@ -94,7 +94,11 @@ def lock_info_from_path(full_path):
         )
         if proc.returncode == 0:
             sha256 = proc.stdout
-            return "", sha256  # need to find a way to get the URL
+            return {
+                "type": "url",
+                "url": "",
+                "sha256": sha256,
+            }  # need to find a way to get the URL
         else:
             raise Exception(
                 f"fatal: requirement '{full_path}' refers to something we "
@@ -111,7 +115,7 @@ def lock_info_from_archive(download_info) -> Optional[Tuple[str, Optional[str]]]
     hash = archive_info.get("hash", "").split("=", 1)
     sha256 = hash[1] if hash[0] == "sha256" else None
 
-    return (download_info["url"], sha256)
+    return {"type": "url", "url": download_info["url"], "sha256": sha256}
 
 
 def lock_info_from_vcs(download_info) -> Optional[Tuple[str, Optional[str]]]:
@@ -132,11 +136,12 @@ def lock_info_from_vcs(download_info) -> Optional[Tuple[str, Optional[str]]]:
                     check=True,
                 ).stdout
             )["sha256"]
-            return (f"git+{url}@{rev}", sha256)
+
+            return {"type": "git", "url": url, "rev": rev, "sha256": sha256}
 
 
 def lock_info_fallback(download_info):
-    return download_info["url"], None
+    return {"type": "url", "url": download_info["url"], "sha256": None}
 
 
 def lock_entry_from_report_entry(install):
@@ -158,12 +163,9 @@ def lock_entry_from_report_entry(install):
     else:
         info = lock_info_fallback(download_info)
 
-    url, sha256 = info
-
     return name, dict(
-        url=url,
         version=install["metadata"]["version"],
-        sha256=sha256,
+        **info,
     )
 
 
