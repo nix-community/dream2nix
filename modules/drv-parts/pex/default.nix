@@ -74,8 +74,7 @@ in {
       ...
     }:
       l.mapAttrs (_: l.mkDefault) {
-        # FIXME see venv workaround below
-        # pex = config.deps.python.pkgs.pex;
+        pex = config.deps.python.pkgs.pex;
         inherit (nixpkgs) git stdenv bash;
         python = nixpkgs.python3;
         inherit pyproject-nix;
@@ -87,14 +86,8 @@ in {
           config.writers.writePureShellScript [config.deps.python]
           ''
             set -x
-            # FIXME, this venv works around the fact that pex can't bootstrap via nix atm
-            # its just here for a proof of concept
-            test -e /tmp/pex_env || {
-                 python -m venv /tmp/pex_env
-                 /tmp/pex_env/bin/pip install pex
-            }
             PEX_VERBOSE=9 \
-              /tmp/pex_env/bin/pex3 \
+              ${config.deps.pex}/bin/pex3 \
               lock create \
               --pip-version ${cfg.pipVersion} \
               --style universal \

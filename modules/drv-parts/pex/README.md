@@ -34,10 +34,6 @@ module, where we write platform-specific lock files:
 
 ## Why not (yet)?
 
-* [ ] There's an **ugly hack** to run `pex3` when writing lock files:
-  We create a venv to run pex, as `nix run nixpkgs#pex3 -- lock create` is
-  currently broken.
-  This is the next step, I just wanted to figure out the nix parts first.
 * [ ] doesn't respect requires-python yet.
 * [ ] add pex builds to other Python examples, there's not a single fully working one atm
 * [ ] In previous attempt we had started from an idea of a python "project" or "package",
