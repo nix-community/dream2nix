@@ -13,7 +13,7 @@ in {
 
   # FIXME remove, after setting a platform-independent default for all lock files
   lock.lockFileRel =
-    l.mkForce "/modules/drvs/${config.name}/lock.json";
+    l.mkForce "/examples/dream2nix-packages-python/${config.name}/lock.json";
 
   deps = {nixpkgs, ...}: {
     python = nixpkgs.python3;
