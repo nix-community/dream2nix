@@ -16,6 +16,19 @@
     inherit (pyproject) pep599;
   };
 
+  writers = import ../../../pkgs/writers {
+    inherit lib;
+    inherit
+      (config.deps)
+      bash
+      coreutils
+      gawk
+      path
+      writeScript
+      writeScriptBin
+      ;
+  };
+
   mkModule = package: {config, ...}: {
     imports = [
       dream2nix.modules.drv-parts.mkDerivation
@@ -63,7 +76,6 @@
 in {
   imports = [
     dream2nix.modules.drv-parts.core
-    dream2nix.modules.drv-parts.writers
     ./interface.nix
   ];
 
@@ -75,7 +87,17 @@ in {
     }:
       l.mapAttrs (_: l.mkDefault) {
         pex = config.deps.python.pkgs.pex;
-        inherit (nixpkgs) git stdenv bash;
+        inherit
+          (nixpkgs)
+          git
+          stdenv
+          bash
+          coreutils
+          gawk
+          path
+          writeScript
+          writeScriptBin
+          ;
         python = nixpkgs.python3;
         inherit pyproject-nix;
       };
@@ -83,7 +105,7 @@ in {
     lock = {
       fields.pex = {
         script =
-          config.writers.writePureShellScript [config.deps.python]
+          writers.writePureShellScript [config.deps.python]
           ''
             set -x
             PEX_VERBOSE=9 \
