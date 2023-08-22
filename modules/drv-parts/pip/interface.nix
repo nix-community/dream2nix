@@ -9,6 +9,13 @@
   t = l.types;
 in {
   options.pip = {
+    flattenDependencies = l.mkOption {
+      type = t.bool;
+      description = ''
+        Use all dependencies as top-level dependencies
+      '';
+      default = false;
+    };
     pypiSnapshotDate = l.mkOption {
       type = t.str;
       description = ''
