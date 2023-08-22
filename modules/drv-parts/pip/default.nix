@@ -81,12 +81,13 @@
         doCheck = l.mkDefault false;
 
         nativeBuildInputs =
-          l.optionals config.deps.stdenv.isLinux [config.deps.autoPatchelfHook];
+          [config.deps.unzip]
+          ++ (l.optionals config.deps.stdenv.isLinux [config.deps.autoPatchelfHook]);
         buildInputs =
           l.optionals config.deps.stdenv.isLinux [config.deps.manylinux1];
         propagatedBuildInputs = let
-          depsByExtra = extra: metadata.targets.${extra}.${config.name} or [];
-          defaultDeps = metadata.targets.default.${config.name} or [];
+          depsByExtra = extra: targets.${extra}.${config.name} or [];
+          defaultDeps = targets.default.${config.name} or [];
           deps = defaultDeps ++ (l.concatLists (l.map depsByExtra cfg.buildExtras));
         in
           l.map (name: cfg.drvs.${name}.public.out) deps;
@@ -122,6 +123,26 @@ in {
 
     mkDerivation = {
       dontStrip = l.mkDefault true;
+      propagatedBuildInputs =
+        if cfg.flattenDependencies
+        then
+          if targets.default ? ${config.name}
+          then
+            throw ''
+            Top-level package ${config.name} is listed in the lockfile.
+            Set `pip.flattenDependencies` to false to use only the top-level dependencies.
+          ''
+          else let
+            topLevelDepNames = l.attrNames (targets.default);
+          in
+            l.map (name: cfg.drvs.${name}.public.out) topLevelDepNames
+        else if ! targets.default ? ${config.name}
+        then
+          throw ''
+          Top-level package ${config.name} is not listed in the lockfile.
+          Set `pip.flattenDependencies` to true to use all dependencies for the top-level package.
+        ''
+        else [];
     };
   };
 }
