@@ -1,5 +1,5 @@
 {
-  nixpkgs ? (import ../../../../..).inputs.nixpkgs,
+  nixpkgs ? (import ../../..).inputs.nixpkgs,
   system ? builtins.currentSystem,
 }: let
   lib = nixpkgs.lib;
