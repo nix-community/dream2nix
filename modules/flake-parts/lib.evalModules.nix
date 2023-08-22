@@ -28,7 +28,7 @@
           modules =
             args.modules
             ++ [
-              inputs.drv-parts.modules.drv-parts.core
+              self.modules.drv-parts.core
             ];
           specialArgs =
             args.specialArgs
