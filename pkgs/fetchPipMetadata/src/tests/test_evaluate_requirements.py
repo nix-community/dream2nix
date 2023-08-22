@@ -68,3 +68,23 @@ def test_platform_mismatch():
         seen=[],
     )
     assert result == dict(root_package=set())
+
+
+def test_cycle():
+    result = l.evaluate_requirements(
+        env={},
+        reqs=dict(
+            root_package={Requirement("foo")},
+            foo={Requirement("bar")},
+            bar={Requirement("foo")},
+        ),
+        dependencies=dict(),
+        root_name="root_package",
+        extras=None,
+        seen=[],
+    )
+    assert result == dict(
+        root_package={"foo"},
+        foo={"bar"},
+        bar=set(),
+    )

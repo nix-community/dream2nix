@@ -143,14 +143,6 @@ def evaluate_requirements(env, reqs, dependencies, root_name, extras, seen):
     requirements to save space in the file.
     A circuit breaker is included to avoid infinite recursion in nix.
     """
-    if root_name in seen:
-        print(
-            f"fatal: cycle detected: {root_name} ({' '.join(seen)})",
-            file=sys.stderr,  # noqa: E501
-        )
-        sys.exit(1)
-    # we copy "seen", because we want to track cycles per
-    # tree-branch and the original would be visible for all branches.
     seen = seen.copy()
     seen.append(root_name)
 
@@ -160,10 +152,11 @@ def evaluate_requirements(env, reqs, dependencies, root_name, extras, seen):
     for req in reqs[root_name]:
         if (not req.marker) or evaluate_extras(req, extras, env):
             req_name = canonicalize_name(req.name)
-            dependencies[root_name].add(req_name)
-            evaluate_requirements(
-                env, reqs, dependencies, req_name, req.extras, seen
-            )  # noqa: 501
+            if req_name not in seen:
+                dependencies[root_name].add(req_name)
+                evaluate_requirements(
+                    env, reqs, dependencies, req_name, req.extras, seen
+                )  # noqa: 501
     return dependencies
 
 
