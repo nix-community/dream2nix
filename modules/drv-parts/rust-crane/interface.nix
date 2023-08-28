@@ -54,14 +54,6 @@ in {
       default = [];
     };
     # TODO: use mkDerivation module interface here
-    mainDrvOptions = {
-      type = t.submodule {
-        freeformType = t.attrsOf t.raw;
-      };
-      description = "Attributes to pass to the buildPackage function";
-      default = {};
-    };
-    # TODO: use mkDerivation module interface here
     depsDrvOptions = {
       type = t.submodule {
         freeformType = t.attrsOf t.raw;

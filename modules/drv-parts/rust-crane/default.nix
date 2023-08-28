@@ -1,7 +1,7 @@
 {
   config,
   lib,
-  extendModules,
+  dream2nix,
   ...
 }: let
   l = lib // builtins;
@@ -127,8 +127,6 @@
 
   # common args we use for both buildDepsOnly and buildPackage
   common = {
-    src = utils.getRootSource pname version;
-
     postUnpack = ''
       export CARGO_HOME=$(pwd)/.cargo_home
       export cargoVendorDir="$TMPDIR/nix-vendor"
@@ -156,6 +154,7 @@
   # The deps-only derivation will use this as a prefix to the `pname`
   depsNameSuffix = "-deps";
   depsArgs = {
+    src = config.mkDerivation.src;
     preUnpack = ''
       ${vendoring.copyVendorDir "$dream2nixVendorDir" common.cargoVendorDir}
     '';
@@ -187,28 +186,23 @@
     cargoArtifacts = packageDeps;
   };
 
-  checkedMkDerivationArgs = l.filterAttrs (_: v: v != null) (l.removeAttrs config.mkDerivation ["src"]);
-
   packageDeps = crane.buildDepsOnly cfg.depsDrvOptions;
-  package = crane.buildPackage cfg.mainDrvOptions;
 in {
-  imports = [./interface.nix];
+  imports = [
+    ./interface.nix
+    dream2nix.modules.drv-parts.mkDerivation
+  ];
 
-  rust-crane.mainDrvOptions = l.mkMerge [common buildArgs checkedMkDerivationArgs];
-  rust-crane.depsDrvOptions = l.mkMerge [common depsArgs checkedMkDerivationArgs];
+  rust-crane.depsDrvOptions = l.mkMerge [
+    common
+    depsArgs
+  ];
 
-  public = lib.mkForce {
-    type = "derivation";
-    inherit config extendModules;
-    inherit (config) name version;
-    inherit
-      (package)
-      drvPath
-      outPath
-      outputs
-      outputName
-      ;
-    passthru = {dependencies = packageDeps;};
+  package-func.func = crane.buildPackage;
+  package-func.args = l.mkMerge [common buildArgs];
+
+  public = {
+    dependencies = packageDeps;
     meta = utils.getMeta pname version;
   };
 
