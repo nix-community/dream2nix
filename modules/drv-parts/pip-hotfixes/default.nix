@@ -20,12 +20,7 @@
           l.filter (dep: ! ignored ? ${dep}) deps
       )
   );
-in {
-  imports = [
-    ./interface.nix
-  ];
-  pip.targets = targets;
-  mkDerivation.propagatedBuildInputs =
+  rootDependencies =
     if cfg.flattenDependencies
     then
       if targets.default ? ${config.name}
@@ -34,15 +29,18 @@ in {
           Top-level package ${config.name} is listed in the lockfile.
           Set `pip.flattenDependencies` to false to use only the top-level dependencies.
         ''
-      else let
-        topLevelDepNames = l.attrNames (targets.default);
-      in
-        l.map (name: cfg.drvs.${name}.public.out) topLevelDepNames
+      else l.attrNames (targets.default)
     else if ! targets.default ? ${config.name}
     then
       throw ''
         Top-level package ${config.name} is not listed in the lockfile.
         Set `pip.flattenDependencies` to true to use all dependencies for the top-level package.
       ''
-    else [];
+    else targets.default.${config.name};
+in {
+  imports = [
+    ./interface.nix
+  ];
+  pip.targets = targets;
+  pip.rootDependencies = lib.genAttrs rootDependencies (_: true);
 }

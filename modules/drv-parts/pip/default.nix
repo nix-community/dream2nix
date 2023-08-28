@@ -124,10 +124,16 @@ in {
 
     pip = {
       drvs = drvs;
+      rootDependencies =
+        l.genAttrs (targets.default.${config.name} or []) (_: true);
     };
 
     mkDerivation = {
       dontStrip = l.mkDefault true;
+      propagatedBuildInputs = let
+        rootDeps = lib.filterAttrs (_: x: x == true) cfg.rootDependencies;
+      in
+        l.attrValues (l.mapAttrs (name: _: cfg.drvs.${name}.public.out) rootDeps);
     };
   };
 }
