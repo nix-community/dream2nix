@@ -18,6 +18,10 @@
     pre-commit-hooks.url = "github:cachix/pre-commit-hooks.nix";
     pre-commit-hooks.inputs.nixpkgs.follows = "nixpkgs";
 
+    nix-unit.url = "github:adisbladis/nix-unit";
+    nix-unit.inputs.nixpkgs.follows = "nixpkgs";
+    nix-unit.inputs.flake-parts.follows = "flake-parts";
+
     devshell = {
       url = "github:numtide/devshell";
       flake = false;
@@ -40,6 +44,7 @@
       config,
       pkgs,
       system,
+      inputs',
       ...
     }: {
       apps = {
@@ -78,6 +83,7 @@
           packages = [
             pkgs.alejandra
             pkgs.mdbook
+            inputs'.nix-unit.packages.nix-unit
             (pkgs.python3.withPackages (ps: [
               pkgs.python3.pkgs.black
             ]))
