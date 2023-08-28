@@ -15,6 +15,13 @@ in {
       internal = true;
       description = "the targets of the lock file to build";
     };
+    rootDependencies = l.mkOption {
+      type = t.attrsOf t.bool;
+      internal = true;
+      description = "the names of the selected top-level dependencies";
+    };
+
+    # user interface
     pypiSnapshotDate = l.mkOption {
       type = t.str;
       description = ''
