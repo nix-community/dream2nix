@@ -77,6 +77,28 @@
       ;
   };
 
+  crane = import ./crane.nix {
+    inherit lib;
+    craneSource = config.deps.fetchFromGitHub {
+      owner = "ipetkov";
+      repo = "crane";
+      rev = "v0.12.2";
+      sha256 = "sha256-looLH5MdY4erLiJw0XwQohGdr0fJL9y6TJY3898RA2U=";
+    };
+    inherit
+      (config.deps)
+      stdenv
+      cargo
+      jq
+      zstd
+      remarshal
+      makeSetupHook
+      writeText
+      runCommand
+      runCommandLocal
+      ;
+  };
+
   vendoring = import ./vendor.nix {
     inherit dreamLock getSource lib;
     inherit
@@ -167,8 +189,8 @@
 
   checkedMkDerivationArgs = l.filterAttrs (_: v: v != null) (l.removeAttrs config.mkDerivation ["src"]);
 
-  packageDeps = config.deps.crane.buildDepsOnly cfg.depsDrvOptions;
-  package = config.deps.crane.buildPackage cfg.mainDrvOptions;
+  packageDeps = crane.buildDepsOnly cfg.depsDrvOptions;
+  package = crane.buildPackage cfg.mainDrvOptions;
 in {
   imports = [./interface.nix];
 
@@ -193,28 +215,6 @@ in {
   deps = {nixpkgs, ...}:
     (l.mapAttrs (_: l.mkDefault) {
       cargo = nixpkgs.cargo;
-      craneSource = config.deps.fetchFromGitHub {
-        owner = "ipetkov";
-        repo = "crane";
-        rev = "v0.12.2";
-        sha256 = "sha256-looLH5MdY4erLiJw0XwQohGdr0fJL9y6TJY3898RA2U=";
-      };
-      crane = import ./crane.nix {
-        inherit lib;
-        inherit
-          (config.deps)
-          craneSource
-          stdenv
-          cargo
-          jq
-          zstd
-          remarshal
-          makeSetupHook
-          writeText
-          runCommand
-          runCommandLocal
-          ;
-      };
     })
     # maybe it would be better to put these under `options.rust-crane.deps` instead of this `deps`
     # since it conflicts with a lot of stuff?
