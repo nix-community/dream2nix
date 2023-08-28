@@ -9,19 +9,8 @@
   python = config.deps.python;
   metadata = config.lock.content.fetchPipMetadata;
 
-  ignored = l.genAttrs cfg.ignoredDependencies (name: true);
-
-  filterTarget = target:
-    l.filterAttrs (name: target: ! ignored ? ${name}) target;
-
   # filter out ignored dependencies
-  targets = l.flip l.mapAttrs metadata.targets (
-    targetName: target:
-      l.flip l.mapAttrs (filterTarget target) (
-        packageName: deps:
-          l.filter (dep: ! ignored ? ${dep}) deps
-      )
-  );
+  targets = cfg.targets;
 
   writers = import ../../../pkgs/writers {
     inherit lib;
@@ -113,6 +102,7 @@ in {
   imports = [
     commonModule
     ./interface.nix
+    ../pip-hotfixes
   ];
 
   config = {
@@ -138,26 +128,6 @@ in {
 
     mkDerivation = {
       dontStrip = l.mkDefault true;
-      propagatedBuildInputs =
-        if cfg.flattenDependencies
-        then
-          if targets.default ? ${config.name}
-          then
-            throw ''
-              Top-level package ${config.name} is listed in the lockfile.
-              Set `pip.flattenDependencies` to false to use only the top-level dependencies.
-            ''
-          else let
-            topLevelDepNames = l.attrNames (targets.default);
-          in
-            l.map (name: cfg.drvs.${name}.public.out) topLevelDepNames
-        else if ! targets.default ? ${config.name}
-        then
-          throw ''
-            Top-level package ${config.name} is not listed in the lockfile.
-            Set `pip.flattenDependencies` to true to use all dependencies for the top-level package.
-          ''
-        else [];
     };
   };
 }
