@@ -1,6 +1,7 @@
 {
-  config,
   lib,
+  dream2nix,
+  specialArgs,
   ...
 }: let
   l = lib // builtins;
@@ -53,12 +54,12 @@ in {
       description = "Flags to add when running `cargo test`";
       default = [];
     };
-    # TODO: use mkDerivation module interface here
-    depsDrvOptions = {
-      type = t.submodule {
-        freeformType = t.attrsOf t.raw;
+    depsDrv = {
+      type = t.submoduleWith {
+        modules = [dream2nix.modules.drv-parts.mkDerivation];
+        inherit specialArgs;
       };
-      description = "Attributes to pass to the buildDepsOnly function";
+      description = "A single derivation with all dependencies of the package";
       default = {};
     };
   };

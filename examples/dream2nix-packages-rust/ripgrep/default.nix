@@ -27,7 +27,7 @@ in {
       sha256 = "sha256-udEh+Re2PeO3DnX4fQThsaT1Y3MBHFfrX5Q5EN2XrF0=";
     };
     # note: any more options defined here will be applied to both
-    # `rust-crane.mainDrvOptions` and `rust-crane.depsDrvOptions`.
+    # `config.mkDerivation` and `config.depsDrv.mkDerivation`.
   };
 
   rust-crane = {
