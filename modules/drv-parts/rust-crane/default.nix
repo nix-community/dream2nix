@@ -165,6 +165,7 @@
     # we pass cargoLock path to buildDepsOnly
     # so that crane's mkDummySrc adds it to the dummy source
     inherit (utils) cargoLock;
+    pname = l.mkOverride 99 pname;
     pnameSuffix = depsNameSuffix;
     # Make sure cargo only checks the package we want
     cargoCheckCommand = "cargo check \${cargoBuildFlags:-} --profile \${cargoBuildProfile} --package ${pname}";
@@ -183,26 +184,30 @@
       ${common.preConfigure}
       ${utils.writeCargoLock}
     '';
-    cargoArtifacts = packageDeps;
+    cargoArtifacts = cfg.depsDrv.public;
   };
-
-  packageDeps = crane.buildDepsOnly cfg.depsDrvOptions;
 in {
   imports = [
     ./interface.nix
     dream2nix.modules.drv-parts.mkDerivation
   ];
 
-  rust-crane.depsDrvOptions = l.mkMerge [
-    common
-    depsArgs
-  ];
+  rust-crane.depsDrv = {
+    inherit version;
+    name = pname + depsNameSuffix;
+    mkDerivation = builtins.removeAttrs config.mkDerivation ["src"];
+    package-func.func = crane.buildDepsOnly;
+    package-func.args = l.mkMerge [
+      common
+      depsArgs
+    ];
+  };
 
   package-func.func = crane.buildPackage;
   package-func.args = l.mkMerge [common buildArgs];
 
   public = {
-    dependencies = packageDeps;
+    dependencies = cfg.depsDrv.public;
     meta = utils.getMeta pname version;
   };
 
