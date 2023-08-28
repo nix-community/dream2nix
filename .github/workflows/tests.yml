@@ -8,7 +8,7 @@ jobs:
   tests-format:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v3.5.3
+    - uses: actions/checkout@v3.6.0
     - uses: cachix/install-nix-action@v22
       with:
         install_url: https://nixos-nix-install-tests.cachix.org/serve/8i0c4nnvddybdq6a684ffybc5p7ziif0/install
