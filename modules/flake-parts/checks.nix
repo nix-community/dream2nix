@@ -13,13 +13,10 @@
   }: let
     inherit
       (lib)
-      filterAttrs
       flip
       foldl
-      hasPrefix
       mapAttrs'
       mapAttrsToList
-      removePrefix
       ;
     inherit
       (builtins)
@@ -53,19 +50,15 @@
     in
       evaled.config.public;
 
-    examplePackagesDirs =
-      filterAttrs
-      (name: _: hasPrefix "dream2nix-packages" name)
-      (readDir (self + "/examples"));
+    examplePackagesDirs = readDir (self + "/examples/packages");
 
     readExamples = dirName: let
-      prefix = removePrefix "dream2nix-packages-" dirName;
-      examplesPath = self + /examples + "/${dirName}";
+      examplesPath = self + /examples/packages + "/${dirName}";
       examples = readDir examplesPath;
     in
       flip mapAttrs' examples
       (name: _: {
-        name = "example-package-${prefix}-${name}";
+        name = "example-package-${name}";
         value = examplesPath + "/${name}";
       });
 
