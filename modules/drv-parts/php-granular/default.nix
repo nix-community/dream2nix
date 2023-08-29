@@ -1,172 +1,210 @@
 {
+  config,
   lib,
-  pkgs,
-  externals,
+  dream2nix,
   ...
-}: {
-  type = "pure";
+}: let
+  l = lib // builtins;
 
-  build = {
-    ### FUNCTIONS
-    # AttrSet -> Bool) -> AttrSet -> [x]
-    getCyclicDependencies,
-    # name: version: -> [ {name=; version=; } ]
-    getDependencies,
-    # name: version: -> [ {name=; version=; } ]
-    getSource,
-    # name: version: -> store-path
-    # to get information about the original source spec
-    getSourceSpec,
-    # name: version: -> {type="git"; url=""; hash="";}
-    ### ATTRIBUTES
-    subsystemAttrs,
-    # attrset
-    defaultPackageName,
-    # string
-    defaultPackageVersion,
-    # string
-    # all exported (top-level) package names and versions
-    # attrset of pname -> version,
-    packages,
-    # all existing package names and versions
-    # attrset of pname -> versions,
-    # where versions is a list of version strings
-    packageVersions,
-    # function which applies overrides to a package
-    # It must be applied by the builder to each individual derivation
-    # Example:
-    #   produceDerivation name (mkDerivation {...})
-    produceDerivation,
-    ...
-  } @ args: let
-    l = lib // builtins;
+  cfg = config.php-granular;
 
-    inherit (pkgs.callPackage ../../semver.nix {}) satisfies;
+  dreamLock = config.php-composer-lock.dreamLock;
 
-    # php with required extensions
-    php =
-      if satisfies pkgs.php81.version subsystemAttrs.phpSemver
-      then
-        pkgs.php81.withExtensions
-        (
-          {
-            all,
-            enabled,
-          }:
-            l.unique (enabled
-              ++ (l.attrValues (l.filterAttrs (e: _: l.elem e subsystemAttrs.phpExtensions) all)))
-        )
-      else
-        l.abort ''
-          Error: incompatible php versions.
-          Package "${defaultPackageName}" defines required php version:
-            "php": "${subsystemAttrs.phpSemver}"
-          Using php version "${pkgs.php81.version}" from attribute "pkgs.php81".
-        '';
-    composer = php.packages.composer;
+  fetchDreamLockSources =
+    import ../../../lib/internal/fetchDreamLockSources.nix
+    {inherit lib;};
+  getDreamLockSource = import ../../../lib/internal/getDreamLockSource.nix {inherit lib;};
+  readDreamLock = import ../../../lib/internal/readDreamLock.nix {inherit lib;};
+  hashPath = import ../../../lib/internal/hashPath.nix {
+    inherit lib;
+    inherit (config.deps) runCommandLocal nix;
+  };
 
-    # packages to export
-    packages =
-      {default = packages.${defaultPackageName};}
-      // (
-        lib.mapAttrs
-        (name: version: {
-          "${version}" = allPackages.${name}.${version};
-        })
-        args.packages
-      );
-    devShells =
-      {default = devShells.${defaultPackageName};}
-      // (
-        l.mapAttrs
-        (name: version: packages.${name}.${version}.devShell)
-        args.packages
-      );
+  # fetchers
+  fetchers = {
+    git = import ../../../lib/internal/fetchers/git {
+      inherit hashPath;
+      inherit (config.deps) fetchgit;
+    };
+    path = import ../../../lib/internal/fetchers/path {
+      inherit hashPath;
+    };
+  };
 
-    # manage packages in attrset to prevent duplicated evaluation
-    allPackages =
-      lib.mapAttrs
-      (name: versions:
-        lib.genAttrs
-        versions
-        (version: makeOnePackage name version))
-      packageVersions;
+  dreamLockLoaded = readDreamLock {inherit dreamLock;};
+  dreamLockInterface = dreamLockLoaded.interface;
 
-    # Generates a derivation for a specific package name + version
-    makeOnePackage = name: version: let
-      isTopLevel = packages ? name && packages.name == version;
+  inherit (dreamLockInterface) defaultPackageName defaultPackageVersion;
 
-      dependencies = getDependencies name version;
-      repositories = let
-        transform = dep: let
-          intoRepository = name: version: root: {
-            type = "path";
-            url = "${root}/vendor/${name}";
-            options = {
-              versions = {
-                "${l.strings.toLower name}" = "${version}";
-              };
-              symlink = false;
+  fetchedSources = fetchDreamLockSources {
+    inherit defaultPackageName defaultPackageVersion;
+    inherit (dreamLockLoaded.lock) sources;
+    inherit fetchers;
+  };
+
+  getSource = getDreamLockSource fetchedSources;
+
+  inherit
+    (dreamLockInterface)
+    getDependencies # name: version: -> [ {name=; version=; } ]
+    # Attributes
+    
+    subsystemAttrs # attrset
+    packageVersions
+    ;
+
+  inherit (import ../../../lib/internal/php-semver.nix {inherit lib;}) satisfies;
+
+  # php with required extensions
+  php =
+    if satisfies config.deps.php81.version subsystemAttrs.phpSemver
+    then
+      config.deps.php81.withExtensions
+      (
+        {
+          all,
+          enabled,
+        }:
+          l.unique (enabled
+            ++ (l.attrValues (l.filterAttrs (e: _: l.elem e subsystemAttrs.phpExtensions) all)))
+      )
+    else
+      l.abort ''
+        Error: incompatible php versions.
+        Package "${defaultPackageName}" defines required php version:
+          "php": "${subsystemAttrs.phpSemver}"
+        Using php version "${config.deps.php81.version}" from attribute "config.deps.php81".
+      '';
+  composer = php.packages.composer;
+
+  # packages to export
+  # packages =
+  #   {default = packages.${defaultPackageName};}
+  #   // (
+  #     lib.mapAttrs
+  #     (name: version: {
+  #       "${version}" = allPackages.${name}.${version};
+  #     })
+  #     dreamLockInterface.packages
+  #   );
+  # devShells =
+  #   {default = devShells.${defaultPackageName};}
+  #   // (
+  #     l.mapAttrs
+  #     (name: version: packages.${name}.${version}.devShell)
+  #     dreamLockInterface.packages
+  #   );
+
+  # Generates a derivation for a specific package name + version
+  commonModule = name: version: let
+    isTopLevel = dreamLockInterface.packages.name or null == version;
+
+    # name = l.strings.sanitizeDerivationName name;
+
+    dependencies = getDependencies name version;
+    repositories = let
+      transform = dep: let
+        intoRepository = name: version: root: {
+          type = "path";
+          url = "${root}/vendor/${name}";
+          options = {
+            versions = {
+              "${l.strings.toLower name}" = "${version}";
             };
+            symlink = false;
           };
-          getAllSubdependencies = deps: let
-            getSubdependencies = dep: let
-              subdeps = getDependencies dep.name dep.version;
-            in
-              l.flatten ([dep] ++ (getAllSubdependencies subdeps));
+        };
+        getAllSubdependencies = deps: let
+          getSubdependencies = dep: let
+            subdeps = getDependencies dep.name dep.version;
           in
-            l.flatten (map getSubdependencies deps);
-          depRoot = allPackages."${dep.name}"."${dep.version}";
-          direct = intoRepository dep.name dep.version "${depRoot}/lib";
-          transitive =
-            map
-            (subdep: intoRepository subdep.name subdep.version "${depRoot}/lib/vendor/${dep.name}")
-            (getAllSubdependencies (getDependencies dep.name dep.version));
+            l.flatten ([dep] ++ (getAllSubdependencies subdeps));
         in
-          [direct] ++ transitive;
+          l.flatten (map getSubdependencies deps);
+        depRoot = cfg.deps."${dep.name}"."${dep.version}".public;
+        direct = intoRepository dep.name dep.version "${depRoot}/lib";
+        transitive =
+          map
+          (subdep: intoRepository subdep.name subdep.version "${depRoot}/lib/vendor/${dep.name}")
+          (getAllSubdependencies (getDependencies dep.name dep.version));
       in
-        l.flatten (map transform dependencies);
-      repositoriesString =
-        l.toJSON
-        (repositories ++ [{packagist = false;}]);
-      dependenciesString = l.toJSON (l.listToAttrs (
-        map
-        (dep: {
-          name = l.strings.toLower dep.name;
-          value = dep.version;
+        [direct] ++ transitive;
+    in
+      l.flatten (map transform dependencies);
+    repositoriesString =
+      l.toJSON
+      (repositories ++ [{packagist = false;}]);
+
+    dependenciesString = l.toJSON (l.listToAttrs (
+      map
+      (dep: {
+        name = l.strings.toLower dep.name;
+        value = dep.version;
+      })
+      (dependencies
+        ++ l.optional (subsystemAttrs.composerPluginApiSemver ? "${name}@${version}")
+        {
+          name = "composer-plugin-api";
+          version = subsystemAttrs.composerPluginApiSemver."${name}@${version}";
         })
-        (dependencies
-          ++ l.optional (subsystemAttrs.composerPluginApiSemver ? "${name}@${version}")
-          {
-            name = "composer-plugin-api";
-            version = subsystemAttrs.composerPluginApiSemver."${name}@${version}";
-          })
-      ));
+    ));
 
-      versionString =
-        if version == "unknown"
-        then "0.0.0"
-        else version;
+    versionString =
+      if version == "unknown"
+      then "0.0.0"
+      else version;
 
-      pkg = pkgs.stdenvNoCC.mkDerivation rec {
-        pname = l.strings.sanitizeDerivationName name;
-        inherit version;
+    module = {config, ...}: {
+      imports = [
+        dream2nix.modules.drv-parts.mkDerivation
+      ];
+      deps = {nixpkgs, ...}:
+        l.mapAttrs (_: l.mkDefault) {
+          inherit
+            (nixpkgs)
+            jq
+            mkShell
+            moreutils
+            php81
+            stdenv
+            ;
+        };
+      public.devShell = import ./devShell.nix {
+        inherit
+          name
+          php
+          composer
+          ;
+        pkg = config.public;
+        inherit (config.deps) mkShell;
+      };
+      php-granular = {
+        composerInstallFlags =
+          [
+            "--no-scripts"
+            "--no-plugins"
+          ]
+          ++ l.optional (subsystemAttrs.noDev || !isTopLevel) "--no-dev";
+      };
+      env = {
+        inherit dependenciesString repositoriesString;
+      };
+      mkDerivation = {
+        src = l.mkDefault (getSource name version);
 
-        src = getSource name version;
-        nativeBuildInputs = with pkgs; [
+        nativeBuildInputs = with config.deps; [
           jq
           composer
           moreutils
         ];
-        buildInputs = with pkgs;
+        buildInputs = with config.deps;
           [
             php
             composer
           ]
-          ++ map (dep: allPackages."${dep.name}"."${dep.version}")
+          ++ map (dep: cfg.deps."${dep.name}"."${dep.version}".public)
           dependencies;
 
-        inherit repositoriesString dependenciesString;
         passAsFile = ["repositoriesString" "dependenciesString"];
 
         unpackPhase = ''
@@ -176,7 +214,7 @@
           cd $out/lib/vendor/${name}
 
           # copy source
-          cp -r ${src}/* .
+          cp -r ${config.mkDerivation.src}/* .
           chmod -R +w .
 
           # create composer.json if does not exist
@@ -190,9 +228,9 @@
           # set name & version
           jq \
             "(.name = \"${name}\") | \
-             (.version = \"${versionString}\") | \
-             (.extra.patches = {})" \
-             composer.json | sponge composer.json
+              (.version = \"${versionString}\") | \
+              (.extra.patches = {})" \
+              composer.json | sponge composer.json
 
           runHook postUnpack
         '';
@@ -204,18 +242,12 @@
             --slurpfile repositories $repositoriesStringPath \
             --slurpfile dependencies $dependenciesStringPath \
             "(.repositories = \$repositories[0]) | \
-             (.require = \$dependencies[0]) | \
-             (.\"require-dev\" = {})" \
+              (.require = \$dependencies[0]) | \
+              (.\"require-dev\" = {})" \
             composer.json | sponge composer.json
 
           runHook postConfigure
         '';
-        composerInstallFlags =
-          [
-            "--no-scripts"
-            "--no-plugins"
-          ]
-          ++ l.optional (subsystemAttrs.noDev || !isTopLevel) "--no-dev";
         buildPhase = ''
           runHook preBuild
 
@@ -223,7 +255,7 @@
           rm -f composer.lock
 
           # build
-          composer install ${l.strings.concatStringsSep " " composerInstallFlags}
+          composer install ${l.strings.concatStringsSep " " config.php-granular.composerInstallFlags}
 
           runHook postBuild
 
@@ -243,21 +275,27 @@
 
           runHook postInstall
         '';
-
-        passthru.devShell = import ./devShell.nix {
-          inherit
-            name
-            pkg
-            php
-            composer
-            ;
-          inherit (pkgs) mkShell;
-        };
       };
-    in
-      # apply packageOverrides to current derivation
-      produceDerivation name pkg;
-  in {
-    inherit packages devShells;
-  };
+    };
+  in
+    module;
+in {
+  imports = [
+    ./interface.nix
+    (commonModule defaultPackageName defaultPackageVersion)
+  ];
+  php-granular.deps =
+    lib.mapAttrs
+    (name: versions:
+      lib.genAttrs
+      versions
+      (
+        version:
+        # the submodule for this dependency
+        {...}: {
+          imports = [(commonModule name version)];
+          inherit name version;
+        }
+      ))
+    packageVersions;
 }

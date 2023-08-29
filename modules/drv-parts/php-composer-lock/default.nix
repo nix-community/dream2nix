@@ -17,7 +17,7 @@
   };
 
   dreamLock = translate {
-    projectName = config.name;
+    projectName = cfg.composerJson.name;
     projectRelPath = "";
     source = cfg.source;
     tree = prepareSourceTree {source = cfg.source;};
