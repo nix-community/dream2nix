@@ -15,7 +15,7 @@
     tree,
     noDev,
     ...
-  } @ args: let
+  }: let
     inherit
       (import ../../../lib/internal/php-semver.nix {inherit lib;})
       satisfies
@@ -24,7 +24,6 @@
 
     # get the root source and project source
     rootSource = tree.fullPath;
-    projectSource = "${tree.fullPath}/${projectRelPath}";
     projectTree = tree.getNodeFromPath projectRelPath;
 
     composerJson = (projectTree.getNodeFromPath "composer.json").jsonContent;
@@ -83,8 +82,6 @@
         (l.optionalAttrs (!noDev) (composerJson.require-dev or {}))
         // (composerJson.require or {});
     };
-    getPath = dependencyObject:
-      lib.removePrefix "file:" dependencyObject.version;
     # all the packages
     packages =
       # Add the top-level package, this is not written in composer.lock
@@ -158,45 +155,6 @@
         };
     in
       map doPins pkgs;
-    createMissingSource = name: version: {
-      type = "http";
-      url = "https://registry.npmjs.org/${name}/-/${name}-${version}.tgz";
-    };
-    inputData =
-      builtins.listToAttrs
-      (map
-        (k: {
-          name = k.name;
-          value = k // {version = k.version;};
-        })
-        (pinPackages resolvedPackages));
-    serializePackages = inputData: let
-      serialize = inputData:
-        lib.mapAttrsToList # returns list of lists
-        
-        (pname: pdata:
-          [
-            (pdata
-              // {
-                inherit pname;
-                depsExact =
-                  lib.filter
-                  (req: (! (pdata.require."${req.name}".bundled or false)))
-                  pdata.depsExact or [];
-              })
-          ]
-          ++ (lib.optionals (pdata ? dependencies)
-            (lib.flatten
-              (serialize
-                (lib.filterAttrs
-                  (pname: data: ! data.bundled or false)
-                  pdata.dependencies)))))
-        inputData;
-    in
-      lib.filter
-      (pdata:
-        ! noDev || ! (pdata.dev or false))
-      (lib.flatten (serialize inputData));
   in
     simpleTranslate2
     ({objectsByKey, ...}: rec {
