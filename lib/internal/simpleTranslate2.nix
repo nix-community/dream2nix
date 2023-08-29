@@ -1,6 +1,3 @@
-# This is currently only used for legacy modules ported to v1.
-# The dream-lock concept might be deprecated together with this module at some
-#   point.
 {lib, ...}: let
   l = builtins // lib;
 
@@ -87,7 +84,7 @@
     {}
     finalObjects;
 
-  simpleTranslate2 = func: let
+  translate = func: let
     final =
       func
       {
@@ -293,9 +290,7 @@
       inherit data;
       inherit inputs;
     };
-  in {
-    result = dreamLockData.data;
-    inputs = dreamLockData.inputs;
-  };
+  in
+    dreamLockData.data;
 in
-  simpleTranslate2
+  translate
