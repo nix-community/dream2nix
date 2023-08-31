@@ -9,9 +9,9 @@
   cfg = config.nodejs-devshell;
 in {
   imports = [
-    dream2nix.modules.drv-parts.mkDerivation
-    dream2nix.modules.drv-parts.nodejs-package-lock
-    dream2nix.modules.drv-parts.nodejs-granular
+    dream2nix.modules.dream2nix.mkDerivation
+    dream2nix.modules.dream2nix.nodejs-package-lock
+    dream2nix.modules.dream2nix.nodejs-granular
   ];
 
   mkDerivation = {

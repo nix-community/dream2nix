@@ -7,7 +7,7 @@
     nixpkgs.lib.evalModules {
       specialArgs.dream2nix = dream2nix;
       specialArgs.packageSets.nixpkgs = nixpkgs;
-      modules = [module dream2nix.modules.drv-parts.core];
+      modules = [module dream2nix.modules.dream2nix.core];
     };
 
   # like callPackage for modules
@@ -39,7 +39,7 @@
     num:
       callModule {
         imports = [
-          dream2nix.modules.drv-parts.builtins-derivation
+          dream2nix.modules.dream2nix.builtins-derivation
         ];
         name = "hello-${num}";
         version = "2.12.1";

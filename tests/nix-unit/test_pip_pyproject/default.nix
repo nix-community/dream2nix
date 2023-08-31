@@ -16,7 +16,7 @@ in {
   test_pip_flattened_dependencies = let
     evaled = eval {
       imports = [
-        dream2nix.modules.drv-parts.pip
+        dream2nix.modules.dream2nix.pip
       ];
       name = "test";
       lock.content = lib.mkForce {
@@ -38,7 +38,7 @@ in {
   test_pip_ignore_dependencies = let
     evaled = eval {
       imports = [
-        dream2nix.modules.drv-parts.pip
+        dream2nix.modules.dream2nix.pip
       ];
       name = "test";
       pip.ignoredDependencies = ["requests"];
@@ -57,7 +57,7 @@ in {
   test_pip_root_dependency = let
     evaled = eval {
       imports = [
-        dream2nix.modules.drv-parts.pip
+        dream2nix.modules.dream2nix.pip
       ];
       name = "test";
       lock.content = lib.mkForce {

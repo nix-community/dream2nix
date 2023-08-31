@@ -5,8 +5,8 @@
   ...
 }: {
   imports = [
-    dream2nix.modules.drv-parts.php-composer-lock
-    dream2nix.modules.drv-parts.php-granular
+    dream2nix.modules.dream2nix.php-composer-lock
+    dream2nix.modules.dream2nix.php-granular
   ];
 
   mkDerivation = {

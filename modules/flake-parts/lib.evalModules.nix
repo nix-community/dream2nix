@@ -28,16 +28,16 @@
           modules =
             args.modules
             ++ [
-              self.modules.drv-parts.core
+              self.modules.dream2nix.core
             ];
           specialArgs =
             args.specialArgs
             or {}
             // {
               inherit packageSets;
-              dream2nix.modules.drv-parts = self.modules.drv-parts;
+              dream2nix.modules.dream2nix = self.modules.dream2nix;
               dream2nix.lib.evalModules = self.lib.evalModules;
-              drv-parts = inputs.drv-parts;
+              drv-parts = inputs.dream2nix;
             };
         }
       );

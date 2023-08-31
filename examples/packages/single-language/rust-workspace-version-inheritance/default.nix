@@ -7,8 +7,8 @@
   l = lib // builtins;
 in {
   imports = [
-    dream2nix.modules.drv-parts.rust-cargo-lock
-    dream2nix.modules.drv-parts.rust-crane
+    dream2nix.modules.dream2nix.rust-cargo-lock
+    dream2nix.modules.dream2nix.rust-crane
   ];
 
   mkDerivation = {

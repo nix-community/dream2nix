@@ -189,7 +189,7 @@
 in {
   imports = [
     ./interface.nix
-    dream2nix.modules.drv-parts.mkDerivation
+    dream2nix.modules.dream2nix.mkDerivation
   ];
 
   rust-crane.depsDrv = {

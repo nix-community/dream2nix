@@ -14,8 +14,8 @@ in {
       type = t.submoduleWith {
         specialArgs = {inherit packageSets dream2nix;};
         modules = [
-          dream2nix.modules.drv-parts.core
-          dream2nix.modules.drv-parts.nodejs-node-modules
+          dream2nix.modules.dream2nix.core
+          dream2nix.modules.dream2nix.nodejs-node-modules
         ];
       };
     };

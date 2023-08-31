@@ -13,7 +13,7 @@
     nixpkgs.lib.evalModules {
       specialArgs.dream2nix = dream2nix;
       specialArgs.packageSets.nixpkgs = nixpkgs;
-      modules = [module ./settings.nix dream2nix.modules.drv-parts.core];
+      modules = [module ./settings.nix dream2nix.modules.dream2nix.core];
     };
 
   # like callPackage for modules

@@ -159,7 +159,7 @@
     dreamLockInterface.packages;
 in {
   imports = [
-    # dream2nix.modules.drv-parts.mkDerivation
+    # dream2nix.modules.dream2nix.mkDerivation
   ];
 
   public = lib.mkForce {

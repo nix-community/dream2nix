@@ -9,7 +9,7 @@
 in {
   # select mkDerivation as a backend for this package
   imports = [
-    dream2nix.modules.drv-parts.mkDerivation
+    dream2nix.modules.dream2nix.mkDerivation
   ];
 
   config = {
