@@ -7,7 +7,7 @@
     nixpkgs.lib.evalModules {
       specialArgs.dream2nix = dream2nix;
       specialArgs.packageSets.nixpkgs = nixpkgs;
-      modules = [module dream2nix.modules.drv-parts.core];
+      modules = [module dream2nix.modules.dream2nix.core];
     };
 
   # like callPackage for modules
@@ -40,7 +40,7 @@
   modules = lib.genAttrs (map toString (lib.range 0 numPkgs)) (num:
     callModule rec {
       imports = [
-        dream2nix.modules.drv-parts.mkDerivation
+        dream2nix.modules.dream2nix.mkDerivation
       ];
       name = "hello-${num}";
       version = "2.12.1";

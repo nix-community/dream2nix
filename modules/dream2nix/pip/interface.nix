@@ -78,7 +78,7 @@ in {
 
     drvs = l.mkOption {
       type = t.lazyAttrsOf (t.submoduleWith {
-        modules = [dream2nix.modules.drv-parts.core];
+        modules = [dream2nix.modules.dream2nix.core];
         specialArgs = {inherit packageSets dream2nix;};
       });
       description = "drv-parts modules that define python dependencies";

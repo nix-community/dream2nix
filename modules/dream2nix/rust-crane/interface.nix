@@ -56,7 +56,7 @@ in {
     };
     depsDrv = {
       type = t.submoduleWith {
-        modules = [dream2nix.modules.drv-parts.mkDerivation];
+        modules = [dream2nix.modules.dream2nix.mkDerivation];
         inherit specialArgs;
       };
       description = "A single derivation with all dependencies of the package";

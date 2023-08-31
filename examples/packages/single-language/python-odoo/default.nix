@@ -15,7 +15,7 @@
   };
 in {
   imports = [
-    dream2nix.modules.drv-parts.pip
+    dream2nix.modules.dream2nix.pip
   ];
 
   deps = {nixpkgs, ...}: {

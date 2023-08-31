@@ -7,7 +7,7 @@
   l = lib // builtins;
 in {
   imports = [
-    dream2nix.modules.drv-parts.nodejs-devshell
+    dream2nix.modules.dream2nix.nodejs-devshell
   ];
 
   mkDerivation = {

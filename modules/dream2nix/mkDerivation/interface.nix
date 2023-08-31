@@ -16,7 +16,7 @@
   # detected as modules by accident. (derivations are attrs as well as modules)
   drvPart = let
     type = t.submoduleWith {
-      modules = [dream2nix.modules.drv-parts.core];
+      modules = [dream2nix.modules.dream2nix.core];
       inherit specialArgs;
     };
   in

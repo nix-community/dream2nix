@@ -36,8 +36,8 @@ in {
     deps = {
       type = t.attrsOf (t.attrsOf (t.submodule {
         imports = [
-          dream2nix.modules.drv-parts.core
-          dream2nix.modules.drv-parts.mkDerivation
+          dream2nix.modules.dream2nix.core
+          dream2nix.modules.dream2nix.mkDerivation
           ./interface.nix
         ];
         _module.args = {inherit dream2nix packageSets;};

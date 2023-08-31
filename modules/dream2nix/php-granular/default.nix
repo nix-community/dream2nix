@@ -156,7 +156,7 @@
 
     module = {config, ...}: {
       imports = [
-        dream2nix.modules.drv-parts.mkDerivation
+        dream2nix.modules.dream2nix.mkDerivation
       ];
       deps = {nixpkgs, ...}:
         l.mapAttrs (_: l.mkDefault) {
