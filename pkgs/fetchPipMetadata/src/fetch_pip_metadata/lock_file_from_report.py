@@ -37,17 +37,6 @@ def nix_show_derivation(path):
     return list(json.loads(proc.stdout).values())[0]
 
 
-def nix_prefetch_git(url, rev):
-    return json.loads(
-        subprocess.run(
-            ["nix-prefetch-git", url, rev],
-            capture_output=True,
-            universal_newlines=True,
-            check=True,
-        ).stdout
-    )["sha256"]
-
-
 def lock_info_from_fod(store_path, drv_json):
     drv_out = drv_json.get("outputs", {}).get("out", {})
     assert str(store_path) == drv_out.get("path")
@@ -139,7 +128,14 @@ def lock_info_from_vcs(download_info) -> Optional[Tuple[str, Optional[str]]]:
         case "git":
             url = download_info["url"]
             rev = vcs_info["commit_id"]
-            sha256 = nix_prefetch_git(url, rev)
+            sha256 = json.loads(
+                subprocess.run(
+                    ["nix-prefetch-git", url, rev],
+                    capture_output=True,
+                    universal_newlines=True,
+                    check=True,
+                ).stdout
+            )["sha256"]
 
             return {"type": "git", "url": url, "rev": rev, "sha256": sha256}
 
