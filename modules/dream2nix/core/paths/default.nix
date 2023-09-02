@@ -9,7 +9,6 @@
   deps = {nixpkgs, ...}: {
     python3 = nixpkgs.python3;
     substituteAll = nixpkgs.substituteAll;
-    # runCommand = nixpkgs.runCommand;
   };
   paths = {
     lockFileAbs =
