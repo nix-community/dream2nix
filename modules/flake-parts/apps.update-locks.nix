@@ -18,11 +18,13 @@
   }: let
     l = lib // builtins;
 
+    packages = lib.filterAttrs (name: _: lib.hasPrefix "example-package-" name) self'.checks;
+
     scripts =
       l.flatten
       (l.mapAttrsToList
         (name: pkg: pkg.config.lock.refresh or [])
-        self'.packages);
+        packages);
 
     update-locks =
       config.writers.writePureShellScript

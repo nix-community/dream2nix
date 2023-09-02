@@ -46,17 +46,17 @@
 
   # LOAD
 
-  file = cfg.repoRoot + cfg.cacheFileRel;
+  file = config.paths.cacheFileAbs;
 
   refreshCommand =
     l.unsafeDiscardStringContext
-    "cat $(nix-build ${cfg.newFile.drvPath} --no-link) > $(git rev-parse --show-toplevel)/${cfg.cacheFileRel}";
+    "cat $(nix-build ${cfg.newFile.drvPath} --no-link) > $(realpath $(${config.paths.findRoot})/${config.paths.package}/${config.paths.cacheFile})";
 
   newFileMsg = "To generate a new cache file, execute:\n  ${refreshCommand}";
 
   ifdInfoMsg = "Information on how to fix this is shown below if evaluated with `--allow-import-from-derivation`";
 
-  cacheMissingMsg = "The cache file ${cfg.cacheFileRel} for drv-parts module '${packageName}' doesn't exist, please create it.";
+  cacheMissingMsg = "The cache file ${config.paths.package}/${config.paths.cacheFile} for drv-parts module '${packageName}' doesn't exist, please create it.";
 
   cacheMissingError =
     l.trace ''
@@ -69,7 +69,7 @@
       ${newFileMsg}
     '';
 
-  cacheInvalidMsg = "The cache file ${cfg.cacheFileRel} for drv-parts module '${packageName}' is outdated, please update it.";
+  cacheInvalidMsg = "The cache file ${config.paths.package}/${config.paths.cacheFile} for drv-parts module '${packageName}' is outdated, please update it.";
 
   cacheInvalidError =
     l.trace ''
@@ -112,15 +112,16 @@
 
     eval-cache.content = loadedContent;
 
-    deps = {nixpkgs, ...}: {
-      inherit
-        (nixpkgs)
-        jq
-        runCommand
-        writeText
-        writeScript
-        ;
-    };
+    deps = {nixpkgs, ...}:
+      lib.mapAttrs (_: lib.mkOptionDefault) {
+        inherit
+          (nixpkgs)
+          jq
+          runCommand
+          writeText
+          writeScript
+          ;
+      };
   };
 
   configIfDisabled = l.mkIf (! cfg.enable) {
