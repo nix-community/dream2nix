@@ -13,7 +13,6 @@ def test_url_no_hash():
         download_info=dict(url="https://example.com"),
     )
     expected = "test", dict(
-        type="url",
         url=install["download_info"]["url"],
         version=install["metadata"]["version"],
         sha256=None,
@@ -33,7 +32,6 @@ def test_url_with_hash():
         ),
     )
     expected = "test", dict(
-        type="url",
         url=install["download_info"]["url"],
         version=install["metadata"]["version"],
         sha256="example_hash",
@@ -52,7 +50,6 @@ def test_path_external():
         ),
     )
     expected = "test", dict(
-        type="url",
         url=install["download_info"]["url"],
         version=install["metadata"]["version"],
         sha256=None,
@@ -71,7 +68,6 @@ def test_path_in_repo(git_repo_path):
         ),
     )
     expected = "test", dict(
-        type="url",
         url=install["download_info"]["url"],
         version=install["metadata"]["version"],
         sha256=None,
@@ -90,7 +86,6 @@ def test_path_in_nix_store():
         ),
     )
     expected = "test", dict(
-        type="url",
         url=install["download_info"]["url"],
         version=install["metadata"]["version"],
         sha256=None,
