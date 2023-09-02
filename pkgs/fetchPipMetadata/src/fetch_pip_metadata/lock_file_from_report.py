@@ -1,5 +1,3 @@
-from __future__ import annotations
-from typing import Optional, Tuple
 import subprocess
 import json
 from pathlib import Path
@@ -51,13 +49,6 @@ def lock_info_from_fod(store_path, drv_json):
     return url, sha256
 
 
-def lock_info_from_file_url(download_info):
-    path = path_from_file_url(download_info["url"])
-
-    if path is not None:
-        return lock_info_from_path(path)
-
-
 def path_from_file_url(url):
     prefix = "file://"
     prefix_len = len(prefix)
@@ -102,43 +93,6 @@ def lock_info_from_path(full_path):
             )
 
 
-def lock_info_from_archive(download_info) -> Optional[Tuple[str, Optional[str]]]:
-    try:
-        archive_info = download_info["archive_info"]
-    except KeyError:
-        return None
-
-    hash = archive_info.get("hash", "").split("=", 1)
-    sha256 = hash[1] if hash[0] == "sha256" else None
-
-    return (download_info["url"], sha256)
-
-
-def lock_info_from_vcs(download_info) -> Optional[Tuple[str, Optional[str]]]:
-    try:
-        vcs_info = download_info["vcs_info"]
-    except KeyError:
-        return None
-
-    match vcs_info["vcs"]:
-        case "git":
-            url = download_info["url"]
-            rev = vcs_info["commit_id"]
-            sha256 = json.loads(
-                subprocess.run(
-                    ["nix-prefetch-git", url, rev],
-                    capture_output=True,
-                    universal_newlines=True,
-                    check=True,
-                ).stdout
-            )["sha256"]
-            return (f"git+{url}@{rev}", sha256)
-
-
-def lock_info_fallback(download_info):
-    return download_info["url"], None
-
-
 def lock_entry_from_report_entry(install):
     """
     Convert an entry of report['install'] to an object we want to store
@@ -147,19 +101,18 @@ def lock_entry_from_report_entry(install):
     name = canonicalize_name(install["metadata"]["name"])
     download_info = install["download_info"]
 
-    for lock_info in (
-        lock_info_from_archive,
-        lock_info_from_vcs,
-        lock_info_from_file_url,
-    ):
-        info = lock_info(download_info)
-        if info is not None:
-            break
-    else:
-        info = lock_info_fallback(download_info)
+    url, sha256 = download_info["url"], None
+    full_path = path_from_file_url(url)
+    if full_path:
+        url, sha256 = lock_info_from_path(full_path)
 
-    url, sha256 = info
-
+    if not sha256:
+        hash = (
+            download_info.get("archive_info", {})
+            .get("hash", "")
+            .split("=", 1)  # noqa: 501
+        )
+        sha256 = hash[1] if hash[0] == "sha256" else None
     return name, dict(
         url=url,
         version=install["metadata"]["version"],
