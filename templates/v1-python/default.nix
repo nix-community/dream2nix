@@ -7,12 +7,13 @@ let
   # TODO: modify this according to your repo structure
   setupModule = {config, ...}: {
     # Define the root of your repo. All other paths are relative to it.
-    lock.repoRoot = ./.;
+    lock.projectRoot = ./.;
 
     # define how a specific lock file should be called
     # This definition will produce lock files like:
     #   my-package-x86_64-linux-lock.json
-    lock.lockFileRel = "/${config.name}-${config.deps.stdenv.system}-lock.json";
+    paths.package = ".";
+    paths.lockFile = "/${config.name}-${config.deps.stdenv.system}-lock.json";
   };
 
   # evaluate package module

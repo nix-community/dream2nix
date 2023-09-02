@@ -28,10 +28,9 @@ in {
         specialArgs = packageSets;
       };
       example = lib.literalExpression ''
-        {nixpkgs, inputs', ...}: {
+        {nixpkgs, ...}: {
           inherit (nixpkgs) stdenv;
           inherit (nixpkgs.haskellPackages) pandoc;
-          nix = inputs'.nix.packages.default;
         }
       '';
       default = {};

@@ -25,8 +25,7 @@
 
     # A module imported into every package setting up the eval cache
     setup = {config, ...}: {
-      lock.repoRoot = self;
-      eval-cache.repoRoot = self;
+      paths.projectRoot = self;
       eval-cache.enable = true;
       deps.npm = inputs.nixpkgs.legacyPackages.${system}.nodejs.pkgs.npm.override (old: rec {
         version = "8.19.4";
@@ -59,7 +58,10 @@
       flip mapAttrs' examples
       (name: _: {
         name = "example-package-${name}";
-        value = examplesPath + "/${name}";
+        value = {
+          module = examplesPath + "/${name}";
+          packagePath = "/examples/packages/${dirName}/${name}";
+        };
       });
 
     allExamples = mapAttrsToList (dirName: _: readExamples dirName) examplePackagesDirs;
@@ -72,11 +74,10 @@
     allModules = flip mapAttrs' allModules' (name: module: {
       inherit name;
       value = [
-        module
+        module.module
         setup
         {
-          lock.lockFileRel = "/locks/${name}/lock-${system}.json";
-          eval-cache.cacheFileRel = "/locks/${name}/cache-${system}.json";
+          paths.package = module.packagePath;
         }
       ];
     });

@@ -7,7 +7,7 @@
   cfg = config.lock;
 
   # LOAD
-  file = cfg.repoRoot + cfg.lockFileRel;
+  file = config.paths.lockFileAbs;
   data = l.fromJSON (l.readFile file);
   fileExists = l.pathExists file;
 
@@ -23,10 +23,10 @@
     from pathlib import Path
 
     repo_path = Path(subprocess.run(
-        ['git', 'rev-parse', '--show-toplevel'],
-        check=True, text=True, capture_output=True)
-        .stdout.strip())
-    lock_path_rel = Path('${cfg.lockFileRel}')  # noqa: E501
+        ['${config.paths.findRoot}'],  # noqa: E501
+        check=True, text=True, capture_output=True
+    ).stdout.strip())
+    lock_path_rel = Path('${config.paths.package}/${config.paths.lockFile}')  # noqa: E501
     lock_path = repo_path / lock_path_rel.relative_to(lock_path_rel.anchor)
 
     if lock_path.exists():
@@ -45,7 +45,7 @@
         ['git', 'rev-parse', '--show-toplevel'],
         check=True, text=True, capture_output=True)
         .stdout.strip())
-    lock_path_rel = Path('${cfg.lockFileRel}')  # noqa: E501
+    lock_path_rel = Path('${config.paths.package}/${config.paths.lockFile}')  # noqa: E501
     lock_path = repo_path / lock_path_rel.relative_to(lock_path_rel.anchor)
     lock_path.parent.mkdir(parents=True, exist_ok=True)
 
@@ -126,29 +126,29 @@
     '';
 
   errorMissingFile = ''
-    The lock file ${cfg.repoRoot}${cfg.lockFileRel}
+    The lock file ${config.paths.package}/${config.paths.lockFile}
       for drv-parts module '${config.name}' is missing.
-
-    To update it using flakes:
-
-      nix run -L .#${config.name}.config.lock.refresh
 
     To update it without flakes:
 
       bash -c $(nix-build ${config.lock.refresh.drvPath} --no-link)/bin/refresh
+
+    To update it using flakes:
+
+      nix run -L .#${config.name}.config.lock.refresh
   '';
 
   errorOutdated = field: ''
-    The lock file ${cfg.repoRoot}${cfg.lockFileRel}
+    The lock file ${config.paths.package}/${config.paths.lockFile}
       for drv-parts module '${config.name}' does not contain field `${field}`.
-
-    To update it using flakes:
-
-      nix run -L .#${config.name}.config.lock.refresh
 
     To update it without flakes:
 
       bash -c $(nix-build ${config.lock.refresh.drvPath} --no-link)/bin/refresh
+
+    To update it using flakes:
+
+      nix run -L .#${config.name}.config.lock.refresh
 
   '';
 
