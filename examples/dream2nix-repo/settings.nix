@@ -1,4 +1,4 @@
 {config, ...}: {
-  lock.repoRoot = ./.;
-  lock.lockFileRel = "/locks/${config.name}.json";
+  paths.projectRoot = ./.;
+  paths.package = "/packages/${config.name}";
 }
