@@ -51,11 +51,6 @@
     };
   };
 
-  fetchers = {
-    url = info: l.fetchurl {inherit (info) url sha256;};
-    git = info: config.deps.fetchgit {inherit (info) url sha256 rev;};
-  };
-
   commonModule = {config, ...}: {
     imports = [
       dream2nix.modules.dream2nix.mkDerivation
@@ -86,7 +81,7 @@
         );
       };
       mkDerivation = {
-        src = l.mkDefault (fetchers.${metadata.sources.${config.name}.type} metadata.sources.${config.name});
+        src = l.mkDefault (l.fetchurl {inherit (metadata.sources.${config.name}) url sha256;});
         doCheck = l.mkDefault false;
 
         nativeBuildInputs =
@@ -118,7 +113,7 @@ in {
           inherit (config.deps) writePureShellScript python nix git;
         };
         setuptools = config.deps.python.pkgs.setuptools;
-        inherit (nixpkgs) git fetchgit;
+        inherit (nixpkgs) git;
         inherit (writers) writePureShellScript;
       };
 
