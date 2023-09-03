@@ -20,8 +20,8 @@ def get_max_date(snapshot_date):
         return dateutil.parser.parse(snapshot_date)
 
 
-def prepare_venv(venv_path, pip_version, wheel_version):
-    subprocess.run([sys.executable, "-m", "venv", venv_path], check=True)
+def prepare_venv(venv_path, pip_version, wheel_version, python_executable):
+    subprocess.run([python_executable, "-m", "venv", venv_path], check=True)
     subprocess.run(
         [
             f"{venv_path}/bin/pip",
@@ -61,7 +61,10 @@ def fetch_pip_metadata():
         )
 
         venv_path = prepare_venv(
-            (home / ".venv").absolute(), args["pipVersion"], args["wheelVersion"]
+            (home / ".venv").absolute(),
+            args["pipVersion"],
+            args["wheelVersion"],
+            args["python"],
         )  # noqa: 501
 
         flags = args["pipFlags"] + [

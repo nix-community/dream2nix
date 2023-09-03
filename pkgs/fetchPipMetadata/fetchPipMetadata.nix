@@ -49,7 +49,8 @@
   path = [nix git] ++ nativeBuildInputs;
 
   package = import ./package.nix {
-    inherit git lib python;
+    inherit git lib;
+    python = python3;
   };
 
   args = writeText "pip-args" (builtins.toJSON {
@@ -57,6 +58,9 @@
 
     # the python interpreter used to run the proxy script
     mitmProxy = "${pythonWithMitmproxy}/bin/mitmdump";
+
+    # the python interpreter to lock packages for
+    python = "${python}/bin/python";
 
     # convert pypiSnapshotDate to string and integrate into finalAttrs
     pypiSnapshotDate = builtins.toString pypiSnapshotDate;
