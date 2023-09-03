@@ -38,9 +38,9 @@
 
     # evaluates the package behind a given module
     makeDrv = modules: let
-      evaled = lib.evalModules {
+      evaled = self.lib.evalModules {
         modules = modules ++ [self.modules.dream2nix.core];
-        specialArgs.packageSets = {
+        packageSets = {
           nixpkgs = inputs.nixpkgs.legacyPackages.${system};
           writers = config.writers;
         };

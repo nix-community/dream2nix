@@ -13,11 +13,12 @@
     # If set, returns the result coming form nixpgs.lib.evalModules as is,
     # otherwise it returns the derivation only (.config.public).
     raw ? false,
+    specialArgs ? {},
     ...
   }: let
     forawardedArgs = builtins.removeAttrs args [
       "packageSets"
-      "return"
+      "raw"
     ];
 
     evaluated =
@@ -31,13 +32,11 @@
               self.modules.dream2nix.core
             ];
           specialArgs =
-            args.specialArgs
-            or {}
+            specialArgs
             // {
               inherit packageSets;
               dream2nix.modules.dream2nix = self.modules.dream2nix;
               dream2nix.lib.evalModules = self.lib.evalModules;
-              drv-parts = inputs.dream2nix;
             };
         }
       );
