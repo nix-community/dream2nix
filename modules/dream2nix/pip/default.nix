@@ -59,7 +59,7 @@
     ];
     config = {
       deps = {nixpkgs, ...}:
-        l.mapAttrs (_: l.mkDefault) {
+        l.mapAttrs (_: l.mkOverride 1001) {
           inherit
             (nixpkgs)
             autoPatchelfHook
