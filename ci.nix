@@ -8,9 +8,15 @@ let
   dream2nix-repo = import ./examples/dream2nix-repo {
     dream2nixSource = ./.;
   };
+
+  dream2nix-repo-flake = (import ./examples/dream2nix-repo-flake/flake.nix).outputs {
+    self = dream2nix-repo-flake;
+    dream2nix = flake;
+    nixpkgs = flake.inputs.nixpkgs;
+  };
 in
   recurseIntoAll {
-    inherit dream2nix-repo;
+    inherit dream2nix-repo dream2nix-repo-flake;
     checks = flake.checks.x86_64-linux;
     packages = flake.packages.x86_64-linux;
   }
