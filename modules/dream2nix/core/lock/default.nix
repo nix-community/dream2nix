@@ -42,7 +42,7 @@
 
     refresh_scripts = json.loads('${l.toJSON cfg.fields}')  # noqa: E501
     repo_path = Path(subprocess.run(
-        ['git', 'rev-parse', '--show-toplevel'],
+        ['${config.paths.findRoot}'],  # noqa: E501
         check=True, text=True, capture_output=True)
         .stdout.strip())
     lock_path_rel = Path('${config.paths.package}/${config.paths.lockFile}')  # noqa: E501

@@ -8,19 +8,6 @@ from packaging.utils import (
 )
 
 
-def repo_root(directory):
-    proc = subprocess.run(
-        ["git", "rev-parse", "--show-toplevel"],
-        text=True,
-        stdout=subprocess.PIPE,
-        cwd=directory,
-    )
-    # fall back to the current directory if not a git repo
-    if proc.returncode == 128:
-        return str(Path(".").absolute())
-    return proc.stdout.strip()
-
-
 def nix_show_derivation(path):
     proc = subprocess.run(
         ["nix", "show-derivation", path],
@@ -56,19 +43,18 @@ def path_from_file_url(url):
         return Path(url[prefix_len:]).absolute()
 
 
-def lock_info_from_path(full_path):
+def lock_info_from_path(full_path, project_root: Path):
     # See whether the path is relative to our local repo
-    repo = Path(repo_root("."))
-    if repo in full_path.parents or repo == full_path:
-        return str(full_path.relative_to(repo)), None
+    if project_root in full_path.parents or project_root == full_path:
+        return str(full_path.relative_to(project_root)), None
 
-    # Otherwise, we assume its in /nix/store and just the "top-level"
+    # Otherwise, we require it is in /nix/store and just the "top-level"
     # store path /nix/store/$hash-name/
     store_path = Path("/").joinpath(*full_path.parts[:4])
     if not Path("/nix/store") == store_path.parent:
         raise Exception(
             f"fatal: requirement '{full_path}' refers to something outside "
-            f"/nix/store and our local repo '{repo}'"
+            f"/nix/store and our local repo '{project_root}'"
         )
 
     # Check if its a FOD, if so use nix to print the derivation of our
@@ -93,7 +79,7 @@ def lock_info_from_path(full_path):
             )
 
 
-def lock_entry_from_report_entry(install):
+def lock_entry_from_report_entry(install, project_root: Path):
     """
     Convert an entry of report['install'] to an object we want to store
     in our lock file, but don't add dependencies yet.
@@ -104,7 +90,7 @@ def lock_entry_from_report_entry(install):
     url, sha256 = download_info["url"], None
     full_path = path_from_file_url(url)
     if full_path:
-        url, sha256 = lock_info_from_path(full_path)
+        url, sha256 = lock_info_from_path(full_path, project_root)
 
     if not sha256:
         hash = (
@@ -158,7 +144,7 @@ def evaluate_requirements(env, reqs, dependencies, root_name, extras, seen):
     return dependencies
 
 
-def lock_file_from_report(report):
+def lock_file_from_report(report, project_root: Path):
     """
     Pre-process pips report.json for easier consumation by nix.
     We extract name, version, url and hash of the source distribution or
@@ -194,7 +180,7 @@ def lock_file_from_report(report):
     # iterate over all packages pip installed to find roots
     # of the tree and gather basic information, such as urls
     for install in report["install"]:
-        name, package = lock_entry_from_report_entry(install)
+        name, package = lock_entry_from_report_entry(install, project_root)
         packages[name] = package
         metadata = install["metadata"]
         requirements[name] = [Requirement(r) for r in metadata.get("requires_dist", [])]
