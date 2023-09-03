@@ -12,9 +12,9 @@
   };
   paths = {
     lockFileAbs =
-      config.paths.projectRoot + "/" + config.paths.package + "/" + config.paths.lockFile;
+      config.paths.projectRoot + "/${config.paths.package}/${config.paths.lockFile}";
     cacheFileAbs =
-      config.paths.projectRoot + "/" + config.paths.package + "/" + config.paths.cacheFile;
+      config.paths.projectRoot + "/${config.paths.package}/${config.paths.cacheFile}";
 
     # - identify the root by searching for the marker config.paths.projectRootFile in the current dir and parents
     # - if the marker file is not found, raise an error
