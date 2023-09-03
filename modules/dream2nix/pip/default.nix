@@ -27,28 +27,29 @@
 
   drvs =
     l.mapAttrs (
-      name: info:
-        buildDependency {
+      name: info: {
+        imports = [
+          commonModule
+          dependencyModule
+          ../nixpkgs-overrides
+        ];
+        config = {
           inherit name;
           inherit (info) version;
-        }
+        };
+      }
     )
     metadata.sources;
 
-  buildDependency = {
-    name,
-    version,
-  }: {config, ...}: {
-    imports = [
-      commonModule
-      ../nixpkgs-overrides
-    ];
-    config = {
-      inherit name version;
-      # deps.python cannot be defined in commonModule as this would trigger an
-      #   infinite recursion.
-      deps = {inherit python;};
-    };
+  dependencyModule = {config, ...}: {
+    # deps.python cannot be defined in commonModule as this would trigger an
+    #   infinite recursion.
+    deps = {inherit python;};
+    buildPythonPackage.format = l.mkDefault (
+      if l.hasSuffix ".whl" config.mkDerivation.src
+      then "wheel"
+      else "setuptools"
+    );
   };
 
   commonModule = {config, ...}: {
@@ -73,13 +74,6 @@
             ;
           inherit (nixpkgs.pythonManylinuxPackages) manylinux1;
         };
-      buildPythonPackage = {
-        format = l.mkDefault (
-          if l.hasSuffix ".whl" config.mkDerivation.src
-          then "wheel"
-          else "setuptools"
-        );
-      };
       mkDerivation = {
         src = l.mkDefault (l.fetchurl {inherit (metadata.sources.${config.name}) url sha256;});
         doCheck = l.mkDefault false;
