@@ -66,6 +66,7 @@
             bash
             coreutils
             gawk
+            mkShell
             path
             stdenv
             unzip
@@ -128,6 +129,14 @@ in {
         rootDeps = lib.filterAttrs (_: x: x == true) cfg.rootDependencies;
       in
         l.attrValues (l.mapAttrs (name: _: cfg.drvs.${name}.public.out) rootDeps);
+    };
+
+    public.devShell = config.deps.mkShell {
+      inherit (config.mkDerivation) buildInputs nativeBuildInputs;
+      packages = [
+        (config.deps.python.withPackages
+          (ps: config.mkDerivation.propagatedBuildInputs))
+      ];
     };
   };
 }
