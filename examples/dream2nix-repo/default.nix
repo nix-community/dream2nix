@@ -15,7 +15,7 @@
     lib.genAttrs packageModuleNames
     (moduleName:
       dream2nix.lib.evalModules {
-        modules = ["${./packages}/${moduleName}"];
+        modules = ["${./packages}/${moduleName}" ./settings.nix];
         packageSets.nixpkgs = nixpkgs;
       });
 in
