@@ -152,6 +152,7 @@
       imports = [
         ./templates
         ./modules/flake-parts/all-modules.nix
+        ./pkgs/fetchPipMetadata/flake-module.nix
       ];
       systems = [
         "x86_64-linux"

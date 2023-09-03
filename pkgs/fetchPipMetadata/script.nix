@@ -10,10 +10,8 @@
 # TODO: for pypiSnapshotDate only allow timestamp or format 2023-01-01
 # TODO: Error if pypiSnapshotDate points to the future
 {
-  stdenv,
   lib,
   writeText,
-  makeWrapper,
   # Use the nixpkgs default python version for the proxy script.
   # The python version select by the user below might be too old for the
   #   dependencies required by the proxy
@@ -21,7 +19,7 @@
   # Specify the python version for which the packages should be downloaded.
   # Pip needs to be executed from that specific python version.
   # Pip accepts '--python-version', but this works only for wheel packages.
-  python,
+  pythonInterpreter,
   # list of strings of requirements.txt entries
   requirementsList ? [],
   # list of requirements.txt files
@@ -37,20 +35,26 @@
       Choose any date from the past.
       Example value: "2023-01-01"
     '',
+  # executable that returns the project root
+  findRoot,
   nix,
-  git,
+  gitMinimal,
   writePureShellScript,
 }: let
+  package = import ./package.nix {
+    inherit
+      lib
+      python3
+      gitMinimal
+      ;
+  };
+
   # We use nixpkgs python3 to run mitmproxy, see function parameters
   pythonWithMitmproxy =
     python3.withPackages
     (ps: [ps.mitmproxy ps.python-dateutil]);
 
-  path = [nix git] ++ nativeBuildInputs;
-
-  package = import ./package.nix {
-    inherit git lib python;
-  };
+  path = [nix gitMinimal] ++ nativeBuildInputs;
 
   args = writeText "pip-args" (builtins.toJSON {
     filterPypiResponsesScript = ./filter-pypi-responses.py;
@@ -63,17 +67,22 @@
 
     # add some variables to the derivation to integrate them into finalAttrs
     inherit
+      pipVersion
+      pipFlags
+      pythonInterpreter
       requirementsFiles
       requirementsList
-      pipVersion
       wheelVersion
-      pipFlags
       ;
   });
 
   script =
     writePureShellScript
     path
-    "${package}/bin/fetch_pip_metadata ${args}";
+    ''
+      ${package}/bin/fetch_pip_metadata \
+        --json-args-file ${args} \
+        --project-root $(${findRoot})
+    '';
 in
   script

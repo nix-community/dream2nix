@@ -1,3 +1,4 @@
+from pathlib import Path
 import pytest
 import lock_file_from_report as l
 
@@ -48,7 +49,7 @@ def test_simple():
             ),
         ),
     )
-    assert l.lock_file_from_report(report) == expected
+    assert l.lock_file_from_report(report, Path("/beer")) == expected
 
 
 def test_multiple_requested():
@@ -93,4 +94,4 @@ def test_multiple_requested():
             ),
         ),
     )
-    assert l.lock_file_from_report(report) == expected
+    assert l.lock_file_from_report(report, Path("foo")) == expected
