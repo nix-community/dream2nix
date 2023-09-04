@@ -18,5 +18,6 @@ in
   recurseIntoAll {
     inherit dream2nix-repo dream2nix-repo-flake;
     checks = flake.checks.x86_64-linux;
+    devShells = flake.devShells.x86_64-linux;
     packages = flake.packages.x86_64-linux;
   }
