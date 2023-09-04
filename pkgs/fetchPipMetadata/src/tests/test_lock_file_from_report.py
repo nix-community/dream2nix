@@ -38,6 +38,7 @@ def test_simple():
     expected = dict(
         sources=dict(
             test=dict(
+                type="url",
                 sha256=None,
                 url="https://example.com",
                 version="0.0.0",
@@ -77,11 +78,13 @@ def test_multiple_requested():
     expected = dict(
         sources=dict(
             foo=dict(
+                type="url",
                 sha256=None,
                 url="https://example.com",
                 version="0.0.0",
             ),
             bar=dict(
+                type="url",
                 sha256=None,
                 url="https://example.com",
                 version="0.0.0",

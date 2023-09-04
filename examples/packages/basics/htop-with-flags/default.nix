@@ -18,12 +18,12 @@ in {
         (nixpkgs)
         autoreconfHook
         fetchFromGitHub
-        IOKit
         lm_sensors
         ncurses
         stdenv
         systemd
         ;
+      IOKit = nixpkgs.darwin.IOKit;
     };
 
     # specify flags that this package provdes

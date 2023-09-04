@@ -52,6 +52,11 @@
     );
   };
 
+  fetchers = {
+    url = info: l.fetchurl {inherit (info) url sha256;};
+    git = info: config.deps.fetchgit {inherit (info) url sha256 rev;};
+  };
+
   commonModule = {config, ...}: {
     imports = [
       dream2nix.modules.dream2nix.mkDerivation
@@ -77,7 +82,7 @@
           inherit (nixpkgs.pythonManylinuxPackages) manylinux1;
         };
       mkDerivation = {
-        src = l.mkDefault (l.fetchurl {inherit (metadata.sources.${config.name}) url sha256;});
+        src = l.mkDefault (fetchers.${metadata.sources.${config.name}.type} metadata.sources.${config.name});
         doCheck = l.mkDefault false;
 
         nativeBuildInputs =
@@ -111,11 +116,11 @@ in {
           inherit (cfg) pypiSnapshotDate pipFlags pipVersion requirementsList requirementsFiles nativeBuildInputs;
           inherit (config.deps) writePureShellScript nix;
           inherit (config.paths) findRoot;
-          inherit (nixpkgs) python3 gitMinimal writeText;
+          inherit (nixpkgs) gitMinimal nix-prefetch-scripts python3 writeText;
           pythonInterpreter = "${python}/bin/python";
         };
         setuptools = config.deps.python.pkgs.setuptools;
-        inherit (nixpkgs) nix;
+        inherit (nixpkgs) nix fetchgit;
         inherit (writers) writePureShellScript;
       };
 

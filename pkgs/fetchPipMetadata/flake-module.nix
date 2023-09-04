@@ -28,7 +28,7 @@
     packages.fetch-pip-metadata-package = import ./package.nix {
       inherit lib;
       inherit python3;
-      inherit (pkgs) gitMinimal;
+      inherit (pkgs) gitMinimal nix-prefetch-scripts;
     };
   };
 }

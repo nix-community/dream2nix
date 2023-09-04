@@ -1,3 +1,5 @@
+from __future__ import annotations
+from typing import Optional, Tuple
 import subprocess
 import json
 from pathlib import Path
@@ -22,6 +24,17 @@ def nix_show_derivation(path):
     return list(json.loads(proc.stdout).values())[0]
 
 
+def nix_prefetch_git(url, rev):
+    return json.loads(
+        subprocess.run(
+            ["nix-prefetch-git", url, rev],
+            capture_output=True,
+            universal_newlines=True,
+            check=True,
+        ).stdout
+    )["sha256"]
+
+
 def lock_info_from_fod(store_path, drv_json):
     drv_out = drv_json.get("outputs", {}).get("out", {})
     assert str(store_path) == drv_out.get("path")
@@ -33,7 +46,14 @@ def lock_info_from_fod(store_path, drv_json):
             f"fatal: requirement '{store_path}' does not seem to be a FOD.\n"
             f"No URL ({url}) or hash ({sha256}) found."
         )
-    return url, sha256
+    return {"type": "url", "url": url, "sha256": sha256}
+
+
+def lock_info_from_file_url(download_info, project_root: Path):
+    path = path_from_file_url(download_info["url"])
+
+    if path is not None:
+        return lock_info_from_path(path, project_root)
 
 
 def path_from_file_url(url):
@@ -46,7 +66,11 @@ def path_from_file_url(url):
 def lock_info_from_path(full_path, project_root: Path):
     # See whether the path is relative to our local repo
     if project_root in full_path.parents or project_root == full_path:
-        return str(full_path.relative_to(project_root)), None
+        return {
+            "type": "url",
+            "url": str(full_path.relative_to(project_root)),
+            "sha256": None,
+        }
 
     # Otherwise, we require it is in /nix/store and just the "top-level"
     # store path /nix/store/$hash-name/
@@ -71,12 +95,47 @@ def lock_info_from_path(full_path, project_root: Path):
         )
         if proc.returncode == 0:
             sha256 = proc.stdout
-            return "", sha256  # need to find a way to get the URL
+            return {
+                "type": "url",
+                "url": "",
+                "sha256": sha256,
+            }  # need to find a way to get the URL
         else:
             raise Exception(
                 f"fatal: requirement '{full_path}' refers to something we "
                 "can't understand"
             )
+
+
+def lock_info_from_archive(download_info) -> Optional[Tuple[str, Optional[str]]]:
+    try:
+        archive_info = download_info["archive_info"]
+    except KeyError:
+        return None
+
+    hash = archive_info.get("hash", "").split("=", 1)
+    sha256 = hash[1] if hash[0] == "sha256" else None
+
+    return {"type": "url", "url": download_info["url"], "sha256": sha256}
+
+
+def lock_info_from_vcs(download_info) -> Optional[Tuple[str, Optional[str]]]:
+    try:
+        vcs_info = download_info["vcs_info"]
+    except KeyError:
+        return None
+
+    match vcs_info["vcs"]:
+        case "git":
+            url = download_info["url"]
+            rev = vcs_info["commit_id"]
+            sha256 = nix_prefetch_git(url, rev)
+
+            return {"type": "git", "url": url, "rev": rev, "sha256": sha256}
+
+
+def lock_info_fallback(download_info):
+    return {"type": "url", "url": download_info["url"], "sha256": None}
 
 
 def lock_entry_from_report_entry(install, project_root: Path):
@@ -87,22 +146,20 @@ def lock_entry_from_report_entry(install, project_root: Path):
     name = canonicalize_name(install["metadata"]["name"])
     download_info = install["download_info"]
 
-    url, sha256 = download_info["url"], None
-    full_path = path_from_file_url(url)
-    if full_path:
-        url, sha256 = lock_info_from_path(full_path, project_root)
+    for lock_info in (
+        lock_info_from_archive,
+        lock_info_from_vcs,
+        lambda download_info: lock_info_from_file_url(download_info, project_root),
+    ):
+        info = lock_info(download_info)
+        if info is not None:
+            break
+    else:
+        info = lock_info_fallback(download_info)
 
-    if not sha256:
-        hash = (
-            download_info.get("archive_info", {})
-            .get("hash", "")
-            .split("=", 1)  # noqa: 501
-        )
-        sha256 = hash[1] if hash[0] == "sha256" else None
     return name, dict(
-        url=url,
         version=install["metadata"]["version"],
-        sha256=sha256,
+        **info,
     )
 
 
