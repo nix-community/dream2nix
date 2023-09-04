@@ -8,7 +8,7 @@
     python3 = pkgs.python310;
   in {
     devShells.fetch-pip-metadata = let
-      package = self'.packages.fetch-pip-metadata;
+      package = self'.packages.fetch-pip-metadata-package;
       pythonWithDeps = python3.withPackages (
         ps:
           package.propagatedBuildInputs
