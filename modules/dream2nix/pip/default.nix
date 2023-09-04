@@ -103,19 +103,19 @@ in {
 
   config = {
     deps = {nixpkgs, ...}:
-      l.mapAttrs (_: l.mkDefault) {
+      l.mapAttrs (_: l.mkOverride 1002) {
         # This is imported directly instead of depending on dream2nix.packages
         # with the intention to keep modules independent.
         fetchPipMetadataScript = import ../../../pkgs/fetchPipMetadata/script.nix {
           inherit lib;
           inherit (cfg) pypiSnapshotDate pipFlags pipVersion requirementsList requirementsFiles nativeBuildInputs;
-          inherit (config.deps) writePureShellScript nix gitMinimal writeText;
+          inherit (config.deps) writePureShellScript nix;
           inherit (config.paths) findRoot;
-          inherit (nixpkgs) python3;
+          inherit (nixpkgs) python3 gitMinimal writeText;
           pythonInterpreter = "${python}/bin/python";
         };
         setuptools = config.deps.python.pkgs.setuptools;
-        inherit (nixpkgs) git;
+        inherit (nixpkgs) nix;
         inherit (writers) writePureShellScript;
       };
 
