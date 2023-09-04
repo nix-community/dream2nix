@@ -3,9 +3,7 @@
   config,
   dream2nix,
   ...
-}: let
-  l = lib // builtins;
-in {
+}: {
   imports = [
     dream2nix.modules.dream2nix.rust-cargo-lock
     dream2nix.modules.dream2nix.rust-crane

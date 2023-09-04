@@ -5,7 +5,6 @@
   dream2nix,
   ...
 }: let
-  l = lib // builtins;
   pyproject = lib.pipe (config.mkDerivation.src + /pyproject.toml) [
     builtins.readFile
     builtins.fromTOML

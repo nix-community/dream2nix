@@ -22,8 +22,8 @@ in {
   version = "0.13.0";
 
   deps = {nixpkgs, ...}: {
-    stdenv = l.mkForce nixpkgs.stdenv;
-    jq = l.mkForce nixpkgs.jq;
+    stdenv = lib.mkForce nixpkgs.stdenv;
+    jq = lib.mkForce nixpkgs.jq;
     fetchFromGitHub = nixpkgs.fetchFromGitHub;
   };
 
@@ -43,8 +43,8 @@ in {
   };
 
   nodejs-granular = {
-    installMethod = l.mkForce "copy";
-    buildScript = l.mkForce "npm run build-prod";
+    installMethod = lib.mkForce "copy";
+    buildScript = lib.mkForce "npm run build-prod";
     # runBuild = true;
     # TODO: create a better interface for overrides
     deps.delayed-stream."1.0.0" = {

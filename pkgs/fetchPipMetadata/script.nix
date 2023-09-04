@@ -40,12 +40,14 @@
   nix,
   gitMinimal,
   writePureShellScript,
+  nix-prefetch-scripts,
 }: let
   package = import ./package.nix {
     inherit
       lib
       python3
       gitMinimal
+      nix-prefetch-scripts
       ;
   };
 

@@ -5,9 +5,7 @@
   lib,
   dream2nix,
   ...
-}: let
-  l = lib // builtins;
-in {
+}: {
   imports = [
     dream2nix.modules.dream2nix.pip
   ];

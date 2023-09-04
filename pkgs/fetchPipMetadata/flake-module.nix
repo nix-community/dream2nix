@@ -8,7 +8,7 @@
     python3 = pkgs.python310;
   in {
     devShells.fetch-pip-metadata = let
-      package = self'.packages.fetch-pip-metadata;
+      package = self'.packages.fetch-pip-metadata-package;
       pythonWithDeps = python3.withPackages (
         ps:
           package.propagatedBuildInputs
@@ -28,7 +28,7 @@
     packages.fetch-pip-metadata-package = import ./package.nix {
       inherit lib;
       inherit python3;
-      inherit (pkgs) gitMinimal;
+      inherit (pkgs) gitMinimal nix-prefetch-scripts;
     };
   };
 }

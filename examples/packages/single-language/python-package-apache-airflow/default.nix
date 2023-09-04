@@ -4,7 +4,6 @@
   dream2nix,
   ...
 }: let
-  l = lib // builtins;
   python = config.deps.python;
 in {
   imports = [
