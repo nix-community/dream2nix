@@ -39,7 +39,7 @@ in {
   };
 
   name = lib.mkForce "app";
-  version = lib.mkForce "0.0.0";
+  version = lib.mkForce "1.0.0";
 
   lock.lockFileRel =
     lib.mkForce "/locks/example-package-nodejs-no-lock/lock-${system}.json";
