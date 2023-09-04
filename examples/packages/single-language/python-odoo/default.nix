@@ -4,7 +4,6 @@
   dream2nix,
   ...
 }: let
-  l = lib // builtins;
   python = config.deps.python;
   src = config.deps.fetchFromGitHub {
     owner = "odoo";
@@ -65,11 +64,11 @@ in {
       };
       libsass.mkDerivation = {
         doCheck = false;
-        doInstallCheck = l.mkForce false;
+        doInstallCheck = lib.mkForce false;
       };
       pypdf2.mkDerivation = {
         doCheck = false;
-        doInstallCheck = l.mkForce false;
+        doInstallCheck = lib.mkForce false;
       };
     };
   };
