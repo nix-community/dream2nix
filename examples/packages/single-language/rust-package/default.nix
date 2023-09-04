@@ -3,9 +3,7 @@
   config,
   dream2nix,
   ...
-}: let
-  l = lib // builtins;
-in {
+}: {
   imports = [
     dream2nix.modules.dream2nix.rust-cargo-lock
     dream2nix.modules.dream2nix.rust-crane
@@ -15,8 +13,8 @@ in {
     inherit (nixpkgs) fetchFromGitHub;
   };
 
-  name = l.mkForce "ripgrep";
-  version = l.mkForce "13.0.0";
+  name = lib.mkForce "ripgrep";
+  version = lib.mkForce "13.0.0";
 
   mkDerivation = {
     # define the source root that contains the package we want to build.

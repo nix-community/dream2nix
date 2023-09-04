@@ -1,4 +1,4 @@
-import pytest
+from pathlib import Path
 from packaging.requirements import Requirement
 
 import lock_file_from_report as l
@@ -18,7 +18,7 @@ def test_url_no_hash():
         version=install["metadata"]["version"],
         sha256=None,
     )
-    assert l.lock_entry_from_report_entry(install) == expected
+    assert l.lock_entry_from_report_entry(install, Path("foo")) == expected
 
 
 def test_url_with_hash():
@@ -38,7 +38,7 @@ def test_url_with_hash():
         version=install["metadata"]["version"],
         sha256="example_hash",
     )
-    assert l.lock_entry_from_report_entry(install) == expected
+    assert l.lock_entry_from_report_entry(install, Path("foo")) == expected
 
 
 def test_path_external():
@@ -57,7 +57,7 @@ def test_path_external():
         version=install["metadata"]["version"],
         sha256=None,
     )
-    assert l.lock_entry_from_report_entry(install) == expected
+    assert l.lock_entry_from_report_entry(install, Path("foo")) == expected
 
 
 def test_path_in_repo(git_repo_path):
@@ -76,7 +76,7 @@ def test_path_in_repo(git_repo_path):
         version=install["metadata"]["version"],
         sha256=None,
     )
-    assert l.lock_entry_from_report_entry(install) == expected
+    assert l.lock_entry_from_report_entry(install, Path("foo")) == expected
 
 
 def test_path_in_nix_store():
@@ -95,7 +95,7 @@ def test_path_in_nix_store():
         version=install["metadata"]["version"],
         sha256=None,
     )
-    assert l.lock_entry_from_report_entry(install) == expected
+    assert l.lock_entry_from_report_entry(install, Path("foo")) == expected
 
 
 def test_git(monkeypatch):
@@ -125,4 +125,4 @@ def test_git(monkeypatch):
         "url": "https://github.com/python/mypy",
         "version": "1.7.0+dev.df4717ee2cbbeb9e47fbd0e60edcaa6f81bbd7bb",
     }
-    assert l.lock_entry_from_report_entry(install) == expected
+    assert l.lock_entry_from_report_entry(install, Path("foo")) == expected

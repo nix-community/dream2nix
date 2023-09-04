@@ -71,6 +71,7 @@
             bash
             coreutils
             gawk
+            gitMinimal
             mkShell
             path
             stdenv
@@ -107,13 +108,19 @@ in {
 
   config = {
     deps = {nixpkgs, ...}:
-      l.mapAttrs (_: l.mkDefault) {
-        fetchPipMetadataScript = nixpkgs.callPackage ../../../pkgs/fetchPipMetadata {
+      l.mapAttrs (_: l.mkOverride 1002) {
+        # This is imported directly instead of depending on dream2nix.packages
+        # with the intention to keep modules independent.
+        fetchPipMetadataScript = import ../../../pkgs/fetchPipMetadata/script.nix {
+          inherit lib;
           inherit (cfg) pypiSnapshotDate pipFlags pipVersion requirementsList requirementsFiles nativeBuildInputs;
-          inherit (config.deps) writePureShellScript python nix git;
+          inherit (config.deps) writePureShellScript nix;
+          inherit (config.paths) findRoot;
+          inherit (nixpkgs) gitMinimal nix-prefetch-scripts python3 writeText;
+          pythonInterpreter = "${python}/bin/python";
         };
         setuptools = config.deps.python.pkgs.setuptools;
-        inherit (nixpkgs) git fetchgit;
+        inherit (nixpkgs) nix fetchgit;
         inherit (writers) writePureShellScript;
       };
 
