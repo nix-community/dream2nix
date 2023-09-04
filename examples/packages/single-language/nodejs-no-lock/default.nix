@@ -4,7 +4,6 @@
   dream2nix,
   ...
 }: let
-  l = lib // builtins;
   system = config.deps.stdenv.system;
 in {
   imports = [
@@ -39,9 +38,9 @@ in {
       ;
   };
 
-  name = l.mkForce "app";
-  version = l.mkForce "0.0.0";
+  name = lib.mkForce "app";
+  version = lib.mkForce "0.0.0";
 
   lock.lockFileRel =
-    l.mkForce "/locks/example-package-nodejs-no-lock/lock-${system}.json";
+    lib.mkForce "/locks/example-package-nodejs-no-lock/lock-${system}.json";
 }

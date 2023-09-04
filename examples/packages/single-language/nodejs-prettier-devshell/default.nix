@@ -3,9 +3,7 @@
   config,
   dream2nix,
   ...
-}: let
-  l = lib // builtins;
-in {
+}: {
   imports = [
     dream2nix.modules.dream2nix.nodejs-devshell
   ];
@@ -31,6 +29,6 @@ in {
       ;
   };
 
-  name = l.mkForce "prettier";
-  version = l.mkForce "2.8.7";
+  name = lib.mkForce "prettier";
+  version = lib.mkForce "2.8.7";
 }
