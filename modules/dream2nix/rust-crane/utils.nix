@@ -13,41 +13,6 @@
 }: let
   l = lib // builtins;
   isInPackages = name: version: (packages.${name} or null) == version;
-  # a make overridable for rust derivations specifically
-  makeOverridable = f: origArgs: let
-    result = f origArgs;
-
-    # Creates a functor with the same arguments as f
-    copyArgs = g: l.setFunctionArgs g (l.functionArgs f);
-    # Changes the original arguments with (potentially a function that returns) a set of new attributes
-    overrideWith = newArgs:
-      origArgs
-      // (
-        if l.isFunction newArgs
-        then newArgs origArgs
-        else newArgs
-      );
-
-    # Re-call the function but with different arguments
-    overrideArgs = copyArgs (newArgs: makeOverridable f (overrideWith newArgs));
-    # Change the result of the function call by applying g to it
-    overrideResult = g: makeOverridable (copyArgs (args: g (f args))) origArgs;
-  in
-    result.derivation
-    // {
-      override = args:
-        overrideArgs {
-          args =
-            origArgs.args
-            // (
-              if l.isFunction args
-              then args origArgs.args
-              else args
-            );
-        };
-      overrideRustToolchain = f: overrideArgs {toolchain = f origArgs.toolchain;};
-      overrideAttrs = fdrv: overrideResult (x: {derivation = x.derivation.overrideAttrs fdrv;});
-    };
 in rec {
   getMeta = pname: version: let
     meta = subsystemAttrs.meta.${pname}.${version};
@@ -85,25 +50,6 @@ in rec {
     substituteInPlace ./Cargo.toml \
       ${replace}
   '';
-
-  mkBuildWithToolchain = mkBuildFunc: let
-    buildWithToolchain = args:
-      makeOverridable
-      (args: {
-        derivation =
-          (mkBuildFunc args.toolchain)
-          (
-            args.args
-            // {
-              passthru =
-                (args.args.passthru or {})
-                // {rustToolchain = args.toolchain;};
-            }
-          );
-      })
-      args;
-  in
-    buildWithToolchain;
 
   # Backup original Cargo.lock if it exists and write our own one
   writeCargoLock = ''

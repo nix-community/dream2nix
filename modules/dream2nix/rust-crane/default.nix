@@ -127,6 +127,7 @@
 
   # common args we use for both buildDepsOnly and buildPackage
   common = {
+    src = lib.mkForce (utils.getRootSource pname version);
     postUnpack = ''
       export CARGO_HOME=$(pwd)/.cargo_home
       export cargoVendorDir="$TMPDIR/nix-vendor"
@@ -154,7 +155,6 @@
   # The deps-only derivation will use this as a prefix to the `pname`
   depsNameSuffix = "-deps";
   depsArgs = {
-    src = config.mkDerivation.src;
     preUnpack = ''
       ${vendoring.copyVendorDir "$dream2nixVendorDir" common.cargoVendorDir}
     '';
@@ -195,7 +195,6 @@ in {
   rust-crane.depsDrv = {
     inherit version;
     name = pname + depsNameSuffix;
-    mkDerivation = builtins.removeAttrs config.mkDerivation ["src"];
     package-func.func = crane.buildDepsOnly;
     package-func.args = l.mkMerge [
       common
@@ -207,6 +206,12 @@ in {
   package-func.args = l.mkMerge [common buildArgs];
 
   public = {
+    devShell = import ./devshell.nix {
+      name = "${pname}-devshell";
+      drvs = [cfg.depsDrv.public config.public];
+      inherit lib;
+      inherit (config.deps) libiconv mkShell stdenv;
+    };
     dependencies = cfg.depsDrv.public;
     meta = utils.getMeta pname version;
   };
@@ -232,6 +237,8 @@ in {
         runCommand
         writeText
         fetchFromGitHub
+        libiconv
+        mkShell
         ;
       inherit
         (nixpkgs.writers)
