@@ -7,6 +7,7 @@
   libiconv,
   mkShell,
   stdenv,
+  cargo,
   ...
 }: let
   l = lib // builtins;
@@ -77,6 +78,7 @@
     // {
       inherit name;
       passthru.env = _shellEnv;
+      nativeBuildInputs = _shellEnv.nativeBuildInputs ++ [cargo];
     };
 in
   (mkShell.override {stdenv = (l.head drvs).config.mkDerivation.stdenv or stdenv;}) shellEnv

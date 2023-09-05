@@ -30,7 +30,7 @@
 
   rust-crane = {
     buildProfile = "dev";
-    buildFlags = ["--verbose"];
+    buildFlags = ["--verbose" "--lib"];
     runTests = false;
   };
 }
