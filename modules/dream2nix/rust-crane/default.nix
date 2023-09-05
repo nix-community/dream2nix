@@ -210,7 +210,7 @@ in {
       name = "${pname}-devshell";
       drvs = [cfg.depsDrv.public config.public];
       inherit lib;
-      inherit (config.deps) libiconv mkShell stdenv;
+      inherit (config.deps) libiconv mkShell stdenv cargo;
     };
     dependencies = cfg.depsDrv.public;
     meta = utils.getMeta pname version;
