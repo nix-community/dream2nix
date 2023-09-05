@@ -13,18 +13,14 @@
     ...
   }: let
     system = "x86_64-linux";
-    pkgs = nixpkgs.legacyPackages.${system};
-    lib = nixpkgs.lib;
-    packageModuleNames = builtins.attrNames (builtins.readDir ./packages);
   in {
     # all packages defined inside ./packages/
-    packages.${system} =
-      lib.genAttrs packageModuleNames
-      (moduleName:
-        dream2nix.lib.evalModules {
-          modules = ["${./packages}/${moduleName}" ./settings.nix];
-          packageSets.nixpkgs = pkgs;
-          specialArgs.self = self;
-        });
+    packages.${system} = dream2nix.lib.importPackages {
+      projectRoot = ./.;
+      # can be changed to ".git" or "flake.nix" to get rid of .project-root
+      projectRootFile = ".project-root";
+      packagesDir = "/packages";
+      packageSets.nixpkgs = nixpkgs.legacyPackages.${system};
+    };
   };
 }
