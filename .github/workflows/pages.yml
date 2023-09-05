@@ -10,10 +10,10 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3.6.0
+      - uses: actions/checkout@3df4ab11eba7bda6032a0b82a6bb43b11571feac  # v4.0.0
 
       - name: Install nix
-        uses: cachix/install-nix-action@v22
+        uses: cachix/install-nix-action@6a9a9e84a173d90b3ffb42c5ddaf9ea033fad011  # v23
         with:
           extra_nix_config: |
             experimental-features = nix-command flakes
@@ -23,7 +23,7 @@ jobs:
         run: nix build -L --show-trace .#docs
 
       - name: Deploy
-        uses: peaceiris/actions-gh-pages@v3
+        uses: peaceiris/actions-gh-pages@373f7f263a76c20808c831209c920827a82a2847  # v3.9.3
         if: ${{ github.ref == 'refs/heads/main' }}
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
