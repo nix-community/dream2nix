@@ -1,12 +1,14 @@
 {
   config,
   lib,
-  extendModules,
+  dream2nix,
   ...
 } @ topArgs: let
   l = lib // builtins;
 
   dreamLock = config.rust-cargo-lock.dreamLock;
+
+  sourceRoot = config.mkDerivation.src;
 
   fetchDreamLockSources =
     import ../../../lib/internal/fetchDreamLockSources.nix
@@ -52,7 +54,7 @@
   fetchedSources =
     fetchedSources'
     // {
-      ${defaultPackageName}.${defaultPackageVersion} = config.mkDerivation.src;
+      ${defaultPackageName}.${defaultPackageVersion} = sourceRoot;
     };
 
   # name: version: -> store-path
@@ -72,7 +74,7 @@
   toTOML = import ../../../lib/internal/toTOML.nix {inherit lib;};
 
   utils = import ./utils.nix {
-    inherit dreamLock getSource lib toTOML;
+    inherit dreamLock getSource lib toTOML sourceRoot;
     inherit
       (dreamLockInterface)
       getSourceSpec
@@ -84,7 +86,6 @@
       (config.deps)
       writeText
       ;
-    sourceRoot = config.mkDerivation.src;
   };
 
   vendoring = import ./vendor.nix {
@@ -105,88 +106,64 @@
       ;
   };
 
-  buildWithToolchain =
-    utils.mkBuildWithToolchain
-    (toolchain: (config.deps.makeRustPlatform toolchain).buildRustPackage);
+  pname = config.name;
+  version = config.version;
 
-  defaultToolchain = {
-    inherit (config.deps) cargo rustc;
+  src = utils.getRootSource pname version;
+  replacePaths =
+    utils.replaceRelativePathsWithAbsolute
+    subsystemAttrs.relPathReplacements.${pname}.${version};
+  writeGitVendorEntries = vendoring.writeGitVendorEntries "vendored-sources";
+
+  cargoBuildFlags = "--package ${pname}";
+  buildArgs = {
+    inherit pname version;
+    src = lib.mkForce src;
+
+    meta = utils.getMeta pname version;
+
+    cargoBuildFlags = cargoBuildFlags;
+    cargoTestFlags = cargoBuildFlags;
+
+    cargoVendorDir = "../nix-vendor";
+    dream2nixVendorDir = vendoring.vendoredDependencies;
+
+    postUnpack = ''
+      ${vendoring.copyVendorDir "$dream2nixVendorDir" "./nix-vendor"}
+      export CARGO_HOME=$(pwd)/.cargo_home
+    '';
+
+    preConfigure = ''
+      mkdir -p $CARGO_HOME
+      if [ -f ../.cargo/config ]; then
+        mv ../.cargo/config $CARGO_HOME/config.toml
+      fi
+      ${writeGitVendorEntries}
+      ${replacePaths}
+      ${utils.writeCargoLock}
+    '';
   };
-
-  buildPackage = pname: version: let
-    src = utils.getRootSource pname version;
-    replacePaths =
-      utils.replaceRelativePathsWithAbsolute
-      subsystemAttrs.relPathReplacements.${pname}.${version};
-    writeGitVendorEntries = vendoring.writeGitVendorEntries "vendored-sources";
-
-    cargoBuildFlags = "--package ${pname}";
-    buildArgs = {
-      inherit pname version src;
-
-      meta = utils.getMeta pname version;
-
-      cargoBuildFlags = cargoBuildFlags;
-      cargoTestFlags = cargoBuildFlags;
-
-      cargoVendorDir = "../nix-vendor";
-      dream2nixVendorDir = vendoring.vendoredDependencies;
-
-      postUnpack = ''
-        ${vendoring.copyVendorDir "$dream2nixVendorDir" "./nix-vendor"}
-        export CARGO_HOME=$(pwd)/.cargo_home
-      '';
-
-      preConfigure = ''
-        mkdir -p $CARGO_HOME
-        if [ -f ../.cargo/config ]; then
-          mv ../.cargo/config $CARGO_HOME/config.toml
-        fi
-        ${writeGitVendorEntries}
-        ${replacePaths}
-        ${utils.writeCargoLock}
-      '';
-    };
-  in
-    buildWithToolchain {
-      toolchain = defaultToolchain;
-      args = buildArgs;
-    };
-
-  allPackages =
-    l.mapAttrs
-    (name: version: {"${version}" = buildPackage name version;})
-    dreamLockInterface.packages;
 in {
   imports = [
-    # dream2nix.modules.dream2nix.mkDerivation
+    dream2nix.modules.dream2nix.mkDerivation
   ];
 
-  public = lib.mkForce {
-    type = "derivation";
-    inherit config extendModules;
-    inherit (config) name version;
-    inherit
-      (allPackages.${config.name}.${config.version})
-      drvPath
-      outPath
-      outputs
-      outputName
-      meta
-      ;
+  package-func.func = config.deps.rustPlatform.buildRustPackage;
+  package-func.args = buildArgs;
+
+  public = {
+    meta = utils.getMeta pname version;
   };
 
   deps = {nixpkgs, ...}: {
     inherit
       (nixpkgs)
-      cargo
       fetchurl
       jq
-      makeRustPlatform
       moreutils
       python3Packages
       runCommandLocal
-      rustc
+      rustPlatform
       ;
     inherit
       (nixpkgs.writers)
