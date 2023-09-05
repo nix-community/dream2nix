@@ -8,59 +8,29 @@
 
   cfg = config.nodejs-granular;
 
-  fetchDreamLockSources =
-    import ../../../lib/internal/fetchDreamLockSources.nix
-    {inherit lib;};
-  getDreamLockSource = import ../../../lib/internal/getDreamLockSource.nix {inherit lib;};
-  readDreamLock = import ../../../lib/internal/readDreamLock.nix {inherit lib;};
-  hashPath = import ../../../lib/internal/hashPath.nix {
+  extractSource = import ../../../lib/internal/fetchers/extractSource.nix {
     inherit lib;
-    inherit (config.deps) runCommandLocal nix;
-  };
-  hashFile = import ../../../lib/internal/hashFile.nix {
-    inherit lib;
-    inherit (config.deps) runCommandLocal nix;
+    inherit (config.deps.stdenv) mkDerivation;
   };
 
-  # fetchers
-  fetchers = {
-    git = import ../../../lib/internal/fetchers/git {
-      inherit hashPath;
-      inherit (config.deps) fetchgit;
-    };
-    http = import ../../../lib/internal/fetchers/http {
-      inherit hashFile lib;
-      inherit (config.deps.stdenv) mkDerivation;
-      inherit (config.deps) fetchurl;
-    };
-  };
+  # pdefs.${name}.${version} :: {
+  #   // all dependency entries of that package.
+  #   // each dependency is guaranteed to have its own entry in 'pdef'
+  #   // A package without dependencies has `dependencies = {}` (So dependencies has a constant type)
+  #   dependencies = {
+  #     ${name} = {
+  #       dev = boolean;
+  #       version :: string;
+  #     }
+  #   }
+  #   // Pointing to the source of the package.
+  #   // in most cases this is a tarball (tar.gz) which needs to be unpacked by e.g. unpackPhase
+  #   source :: Derivation | Path
+  # }
+  pdefs = config.nodejs-package-lock-v3.pdefs;
 
-  dreamLockLoaded =
-    readDreamLock {inherit (config.nodejs-package-lock) dreamLock;};
-  dreamLockInterface = dreamLockLoaded.interface;
-
-  inherit (dreamLockInterface) defaultPackageName defaultPackageVersion;
-
-  fetchedSources = fetchDreamLockSources {
-    inherit (dreamLockInterface) defaultPackageName defaultPackageVersion;
-    inherit (dreamLockLoaded.lock) sources;
-    inherit fetchers;
-  };
-
-  # name: version: -> store-path
-  getSource = getDreamLockSource fetchedSources;
-
-  inherit
-    (dreamLockInterface)
-    getDependencies # name: version: -> [ {name=; version=; } ]
-    # Attributes
-    
-    subsystemAttrs # attrset
-    packageVersions
-    ;
-
-  isMainPackage = name: version:
-    (dreamLockInterface.packages."${name}" or null) == version;
+  defaultPackageName = config.nodejs-package-lock-v3.packageLock.name;
+  defaultPackageVersion = config.nodejs-package-lock-v3.packageLock.version;
 
   nodejs = config.deps.nodejs;
 
@@ -69,22 +39,141 @@
     mv node-* $out
   '';
 
+  # name: version: -> store-path
+  getSource = name: version:
+    extractSource {
+      source = pdefs.${name}.${version}.source;
+    };
+
+  nameVersionPair = name: version: {
+    name = name;
+    version = version;
+  };
+
+  # name: version: -> [ {name=; version=; } ]
+  getDependencies = pname: version:
+    l.filter
+    (dep: ! l.elem dep cyclicDependencies."${pname}"."${version}" or [])
+    dependencyGraph."${pname}"."${version}" or [];
+
+  dependencyGraph = lib.flip lib.mapAttrs pdefs (
+    name: versions:
+      lib.flip lib.mapAttrs versions (
+        version: def:
+          lib.mapAttrsToList
+          (name: def: {
+            name = name;
+            version = def.version;
+          })
+          def.dependencies
+      )
+  );
+
+  cyclicDependencies = let
+    depGraphWithFakeRoot =
+      l.recursiveUpdate
+      dependencyGraph
+      {
+        __fake-entry.__fake-version =
+          l.mapAttrsToList
+          nameVersionPair
+          {${defaultPackageName} = defaultPackageVersion;};
+      };
+
+    findCycles = node: prevNodes: cycles: let
+      children =
+        depGraphWithFakeRoot."${node.name}"."${node.version}";
+
+      cyclicChildren =
+        l.filter
+        (child: prevNodes ? "${child.name}#${child.version}")
+        children;
+
+      nonCyclicChildren =
+        l.filter
+        (child: ! prevNodes ? "${child.name}#${child.version}")
+        children;
+
+      cycles' =
+        cycles
+        ++ (l.map (child: {
+            from = node;
+            to = child;
+          })
+          cyclicChildren);
+
+      # use set for efficient lookups
+      prevNodes' =
+        prevNodes
+        // {"${node.name}#${node.version}" = null;};
+    in
+      if nonCyclicChildren == []
+      then cycles'
+      else
+        l.flatten
+        (l.map
+          (child: findCycles child prevNodes' cycles')
+          nonCyclicChildren);
+
+    cyclesList =
+      findCycles
+      (
+        nameVersionPair
+        "__fake-entry"
+        "__fake-version"
+      )
+      {}
+      [];
+  in
+    l.foldl'
+    (cycles: cycle: (
+      let
+        existing =
+          cycles."${cycle.from.name}"."${cycle.from.version}"
+          or [];
+
+        reverse =
+          cycles."${cycle.to.name}"."${cycle.to.version}"
+          or [];
+      in
+        # if edge or reverse edge already in cycles, do nothing
+        if
+          l.elem cycle.from reverse
+          || l.elem cycle.to existing
+        then cycles
+        else
+          l.recursiveUpdate
+          cycles
+          {
+            "${cycle.from.name}"."${cycle.from.version}" =
+              existing ++ [cycle.to];
+          }
+    ))
+    {}
+    cyclesList;
+
   nodejsDeps =
     lib.mapAttrs
-    (name: versions:
-      lib.genAttrs
-      versions
-      (version:
-        makeDependencyModule name version))
-    packageVersions;
+    (
+      name: versions:
+        lib.mapAttrs
+        (version: def: {...}: {
+          imports = [
+            (commonModule name version)
+            (depsModule name version)
+          ];
+        })
+        versions
+    )
+    pdefs;
 
-  # Generates a derivation for a specific package name + version
-  makeDependencyModule = name: version: {config, ...}: {
-    imports = [
-      (commonModule name version)
-    ];
+  depsModule = name: version: {config, ...}: {
     name = lib.replaceStrings ["@" "/"] ["__at__" "__slash__"] name;
     inherit version;
+    nodejs-granular = {
+      # only run build on the main package
+      runBuild = l.mkOptionDefault false;
+    };
     env = {
       packageName = name;
     };
@@ -140,12 +229,13 @@
       };
 
     mkDerivation = {
-      meta =
-        subsystemAttrs.meta
-        // {
-          license =
-            l.map (name: l.licenses.${name}) subsystemAttrs.meta.license;
-        };
+      # TODO: add to nodejs-package-lock-v3 module
+      # meta =
+      #   subsystemAttrs.meta
+      #   // {
+      #     license =
+      #       l.map (name: l.licenses.${name}) subsystemAttrs.meta.license;
+      #   };
 
       passthru.dependencies = passthruDeps;
 
@@ -265,9 +355,6 @@
       */
       installMethod = l.mkOptionDefault "symlink";
 
-      # only run build on the main package
-      runBuild = l.mkOptionDefault (isMainPackage name config.version);
-
       # can be overridden to define alternative install command
       # (defaults to 'npm run postinstall')
       buildScript = l.mkOptionDefault null;
@@ -281,7 +368,11 @@ in {
   ];
   deps = {nixpkgs, ...}:
     l.mapAttrs (_: l.mkDefault) {
-      inherit (nixpkgs) mkShell;
+      inherit
+        (nixpkgs)
+        mkShell
+        runCommandLocal
+        ;
     };
   env = {
     packageName = config.name;
