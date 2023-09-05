@@ -1,12 +1,12 @@
 {
   # args
-  drvs,
   name,
+  depsDrv,
+  mainDrv,
   # nixpkgs
   lib,
   libiconv,
   mkShell,
-  stdenv,
   cargo,
   ...
 }: let
@@ -72,7 +72,7 @@
     )
     {}
     envs;
-  _shellEnv = combineEnvs (l.map getEnvs drvs);
+  _shellEnv = combineEnvs (l.map getEnvs [depsDrv mainDrv]);
   shellEnv =
     _shellEnv
     // {
@@ -81,4 +81,4 @@
       nativeBuildInputs = _shellEnv.nativeBuildInputs ++ [cargo];
     };
 in
-  (mkShell.override {stdenv = (l.head drvs).config.mkDerivation.stdenv or stdenv;}) shellEnv
+  (mkShell.override {stdenv = mainDrv.out.stdenv;}) shellEnv
