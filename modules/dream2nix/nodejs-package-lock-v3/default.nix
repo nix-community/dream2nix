@@ -5,6 +5,8 @@
   ...
 }: let
   l = lib // builtins;
+  cfg = config.nodejs-package-lock-v3;
+
   inherit (config.deps) fetchurl;
 
   nodejsLockUtils = import ../../../lib/internal/nodejsLockUtils.nix {inherit lib;};
@@ -68,11 +70,18 @@
         };
       };
 
-  parse = lock: (l.mapAttrs' (parseEntry lock) lock.packages);
+  parse = lock:
+    builtins.foldl'
+    (acc: entry:
+      acc
+      // {
+        ${entry.name} = acc.${entry.name} or {} // entry.value;
+      })
+    {}
+    # [{name=; value=;} ...]
+    (l.mapAttrsToList (parseEntry lock) lock.packages);
 
   pdefs = parse config.nodejs-package-lock-v3.packageLock;
-  # cfg = config.nodejs-package-lock-v3;
-  # config.packageLock
 in {
   imports = [
     ./interface.nix
@@ -88,4 +97,7 @@ in {
   };
 
   nodejs-package-lock-v3.pdefs = pdefs;
+  nodejs-package-lock-v3.packageLock =
+    lib.mkDefault
+    (builtins.fromJSON (builtins.readFile cfg.packageLockFile));
 }
