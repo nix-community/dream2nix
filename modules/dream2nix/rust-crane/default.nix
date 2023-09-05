@@ -208,9 +208,10 @@ in {
   public = {
     devShell = import ./devshell.nix {
       name = "${pname}-devshell";
-      drvs = [cfg.depsDrv.public config.public];
+      depsDrv = cfg.depsDrv.public;
+      mainDrv = config.public;
       inherit lib;
-      inherit (config.deps) libiconv mkShell stdenv cargo;
+      inherit (config.deps) libiconv mkShell cargo;
     };
     dependencies = cfg.depsDrv.public;
     meta = utils.getMeta pname version;
