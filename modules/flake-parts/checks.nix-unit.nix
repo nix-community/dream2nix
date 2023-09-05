@@ -8,9 +8,12 @@
     # map all modules in /examples to a package output in the flake.
     checks.nix-unit = pkgs.runCommand "nix-unit-tests" {} ''
       export NIX_PATH=nixpkgs=${pkgs.path}
-      ${inputs'.nix-unit.packages.nix-unit}/bin/nix-unit \
-        ${self}/tests/nix-unit/* \
-        --eval-store $(realpath .)
+      for test in ${self}/tests/nix-unit/*; do
+        echo -e "Executing tests from file $test"
+        ${inputs'.nix-unit.packages.nix-unit}/bin/nix-unit \
+          "$test" \
+          --eval-store $(realpath .)
+      done
       touch $out
     '';
   };
