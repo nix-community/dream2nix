@@ -2,27 +2,61 @@
 {
   self,
   inputs,
+  lib,
   ...
-}: {
+}: let
+  inherit
+    (lib)
+    flip
+    foldl
+    mapAttrs'
+    mapAttrsToList
+    ;
+  inherit
+    (builtins)
+    mapAttrs
+    readDir
+    ;
+
+  packageCategories = readDir (self + "/examples/packages");
+
+  readExamples = dirName: let
+    examplesPath = self + /examples/packages + "/${dirName}";
+    examples = readDir examplesPath;
+  in
+    flip mapAttrs examples
+    (name: _: {
+      module = examplesPath + "/${name}";
+      packagePath = "/examples/packages/${dirName}/${name}";
+    });
+
+  # Type: [ {${name} = {module, packagePath} ]
+  allExamples = mapAttrsToList (dirName: _: readExamples dirName) packageCategories;
+
+  exampleModules = foldl (a: b: a // b) {} allExamples;
+
+  # create a template for each example package
+  packageTempaltes = flip mapAttrs exampleModules (name: def: {
+    description = "Example package ${name}";
+    path = def.module;
+  });
+in {
+  flake.templates =
+    packageTempaltes
+    // {
+      # add repo templates
+      repo.description = "Dream2nix repo without flakes";
+      repo.path = self + /examples/dream2nix-repo;
+      repo-flake.description = "Dream2nix repo with flakes";
+      repo-flake.path = self + /examples/dream2nix-repo-flake;
+    };
+
   perSystem = {
     system,
     config,
-    lib,
     pkgs,
     ...
   }: let
-    inherit
-      (lib)
-      flip
-      foldl
-      mapAttrs'
-      mapAttrsToList
-      ;
-    inherit
-      (builtins)
-      readDir
-      ;
-
     # A module imported into every package setting up the eval cache
     setup = {config, ...}: {
       paths.projectRoot = self;
@@ -49,30 +83,8 @@
     in
       evaled.config.public;
 
-    examplePackagesDirs = readDir (self + "/examples/packages");
-
-    readExamples = dirName: let
-      examplesPath = self + /examples/packages + "/${dirName}";
-      examples = readDir examplesPath;
-    in
-      flip mapAttrs' examples
-      (name: _: {
-        name = "example-package-${name}";
-        value = {
-          module = examplesPath + "/${name}";
-          packagePath = "/examples/packages/${dirName}/${name}";
-        };
-      });
-
-    allExamples = mapAttrsToList (dirName: _: readExamples dirName) examplePackagesDirs;
-
-    exampleModules = foldl (a: b: a // b) {} allExamples;
-
-    # TODO: remove this line once everything is migrated to the new structure
-    allModules' = self.modules.drvs or {} // exampleModules;
-
-    allModules = flip mapAttrs' allModules' (name: module: {
-      inherit name;
+    allModules = flip mapAttrs' exampleModules (name: module: {
+      name = "example-package-${name}";
       value = [
         module.module
         setup
