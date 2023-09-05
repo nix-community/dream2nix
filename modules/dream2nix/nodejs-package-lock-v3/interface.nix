@@ -2,21 +2,6 @@
 #   meta? :: {
 #   }
 # }
-# // Every package has one entry
-# pdef.${name}.${version} :: {
-#   // all dependency entries of that package.
-#   // each dependency is guaranteed to have its own entry in 'pdef'
-#   // A package without dependencies has `dependencies = {}` (So dependencies has a constant type)
-#   dependencies = {
-#     ${name} = {
-#       dev :: boolean;
-#       version :: string;
-#     }
-#   } | {}
-#   // Pointing to the source of the package.
-#   // in most cases this is a tarball (tar.gz) which needs to be unpacked by e.g. unpackPhase
-#   source :: Derivation | Path
-# }
 {
   config,
   options,
@@ -81,7 +66,6 @@ in {
       description = ''
         The package-lock.json file to use.
       '';
-      default = cfg.source + "/package-lock.json";
     };
     packageLock = {
       type = t.attrs;
@@ -93,7 +77,7 @@ in {
     #   // each dependency is guaranteed to have its own entry in 'pdef'
     #   // A package without dependencies has `dependencies = {}` (So dependencies has a constant type)
     #   dependencies = {
-    #     ${name}.${version} = {
+    #     ${name} = {
     #       dev = boolean;
     #       version :: string;
     #     }

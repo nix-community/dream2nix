@@ -280,6 +280,23 @@ in {
     };
   };
 
+  test_multiple_versions = let
+    evaled = eval {
+      imports = [
+        dream2nix.modules.dream2nix.nodejs-package-lock-v3
+      ];
+      nodejs-package-lock-v3.packageLockFile = ./multiple-versions-lock.json;
+    };
+    config = evaled.config;
+  in {
+    expr = lib.attrNames config.nodejs-package-lock-v3.pdefs.strip-ansi;
+    expected = [
+      "3.0.1"
+      "4.0.0"
+      "6.0.0"
+    ];
+  };
+
   # TODO: some infinite recursion occurs when accessing pdef.{name}.{version}.source
   # test_nodejs_parse_lockfile = let
   #   evaled = eval {
