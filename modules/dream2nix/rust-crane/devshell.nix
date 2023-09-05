@@ -6,6 +6,7 @@
   lib,
   libiconv,
   mkShell,
+  stdenv,
   ...
 }: let
   l = lib // builtins;
@@ -51,7 +52,7 @@
           then v
           else null
       )
-      drv.drvAttrs
+      drv.config.mkDerivation
     );
   combineEnvs = envs:
     l.foldl'
@@ -78,4 +79,4 @@
       passthru.env = _shellEnv;
     };
 in
-  (mkShell.override {stdenv = (l.head drvs).stdenv;}) shellEnv
+  (mkShell.override {stdenv = (l.head drvs).config.mkDerivation.stdenv or stdenv;}) shellEnv
