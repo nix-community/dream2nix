@@ -31,7 +31,6 @@
         imports = [
           commonModule
           dependencyModule
-          ../nixpkgs-overrides
         ];
         config = {
           inherit name;

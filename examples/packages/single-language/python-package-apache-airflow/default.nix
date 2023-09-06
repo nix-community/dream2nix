@@ -53,9 +53,13 @@ in {
     drvs = {
       # We include fixes from nixpkgs for pendulum, but keep
       # our dependencies to avoid version conflicts
-      pendulum.nixpkgs-overrides = {
-        enable = true;
-        exclude = ["propagatedBuildInputs"];
+      pendulum = {
+        imports = [
+          dream2nix.modules.dream2nix.nixpkgs-overrides
+        ];
+        nixpkgs-overrides = {
+          exclude = ["propagatedBuildInputs"];
+        };
       };
       lazy-object-proxy.mkDerivation = {
         # setuptools-scm is required by lazy-object-proxy,
