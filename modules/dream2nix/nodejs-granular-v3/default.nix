@@ -13,6 +13,10 @@
     inherit (config.deps.stdenv) mkDerivation;
   };
 
+  findCycles = import ../../../lib/internal/findCycles.nix {
+    inherit lib;
+  };
+
   # pdefs.${name}.${version} :: {
   #   // all dependency entries of that package.
   #   // each dependency is guaranteed to have its own entry in 'pdef'
@@ -69,88 +73,10 @@
       )
   );
 
-  cyclicDependencies = let
-    depGraphWithFakeRoot =
-      l.recursiveUpdate
-      dependencyGraph
-      {
-        __fake-entry.__fake-version =
-          l.mapAttrsToList
-          nameVersionPair
-          {${defaultPackageName} = defaultPackageVersion;};
-      };
-
-    findCycles = node: prevNodes: cycles: let
-      children =
-        depGraphWithFakeRoot."${node.name}"."${node.version}";
-
-      cyclicChildren =
-        l.filter
-        (child: prevNodes ? "${child.name}#${child.version}")
-        children;
-
-      nonCyclicChildren =
-        l.filter
-        (child: ! prevNodes ? "${child.name}#${child.version}")
-        children;
-
-      cycles' =
-        cycles
-        ++ (l.map (child: {
-            from = node;
-            to = child;
-          })
-          cyclicChildren);
-
-      # use set for efficient lookups
-      prevNodes' =
-        prevNodes
-        // {"${node.name}#${node.version}" = null;};
-    in
-      if nonCyclicChildren == []
-      then cycles'
-      else
-        l.flatten
-        (l.map
-          (child: findCycles child prevNodes' cycles')
-          nonCyclicChildren);
-
-    cyclesList =
-      findCycles
-      (
-        nameVersionPair
-        "__fake-entry"
-        "__fake-version"
-      )
-      {}
-      [];
-  in
-    l.foldl'
-    (cycles: cycle: (
-      let
-        existing =
-          cycles."${cycle.from.name}"."${cycle.from.version}"
-          or [];
-
-        reverse =
-          cycles."${cycle.to.name}"."${cycle.to.version}"
-          or [];
-      in
-        # if edge or reverse edge already in cycles, do nothing
-        if
-          l.elem cycle.from reverse
-          || l.elem cycle.to existing
-        then cycles
-        else
-          l.recursiveUpdate
-          cycles
-          {
-            "${cycle.from.name}"."${cycle.from.version}" =
-              existing ++ [cycle.to];
-          }
-    ))
-    {}
-    cyclesList;
+  cyclicDependencies = findCycles {
+    inherit dependencyGraph;
+    roots = {${defaultPackageName} = defaultPackageVersion;};
+  };
 
   nodejsDeps =
     lib.mapAttrs
