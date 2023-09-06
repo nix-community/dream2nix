@@ -48,12 +48,14 @@ in {
     # fix some builds via package-specific overrides
     drvs = {
       psycopg2 = {
+        imports = [
+          dream2nix.modules.dream2nix.nixpkgs-overrides
+        ];
         # We can bulk-inherit overrides from nixpkgs, to which often helps to
         # get something working quickly. In this case it's needed for psycopg2
         # to build on aarch64-darwin. We exclude propagatedBuildInputs to keep
         # python deps from our lock file and avoid version conflicts
         nixpkgs-overrides = {
-          enable = true;
           exclude = ["propagatedBuildInputs"];
         };
         # packages-specific build inputs that are used for this
