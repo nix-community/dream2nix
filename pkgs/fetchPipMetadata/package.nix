@@ -12,11 +12,11 @@
     nativeBuildInputs = [
       gitMinimal
       python3.pkgs.pytestCheckHook
-      nix-prefetch-scripts
     ];
     propagatedBuildInputs = with python3.pkgs; [
       packaging
       certifi
+      nix-prefetch-scripts
       python-dateutil
       pip
     ];
