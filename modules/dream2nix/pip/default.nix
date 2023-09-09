@@ -89,6 +89,11 @@
           ++ (l.optionals config.deps.stdenv.isLinux [config.deps.autoPatchelfHook]);
         buildInputs =
           l.optionals config.deps.stdenv.isLinux [config.deps.manylinux1];
+        # This is required for autoPatchelfHook to find .so files from other
+        # python dependencies, like for example libcublas.so.11 from nvidia-cublas-cu11.
+        preFixup = ''
+          addAutoPatchelfSearchPath ${toString (config.mkDerivation.propagatedBuildInputs)}
+        '';
         propagatedBuildInputs = let
           depsByExtra = extra: targets.${extra}.${config.name} or [];
           defaultDeps = targets.default.${config.name} or [];
