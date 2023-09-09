@@ -18,7 +18,7 @@
     packages.${system} = dream2nix.lib.importPackages {
       projectRoot = ./.;
       # can be changed to ".git" or "flake.nix" to get rid of .project-root
-      projectRootFile = ".project-root";
+      projectRootFile = "flake.nix";
       packagesDir = "/packages";
       packageSets.nixpkgs = nixpkgs.legacyPackages.${system};
     };
