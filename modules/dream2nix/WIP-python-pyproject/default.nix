@@ -20,7 +20,6 @@ in {
 
   buildPythonPackage = {
     format = "pyproject";
-    pythonImportsCheck = pyproject.tool.setuptools.packages.find.include or [];
   };
 
   name = pyproject.project.name;
