@@ -85,6 +85,7 @@
       mkDerivation = {
         src = l.mkDefault (fetchers.${metadata.sources.${config.name}.type} metadata.sources.${config.name});
         doCheck = l.mkDefault false;
+        dontStrip = l.mkDefault true;
 
         nativeBuildInputs =
           [config.deps.unzip]
@@ -142,7 +143,6 @@ in {
     };
 
     mkDerivation = {
-      dontStrip = l.mkDefault true;
       propagatedBuildInputs = let
         rootDeps = lib.filterAttrs (_: x: x == true) cfg.rootDependencies;
       in
