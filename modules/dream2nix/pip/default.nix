@@ -147,12 +147,14 @@ in {
         l.attrValues (l.mapAttrs (name: _: cfg.drvs.${name}.public.out) rootDeps);
     };
 
-    public.devShell = config.deps.mkShell {
-      inherit (config.mkDerivation) buildInputs nativeBuildInputs;
-      packages = [
-        (config.deps.python.withPackages
-          (ps: config.mkDerivation.propagatedBuildInputs))
-      ];
-    };
+    public.devShell = let
+      pyEnv' = config.deps.python.withPackages (ps: config.mkDerivation.propagatedBuildInputs);
+      pyEnv = pyEnv'.override (old: {
+        # namespaced packages are triggering a collision error, but this can be
+        # safely ignored. They are still set up correctly and can be imported.
+        ignoreCollisions = true;
+      });
+    in
+      pyEnv.env;
   };
 }
