@@ -75,4 +75,42 @@
     expected = "node_modules/underscore";
   };
   
+  # test the lock 
+  test_nodejsLockUtils_lockfile_v3 = let
+    plock = {
+      name = "foo";
+      version = "1.0.0";
+      lockfileVersion = 3;
+      packages = {};
+    };
+  in {
+    expr = nodejsLockUtils.sanitizeLockfile plock;
+    expected = plock;
+  };
+
+  test_nodejsLockUtils_lockfile_v2 = let
+    plock = {
+      name = "foo";
+      version = "1.0.0";
+      lockfileVersion = 2;
+      packages = {};
+      dependencies = {};
+    };
+  in {
+    expr = nodejsLockUtils.sanitizeLockfile plock;
+    expected = plock;
+  };
+
+  test_nodejsLockUtils_lockfile_v1 = let
+    plock = {
+      name = "foo";
+      version = "1.0.0";
+      lockfileVersion = 1;
+      dependencies = {};
+    };
+  in {
+    expr = nodejsLockUtils.sanitizeLockfile plock;
+    expectedError = plock;
+  };
+
 }
