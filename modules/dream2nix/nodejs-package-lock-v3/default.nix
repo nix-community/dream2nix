@@ -93,6 +93,8 @@
     {};
 
   parse = lock:
+    assert lock.lockfileVersion != 1;
+    assert lock ? packages;
     mergePdefs
     # type: [ { name :: String; value :: {...}; } ]
     (l.mapAttrsToList (parseEntry lock) lock.packages);

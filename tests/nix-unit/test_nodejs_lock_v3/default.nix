@@ -292,7 +292,7 @@ in {
     ];
   };
 
-  test_nodejs_wrong_lockfile = let
+  test_nodejs_wrong_lockfile_version = let
     evaled = eval {
       imports = [
         dream2nix.modules.dream2nix.nodejs-package-lock-v3
