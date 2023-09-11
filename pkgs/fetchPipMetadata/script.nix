@@ -65,7 +65,11 @@
     mitmProxy = "${pythonWithMitmproxy}/bin/mitmdump";
 
     # convert pypiSnapshotDate to string and integrate into finalAttrs
-    pypiSnapshotDate = builtins.toString pypiSnapshotDate;
+    pypiSnapshotDate =
+      if pypiSnapshotDate == null
+      # when the snapshot date is disabled, put it far into the future
+      then "9999-01-01"
+      else builtins.toString pypiSnapshotDate;
 
     # add some variables to the derivation to integrate them into finalAttrs
     inherit
