@@ -11,4 +11,6 @@
     else null
   } =
     config.lock.refresh;
+  config.type = "derivation";
+  config.drvPath = config.public.drvPath;
 }
