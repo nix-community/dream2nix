@@ -23,12 +23,13 @@ in {
 
     # user interface
     pypiSnapshotDate = l.mkOption {
-      type = t.str;
+      type = t.nullOr t.str;
       description = ''
         maximum release date for packages
         Choose any date from the past.
       '';
       example = "2023-01-01";
+      default = null;
     };
     pipFlags = l.mkOption {
       type = t.listOf t.str;

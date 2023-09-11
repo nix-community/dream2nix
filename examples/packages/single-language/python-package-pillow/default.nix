@@ -40,7 +40,6 @@
   };
 
   pip = {
-    pypiSnapshotDate = "2023-04-02";
     requirementsList = ["${config.name}==${config.version}"];
     pipFlags = [
       "--no-binary"
