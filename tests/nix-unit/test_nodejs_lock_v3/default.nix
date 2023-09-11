@@ -299,7 +299,7 @@ in {
       ];
       nodejs-package-lock-v3.packageLock = lib.mkForce {
         # Example content of lockfile
-        "lockfileVersion" = 1;
+        # "lockfileVersion" = 1;
       };
     };
     config = evaled.config;

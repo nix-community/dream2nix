@@ -7,6 +7,17 @@
   in
     lib.removeSuffix "/" nextPath;
 
+  sanitizeLockfile = lock:
+  # Every project MUST have a name
+  assert lock ? name;
+  # Every project MUST have a version
+  assert lock ? version;
+  # This lockfile module only supports lockfileVersion 2 and 3
+  assert !lock ? lockfileVersion || lock.lockfileVersion >= 2;
+  # The Lockfile must contain a 'packages' attribute.
+  assert lock ? packages;
+  lock;
+
   findEntry =
     # = "attrs"
     packageLock:
@@ -51,5 +62,5 @@
         );
     };
 in {
-  inherit findEntry stripPath getBundledDependencies;
+  inherit findEntry stripPath getBundledDependencies sanitizeLockfile;
 }
