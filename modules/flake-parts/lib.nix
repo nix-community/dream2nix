@@ -69,6 +69,7 @@
             // {
               inherit packageSets;
               dream2nix.modules.dream2nix = self.modules.dream2nix;
+              dream2nix.overrides = self.overrides;
               dream2nix.lib.evalModules = self.lib.evalModules;
             };
         }

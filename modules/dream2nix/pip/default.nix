@@ -31,6 +31,8 @@
         imports = [
           commonModule
           dependencyModule
+          # include community overrides
+          (dream2nix.overrides.python.${name} or {})
         ];
         config = {
           inherit name;
