@@ -1,0 +1,14 @@
+[project]
+name = "someproject"
+version = "0.1.0"
+
+dependencies = [
+  "pillow",
+  "scikit-learn",
+  "torch",
+]
+
+[tool.setuptools.packages.find]
+include = [
+  "someproject",
+]
