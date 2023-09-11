@@ -9,33 +9,47 @@
 
   inherit (config.deps) fetchurl;
 
-  nodejsLockUtils = import ../../../lib/internal/nodejsLockUtils.nix {inherit lib;};
+  nodejsLockUtils = import ../../../lib/internal/nodejsLockUtils.nix { inherit lib; };
 
-  isLink = plent: plent ? link && plent.link;
+  # Collection of sanitized functions that always return the same type
+  isLink = pent: pent.link or false;
 
-  parseSource = plent:
-    if isLink plent
+  # isDev = pent: pent.dev or false;
+  # isOptional = pent: pent.optional or false;
+  # isInBundle = pent: pent.inBundle or false;
+  # hasInstallScript = pent: pent.hasInstallScript or false;
+  # getBin = pent: pent.bin or {};
+
+  /*
+    Pent :: {
+      See: https://docs.npmjs.com/cli/v9/configuring-npm/package-lock-json#packages
+    }
+    pent is one entry of 'packages'
+  */
+  parseSource = pent:
+    if isLink pent
     then
       # entry is local file
-      (builtins.dirOf config.nodejs-package-lock-v3.packageLockFile) + "/${plent.resolved}"
+      (builtins.dirOf config.nodejs-package-lock-v3.packageLockFile) + "/${pent.resolved}"
     else
       fetchurl {
-        url = plent.resolved;
-        hash = plent.integrity;
+        url = pent.resolved;
+        hash = pent.integrity;
       };
 
-  getDependencies = lock: path: plent:
-    l.mapAttrs (name: _descriptor: {
-      dev = plent.dev or false;
-      version = let
-        # Need this util as dependencies no explizitly locked version
-        # This findEntry is needed to find the exact locked version
-        packageIdent = nodejsLockUtils.findEntry lock path name;
-      in
-        # Read version from package-lock entry for the resolved package
-        lock.packages.${packageIdent}.version;
+
+  getDependencies = lock: path: pent:
+    l.mapAttrs (depName: _semverConstraint: 
+    let
+      packageIdent = nodejsLockUtils.findEntry lock path depName;
+      depPent = lock.packages.${packageIdent};
+    in
+    {
+      dev = pent.dev or false;
+      version = depPent.version;
     })
-    (plent.dependencies or {} // plent.devDependencies or {} // plent.optionalDependencies or {});
+    (pent.dependencies or {} // pent.devDependencies or {} // pent.optionalDependencies or {});
+
 
   # Takes one entry of "package" from package-lock.json
   parseEntry = lock: path: entry:
@@ -70,15 +84,17 @@
         };
       };
 
-  parse = lock:
-    builtins.foldl'
+  mergePdefs = builtins.foldl'
     (acc: entry:
       acc
       // {
         ${entry.name} = acc.${entry.name} or {} // entry.value;
       })
-    {}
-    # [{name=; value=;} ...]
+    {};
+
+  parse = lock:
+    mergePdefs
+    # type: [ { name :: String; value :: {...}; } ]
     (l.mapAttrsToList (parseEntry lock) lock.packages);
 
   pdefs = parse config.nodejs-package-lock-v3.packageLock;
