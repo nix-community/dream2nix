@@ -15,7 +15,8 @@ in {
     source = {
       type = t.either t.path t.package;
       description = "Source of the package";
-      default = config.mkDerivation.src;
+      # pull default either from rust-crane source or mkDerivation source (mkDerivation is what buildRustPackage uses)
+      default = config.rust-crane.source or config.mkDerivation.src;
     };
   };
 }

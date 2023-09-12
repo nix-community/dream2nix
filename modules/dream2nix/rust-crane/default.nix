@@ -10,7 +10,7 @@
 
   dreamLock = config.rust-cargo-lock.dreamLock;
 
-  sourceRoot = config.mkDerivation.src;
+  sourceRoot = cfg.source;
 
   fetchDreamLockSources =
     import ../../../lib/internal/fetchDreamLockSources.nix
@@ -189,7 +189,6 @@
 in {
   imports = [
     ./interface.nix
-    dream2nix.modules.dream2nix.mkDerivation
   ];
 
   rust-crane.depsDrv = {
@@ -202,20 +201,25 @@ in {
     ];
   };
 
-  package-func.func = crane.buildPackage;
-  package-func.args = l.mkMerge [common buildArgs];
-
-  public = {
-    devShell = import ./devshell.nix {
-      name = "${pname}-devshell";
-      depsDrv = cfg.depsDrv.public;
-      mainDrv = config.public;
-      inherit lib;
-      inherit (config.deps) libiconv mkShell cargo;
+  rust-crane.mainDrv = {
+    inherit version;
+    name = pname;
+    package-func.func = crane.buildPackage;
+    package-func.args = l.mkMerge [common buildArgs];
+    public = {
+      devShell = import ./devshell.nix {
+        name = "${pname}-devshell";
+        depsDrv = cfg.depsDrv.public;
+        mainDrv = cfg.mainDrv.public;
+        inherit lib;
+        inherit (config.deps) libiconv mkShell cargo;
+      };
+      dependencies = cfg.depsDrv.public;
+      meta = utils.getMeta pname version;
     };
-    dependencies = cfg.depsDrv.public;
-    meta = utils.getMeta pname version;
   };
+
+  public = cfg.mainDrv.public;
 
   deps = {nixpkgs, ...}:
     (l.mapAttrs (_: l.mkDefault) {

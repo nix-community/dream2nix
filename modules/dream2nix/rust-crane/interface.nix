@@ -29,6 +29,10 @@ in {
   };
 
   options.rust-crane = l.mapAttrs (_: l.mkOption) {
+    source = {
+      type = t.path;
+      description = "The source of a Cargo package or workspace to use when building";
+    };
     runTests = {
       type = t.bool;
       description = "Whether to run tests via `cargo test`";
@@ -53,6 +57,14 @@ in {
       type = t.listOf t.str;
       description = "Flags to add when running `cargo test`";
       default = [];
+    };
+    mainDrv = {
+      type = t.submoduleWith {
+        modules = [dream2nix.modules.dream2nix.mkDerivation];
+        inherit specialArgs;
+      };
+      description = "The main derivation config that builds the package";
+      default = {};
     };
     depsDrv = {
       type = t.submoduleWith {
