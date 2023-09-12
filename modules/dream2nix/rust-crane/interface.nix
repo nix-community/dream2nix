@@ -7,6 +7,17 @@
   l = lib // builtins;
   t = l.types;
 in {
+  options.public = {
+    devShell = l.mkOption {
+      type = t.package;
+      description = "Development shell for this package";
+    };
+    dependencies = l.mkOption {
+      type = t.package;
+      description = "The dependencies derivation for this package";
+    };
+  };
+
   options.deps = {
     cargo = l.mkOption {
       type = t.package;
