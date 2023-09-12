@@ -9,10 +9,6 @@
     dream2nix.modules.dream2nix.rust-crane
   ];
 
-  mkDerivation = {
-    src = ./.;
-  };
-
   deps = {nixpkgs, ...}: {
     inherit
       (nixpkgs)
@@ -22,4 +18,8 @@
 
   name = "app";
   version = "0.1.0";
+
+  rust-crane = {
+    source = ./.;
+  };
 }
