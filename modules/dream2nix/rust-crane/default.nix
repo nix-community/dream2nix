@@ -197,10 +197,7 @@ in {
     inherit version;
     name = pname + depsNameSuffix;
     package-func.func = crane.buildDepsOnly;
-    package-func.args = l.mkMerge [
-      common
-      depsArgs
-    ];
+    package-func.args = l.mkMerge [common depsArgs];
   };
 
   rust-crane.mainDrv = {
