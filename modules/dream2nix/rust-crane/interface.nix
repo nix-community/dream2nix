@@ -60,7 +60,10 @@ in {
     };
     mainDrv = {
       type = t.submoduleWith {
-        modules = [dream2nix.modules.dream2nix.mkDerivation];
+        modules = [
+          dream2nix.modules.dream2nix.core
+          dream2nix.modules.dream2nix.mkDerivation
+        ];
         inherit specialArgs;
       };
       description = "The main derivation config that builds the package";
@@ -68,7 +71,10 @@ in {
     };
     depsDrv = {
       type = t.submoduleWith {
-        modules = [dream2nix.modules.dream2nix.mkDerivation];
+        modules = [
+          dream2nix.modules.dream2nix.core
+          dream2nix.modules.dream2nix.mkDerivation
+        ];
         inherit specialArgs;
       };
       description = "A single derivation with all dependencies of the package";

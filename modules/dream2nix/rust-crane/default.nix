@@ -1,7 +1,9 @@
 {
   config,
+  options,
   lib,
   dream2nix,
+  extendModules,
   ...
 }: let
   l = lib // builtins;
@@ -206,20 +208,29 @@ in {
     name = pname;
     package-func.func = crane.buildPackage;
     package-func.args = l.mkMerge [common buildArgs];
-    public = {
-      devShell = import ./devshell.nix {
-        name = "${pname}-devshell";
-        depsDrv = cfg.depsDrv.public;
-        mainDrv = cfg.mainDrv.public;
-        inherit lib;
-        inherit (config.deps) libiconv mkShell cargo;
-      };
-      dependencies = cfg.depsDrv.public;
-      meta = utils.getMeta pname version;
-    };
   };
 
-  public = cfg.mainDrv.public;
+  public = {
+    type = "derivation";
+    inherit config extendModules;
+    inherit (config) name version;
+    inherit
+      (cfg.mainDrv.public)
+      drvPath
+      outPath
+      outputs
+      outputName
+      ;
+    devShell = import ./devshell.nix {
+      name = "${pname}-devshell";
+      depsDrv = cfg.depsDrv.public;
+      mainDrv = cfg.mainDrv.public;
+      inherit lib;
+      inherit (config.deps) libiconv mkShell cargo;
+    };
+    dependencies = cfg.depsDrv.public;
+    meta = utils.getMeta pname version;
+  };
 
   deps = {nixpkgs, ...}:
     (l.mapAttrs (_: l.mkDefault) {
