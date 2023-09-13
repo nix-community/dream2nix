@@ -6,12 +6,15 @@
   # stripping doesn't reduce the file size much, and it takes a long time
   mkDerivation.dontStrip = true;
 
+  # use the autoAddOpenGLRunpathHook to add /run/opengl-driver/lib to the RPATH
+  #   of all ELF files
+  deps = {nixpkgs, ...}: {
+    inherit (nixpkgs.cudaPackages) autoAddOpenGLRunpathHook;
+  };
+  mkDerivation.nativeBuildInputs = [
+    config.deps.autoAddOpenGLRunpathHook
+  ];
+
   # this file is patched manually, so ignore it in autoPatchelf
   env.autoPatchelfIgnoreMissingDeps = ["libcuda.so.1"];
-  # patch the rpath so libcuda.so.1 can be found at /run/opengl-driver/lib
-  env.cudaPatchPhase = ''
-    patchelf $out/${config.deps.python.sitePackages}/torch/lib/libcaffe2_nvrtc.so \
-      --add-rpath /run/opengl-driver/lib
-  '';
-  mkDerivation.postPhases = ["cudaPatchPhase"];
 }
