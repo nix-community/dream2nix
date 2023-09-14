@@ -168,12 +168,7 @@
     else data;
 
   loadField = field: val:
-  # This first check is generic to the whole lock file but put here under
-  #   loadField to make evaluation a bit lazier and not crash if paths.XXX
-  #   is not set
-    if invalidationHashCurrent != invalidationHashLocked
-    then throw errorOutdated
-    else if
+    if
       # load the default value (if specified) whenever the field is not found in
       #   the lock file or the lock file doesn't exist.
       (cfg.fields.${field}.default != null)
@@ -183,7 +178,16 @@
     then fileContent.${field}
     else throw (errorOutdatedField field);
 
-  loadedContent = l.mapAttrs loadField cfg.fields;
+  loadedContent =
+    if invalidationHashCurrent != invalidationHashLocked
+    then throw errorOutdated
+    else l.mapAttrs loadField cfg.fields;
+
+  # makes a value more lazy to the module system, so it can be overridden
+  # without the original value being evaluated.
+  mkLazy =
+    lib.mkOverride
+    (lib.modules.defaultOverridePriority or lib.modules.defaultPriority);
 in {
   imports = [
     ./interface.nix
@@ -192,7 +196,7 @@ in {
   config = {
     lock.refresh = refresh;
 
-    lock.content = loadedContent;
+    lock.content = mkLazy loadedContent;
 
     lock.lib = {inherit computeFODHash;};
 
