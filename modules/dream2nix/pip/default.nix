@@ -113,50 +113,64 @@ in {
     ../pip-hotfixes
   ];
 
-  config = {
-    deps = {nixpkgs, ...}:
-      l.mapAttrs (_: l.mkOverride 1002) {
-        # This is imported directly instead of depending on dream2nix.packages
-        # with the intention to keep modules independent.
-        fetchPipMetadataScript = import ../../../pkgs/fetchPipMetadata/script.nix {
-          inherit lib;
-          inherit (cfg) pypiSnapshotDate pipFlags pipVersion requirementsList requirementsFiles nativeBuildInputs;
-          inherit (config.deps) writePureShellScript nix;
-          inherit (config.paths) findRoot;
-          inherit (nixpkgs) gitMinimal nix-prefetch-scripts python3 writeText;
-          pythonInterpreter = "${python}/bin/python";
-        };
-        setuptools = config.deps.python.pkgs.setuptools;
-        inherit (nixpkgs) nix fetchgit;
-        inherit (writers) writePureShellScript;
+  deps = {nixpkgs, ...}:
+    l.mapAttrs (_: l.mkOverride 1002) {
+      # This is imported directly instead of depending on dream2nix.packages
+      # with the intention to keep modules independent.
+      fetchPipMetadataScript = import ../../../pkgs/fetchPipMetadata/script.nix {
+        inherit lib;
+        inherit (cfg) pypiSnapshotDate pipFlags pipVersion requirementsList requirementsFiles nativeBuildInputs;
+        inherit (config.deps) writePureShellScript nix;
+        inherit (config.paths) findRoot;
+        inherit (nixpkgs) gitMinimal nix-prefetch-scripts python3 writeText;
+        pythonInterpreter = "${python}/bin/python";
       };
-
-    # Keep package metadata fetched by Pip in our lockfile
-    lock.fields.fetchPipMetadata = {
-      script = config.deps.fetchPipMetadataScript;
+      setuptools = config.deps.python.pkgs.setuptools;
+      inherit (nixpkgs) nix fetchgit;
+      inherit (writers) writePureShellScript;
     };
 
-    pip = {
-      drvs = drvs;
-      rootDependencies =
-        l.genAttrs (targets.default.${config.name} or []) (_: true);
-    };
-
-    mkDerivation = {
-      propagatedBuildInputs = let
-        rootDeps = lib.filterAttrs (_: x: x == true) cfg.rootDependencies;
-      in
-        l.attrValues (l.mapAttrs (name: _: cfg.drvs.${name}.public.out) rootDeps);
-    };
-
-    public.devShell = let
-      pyEnv' = config.deps.python.withPackages (ps: config.mkDerivation.propagatedBuildInputs);
-      pyEnv = pyEnv'.override (old: {
-        # namespaced packages are triggering a collision error, but this can be
-        # safely ignored. They are still set up correctly and can be imported.
-        ignoreCollisions = true;
-      });
-    in
-      pyEnv.env;
+  # Keep package metadata fetched by Pip in our lockfile
+  lock.fields.fetchPipMetadata = {
+    script = config.deps.fetchPipMetadataScript;
   };
+
+  # if any of the invalidationData changes, the lock file will be invalidated
+  #   and the user will be promted to re-generate it.
+  lock.invalidationData = {
+    pip = {
+      inherit
+        (config.pip)
+        pypiSnapshotDate
+        pipFlags
+        pipVersion
+        requirementsList
+        requirementsFiles
+        ;
+      pythonVersion = config.deps.python.version;
+    };
+  };
+
+  pip = {
+    drvs = drvs;
+    rootDependencies =
+      l.genAttrs (targets.default.${config.name} or []) (_: true);
+  };
+
+  mkDerivation = {
+    propagatedBuildInputs = let
+      rootDeps = lib.filterAttrs (_: x: x == true) cfg.rootDependencies;
+    in
+      l.attrValues (l.mapAttrs (name: _: cfg.drvs.${name}.public.out) rootDeps);
+  };
+
+  public.devShell = let
+    pyEnv' = config.deps.python.withPackages (ps: config.mkDerivation.propagatedBuildInputs);
+    pyEnv = pyEnv'.override (old: {
+      # namespaced packages are triggering a collision error, but this can be
+      # safely ignored. They are still set up correctly and can be imported.
+      ignoreCollisions = true;
+    });
+  in
+    pyEnv.env;
 }
