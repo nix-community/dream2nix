@@ -133,44 +133,33 @@
           json.dump(checksum, f, indent=2)
     '';
 
+  updateHint = ''
+    To create or update the lock file, run:
+
+      bash -c $(nix-build ${config.lock.refresh.drvPath} --no-link)/bin/refresh
+
+    Alternatively `nix run` the .lock attribute of your package.
+  '';
+
   errorMissingFile = ''
     The lock file ${config.paths.package}/${config.paths.lockFile}
       for drv-parts module '${config.name}' is missing.
 
-    To update it without flakes:
-
-      bash -c $(nix-build ${config.lock.refresh.drvPath} --no-link)/bin/refresh
-
-    To update it using flakes:
-
-      nix run -L .#${config.name}.config.lock.refresh
+    ${updateHint}
   '';
 
   errorOutdated = ''
     The lock file ${config.paths.package}/${config.paths.lockFile}
       for drv-parts module '${config.name}' is outdated.
 
-    To update it without flakes:
-
-      bash -c $(nix-build ${config.lock.refresh.drvPath} --no-link)/bin/refresh
-
-    To update it using flakes:
-
-      nix run -L .#${config.name}.config.lock.refresh
+    ${updateHint}
   '';
 
   errorOutdatedField = field: ''
     The lock file ${config.paths.package}/${config.paths.lockFile}
       for drv-parts module '${config.name}' does not contain field `${field}`.
 
-    To update it without flakes:
-
-      bash -c $(nix-build ${config.lock.refresh.drvPath} --no-link)/bin/refresh
-
-    To update it using flakes:
-
-      nix run -L .#${config.name}.config.lock.refresh
-
+    ${updateHint}
   '';
 
   fileContent =
