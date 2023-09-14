@@ -48,6 +48,20 @@ in {
       };
     };
 
+    invalidationData = l.mkOption {
+      type = t.anything;
+      description = ''
+        Pass any data that should invalidate the lock file when changed.
+        This is useful for example when the lock file should be regenerated
+        when the requirements change.
+      '';
+      default = {};
+      example = {
+        pip.requirements = ["requests" "pillow"];
+        pip.lockVersion = "2";
+      };
+    };
+
     refresh = l.mkOption {
       type = t.package;
       description = "Script to refresh the cache file of this package";

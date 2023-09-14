@@ -16,6 +16,9 @@
     then removeLockFileScript
     else refresh';
 
+  invalidationHashCurrent = l.hashString "sha256" (l.toJSON cfg.invalidationData);
+  invalidationHashLocked = fileContent.invalidationHash or null;
+
   # script to remove the lock file if no fields are defined
   removeLockFileScript = config.deps.writePython3Bin "refresh" {} ''
     import os
@@ -71,6 +74,11 @@
 
 
     lock_data = run_refresh_scripts(refresh_scripts)
+    # error out if invalidation hash is already present
+    if "invalidationHash" in lock_data:
+        raise Exception("invalidationHash already present in lock file")
+    else:
+        lock_data["invalidationHash"] = "${invalidationHashCurrent}"  # noqa: E501
     with open(lock_path, 'w') as out_file:
         json.dump(lock_data, out_file, indent=2)
     print(f"lock file written to {out_file.name}")
@@ -138,7 +146,20 @@
       nix run -L .#${config.name}.config.lock.refresh
   '';
 
-  errorOutdated = field: ''
+  errorOutdated = ''
+    The lock file ${config.paths.package}/${config.paths.lockFile}
+      for drv-parts module '${config.name}' is outdated.
+
+    To update it without flakes:
+
+      bash -c $(nix-build ${config.lock.refresh.drvPath} --no-link)/bin/refresh
+
+    To update it using flakes:
+
+      nix run -L .#${config.name}.config.lock.refresh
+  '';
+
+  errorOutdatedField = field: ''
     The lock file ${config.paths.package}/${config.paths.lockFile}
       for drv-parts module '${config.name}' does not contain field `${field}`.
 
@@ -158,7 +179,12 @@
     else data;
 
   loadField = field: val:
-    if
+  # This first check is generic to the whole lock file but put here under
+  #   loadField to make evaluation a bit lazier and not crash if paths.XXX
+  #   is not set
+    if invalidationHashCurrent != invalidationHashLocked
+    then throw errorOutdated
+    else if
       # load the default value (if specified) whenever the field is not found in
       #   the lock file or the lock file doesn't exist.
       (cfg.fields.${field}.default != null)
@@ -166,7 +192,7 @@
     then cfg.fields.${field}.default
     else if fileContent ? ${field}
     then fileContent.${field}
-    else throw (errorOutdated field);
+    else throw (errorOutdatedField field);
 
   loadedContent = l.mapAttrs loadField cfg.fields;
 in {
