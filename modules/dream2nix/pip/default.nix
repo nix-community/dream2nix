@@ -94,7 +94,7 @@
           l.optionals config.deps.stdenv.isLinux [config.deps.manylinux1];
         # This is required for autoPatchelfHook to find .so files from other
         # python dependencies, like for example libcublas.so.11 from nvidia-cublas-cu11.
-        preFixup = ''
+        preFixup = lib.optionalString config.deps.stdenv.isLinux ''
           addAutoPatchelfSearchPath ${toString (config.mkDerivation.propagatedBuildInputs)}
         '';
         propagatedBuildInputs = let
