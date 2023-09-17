@@ -150,7 +150,6 @@
   in
     flake-parts.lib.mkFlake {inherit inputs;} {
       imports = [
-        ./templates
         ./modules/flake-parts/all-modules.nix
         ./pkgs/fetchPipMetadata/flake-module.nix
       ];
