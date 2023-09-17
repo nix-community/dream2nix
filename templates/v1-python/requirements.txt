@@ -1,4 +1,0 @@
-django
-lxml
-psycopg2
-setuptools
