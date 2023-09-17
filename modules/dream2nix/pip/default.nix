@@ -147,7 +147,8 @@ in {
         requirementsList
         requirementsFiles
         ;
-      pythonVersion = config.deps.python.version;
+      # don't invalidate on bugfix version changes
+      pythonVersion = lib.init (lib.splitVersion config.deps.python.version);
     };
   };
 
