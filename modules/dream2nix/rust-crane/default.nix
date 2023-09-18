@@ -79,16 +79,11 @@
 
   crane = import ./crane.nix {
     inherit lib;
-    craneSource = config.deps.fetchFromGitHub {
-      owner = "ipetkov";
-      repo = "crane";
-      rev = "v0.12.2";
-      sha256 = "sha256-looLH5MdY4erLiJw0XwQohGdr0fJL9y6TJY3898RA2U=";
-    };
     inherit
       (config.deps)
       stdenv
       cargo
+      craneSource
       jq
       zstd
       remarshal
@@ -218,32 +213,40 @@ in {
   };
 
   deps = {nixpkgs, ...}:
-    (l.mapAttrs (_: l.mkDefault) {
-      cargo = nixpkgs.cargo;
-    })
-    # maybe it would be better to put these under `options.rust-crane.deps` instead of this `deps`
-    # since it conflicts with a lot of stuff?
-    // (l.mapAttrs (_: l.mkOverride 999) {
-      inherit
-        (nixpkgs)
-        stdenv
-        fetchurl
-        jq
-        zstd
-        remarshal
-        moreutils
-        python3Packages
-        makeSetupHook
-        runCommandLocal
-        runCommand
-        writeText
-        fetchFromGitHub
-        libiconv
-        mkShell
-        ;
-      inherit
-        (nixpkgs.writers)
-        writePython3
-        ;
-    });
+    l.mkMerge [
+      (l.mapAttrs (_: l.mkDefault) {
+        cargo = nixpkgs.cargo;
+        craneSource = config.deps.fetchFromGitHub {
+          owner = "ipetkov";
+          repo = "crane";
+          rev = "v0.12.2";
+          sha256 = "sha256-looLH5MdY4erLiJw0XwQohGdr0fJL9y6TJY3898RA2U=";
+        };
+      })
+      # maybe it would be better to put these under `options.rust-crane.deps` instead of this `deps`
+      # since it conflicts with a lot of stuff?
+      (l.mapAttrs (_: l.mkOverride 999) {
+        inherit
+          (nixpkgs)
+          stdenv
+          fetchurl
+          jq
+          zstd
+          remarshal
+          moreutils
+          python3Packages
+          makeSetupHook
+          runCommandLocal
+          runCommand
+          writeText
+          fetchFromGitHub
+          libiconv
+          mkShell
+          ;
+        inherit
+          (nixpkgs.writers)
+          writePython3
+          ;
+      })
+    ];
 }
