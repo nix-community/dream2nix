@@ -28,14 +28,17 @@
       module: type:
         self.lib.evalModules (forwardedArgs
           // {
-            modules = [
-              (packagesDirPath + "/${module}")
-              {
-                paths.projectRoot = projectRoot;
-                paths.projectRootFile = projectRootFile;
-                paths.package = "/${packagesDir}/${module}";
-              }
-            ];
+            modules =
+              args.modules
+              or []
+              ++ [
+                (packagesDirPath + "/${module}")
+                {
+                  paths.projectRoot = projectRoot;
+                  paths.projectRootFile = projectRootFile;
+                  paths.package = "/${packagesDir}/${module}";
+                }
+              ];
           })
     )
     (builtins.readDir packagesDirPath);
