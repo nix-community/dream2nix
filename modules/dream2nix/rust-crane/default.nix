@@ -190,14 +190,14 @@ in {
   rust-crane.depsDrv = {
     inherit version;
     name = pname + depsNameSuffix;
-    package-func.func = crane.buildDepsOnly;
+    package-func.func = config.deps.crane.buildDepsOnly;
     package-func.args = l.mkMerge [
       common
       depsArgs
     ];
   };
 
-  package-func.func = crane.buildPackage;
+  package-func.func = config.deps.crane.buildPackage;
   package-func.args = l.mkMerge [common buildArgs];
 
   public = {
@@ -215,6 +215,7 @@ in {
   deps = {nixpkgs, ...}:
     l.mkMerge [
       (l.mapAttrs (_: l.mkDefault) {
+        inherit crane;
         cargo = nixpkgs.cargo;
         craneSource = config.deps.fetchFromGitHub {
           owner = "ipetkov";
