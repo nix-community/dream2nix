@@ -138,7 +138,7 @@
 
       bash -c $(nix-build ${config.lock.refresh.drvPath} --no-link)/bin/refresh
 
-    Alternatively `nix run` the .lock attribute of your package.
+    Alternatively `nix run` the .lock.refresh attribute of your package.
   '';
 
   errorMissingFile = ''
