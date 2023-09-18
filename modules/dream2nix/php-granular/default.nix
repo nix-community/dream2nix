@@ -55,18 +55,30 @@
 
   inherit (import ../../../lib/internal/php-semver.nix {inherit lib;}) satisfies;
 
+  selectExtensions = all:
+    l.attrValues (
+      l.filterAttrs
+      (
+        e: _:
+        #adding xml currently breaks the build of composer
+          (e != "xml")
+          && (l.elem e ["xml"])
+      )
+      all
+    );
+
   # php with required extensions
   php =
     if satisfies config.deps.php81.version subsystemAttrs.phpSemver
     then
+      # config.deps.php81
       config.deps.php81.withExtensions
       (
         {
           all,
           enabled,
         }:
-          l.unique (enabled
-            ++ (l.attrValues (l.filterAttrs (e: _: l.elem e subsystemAttrs.phpExtensions) all)))
+          l.unique (enabled ++ selectExtensions all)
       )
     else
       l.abort ''
