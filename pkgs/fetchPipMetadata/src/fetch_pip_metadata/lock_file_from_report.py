@@ -67,9 +67,8 @@ def lock_info_from_path(full_path, project_root: Path):
     # See whether the path is relative to our local repo
     if project_root in full_path.parents or project_root == full_path:
         return {
-            "type": "url",
-            "url": str(full_path.relative_to(project_root)),
-            "sha256": None,
+            "type": "local",
+            "path": str(full_path.relative_to(project_root)),
         }
 
     # Otherwise, we require it is in /nix/store and just the "top-level"

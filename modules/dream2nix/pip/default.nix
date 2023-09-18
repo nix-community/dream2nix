@@ -58,6 +58,7 @@
   fetchers = {
     url = info: l.fetchurl {inherit (info) url sha256;};
     git = info: config.deps.fetchgit {inherit (info) url sha256 rev;};
+    local = info: "${config.paths.projectRoot}/${info.path}";
   };
 
   commonModule = {config, ...}: {
@@ -97,7 +98,7 @@
         # This is required for autoPatchelfHook to find .so files from other
         # python dependencies, like for example libcublas.so.11 from nvidia-cublas-cu11.
         preFixup = lib.optionalString config.deps.stdenv.isLinux ''
-          addAutoPatchelfSearchPath ${toString (config.mkDerivation.propagatedBuildInputs)}
+          addAutoPatchelfSearchPath $propagatedBuildInputs
         '';
         propagatedBuildInputs = let
           depsByExtra = extra: targets.${extra}.${config.name} or [];

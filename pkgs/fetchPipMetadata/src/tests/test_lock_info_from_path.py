@@ -6,9 +6,8 @@ import lock_file_from_report as l
 
 def test_path_in_repo_root(git_repo_path):
     assert l.lock_info_from_path(git_repo_path / "foo", git_repo_path) == {
-        "type": "url",
-        "url": "foo",
-        "sha256": None,
+        "type": "local",
+        "path": "foo",
     }
 
 
