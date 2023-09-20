@@ -59,6 +59,38 @@ in {
         list of requirements.txt files
       '';
     };
+    buildDependencies = l.mkOption {
+      type = t.attrsOf t.bool;
+      default = {
+        cython = true;
+        flit-core = true;
+        flit-scm = true;
+        hatch-fancy-pypi-readme = true;
+        hatch-nodejs-version = true;
+        hatch-vcs = true;
+        hatchling = true;
+        pbr = true;
+        pdm-pep517 = true;
+        poetry-core = true;
+        poetry-dynamic-versioning = true;
+        setuptools = true;
+        setuptools-odoo = true;
+        setuptools-scm = true;
+        versioneer = true;
+        wheel = true;
+      };
+      description = ''
+        python packages to be added only as buildInputs.
+        These should be somehow installable from `requirementsList` or
+        `requirementsFiles` too; listing them here doesn't do that automatically.
+      '';
+      example = lib.literalExpression ''
+        {
+          setuptools-scm = false; # To disable the default
+          easy_install = true; # To select easy_install as a buildInput
+        }
+      '';
+    };
 
     buildExtras = l.mkOption {
       type = t.listOf t.str;
