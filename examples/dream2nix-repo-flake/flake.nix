@@ -19,7 +19,7 @@
       projectRoot = ./.;
       # can be changed to ".git" or "flake.nix" to get rid of .project-root
       projectRootFile = "flake.nix";
-      packagesDir = "/packages";
+      packagesDir = ./packages;
       packageSets.nixpkgs = nixpkgs.legacyPackages.${system};
     };
   };

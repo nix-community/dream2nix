@@ -20,7 +20,7 @@ in {
       }));
     };
     composerInstallFlags = {
-      type = t.listOf t.string;
+      type = t.listOf t.str;
       default = [];
     };
   };

@@ -2,11 +2,13 @@
   lib,
   config,
   ...
-}: {
+}: let
+  cfg = config.paths;
+in {
   options.paths = lib.mapAttrs (_: lib.mkOption) {
     # mandatory fields
     projectRoot = {
-      type = lib.types.path;
+      type = lib.types.pathInStore;
       description = ''
         Path to the root of the project on which dream2nix operates.
         Must contain the marker file specified by 'paths.projectRootFile'
@@ -16,13 +18,22 @@
       example = lib.literalExpression "./.";
     };
     package = {
-      type = lib.types.str;
+      type = lib.types.either lib.types.path lib.types.str;
       description = ''
         Path to the directory containing the definition of the current package.
         Relative to 'paths.projectRoot'.
 
         This helps locating package definitions for lock & update scripts.
       '';
+      apply = path': let
+        projectRoot = toString cfg.projectRoot;
+        path = toString path';
+      in
+        if path == projectRoot
+        then "./."
+        else if lib.hasPrefix projectRoot path
+        then lib.path.subpath.normalise "./${lib.removePrefix projectRoot path}"
+        else lib.path.subpath.normalise "./${path}";
     };
 
     # optional fields

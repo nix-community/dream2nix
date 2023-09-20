@@ -7,6 +7,7 @@ let
 
   dream2nix-repo = import ./examples/dream2nix-repo {
     dream2nixSource = ./.;
+    inherit pkgs;
   };
 
   dream2nix-repo-flake = (import ./examples/dream2nix-repo-flake/flake.nix).outputs {
