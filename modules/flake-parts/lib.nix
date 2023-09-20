@@ -13,9 +13,11 @@
     packagesDir,
     ...
   }: let
+    projectRoot = toString args.projectRoot;
+    packagesDir = toString args.packagesDir;
     packagesDirPath =
-      if ! builtins.isString packagesDir
-      then throw "packagesDir must be a string"
+      if lib.hasPrefix projectRoot packagesDir
+      then packagesDir
       else projectRoot + "/${packagesDir}";
     forwardedArgs = builtins.removeAttrs args [
       "projectRoot"
@@ -36,7 +38,7 @@
                 {
                   paths.projectRoot = projectRoot;
                   paths.projectRootFile = projectRootFile;
-                  paths.package = "/${packagesDir}/${module}";
+                  paths.package = packagesDir + "/${module}";
                 }
               ];
           })
