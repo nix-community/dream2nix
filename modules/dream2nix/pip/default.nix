@@ -11,6 +11,8 @@
 
   # filter out ignored dependencies
   targets = cfg.targets;
+  isRootDrv = drv: cfg.rootDependencies.${drv.name} or false;
+  isBuildInput = drv: cfg.buildDependencies.${drv.name} or false;
 
   writers = import ../../../pkgs/writers {
     inherit lib;
@@ -158,10 +160,21 @@ in {
   };
 
   mkDerivation = {
-    propagatedBuildInputs = let
-      rootDeps = lib.filterAttrs (_: x: x == true) cfg.rootDependencies;
+    buildInputs = let
+      rootDeps =
+        lib.filterAttrs
+        (name: value: isRootDrv value && isBuildInput value)
+        cfg.drvs;
     in
-      l.attrValues (l.mapAttrs (name: _: cfg.drvs.${name}.public.out) rootDeps);
+      l.map (drv: drv.public.out) (l.attrValues rootDeps);
+
+    propagatedBuildInputs = let
+      rootDeps =
+        lib.filterAttrs
+        (name: value: isRootDrv value && !isBuildInput value)
+        cfg.drvs;
+    in
+      l.map (drv: drv.public.out) (l.attrValues rootDeps);
   };
 
   public.devShell = let
