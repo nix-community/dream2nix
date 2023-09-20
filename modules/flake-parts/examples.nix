@@ -105,16 +105,20 @@ in {
   in {
     # map all modules in /examples to a package output in the flake.
     checks =
-      (lib.mapAttrs (_: drvModules: makeDrv drvModules) allModules)
-      // {
-        example-repo =
-          (import (self + /examples/dream2nix-repo) {
-            dream2nixSource = self;
-            inherit pkgs;
-          })
-          .hello;
-        example-repo-flake =
-          (importFlake (self + /examples/dream2nix-repo-flake/flake.nix)).packages.${system}.hello;
-      };
+      lib.optionalAttrs
+      (system == "x86_64-linux")
+      (
+        (lib.mapAttrs (_: drvModules: makeDrv drvModules) allModules)
+        // {
+          example-repo =
+            (import (self + /examples/dream2nix-repo) {
+              dream2nixSource = self;
+              inherit pkgs;
+            })
+            .hello;
+          example-repo-flake =
+            (importFlake (self + /examples/dream2nix-repo-flake/flake.nix)).packages.${system}.hello;
+        }
+      );
   };
 }

@@ -80,14 +80,17 @@
         dream2nix-shell = mkShell {
           devshell.name = "dream2nix-devshell";
 
-          packages = [
-            pkgs.alejandra
-            pkgs.mdbook
-            inputs'.nix-unit.packages.nix-unit
-            (pkgs.python3.withPackages (ps: [
-              pkgs.python3.pkgs.black
-            ]))
-          ];
+          packages =
+            [
+              pkgs.alejandra
+              pkgs.mdbook
+              (pkgs.python3.withPackages (ps: [
+                pkgs.python3.pkgs.black
+              ]))
+            ]
+            ++ (l.optionals pkgs.stdenv.isLinux [
+              inputs'.nix-unit.packages.nix-unit
+            ]);
 
           commands =
             [
