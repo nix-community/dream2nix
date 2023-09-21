@@ -8,7 +8,7 @@ in {
   options.paths = lib.mapAttrs (_: lib.mkOption) {
     # mandatory fields
     projectRoot = {
-      type = lib.types.pathInStore;
+      type = lib.types.path;
       description = ''
         Path to the root of the project on which dream2nix operates.
         Must contain the marker file specified by 'paths.projectRootFile'
