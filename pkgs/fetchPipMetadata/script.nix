@@ -26,6 +26,7 @@
   requirementsFiles ? [],
   pipFlags ? [],
   pipVersion ? "23.1",
+  env ? {},
   wheelVersion ? "0.40.0",
   nativeBuildInputs ? [],
   # maximum release date for packages
@@ -86,6 +87,12 @@
     writePureShellScript
     path
     ''
+      ${
+        lib.foldlAttrs
+        (acc: name: value: acc + "\nexport " + lib.toShellVar name value)
+        ""
+        env
+      }
       ${package}/bin/fetch_pip_metadata \
         --json-args-file ${args} \
         --project-root $(${findRoot})

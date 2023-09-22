@@ -22,6 +22,18 @@ in {
     };
 
     # user interface
+    env = l.mkOption {
+      type = t.attrsOf t.str;
+      default = {};
+      description = ''
+        environment variables exported while locking
+      '';
+      example = lib.literalExpression ''
+        {
+          PIP_FIND_LINKS = "${config.deps.setuptools.dist}";
+        }
+      '';
+    };
     pypiSnapshotDate = l.mkOption {
       type = t.nullOr t.str;
       description = ''

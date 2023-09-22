@@ -122,7 +122,7 @@ in {
       # with the intention to keep modules independent.
       fetchPipMetadataScript = import ../../../pkgs/fetchPipMetadata/script.nix {
         inherit lib;
-        inherit (cfg) pypiSnapshotDate pipFlags pipVersion requirementsList requirementsFiles nativeBuildInputs;
+        inherit (cfg) env pypiSnapshotDate pipFlags pipVersion requirementsList requirementsFiles nativeBuildInputs;
         inherit (config.deps) writePureShellScript nix;
         inherit (config.paths) findRoot;
         inherit (nixpkgs) gitMinimal nix-prefetch-scripts python3 writeText;
@@ -141,18 +141,22 @@ in {
   # if any of the invalidationData changes, the lock file will be invalidated
   #   and the user will be promted to re-generate it.
   lock.invalidationData = {
-    pip = {
-      inherit
-        (config.pip)
-        pypiSnapshotDate
-        pipFlags
-        pipVersion
-        requirementsList
-        requirementsFiles
-        ;
-      # don't invalidate on bugfix version changes
-      pythonVersion = lib.init (lib.splitVersion config.deps.python.version);
-    };
+    pip =
+      {
+        inherit
+          (config.pip)
+          pypiSnapshotDate
+          pipFlags
+          pipVersion
+          requirementsList
+          requirementsFiles
+          ;
+        # don't invalidate on bugfix version changes
+        pythonVersion = lib.init (lib.splitVersion config.deps.python.version);
+      }
+      # including env conditionally to not invalidate all existing lockfiles
+      # TODO: refactor once compat is broken through something else
+      // (lib.optionalAttrs (config.pip.env != {}) config.pip.env);
   };
 
   pip = {
