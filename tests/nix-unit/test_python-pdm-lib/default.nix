@@ -148,11 +148,20 @@
   };
   tests_parseLockData = let
     lock-data = lib.importTOML ./../../../examples/dream2nix-repo-flake-pdm/pdm.lock;
-    parsed = libpdm.parseLockData {inherit lock-data;};
+    version = "2023.7.22";
+    parsed = libpdm.parseLockData {
+      inherit lock-data;
+      environ = lib.importJSON ./environ.json;
+      selector = libpdm.preferWheelSelector;
+    };
   in {
     test_parseLockData = {
-      expr = lib.elemAt (lib.attrNames parsed) 0;
-      expected = "certifi";
+      expr =
+        (parsed ? "certifi")
+        && (parsed.certifi.version == version)
+        && (parsed.certifi ? source)
+        && (parsed.certifi.source.url == "https://files.pythonhosted.org/packages/4c/dd/2234eab22353ffc7d94e8d13177aaa050113286e93e7b40eae01fbf7c3d9/certifi-2023.7.22-py3-none-any.whl");
+      expected = true;
     };
   };
 in

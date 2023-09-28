@@ -2,6 +2,18 @@
   lib,
   libpyproject,
 }: rec {
+  getFilename = url: lib.lists.last (lib.splitString "/" url);
+
+  # Convert sources to mapping with filename as key.
+  sourcesToAttrs = sources:
+    lib.listToAttrs (
+      map (
+        source:
+          lib.nameValuePair (getFilename source.url) source
+      )
+      sources
+    );
+
   isUsableFilename = {
     environ,
     filename,
@@ -41,6 +53,7 @@
     environ,
     filename,
   }: let
+    # TODO: implement it
     parsed_filename = libpyproject.pep427.parseFileName filename;
     is_valid_build = true;
     is_valid_implementation = true;
@@ -102,19 +115,31 @@
   # Returns a set with package name as key
   # and as value the version, sources and dependencies
   # The packages are not yet divided into groups.
-  parseLockData = {lock-data}: let
+  parseLockData = {
+    lock-data,
+    environ,
+    selector,
+  }: let
     # TODO: validate against lock file version.
     func = item: let
+      sources = sourcesToAttrs lock-data.metadata.files."${item.name} ${item.version}";
+      compatibleSources =
+        lib.filterAttrs
+        (
+          filename: source:
+            isUsableFilename {inherit environ filename;}
+        )
+        sources;
       value = {
         inherit (item) version;
-        requires_python = item.requires_python or null; # check already here against Python version?
-        sources = lock-data.metadata.files."${item.name} ${item.version}";
+        source = sources.${selector (lib.attrNames compatibleSources)};
         # In the future we could add additional meta data fields
         # such as summary
       };
     in
       lib.nameValuePair item.name value;
   in
+    # TODO: packages need to be filtered on environment.
     lib.listToAttrs (map func lock-data.package);
 
   # }
