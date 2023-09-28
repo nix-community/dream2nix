@@ -6,6 +6,4 @@
   imports = [
     ./interface.nix
   ];
-  config = {
-  };
 }
