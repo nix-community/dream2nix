@@ -1,6 +1,14 @@
 {
   description = "(modules only) dream2nix: Automate reproducible packaging for various language ecosystems";
 
+  inputs = {
+    flake-compat.url = "github:edolstra/flake-compat";
+    flake-compat.flake = false;
+
+    pyproject-nix.url = "github:adisbladis/pyproject.nix";
+    pyproject-nix.flake = false;
+  };
+
   outputs = _: let
     modulesDir = ./.;
 

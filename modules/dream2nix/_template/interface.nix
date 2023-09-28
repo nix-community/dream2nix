@@ -3,10 +3,9 @@
   lib,
   ...
 }: let
-  l = lib // builtins;
-  t = l.types;
+  t = lib.types;
 in {
-  options = l.mapAttrs (_: l.mkOption) {
+  options = lib.mapAttrs (_: lib.mkOption) {
     # put options here
   };
 }
