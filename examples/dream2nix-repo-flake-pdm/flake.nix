@@ -21,7 +21,7 @@
       ...
     }: {
       imports = [
-        dream2nix.modules.dream2nix.python-pdm
+        dream2nix.modules.dream2nix.WIP-python-pdm
       ];
       pdm.lockfile = ./pdm.lock;
       pdm.pyproject = ./pyproject.toml;

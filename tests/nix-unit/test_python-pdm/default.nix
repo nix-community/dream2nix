@@ -6,7 +6,7 @@
   eval = module:
     (lib.evalModules {
       modules = [
-        dream2nix.modules.dream2nix.python-pdm
+        dream2nix.modules.dream2nix.WIP-python-pdm
         module
       ];
       specialArgs = {

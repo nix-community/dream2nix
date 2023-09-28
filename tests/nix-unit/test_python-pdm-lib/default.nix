@@ -4,7 +4,7 @@
   dream2nix ? (import (../../../modules + "/default.nix")),
   inputs ? dream2nix.inputs,
 }: let
-  libpdm = (import ../../../modules/dream2nix/python-pdm/lib.nix) {
+  libpdm = (import ../../../modules/dream2nix/WIP-python-pdm/lib.nix) {
     inherit lib libpyproject;
   };
   pyproject-nix = inputs.pyproject-nix;
