@@ -12,12 +12,18 @@
       )
     );
 
+  # Evaluates a parsed dependency against an environment to determine if it is required.
+  isDependencyRequired = environ: dependency:
+    if dependency.markers != null
+    then libpyproject.pep508.evalMarkers environ dependency.markers
+    else true;
+
   # Convert sources to mapping with filename as key.
   sourcesToAttrs = sources:
     lib.listToAttrs (
       map (
         source:
-          lib.nameValuePair (getFilename source.url) source
+          lib.nameValuePair (getFilename source.file) source
       )
       sources
     );
@@ -129,8 +135,8 @@
     selector,
   }: let
     # TODO: validate against lock file version.
-    func = item: let
-      sources = sourcesToAttrs lock-data.metadata.files."${item.name} ${item.version}";
+    parsePackage = item: let
+      sources = sourcesToAttrs item.files;
       compatibleSources =
         lib.filterAttrs
         (
@@ -138,18 +144,14 @@
             isUsableFilename {inherit environ filename;}
         )
         sources;
-      evalDep = dep:
-        libpyproject.pep508.evalMarkers
-        environ
-        (libpyproject.pep508.parseString dep);
-      dependencies =
+      parsedDeps = (
         map
-        (dep: {
-          inherit (dep) name;
-        })
-        (lib.filter evalDep item.dependencies);
+        libpyproject.pep508.parseString
+        item.dependencies or []
+      );
+      requiredDeps = lib.filter (isDependencyRequired environ) parsedDeps;
       value = {
-        inherit dependencies;
+        dependencies = map (dep: dep.name) requiredDeps;
         inherit (item) version;
         source = sources.${selector (lib.attrNames compatibleSources)};
         # In the future we could add additional meta data fields
@@ -159,33 +161,5 @@
       lib.nameValuePair item.name value;
   in
     # TODO: packages need to be filtered on environment.
-    lib.listToAttrs (map func lock-data.package);
-
-  # }
-  # # Function that parses pyproject.toml and pdm.lock
-  # # and returns the package sets that are described.
-  # { pyproject-data
-  # , pdm-lock-data
-  # , lib # nixpkgs.lib
-  # , lib-pyproject
-  # }: let
-  #   # Collect the attributes for a given package name.
-  #   get-pkg-attrs-from-lock = pkgname: let
-  #     # Collect version, python constraint and dependencies.
-  #     package = lib.findSingle (pkg: pkg.name == pkgname) pkgname;
-  #     # Collect source
-  #     get-source = {
-  #       version,
-  #     }:
-  #     attrs = pdm-lock-data.
-  #   in {
-  #   }
-  #   get-group-pkgnames = groupname:
-  #   # Collect group attributes for a given group name.
-  #   get-group-attrs = groupname: let
-  #   in { }
-  #   groups = pdm-lock-data.metadata.groups;
-  #   # Whether the project defines a library or only optional groups.
-  #   providesLibrary = lib.elem "default" groups;
-  # in { }
+    lib.listToAttrs (map parsePackage lock-data.package);
 }

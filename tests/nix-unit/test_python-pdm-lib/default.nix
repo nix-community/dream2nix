@@ -10,15 +10,29 @@
   pyproject-nix = inputs.pyproject-nix;
   libpyproject = import (pyproject-nix + "/lib") {inherit lib;};
 
+  linux_environ = lib.importJSON ./environ.json;
+
+  test_isDependencyRequired = {
+    test_isDependencyRequired__not_required = {
+      expr =
+        libpdm.isDependencyRequired
+        linux_environ
+        (libpyproject.pep508.parseString "foo==1.0.0; sys_platform == 'win32'");
+      expected = false;
+    };
+    test_isDependencyRequired__required = {
+      expr =
+        libpdm.isDependencyRequired
+        linux_environ
+        (libpyproject.pep508.parseString "foo==1.0.0; sys_platform == 'linux'");
+      expected = true;
+    };
+  };
+
   testIsUsableSdistFilename = filename: let
     environ = libpyproject.pep508.mkEnviron pkgs.python3;
   in
     libpdm.isUsableSdistFilename {inherit environ filename;};
-
-  # test_data = {
-  # "sdist" = "certifi-2023.7.22.tar.gz";
-  # ""
-  # };
 
   tests_isUsableFilename = let
     testIsUsableWheelFilename = filename: let
@@ -148,7 +162,7 @@
   };
   tests_parseLockData = let
     lock-data = lib.importTOML ./../../../examples/dream2nix-repo-flake-pdm/pdm.lock;
-    version = "2023.7.22";
+    version = "2.31.0";
     parsed = libpdm.parseLockData {
       inherit lock-data;
       environ = lib.importJSON ./environ.json;
@@ -157,13 +171,26 @@
   in {
     test_parseLockData = {
       expr =
-        (parsed ? "certifi")
-        && (parsed.certifi.version == version)
-        && (parsed.certifi ? source)
-        && (parsed.certifi.source.url == "https://files.pythonhosted.org/packages/4c/dd/2234eab22353ffc7d94e8d13177aaa050113286e93e7b40eae01fbf7c3d9/certifi-2023.7.22-py3-none-any.whl")
-        && (parsed.certifi.dependencies == []);
+        (parsed ? "requests")
+        && (parsed.requests.version == version)
+        && (parsed.requests ? source);
       expected = true;
+    };
+
+    test_parseLockData_file = {
+      expr = parsed.requests.source.file;
+      expected = "requests-2.31.0-py3-none-any.whl";
+    };
+
+    test_parseLockData_dependencies = {
+      expr = parsed.requests.dependencies;
+      expected = [
+        "certifi"
+        "charset-normalizer"
+        "idna"
+        "urllib3"
+      ];
     };
   };
 in
-  tests_isUsableFilename // tests_isValidUniversalWheel // tests_selectExtension // tests_selectSdist // tests_preferWheelSelector // tests_preferSdistSelector // tests_parseLockData
+  test_isDependencyRequired // tests_isUsableFilename // tests_isValidUniversalWheel // tests_selectExtension // tests_selectSdist // tests_preferWheelSelector // tests_preferSdistSelector // tests_parseLockData
