@@ -4,6 +4,14 @@
 }: rec {
   getFilename = url: lib.lists.last (lib.splitString "/" url);
 
+  getPdmPackages = {lock-data}:
+    lib.listToAttrs (
+      lib.forEach lock-data.package (
+        pkg:
+          lib.nameValuePair pkg.name pkg
+      )
+    );
+
   # Convert sources to mapping with filename as key.
   sourcesToAttrs = sources:
     lib.listToAttrs (
@@ -130,7 +138,18 @@
             isUsableFilename {inherit environ filename;}
         )
         sources;
+      evalDep = dep:
+        libpyproject.pep508.evalMarkers
+        environ
+        (libpyproject.pep508.parseString dep);
+      dependencies =
+        map
+        (dep: {
+          inherit (dep) name;
+        })
+        (lib.filter evalDep item.dependencies);
       value = {
+        inherit dependencies;
         inherit (item) version;
         source = sources.${selector (lib.attrNames compatibleSources)};
         # In the future we could add additional meta data fields

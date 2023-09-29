@@ -24,8 +24,7 @@ in {
       # groups.my-group.packages.hello = {...}: fixtures.basic-derivation;
     };
   in {
-    expr = true;
-    # expr = config.groups.my-group.public.hello ? drvPath;
+    expr = config.groups.default.public.certifi ? drvPath;
     expected = true;
   };
 }

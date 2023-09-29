@@ -18,10 +18,6 @@ in {
       type = t.package;
     };
 
-    debugData = l.mkOption {
-      type = t.raw;
-    };
-
     sourceSelector = import ./sourceSelectorOption.nix {inherit lib;};
   };
 }
