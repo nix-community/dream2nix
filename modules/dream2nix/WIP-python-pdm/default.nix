@@ -18,9 +18,7 @@
 
   pyproject-data = lib.importTOML config.pdm.pyproject;
 
-  pyprojectLoaded = libpyproject.project.loadPyproject {
-    pyproject = pyproject-data;
-  };
+  pyprojectLoaded = libpdm.loadPdmPyproject pyproject-data;
 
   build-systems = pyprojectLoaded.build-systems;
   dependencies = pyprojectLoaded.dependencies;

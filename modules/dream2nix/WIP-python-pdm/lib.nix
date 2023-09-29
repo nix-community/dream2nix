@@ -6,9 +6,23 @@
   # getFilename :: String -> String
   getFilename = url: lib.lists.last (lib.splitString "/" url);
 
-  getPdmPackages = {lock-data}:
+  # loadPdmPyProject :: Attrset -> Attrset
+  loadPdmPyProject = pyproject-data: let
+    # loadPyProject does not check for existence of additional
+    # paths so we need to do that here.
+    tool_pdm_path = ["tool" "pdm" "dev-dependencies"];
+    withPdmGroups = lib.hasAttrByPath tool_pdm_path pyproject-data;
+  in
+    libpyproject.project.loadPyproject ({
+        pyproject = pyproject-data;
+      }
+      // lib.optionalAttrs withPdmGroups {
+        extrasAttrPaths = [(lib.concatStringsSep "." tool_pdm_path)];
+      });
+
+  getPdmPackages = {lock_data}:
     lib.listToAttrs (
-      lib.forEach lock-data.package (
+      lib.forEach lock_data.package (
         pkg:
           lib.nameValuePair pkg.name pkg
       )
@@ -133,12 +147,19 @@
     then wheel
     else null;
 
+  # Get the dependency names out from a list of parsed deps
+  # requiredDeps :: Attrset -> [Attrset] -> [String]
+  requiredDeps = environ: parsed_deps: let
+    requiredDeps' = lib.filter (isDependencyRequired environ) parsed_deps;
+  in
+    map (dep: dep.name) requiredDeps';
+
   # Parse lockfile data.
   # Returns a set with package name as key
   # and as value the version, sources and dependencies
   # The packages are not yet divided into groups.
   parseLockData = {
-    lock-data,
+    lock_data,
     environ, # Output from `libpyproject.pep508.mkEnviron`
     selector,
   }: let
@@ -157,9 +178,8 @@
         libpyproject.pep508.parseString
         item.dependencies or []
       );
-      requiredDeps = lib.filter (isDependencyRequired environ) parsedDeps;
       value = {
-        dependencies = map (dep: dep.name) requiredDeps;
+        dependencies = requiredDeps environ parsedDeps;
         inherit (item) version;
         source = sources.${selector (lib.attrNames compatibleSources)};
         # In the future we could add additional meta data fields
@@ -169,5 +189,50 @@
       lib.nameValuePair item.name value;
   in
     # TODO: packages need to be filtered on environment.
-    lib.listToAttrs (map parsePackage lock-data.package);
+    lib.listToAttrs (map parsePackage lock_data.package);
+
+  # Create an overview of all groups and dependencies
+  # Keys are group names, and values lists with strings.
+  # groupsWithDeps :: { Attrset, Attrset} -> Attrset
+  groupsWithDeps = {
+    pyproject,
+    environ,
+  }: let
+    # TODO: it is possible to use PDM without a main project
+    # so there would not be any default group.
+    requiredDeps' = requiredDeps environ;
+    default = requiredDeps' pyproject.dependencies.dependencies;
+    # The extras field contains both `project.optional-dependencies` and
+    # `tool.pdm.dev-dependencies`.
+    optional_dependencies = lib.mapAttrs (name: value: requiredDeps' value) pyproject.dependencies.extras;
+
+    all_groups = {inherit default;} // optional_dependencies;
+  in
+    all_groups;
+
+  # Get a set with all dependencies recursively.
+  # For every dependency we have the version, source
+  # and dependencies as names.
+  # getDepsRecursively :: Attrset -> String -> Attrset
+  getDepsRecursively = parseLockData: name: let
+    getDeps = name: let
+      dep = parseLockData.${name};
+    in
+      [{"${name}" = dep;}] ++ lib.flatten (map getDeps dep.dependencies);
+  in
+    lib.attrsets.mergeAttrsList (lib.unique (getDeps name));
+
+  # Select the dependencies we need in our group.
+  # Here we recurse so we get a set with all dependencies.
+  # selectForGroup :: {Attrset, Attrset, String}
+  selectForGroup = {
+    parsed_lock_data,
+    groups_with_deps,
+    groupname,
+  }: let
+    # List of top-level package names we need.
+    deps_top_level = groups_with_deps.${groupname};
+    getDeps = getDepsRecursively parsed_lock_data;
+  in
+    lib.attrsets.mergeAttrsList (map getDeps deps_top_level);
 }
