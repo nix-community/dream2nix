@@ -30,13 +30,13 @@
   };
 
   testIsUsableSdistFilename = filename: let
-    environ = libpyproject.pep508.mkEnviron pkgs.python3;
+    environ = linux_environ;
   in
     libpdm.isUsableSdistFilename {inherit environ filename;};
 
   tests_isUsableFilename = let
     testIsUsableWheelFilename = filename: let
-      environ = libpyproject.pep508.mkEnviron pkgs.python3;
+      environ = linux_environ;
     in
       libpdm.isUsableWheelFilename {inherit environ filename;};
   in {
@@ -161,11 +161,11 @@
     };
   };
   tests_parseLockData = let
-    lock-data = lib.importTOML ./../../../examples/dream2nix-repo-flake-pdm/pdm.lock;
+    lock_data = lib.importTOML ./../../../examples/dream2nix-repo-flake-pdm/pdm.lock;
     version = "2.31.0";
     parsed = libpdm.parseLockData {
-      inherit lock-data;
-      environ = lib.importJSON ./environ.json;
+      inherit lock_data;
+      environ = linux_environ;
       selector = libpdm.preferWheelSelector;
     };
   in {
@@ -192,5 +192,103 @@
       ];
     };
   };
+  tests_groupsWithDeps = let
+    environ = linux_environ;
+    pyproject = libpdm.loadPdmPyProject (lib.importTOML ./../../../examples/dream2nix-repo-flake-pdm/pyproject.toml);
+    groups_with_deps = libpdm.groupsWithDeps {
+      inherit environ pyproject;
+    };
+  in {
+    test_groupsWithDeps__has_main_group = {
+      expr = groups_with_deps ? "default";
+      expected = true;
+    };
+    test_groupsWithDeps__main_group_has_deps = {
+      expr = groups_with_deps.default;
+      expected = ["requests"];
+    };
+    test_groupsWithDeps__optionals_dev_has_deps = {
+      expr = groups_with_deps.dev;
+      expected = ["pi"];
+    };
+  };
+
+  tests_getDepsRecursively = let
+    environ = linux_environ;
+    lock_data = lib.importTOML ./../../../examples/dream2nix-repo-flake-pdm/pdm.lock;
+    parsed_lock_data = libpdm.parseLockData {
+      inherit environ lock_data;
+      selector = libpdm.preferWheelSelector;
+    };
+    deps = libpdm.getDepsRecursively parsed_lock_data "requests";
+  in {
+    test_getDepsRecursively_names = {
+      expr = lib.attrNames deps;
+      expected = ["certifi" "charset-normalizer" "idna" "requests" "urllib3"];
+    };
+    test_getDepsRecursively_versions = {
+      expr = lib.mapAttrs (key: value: value.version) deps;
+      expected = {
+        certifi = "2023.7.22";
+        charset-normalizer = "3.2.0";
+        idna = "3.4";
+        requests = "2.31.0";
+        urllib3 = "2.0.5";
+      };
+    };
+    test_getDepsRecursively_sources = {
+      expr = lib.mapAttrs (key: value: value.source.file) deps;
+      expected = {
+        certifi = "certifi-2023.7.22-py3-none-any.whl";
+        charset-normalizer = "charset_normalizer-3.2.0-cp310-cp310-macosx_10_9_universal2.whl";
+        idna = "idna-3.4-py3-none-any.whl";
+        requests = "requests-2.31.0-py3-none-any.whl";
+        urllib3 = "urllib3-2.0.5-py3-none-any.whl";
+      };
+    };
+  };
+
+  tests_selectForGroup = let
+    environ = linux_environ;
+    pyproject = libpdm.loadPdmPyProject (lib.importTOML ./../../../examples/dream2nix-repo-flake-pdm/pyproject.toml);
+    lock_data = lib.importTOML ./../../../examples/dream2nix-repo-flake-pdm/pdm.lock;
+    groups_with_deps = libpdm.groupsWithDeps {
+      inherit environ pyproject;
+    };
+    parsed_lock_data = libpdm.parseLockData {
+      inherit lock_data;
+      environ = linux_environ;
+      selector = libpdm.preferWheelSelector;
+    };
+    deps_default = libpdm.selectForGroup {
+      inherit parsed_lock_data groups_with_deps;
+      groupname = "default";
+    };
+  in {
+    test_selectForGroup_names = {
+      expr = lib.attrNames deps_default;
+      expected = ["certifi" "charset-normalizer" "idna" "requests" "urllib3"];
+    };
+    test_selectForGroup_versions = {
+      expr = lib.mapAttrs (key: value: value.version) deps_default;
+      expected = {
+        certifi = "2023.7.22";
+        charset-normalizer = "3.2.0";
+        idna = "3.4";
+        requests = "2.31.0";
+        urllib3 = "2.0.5";
+      };
+    };
+    test_selectForGroup_sources = {
+      expr = lib.mapAttrs (key: value: value.source.file) deps_default;
+      expected = {
+        certifi = "certifi-2023.7.22-py3-none-any.whl";
+        charset-normalizer = "charset_normalizer-3.2.0-cp310-cp310-macosx_10_9_universal2.whl";
+        idna = "idna-3.4-py3-none-any.whl";
+        requests = "requests-2.31.0-py3-none-any.whl";
+        urllib3 = "urllib3-2.0.5-py3-none-any.whl";
+      };
+    };
+  };
 in
-  test_isDependencyRequired // tests_isUsableFilename // tests_isValidUniversalWheel // tests_selectExtension // tests_selectSdist // tests_preferWheelSelector // tests_preferSdistSelector // tests_parseLockData
+  test_isDependencyRequired // tests_isUsableFilename // tests_isValidUniversalWheel // tests_selectExtension // tests_selectSdist // tests_preferWheelSelector // tests_preferSdistSelector // tests_parseLockData // tests_groupsWithDeps // tests_getDepsRecursively // tests_selectForGroup
