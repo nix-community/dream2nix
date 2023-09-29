@@ -1,0 +1,15 @@
+package:
+  dependencies:
+    - abc-parser # added just for having transitive dependencies
+    - console
+    - effect
+    - prelude
+    - psci-support # TODO hardcode
+  name: spago-project
+  test:
+    dependencies: []
+    main: Test.Main
+workspace:
+  extra_packages: {}
+  package_set:
+    registry: 42.1.0
