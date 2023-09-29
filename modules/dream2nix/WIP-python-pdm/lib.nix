@@ -2,6 +2,7 @@
   lib,
   libpyproject,
 }: rec {
+  # getFilename :: String -> String
   getFilename = url: lib.lists.last (lib.splitString "/" url);
 
   getPdmPackages = {lock-data}:
@@ -19,6 +20,7 @@
     else true;
 
   # Convert sources to mapping with filename as key.
+  # sourcesToAttrs :: [Attrset] -> Attrset
   sourcesToAttrs = sources:
     lib.listToAttrs (
       map (
@@ -80,6 +82,7 @@
   # Select single item matching the extension.
   # If multiple items have the extension, raise.
   # If no items match, return null.
+  # selectExtension :: [String] -> String -> String
   selectExtension = names: ext: let
     selected = lib.findSingle (name: lib.hasSuffix ext name) null "multiple" names;
   in
@@ -90,6 +93,7 @@
   # Select a single sdist from a list of filenames.
   # If multiple sdist we choose the preferred sdist.
   # If no valid sdist present we return null.
+  # selectSdist :: [String] -> String
   selectSdist = filenames: let
     # sdists = lib.filter (filename: isUsableSdistFilename {environ = {}; inherit filename;}) filenames;
     select = selectExtension filenames;
@@ -100,11 +104,13 @@
 
   # Select a single wheel from a list of filenames
   # This assumes filtering on usable wheels has already been performed.
+  # selectWheel :: [String] ->  String
   selectWheel = filenames: lib.findFirst (x: lib.hasSuffix ".whl" x) null filenames;
 
   # Source selectors.
   # Prefer to select a wheel from a list of filenames.
   # Filenames should already have been filtered on environment usability.
+  # preferWheelSelector :: [String] -> String
   preferWheelSelector = filenames: let
     wheel = selectWheel filenames;
     sdist = selectSdist filenames;
@@ -115,6 +121,7 @@
     then sdist
     else null;
 
+  # preferSdistSelector :: [String] -> String
   preferSdistSelector = filenames: let
     wheel = selectWheel filenames;
     sdist = selectSdist filenames;
@@ -131,7 +138,7 @@
   # The packages are not yet divided into groups.
   parseLockData = {
     lock-data,
-    environ,
+    environ, # Output from `libpyproject.pep508.mkEnviron`
     selector,
   }: let
     # TODO: validate against lock file version.
