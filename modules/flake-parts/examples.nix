@@ -39,6 +39,8 @@
   in
     self';
 
+  modulesFlake = import (self + "/modules/default.nix");
+
   # Type: [ {${name} = {module, packagePath} ]
   allExamples = mapAttrsToList (dirName: _: readExamples dirName) packageCategories;
 
@@ -87,7 +89,7 @@ in {
           nixpkgs = inputs.nixpkgs.legacyPackages.${system};
           writers = config.writers;
         };
-        specialArgs.dream2nix = self;
+        specialArgs.dream2nix = modulesFlake;
       };
     in
       evaled.config.public;
