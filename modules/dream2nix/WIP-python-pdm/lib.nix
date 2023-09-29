@@ -2,6 +2,7 @@
   lib,
   libpyproject,
 }: rec {
+  # Get the filename from an URL.
   # getFilename :: String -> String
   getFilename = url: lib.lists.last (lib.splitString "/" url);
 
@@ -25,7 +26,7 @@
     lib.listToAttrs (
       map (
         source:
-          lib.nameValuePair (getFilename source.file) source
+          lib.nameValuePair source.file source
       )
       sources
     );
