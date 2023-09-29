@@ -3,7 +3,7 @@
 
   inputs = {
     dream2nix.url = "github:nix-community/dream2nix";
-    nixpkgs.url = "nixpkgs/nixos-unstable";
+    nixpkgs.follows = "dream2nix/nixpkgs";
   };
 
   outputs = inputs @ {
