@@ -1,8 +1,8 @@
 {
   pkgs ? import <nixpkgs> {},
   lib ? import <nixpkgs/lib>,
-  dream2nix ? (import (../../../modules + "/default.nix")),
-  inputs ? dream2nix.inputs,
+  dream2nix ? (import (../../../modules + "/flake.nix")).outputs inputs,
+  inputs ? (import (../../../modules + "/default.nix")).inputs,
 }: let
   libpdm = (import ../../../modules/dream2nix/WIP-python-pdm/lib.nix) {
     inherit lib libpyproject;
