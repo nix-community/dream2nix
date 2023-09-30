@@ -7,7 +7,7 @@
     system,
     ...
   }: let
-    modulesFlake = import "${self}/modules";
+    modulesFlake = import "${self}/modules" {};
     inputs = lib.mapAttrs (name: input: "${input.outPath}") modulesFlake.inputs;
     inputsFile = builtins.toFile "inputs.json" (builtins.toJSON inputs);
   in
