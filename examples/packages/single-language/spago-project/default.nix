@@ -1,7 +1,4 @@
-{
-  dream2nix,
-  ...
-}: {
+{dream2nix, ...}: {
   imports = [
     dream2nix.modules.dream2nix.WIP-spago
   ];
