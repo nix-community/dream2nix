@@ -2,7 +2,7 @@
   description = "My flake with dream2nix packages";
 
   inputs = {
-    dream2nix.url = "github:nix-community/dream2nix";
+    dream2nix.url = "github:nix-community/dream2nix?dir=modules";
     nixpkgs.url = "nixpkgs/nixos-unstable";
   };
 
@@ -27,9 +27,12 @@
       pdm.pyproject = ./pyproject.toml;
       pdm.pythonInterpreter = nixpkgs.legacyPackages.python3;
     };
-    evaled = lib.evalModules {modules = [module];};
-    defaultPackage = evaled.config.groups.default.public.packages.my-package;
+    evaled = lib.evalModules {
+      modules = [module];
+      specialArgs.dream2nix = dream2nix;
+      specialArgs.packageSets.nixpkgs = nixpkgs.legacyPackages.x86_64-linux;
+    };
   in {
-    packages.${system}.default = defaultPackage;
+    packages.${system} = evaled.config.groups.default.public.packages;
   };
 }

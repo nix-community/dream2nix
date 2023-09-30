@@ -7,7 +7,9 @@
 }: let
   t = lib.types;
   groupType = t.submoduleWith {
-    modules = [(import ./group.nix {inherit (config) commonModule;})];
+    modules = [
+      (import ./group.nix {inherit (config) commonModule;})
+    ];
     inherit specialArgs;
   };
 in {
