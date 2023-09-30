@@ -2,6 +2,7 @@
   lib,
   dream2nix,
   config,
+  specialArgs,
   ...
 }: let
   t = lib.types;
@@ -9,6 +10,7 @@
     staticModules = [
       dream2nix.modules.dream2nix.core
       commonModule
+      {_module.args = specialArgs;}
     ];
   };
 in {
@@ -32,7 +34,7 @@ in {
       '';
       internal = true;
     };
-    public = lib.mkOption {
+    public.packages = lib.mkOption {
       type = t.lazyAttrsOf t.package;
       description = ''
         The evaluated packages ready to consume
@@ -42,6 +44,6 @@ in {
   };
   config = {
     packagesEval = config.packages;
-    public = lib.mapAttrs (name: pkg: pkg.public) config.packagesEval;
+    public.packages = lib.mapAttrs (name: pkg: pkg.public) config.packagesEval;
   };
 }

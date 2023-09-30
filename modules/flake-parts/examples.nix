@@ -39,6 +39,17 @@
   in
     self';
 
+  importFlakeSmall = flakeFile: let
+    self' = (import flakeFile).outputs {
+      dream2nix = modulesFlake;
+      nixpkgs = inputs.nixpkgs;
+      self = self';
+    };
+  in
+    self';
+
+  modulesFlake = import (self + /modules) {};
+
   # Type: [ {${name} = {module, packagePath} ]
   allExamples = mapAttrsToList (dirName: _: readExamples dirName) packageCategories;
 
@@ -117,6 +128,8 @@ in {
             .hello;
           example-repo-flake =
             (importFlake (self + /examples/dream2nix-repo-flake/flake.nix)).packages.${system}.hello;
+          example-repo-flake-pdm =
+            (importFlakeSmall (self + /examples/dream2nix-repo-flake-pdm/flake.nix)).packages.${system}.requests;
         }
       );
   };

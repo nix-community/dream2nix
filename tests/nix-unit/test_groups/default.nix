@@ -22,7 +22,7 @@ in {
       groups.my-group.packages.hello = {...}: fixtures.basic-derivation;
     };
   in {
-    expr = config.groups.my-group.public.hello ? drvPath;
+    expr = config.groups.my-group.public.packages.hello ? drvPath;
     expected = true;
   };
 
@@ -32,7 +32,7 @@ in {
       commonModule = {name = lib.mkForce "hello-mod";};
     };
   in {
-    expr = "${config.groups.my-group.public.hello.name}";
+    expr = "${config.groups.my-group.public.packages.hello.name}";
     expected = "hello-mod";
   };
 }
