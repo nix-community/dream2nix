@@ -20,12 +20,7 @@
     inherit environ pyproject;
   };
   parsed_lock_data = libpdm.parseLockData {
-    inherit environ lock_data;
-    selector = libpdm.preferWheelSelector;
-  };
-  deps_default = libpdm.selectForGroup {
-    inherit parsed_lock_data groups_with_deps;
-    groupname = "default";
+    inherit environ lock_data selector;
   };
 
   fetchFromPypi = import ./fetch-from-pypi.nix {
@@ -50,35 +45,42 @@ in {
     options.sourceSelector = import ./sourceSelectorOption.nix {inherit lib;};
     config.sourceSelector = lib.mkOptionDefault config.pdm.sourceSelector;
   };
-  groups.default = {
-    packages = lib.flip lib.mapAttrs deps_default (name: pkg: {
-      inherit name;
-      version = pkg.version;
-      imports = [
-        dream2nix.modules.dream2nix.buildPythonPackage
-        dream2nix.modules.dream2nix.mkDerivation
-        dream2nix.modules.dream2nix.package-func
-      ];
-      buildPythonPackage = {
-        format =
-          if lib.hasSuffix ".whl" pkg.source.file
-          then "wheel"
-          else "pyproject";
+  groups = let
+    populateGroup = groupname: deps: let
+      deps' = libpdm.selectForGroup {
+        inherit groupname parsed_lock_data groups_with_deps;
       };
-      mkDerivation = {
-        # required: { pname, file, version, hash, kind, curlOpts ? "" }:
-        src = fetchFromPypi {
-          pname = name;
-          file = pkg.source.file;
-          version = pkg.version;
-          hash = pkg.source.hash;
-          kind = "";
+
+      packages = lib.flip lib.mapAttrs deps' (name: pkg: {
+        inherit name;
+        version = pkg.version;
+        imports = [
+          dream2nix.modules.dream2nix.buildPythonPackage
+          dream2nix.modules.dream2nix.mkDerivation
+          dream2nix.modules.dream2nix.package-func
+        ];
+        buildPythonPackage = {
+          format =
+            if lib.hasSuffix ".whl" pkg.source.file
+            then "wheel"
+            else "pyproject";
         };
-        propagatedBuildInputs =
-          lib.forEach
-          parsed_lock_data.${name}.dependencies
-          (depName: config.groups.default.public.packages.${depName});
-      };
-    });
-  };
+        mkDerivation = {
+          # required: { pname, file, version, hash, kind, curlOpts ? "" }:
+          src = fetchFromPypi {
+            pname = name;
+            file = pkg.source.file;
+            version = pkg.version;
+            hash = pkg.source.hash;
+            kind = "";
+          };
+          propagatedBuildInputs =
+            lib.forEach
+            parsed_lock_data.${name}.dependencies
+            (depName: config.groups.${groupname}.public.packages.${depName});
+        };
+      });
+    in {inherit packages;};
+  in
+    lib.mapAttrs populateGroup groups_with_deps;
 }
