@@ -209,7 +209,7 @@ in {
       inherit (config.deps) libiconv mkShell cargo;
     };
     dependencies = cfg.depsDrv.public;
-    meta = utils.getMeta pname version;
+    meta = (utils.getMeta pname version) // config.mkDerivation.meta;
   };
 
   deps = {nixpkgs, ...}:
