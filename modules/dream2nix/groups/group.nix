@@ -16,7 +16,7 @@
 in {
   options = {
     overrides = lib.mkOption {
-      type = lib.attrs;
+      type = t.attrs;
       description = ''
         A set of package overrides
       '';
