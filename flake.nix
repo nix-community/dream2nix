@@ -8,6 +8,7 @@
 
   inputs = {
     nixpkgs.url = "nixpkgs/nixos-unstable";
+    pyproject-nix.url = "github:adisbladis/pyproject.nix";
 
     flake-parts.url = "github:hercules-ci/flake-parts";
     flake-parts.inputs.nixpkgs-lib.follows = "nixpkgs";
