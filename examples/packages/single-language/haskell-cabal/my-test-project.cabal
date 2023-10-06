@@ -1,0 +1,17 @@
+cabal-version:      3.4
+name:               my-test-project
+version:            1.0.0
+build-type:         Simple
+
+common warnings
+    ghc-options: -Wall
+
+executable my-test-project
+    import:           warnings
+    main-is:          Main.hs
+    build-depends:
+      , base
+      , zlib
+      , bifunctors
+    hs-source-dirs:   app
+    default-language: GHC2021
