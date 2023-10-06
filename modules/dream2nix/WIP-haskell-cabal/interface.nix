@@ -1,11 +1,10 @@
-{ lib
-, config
-, ...
-}:
-let
+{
+  lib,
+  config,
+  ...
+}: let
   l = lib // builtins;
   t = l.types;
-in
-{
-  options.haskell-cabal = { };
+in {
+  options.haskell-cabal = {};
 }
