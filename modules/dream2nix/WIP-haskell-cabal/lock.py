@@ -9,41 +9,57 @@ from hashlib import sha256
 import json
 import os
 import requests
-import subprocess
 import sys
 
-subprocess.run(["cabal", "freeze"])
-
-with open('./dist-newstyle/cache/plan.json') as f:
+with open("./dist-newstyle/cache/plan.json") as f:
     plan = f.read()
 
 plan = json.loads(plan)
 
-pkgs = list(filter((lambda pkg: pkg.get('pkg-src') is not None
-                    and pkg['pkg-src']['type'] == 'repo-tar')
-                   , plan['install-plan']))
+pkgs = list(
+    filter(
+        (
+            lambda pkg: pkg.get("pkg-src") is not None
+            and pkg["pkg-src"]["type"] == "repo-tar"
+        ),
+        plan["install-plan"],
+    )
+)
 pkg_len = len(pkgs)
 
-for i,pkg in enumerate(pkgs):
+lock = {}
+
+for i, pkg in enumerate(pkgs):
     name = pkg["pkg-name"]
     id = pkg["id"]
     version = pkg["pkg-version"]
 
     print(f"[{i}/{pkg_len}] Resolving revision for {name}")
 
-    revisions = requests.get(f'https://hackage.haskell.org/package/{name}/revisions/'
-                             , headers={'Accept': 'application/json'}).json()
+    revisions = requests.get(
+        f"https://hackage.haskell.org/package/{name}/revisions/",
+        headers={"Accept": "application/json"},
+    ).json()
     for rev in revisions:
-        no = rev['number']
-        rev_url = f'https://hackage.haskell.org/package/{name}-{version}/revision/{no}.cabal'
+        no = rev["number"]
+        rev_url = (
+            f"https://hackage.haskell.org/package/{name}-{version}/revision/{no}.cabal"
+        )
         rev_cabal = requests.get(rev_url).text
-        rev_hash = sha256(rev_cabal.encode('utf-8')).hexdigest()
-        if rev_hash == pkg['pkg-cabal-sha256']:
-            pkg['pkg-cabal-url'] = rev_url
+        rev_hash = sha256(rev_cabal.encode("utf-8")).hexdigest()
+        if rev_hash == pkg["pkg-cabal-sha256"]:
+            lock[id] = {
+                "name": name,
+                "version": version,
+                "cabal-sha256": rev_hash,
+                "cabal-url": rev_url,
+                "url": pkg["pkg-src"]["repo"]["uri"],
+                "sha256": pkg["pkg-src-sha256"],
+            }
             break
     else:
-        print(f'Could not find revision for {name}-{version}')
+        print(f"Could not find revision for {name}-{version}")
         sys.exit(1)
 
 with open(os.environ.get("out"), "w") as f:
-    json.dump(plan, f, indent=2)
+    json.dump(lock, f, indent=2)
