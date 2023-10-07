@@ -6,6 +6,7 @@
 # are augmenting it with correct revision and link to the valid cabal file
 
 from hashlib import sha256
+from urllib.parse import urljoin
 import json
 import os
 import requests
@@ -34,12 +35,18 @@ for i, pkg in enumerate(pkgs):
     id = pkg["id"]
     version = pkg["pkg-version"]
 
-    print(f"[{i}/{pkg_len}] Resolving revision for {name}")
+    print(f"[{i+1}/{pkg_len}] Resolving revision for {name}")
 
     revisions = requests.get(
         f"https://hackage.haskell.org/package/{name}/revisions/",
         headers={"Accept": "application/json"},
     ).json()
+
+    url = pkg["pkg-src"]["repo"]["uri"]
+    url = urljoin(url, "package/")
+    url = urljoin(url, f"{name}/")
+    url = urljoin(url, f"{name}-{version}.tar.gz")
+
     for rev in revisions:
         no = rev["number"]
         rev_url = (
@@ -47,13 +54,14 @@ for i, pkg in enumerate(pkgs):
         )
         rev_cabal = requests.get(rev_url).text
         rev_hash = sha256(rev_cabal.encode("utf-8")).hexdigest()
+
         if rev_hash == pkg["pkg-cabal-sha256"]:
             lock[id] = {
                 "name": name,
                 "version": version,
                 "cabal-sha256": rev_hash,
                 "cabal-url": rev_url,
-                "url": pkg["pkg-src"]["repo"]["uri"],
+                "url": url,
                 "sha256": pkg["pkg-src-sha256"],
             }
             break
