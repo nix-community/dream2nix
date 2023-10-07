@@ -24,28 +24,30 @@
 
   getNameVer = p: "${p.name}-${p.version}";
 
-  fetchFromHackage = p: let
-    cabalFile = config.deps.fetchurl {
+  fetchCabalFile = p:
+    config.deps.fetchurl {
       url = p.cabal-url;
       sha256 = p.cabal-sha256;
     };
-  in
+
+  fetchFromHackage = p:
     config.deps.stdenv.mkDerivation {
       name = "${getNameVer p}-source";
 
       # NOTE: Cannot use fetchTarball because cabal gives hash before unpacking
       src = config.deps.fetchurl {
-        url = "${p.url}package/${p.name}/${getNameVer p}.tar.gz";
-        sha256 = p.sha256;
+        inherit (p) url sha256;
       };
 
+      # We are fetching cabal file separately to match the revision
+      # p.url contains only "base" release
       installPhase = ''
         runHook preInstall
 
         mkdir unpacked
         tar -C unpacked -xf "$src"
         mv unpacked/${getNameVer p} $out
-        cp ${cabalFile} $out/${p.name}.cabal
+        cp ${fetchCabalFile p} $out/${p.name}.cabal
 
         runHook postInstall
       '';
@@ -53,10 +55,12 @@
 
   vendorPackage = p: ''
     echo "Vendoring ${fetchFromHackage p}"
-    cp -r ${fetchFromHackage p} ./vendor/${p.name}
+    cp -r ${fetchFromHackage p} $VENDOR_DIR/${p.name}
   '';
 
-  vendorPackages = builtins.concatStringsSep "\n" (lib.mapAttrsToList (_: vendorPackage) lock);
+  vendorPackages =
+    builtins.concatStringsSep "\n"
+    (lib.mapAttrsToList (_: vendorPackage) lock);
 in {
   imports = [
     dream2nix.modules.dream2nix.core
@@ -76,17 +80,18 @@ in {
     configurePhase = ''
       runHook preConfigure
 
+      VENDOR_DIR="$(mktemp -d)"
+
       if ! test -f ./cabal.project;
       then
         {
           echo "packages: ./."
-          echo "optional-packages: ./vendor/*/*.cabal"
+          echo "optional-packages: $VENDOR_DIR/*/*.cabal"
         } > cabal.project
       else
-        echo "optional-packages: ./vendor/*/*.cabal" >> cabal.project
+        echo "optional-packages: $VENDOR_DIR/*/*.cabal" >> cabal.project
       fi
 
-      mkdir -p vendor
       ${vendorPackages}
 
       runHook postConfigure
@@ -118,11 +123,11 @@ in {
       config.deps.coreutils
       (config.deps.python3.withPackages (ps: with ps; [requests]))
     ] ''
-      DIR=$(mktemp -d)
-      cp -r --no-preserve=all ${config.mkDerivation.src}/* $DIR/.
-      env -C $DIR cabal update
-      env -C $DIR cabal freeze
-      env -C $DIR python3 ${./lock.py}
+      cd $TMPDIR
+      cp -r --no-preserve=all ${config.mkDerivation.src}/* .
+      cabal update # We need to run update or cabal will fetch invalid cabal hashes
+      cabal freeze
+      python3 ${./lock.py}
     '';
 
   deps = {nixpkgs, ...}:

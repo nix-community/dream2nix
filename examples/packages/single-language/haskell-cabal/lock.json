@@ -5,7 +5,7 @@
       "version": "1.1",
       "cabal-sha256": "56d0fd1c17aaf6268e81bf19ba5afe186128d7f88126bd546d5b3151ab692652",
       "cabal-url": "https://hackage.haskell.org/package/assoc-1.1/revision/1.cabal",
-      "url": "http://hackage.haskell.org/",
+      "url": "http://hackage.haskell.org/package/assoc/assoc-1.1.tar.gz",
       "sha256": "7aa2e6548b3d9d49a286ac20639479aaf6c47a1446113ed784d98737c5f60df4"
     },
     "base-orphans-0.9.0-58b68b321775f293e2adbf34be7d3a36b9a440ced376624a01630e8adaca8c7d": {
@@ -13,7 +13,7 @@
       "version": "0.9.0",
       "cabal-sha256": "0bdd3486d3a1bcbed0513b46af4a13ca74b395313fa5b6e0068d6b7413b76a04",
       "cabal-url": "https://hackage.haskell.org/package/base-orphans-0.9.0/revision/0.cabal",
-      "url": "http://hackage.haskell.org/",
+      "url": "http://hackage.haskell.org/package/base-orphans/base-orphans-0.9.0.tar.gz",
       "sha256": "613ed4d8241ed5a648a59ae6569a6962990bb545711d020d49fb83fa12d16e62"
     },
     "bifunctors-5.6.1-ab6fad39c7d535ecbf3902c531a3005a6b0dc22e75c1519cf2c1cde9b9a14814": {
@@ -21,7 +21,7 @@
       "version": "5.6.1",
       "cabal-sha256": "82fa7ed8f69f0bfa375de117ab36414c0b96a97ee046edc3ac6da7a295a94755",
       "cabal-url": "https://hackage.haskell.org/package/bifunctors-5.6.1/revision/2.cabal",
-      "url": "http://hackage.haskell.org/",
+      "url": "http://hackage.haskell.org/package/bifunctors/bifunctors-5.6.1.tar.gz",
       "sha256": "06381471b5be16516a1b2c4b21a5101a3d991038bface8e0cad144c0044d57fc"
     },
     "comonad-5.0.8-5a6a21fcf92fcb04889c4c5b5e179316c39948ee9d617015dcd1d30aac251242": {
@@ -29,7 +29,7 @@
       "version": "5.0.8",
       "cabal-sha256": "4a4dbfbd03fb4963987710fca994e8b5624bd05a33e5f95b7581b26f8229c5e3",
       "cabal-url": "https://hackage.haskell.org/package/comonad-5.0.8/revision/2.cabal",
-      "url": "http://hackage.haskell.org/",
+      "url": "http://hackage.haskell.org/package/comonad/comonad-5.0.8.tar.gz",
       "sha256": "ef6cdf2cc292cc43ee6aa96c581b235fdea8ab44a0bffb24dc79ae2b2ef33d13"
     },
     "distributive-0.6.2.1-f5aca98c623373dc34fa9aaeaa5cbd333163b58dd2be5b475c5657f2e9df5fd1": {
@@ -37,7 +37,7 @@
       "version": "0.6.2.1",
       "cabal-sha256": "0f99f5541cca04acf89b64432b03422b6408e830a8dff30e6c4334ef1a48680c",
       "cabal-url": "https://hackage.haskell.org/package/distributive-0.6.2.1/revision/1.cabal",
-      "url": "http://hackage.haskell.org/",
+      "url": "http://hackage.haskell.org/package/distributive/distributive-0.6.2.1.tar.gz",
       "sha256": "d7351392e078f58caa46630a4b9c643e1e2e9dddee45848c5c8358e7b1316b91"
     },
     "foldable1-classes-compat-0.1-020755d5ecf87ee5dcbe9f3ce3a2afabe4ce2db2fb82b4eab884942e54d1e31a": {
@@ -45,7 +45,7 @@
       "version": "0.1",
       "cabal-sha256": "fb4b3cedd33d5c22c573c39baa930c78eaa4feb22d43abb680c3149f8ab9fa4e",
       "cabal-url": "https://hackage.haskell.org/package/foldable1-classes-compat-0.1/revision/4.cabal",
-      "url": "http://hackage.haskell.org/",
+      "url": "http://hackage.haskell.org/package/foldable1-classes-compat/foldable1-classes-compat-0.1.tar.gz",
       "sha256": "d057c3f358e1a6b72c73519bc64ba6aa959f066c08fed69f73258555ef95ff12"
     },
     "indexed-traversable-0.1.3-59bd0d4010c8b599ed0c4fe6f3b5cb3e2b2b599d3ecf3dd9b6803e2ec6bf797c": {
@@ -53,7 +53,7 @@
       "version": "0.1.3",
       "cabal-sha256": "911f96592752ce4ffbeda00b1155dbbfac5135c71d6755ae02c00552819a9b17",
       "cabal-url": "https://hackage.haskell.org/package/indexed-traversable-0.1.3/revision/0.cabal",
-      "url": "http://hackage.haskell.org/",
+      "url": "http://hackage.haskell.org/package/indexed-traversable/indexed-traversable-0.1.3.tar.gz",
       "sha256": "1d32925fb6f78e3a52a849b29fc4360df51c97be95ba8ac642517d3ff01a53d9"
     },
     "tagged-0.8.8-a0ceba434643f0e1990194c2a392bc13a5cc345f9787019a9c12d5abf769dc41": {
@@ -61,7 +61,7 @@
       "version": "0.8.8",
       "cabal-sha256": "c4fdbd3e1c423af0ccf8eb9e9962620106c34e32ed8e0cc647fb06899a703e04",
       "cabal-url": "https://hackage.haskell.org/package/tagged-0.8.8/revision/0.cabal",
-      "url": "http://hackage.haskell.org/",
+      "url": "http://hackage.haskell.org/package/tagged/tagged-0.8.8.tar.gz",
       "sha256": "a083fa7835516203c168433a1c8dfc0290a94b05fedab566ad0640fc9137a6a7"
     },
     "th-abstraction-0.6.0.0-9aaaedf3eb0d8b6b9657df806e8b2a3a8120d7dd98cf662192696d944938c7fa": {
@@ -69,7 +69,7 @@
       "version": "0.6.0.0",
       "cabal-sha256": "d8959fa6a2812afcdd5f6f255fd6be8b3e0ca01e425586a554544fcb70b0ec7c",
       "cabal-url": "https://hackage.haskell.org/package/th-abstraction-0.6.0.0/revision/1.cabal",
-      "url": "http://hackage.haskell.org/",
+      "url": "http://hackage.haskell.org/package/th-abstraction/th-abstraction-0.6.0.0.tar.gz",
       "sha256": "69ea6eca1f0c00b6e1e1f8329c908ec76e73855e2ce6e91ace2f8bbf92c51a30"
     },
     "transformers-compat-0.7.2-2149c73f816de26f42e847494a4774f347e627526e04a9db86fdac821179748a": {
@@ -77,7 +77,7 @@
       "version": "0.7.2",
       "cabal-sha256": "044fb9955f63ee138fcebedfdcbe54afe741f2d5892a2d0bdf3a8052bd342643",
       "cabal-url": "https://hackage.haskell.org/package/transformers-compat-0.7.2/revision/0.cabal",
-      "url": "http://hackage.haskell.org/",
+      "url": "http://hackage.haskell.org/package/transformers-compat/transformers-compat-0.7.2.tar.gz",
       "sha256": "b62c7304c9f3cbc9463d0739aa85cb9489f217ea092b9d625d417514fbcc9d6a"
     },
     "zlib-0.6.3.0-36d455b073cd2f52fce48d7ee5952ee655d626d80206236ff97d7bc4d3c51d0e": {
@@ -85,7 +85,7 @@
       "version": "0.6.3.0",
       "cabal-sha256": "cf2a8edc1f4086934638d11882423780dd096c4e77d9c6639ccc469c6c26f041",
       "cabal-url": "https://hackage.haskell.org/package/zlib-0.6.3.0/revision/3.cabal",
-      "url": "http://hackage.haskell.org/",
+      "url": "http://hackage.haskell.org/package/zlib/zlib-0.6.3.0.tar.gz",
       "sha256": "9eaa989ad4534438b5beb51c1d3a4c8f6a088fdff0b259a5394fbf39aaee04da"
     }
   },
