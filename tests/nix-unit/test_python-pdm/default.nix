@@ -1,7 +1,7 @@
 {
   pkgs ? import <nixpkgs> {},
   lib ? import <nixpkgs/lib>,
-  dream2nix ? (import (../../../modules + "/flake.nix")).outputs inputs,
+  dream2nix ? ((import (../../../modules + "/flake.nix")).outputs inputs),
   inputs ? (import (../../../modules + "/default.nix")).inputs,
 }: let
   eval = module:
@@ -11,7 +11,7 @@
         module
       ];
       specialArgs = {
-        inherit dream2nix;
+        dream2nix = dream2nix // {inherit inputs;};
         packageSets.nixpkgs = pkgs;
       };
     })
@@ -22,11 +22,9 @@ in {
       # TODO: create fixtures
       pdm.lockfile = ./../../../examples/dream2nix-repo-flake-pdm/pdm.lock;
       pdm.pyproject = ./../../../examples/dream2nix-repo-flake-pdm/pyproject.toml;
-      # groups.my-group.packages.hello = {...}: fixtures.basic-derivation;
     };
   in {
-    # expr = config.groups.default.public.certifi ? drvPath;
-    expr = true;
+    expr = config.groups.default.public.packages.certifi ? drvPath;
     expected = true;
   };
 }
