@@ -113,9 +113,11 @@ in {
     ]
     ''
       set -euo pipefail
-      mkdir $TMPDIR/package-sets
+      git clone https://github.com/purescript/package-sets.git $TMPDIR/package-sets
       cd $TMPDIR/package-sets
-      curl -fL https://github.com/purescript/package-sets/archive/refs/heads/master.tar.gz | tar xz --strip-components=1
+      REGISTRY="$(yq ".workspace.package_set.registry" ${config.spago.spagoYamlFile})"
+      REV="$(git log --grep "$REGISTRY" --pretty=format:"%H")"
+      git checkout $REV
       yq -o=json < ${config.spago.spagoYamlFile} > spago.json
       python3 ${./lock.py}
     '';
