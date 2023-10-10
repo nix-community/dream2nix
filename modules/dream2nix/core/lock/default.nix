@@ -191,6 +191,8 @@
 in {
   imports = [
     ./interface.nix
+    ../assertions.nix
+    ../deps
   ];
 
   config = {

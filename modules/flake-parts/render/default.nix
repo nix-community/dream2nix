@@ -71,13 +71,20 @@ in {
     };
 
     eval = evalWith {
-      modules = concatLists (mapAttrsToList (name: inputCfg: inputCfg.getModules inputCfg.flake) cfg.inputs);
+      modules = concatLists (mapAttrsToList (name: inputCfg: [inputCfg.module]) cfg.inputs);
     };
     evalWith = {modules}:
       lib.evalModules {
-        modules = modules;
-        specialArgs.dream2nix.modules = self.modules;
-        specialArgs.packageSets = {};
+        modules =
+          modules
+          ++ [
+            # {
+            #   name = "dummy-name";
+            #   version = "dummy-version";
+            # }
+          ];
+        specialArgs.dream2nix = self;
+        specialArgs.packageSets.nixpkgs = pkgs;
       };
     # inputs.flake-parts.lib.evalFlakeModule
     # {
@@ -123,23 +130,21 @@ in {
               in [
                 {
                   url = baseUrl + subpath;
-                  name = sourceName + subpath;
+                  name = "dream2nix" + subpath;
                 }
               ]
               else []
           )
           opt.declarations;
       in
-        # if
-        #   declarations
-        #   == []
-        #   || (
-        #     # sourceName != "flake-parts" && coreOptDecls ? ${lib.showOption opt.loc}
-        #     sourceName != "flake-parts"
-        #   )
-        # then opt // {visible = false;}
-        # else opt // {inherit declarations;};
-        opt // {inherit declarations;};
+        if
+          declarations
+          == []
+          || (
+            (lib.head opt.loc) != sourceName
+          )
+        then opt // {visible = false;}
+        else opt // {inherit declarations;};
 
     inputModule = {
       config,
@@ -147,12 +152,11 @@ in {
       ...
     }: {
       options = {
-        flake = mkOption {
+        module = mkOption {
           type = types.raw;
           description = ''
-            A flake.
+            A Module.
           '';
-          default = inputs.${name};
         };
 
         sourcePath = mkOption {
@@ -160,7 +164,6 @@ in {
           description = ''
             Source path in which the modules are contained.
           '';
-          default = config.flake.outPath;
         };
 
         title = mkOption {
@@ -224,29 +227,13 @@ in {
           default = ''
             ## Installation
 
-            ${
-              if config.installationDeclareInput
-              then ''
-                To use these options, add to your flake inputs:
-
-                ```nix
-                ${config.sourceName}.url = "${config.flakeRef}";
-                ```
-
-                and inside the `mkFlake`:
-              ''
-              else ''
-                To use these options, add inside the `mkFlake`:
-              ''
-            }
+            To import this module into your dream2nix package:
 
             ```nix
             imports = [
-              inputs.${config.sourceName}.${lib.concatMapStringsSep "." lib.strings.escapeNixIdentifier config.attributePath}
+              ${lib.concatMapStringsSep "." lib.strings.escapeNixIdentifier config.attributePath}
             ];
             ```
-
-            Run `nix flake lock` and you're set.
           '';
         };
 
@@ -263,19 +250,6 @@ in {
           description = ''
             URL prefix for source location links.
           '';
-        };
-
-        getModules = mkOption {
-          type = types.functionTo (types.listOf types.raw);
-          description = ''
-            Get the modules to render.
-          '';
-          default = flake: [
-            (
-              builtins.addErrorContext "while getting modules for input '${name}'"
-              (lib.getAttrFromPath config.attributePath flake)
-            )
-          ];
         };
 
         attributePath = mkOption {
@@ -325,7 +299,7 @@ in {
             if config.separateEval
             then
               (evalWith {
-                modules = config.getModules config.flake;
+                modules = [config.module];
               })
               .options
             else opts;
@@ -334,7 +308,7 @@ in {
             inherit (config) sourceName baseUrl sourcePath;
             # inherit coreOptDecls;
           };
-          warningsAreErrors = true; # not sure if feasible long term
+          warningsAreErrors = false; # not sure if feasible long term
           markdownByDefault = true;
         };
         rendered =
@@ -375,6 +349,20 @@ in {
         })
         cfg.inputs
         // {
+          # generate markdown file like:
+          # Summary
+          # - [Reference Documentation]()
+          #   - [core (built in)](./options/core.md)
+          generated-summary-md = pkgs.writeText "SUMMARY.md" ''
+            # Summary
+            - [Reference Documentation]()
+            ${
+              lib.concatStringsSep "\n"
+              (lib.mapAttrsToList
+                (name: inputCfg: "  - [${inputCfg.sourceName}](./options/${name}.md)")
+                cfg.inputs)
+            }
+          '';
           generated-docs =
             pkgs.runCommand "generated-docs"
             {

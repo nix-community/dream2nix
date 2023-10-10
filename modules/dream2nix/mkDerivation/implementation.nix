@@ -60,4 +60,8 @@ in {
       inherit (config.public) version;
       pname = config.name;
     };
+
+  config.deps = {nixpkgs, ...}: {
+    stdenv = lib.mkOverride 1050 nixpkgs.stdenv;
+  };
 }
