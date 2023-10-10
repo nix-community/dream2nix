@@ -17,6 +17,10 @@ in {
       type = t.submodule {
         freeformType = t.anything;
       };
+      description = ''
+        The content of the lock file.
+        All fields declared via `lock.fields` are contained pointing to their respective values.
+      '';
     };
 
     fields = l.mkOption {

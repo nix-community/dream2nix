@@ -14,6 +14,10 @@ in {
       type = t.submodule {
         freeformType = t.anything;
       };
+      description = ''
+        The content of the cached fields.
+        For example if fields.pname is set to true, then content.pname will exist.
+      '';
     };
 
     invalidationFields = l.mkOption {

@@ -44,6 +44,9 @@ in {
     flagsOffered = l.mkOption {
       type = t.attrsOf t.str;
       default = {};
+      description = ''
+        declare flags that can be used to enable/disable features
+      '';
     };
 
     # The flag options generated from `flagsOffered`
@@ -52,6 +55,9 @@ in {
         options = l.mapAttrs (_: mkFlag) config.flagsOffered;
       };
       default = {};
+      description = ''
+        Enable/disable flags declared in `flagsOffered`
+      '';
     };
   };
 }

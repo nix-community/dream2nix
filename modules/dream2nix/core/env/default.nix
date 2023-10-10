@@ -15,6 +15,9 @@ in {
       in
         t.attrsOf (t.nullOr (t.oneOf allTypes));
       default = {};
+      description = ''
+        environment variables passed to the build environment
+      '';
     };
   };
 }
