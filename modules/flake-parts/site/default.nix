@@ -44,12 +44,16 @@
       '';
 
     packages = {
-      default = pkgs.stdenvNoCC.mkDerivation {
+      website = pkgs.stdenvNoCC.mkDerivation {
         name = "site";
         nativeBuildInputs = [pkgs.mdbook pkgs.mdbook-linkcheck];
         src = ./.;
         buildPhase = ''
           runHook preBuild
+
+          cp ${self + /docs/theme/highlight.js} ./src/highlight.js
+          mkdir -p ./theme
+          cp ${self + /modules/dream2nix/core/docs/theme/favicon.png} ./theme/favicon.png
 
           {
             while read ln; do
