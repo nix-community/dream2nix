@@ -1,7 +1,7 @@
 h1.menu-title::before {
   content: "";
   display: inline-block;
-  background-image: url(./favicon.svg);
+  background-image: url(./favicon.png);
   background-repeat: no-repeat;
   background-size: contain;
   width: 1.8ex;

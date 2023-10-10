@@ -1,13 +1,13 @@
 [book]
-authors = ["Robert Hensing", "Various module authors"]
+authors = ["David Hauer", "Various contributors"]
 language = "en"
 multilingual = false
 src = "src"
-title = "flake-parts"
+title = "dream2nix"
 
 [output.html]
-git-repository-url = "https://github.com/hercules-ci/flake-parts"
-edit-url-template = "https://github.com/hercules-ci/flake.parts-website/edit/main/site/{path}"
+git-repository-url = "https://github.com/nix-community/dream2nix"
+edit-url-template = "https://github.com/nix-community/dream2nix/edit/main/modules/dream2nix/{path}"
 additional-js = [ "no-edit-options.js" ]
 additional-css = [ "flake-parts.css" ]
 no-section-label = true
