@@ -26,7 +26,7 @@
       pkgs.runCommand "linkcheck"
       {
         nativeBuildInputs = [pkgs.linkchecker pkgs.python3];
-        site = config.packages.default;
+        site = config.packages.website;
       } ''
         # https://linkchecker.github.io/linkchecker/man/linkcheckerrc.html
         cat >>$TMPDIR/linkcheckrc <<EOF
@@ -52,6 +52,7 @@
           runHook preBuild
 
           cp ${self + /docs/theme/highlight.js} ./src/highlight.js
+          cp ${self'.packages.generated-summary-md} ./src/SUMMARY.md
           mkdir -p ./theme
           cp ${self + /modules/dream2nix/core/docs/theme/favicon.png} ./theme/favicon.png
 
@@ -77,7 +78,8 @@
           cp -r $TMPDIR/out/html $out
           cp _redirects $out
 
-          echo '<html><head><script>window.location.pathname = window.location.pathname.replace(/options.html$/, "") + "options/flake-parts.html"</script></head><body><a href="options/flake-parts.html">to the options</a></body></html>' \
+          # TODO: point to something else than public.html
+          echo '<html><head><script>window.location.pathname = window.location.pathname.replace(/options.html$/, "") + "options/public.html"</script></head><body><a href="options/public.html">to the options</a></body></html>' \
             >$out/options.html
 
           runHook postBuild
