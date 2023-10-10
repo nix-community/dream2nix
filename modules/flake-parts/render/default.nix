@@ -3,6 +3,7 @@
   inputs,
   lib,
   flake-parts-lib,
+  self,
   ...
 }: let
   inherit
@@ -73,36 +74,41 @@ in {
       modules = concatLists (mapAttrsToList (name: inputCfg: inputCfg.getModules inputCfg.flake) cfg.inputs);
     };
     evalWith = {modules}:
-      inputs.flake-parts.lib.evalFlakeModule
-      {
-        inputs = {
-          inherit (inputs) nixpkgs;
-          self =
-            eval.config.flake
-            // {
-              outPath =
-                throw "The `self.outPath` attribute is not available when generating documentation, because the documentation should not depend on the specifics of the flake files where it is loaded. This error is generally caused by a missing `defaultText` on one or more options in the trace. Please run this evaluation with `--show-trace`, and look for `while evaluating the default value of option` and add a `defaultText` to one or more of the options involved.";
-            };
-        };
-      }
-      {
-        imports =
-          modules
-          ++ [
-            fixups
-          ];
-        systems = [(throw "The `systems` option value is not available when generating documentation. This is generally caused by a missing `defaultText` on one or more options in the trace. Please run this evaluation with `--show-trace`, look for `while evaluating the default value of option` and add a `defaultText` to the one or more of the options involved.")];
+      lib.evalModules {
+        modules = modules;
+        specialArgs.dream2nix.modules = self.modules;
+        specialArgs.packageSets = {};
       };
+    # inputs.flake-parts.lib.evalFlakeModule
+    # {
+    #   inputs = {
+    #     inherit (inputs) nixpkgs;
+    #     self =
+    #       eval.config.flake
+    #       // {
+    #         outPath =
+    #           throw "The `self.outPath` attribute is not available when generating documentation, because the documentation should not depend on the specifics of the flake files where it is loaded. This error is generally caused by a missing `defaultText` on one or more options in the trace. Please run this evaluation with `--show-trace`, and look for `while evaluating the default value of option` and add a `defaultText` to one or more of the options involved.";
+    #       };
+    #   };
+    # }
+    # {
+    #   imports =
+    #     modules
+    #     ++ [
+    #       fixups
+    #     ];
+    #   systems = [(throw "The `systems` option value is not available when generating documentation. This is generally caused by a missing `defaultText` on one or more options in the trace. Please run this evaluation with `--show-trace`, look for `while evaluating the default value of option` and add a `defaultText` to the one or more of the options involved.")];
+    # };
 
     opts = eval.options;
 
-    coreOptDecls = config.render.inputs.flake-parts._nixosOptionsDoc.optionsNix;
+    # coreOptDecls = config.render.inputs.flake-parts._nixosOptionsDoc.optionsNix;
 
     filterTransformOptions = {
       sourceName,
       sourcePath,
       baseUrl,
-      coreOptDecls,
+      # coreOptDecls,
     }: let
       sourcePathStr = toString sourcePath;
     in
@@ -124,14 +130,16 @@ in {
           )
           opt.declarations;
       in
-        if
-          declarations
-          == []
-          || (
-            sourceName != "flake-parts" && coreOptDecls ? ${lib.showOption opt.loc}
-          )
-        then opt // {visible = false;}
-        else opt // {inherit declarations;};
+        # if
+        #   declarations
+        #   == []
+        #   || (
+        #     # sourceName != "flake-parts" && coreOptDecls ? ${lib.showOption opt.loc}
+        #     sourceName != "flake-parts"
+        #   )
+        # then opt // {visible = false;}
+        # else opt // {inherit declarations;};
+        opt // {inherit declarations;};
 
     inputModule = {
       config,
@@ -324,7 +332,7 @@ in {
           documentType = "none";
           transformOptions = config.filterTransformOptions {
             inherit (config) sourceName baseUrl sourcePath;
-            inherit coreOptDecls;
+            # inherit coreOptDecls;
           };
           warningsAreErrors = true; # not sure if feasible long term
           markdownByDefault = true;

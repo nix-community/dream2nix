@@ -1,4 +1,8 @@
-{inputs, ...}: {
+{
+  inputs,
+  self,
+  ...
+}: {
   perSystem = {
     config,
     self',
@@ -59,7 +63,7 @@
               esac
             done
             cat src/intro-continued.md
-          } <${inputs.flake-parts + "/README.md"} >src/README.md
+          } <${self + "/README.md"} >src/README.md
 
           mkdir -p src/options
           for f in ${config.packages.generated-docs}/*.html; do
