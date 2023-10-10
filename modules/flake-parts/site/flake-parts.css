@@ -1,0 +1,19 @@
+h1.menu-title::before {
+  content: "";
+  display: inline-block;
+  background-image: url(./favicon.svg);
+  background-repeat: no-repeat;
+  background-size: contain;
+  width: 1.8ex;
+  height: 1.8ex;
+  margin-right: 0.9ex;
+  vertical-align: middle;
+}
+.light {
+  --links: #058;
+  --sidebar-active: #0af;
+}
+.sidebar .sidebar-scrollbox {
+  /* We don't use numbers, so we can take a consistent amount of space */
+  padding: var(--page-padding) !important;
+}
