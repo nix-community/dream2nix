@@ -113,7 +113,7 @@ in {
   imports = [
     commonModule
     ./interface.nix
-    ../pip-hotfixes
+    ./pip-hotfixes
   ];
 
   deps = {nixpkgs, ...}:

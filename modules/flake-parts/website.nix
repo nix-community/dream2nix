@@ -17,7 +17,7 @@
           # "buildPythonPackage"
           # "buildRustPackage"
           # "builtins-derivation"
-          # "core"
+          "core"
           # "groups"
           # "mkDerivation"
           # "mkDerivation-sane-defaults"
@@ -30,20 +30,22 @@
           # "nodejs-package-lock"
           # "nodejs-package-lock-v3"
           # "package-func"
-          # "php-composer-lock"
-          # "php-granular"
-          # "pip"
-          # "pip-hotfixes"
-          # "rust-cargo-lock"
-          # "rust-crane"
-          # "_template"
-          # "WIP-python-pdm"
-          # "WIP-python-pyproject"
-          # "WIP-spago"
+          "php-composer-lock"
+          "php-granular"
 
-          # "lock"
+          "pip"
+          "rust-cargo-lock"
+          "WIP-python-pdm"
+          "WIP-python-pyproject"
+          "WIP-spago"
+
+          "lock"
           "mkDerivation"
           "public"
+
+          # NOT WORKING
+          # "rust-crane"
+          # "_template"
         ]) (self.modules.dream2nix))
       (name: module: {
         title = name;

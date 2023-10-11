@@ -23,6 +23,7 @@
 in {
   imports = [
     ./interface.nix
+    dream2nix.modules.dream2nix.mkDerivation
   ];
   rust-cargo-lock = {
     inherit dreamLock;

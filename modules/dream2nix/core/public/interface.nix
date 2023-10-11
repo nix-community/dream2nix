@@ -29,6 +29,7 @@ in {
       The final result of the evaluated package.
       Contains everything that nix expects from a derivation.
       Contains fields like name, outputs, drvPath, outPath, etc.
+      Can be build with nix-build or `nix build`.
     '';
   };
 }
