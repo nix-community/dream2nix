@@ -27,13 +27,17 @@ in {
     fetchFromGitHub = nixpkgs.fetchFromGitHub;
   };
 
-  mkDerivation = {
-    src = config.deps.fetchFromGitHub {
+  nodejs-package-lock = {
+    source = config.deps.fetchFromGitHub {
       owner = "posativ";
       repo = config.name;
       rev = "refs/tags/${config.version}";
       sha256 = "sha256-kZNf7Rlb1DZtQe4dK1B283OkzQQcCX+pbvZzfL65gsA=";
     };
+  };
+
+  mkDerivation = {
+    src = config.nodejs-package-lock.source;
 
     propagatedBuildInputs = [
       # isso implicitly assumes that pkg_resources, which is

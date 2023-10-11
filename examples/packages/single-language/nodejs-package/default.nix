@@ -9,8 +9,8 @@
     dream2nix.modules.dream2nix.nodejs-granular
   ];
 
-  mkDerivation = {
-    src = config.deps.fetchFromGitHub {
+  nodejs-package-lock = {
+    source = config.deps.fetchFromGitHub {
       owner = "piuccio";
       repo = "cowsay";
       rev = "v1.5.0";
@@ -28,4 +28,8 @@
 
   name = "cowsay";
   version = "1.5.0";
+
+  mkDerivation = {
+    src = config.nodejs-package-lock.source;
+  };
 }
