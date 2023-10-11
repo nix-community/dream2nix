@@ -51,6 +51,8 @@
 
         runHook postInstall
       '';
+
+      dontFixup = true;
     };
 
   vendorPackage = p: ''

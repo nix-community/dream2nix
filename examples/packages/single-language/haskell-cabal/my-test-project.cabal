@@ -12,6 +12,6 @@ executable my-test-project
     build-depends:
       , base
       , zlib
-      , bifunctors
+      , free
     hs-source-dirs:   app
     default-language: GHC2021
