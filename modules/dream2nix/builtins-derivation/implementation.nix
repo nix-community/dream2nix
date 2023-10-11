@@ -32,7 +32,7 @@
 in {
   imports = [
     ../core
-    ../package-func/implementation.nix
+    ../package-func
   ];
 
   config.package-func.outputs = cfg.outputs;
