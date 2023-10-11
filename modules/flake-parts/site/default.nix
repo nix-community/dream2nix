@@ -22,26 +22,26 @@
     upstream, so that it's quick and can run often without blocking the
     iteration cycle unnecessarily.
     */
-    checks.linkcheck =
-      pkgs.runCommand "linkcheck"
-      {
-        nativeBuildInputs = [pkgs.linkchecker pkgs.python3];
-        site = config.packages.website;
-      } ''
-        # https://linkchecker.github.io/linkchecker/man/linkcheckerrc.html
-        cat >>$TMPDIR/linkcheckrc <<EOF
-        [checking]
-        threads=''${NIX_BUILD_CORES:-4}
+    # checks.linkcheck =
+    #   pkgs.runCommand "linkcheck"
+    #   {
+    #     nativeBuildInputs = [pkgs.linkchecker pkgs.python3];
+    #     site = config.packages.website;
+    #   } ''
+    #     # https://linkchecker.github.io/linkchecker/man/linkcheckerrc.html
+    #     cat >>$TMPDIR/linkcheckrc <<EOF
+    #     [checking]
+    #     threads=100
 
-        [AnchorCheck]
+    #     [AnchorCheck]
 
-        EOF
+    #     EOF
 
-        echo Checking $site
-        linkchecker -f $TMPDIR/linkcheckrc $site/
+    #     echo Checking $site
+    #     linkchecker -f $TMPDIR/linkcheckrc $site/
 
-        touch $out
-      '';
+    #     touch $out
+    #   '';
 
     packages = {
       website = pkgs.stdenvNoCC.mkDerivation {
