@@ -1,0 +1,378 @@
+<!DOCTYPE HTML>
+<html lang="en" class="sidebar-visible no-js light">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>buildPythonPackage - dream2nix</title>
+
+
+        <!-- Custom HTML head -->
+        
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff" />
+
+        <link rel="shortcut icon" href="../favicon.png">
+        <link rel="stylesheet" href="../css/variables.css">
+        <link rel="stylesheet" href="../css/general.css">
+        <link rel="stylesheet" href="../css/chrome.css">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" href="../highlight.css">
+        <link rel="stylesheet" href="../tomorrow-night.css">
+        <link rel="stylesheet" href="../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+        <link rel="stylesheet" href="../flake-parts.css">
+
+    </head>
+    <body>
+    <div id="body-container">
+        <!-- Provide site root to javascript -->
+        <script>
+            var path_to_root = "../";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
+        </script>
+
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            var html = document.querySelector('html');
+            html.classList.remove('no-js')
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add('js');
+        </script>
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            var html = document.querySelector('html');
+            var sidebar = null;
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+            }
+            html.classList.remove('sidebar-visible');
+            html.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <div class="sidebar-scrollbox">
+                <ol class="chapter"><li class="chapter-item expanded "><a href="../intro.html">Introduction</a></li><li class="chapter-item expanded affix "><li class="part-title">Examples</li><li class="chapter-item expanded "><a href="../examples.html">dream2nix examples</a></li><li class="chapter-item expanded affix "><li class="part-title">Concepts</li><li class="chapter-item expanded "><a href="../modules.html">dream2nix modules</a></li><li class="chapter-item expanded affix "><li class="part-title">Development Roundups</li><li class="chapter-item expanded "><a href="../development-roundups/2022-april-june.html">April - June 2022</a></li><li class="chapter-item expanded "><a href="../development-roundups/2022-july-september.html">July - September 2022</a></li><li class="chapter-item expanded "><div>Reference Documentation</div></li><li><ol class="section"><li class="chapter-item expanded "><a href="../options/WIP-python-pdm.html">WIP-python-pdm</a></li><li class="chapter-item expanded "><a href="../options/WIP-python-pyproject.html">WIP-python-pyproject</a></li><li class="chapter-item expanded "><a href="../options/WIP-spago.html">WIP-spago</a></li><li class="chapter-item expanded "><a href="../options/buildPythonPackage.html" class="active">buildPythonPackage</a></li><li class="chapter-item expanded "><a href="../options/buildRustPackage.html">buildRustPackage</a></li><li class="chapter-item expanded "><a href="../options/builtins-derivation.html">builtins-derivation</a></li><li class="chapter-item expanded "><a href="../options/deps.html">deps</a></li><li class="chapter-item expanded "><a href="../options/eval-cache.html">eval-cache</a></li><li class="chapter-item expanded "><a href="../options/groups.html">groups</a></li><li class="chapter-item expanded "><a href="../options/lock.html">lock</a></li><li class="chapter-item expanded "><a href="../options/mkDerivation.html">mkDerivation</a></li><li class="chapter-item expanded "><a href="../options/nodejs-devshell.html">nodejs-devshell</a></li><li class="chapter-item expanded "><a href="../options/nodejs-granular.html">nodejs-granular</a></li><li class="chapter-item expanded "><a href="../options/nodejs-granular-v3.html">nodejs-granular-v3</a></li><li class="chapter-item expanded "><a href="../options/nodejs-node-modules.html">nodejs-node-modules</a></li><li class="chapter-item expanded "><a href="../options/nodejs-package-json.html">nodejs-package-json</a></li><li class="chapter-item expanded "><a href="../options/nodejs-package-lock.html">nodejs-package-lock</a></li><li class="chapter-item expanded "><a href="../options/nodejs-package-lock-v3.html">nodejs-package-lock-v3</a></li><li class="chapter-item expanded "><a href="../options/package-func.html">package-func</a></li><li class="chapter-item expanded "><a href="../options/paths.html">paths</a></li><li class="chapter-item expanded "><a href="../options/php-composer-lock.html">php-composer-lock</a></li><li class="chapter-item expanded "><a href="../options/php-granular.html">php-granular</a></li><li class="chapter-item expanded "><a href="../options/pip.html">pip</a></li><li class="chapter-item expanded "><a href="../options/public.html">public</a></li><li class="chapter-item expanded "><a href="../options/rust-cargo-lock.html">rust-cargo-lock</a></li><li class="chapter-item expanded "><a href="../options/rust-crane.html">rust-crane</a></li></ol></li></ol>
+            </div>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
+        </nav>
+
+        <!-- Track and set sidebar scroll position -->
+        <script>
+            var sidebarScrollbox = document.querySelector('#sidebar .sidebar-scrollbox');
+            sidebarScrollbox.addEventListener('click', function(e) {
+                if (e.target.tagName === 'A') {
+                    sessionStorage.setItem('sidebar-scroll', sidebarScrollbox.scrollTop);
+                }
+            }, { passive: true });
+            var sidebarScrollTop = sessionStorage.getItem('sidebar-scroll');
+            sessionStorage.removeItem('sidebar-scroll');
+            if (sidebarScrollTop) {
+                // preserve sidebar scroll position when navigating via links within sidebar
+                sidebarScrollbox.scrollTop = sidebarScrollTop;
+            } else {
+                // scroll sidebar to current active section when navigating via "next/previous chapter" buttons
+                var activeSection = document.querySelector('#sidebar .active');
+                if (activeSection) {
+                    activeSection.scrollIntoView({ block: 'center' });
+                }
+            }
+        </script>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <button id="sidebar-toggle" class="icon-button" type="button" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </button>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">dream2nix</h1>
+
+                    <div class="right-buttons">
+                        <a href="https://github.com/nix-community/dream2nix" title="Git repository" aria-label="Git repository">
+                            <i id="git-repository-button" class="fa fa-github"></i>
+                        </a>
+                        <a href="https://github.com/nix-community/dream2nix/edit/main/modules/dream2nix/src/options/buildPythonPackage.md" title="Suggest an edit" aria-label="Suggest an edit">
+                            <i id="git-edit-button" class="fa fa-edit"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h1 id="buildpythonpackage"><a class="header" href="#buildpythonpackage">buildPythonPackage</a></h1>
+<p>intro</p>
+<h2 id="installation"><a class="header" href="#installation">Installation</a></h2>
+<p>To import this module into your dream2nix package:</p>
+<pre><code class="language-nix">imports = [
+  dream2nix.modules.dream2nix.buildPythonPackage
+];
+</code></pre>
+<h2 id="options"><a class="header" href="#options">Options</a></h2>
+<p><a
+href="#opt-buildPythonPackage.catchConflicts"><code>buildPythonPackage.catchConflicts</code></a></p>
+<p><a
+href="#opt-buildPythonPackage.disabled"><code>buildPythonPackage.disabled</code></a></p>
+<p><a
+href="#opt-buildPythonPackage.disabledTestPaths"><code>buildPythonPackage.disabledTestPaths</code></a></p>
+<p><a
+href="#opt-buildPythonPackage.disabledTests"><code>buildPythonPackage.disabledTests</code></a></p>
+<p><a
+href="#opt-buildPythonPackage.dontUsePipInstall"><code>buildPythonPackage.dontUsePipInstall</code></a></p>
+<p><a
+href="#opt-buildPythonPackage.dontWrapPythonPrograms"><code>buildPythonPackage.dontWrapPythonPrograms</code></a></p>
+<p><a
+href="#opt-buildPythonPackage.format"><code>buildPythonPackage.format</code></a></p>
+<p><a
+href="#opt-buildPythonPackage.makeWrapperArgs"><code>buildPythonPackage.makeWrapperArgs</code></a></p>
+<p><a
+href="#opt-buildPythonPackage.permitUserSite"><code>buildPythonPackage.permitUserSite</code></a></p>
+<p><a
+href="#opt-buildPythonPackage.pipInstallFlags"><code>buildPythonPackage.pipInstallFlags</code></a></p>
+<p><a
+href="#opt-buildPythonPackage.pytestFlagsArray"><code>buildPythonPackage.pytestFlagsArray</code></a></p>
+<p><a
+href="#opt-buildPythonPackage.pythonImportsCheck"><code>buildPythonPackage.pythonImportsCheck</code></a></p>
+<p><a
+href="#opt-buildPythonPackage.removeBinBytecode"><code>buildPythonPackage.removeBinBytecode</code></a></p>
+<h2><a href="#opt-buildPythonPackage.catchConflicts"
+id="opt-buildPythonPackage.catchConflicts"><code>buildPythonPackage.catchConflicts</code></a></h2>
+<p>Raise an error if two packages are installed with the same name TODO:
+For cross we probably need a different PYTHONPATH, or not add the
+runtime deps until after buildPhase.</p>
+<p><em>Type:</em> boolean</p>
+<p><em>Default:</em> <code>true</code></p>
+<p><em>Declared by:</em></p>
+<p><a
+href="https://github.com/nix-community/dream2nix/blob/master/modules/dream2nix/buildPythonPackage/interface.nix"><code>dream2nix/modules/dream2nix/buildPythonPackage/interface.nix</code></a></p>
+<h2><a href="#opt-buildPythonPackage.disabled"
+id="opt-buildPythonPackage.disabled"><code>buildPythonPackage.disabled</code></a></h2>
+<p>used to disable derivation, useful for specific python versions</p>
+<p><em>Type:</em> boolean</p>
+<p><em>Default:</em> <code>false</code></p>
+<p><em>Declared by:</em></p>
+<p><a
+href="https://github.com/nix-community/dream2nix/blob/master/modules/dream2nix/buildPythonPackage/interface.nix"><code>dream2nix/modules/dream2nix/buildPythonPackage/interface.nix</code></a></p>
+<h2><a href="#opt-buildPythonPackage.disabledTestPaths"
+id="opt-buildPythonPackage.disabledTestPaths"><code>buildPythonPackage.disabledTestPaths</code></a></h2>
+<p>Test paths to ignore in checkPhase</p>
+<p><em>Type:</em> list of anything</p>
+<p><em>Default:</em> <code>[ ]</code></p>
+<p><em>Declared by:</em></p>
+<p><a
+href="https://github.com/nix-community/dream2nix/blob/master/modules/dream2nix/buildPythonPackage/interface.nix"><code>dream2nix/modules/dream2nix/buildPythonPackage/interface.nix</code></a></p>
+<h2><a href="#opt-buildPythonPackage.disabledTests"
+id="opt-buildPythonPackage.disabledTests"><code>buildPythonPackage.disabledTests</code></a></h2>
+<p>Disable running specific unit tests</p>
+<p><em>Type:</em> list of string</p>
+<p><em>Default:</em> <code>[ ]</code></p>
+<p><em>Declared by:</em></p>
+<p><a
+href="https://github.com/nix-community/dream2nix/blob/master/modules/dream2nix/buildPythonPackage/interface.nix"><code>dream2nix/modules/dream2nix/buildPythonPackage/interface.nix</code></a></p>
+<h2><a href="#opt-buildPythonPackage.dontUsePipInstall"
+id="opt-buildPythonPackage.dontUsePipInstall"><code>buildPythonPackage.dontUsePipInstall</code></a></h2>
+<p>Don’t use Pip to install a wheel Note this is actually a variable for
+the pipInstallPhase in pip’s setupHook. It’s included here to prevent an
+infinite recursion.</p>
+<p><em>Type:</em> boolean</p>
+<p><em>Default:</em> <code>false</code></p>
+<p><em>Declared by:</em></p>
+<p><a
+href="https://github.com/nix-community/dream2nix/blob/master/modules/dream2nix/buildPythonPackage/interface.nix"><code>dream2nix/modules/dream2nix/buildPythonPackage/interface.nix</code></a></p>
+<h2><a href="#opt-buildPythonPackage.dontWrapPythonPrograms"
+id="opt-buildPythonPackage.dontWrapPythonPrograms"><code>buildPythonPackage.dontWrapPythonPrograms</code></a></h2>
+<p>Skip wrapping of python programs altogether</p>
+<p><em>Type:</em> boolean</p>
+<p><em>Default:</em> <code>false</code></p>
+<p><em>Declared by:</em></p>
+<p><a
+href="https://github.com/nix-community/dream2nix/blob/master/modules/dream2nix/buildPythonPackage/interface.nix"><code>dream2nix/modules/dream2nix/buildPythonPackage/interface.nix</code></a></p>
+<h2><a href="#opt-buildPythonPackage.format"
+id="opt-buildPythonPackage.format"><code>buildPythonPackage.format</code></a></h2>
+<p>Several package formats are supported: “setuptools” : Install a
+common setuptools/distutils based package. This builds a wheel. “wheel”
+: Install from a pre-compiled wheel. “flit” : Install a flit package.
+This builds a wheel. “pyproject”: Install a package using a
+<code>pyproject.toml</code> file (PEP517). This builds a wheel. “egg”:
+Install a package from an egg. “other” : Provide your own buildPhase and
+installPhase.</p>
+<p><em>Type:</em> string</p>
+<p><em>Default:</em> <code>"setuptools"</code></p>
+<p><em>Declared by:</em></p>
+<p><a
+href="https://github.com/nix-community/dream2nix/blob/master/modules/dream2nix/buildPythonPackage/interface.nix"><code>dream2nix/modules/dream2nix/buildPythonPackage/interface.nix</code></a></p>
+<h2><a href="#opt-buildPythonPackage.makeWrapperArgs"
+id="opt-buildPythonPackage.makeWrapperArgs"><code>buildPythonPackage.makeWrapperArgs</code></a></h2>
+<p>Additional arguments to pass to the makeWrapper function, which wraps
+generated binaries.</p>
+<p><em>Type:</em> list of string</p>
+<p><em>Default:</em> <code>[ ]</code></p>
+<p><em>Declared by:</em></p>
+<p><a
+href="https://github.com/nix-community/dream2nix/blob/master/modules/dream2nix/buildPythonPackage/interface.nix"><code>dream2nix/modules/dream2nix/buildPythonPackage/interface.nix</code></a></p>
+<h2><a href="#opt-buildPythonPackage.permitUserSite"
+id="opt-buildPythonPackage.permitUserSite"><code>buildPythonPackage.permitUserSite</code></a></h2>
+<p>Skip setting the PYTHONNOUSERSITE environment variable in wrapped
+programs</p>
+<p><em>Type:</em> boolean</p>
+<p><em>Default:</em> <code>false</code></p>
+<p><em>Declared by:</em></p>
+<p><a
+href="https://github.com/nix-community/dream2nix/blob/master/modules/dream2nix/buildPythonPackage/interface.nix"><code>dream2nix/modules/dream2nix/buildPythonPackage/interface.nix</code></a></p>
+<h2><a href="#opt-buildPythonPackage.pipInstallFlags"
+id="opt-buildPythonPackage.pipInstallFlags"><code>buildPythonPackage.pipInstallFlags</code></a></h2>
+<p>Extra flags passed to <code>pip install</code></p>
+<p><em>Type:</em> list of string</p>
+<p><em>Default:</em> <code>[ ]</code></p>
+<p><em>Declared by:</em></p>
+<p><a
+href="https://github.com/nix-community/dream2nix/blob/master/modules/dream2nix/buildPythonPackage/interface.nix"><code>dream2nix/modules/dream2nix/buildPythonPackage/interface.nix</code></a></p>
+<h2><a href="#opt-buildPythonPackage.pytestFlagsArray"
+id="opt-buildPythonPackage.pytestFlagsArray"><code>buildPythonPackage.pytestFlagsArray</code></a></h2>
+<p>Extra flags passed to pytest</p>
+<p><em>Type:</em> list of string</p>
+<p><em>Default:</em> <code>[ ]</code></p>
+<p><em>Declared by:</em></p>
+<p><a
+href="https://github.com/nix-community/dream2nix/blob/master/modules/dream2nix/buildPythonPackage/interface.nix"><code>dream2nix/modules/dream2nix/buildPythonPackage/interface.nix</code></a></p>
+<h2><a href="#opt-buildPythonPackage.pythonImportsCheck"
+id="opt-buildPythonPackage.pythonImportsCheck"><code>buildPythonPackage.pythonImportsCheck</code></a></h2>
+<p>Check whether importing the listed modules works</p>
+<p><em>Type:</em> list of string</p>
+<p><em>Default:</em> <code>[ ]</code></p>
+<p><em>Declared by:</em></p>
+<p><a
+href="https://github.com/nix-community/dream2nix/blob/master/modules/dream2nix/buildPythonPackage/interface.nix"><code>dream2nix/modules/dream2nix/buildPythonPackage/interface.nix</code></a></p>
+<h2><a href="#opt-buildPythonPackage.removeBinBytecode"
+id="opt-buildPythonPackage.removeBinBytecode"><code>buildPythonPackage.removeBinBytecode</code></a></h2>
+<p>Remove bytecode from bin folder. When a Python script has the
+extension <code>.py</code>, bytecode is generated Typically, executables
+in bin have no extension, so no bytecode is generated. However, some
+packages do provide executables with extensions, and thus bytecode is
+generated.</p>
+<p><em>Type:</em> boolean</p>
+<p><em>Default:</em> <code>true</code></p>
+<p><em>Declared by:</em></p>
+<p><a
+href="https://github.com/nix-community/dream2nix/blob/master/modules/dream2nix/buildPythonPackage/interface.nix"><code>dream2nix/modules/dream2nix/buildPythonPackage/interface.nix</code></a></p>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../options/WIP-spago.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+                            <a rel="next" href="../options/buildRustPackage.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../options/WIP-spago.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next" href="../options/buildRustPackage.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="../elasticlunr.min.js"></script>
+        <script src="../mark.min.js"></script>
+        <script src="../searcher.js"></script>
+
+        <script src="../clipboard.min.js"></script>
+        <script src="../highlight.js"></script>
+        <script src="../book.js"></script>
+
+        <!-- Custom JS scripts -->
+        <script src="../no-edit-options.js"></script>
+
+
+    </div>
+    </body>
+</html>

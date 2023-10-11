@@ -1,0 +1,2183 @@
+<!DOCTYPE HTML>
+<html lang="en" class="sidebar-visible no-js light">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>nodejs-granular - dream2nix</title>
+
+
+        <!-- Custom HTML head -->
+        
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff" />
+
+        <link rel="shortcut icon" href="../favicon.png">
+        <link rel="stylesheet" href="../css/variables.css">
+        <link rel="stylesheet" href="../css/general.css">
+        <link rel="stylesheet" href="../css/chrome.css">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" href="../highlight.css">
+        <link rel="stylesheet" href="../tomorrow-night.css">
+        <link rel="stylesheet" href="../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+        <link rel="stylesheet" href="../flake-parts.css">
+
+    </head>
+    <body>
+    <div id="body-container">
+        <!-- Provide site root to javascript -->
+        <script>
+            var path_to_root = "../";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
+        </script>
+
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            var html = document.querySelector('html');
+            html.classList.remove('no-js')
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add('js');
+        </script>
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            var html = document.querySelector('html');
+            var sidebar = null;
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+            }
+            html.classList.remove('sidebar-visible');
+            html.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <div class="sidebar-scrollbox">
+                <ol class="chapter"><li class="chapter-item expanded "><a href="../intro.html">Introduction</a></li><li class="chapter-item expanded affix "><li class="part-title">Examples</li><li class="chapter-item expanded "><a href="../examples.html">dream2nix examples</a></li><li class="chapter-item expanded affix "><li class="part-title">Concepts</li><li class="chapter-item expanded "><a href="../modules.html">dream2nix modules</a></li><li class="chapter-item expanded affix "><li class="part-title">Development Roundups</li><li class="chapter-item expanded "><a href="../development-roundups/2022-april-june.html">April - June 2022</a></li><li class="chapter-item expanded "><a href="../development-roundups/2022-july-september.html">July - September 2022</a></li><li class="chapter-item expanded "><div>Reference Documentation</div></li><li><ol class="section"><li class="chapter-item expanded "><a href="../options/WIP-python-pdm.html">WIP-python-pdm</a></li><li class="chapter-item expanded "><a href="../options/WIP-python-pyproject.html">WIP-python-pyproject</a></li><li class="chapter-item expanded "><a href="../options/WIP-spago.html">WIP-spago</a></li><li class="chapter-item expanded "><a href="../options/buildPythonPackage.html">buildPythonPackage</a></li><li class="chapter-item expanded "><a href="../options/buildRustPackage.html">buildRustPackage</a></li><li class="chapter-item expanded "><a href="../options/builtins-derivation.html">builtins-derivation</a></li><li class="chapter-item expanded "><a href="../options/deps.html">deps</a></li><li class="chapter-item expanded "><a href="../options/eval-cache.html">eval-cache</a></li><li class="chapter-item expanded "><a href="../options/groups.html">groups</a></li><li class="chapter-item expanded "><a href="../options/lock.html">lock</a></li><li class="chapter-item expanded "><a href="../options/mkDerivation.html">mkDerivation</a></li><li class="chapter-item expanded "><a href="../options/nodejs-devshell.html">nodejs-devshell</a></li><li class="chapter-item expanded "><a href="../options/nodejs-granular.html" class="active">nodejs-granular</a></li><li class="chapter-item expanded "><a href="../options/nodejs-granular-v3.html">nodejs-granular-v3</a></li><li class="chapter-item expanded "><a href="../options/nodejs-node-modules.html">nodejs-node-modules</a></li><li class="chapter-item expanded "><a href="../options/nodejs-package-json.html">nodejs-package-json</a></li><li class="chapter-item expanded "><a href="../options/nodejs-package-lock.html">nodejs-package-lock</a></li><li class="chapter-item expanded "><a href="../options/nodejs-package-lock-v3.html">nodejs-package-lock-v3</a></li><li class="chapter-item expanded "><a href="../options/package-func.html">package-func</a></li><li class="chapter-item expanded "><a href="../options/paths.html">paths</a></li><li class="chapter-item expanded "><a href="../options/php-composer-lock.html">php-composer-lock</a></li><li class="chapter-item expanded "><a href="../options/php-granular.html">php-granular</a></li><li class="chapter-item expanded "><a href="../options/pip.html">pip</a></li><li class="chapter-item expanded "><a href="../options/public.html">public</a></li><li class="chapter-item expanded "><a href="../options/rust-cargo-lock.html">rust-cargo-lock</a></li><li class="chapter-item expanded "><a href="../options/rust-crane.html">rust-crane</a></li></ol></li></ol>
+            </div>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
+        </nav>
+
+        <!-- Track and set sidebar scroll position -->
+        <script>
+            var sidebarScrollbox = document.querySelector('#sidebar .sidebar-scrollbox');
+            sidebarScrollbox.addEventListener('click', function(e) {
+                if (e.target.tagName === 'A') {
+                    sessionStorage.setItem('sidebar-scroll', sidebarScrollbox.scrollTop);
+                }
+            }, { passive: true });
+            var sidebarScrollTop = sessionStorage.getItem('sidebar-scroll');
+            sessionStorage.removeItem('sidebar-scroll');
+            if (sidebarScrollTop) {
+                // preserve sidebar scroll position when navigating via links within sidebar
+                sidebarScrollbox.scrollTop = sidebarScrollTop;
+            } else {
+                // scroll sidebar to current active section when navigating via "next/previous chapter" buttons
+                var activeSection = document.querySelector('#sidebar .active');
+                if (activeSection) {
+                    activeSection.scrollIntoView({ block: 'center' });
+                }
+            }
+        </script>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <button id="sidebar-toggle" class="icon-button" type="button" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </button>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">dream2nix</h1>
+
+                    <div class="right-buttons">
+                        <a href="https://github.com/nix-community/dream2nix" title="Git repository" aria-label="Git repository">
+                            <i id="git-repository-button" class="fa fa-github"></i>
+                        </a>
+                        <a href="https://github.com/nix-community/dream2nix/edit/main/modules/dream2nix/src/options/nodejs-granular.md" title="Suggest an edit" aria-label="Suggest an edit">
+                            <i id="git-edit-button" class="fa fa-edit"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h1 id="nodejs-granular"><a class="header" href="#nodejs-granular">nodejs-granular</a></h1>
+<p>intro</p>
+<h2 id="installation"><a class="header" href="#installation">Installation</a></h2>
+<p>To import this module into your dream2nix package:</p>
+<pre><code class="language-nix">imports = [
+  dream2nix.modules.dream2nix.nodejs-granular
+];
+</code></pre>
+<h2 id="options"><a class="header" href="#options">Options</a></h2>
+<p><a
+href="#opt-nodejs-granular.buildScript"><code>nodejs-granular.buildScript</code></a></p>
+<p><a
+href="#opt-nodejs-granular.deps"><code>nodejs-granular.deps</code></a></p>
+<p><a
+href="#opt-nodejs-granular.deps._name_._name_.package-func.args"><code>nodejs-granular.deps.&lt;name&gt;.&lt;name&gt;.package-func.args</code></a></p>
+<p><a
+href="#opt-nodejs-granular.deps._name_._name_.package-func.func"><code>nodejs-granular.deps.&lt;name&gt;.&lt;name&gt;.package-func.func</code></a></p>
+<p><a
+href="#opt-nodejs-granular.deps._name_._name_.package-func.outputs"><code>nodejs-granular.deps.&lt;name&gt;.&lt;name&gt;.package-func.outputs</code></a></p>
+<p><a
+href="#opt-nodejs-granular.deps._name_._name_.package-func.result"><code>nodejs-granular.deps.&lt;name&gt;.&lt;name&gt;.package-func.result</code></a></p>
+<p><a
+href="#opt-nodejs-granular.deps._name_._name_.deps"><code>nodejs-granular.deps.&lt;name&gt;.&lt;name&gt;.deps</code></a></p>
+<p><a
+href="#opt-nodejs-granular.deps._name_._name_.deps.stdenv"><code>nodejs-granular.deps.&lt;name&gt;.&lt;name&gt;.deps.stdenv</code></a></p>
+<p><a
+href="#opt-nodejs-granular.deps._name_._name_.env"><code>nodejs-granular.deps.&lt;name&gt;.&lt;name&gt;.env</code></a></p>
+<p><a
+href="#opt-nodejs-granular.deps._name_._name_.eval-cache.enable"><code>nodejs-granular.deps.&lt;name&gt;.&lt;name&gt;.eval-cache.enable</code></a></p>
+<p><a
+href="#opt-nodejs-granular.deps._name_._name_.eval-cache.content"><code>nodejs-granular.deps.&lt;name&gt;.&lt;name&gt;.eval-cache.content</code></a></p>
+<p><a
+href="#opt-nodejs-granular.deps._name_._name_.eval-cache.fields"><code>nodejs-granular.deps.&lt;name&gt;.&lt;name&gt;.eval-cache.fields</code></a></p>
+<p><a
+href="#opt-nodejs-granular.deps._name_._name_.eval-cache.invalidationFields"><code>nodejs-granular.deps.&lt;name&gt;.&lt;name&gt;.eval-cache.invalidationFields</code></a></p>
+<p><a
+href="#opt-nodejs-granular.deps._name_._name_.eval-cache.refresh"><code>nodejs-granular.deps.&lt;name&gt;.&lt;name&gt;.eval-cache.refresh</code></a></p>
+<p><a
+href="#opt-nodejs-granular.deps._name_._name_.flags"><code>nodejs-granular.deps.&lt;name&gt;.&lt;name&gt;.flags</code></a></p>
+<p><a
+href="#opt-nodejs-granular.deps._name_._name_.flagsOffered"><code>nodejs-granular.deps.&lt;name&gt;.&lt;name&gt;.flagsOffered</code></a></p>
+<p><a
+href="#opt-nodejs-granular.deps._name_._name_.lock.content"><code>nodejs-granular.deps.&lt;name&gt;.&lt;name&gt;.lock.content</code></a></p>
+<p><a
+href="#opt-nodejs-granular.deps._name_._name_.lock.fields"><code>nodejs-granular.deps.&lt;name&gt;.&lt;name&gt;.lock.fields</code></a></p>
+<p><a
+href="#opt-nodejs-granular.deps._name_._name_.lock.fields._name_.default"><code>nodejs-granular.deps.&lt;name&gt;.&lt;name&gt;.lock.fields.&lt;name&gt;.default</code></a></p>
+<p><a
+href="#opt-nodejs-granular.deps._name_._name_.lock.fields._name_.script"><code>nodejs-granular.deps.&lt;name&gt;.&lt;name&gt;.lock.fields.&lt;name&gt;.script</code></a></p>
+<p><a
+href="#opt-nodejs-granular.deps._name_._name_.lock.invalidationData"><code>nodejs-granular.deps.&lt;name&gt;.&lt;name&gt;.lock.invalidationData</code></a></p>
+<p><a
+href="#opt-nodejs-granular.deps._name_._name_.lock.lib.computeFODHash"><code>nodejs-granular.deps.&lt;name&gt;.&lt;name&gt;.lock.lib.computeFODHash</code></a></p>
+<p><a
+href="#opt-nodejs-granular.deps._name_._name_.lock.refresh"><code>nodejs-granular.deps.&lt;name&gt;.&lt;name&gt;.lock.refresh</code></a></p>
+<p><a
+href="#opt-nodejs-granular.deps._name_._name_.mkDerivation.enableParallelBuilding"><code>nodejs-granular.deps.&lt;name&gt;.&lt;name&gt;.mkDerivation.enableParallelBuilding</code></a></p>
+<p><a
+href="#opt-nodejs-granular.deps._name_._name_.mkDerivation.enableParallelChecking"><code>nodejs-granular.deps.&lt;name&gt;.&lt;name&gt;.mkDerivation.enableParallelChecking</code></a></p>
+<p><a
+href="#opt-nodejs-granular.deps._name_._name_.mkDerivation.__contentAddressed"><code>nodejs-granular.deps.&lt;name&gt;.&lt;name&gt;.mkDerivation.__contentAddressed</code></a></p>
+<p><a
+href="#opt-nodejs-granular.deps._name_._name_.mkDerivation.__darwinAllowLocalNetworking"><code>nodejs-granular.deps.&lt;name&gt;.&lt;name&gt;.mkDerivation.__darwinAllowLocalNetworking</code></a></p>
+<p><a
+href="#opt-nodejs-granular.deps._name_._name_.mkDerivation.__impureHostDeps"><code>nodejs-granular.deps.&lt;name&gt;.&lt;name&gt;.mkDerivation.__impureHostDeps</code></a></p>
+<p><a
+href="#opt-nodejs-granular.deps._name_._name_.mkDerivation.__propagatedImpureHostDeps"><code>nodejs-granular.deps.&lt;name&gt;.&lt;name&gt;.mkDerivation.__propagatedImpureHostDeps</code></a></p>
+<p><a
+href="#opt-nodejs-granular.deps._name_._name_.mkDerivation.__structuredAttrs"><code>nodejs-granular.deps.&lt;name&gt;.&lt;name&gt;.mkDerivation.__structuredAttrs</code></a></p>
+<p><a
+href="#opt-nodejs-granular.deps._name_._name_.mkDerivation.allowSubstitutes"><code>nodejs-granular.deps.&lt;name&gt;.&lt;name&gt;.mkDerivation.allowSubstitutes</code></a></p>
+<p><a
+href="#opt-nodejs-granular.deps._name_._name_.mkDerivation.allowedReferences"><code>nodejs-granular.deps.&lt;name&gt;.&lt;name&gt;.mkDerivation.allowedReferences</code></a></p>
+<p><a
+href="#opt-nodejs-granular.deps._name_._name_.mkDerivation.allowedRequisites"><code>nodejs-granular.deps.&lt;name&gt;.&lt;name&gt;.mkDerivation.allowedRequisites</code></a></p>
+<p><a
+href="#opt-nodejs-granular.deps._name_._name_.mkDerivation.args"><code>nodejs-granular.deps.&lt;name&gt;.&lt;name&gt;.mkDerivation.args</code></a></p>
+<p><a
+href="#opt-nodejs-granular.deps._name_._name_.mkDerivation.buildFlags"><code>nodejs-granular.deps.&lt;name&gt;.&lt;name&gt;.mkDerivation.buildFlags</code></a></p>
+<p><a
+href="#opt-nodejs-granular.deps._name_._name_.mkDerivation.buildInputs"><code>nodejs-granular.deps.&lt;name&gt;.&lt;name&gt;.mkDerivation.buildInputs</code></a></p>
+<p><a
+href="#opt-nodejs-granular.deps._name_._name_.mkDerivation.buildPhase"><code>nodejs-granular.deps.&lt;name&gt;.&lt;name&gt;.mkDerivation.buildPhase</code></a></p>
+<p><a
+href="#opt-nodejs-granular.deps._name_._name_.mkDerivation.builder"><code>nodejs-granular.deps.&lt;name&gt;.&lt;name&gt;.mkDerivation.builder</code></a></p>
+<p><a
+href="#opt-nodejs-granular.deps._name_._name_.mkDerivation.checkFLags"><code>nodejs-granular.deps.&lt;name&gt;.&lt;name&gt;.mkDerivation.checkFLags</code></a></p>
+<p><a
+href="#opt-nodejs-granular.deps._name_._name_.mkDerivation.checkInputs"><code>nodejs-granular.deps.&lt;name&gt;.&lt;name&gt;.mkDerivation.checkInputs</code></a></p>
+<p><a
+href="#opt-nodejs-granular.deps._name_._name_.mkDerivation.checkPhase"><code>nodejs-granular.deps.&lt;name&gt;.&lt;name&gt;.mkDerivation.checkPhase</code></a></p>
+<p><a
+href="#opt-nodejs-granular.deps._name_._name_.mkDerivation.checkTarget"><code>nodejs-granular.deps.&lt;name&gt;.&lt;name&gt;.mkDerivation.checkTarget</code></a></p>
+<p><a
+href="#opt-nodejs-granular.deps._name_._name_.mkDerivation.cmakeFlags"><code>nodejs-granular.deps.&lt;name&gt;.&lt;name&gt;.mkDerivation.cmakeFlags</code></a></p>
+<p><a
+href="#opt-nodejs-granular.deps._name_._name_.mkDerivation.configureFlags"><code>nodejs-granular.deps.&lt;name&gt;.&lt;name&gt;.mkDerivation.configureFlags</code></a></p>
+<p><a
+href="#opt-nodejs-granular.deps._name_._name_.mkDerivation.configurePhase"><code>nodejs-granular.deps.&lt;name&gt;.&lt;name&gt;.mkDerivation.configurePhase</code></a></p>
+<p><a
+href="#opt-nodejs-granular.deps._name_._name_.mkDerivation.configurePlatforms"><code>nodejs-granular.deps.&lt;name&gt;.&lt;name&gt;.mkDerivation.configurePlatforms</code></a></p>
+<p><a
+href="#opt-nodejs-granular.deps._name_._name_.mkDerivation.configureScript"><code>nodejs-granular.deps.&lt;name&gt;.&lt;name&gt;.mkDerivation.configureScript</code></a></p>
+<p><a
+href="#opt-nodejs-granular.deps._name_._name_.mkDerivation.depsBuildBuild"><code>nodejs-granular.deps.&lt;name&gt;.&lt;name&gt;.mkDerivation.depsBuildBuild</code></a></p>
+<p><a
+href="#opt-nodejs-granular.deps._name_._name_.mkDerivation.depsBuildBuildPropagated"><code>nodejs-granular.deps.&lt;name&gt;.&lt;name&gt;.mkDerivation.depsBuildBuildPropagated</code></a></p>
+<p><a
+href="#opt-nodejs-granular.deps._name_._name_.mkDerivation.depsBuildTarget"><code>nodejs-granular.deps.&lt;name&gt;.&lt;name&gt;.mkDerivation.depsBuildTarget</code></a></p>
+<p><a
+href="#opt-nodejs-granular.deps._name_._name_.mkDerivation.depsBuildTargetPropagated"><code>nodejs-granular.deps.&lt;name&gt;.&lt;name&gt;.mkDerivation.depsBuildTargetPropagated</code></a></p>
+<p><a
+href="#opt-nodejs-granular.deps._name_._name_.mkDerivation.depsHostHost"><code>nodejs-granular.deps.&lt;name&gt;.&lt;name&gt;.mkDerivation.depsHostHost</code></a></p>
+<p><a
+href="#opt-nodejs-granular.deps._name_._name_.mkDerivation.depsHostHostPropagated"><code>nodejs-granular.deps.&lt;name&gt;.&lt;name&gt;.mkDerivation.depsHostHostPropagated</code></a></p>
+<p><a
+href="#opt-nodejs-granular.deps._name_._name_.mkDerivation.depsTargetTarget"><code>nodejs-granular.deps.&lt;name&gt;.&lt;name&gt;.mkDerivation.depsTargetTarget</code></a></p>
+<p><a
+href="#opt-nodejs-granular.deps._name_._name_.mkDerivation.depsTargetTargetPropagated"><code>nodejs-granular.deps.&lt;name&gt;.&lt;name&gt;.mkDerivation.depsTargetTargetPropagated</code></a></p>
+<p><a
+href="#opt-nodejs-granular.deps._name_._name_.mkDerivation.disallowedReferences"><code>nodejs-granular.deps.&lt;name&gt;.&lt;name&gt;.mkDerivation.disallowedReferences</code></a></p>
+<p><a
+href="#opt-nodejs-granular.deps._name_._name_.mkDerivation.disallowedRequisites"><code>nodejs-granular.deps.&lt;name&gt;.&lt;name&gt;.mkDerivation.disallowedRequisites</code></a></p>
+<p><a
+href="#opt-nodejs-granular.deps._name_._name_.mkDerivation.distFlags"><code>nodejs-granular.deps.&lt;name&gt;.&lt;name&gt;.mkDerivation.distFlags</code></a></p>
+<p><a
+href="#opt-nodejs-granular.deps._name_._name_.mkDerivation.distPhase"><code>nodejs-granular.deps.&lt;name&gt;.&lt;name&gt;.mkDerivation.distPhase</code></a></p>
+<p><a
+href="#opt-nodejs-granular.deps._name_._name_.mkDerivation.distTarget"><code>nodejs-granular.deps.&lt;name&gt;.&lt;name&gt;.mkDerivation.distTarget</code></a></p>
+<p><a
+href="#opt-nodejs-granular.deps._name_._name_.mkDerivation.doCheck"><code>nodejs-granular.deps.&lt;name&gt;.&lt;name&gt;.mkDerivation.doCheck</code></a></p>
+<p><a
+href="#opt-nodejs-granular.deps._name_._name_.mkDerivation.doDist"><code>nodejs-granular.deps.&lt;name&gt;.&lt;name&gt;.mkDerivation.doDist</code></a></p>
+<p><a
+href="#opt-nodejs-granular.deps._name_._name_.mkDerivation.doInstallCheck"><code>nodejs-granular.deps.&lt;name&gt;.&lt;name&gt;.mkDerivation.doInstallCheck</code></a></p>
+<p><a
+href="#opt-nodejs-granular.deps._name_._name_.mkDerivation.dontAddDisableDepTrack"><code>nodejs-granular.deps.&lt;name&gt;.&lt;name&gt;.mkDerivation.dontAddDisableDepTrack</code></a></p>
+<p><a
+href="#opt-nodejs-granular.deps._name_._name_.mkDerivation.dontAddPrefix"><code>nodejs-granular.deps.&lt;name&gt;.&lt;name&gt;.mkDerivation.dontAddPrefix</code></a></p>
+<p><a
+href="#opt-nodejs-granular.deps._name_._name_.mkDerivation.dontAddStaticConfigureFlags"><code>nodejs-granular.deps.&lt;name&gt;.&lt;name&gt;.mkDerivation.dontAddStaticConfigureFlags</code></a></p>
+<p><a
+href="#opt-nodejs-granular.deps._name_._name_.mkDerivation.dontBuild"><code>nodejs-granular.deps.&lt;name&gt;.&lt;name&gt;.mkDerivation.dontBuild</code></a></p>
+<p><a
+href="#opt-nodejs-granular.deps._name_._name_.mkDerivation.dontConfigure"><code>nodejs-granular.deps.&lt;name&gt;.&lt;name&gt;.mkDerivation.dontConfigure</code></a></p>
+<p><a
+href="#opt-nodejs-granular.deps._name_._name_.mkDerivation.dontCopyDist"><code>nodejs-granular.deps.&lt;name&gt;.&lt;name&gt;.mkDerivation.dontCopyDist</code></a></p>
+<p><a
+href="#opt-nodejs-granular.deps._name_._name_.mkDerivation.dontDisableStatic"><code>nodejs-granular.deps.&lt;name&gt;.&lt;name&gt;.mkDerivation.dontDisableStatic</code></a></p>
+<p><a
+href="#opt-nodejs-granular.deps._name_._name_.mkDerivation.dontFixLibtool"><code>nodejs-granular.deps.&lt;name&gt;.&lt;name&gt;.mkDerivation.dontFixLibtool</code></a></p>
+<p><a
+href="#opt-nodejs-granular.deps._name_._name_.mkDerivation.dontFixup"><code>nodejs-granular.deps.&lt;name&gt;.&lt;name&gt;.mkDerivation.dontFixup</code></a></p>
+<p><a
+href="#opt-nodejs-granular.deps._name_._name_.mkDerivation.dontInstall"><code>nodejs-granular.deps.&lt;name&gt;.&lt;name&gt;.mkDerivation.dontInstall</code></a></p>
+<p><a
+href="#opt-nodejs-granular.deps._name_._name_.mkDerivation.dontMakeSourcesWritable"><code>nodejs-granular.deps.&lt;name&gt;.&lt;name&gt;.mkDerivation.dontMakeSourcesWritable</code></a></p>
+<p><a
+href="#opt-nodejs-granular.deps._name_._name_.mkDerivation.dontMoveBin"><code>nodejs-granular.deps.&lt;name&gt;.&lt;name&gt;.mkDerivation.dontMoveBin</code></a></p>
+<p><a
+href="#opt-nodejs-granular.deps._name_._name_.mkDerivation.dontPatch"><code>nodejs-granular.deps.&lt;name&gt;.&lt;name&gt;.mkDerivation.dontPatch</code></a></p>
+<p><a
+href="#opt-nodejs-granular.deps._name_._name_.mkDerivation.dontPatchELF"><code>nodejs-granular.deps.&lt;name&gt;.&lt;name&gt;.mkDerivation.dontPatchELF</code></a></p>
+<p><a
+href="#opt-nodejs-granular.deps._name_._name_.mkDerivation.dontPatchShebangs"><code>nodejs-granular.deps.&lt;name&gt;.&lt;name&gt;.mkDerivation.dontPatchShebangs</code></a></p>
+<p><a
+href="#opt-nodejs-granular.deps._name_._name_.mkDerivation.dontPruneLibtoolFiles"><code>nodejs-granular.deps.&lt;name&gt;.&lt;name&gt;.mkDerivation.dontPruneLibtoolFiles</code></a></p>
+<p><a
+href="#opt-nodejs-granular.deps._name_._name_.mkDerivation.dontStrip"><code>nodejs-granular.deps.&lt;name&gt;.&lt;name&gt;.mkDerivation.dontStrip</code></a></p>
+<p><a
+href="#opt-nodejs-granular.deps._name_._name_.mkDerivation.dontStripHost"><code>nodejs-granular.deps.&lt;name&gt;.&lt;name&gt;.mkDerivation.dontStripHost</code></a></p>
+<p><a
+href="#opt-nodejs-granular.deps._name_._name_.mkDerivation.dontStripTarget"><code>nodejs-granular.deps.&lt;name&gt;.&lt;name&gt;.mkDerivation.dontStripTarget</code></a></p>
+<p><a
+href="#opt-nodejs-granular.deps._name_._name_.mkDerivation.dontUnpack"><code>nodejs-granular.deps.&lt;name&gt;.&lt;name&gt;.mkDerivation.dontUnpack</code></a></p>
+<p><a
+href="#opt-nodejs-granular.deps._name_._name_.mkDerivation.exportReferenceGraph"><code>nodejs-granular.deps.&lt;name&gt;.&lt;name&gt;.mkDerivation.exportReferenceGraph</code></a></p>
+<p><a
+href="#opt-nodejs-granular.deps._name_._name_.mkDerivation.fixupPhase"><code>nodejs-granular.deps.&lt;name&gt;.&lt;name&gt;.mkDerivation.fixupPhase</code></a></p>
+<p><a
+href="#opt-nodejs-granular.deps._name_._name_.mkDerivation.forceShare"><code>nodejs-granular.deps.&lt;name&gt;.&lt;name&gt;.mkDerivation.forceShare</code></a></p>
+<p><a
+href="#opt-nodejs-granular.deps._name_._name_.mkDerivation.hardeningDisable"><code>nodejs-granular.deps.&lt;name&gt;.&lt;name&gt;.mkDerivation.hardeningDisable</code></a></p>
+<p><a
+href="#opt-nodejs-granular.deps._name_._name_.mkDerivation.hardeningEnable"><code>nodejs-granular.deps.&lt;name&gt;.&lt;name&gt;.mkDerivation.hardeningEnable</code></a></p>
+<p><a
+href="#opt-nodejs-granular.deps._name_._name_.mkDerivation.impureEnvVars"><code>nodejs-granular.deps.&lt;name&gt;.&lt;name&gt;.mkDerivation.impureEnvVars</code></a></p>
+<p><a
+href="#opt-nodejs-granular.deps._name_._name_.mkDerivation.installCheckFlags"><code>nodejs-granular.deps.&lt;name&gt;.&lt;name&gt;.mkDerivation.installCheckFlags</code></a></p>
+<p><a
+href="#opt-nodejs-granular.deps._name_._name_.mkDerivation.installCheckInputs"><code>nodejs-granular.deps.&lt;name&gt;.&lt;name&gt;.mkDerivation.installCheckInputs</code></a></p>
+<p><a
+href="#opt-nodejs-granular.deps._name_._name_.mkDerivation.installCheckPhase"><code>nodejs-granular.deps.&lt;name&gt;.&lt;name&gt;.mkDerivation.installCheckPhase</code></a></p>
+<p><a
+href="#opt-nodejs-granular.deps._name_._name_.mkDerivation.installCheckTarget"><code>nodejs-granular.deps.&lt;name&gt;.&lt;name&gt;.mkDerivation.installCheckTarget</code></a></p>
+<p><a
+href="#opt-nodejs-granular.deps._name_._name_.mkDerivation.installFlags"><code>nodejs-granular.deps.&lt;name&gt;.&lt;name&gt;.mkDerivation.installFlags</code></a></p>
+<p><a
+href="#opt-nodejs-granular.deps._name_._name_.mkDerivation.installPhase"><code>nodejs-granular.deps.&lt;name&gt;.&lt;name&gt;.mkDerivation.installPhase</code></a></p>
+<p><a
+href="#opt-nodejs-granular.deps._name_._name_.mkDerivation.installTargets"><code>nodejs-granular.deps.&lt;name&gt;.&lt;name&gt;.mkDerivation.installTargets</code></a></p>
+<p><a
+href="#opt-nodejs-granular.deps._name_._name_.mkDerivation.makeFlags"><code>nodejs-granular.deps.&lt;name&gt;.&lt;name&gt;.mkDerivation.makeFlags</code></a></p>
+<p><a
+href="#opt-nodejs-granular.deps._name_._name_.mkDerivation.makefile"><code>nodejs-granular.deps.&lt;name&gt;.&lt;name&gt;.mkDerivation.makefile</code></a></p>
+<p><a
+href="#opt-nodejs-granular.deps._name_._name_.mkDerivation.mesonFlags"><code>nodejs-granular.deps.&lt;name&gt;.&lt;name&gt;.mkDerivation.mesonFlags</code></a></p>
+<p><a
+href="#opt-nodejs-granular.deps._name_._name_.mkDerivation.meta"><code>nodejs-granular.deps.&lt;name&gt;.&lt;name&gt;.mkDerivation.meta</code></a></p>
+<p><a
+href="#opt-nodejs-granular.deps._name_._name_.mkDerivation.nativeBuildInputs"><code>nodejs-granular.deps.&lt;name&gt;.&lt;name&gt;.mkDerivation.nativeBuildInputs</code></a></p>
+<p><a
+href="#opt-nodejs-granular.deps._name_._name_.mkDerivation.nativeCheckInputs"><code>nodejs-granular.deps.&lt;name&gt;.&lt;name&gt;.mkDerivation.nativeCheckInputs</code></a></p>
+<p><a
+href="#opt-nodejs-granular.deps._name_._name_.mkDerivation.outputHash"><code>nodejs-granular.deps.&lt;name&gt;.&lt;name&gt;.mkDerivation.outputHash</code></a></p>
+<p><a
+href="#opt-nodejs-granular.deps._name_._name_.mkDerivation.outputHashAlgo"><code>nodejs-granular.deps.&lt;name&gt;.&lt;name&gt;.mkDerivation.outputHashAlgo</code></a></p>
+<p><a
+href="#opt-nodejs-granular.deps._name_._name_.mkDerivation.outputHashMode"><code>nodejs-granular.deps.&lt;name&gt;.&lt;name&gt;.mkDerivation.outputHashMode</code></a></p>
+<p><a
+href="#opt-nodejs-granular.deps._name_._name_.mkDerivation.outputs"><code>nodejs-granular.deps.&lt;name&gt;.&lt;name&gt;.mkDerivation.outputs</code></a></p>
+<p><a
+href="#opt-nodejs-granular.deps._name_._name_.mkDerivation.passAsFile"><code>nodejs-granular.deps.&lt;name&gt;.&lt;name&gt;.mkDerivation.passAsFile</code></a></p>
+<p><a
+href="#opt-nodejs-granular.deps._name_._name_.mkDerivation.passthru"><code>nodejs-granular.deps.&lt;name&gt;.&lt;name&gt;.mkDerivation.passthru</code></a></p>
+<p><a
+href="#opt-nodejs-granular.deps._name_._name_.mkDerivation.patchFlags"><code>nodejs-granular.deps.&lt;name&gt;.&lt;name&gt;.mkDerivation.patchFlags</code></a></p>
+<p><a
+href="#opt-nodejs-granular.deps._name_._name_.mkDerivation.patchPhase"><code>nodejs-granular.deps.&lt;name&gt;.&lt;name&gt;.mkDerivation.patchPhase</code></a></p>
+<p><a
+href="#opt-nodejs-granular.deps._name_._name_.mkDerivation.patches"><code>nodejs-granular.deps.&lt;name&gt;.&lt;name&gt;.mkDerivation.patches</code></a></p>
+<p><a
+href="#opt-nodejs-granular.deps._name_._name_.mkDerivation.phases"><code>nodejs-granular.deps.&lt;name&gt;.&lt;name&gt;.mkDerivation.phases</code></a></p>
+<p><a
+href="#opt-nodejs-granular.deps._name_._name_.mkDerivation.pos"><code>nodejs-granular.deps.&lt;name&gt;.&lt;name&gt;.mkDerivation.pos</code></a></p>
+<p><a
+href="#opt-nodejs-granular.deps._name_._name_.mkDerivation.postBuild"><code>nodejs-granular.deps.&lt;name&gt;.&lt;name&gt;.mkDerivation.postBuild</code></a></p>
+<p><a
+href="#opt-nodejs-granular.deps._name_._name_.mkDerivation.postCheck"><code>nodejs-granular.deps.&lt;name&gt;.&lt;name&gt;.mkDerivation.postCheck</code></a></p>
+<p><a
+href="#opt-nodejs-granular.deps._name_._name_.mkDerivation.postConfigure"><code>nodejs-granular.deps.&lt;name&gt;.&lt;name&gt;.mkDerivation.postConfigure</code></a></p>
+<p><a
+href="#opt-nodejs-granular.deps._name_._name_.mkDerivation.postDist"><code>nodejs-granular.deps.&lt;name&gt;.&lt;name&gt;.mkDerivation.postDist</code></a></p>
+<p><a
+href="#opt-nodejs-granular.deps._name_._name_.mkDerivation.postFixup"><code>nodejs-granular.deps.&lt;name&gt;.&lt;name&gt;.mkDerivation.postFixup</code></a></p>
+<p><a
+href="#opt-nodejs-granular.deps._name_._name_.mkDerivation.postInstalCheck"><code>nodejs-granular.deps.&lt;name&gt;.&lt;name&gt;.mkDerivation.postInstalCheck</code></a></p>
+<p><a
+href="#opt-nodejs-granular.deps._name_._name_.mkDerivation.postInstall"><code>nodejs-granular.deps.&lt;name&gt;.&lt;name&gt;.mkDerivation.postInstall</code></a></p>
+<p><a
+href="#opt-nodejs-granular.deps._name_._name_.mkDerivation.postPatch"><code>nodejs-granular.deps.&lt;name&gt;.&lt;name&gt;.mkDerivation.postPatch</code></a></p>
+<p><a
+href="#opt-nodejs-granular.deps._name_._name_.mkDerivation.postPhases"><code>nodejs-granular.deps.&lt;name&gt;.&lt;name&gt;.mkDerivation.postPhases</code></a></p>
+<p><a
+href="#opt-nodejs-granular.deps._name_._name_.mkDerivation.postUnpack"><code>nodejs-granular.deps.&lt;name&gt;.&lt;name&gt;.mkDerivation.postUnpack</code></a></p>
+<p><a
+href="#opt-nodejs-granular.deps._name_._name_.mkDerivation.preBuild"><code>nodejs-granular.deps.&lt;name&gt;.&lt;name&gt;.mkDerivation.preBuild</code></a></p>
+<p><a
+href="#opt-nodejs-granular.deps._name_._name_.mkDerivation.preBuildPhases"><code>nodejs-granular.deps.&lt;name&gt;.&lt;name&gt;.mkDerivation.preBuildPhases</code></a></p>
+<p><a
+href="#opt-nodejs-granular.deps._name_._name_.mkDerivation.preCheck"><code>nodejs-granular.deps.&lt;name&gt;.&lt;name&gt;.mkDerivation.preCheck</code></a></p>
+<p><a
+href="#opt-nodejs-granular.deps._name_._name_.mkDerivation.preConfigure"><code>nodejs-granular.deps.&lt;name&gt;.&lt;name&gt;.mkDerivation.preConfigure</code></a></p>
+<p><a
+href="#opt-nodejs-granular.deps._name_._name_.mkDerivation.preConfigurePhases"><code>nodejs-granular.deps.&lt;name&gt;.&lt;name&gt;.mkDerivation.preConfigurePhases</code></a></p>
+<p><a
+href="#opt-nodejs-granular.deps._name_._name_.mkDerivation.preDist"><code>nodejs-granular.deps.&lt;name&gt;.&lt;name&gt;.mkDerivation.preDist</code></a></p>
+<p><a
+href="#opt-nodejs-granular.deps._name_._name_.mkDerivation.preDistPhases"><code>nodejs-granular.deps.&lt;name&gt;.&lt;name&gt;.mkDerivation.preDistPhases</code></a></p>
+<p><a
+href="#opt-nodejs-granular.deps._name_._name_.mkDerivation.preFixup"><code>nodejs-granular.deps.&lt;name&gt;.&lt;name&gt;.mkDerivation.preFixup</code></a></p>
+<p><a
+href="#opt-nodejs-granular.deps._name_._name_.mkDerivation.preFixupPhases"><code>nodejs-granular.deps.&lt;name&gt;.&lt;name&gt;.mkDerivation.preFixupPhases</code></a></p>
+<p><a
+href="#opt-nodejs-granular.deps._name_._name_.mkDerivation.preInstall"><code>nodejs-granular.deps.&lt;name&gt;.&lt;name&gt;.mkDerivation.preInstall</code></a></p>
+<p><a
+href="#opt-nodejs-granular.deps._name_._name_.mkDerivation.preInstallCheck"><code>nodejs-granular.deps.&lt;name&gt;.&lt;name&gt;.mkDerivation.preInstallCheck</code></a></p>
+<p><a
+href="#opt-nodejs-granular.deps._name_._name_.mkDerivation.preInstallPhases"><code>nodejs-granular.deps.&lt;name&gt;.&lt;name&gt;.mkDerivation.preInstallPhases</code></a></p>
+<p><a
+href="#opt-nodejs-granular.deps._name_._name_.mkDerivation.prePatch"><code>nodejs-granular.deps.&lt;name&gt;.&lt;name&gt;.mkDerivation.prePatch</code></a></p>
+<p><a
+href="#opt-nodejs-granular.deps._name_._name_.mkDerivation.prePhases"><code>nodejs-granular.deps.&lt;name&gt;.&lt;name&gt;.mkDerivation.prePhases</code></a></p>
+<p><a
+href="#opt-nodejs-granular.deps._name_._name_.mkDerivation.preUnpack"><code>nodejs-granular.deps.&lt;name&gt;.&lt;name&gt;.mkDerivation.preUnpack</code></a></p>
+<p><a
+href="#opt-nodejs-granular.deps._name_._name_.mkDerivation.preferLocalBuild"><code>nodejs-granular.deps.&lt;name&gt;.&lt;name&gt;.mkDerivation.preferLocalBuild</code></a></p>
+<p><a
+href="#opt-nodejs-granular.deps._name_._name_.mkDerivation.prefix"><code>nodejs-granular.deps.&lt;name&gt;.&lt;name&gt;.mkDerivation.prefix</code></a></p>
+<p><a
+href="#opt-nodejs-granular.deps._name_._name_.mkDerivation.prefixKey"><code>nodejs-granular.deps.&lt;name&gt;.&lt;name&gt;.mkDerivation.prefixKey</code></a></p>
+<p><a
+href="#opt-nodejs-granular.deps._name_._name_.mkDerivation.propagatedBuildInputs"><code>nodejs-granular.deps.&lt;name&gt;.&lt;name&gt;.mkDerivation.propagatedBuildInputs</code></a></p>
+<p><a
+href="#opt-nodejs-granular.deps._name_._name_.mkDerivation.propagatedNativeBuildInputs"><code>nodejs-granular.deps.&lt;name&gt;.&lt;name&gt;.mkDerivation.propagatedNativeBuildInputs</code></a></p>
+<p><a
+href="#opt-nodejs-granular.deps._name_._name_.mkDerivation.propagatedSandboxProfile"><code>nodejs-granular.deps.&lt;name&gt;.&lt;name&gt;.mkDerivation.propagatedSandboxProfile</code></a></p>
+<p><a
+href="#opt-nodejs-granular.deps._name_._name_.mkDerivation.realBuilder"><code>nodejs-granular.deps.&lt;name&gt;.&lt;name&gt;.mkDerivation.realBuilder</code></a></p>
+<p><a
+href="#opt-nodejs-granular.deps._name_._name_.mkDerivation.requiredSystemFeatures"><code>nodejs-granular.deps.&lt;name&gt;.&lt;name&gt;.mkDerivation.requiredSystemFeatures</code></a></p>
+<p><a
+href="#opt-nodejs-granular.deps._name_._name_.mkDerivation.sandboxProfile"><code>nodejs-granular.deps.&lt;name&gt;.&lt;name&gt;.mkDerivation.sandboxProfile</code></a></p>
+<p><a
+href="#opt-nodejs-granular.deps._name_._name_.mkDerivation.separateDebugInfo"><code>nodejs-granular.deps.&lt;name&gt;.&lt;name&gt;.mkDerivation.separateDebugInfo</code></a></p>
+<p><a
+href="#opt-nodejs-granular.deps._name_._name_.mkDerivation.setSourceRoot"><code>nodejs-granular.deps.&lt;name&gt;.&lt;name&gt;.mkDerivation.setSourceRoot</code></a></p>
+<p><a
+href="#opt-nodejs-granular.deps._name_._name_.mkDerivation.setupHook"><code>nodejs-granular.deps.&lt;name&gt;.&lt;name&gt;.mkDerivation.setupHook</code></a></p>
+<p><a
+href="#opt-nodejs-granular.deps._name_._name_.mkDerivation.shellHook"><code>nodejs-granular.deps.&lt;name&gt;.&lt;name&gt;.mkDerivation.shellHook</code></a></p>
+<p><a
+href="#opt-nodejs-granular.deps._name_._name_.mkDerivation.sourceRoot"><code>nodejs-granular.deps.&lt;name&gt;.&lt;name&gt;.mkDerivation.sourceRoot</code></a></p>
+<p><a
+href="#opt-nodejs-granular.deps._name_._name_.mkDerivation.src"><code>nodejs-granular.deps.&lt;name&gt;.&lt;name&gt;.mkDerivation.src</code></a></p>
+<p><a
+href="#opt-nodejs-granular.deps._name_._name_.mkDerivation.srcs"><code>nodejs-granular.deps.&lt;name&gt;.&lt;name&gt;.mkDerivation.srcs</code></a></p>
+<p><a
+href="#opt-nodejs-granular.deps._name_._name_.mkDerivation.strictDeps"><code>nodejs-granular.deps.&lt;name&gt;.&lt;name&gt;.mkDerivation.strictDeps</code></a></p>
+<p><a
+href="#opt-nodejs-granular.deps._name_._name_.mkDerivation.stripAllFlags"><code>nodejs-granular.deps.&lt;name&gt;.&lt;name&gt;.mkDerivation.stripAllFlags</code></a></p>
+<p><a
+href="#opt-nodejs-granular.deps._name_._name_.mkDerivation.stripAllList"><code>nodejs-granular.deps.&lt;name&gt;.&lt;name&gt;.mkDerivation.stripAllList</code></a></p>
+<p><a
+href="#opt-nodejs-granular.deps._name_._name_.mkDerivation.stripDebugFlags"><code>nodejs-granular.deps.&lt;name&gt;.&lt;name&gt;.mkDerivation.stripDebugFlags</code></a></p>
+<p><a
+href="#opt-nodejs-granular.deps._name_._name_.mkDerivation.stripDebugList"><code>nodejs-granular.deps.&lt;name&gt;.&lt;name&gt;.mkDerivation.stripDebugList</code></a></p>
+<p><a
+href="#opt-nodejs-granular.deps._name_._name_.mkDerivation.tarballs"><code>nodejs-granular.deps.&lt;name&gt;.&lt;name&gt;.mkDerivation.tarballs</code></a></p>
+<p><a
+href="#opt-nodejs-granular.deps._name_._name_.mkDerivation.unpackCmd"><code>nodejs-granular.deps.&lt;name&gt;.&lt;name&gt;.mkDerivation.unpackCmd</code></a></p>
+<p><a
+href="#opt-nodejs-granular.deps._name_._name_.mkDerivation.unpackPhase"><code>nodejs-granular.deps.&lt;name&gt;.&lt;name&gt;.mkDerivation.unpackPhase</code></a></p>
+<p><a
+href="#opt-nodejs-granular.deps._name_._name_.mkDerivation.version"><code>nodejs-granular.deps.&lt;name&gt;.&lt;name&gt;.mkDerivation.version</code></a></p>
+<p><a
+href="#opt-nodejs-granular.deps._name_._name_.name"><code>nodejs-granular.deps.&lt;name&gt;.&lt;name&gt;.name</code></a></p>
+<p><a
+href="#opt-nodejs-granular.deps._name_._name_.paths.package"><code>nodejs-granular.deps.&lt;name&gt;.&lt;name&gt;.paths.package</code></a></p>
+<p><a
+href="#opt-nodejs-granular.deps._name_._name_.paths.cacheFile"><code>nodejs-granular.deps.&lt;name&gt;.&lt;name&gt;.paths.cacheFile</code></a></p>
+<p><a
+href="#opt-nodejs-granular.deps._name_._name_.paths.lockFile"><code>nodejs-granular.deps.&lt;name&gt;.&lt;name&gt;.paths.lockFile</code></a></p>
+<p><a
+href="#opt-nodejs-granular.deps._name_._name_.paths.projectRoot"><code>nodejs-granular.deps.&lt;name&gt;.&lt;name&gt;.paths.projectRoot</code></a></p>
+<p><a
+href="#opt-nodejs-granular.deps._name_._name_.paths.projectRootFile"><code>nodejs-granular.deps.&lt;name&gt;.&lt;name&gt;.paths.projectRootFile</code></a></p>
+<p><a
+href="#opt-nodejs-granular.deps._name_._name_.public"><code>nodejs-granular.deps.&lt;name&gt;.&lt;name&gt;.public</code></a></p>
+<p><a
+href="#opt-nodejs-granular.deps._name_._name_.public.docs"><code>nodejs-granular.deps.&lt;name&gt;.&lt;name&gt;.public.docs</code></a></p>
+<p><a
+href="#opt-nodejs-granular.deps._name_._name_.version"><code>nodejs-granular.deps.&lt;name&gt;.&lt;name&gt;.version</code></a></p>
+<p><a
+href="#opt-nodejs-granular.installMethod"><code>nodejs-granular.installMethod</code></a></p>
+<p><a
+href="#opt-nodejs-granular.runBuild"><code>nodejs-granular.runBuild</code></a></p>
+<h2><a href="#opt-nodejs-granular.buildScript"
+id="opt-nodejs-granular.buildScript"><code>nodejs-granular.buildScript</code></a></h2>
+<p>A command or script to execute instead of <code>npm run build</code>.
+Is only executed if <code>runBuild = true</code>.</p>
+<p><em>Type:</em> null or string or path or package</p>
+<p><em>Declared by:</em></p>
+<p><a
+href="https://github.com/nix-community/dream2nix/blob/master/modules/dream2nix/nodejs-granular/interface.nix"><code>dream2nix/modules/dream2nix/nodejs-granular/interface.nix</code></a></p>
+<h2><a href="#opt-nodejs-granular.deps"
+id="opt-nodejs-granular.deps"><code>nodejs-granular.deps</code></a></h2>
+<p>This option has no description.</p>
+<p><em>Type:</em> lazy attribute set of lazy attribute set of
+(submodule)</p>
+<p><em>Declared by:</em></p>
+<p><a
+href="https://github.com/nix-community/dream2nix/blob/master/modules/dream2nix/nodejs-granular/interface.nix"><code>dream2nix/modules/dream2nix/nodejs-granular/interface.nix</code></a></p>
+<h2><a href="#opt-nodejs-granular.deps._name_._name_.package-func.args"
+id="opt-nodejs-granular.deps._name_._name_.package-func.args"><code>nodejs-granular.deps.&lt;name&gt;.&lt;name&gt;.package-func.args</code></a></h2>
+<p>The arguments which will be passed to
+<code>package-func.func</code></p>
+<p><em>Type:</em> lazy attribute set of ((list of raw value) or
+anything)</p>
+<p><em>Declared by:</em></p>
+<p><a
+href="https://github.com/nix-community/dream2nix/blob/master/modules/dream2nix/package-func/interface.nix"><code>dream2nix/modules/dream2nix/package-func/interface.nix</code></a></p>
+<h2><a href="#opt-nodejs-granular.deps._name_._name_.package-func.func"
+id="opt-nodejs-granular.deps._name_._name_.package-func.func"><code>nodejs-granular.deps.&lt;name&gt;.&lt;name&gt;.package-func.func</code></a></h2>
+<p>Will be called with <code>package-func.args</code> in order to derive
+<code>package-func.result</code></p>
+<p><em>Type:</em> raw value</p>
+<p><em>Declared by:</em></p>
+<p><a
+href="https://github.com/nix-community/dream2nix/blob/master/modules/dream2nix/package-func/interface.nix"><code>dream2nix/modules/dream2nix/package-func/interface.nix</code></a></p>
+<h2><a
+href="#opt-nodejs-granular.deps._name_._name_.package-func.outputs"
+id="opt-nodejs-granular.deps._name_._name_.package-func.outputs"><code>nodejs-granular.deps.&lt;name&gt;.&lt;name&gt;.package-func.outputs</code></a></h2>
+<p>Outputs of the derivation this package function produces</p>
+<p><em>Type:</em> list of string</p>
+<p><em>Declared by:</em></p>
+<p><a
+href="https://github.com/nix-community/dream2nix/blob/master/modules/dream2nix/package-func/interface.nix"><code>dream2nix/modules/dream2nix/package-func/interface.nix</code></a></p>
+<h2><a
+href="#opt-nodejs-granular.deps._name_._name_.package-func.result"
+id="opt-nodejs-granular.deps._name_._name_.package-func.result"><code>nodejs-granular.deps.&lt;name&gt;.&lt;name&gt;.package-func.result</code></a></h2>
+<p>The result of calling the final derivation function. This is not
+necessarily the same as <code>final.package</code>. The function output
+might not be compatible to the interface of <code>final.package</code>
+and additional logic might be needed to create
+<code>final.package</code>.</p>
+<p><em>Type:</em> raw value <em>(read only)</em></p>
+<p><em>Declared by:</em></p>
+<p><a
+href="https://github.com/nix-community/dream2nix/blob/master/modules/dream2nix/package-func/interface.nix"><code>dream2nix/modules/dream2nix/package-func/interface.nix</code></a></p>
+<h2><a href="#opt-nodejs-granular.deps._name_._name_.deps"
+id="opt-nodejs-granular.deps._name_._name_.deps"><code>nodejs-granular.deps.&lt;name&gt;.&lt;name&gt;.deps</code></a></h2>
+<p>All dependencies of the package. This option should be set by the
+“outer world” and can be used to inherit attributes from
+<code>pkgs</code> or <code>inputs</code> etc.</p>
+<p>By separating the task of retrieving things from the outside world,
+it is ensured that the dependencies are overridable. Nothing will stop
+users from adding <code>nixpkgs</code> itself as a dependency, but this
+will make it very hard for the user of the package to override any
+dependencies, because they’d have to figure out a way to insert their
+changes into the Nixpkgs fixpoint. By adding specific attributes to
+<code>deps</code> instead, the user has a realistic chance of overriding
+those dependencies.</p>
+<p>So deps should be specific, but not overly specific. For instance,
+the caller shouldn’t have to know the version of a dependency in order
+to override it. The name should suffice. (e.g.
+<code>nix = nixVersions.nix_2_12</code> instead of
+<code>inherit (nixVersions) nix_2_12</code>.</p>
+<p><em>Type:</em> lazy attribute set of raw value</p>
+<p><em>Default:</em> <code>{ }</code></p>
+<p><em>Example:</em></p>
+<pre><code>{nixpkgs, ...}: {
+  inherit (nixpkgs) stdenv;
+  inherit (nixpkgs.haskellPackages) pandoc;
+}</code></pre>
+<p><em>Declared by:</em></p>
+<p><a
+href="https://github.com/nix-community/dream2nix/blob/master/modules/dream2nix/mkDerivation/interface.nix"><code>dream2nix/modules/dream2nix/mkDerivation/interface.nix</code></a>,
+<a
+href="https://github.com/nix-community/dream2nix/blob/master/modules/dream2nix/core/deps"><code>dream2nix/modules/dream2nix/core/deps</code></a></p>
+<h2><a href="#opt-nodejs-granular.deps._name_._name_.deps.stdenv"
+id="opt-nodejs-granular.deps._name_._name_.deps.stdenv"><code>nodejs-granular.deps.&lt;name&gt;.&lt;name&gt;.deps.stdenv</code></a></h2>
+<p>The stdenv used for building this package</p>
+<p><em>Type:</em> raw value</p>
+<p><em>Declared by:</em></p>
+<p><a
+href="https://github.com/nix-community/dream2nix/blob/master/modules/dream2nix/mkDerivation/interface.nix"><code>dream2nix/modules/dream2nix/mkDerivation/interface.nix</code></a></p>
+<h2><a href="#opt-nodejs-granular.deps._name_._name_.env"
+id="opt-nodejs-granular.deps._name_._name_.env"><code>nodejs-granular.deps.&lt;name&gt;.&lt;name&gt;.env</code></a></h2>
+<p>environment variables passed to the build environment</p>
+<p><em>Type:</em> attribute set of (null or boolean or signed integer or
+string or path or package or list of (boolean or signed integer or
+string or path or package))</p>
+<p><em>Default:</em> <code>{ }</code></p>
+<p><em>Declared by:</em></p>
+<p><a
+href="https://github.com/nix-community/dream2nix/blob/master/modules/dream2nix/core/env"><code>dream2nix/modules/dream2nix/core/env</code></a></p>
+<h2><a href="#opt-nodejs-granular.deps._name_._name_.eval-cache.enable"
+id="opt-nodejs-granular.deps._name_._name_.eval-cache.enable"><code>nodejs-granular.deps.&lt;name&gt;.&lt;name&gt;.eval-cache.enable</code></a></h2>
+<p>Whether to enable the evaluation cache for this derivation.</p>
+<p><em>Type:</em> boolean</p>
+<p><em>Default:</em> <code>false</code></p>
+<p><em>Example:</em> <code>true</code></p>
+<p><em>Declared by:</em></p>
+<p><a
+href="https://github.com/nix-community/dream2nix/blob/master/modules/dream2nix/core/eval-cache/interface.nix"><code>dream2nix/modules/dream2nix/core/eval-cache/interface.nix</code></a></p>
+<h2><a href="#opt-nodejs-granular.deps._name_._name_.eval-cache.content"
+id="opt-nodejs-granular.deps._name_._name_.eval-cache.content"><code>nodejs-granular.deps.&lt;name&gt;.&lt;name&gt;.eval-cache.content</code></a></h2>
+<p>The content of the cached fields. For example if fields.pname is set
+to true, then content.pname will exist.</p>
+<p><em>Type:</em> anything</p>
+<p><em>Declared by:</em></p>
+<p><a
+href="https://github.com/nix-community/dream2nix/blob/master/modules/dream2nix/core/eval-cache/interface.nix"><code>dream2nix/modules/dream2nix/core/eval-cache/interface.nix</code></a></p>
+<h2><a href="#opt-nodejs-granular.deps._name_._name_.eval-cache.fields"
+id="opt-nodejs-granular.deps._name_._name_.eval-cache.fields"><code>nodejs-granular.deps.&lt;name&gt;.&lt;name&gt;.eval-cache.fields</code></a></h2>
+<p>Fields for which to cache evaluation</p>
+<p><em>Type:</em> attribute set of anything</p>
+<p><em>Default:</em> <code>{ }</code></p>
+<p><em>Example:</em></p>
+<pre><code>{
+  pname = true;
+  version = true;
+}</code></pre>
+<p><em>Declared by:</em></p>
+<p><a
+href="https://github.com/nix-community/dream2nix/blob/master/modules/dream2nix/core/eval-cache/interface.nix"><code>dream2nix/modules/dream2nix/core/eval-cache/interface.nix</code></a></p>
+<h2><a
+href="#opt-nodejs-granular.deps._name_._name_.eval-cache.invalidationFields"
+id="opt-nodejs-granular.deps._name_._name_.eval-cache.invalidationFields"><code>nodejs-granular.deps.&lt;name&gt;.&lt;name&gt;.eval-cache.invalidationFields</code></a></h2>
+<p>Fields, when changed, require refreshing the cache</p>
+<p><em>Type:</em> attribute set of anything</p>
+<p><em>Default:</em> <code>{ }</code></p>
+<p><em>Example:</em></p>
+<pre><code>{
+  src = true;
+}</code></pre>
+<p><em>Declared by:</em></p>
+<p><a
+href="https://github.com/nix-community/dream2nix/blob/master/modules/dream2nix/core/eval-cache/interface.nix"><code>dream2nix/modules/dream2nix/core/eval-cache/interface.nix</code></a></p>
+<h2><a href="#opt-nodejs-granular.deps._name_._name_.eval-cache.refresh"
+id="opt-nodejs-granular.deps._name_._name_.eval-cache.refresh"><code>nodejs-granular.deps.&lt;name&gt;.&lt;name&gt;.eval-cache.refresh</code></a></h2>
+<p>Script to refresh the cache file of this package</p>
+<p><em>Type:</em> path <em>(read only)</em></p>
+<p><em>Declared by:</em></p>
+<p><a
+href="https://github.com/nix-community/dream2nix/blob/master/modules/dream2nix/core/eval-cache/interface.nix"><code>dream2nix/modules/dream2nix/core/eval-cache/interface.nix</code></a></p>
+<h2><a href="#opt-nodejs-granular.deps._name_._name_.flags"
+id="opt-nodejs-granular.deps._name_._name_.flags"><code>nodejs-granular.deps.&lt;name&gt;.&lt;name&gt;.flags</code></a></h2>
+<p>Enable/disable flags declared in <code>flagsOffered</code></p>
+<p><em>Type:</em> submodule</p>
+<p><em>Default:</em> <code>{ }</code></p>
+<p><em>Declared by:</em></p>
+<p><a
+href="https://github.com/nix-community/dream2nix/blob/master/modules/dream2nix/core/flags"><code>dream2nix/modules/dream2nix/core/flags</code></a></p>
+<h2><a href="#opt-nodejs-granular.deps._name_._name_.flagsOffered"
+id="opt-nodejs-granular.deps._name_._name_.flagsOffered"><code>nodejs-granular.deps.&lt;name&gt;.&lt;name&gt;.flagsOffered</code></a></h2>
+<p>declare flags that can be used to enable/disable features</p>
+<p><em>Type:</em> attribute set of string</p>
+<p><em>Default:</em> <code>{ }</code></p>
+<p><em>Declared by:</em></p>
+<p><a
+href="https://github.com/nix-community/dream2nix/blob/master/modules/dream2nix/core/flags"><code>dream2nix/modules/dream2nix/core/flags</code></a></p>
+<h2><a href="#opt-nodejs-granular.deps._name_._name_.lock.content"
+id="opt-nodejs-granular.deps._name_._name_.lock.content"><code>nodejs-granular.deps.&lt;name&gt;.&lt;name&gt;.lock.content</code></a></h2>
+<p>The content of the lock file. All fields declared via
+<code>lock.fields</code> are contained pointing to their respective
+values.</p>
+<p><em>Type:</em> anything</p>
+<p><em>Declared by:</em></p>
+<p><a
+href="https://github.com/nix-community/dream2nix/blob/master/modules/dream2nix/core/lock/interface.nix"><code>dream2nix/modules/dream2nix/core/lock/interface.nix</code></a></p>
+<h2><a href="#opt-nodejs-granular.deps._name_._name_.lock.fields"
+id="opt-nodejs-granular.deps._name_._name_.lock.fields"><code>nodejs-granular.deps.&lt;name&gt;.&lt;name&gt;.lock.fields</code></a></h2>
+<p>Fields of the lock file</p>
+<p><em>Type:</em> attribute set of (submodule)</p>
+<p><em>Default:</em> <code>{ }</code></p>
+<p><em>Example:</em></p>
+<pre><code>{
+  pname = true;
+  version = true;
+}</code></pre>
+<p><em>Declared by:</em></p>
+<p><a
+href="https://github.com/nix-community/dream2nix/blob/master/modules/dream2nix/core/lock/interface.nix"><code>dream2nix/modules/dream2nix/core/lock/interface.nix</code></a></p>
+<h2><a
+href="#opt-nodejs-granular.deps._name_._name_.lock.fields._name_.default"
+id="opt-nodejs-granular.deps._name_._name_.lock.fields._name_.default"><code>nodejs-granular.deps.&lt;name&gt;.&lt;name&gt;.lock.fields.&lt;name&gt;.default</code></a></h2>
+<p>The default value in case the lock file doesn’t exist or doesn’t yet
+contain the field.</p>
+<p><em>Type:</em> null or anything</p>
+<p><em>Default:</em> <code>null</code></p>
+<p><em>Declared by:</em></p>
+<p><a
+href="https://github.com/nix-community/dream2nix/blob/master/modules/dream2nix/core/lock/interface.nix"><code>dream2nix/modules/dream2nix/core/lock/interface.nix</code></a></p>
+<h2><a
+href="#opt-nodejs-granular.deps._name_._name_.lock.fields._name_.script"
+id="opt-nodejs-granular.deps._name_._name_.lock.fields._name_.script"><code>nodejs-granular.deps.&lt;name&gt;.&lt;name&gt;.lock.fields.&lt;name&gt;.script</code></a></h2>
+<p>A script to refresh the value of this lock file field. The script
+should write the result as json file to $out.</p>
+<p><em>Type:</em> path</p>
+<p><em>Declared by:</em></p>
+<p><a
+href="https://github.com/nix-community/dream2nix/blob/master/modules/dream2nix/core/lock/interface.nix"><code>dream2nix/modules/dream2nix/core/lock/interface.nix</code></a></p>
+<h2><a
+href="#opt-nodejs-granular.deps._name_._name_.lock.invalidationData"
+id="opt-nodejs-granular.deps._name_._name_.lock.invalidationData"><code>nodejs-granular.deps.&lt;name&gt;.&lt;name&gt;.lock.invalidationData</code></a></h2>
+<p>Pass any data that should invalidate the lock file when changed. This
+is useful for example when the lock file should be regenerated when the
+requirements change.</p>
+<p><em>Type:</em> anything</p>
+<p><em>Default:</em> <code>{ }</code></p>
+<p><em>Example:</em></p>
+<pre><code>{
+  pip = {
+    lockVersion = &quot;2&quot;;
+    requirements = [
+      &quot;requests&quot;
+      &quot;pillow&quot;
+    ];
+  };
+}</code></pre>
+<p><em>Declared by:</em></p>
+<p><a
+href="https://github.com/nix-community/dream2nix/blob/master/modules/dream2nix/core/lock/interface.nix"><code>dream2nix/modules/dream2nix/core/lock/interface.nix</code></a></p>
+<h2><a
+href="#opt-nodejs-granular.deps._name_._name_.lock.lib.computeFODHash"
+id="opt-nodejs-granular.deps._name_._name_.lock.lib.computeFODHash"><code>nodejs-granular.deps.&lt;name&gt;.&lt;name&gt;.lock.lib.computeFODHash</code></a></h2>
+<p>Helper function to write the hash of a given FOD to $out.</p>
+<p><em>Type:</em> function that evaluates to a(n) path <em>(read
+only)</em></p>
+<p><em>Declared by:</em></p>
+<p><a
+href="https://github.com/nix-community/dream2nix/blob/master/modules/dream2nix/core/lock/interface.nix"><code>dream2nix/modules/dream2nix/core/lock/interface.nix</code></a></p>
+<h2><a href="#opt-nodejs-granular.deps._name_._name_.lock.refresh"
+id="opt-nodejs-granular.deps._name_._name_.lock.refresh"><code>nodejs-granular.deps.&lt;name&gt;.&lt;name&gt;.lock.refresh</code></a></h2>
+<p>Script to refresh the cache file of this package</p>
+<p><em>Type:</em> package <em>(read only)</em></p>
+<p><em>Declared by:</em></p>
+<p><a
+href="https://github.com/nix-community/dream2nix/blob/master/modules/dream2nix/core/lock/interface.nix"><code>dream2nix/modules/dream2nix/core/lock/interface.nix</code></a></p>
+<h2><a
+href="#opt-nodejs-granular.deps._name_._name_.mkDerivation.enableParallelBuilding"
+id="opt-nodejs-granular.deps._name_._name_.mkDerivation.enableParallelBuilding"><code>nodejs-granular.deps.&lt;name&gt;.&lt;name&gt;.mkDerivation.enableParallelBuilding</code></a></h2>
+<p>This option has no description.</p>
+<p><em>Type:</em> null or boolean</p>
+<p><em>Default:</em> <code>null</code></p>
+<p><em>Declared by:</em></p>
+<p><a
+href="https://github.com/nix-community/dream2nix/blob/master/modules/dream2nix/mkDerivation/interface.nix"><code>dream2nix/modules/dream2nix/mkDerivation/interface.nix</code></a></p>
+<h2><a
+href="#opt-nodejs-granular.deps._name_._name_.mkDerivation.enableParallelChecking"
+id="opt-nodejs-granular.deps._name_._name_.mkDerivation.enableParallelChecking"><code>nodejs-granular.deps.&lt;name&gt;.&lt;name&gt;.mkDerivation.enableParallelChecking</code></a></h2>
+<p>This option has no description.</p>
+<p><em>Type:</em> null or boolean</p>
+<p><em>Default:</em> <code>null</code></p>
+<p><em>Declared by:</em></p>
+<p><a
+href="https://github.com/nix-community/dream2nix/blob/master/modules/dream2nix/mkDerivation/interface.nix"><code>dream2nix/modules/dream2nix/mkDerivation/interface.nix</code></a></p>
+<h2><a
+href="#opt-nodejs-granular.deps._name_._name_.mkDerivation.__contentAddressed"
+id="opt-nodejs-granular.deps._name_._name_.mkDerivation.__contentAddressed"><code>nodejs-granular.deps.&lt;name&gt;.&lt;name&gt;.mkDerivation.__contentAddressed</code></a></h2>
+<p>This option has no description.</p>
+<p><em>Type:</em> null or boolean</p>
+<p><em>Default:</em> <code>null</code></p>
+<p><em>Declared by:</em></p>
+<p><a
+href="https://github.com/nix-community/dream2nix/blob/master/modules/dream2nix/mkDerivation/interface.nix"><code>dream2nix/modules/dream2nix/mkDerivation/interface.nix</code></a></p>
+<h2><a
+href="#opt-nodejs-granular.deps._name_._name_.mkDerivation.__darwinAllowLocalNetworking"
+id="opt-nodejs-granular.deps._name_._name_.mkDerivation.__darwinAllowLocalNetworking"><code>nodejs-granular.deps.&lt;name&gt;.&lt;name&gt;.mkDerivation.__darwinAllowLocalNetworking</code></a></h2>
+<p>This option has no description.</p>
+<p><em>Type:</em> null or boolean</p>
+<p><em>Default:</em> <code>null</code></p>
+<p><em>Declared by:</em></p>
+<p><a
+href="https://github.com/nix-community/dream2nix/blob/master/modules/dream2nix/mkDerivation/interface.nix"><code>dream2nix/modules/dream2nix/mkDerivation/interface.nix</code></a></p>
+<h2><a
+href="#opt-nodejs-granular.deps._name_._name_.mkDerivation.__impureHostDeps"
+id="opt-nodejs-granular.deps._name_._name_.mkDerivation.__impureHostDeps"><code>nodejs-granular.deps.&lt;name&gt;.&lt;name&gt;.mkDerivation.__impureHostDeps</code></a></h2>
+<p>This option has no description.</p>
+<p><em>Type:</em> null or (list of anything)</p>
+<p><em>Default:</em> <code>null</code></p>
+<p><em>Declared by:</em></p>
+<p><a
+href="https://github.com/nix-community/dream2nix/blob/master/modules/dream2nix/mkDerivation/interface.nix"><code>dream2nix/modules/dream2nix/mkDerivation/interface.nix</code></a></p>
+<h2><a
+href="#opt-nodejs-granular.deps._name_._name_.mkDerivation.__propagatedImpureHostDeps"
+id="opt-nodejs-granular.deps._name_._name_.mkDerivation.__propagatedImpureHostDeps"><code>nodejs-granular.deps.&lt;name&gt;.&lt;name&gt;.mkDerivation.__propagatedImpureHostDeps</code></a></h2>
+<p>This option has no description.</p>
+<p><em>Type:</em> null or (list of anything)</p>
+<p><em>Default:</em> <code>null</code></p>
+<p><em>Declared by:</em></p>
+<p><a
+href="https://github.com/nix-community/dream2nix/blob/master/modules/dream2nix/mkDerivation/interface.nix"><code>dream2nix/modules/dream2nix/mkDerivation/interface.nix</code></a></p>
+<h2><a
+href="#opt-nodejs-granular.deps._name_._name_.mkDerivation.__structuredAttrs"
+id="opt-nodejs-granular.deps._name_._name_.mkDerivation.__structuredAttrs"><code>nodejs-granular.deps.&lt;name&gt;.&lt;name&gt;.mkDerivation.__structuredAttrs</code></a></h2>
+<p>This option has no description.</p>
+<p><em>Type:</em> null or boolean</p>
+<p><em>Default:</em> <code>null</code></p>
+<p><em>Declared by:</em></p>
+<p><a
+href="https://github.com/nix-community/dream2nix/blob/master/modules/dream2nix/mkDerivation/interface.nix"><code>dream2nix/modules/dream2nix/mkDerivation/interface.nix</code></a></p>
+<h2><a
+href="#opt-nodejs-granular.deps._name_._name_.mkDerivation.allowSubstitutes"
+id="opt-nodejs-granular.deps._name_._name_.mkDerivation.allowSubstitutes"><code>nodejs-granular.deps.&lt;name&gt;.&lt;name&gt;.mkDerivation.allowSubstitutes</code></a></h2>
+<p>This option has no description.</p>
+<p><em>Type:</em> null or boolean</p>
+<p><em>Default:</em> <code>null</code></p>
+<p><em>Declared by:</em></p>
+<p><a
+href="https://github.com/nix-community/dream2nix/blob/master/modules/dream2nix/mkDerivation/interface.nix"><code>dream2nix/modules/dream2nix/mkDerivation/interface.nix</code></a></p>
+<h2><a
+href="#opt-nodejs-granular.deps._name_._name_.mkDerivation.allowedReferences"
+id="opt-nodejs-granular.deps._name_._name_.mkDerivation.allowedReferences"><code>nodejs-granular.deps.&lt;name&gt;.&lt;name&gt;.mkDerivation.allowedReferences</code></a></h2>
+<p>This option has no description.</p>
+<p><em>Type:</em> null or (list of string)</p>
+<p><em>Default:</em> <code>null</code></p>
+<p><em>Declared by:</em></p>
+<p><a
+href="https://github.com/nix-community/dream2nix/blob/master/modules/dream2nix/mkDerivation/interface.nix"><code>dream2nix/modules/dream2nix/mkDerivation/interface.nix</code></a></p>
+<h2><a
+href="#opt-nodejs-granular.deps._name_._name_.mkDerivation.allowedRequisites"
+id="opt-nodejs-granular.deps._name_._name_.mkDerivation.allowedRequisites"><code>nodejs-granular.deps.&lt;name&gt;.&lt;name&gt;.mkDerivation.allowedRequisites</code></a></h2>
+<p>This option has no description.</p>
+<p><em>Type:</em> null or (list of string)</p>
+<p><em>Default:</em> <code>null</code></p>
+<p><em>Declared by:</em></p>
+<p><a
+href="https://github.com/nix-community/dream2nix/blob/master/modules/dream2nix/mkDerivation/interface.nix"><code>dream2nix/modules/dream2nix/mkDerivation/interface.nix</code></a></p>
+<h2><a href="#opt-nodejs-granular.deps._name_._name_.mkDerivation.args"
+id="opt-nodejs-granular.deps._name_._name_.mkDerivation.args"><code>nodejs-granular.deps.&lt;name&gt;.&lt;name&gt;.mkDerivation.args</code></a></h2>
+<p>This option has no description.</p>
+<p><em>Type:</em> null or (list of (string or path))</p>
+<p><em>Default:</em> <code>null</code></p>
+<p><em>Declared by:</em></p>
+<p><a
+href="https://github.com/nix-community/dream2nix/blob/master/modules/dream2nix/mkDerivation/interface.nix"><code>dream2nix/modules/dream2nix/mkDerivation/interface.nix</code></a></p>
+<h2><a
+href="#opt-nodejs-granular.deps._name_._name_.mkDerivation.buildFlags"
+id="opt-nodejs-granular.deps._name_._name_.mkDerivation.buildFlags"><code>nodejs-granular.deps.&lt;name&gt;.&lt;name&gt;.mkDerivation.buildFlags</code></a></h2>
+<p>This option has no description.</p>
+<p><em>Type:</em> null or (list of anything)</p>
+<p><em>Default:</em> <code>null</code></p>
+<p><em>Declared by:</em></p>
+<p><a
+href="https://github.com/nix-community/dream2nix/blob/master/modules/dream2nix/mkDerivation/interface.nix"><code>dream2nix/modules/dream2nix/mkDerivation/interface.nix</code></a></p>
+<h2><a
+href="#opt-nodejs-granular.deps._name_._name_.mkDerivation.buildInputs"
+id="opt-nodejs-granular.deps._name_._name_.mkDerivation.buildInputs"><code>nodejs-granular.deps.&lt;name&gt;.&lt;name&gt;.mkDerivation.buildInputs</code></a></h2>
+<p>This option has no description.</p>
+<p><em>Type:</em> null or (list of anything)</p>
+<p><em>Default:</em> <code>null</code></p>
+<p><em>Declared by:</em></p>
+<p><a
+href="https://github.com/nix-community/dream2nix/blob/master/modules/dream2nix/mkDerivation/interface.nix"><code>dream2nix/modules/dream2nix/mkDerivation/interface.nix</code></a></p>
+<h2><a
+href="#opt-nodejs-granular.deps._name_._name_.mkDerivation.buildPhase"
+id="opt-nodejs-granular.deps._name_._name_.mkDerivation.buildPhase"><code>nodejs-granular.deps.&lt;name&gt;.&lt;name&gt;.mkDerivation.buildPhase</code></a></h2>
+<p>This option has no description.</p>
+<p><em>Type:</em> null or string</p>
+<p><em>Default:</em> <code>null</code></p>
+<p><em>Declared by:</em></p>
+<p><a
+href="https://github.com/nix-community/dream2nix/blob/master/modules/dream2nix/mkDerivation/interface.nix"><code>dream2nix/modules/dream2nix/mkDerivation/interface.nix</code></a></p>
+<h2><a
+href="#opt-nodejs-granular.deps._name_._name_.mkDerivation.builder"
+id="opt-nodejs-granular.deps._name_._name_.mkDerivation.builder"><code>nodejs-granular.deps.&lt;name&gt;.&lt;name&gt;.mkDerivation.builder</code></a></h2>
+<p>This option has no description.</p>
+<p><em>Type:</em> null or string or path or package or (submodule)</p>
+<p><em>Default:</em> <code>null</code></p>
+<p><em>Declared by:</em></p>
+<p><a
+href="https://github.com/nix-community/dream2nix/blob/master/modules/dream2nix/mkDerivation/interface.nix"><code>dream2nix/modules/dream2nix/mkDerivation/interface.nix</code></a></p>
+<h2><a
+href="#opt-nodejs-granular.deps._name_._name_.mkDerivation.checkFLags"
+id="opt-nodejs-granular.deps._name_._name_.mkDerivation.checkFLags"><code>nodejs-granular.deps.&lt;name&gt;.&lt;name&gt;.mkDerivation.checkFLags</code></a></h2>
+<p>This option has no description.</p>
+<p><em>Type:</em> null or (list of anything)</p>
+<p><em>Default:</em> <code>null</code></p>
+<p><em>Declared by:</em></p>
+<p><a
+href="https://github.com/nix-community/dream2nix/blob/master/modules/dream2nix/mkDerivation/interface.nix"><code>dream2nix/modules/dream2nix/mkDerivation/interface.nix</code></a></p>
+<h2><a
+href="#opt-nodejs-granular.deps._name_._name_.mkDerivation.checkInputs"
+id="opt-nodejs-granular.deps._name_._name_.mkDerivation.checkInputs"><code>nodejs-granular.deps.&lt;name&gt;.&lt;name&gt;.mkDerivation.checkInputs</code></a></h2>
+<p>This option has no description.</p>
+<p><em>Type:</em> null or (list of anything)</p>
+<p><em>Default:</em> <code>null</code></p>
+<p><em>Declared by:</em></p>
+<p><a
+href="https://github.com/nix-community/dream2nix/blob/master/modules/dream2nix/mkDerivation/interface.nix"><code>dream2nix/modules/dream2nix/mkDerivation/interface.nix</code></a></p>
+<h2><a
+href="#opt-nodejs-granular.deps._name_._name_.mkDerivation.checkPhase"
+id="opt-nodejs-granular.deps._name_._name_.mkDerivation.checkPhase"><code>nodejs-granular.deps.&lt;name&gt;.&lt;name&gt;.mkDerivation.checkPhase</code></a></h2>
+<p>This option has no description.</p>
+<p><em>Type:</em> null or string</p>
+<p><em>Default:</em> <code>null</code></p>
+<p><em>Declared by:</em></p>
+<p><a
+href="https://github.com/nix-community/dream2nix/blob/master/modules/dream2nix/mkDerivation/interface.nix"><code>dream2nix/modules/dream2nix/mkDerivation/interface.nix</code></a></p>
+<h2><a
+href="#opt-nodejs-granular.deps._name_._name_.mkDerivation.checkTarget"
+id="opt-nodejs-granular.deps._name_._name_.mkDerivation.checkTarget"><code>nodejs-granular.deps.&lt;name&gt;.&lt;name&gt;.mkDerivation.checkTarget</code></a></h2>
+<p>This option has no description.</p>
+<p><em>Type:</em> null or string</p>
+<p><em>Default:</em> <code>null</code></p>
+<p><em>Declared by:</em></p>
+<p><a
+href="https://github.com/nix-community/dream2nix/blob/master/modules/dream2nix/mkDerivation/interface.nix"><code>dream2nix/modules/dream2nix/mkDerivation/interface.nix</code></a></p>
+<h2><a
+href="#opt-nodejs-granular.deps._name_._name_.mkDerivation.cmakeFlags"
+id="opt-nodejs-granular.deps._name_._name_.mkDerivation.cmakeFlags"><code>nodejs-granular.deps.&lt;name&gt;.&lt;name&gt;.mkDerivation.cmakeFlags</code></a></h2>
+<p>This option has no description.</p>
+<p><em>Type:</em> null or (list of anything)</p>
+<p><em>Default:</em> <code>null</code></p>
+<p><em>Declared by:</em></p>
+<p><a
+href="https://github.com/nix-community/dream2nix/blob/master/modules/dream2nix/mkDerivation/interface.nix"><code>dream2nix/modules/dream2nix/mkDerivation/interface.nix</code></a></p>
+<h2><a
+href="#opt-nodejs-granular.deps._name_._name_.mkDerivation.configureFlags"
+id="opt-nodejs-granular.deps._name_._name_.mkDerivation.configureFlags"><code>nodejs-granular.deps.&lt;name&gt;.&lt;name&gt;.mkDerivation.configureFlags</code></a></h2>
+<p>This option has no description.</p>
+<p><em>Type:</em> null or (list of anything)</p>
+<p><em>Default:</em> <code>null</code></p>
+<p><em>Declared by:</em></p>
+<p><a
+href="https://github.com/nix-community/dream2nix/blob/master/modules/dream2nix/mkDerivation/interface.nix"><code>dream2nix/modules/dream2nix/mkDerivation/interface.nix</code></a></p>
+<h2><a
+href="#opt-nodejs-granular.deps._name_._name_.mkDerivation.configurePhase"
+id="opt-nodejs-granular.deps._name_._name_.mkDerivation.configurePhase"><code>nodejs-granular.deps.&lt;name&gt;.&lt;name&gt;.mkDerivation.configurePhase</code></a></h2>
+<p>This option has no description.</p>
+<p><em>Type:</em> null or string</p>
+<p><em>Default:</em> <code>null</code></p>
+<p><em>Declared by:</em></p>
+<p><a
+href="https://github.com/nix-community/dream2nix/blob/master/modules/dream2nix/mkDerivation/interface.nix"><code>dream2nix/modules/dream2nix/mkDerivation/interface.nix</code></a></p>
+<h2><a
+href="#opt-nodejs-granular.deps._name_._name_.mkDerivation.configurePlatforms"
+id="opt-nodejs-granular.deps._name_._name_.mkDerivation.configurePlatforms"><code>nodejs-granular.deps.&lt;name&gt;.&lt;name&gt;.mkDerivation.configurePlatforms</code></a></h2>
+<p>This option has no description.</p>
+<p><em>Type:</em> null or (list of anything)</p>
+<p><em>Default:</em> <code>null</code></p>
+<p><em>Declared by:</em></p>
+<p><a
+href="https://github.com/nix-community/dream2nix/blob/master/modules/dream2nix/mkDerivation/interface.nix"><code>dream2nix/modules/dream2nix/mkDerivation/interface.nix</code></a></p>
+<h2><a
+href="#opt-nodejs-granular.deps._name_._name_.mkDerivation.configureScript"
+id="opt-nodejs-granular.deps._name_._name_.mkDerivation.configureScript"><code>nodejs-granular.deps.&lt;name&gt;.&lt;name&gt;.mkDerivation.configureScript</code></a></h2>
+<p>This option has no description.</p>
+<p><em>Type:</em> null or string</p>
+<p><em>Default:</em> <code>null</code></p>
+<p><em>Declared by:</em></p>
+<p><a
+href="https://github.com/nix-community/dream2nix/blob/master/modules/dream2nix/mkDerivation/interface.nix"><code>dream2nix/modules/dream2nix/mkDerivation/interface.nix</code></a></p>
+<h2><a
+href="#opt-nodejs-granular.deps._name_._name_.mkDerivation.depsBuildBuild"
+id="opt-nodejs-granular.deps._name_._name_.mkDerivation.depsBuildBuild"><code>nodejs-granular.deps.&lt;name&gt;.&lt;name&gt;.mkDerivation.depsBuildBuild</code></a></h2>
+<p>This option has no description.</p>
+<p><em>Type:</em> null or (list of anything)</p>
+<p><em>Default:</em> <code>null</code></p>
+<p><em>Declared by:</em></p>
+<p><a
+href="https://github.com/nix-community/dream2nix/blob/master/modules/dream2nix/mkDerivation/interface.nix"><code>dream2nix/modules/dream2nix/mkDerivation/interface.nix</code></a></p>
+<h2><a
+href="#opt-nodejs-granular.deps._name_._name_.mkDerivation.depsBuildBuildPropagated"
+id="opt-nodejs-granular.deps._name_._name_.mkDerivation.depsBuildBuildPropagated"><code>nodejs-granular.deps.&lt;name&gt;.&lt;name&gt;.mkDerivation.depsBuildBuildPropagated</code></a></h2>
+<p>This option has no description.</p>
+<p><em>Type:</em> null or (list of anything)</p>
+<p><em>Default:</em> <code>null</code></p>
+<p><em>Declared by:</em></p>
+<p><a
+href="https://github.com/nix-community/dream2nix/blob/master/modules/dream2nix/mkDerivation/interface.nix"><code>dream2nix/modules/dream2nix/mkDerivation/interface.nix</code></a></p>
+<h2><a
+href="#opt-nodejs-granular.deps._name_._name_.mkDerivation.depsBuildTarget"
+id="opt-nodejs-granular.deps._name_._name_.mkDerivation.depsBuildTarget"><code>nodejs-granular.deps.&lt;name&gt;.&lt;name&gt;.mkDerivation.depsBuildTarget</code></a></h2>
+<p>This option has no description.</p>
+<p><em>Type:</em> null or (list of anything)</p>
+<p><em>Default:</em> <code>null</code></p>
+<p><em>Declared by:</em></p>
+<p><a
+href="https://github.com/nix-community/dream2nix/blob/master/modules/dream2nix/mkDerivation/interface.nix"><code>dream2nix/modules/dream2nix/mkDerivation/interface.nix</code></a></p>
+<h2><a
+href="#opt-nodejs-granular.deps._name_._name_.mkDerivation.depsBuildTargetPropagated"
+id="opt-nodejs-granular.deps._name_._name_.mkDerivation.depsBuildTargetPropagated"><code>nodejs-granular.deps.&lt;name&gt;.&lt;name&gt;.mkDerivation.depsBuildTargetPropagated</code></a></h2>
+<p>This option has no description.</p>
+<p><em>Type:</em> null or (list of anything)</p>
+<p><em>Default:</em> <code>null</code></p>
+<p><em>Declared by:</em></p>
+<p><a
+href="https://github.com/nix-community/dream2nix/blob/master/modules/dream2nix/mkDerivation/interface.nix"><code>dream2nix/modules/dream2nix/mkDerivation/interface.nix</code></a></p>
+<h2><a
+href="#opt-nodejs-granular.deps._name_._name_.mkDerivation.depsHostHost"
+id="opt-nodejs-granular.deps._name_._name_.mkDerivation.depsHostHost"><code>nodejs-granular.deps.&lt;name&gt;.&lt;name&gt;.mkDerivation.depsHostHost</code></a></h2>
+<p>This option has no description.</p>
+<p><em>Type:</em> null or (list of anything)</p>
+<p><em>Default:</em> <code>null</code></p>
+<p><em>Declared by:</em></p>
+<p><a
+href="https://github.com/nix-community/dream2nix/blob/master/modules/dream2nix/mkDerivation/interface.nix"><code>dream2nix/modules/dream2nix/mkDerivation/interface.nix</code></a></p>
+<h2><a
+href="#opt-nodejs-granular.deps._name_._name_.mkDerivation.depsHostHostPropagated"
+id="opt-nodejs-granular.deps._name_._name_.mkDerivation.depsHostHostPropagated"><code>nodejs-granular.deps.&lt;name&gt;.&lt;name&gt;.mkDerivation.depsHostHostPropagated</code></a></h2>
+<p>This option has no description.</p>
+<p><em>Type:</em> null or (list of anything)</p>
+<p><em>Default:</em> <code>null</code></p>
+<p><em>Declared by:</em></p>
+<p><a
+href="https://github.com/nix-community/dream2nix/blob/master/modules/dream2nix/mkDerivation/interface.nix"><code>dream2nix/modules/dream2nix/mkDerivation/interface.nix</code></a></p>
+<h2><a
+href="#opt-nodejs-granular.deps._name_._name_.mkDerivation.depsTargetTarget"
+id="opt-nodejs-granular.deps._name_._name_.mkDerivation.depsTargetTarget"><code>nodejs-granular.deps.&lt;name&gt;.&lt;name&gt;.mkDerivation.depsTargetTarget</code></a></h2>
+<p>This option has no description.</p>
+<p><em>Type:</em> null or (list of anything)</p>
+<p><em>Default:</em> <code>null</code></p>
+<p><em>Declared by:</em></p>
+<p><a
+href="https://github.com/nix-community/dream2nix/blob/master/modules/dream2nix/mkDerivation/interface.nix"><code>dream2nix/modules/dream2nix/mkDerivation/interface.nix</code></a></p>
+<h2><a
+href="#opt-nodejs-granular.deps._name_._name_.mkDerivation.depsTargetTargetPropagated"
+id="opt-nodejs-granular.deps._name_._name_.mkDerivation.depsTargetTargetPropagated"><code>nodejs-granular.deps.&lt;name&gt;.&lt;name&gt;.mkDerivation.depsTargetTargetPropagated</code></a></h2>
+<p>This option has no description.</p>
+<p><em>Type:</em> null or (list of anything)</p>
+<p><em>Default:</em> <code>null</code></p>
+<p><em>Declared by:</em></p>
+<p><a
+href="https://github.com/nix-community/dream2nix/blob/master/modules/dream2nix/mkDerivation/interface.nix"><code>dream2nix/modules/dream2nix/mkDerivation/interface.nix</code></a></p>
+<h2><a
+href="#opt-nodejs-granular.deps._name_._name_.mkDerivation.disallowedReferences"
+id="opt-nodejs-granular.deps._name_._name_.mkDerivation.disallowedReferences"><code>nodejs-granular.deps.&lt;name&gt;.&lt;name&gt;.mkDerivation.disallowedReferences</code></a></h2>
+<p>This option has no description.</p>
+<p><em>Type:</em> null or (list of string)</p>
+<p><em>Default:</em> <code>null</code></p>
+<p><em>Declared by:</em></p>
+<p><a
+href="https://github.com/nix-community/dream2nix/blob/master/modules/dream2nix/mkDerivation/interface.nix"><code>dream2nix/modules/dream2nix/mkDerivation/interface.nix</code></a></p>
+<h2><a
+href="#opt-nodejs-granular.deps._name_._name_.mkDerivation.disallowedRequisites"
+id="opt-nodejs-granular.deps._name_._name_.mkDerivation.disallowedRequisites"><code>nodejs-granular.deps.&lt;name&gt;.&lt;name&gt;.mkDerivation.disallowedRequisites</code></a></h2>
+<p>This option has no description.</p>
+<p><em>Type:</em> null or (list of string)</p>
+<p><em>Default:</em> <code>null</code></p>
+<p><em>Declared by:</em></p>
+<p><a
+href="https://github.com/nix-community/dream2nix/blob/master/modules/dream2nix/mkDerivation/interface.nix"><code>dream2nix/modules/dream2nix/mkDerivation/interface.nix</code></a></p>
+<h2><a
+href="#opt-nodejs-granular.deps._name_._name_.mkDerivation.distFlags"
+id="opt-nodejs-granular.deps._name_._name_.mkDerivation.distFlags"><code>nodejs-granular.deps.&lt;name&gt;.&lt;name&gt;.mkDerivation.distFlags</code></a></h2>
+<p>This option has no description.</p>
+<p><em>Type:</em> null or (list of anything)</p>
+<p><em>Default:</em> <code>null</code></p>
+<p><em>Declared by:</em></p>
+<p><a
+href="https://github.com/nix-community/dream2nix/blob/master/modules/dream2nix/mkDerivation/interface.nix"><code>dream2nix/modules/dream2nix/mkDerivation/interface.nix</code></a></p>
+<h2><a
+href="#opt-nodejs-granular.deps._name_._name_.mkDerivation.distPhase"
+id="opt-nodejs-granular.deps._name_._name_.mkDerivation.distPhase"><code>nodejs-granular.deps.&lt;name&gt;.&lt;name&gt;.mkDerivation.distPhase</code></a></h2>
+<p>This option has no description.</p>
+<p><em>Type:</em> null or string</p>
+<p><em>Default:</em> <code>null</code></p>
+<p><em>Declared by:</em></p>
+<p><a
+href="https://github.com/nix-community/dream2nix/blob/master/modules/dream2nix/mkDerivation/interface.nix"><code>dream2nix/modules/dream2nix/mkDerivation/interface.nix</code></a></p>
+<h2><a
+href="#opt-nodejs-granular.deps._name_._name_.mkDerivation.distTarget"
+id="opt-nodejs-granular.deps._name_._name_.mkDerivation.distTarget"><code>nodejs-granular.deps.&lt;name&gt;.&lt;name&gt;.mkDerivation.distTarget</code></a></h2>
+<p>This option has no description.</p>
+<p><em>Type:</em> null or string</p>
+<p><em>Default:</em> <code>null</code></p>
+<p><em>Declared by:</em></p>
+<p><a
+href="https://github.com/nix-community/dream2nix/blob/master/modules/dream2nix/mkDerivation/interface.nix"><code>dream2nix/modules/dream2nix/mkDerivation/interface.nix</code></a></p>
+<h2><a
+href="#opt-nodejs-granular.deps._name_._name_.mkDerivation.doCheck"
+id="opt-nodejs-granular.deps._name_._name_.mkDerivation.doCheck"><code>nodejs-granular.deps.&lt;name&gt;.&lt;name&gt;.mkDerivation.doCheck</code></a></h2>
+<p>This option has no description.</p>
+<p><em>Type:</em> null or boolean</p>
+<p><em>Default:</em> <code>null</code></p>
+<p><em>Declared by:</em></p>
+<p><a
+href="https://github.com/nix-community/dream2nix/blob/master/modules/dream2nix/mkDerivation/interface.nix"><code>dream2nix/modules/dream2nix/mkDerivation/interface.nix</code></a></p>
+<h2><a
+href="#opt-nodejs-granular.deps._name_._name_.mkDerivation.doDist"
+id="opt-nodejs-granular.deps._name_._name_.mkDerivation.doDist"><code>nodejs-granular.deps.&lt;name&gt;.&lt;name&gt;.mkDerivation.doDist</code></a></h2>
+<p>This option has no description.</p>
+<p><em>Type:</em> null or boolean</p>
+<p><em>Default:</em> <code>null</code></p>
+<p><em>Declared by:</em></p>
+<p><a
+href="https://github.com/nix-community/dream2nix/blob/master/modules/dream2nix/mkDerivation/interface.nix"><code>dream2nix/modules/dream2nix/mkDerivation/interface.nix</code></a></p>
+<h2><a
+href="#opt-nodejs-granular.deps._name_._name_.mkDerivation.doInstallCheck"
+id="opt-nodejs-granular.deps._name_._name_.mkDerivation.doInstallCheck"><code>nodejs-granular.deps.&lt;name&gt;.&lt;name&gt;.mkDerivation.doInstallCheck</code></a></h2>
+<p>This option has no description.</p>
+<p><em>Type:</em> null or boolean</p>
+<p><em>Default:</em> <code>null</code></p>
+<p><em>Declared by:</em></p>
+<p><a
+href="https://github.com/nix-community/dream2nix/blob/master/modules/dream2nix/mkDerivation/interface.nix"><code>dream2nix/modules/dream2nix/mkDerivation/interface.nix</code></a></p>
+<h2><a
+href="#opt-nodejs-granular.deps._name_._name_.mkDerivation.dontAddDisableDepTrack"
+id="opt-nodejs-granular.deps._name_._name_.mkDerivation.dontAddDisableDepTrack"><code>nodejs-granular.deps.&lt;name&gt;.&lt;name&gt;.mkDerivation.dontAddDisableDepTrack</code></a></h2>
+<p>This option has no description.</p>
+<p><em>Type:</em> null or boolean</p>
+<p><em>Default:</em> <code>null</code></p>
+<p><em>Declared by:</em></p>
+<p><a
+href="https://github.com/nix-community/dream2nix/blob/master/modules/dream2nix/mkDerivation/interface.nix"><code>dream2nix/modules/dream2nix/mkDerivation/interface.nix</code></a></p>
+<h2><a
+href="#opt-nodejs-granular.deps._name_._name_.mkDerivation.dontAddPrefix"
+id="opt-nodejs-granular.deps._name_._name_.mkDerivation.dontAddPrefix"><code>nodejs-granular.deps.&lt;name&gt;.&lt;name&gt;.mkDerivation.dontAddPrefix</code></a></h2>
+<p>This option has no description.</p>
+<p><em>Type:</em> null or boolean</p>
+<p><em>Default:</em> <code>null</code></p>
+<p><em>Declared by:</em></p>
+<p><a
+href="https://github.com/nix-community/dream2nix/blob/master/modules/dream2nix/mkDerivation/interface.nix"><code>dream2nix/modules/dream2nix/mkDerivation/interface.nix</code></a></p>
+<h2><a
+href="#opt-nodejs-granular.deps._name_._name_.mkDerivation.dontAddStaticConfigureFlags"
+id="opt-nodejs-granular.deps._name_._name_.mkDerivation.dontAddStaticConfigureFlags"><code>nodejs-granular.deps.&lt;name&gt;.&lt;name&gt;.mkDerivation.dontAddStaticConfigureFlags</code></a></h2>
+<p>This option has no description.</p>
+<p><em>Type:</em> null or boolean</p>
+<p><em>Default:</em> <code>null</code></p>
+<p><em>Declared by:</em></p>
+<p><a
+href="https://github.com/nix-community/dream2nix/blob/master/modules/dream2nix/mkDerivation/interface.nix"><code>dream2nix/modules/dream2nix/mkDerivation/interface.nix</code></a></p>
+<h2><a
+href="#opt-nodejs-granular.deps._name_._name_.mkDerivation.dontBuild"
+id="opt-nodejs-granular.deps._name_._name_.mkDerivation.dontBuild"><code>nodejs-granular.deps.&lt;name&gt;.&lt;name&gt;.mkDerivation.dontBuild</code></a></h2>
+<p>This option has no description.</p>
+<p><em>Type:</em> null or boolean</p>
+<p><em>Default:</em> <code>null</code></p>
+<p><em>Declared by:</em></p>
+<p><a
+href="https://github.com/nix-community/dream2nix/blob/master/modules/dream2nix/mkDerivation/interface.nix"><code>dream2nix/modules/dream2nix/mkDerivation/interface.nix</code></a></p>
+<h2><a
+href="#opt-nodejs-granular.deps._name_._name_.mkDerivation.dontConfigure"
+id="opt-nodejs-granular.deps._name_._name_.mkDerivation.dontConfigure"><code>nodejs-granular.deps.&lt;name&gt;.&lt;name&gt;.mkDerivation.dontConfigure</code></a></h2>
+<p>This option has no description.</p>
+<p><em>Type:</em> null or boolean</p>
+<p><em>Default:</em> <code>null</code></p>
+<p><em>Declared by:</em></p>
+<p><a
+href="https://github.com/nix-community/dream2nix/blob/master/modules/dream2nix/mkDerivation/interface.nix"><code>dream2nix/modules/dream2nix/mkDerivation/interface.nix</code></a></p>
+<h2><a
+href="#opt-nodejs-granular.deps._name_._name_.mkDerivation.dontCopyDist"
+id="opt-nodejs-granular.deps._name_._name_.mkDerivation.dontCopyDist"><code>nodejs-granular.deps.&lt;name&gt;.&lt;name&gt;.mkDerivation.dontCopyDist</code></a></h2>
+<p>This option has no description.</p>
+<p><em>Type:</em> null or boolean</p>
+<p><em>Default:</em> <code>null</code></p>
+<p><em>Declared by:</em></p>
+<p><a
+href="https://github.com/nix-community/dream2nix/blob/master/modules/dream2nix/mkDerivation/interface.nix"><code>dream2nix/modules/dream2nix/mkDerivation/interface.nix</code></a></p>
+<h2><a
+href="#opt-nodejs-granular.deps._name_._name_.mkDerivation.dontDisableStatic"
+id="opt-nodejs-granular.deps._name_._name_.mkDerivation.dontDisableStatic"><code>nodejs-granular.deps.&lt;name&gt;.&lt;name&gt;.mkDerivation.dontDisableStatic</code></a></h2>
+<p>This option has no description.</p>
+<p><em>Type:</em> null or boolean</p>
+<p><em>Default:</em> <code>null</code></p>
+<p><em>Declared by:</em></p>
+<p><a
+href="https://github.com/nix-community/dream2nix/blob/master/modules/dream2nix/mkDerivation/interface.nix"><code>dream2nix/modules/dream2nix/mkDerivation/interface.nix</code></a></p>
+<h2><a
+href="#opt-nodejs-granular.deps._name_._name_.mkDerivation.dontFixLibtool"
+id="opt-nodejs-granular.deps._name_._name_.mkDerivation.dontFixLibtool"><code>nodejs-granular.deps.&lt;name&gt;.&lt;name&gt;.mkDerivation.dontFixLibtool</code></a></h2>
+<p>This option has no description.</p>
+<p><em>Type:</em> null or boolean</p>
+<p><em>Default:</em> <code>null</code></p>
+<p><em>Declared by:</em></p>
+<p><a
+href="https://github.com/nix-community/dream2nix/blob/master/modules/dream2nix/mkDerivation/interface.nix"><code>dream2nix/modules/dream2nix/mkDerivation/interface.nix</code></a></p>
+<h2><a
+href="#opt-nodejs-granular.deps._name_._name_.mkDerivation.dontFixup"
+id="opt-nodejs-granular.deps._name_._name_.mkDerivation.dontFixup"><code>nodejs-granular.deps.&lt;name&gt;.&lt;name&gt;.mkDerivation.dontFixup</code></a></h2>
+<p>This option has no description.</p>
+<p><em>Type:</em> null or boolean</p>
+<p><em>Default:</em> <code>null</code></p>
+<p><em>Declared by:</em></p>
+<p><a
+href="https://github.com/nix-community/dream2nix/blob/master/modules/dream2nix/mkDerivation/interface.nix"><code>dream2nix/modules/dream2nix/mkDerivation/interface.nix</code></a></p>
+<h2><a
+href="#opt-nodejs-granular.deps._name_._name_.mkDerivation.dontInstall"
+id="opt-nodejs-granular.deps._name_._name_.mkDerivation.dontInstall"><code>nodejs-granular.deps.&lt;name&gt;.&lt;name&gt;.mkDerivation.dontInstall</code></a></h2>
+<p>This option has no description.</p>
+<p><em>Type:</em> null or boolean</p>
+<p><em>Default:</em> <code>null</code></p>
+<p><em>Declared by:</em></p>
+<p><a
+href="https://github.com/nix-community/dream2nix/blob/master/modules/dream2nix/mkDerivation/interface.nix"><code>dream2nix/modules/dream2nix/mkDerivation/interface.nix</code></a></p>
+<h2><a
+href="#opt-nodejs-granular.deps._name_._name_.mkDerivation.dontMakeSourcesWritable"
+id="opt-nodejs-granular.deps._name_._name_.mkDerivation.dontMakeSourcesWritable"><code>nodejs-granular.deps.&lt;name&gt;.&lt;name&gt;.mkDerivation.dontMakeSourcesWritable</code></a></h2>
+<p>This option has no description.</p>
+<p><em>Type:</em> null or boolean</p>
+<p><em>Default:</em> <code>null</code></p>
+<p><em>Declared by:</em></p>
+<p><a
+href="https://github.com/nix-community/dream2nix/blob/master/modules/dream2nix/mkDerivation/interface.nix"><code>dream2nix/modules/dream2nix/mkDerivation/interface.nix</code></a></p>
+<h2><a
+href="#opt-nodejs-granular.deps._name_._name_.mkDerivation.dontMoveBin"
+id="opt-nodejs-granular.deps._name_._name_.mkDerivation.dontMoveBin"><code>nodejs-granular.deps.&lt;name&gt;.&lt;name&gt;.mkDerivation.dontMoveBin</code></a></h2>
+<p>This option has no description.</p>
+<p><em>Type:</em> null or boolean</p>
+<p><em>Default:</em> <code>null</code></p>
+<p><em>Declared by:</em></p>
+<p><a
+href="https://github.com/nix-community/dream2nix/blob/master/modules/dream2nix/mkDerivation/interface.nix"><code>dream2nix/modules/dream2nix/mkDerivation/interface.nix</code></a></p>
+<h2><a
+href="#opt-nodejs-granular.deps._name_._name_.mkDerivation.dontPatch"
+id="opt-nodejs-granular.deps._name_._name_.mkDerivation.dontPatch"><code>nodejs-granular.deps.&lt;name&gt;.&lt;name&gt;.mkDerivation.dontPatch</code></a></h2>
+<p>This option has no description.</p>
+<p><em>Type:</em> null or boolean</p>
+<p><em>Default:</em> <code>null</code></p>
+<p><em>Declared by:</em></p>
+<p><a
+href="https://github.com/nix-community/dream2nix/blob/master/modules/dream2nix/mkDerivation/interface.nix"><code>dream2nix/modules/dream2nix/mkDerivation/interface.nix</code></a></p>
+<h2><a
+href="#opt-nodejs-granular.deps._name_._name_.mkDerivation.dontPatchELF"
+id="opt-nodejs-granular.deps._name_._name_.mkDerivation.dontPatchELF"><code>nodejs-granular.deps.&lt;name&gt;.&lt;name&gt;.mkDerivation.dontPatchELF</code></a></h2>
+<p>This option has no description.</p>
+<p><em>Type:</em> null or boolean</p>
+<p><em>Default:</em> <code>null</code></p>
+<p><em>Declared by:</em></p>
+<p><a
+href="https://github.com/nix-community/dream2nix/blob/master/modules/dream2nix/mkDerivation/interface.nix"><code>dream2nix/modules/dream2nix/mkDerivation/interface.nix</code></a></p>
+<h2><a
+href="#opt-nodejs-granular.deps._name_._name_.mkDerivation.dontPatchShebangs"
+id="opt-nodejs-granular.deps._name_._name_.mkDerivation.dontPatchShebangs"><code>nodejs-granular.deps.&lt;name&gt;.&lt;name&gt;.mkDerivation.dontPatchShebangs</code></a></h2>
+<p>This option has no description.</p>
+<p><em>Type:</em> null or boolean</p>
+<p><em>Default:</em> <code>null</code></p>
+<p><em>Declared by:</em></p>
+<p><a
+href="https://github.com/nix-community/dream2nix/blob/master/modules/dream2nix/mkDerivation/interface.nix"><code>dream2nix/modules/dream2nix/mkDerivation/interface.nix</code></a></p>
+<h2><a
+href="#opt-nodejs-granular.deps._name_._name_.mkDerivation.dontPruneLibtoolFiles"
+id="opt-nodejs-granular.deps._name_._name_.mkDerivation.dontPruneLibtoolFiles"><code>nodejs-granular.deps.&lt;name&gt;.&lt;name&gt;.mkDerivation.dontPruneLibtoolFiles</code></a></h2>
+<p>This option has no description.</p>
+<p><em>Type:</em> null or boolean</p>
+<p><em>Default:</em> <code>null</code></p>
+<p><em>Declared by:</em></p>
+<p><a
+href="https://github.com/nix-community/dream2nix/blob/master/modules/dream2nix/mkDerivation/interface.nix"><code>dream2nix/modules/dream2nix/mkDerivation/interface.nix</code></a></p>
+<h2><a
+href="#opt-nodejs-granular.deps._name_._name_.mkDerivation.dontStrip"
+id="opt-nodejs-granular.deps._name_._name_.mkDerivation.dontStrip"><code>nodejs-granular.deps.&lt;name&gt;.&lt;name&gt;.mkDerivation.dontStrip</code></a></h2>
+<p>This option has no description.</p>
+<p><em>Type:</em> null or boolean</p>
+<p><em>Default:</em> <code>null</code></p>
+<p><em>Declared by:</em></p>
+<p><a
+href="https://github.com/nix-community/dream2nix/blob/master/modules/dream2nix/mkDerivation/interface.nix"><code>dream2nix/modules/dream2nix/mkDerivation/interface.nix</code></a></p>
+<h2><a
+href="#opt-nodejs-granular.deps._name_._name_.mkDerivation.dontStripHost"
+id="opt-nodejs-granular.deps._name_._name_.mkDerivation.dontStripHost"><code>nodejs-granular.deps.&lt;name&gt;.&lt;name&gt;.mkDerivation.dontStripHost</code></a></h2>
+<p>This option has no description.</p>
+<p><em>Type:</em> null or boolean</p>
+<p><em>Default:</em> <code>null</code></p>
+<p><em>Declared by:</em></p>
+<p><a
+href="https://github.com/nix-community/dream2nix/blob/master/modules/dream2nix/mkDerivation/interface.nix"><code>dream2nix/modules/dream2nix/mkDerivation/interface.nix</code></a></p>
+<h2><a
+href="#opt-nodejs-granular.deps._name_._name_.mkDerivation.dontStripTarget"
+id="opt-nodejs-granular.deps._name_._name_.mkDerivation.dontStripTarget"><code>nodejs-granular.deps.&lt;name&gt;.&lt;name&gt;.mkDerivation.dontStripTarget</code></a></h2>
+<p>This option has no description.</p>
+<p><em>Type:</em> null or boolean</p>
+<p><em>Default:</em> <code>null</code></p>
+<p><em>Declared by:</em></p>
+<p><a
+href="https://github.com/nix-community/dream2nix/blob/master/modules/dream2nix/mkDerivation/interface.nix"><code>dream2nix/modules/dream2nix/mkDerivation/interface.nix</code></a></p>
+<h2><a
+href="#opt-nodejs-granular.deps._name_._name_.mkDerivation.dontUnpack"
+id="opt-nodejs-granular.deps._name_._name_.mkDerivation.dontUnpack"><code>nodejs-granular.deps.&lt;name&gt;.&lt;name&gt;.mkDerivation.dontUnpack</code></a></h2>
+<p>This option has no description.</p>
+<p><em>Type:</em> null or boolean</p>
+<p><em>Default:</em> <code>null</code></p>
+<p><em>Declared by:</em></p>
+<p><a
+href="https://github.com/nix-community/dream2nix/blob/master/modules/dream2nix/mkDerivation/interface.nix"><code>dream2nix/modules/dream2nix/mkDerivation/interface.nix</code></a></p>
+<h2><a
+href="#opt-nodejs-granular.deps._name_._name_.mkDerivation.exportReferenceGraph"
+id="opt-nodejs-granular.deps._name_._name_.mkDerivation.exportReferenceGraph"><code>nodejs-granular.deps.&lt;name&gt;.&lt;name&gt;.mkDerivation.exportReferenceGraph</code></a></h2>
+<p>This option has no description.</p>
+<p><em>Type:</em> null or (list of (string or package))</p>
+<p><em>Default:</em> <code>null</code></p>
+<p><em>Declared by:</em></p>
+<p><a
+href="https://github.com/nix-community/dream2nix/blob/master/modules/dream2nix/mkDerivation/interface.nix"><code>dream2nix/modules/dream2nix/mkDerivation/interface.nix</code></a></p>
+<h2><a
+href="#opt-nodejs-granular.deps._name_._name_.mkDerivation.fixupPhase"
+id="opt-nodejs-granular.deps._name_._name_.mkDerivation.fixupPhase"><code>nodejs-granular.deps.&lt;name&gt;.&lt;name&gt;.mkDerivation.fixupPhase</code></a></h2>
+<p>This option has no description.</p>
+<p><em>Type:</em> null or string</p>
+<p><em>Default:</em> <code>null</code></p>
+<p><em>Declared by:</em></p>
+<p><a
+href="https://github.com/nix-community/dream2nix/blob/master/modules/dream2nix/mkDerivation/interface.nix"><code>dream2nix/modules/dream2nix/mkDerivation/interface.nix</code></a></p>
+<h2><a
+href="#opt-nodejs-granular.deps._name_._name_.mkDerivation.forceShare"
+id="opt-nodejs-granular.deps._name_._name_.mkDerivation.forceShare"><code>nodejs-granular.deps.&lt;name&gt;.&lt;name&gt;.mkDerivation.forceShare</code></a></h2>
+<p>This option has no description.</p>
+<p><em>Type:</em> null or (list of anything)</p>
+<p><em>Default:</em> <code>null</code></p>
+<p><em>Declared by:</em></p>
+<p><a
+href="https://github.com/nix-community/dream2nix/blob/master/modules/dream2nix/mkDerivation/interface.nix"><code>dream2nix/modules/dream2nix/mkDerivation/interface.nix</code></a></p>
+<h2><a
+href="#opt-nodejs-granular.deps._name_._name_.mkDerivation.hardeningDisable"
+id="opt-nodejs-granular.deps._name_._name_.mkDerivation.hardeningDisable"><code>nodejs-granular.deps.&lt;name&gt;.&lt;name&gt;.mkDerivation.hardeningDisable</code></a></h2>
+<p>This option has no description.</p>
+<p><em>Type:</em> null or (list of anything)</p>
+<p><em>Default:</em> <code>null</code></p>
+<p><em>Declared by:</em></p>
+<p><a
+href="https://github.com/nix-community/dream2nix/blob/master/modules/dream2nix/mkDerivation/interface.nix"><code>dream2nix/modules/dream2nix/mkDerivation/interface.nix</code></a></p>
+<h2><a
+href="#opt-nodejs-granular.deps._name_._name_.mkDerivation.hardeningEnable"
+id="opt-nodejs-granular.deps._name_._name_.mkDerivation.hardeningEnable"><code>nodejs-granular.deps.&lt;name&gt;.&lt;name&gt;.mkDerivation.hardeningEnable</code></a></h2>
+<p>This option has no description.</p>
+<p><em>Type:</em> null or (list of anything)</p>
+<p><em>Default:</em> <code>null</code></p>
+<p><em>Declared by:</em></p>
+<p><a
+href="https://github.com/nix-community/dream2nix/blob/master/modules/dream2nix/mkDerivation/interface.nix"><code>dream2nix/modules/dream2nix/mkDerivation/interface.nix</code></a></p>
+<h2><a
+href="#opt-nodejs-granular.deps._name_._name_.mkDerivation.impureEnvVars"
+id="opt-nodejs-granular.deps._name_._name_.mkDerivation.impureEnvVars"><code>nodejs-granular.deps.&lt;name&gt;.&lt;name&gt;.mkDerivation.impureEnvVars</code></a></h2>
+<p>This option has no description.</p>
+<p><em>Type:</em> null or (list of string)</p>
+<p><em>Default:</em> <code>null</code></p>
+<p><em>Declared by:</em></p>
+<p><a
+href="https://github.com/nix-community/dream2nix/blob/master/modules/dream2nix/mkDerivation/interface.nix"><code>dream2nix/modules/dream2nix/mkDerivation/interface.nix</code></a></p>
+<h2><a
+href="#opt-nodejs-granular.deps._name_._name_.mkDerivation.installCheckFlags"
+id="opt-nodejs-granular.deps._name_._name_.mkDerivation.installCheckFlags"><code>nodejs-granular.deps.&lt;name&gt;.&lt;name&gt;.mkDerivation.installCheckFlags</code></a></h2>
+<p>This option has no description.</p>
+<p><em>Type:</em> null or (list of anything)</p>
+<p><em>Default:</em> <code>null</code></p>
+<p><em>Declared by:</em></p>
+<p><a
+href="https://github.com/nix-community/dream2nix/blob/master/modules/dream2nix/mkDerivation/interface.nix"><code>dream2nix/modules/dream2nix/mkDerivation/interface.nix</code></a></p>
+<h2><a
+href="#opt-nodejs-granular.deps._name_._name_.mkDerivation.installCheckInputs"
+id="opt-nodejs-granular.deps._name_._name_.mkDerivation.installCheckInputs"><code>nodejs-granular.deps.&lt;name&gt;.&lt;name&gt;.mkDerivation.installCheckInputs</code></a></h2>
+<p>This option has no description.</p>
+<p><em>Type:</em> null or (list of anything)</p>
+<p><em>Default:</em> <code>null</code></p>
+<p><em>Declared by:</em></p>
+<p><a
+href="https://github.com/nix-community/dream2nix/blob/master/modules/dream2nix/mkDerivation/interface.nix"><code>dream2nix/modules/dream2nix/mkDerivation/interface.nix</code></a></p>
+<h2><a
+href="#opt-nodejs-granular.deps._name_._name_.mkDerivation.installCheckPhase"
+id="opt-nodejs-granular.deps._name_._name_.mkDerivation.installCheckPhase"><code>nodejs-granular.deps.&lt;name&gt;.&lt;name&gt;.mkDerivation.installCheckPhase</code></a></h2>
+<p>This option has no description.</p>
+<p><em>Type:</em> null or string</p>
+<p><em>Default:</em> <code>null</code></p>
+<p><em>Declared by:</em></p>
+<p><a
+href="https://github.com/nix-community/dream2nix/blob/master/modules/dream2nix/mkDerivation/interface.nix"><code>dream2nix/modules/dream2nix/mkDerivation/interface.nix</code></a></p>
+<h2><a
+href="#opt-nodejs-granular.deps._name_._name_.mkDerivation.installCheckTarget"
+id="opt-nodejs-granular.deps._name_._name_.mkDerivation.installCheckTarget"><code>nodejs-granular.deps.&lt;name&gt;.&lt;name&gt;.mkDerivation.installCheckTarget</code></a></h2>
+<p>This option has no description.</p>
+<p><em>Type:</em> null or string</p>
+<p><em>Default:</em> <code>null</code></p>
+<p><em>Declared by:</em></p>
+<p><a
+href="https://github.com/nix-community/dream2nix/blob/master/modules/dream2nix/mkDerivation/interface.nix"><code>dream2nix/modules/dream2nix/mkDerivation/interface.nix</code></a></p>
+<h2><a
+href="#opt-nodejs-granular.deps._name_._name_.mkDerivation.installFlags"
+id="opt-nodejs-granular.deps._name_._name_.mkDerivation.installFlags"><code>nodejs-granular.deps.&lt;name&gt;.&lt;name&gt;.mkDerivation.installFlags</code></a></h2>
+<p>This option has no description.</p>
+<p><em>Type:</em> null or (list of anything)</p>
+<p><em>Default:</em> <code>null</code></p>
+<p><em>Declared by:</em></p>
+<p><a
+href="https://github.com/nix-community/dream2nix/blob/master/modules/dream2nix/mkDerivation/interface.nix"><code>dream2nix/modules/dream2nix/mkDerivation/interface.nix</code></a></p>
+<h2><a
+href="#opt-nodejs-granular.deps._name_._name_.mkDerivation.installPhase"
+id="opt-nodejs-granular.deps._name_._name_.mkDerivation.installPhase"><code>nodejs-granular.deps.&lt;name&gt;.&lt;name&gt;.mkDerivation.installPhase</code></a></h2>
+<p>This option has no description.</p>
+<p><em>Type:</em> null or string</p>
+<p><em>Default:</em> <code>null</code></p>
+<p><em>Declared by:</em></p>
+<p><a
+href="https://github.com/nix-community/dream2nix/blob/master/modules/dream2nix/mkDerivation/interface.nix"><code>dream2nix/modules/dream2nix/mkDerivation/interface.nix</code></a></p>
+<h2><a
+href="#opt-nodejs-granular.deps._name_._name_.mkDerivation.installTargets"
+id="opt-nodejs-granular.deps._name_._name_.mkDerivation.installTargets"><code>nodejs-granular.deps.&lt;name&gt;.&lt;name&gt;.mkDerivation.installTargets</code></a></h2>
+<p>This option has no description.</p>
+<p><em>Type:</em> null or string</p>
+<p><em>Default:</em> <code>null</code></p>
+<p><em>Declared by:</em></p>
+<p><a
+href="https://github.com/nix-community/dream2nix/blob/master/modules/dream2nix/mkDerivation/interface.nix"><code>dream2nix/modules/dream2nix/mkDerivation/interface.nix</code></a></p>
+<h2><a
+href="#opt-nodejs-granular.deps._name_._name_.mkDerivation.makeFlags"
+id="opt-nodejs-granular.deps._name_._name_.mkDerivation.makeFlags"><code>nodejs-granular.deps.&lt;name&gt;.&lt;name&gt;.mkDerivation.makeFlags</code></a></h2>
+<p>This option has no description.</p>
+<p><em>Type:</em> null or (list of anything)</p>
+<p><em>Default:</em> <code>null</code></p>
+<p><em>Declared by:</em></p>
+<p><a
+href="https://github.com/nix-community/dream2nix/blob/master/modules/dream2nix/mkDerivation/interface.nix"><code>dream2nix/modules/dream2nix/mkDerivation/interface.nix</code></a></p>
+<h2><a
+href="#opt-nodejs-granular.deps._name_._name_.mkDerivation.makefile"
+id="opt-nodejs-granular.deps._name_._name_.mkDerivation.makefile"><code>nodejs-granular.deps.&lt;name&gt;.&lt;name&gt;.mkDerivation.makefile</code></a></h2>
+<p>This option has no description.</p>
+<p><em>Type:</em> null or string</p>
+<p><em>Default:</em> <code>null</code></p>
+<p><em>Declared by:</em></p>
+<p><a
+href="https://github.com/nix-community/dream2nix/blob/master/modules/dream2nix/mkDerivation/interface.nix"><code>dream2nix/modules/dream2nix/mkDerivation/interface.nix</code></a></p>
+<h2><a
+href="#opt-nodejs-granular.deps._name_._name_.mkDerivation.mesonFlags"
+id="opt-nodejs-granular.deps._name_._name_.mkDerivation.mesonFlags"><code>nodejs-granular.deps.&lt;name&gt;.&lt;name&gt;.mkDerivation.mesonFlags</code></a></h2>
+<p>This option has no description.</p>
+<p><em>Type:</em> null or (list of anything)</p>
+<p><em>Default:</em> <code>null</code></p>
+<p><em>Declared by:</em></p>
+<p><a
+href="https://github.com/nix-community/dream2nix/blob/master/modules/dream2nix/mkDerivation/interface.nix"><code>dream2nix/modules/dream2nix/mkDerivation/interface.nix</code></a></p>
+<h2><a href="#opt-nodejs-granular.deps._name_._name_.mkDerivation.meta"
+id="opt-nodejs-granular.deps._name_._name_.mkDerivation.meta"><code>nodejs-granular.deps.&lt;name&gt;.&lt;name&gt;.mkDerivation.meta</code></a></h2>
+<p>This option has no description.</p>
+<p><em>Type:</em> null or (attribute set)</p>
+<p><em>Default:</em> <code>{ }</code></p>
+<p><em>Declared by:</em></p>
+<p><a
+href="https://github.com/nix-community/dream2nix/blob/master/modules/dream2nix/mkDerivation/interface.nix"><code>dream2nix/modules/dream2nix/mkDerivation/interface.nix</code></a></p>
+<h2><a
+href="#opt-nodejs-granular.deps._name_._name_.mkDerivation.nativeBuildInputs"
+id="opt-nodejs-granular.deps._name_._name_.mkDerivation.nativeBuildInputs"><code>nodejs-granular.deps.&lt;name&gt;.&lt;name&gt;.mkDerivation.nativeBuildInputs</code></a></h2>
+<p>This option has no description.</p>
+<p><em>Type:</em> null or (list of anything)</p>
+<p><em>Default:</em> <code>null</code></p>
+<p><em>Declared by:</em></p>
+<p><a
+href="https://github.com/nix-community/dream2nix/blob/master/modules/dream2nix/mkDerivation/interface.nix"><code>dream2nix/modules/dream2nix/mkDerivation/interface.nix</code></a></p>
+<h2><a
+href="#opt-nodejs-granular.deps._name_._name_.mkDerivation.nativeCheckInputs"
+id="opt-nodejs-granular.deps._name_._name_.mkDerivation.nativeCheckInputs"><code>nodejs-granular.deps.&lt;name&gt;.&lt;name&gt;.mkDerivation.nativeCheckInputs</code></a></h2>
+<p>This option has no description.</p>
+<p><em>Type:</em> null or (list of anything)</p>
+<p><em>Default:</em> <code>null</code></p>
+<p><em>Declared by:</em></p>
+<p><a
+href="https://github.com/nix-community/dream2nix/blob/master/modules/dream2nix/mkDerivation/interface.nix"><code>dream2nix/modules/dream2nix/mkDerivation/interface.nix</code></a></p>
+<h2><a
+href="#opt-nodejs-granular.deps._name_._name_.mkDerivation.outputHash"
+id="opt-nodejs-granular.deps._name_._name_.mkDerivation.outputHash"><code>nodejs-granular.deps.&lt;name&gt;.&lt;name&gt;.mkDerivation.outputHash</code></a></h2>
+<p>This option has no description.</p>
+<p><em>Type:</em> null or string</p>
+<p><em>Default:</em> <code>null</code></p>
+<p><em>Declared by:</em></p>
+<p><a
+href="https://github.com/nix-community/dream2nix/blob/master/modules/dream2nix/mkDerivation/interface.nix"><code>dream2nix/modules/dream2nix/mkDerivation/interface.nix</code></a></p>
+<h2><a
+href="#opt-nodejs-granular.deps._name_._name_.mkDerivation.outputHashAlgo"
+id="opt-nodejs-granular.deps._name_._name_.mkDerivation.outputHashAlgo"><code>nodejs-granular.deps.&lt;name&gt;.&lt;name&gt;.mkDerivation.outputHashAlgo</code></a></h2>
+<p>This option has no description.</p>
+<p><em>Type:</em> null or string</p>
+<p><em>Default:</em> <code>null</code></p>
+<p><em>Declared by:</em></p>
+<p><a
+href="https://github.com/nix-community/dream2nix/blob/master/modules/dream2nix/mkDerivation/interface.nix"><code>dream2nix/modules/dream2nix/mkDerivation/interface.nix</code></a></p>
+<h2><a
+href="#opt-nodejs-granular.deps._name_._name_.mkDerivation.outputHashMode"
+id="opt-nodejs-granular.deps._name_._name_.mkDerivation.outputHashMode"><code>nodejs-granular.deps.&lt;name&gt;.&lt;name&gt;.mkDerivation.outputHashMode</code></a></h2>
+<p>This option has no description.</p>
+<p><em>Type:</em> null or string</p>
+<p><em>Default:</em> <code>null</code></p>
+<p><em>Declared by:</em></p>
+<p><a
+href="https://github.com/nix-community/dream2nix/blob/master/modules/dream2nix/mkDerivation/interface.nix"><code>dream2nix/modules/dream2nix/mkDerivation/interface.nix</code></a></p>
+<h2><a
+href="#opt-nodejs-granular.deps._name_._name_.mkDerivation.outputs"
+id="opt-nodejs-granular.deps._name_._name_.mkDerivation.outputs"><code>nodejs-granular.deps.&lt;name&gt;.&lt;name&gt;.mkDerivation.outputs</code></a></h2>
+<p>This option has no description.</p>
+<p><em>Type:</em> null or (list of string)</p>
+<p><em>Default:</em></p>
+<pre><code>[
+  &quot;out&quot;
+]</code></pre>
+<p><em>Declared by:</em></p>
+<p><a
+href="https://github.com/nix-community/dream2nix/blob/master/modules/dream2nix/mkDerivation/interface.nix"><code>dream2nix/modules/dream2nix/mkDerivation/interface.nix</code></a></p>
+<h2><a
+href="#opt-nodejs-granular.deps._name_._name_.mkDerivation.passAsFile"
+id="opt-nodejs-granular.deps._name_._name_.mkDerivation.passAsFile"><code>nodejs-granular.deps.&lt;name&gt;.&lt;name&gt;.mkDerivation.passAsFile</code></a></h2>
+<p>This option has no description.</p>
+<p><em>Type:</em> null or (list of string)</p>
+<p><em>Default:</em> <code>null</code></p>
+<p><em>Declared by:</em></p>
+<p><a
+href="https://github.com/nix-community/dream2nix/blob/master/modules/dream2nix/mkDerivation/interface.nix"><code>dream2nix/modules/dream2nix/mkDerivation/interface.nix</code></a></p>
+<h2><a
+href="#opt-nodejs-granular.deps._name_._name_.mkDerivation.passthru"
+id="opt-nodejs-granular.deps._name_._name_.mkDerivation.passthru"><code>nodejs-granular.deps.&lt;name&gt;.&lt;name&gt;.mkDerivation.passthru</code></a></h2>
+<p>This option has no description.</p>
+<p><em>Type:</em> null or (attribute set)</p>
+<p><em>Default:</em> <code>{ }</code></p>
+<p><em>Declared by:</em></p>
+<p><a
+href="https://github.com/nix-community/dream2nix/blob/master/modules/dream2nix/mkDerivation/interface.nix"><code>dream2nix/modules/dream2nix/mkDerivation/interface.nix</code></a></p>
+<h2><a
+href="#opt-nodejs-granular.deps._name_._name_.mkDerivation.patchFlags"
+id="opt-nodejs-granular.deps._name_._name_.mkDerivation.patchFlags"><code>nodejs-granular.deps.&lt;name&gt;.&lt;name&gt;.mkDerivation.patchFlags</code></a></h2>
+<p>This option has no description.</p>
+<p><em>Type:</em> null or string</p>
+<p><em>Default:</em> <code>null</code></p>
+<p><em>Declared by:</em></p>
+<p><a
+href="https://github.com/nix-community/dream2nix/blob/master/modules/dream2nix/mkDerivation/interface.nix"><code>dream2nix/modules/dream2nix/mkDerivation/interface.nix</code></a></p>
+<h2><a
+href="#opt-nodejs-granular.deps._name_._name_.mkDerivation.patchPhase"
+id="opt-nodejs-granular.deps._name_._name_.mkDerivation.patchPhase"><code>nodejs-granular.deps.&lt;name&gt;.&lt;name&gt;.mkDerivation.patchPhase</code></a></h2>
+<p>This option has no description.</p>
+<p><em>Type:</em> null or string</p>
+<p><em>Default:</em> <code>null</code></p>
+<p><em>Declared by:</em></p>
+<p><a
+href="https://github.com/nix-community/dream2nix/blob/master/modules/dream2nix/mkDerivation/interface.nix"><code>dream2nix/modules/dream2nix/mkDerivation/interface.nix</code></a></p>
+<h2><a
+href="#opt-nodejs-granular.deps._name_._name_.mkDerivation.patches"
+id="opt-nodejs-granular.deps._name_._name_.mkDerivation.patches"><code>nodejs-granular.deps.&lt;name&gt;.&lt;name&gt;.mkDerivation.patches</code></a></h2>
+<p>This option has no description.</p>
+<p><em>Type:</em> null or (list of anything)</p>
+<p><em>Default:</em> <code>null</code></p>
+<p><em>Declared by:</em></p>
+<p><a
+href="https://github.com/nix-community/dream2nix/blob/master/modules/dream2nix/mkDerivation/interface.nix"><code>dream2nix/modules/dream2nix/mkDerivation/interface.nix</code></a></p>
+<h2><a
+href="#opt-nodejs-granular.deps._name_._name_.mkDerivation.phases"
+id="opt-nodejs-granular.deps._name_._name_.mkDerivation.phases"><code>nodejs-granular.deps.&lt;name&gt;.&lt;name&gt;.mkDerivation.phases</code></a></h2>
+<p>This option has no description.</p>
+<p><em>Type:</em> null or (list of string)</p>
+<p><em>Default:</em> <code>null</code></p>
+<p><em>Declared by:</em></p>
+<p><a
+href="https://github.com/nix-community/dream2nix/blob/master/modules/dream2nix/mkDerivation/interface.nix"><code>dream2nix/modules/dream2nix/mkDerivation/interface.nix</code></a></p>
+<h2><a href="#opt-nodejs-granular.deps._name_._name_.mkDerivation.pos"
+id="opt-nodejs-granular.deps._name_._name_.mkDerivation.pos"><code>nodejs-granular.deps.&lt;name&gt;.&lt;name&gt;.mkDerivation.pos</code></a></h2>
+<p>This option has no description.</p>
+<p><em>Type:</em> null or (attribute set)</p>
+<p><em>Default:</em> <code>{ }</code></p>
+<p><em>Declared by:</em></p>
+<p><a
+href="https://github.com/nix-community/dream2nix/blob/master/modules/dream2nix/mkDerivation/interface.nix"><code>dream2nix/modules/dream2nix/mkDerivation/interface.nix</code></a></p>
+<h2><a
+href="#opt-nodejs-granular.deps._name_._name_.mkDerivation.postBuild"
+id="opt-nodejs-granular.deps._name_._name_.mkDerivation.postBuild"><code>nodejs-granular.deps.&lt;name&gt;.&lt;name&gt;.mkDerivation.postBuild</code></a></h2>
+<p>This option has no description.</p>
+<p><em>Type:</em> null or string</p>
+<p><em>Default:</em> <code>null</code></p>
+<p><em>Declared by:</em></p>
+<p><a
+href="https://github.com/nix-community/dream2nix/blob/master/modules/dream2nix/mkDerivation/interface.nix"><code>dream2nix/modules/dream2nix/mkDerivation/interface.nix</code></a></p>
+<h2><a
+href="#opt-nodejs-granular.deps._name_._name_.mkDerivation.postCheck"
+id="opt-nodejs-granular.deps._name_._name_.mkDerivation.postCheck"><code>nodejs-granular.deps.&lt;name&gt;.&lt;name&gt;.mkDerivation.postCheck</code></a></h2>
+<p>This option has no description.</p>
+<p><em>Type:</em> null or string</p>
+<p><em>Default:</em> <code>null</code></p>
+<p><em>Declared by:</em></p>
+<p><a
+href="https://github.com/nix-community/dream2nix/blob/master/modules/dream2nix/mkDerivation/interface.nix"><code>dream2nix/modules/dream2nix/mkDerivation/interface.nix</code></a></p>
+<h2><a
+href="#opt-nodejs-granular.deps._name_._name_.mkDerivation.postConfigure"
+id="opt-nodejs-granular.deps._name_._name_.mkDerivation.postConfigure"><code>nodejs-granular.deps.&lt;name&gt;.&lt;name&gt;.mkDerivation.postConfigure</code></a></h2>
+<p>This option has no description.</p>
+<p><em>Type:</em> null or string</p>
+<p><em>Default:</em> <code>null</code></p>
+<p><em>Declared by:</em></p>
+<p><a
+href="https://github.com/nix-community/dream2nix/blob/master/modules/dream2nix/mkDerivation/interface.nix"><code>dream2nix/modules/dream2nix/mkDerivation/interface.nix</code></a></p>
+<h2><a
+href="#opt-nodejs-granular.deps._name_._name_.mkDerivation.postDist"
+id="opt-nodejs-granular.deps._name_._name_.mkDerivation.postDist"><code>nodejs-granular.deps.&lt;name&gt;.&lt;name&gt;.mkDerivation.postDist</code></a></h2>
+<p>This option has no description.</p>
+<p><em>Type:</em> null or string</p>
+<p><em>Default:</em> <code>null</code></p>
+<p><em>Declared by:</em></p>
+<p><a
+href="https://github.com/nix-community/dream2nix/blob/master/modules/dream2nix/mkDerivation/interface.nix"><code>dream2nix/modules/dream2nix/mkDerivation/interface.nix</code></a></p>
+<h2><a
+href="#opt-nodejs-granular.deps._name_._name_.mkDerivation.postFixup"
+id="opt-nodejs-granular.deps._name_._name_.mkDerivation.postFixup"><code>nodejs-granular.deps.&lt;name&gt;.&lt;name&gt;.mkDerivation.postFixup</code></a></h2>
+<p>This option has no description.</p>
+<p><em>Type:</em> null or string</p>
+<p><em>Default:</em> <code>null</code></p>
+<p><em>Declared by:</em></p>
+<p><a
+href="https://github.com/nix-community/dream2nix/blob/master/modules/dream2nix/mkDerivation/interface.nix"><code>dream2nix/modules/dream2nix/mkDerivation/interface.nix</code></a></p>
+<h2><a
+href="#opt-nodejs-granular.deps._name_._name_.mkDerivation.postInstalCheck"
+id="opt-nodejs-granular.deps._name_._name_.mkDerivation.postInstalCheck"><code>nodejs-granular.deps.&lt;name&gt;.&lt;name&gt;.mkDerivation.postInstalCheck</code></a></h2>
+<p>This option has no description.</p>
+<p><em>Type:</em> null or string</p>
+<p><em>Default:</em> <code>null</code></p>
+<p><em>Declared by:</em></p>
+<p><a
+href="https://github.com/nix-community/dream2nix/blob/master/modules/dream2nix/mkDerivation/interface.nix"><code>dream2nix/modules/dream2nix/mkDerivation/interface.nix</code></a></p>
+<h2><a
+href="#opt-nodejs-granular.deps._name_._name_.mkDerivation.postInstall"
+id="opt-nodejs-granular.deps._name_._name_.mkDerivation.postInstall"><code>nodejs-granular.deps.&lt;name&gt;.&lt;name&gt;.mkDerivation.postInstall</code></a></h2>
+<p>This option has no description.</p>
+<p><em>Type:</em> null or string</p>
+<p><em>Default:</em> <code>null</code></p>
+<p><em>Declared by:</em></p>
+<p><a
+href="https://github.com/nix-community/dream2nix/blob/master/modules/dream2nix/mkDerivation/interface.nix"><code>dream2nix/modules/dream2nix/mkDerivation/interface.nix</code></a></p>
+<h2><a
+href="#opt-nodejs-granular.deps._name_._name_.mkDerivation.postPatch"
+id="opt-nodejs-granular.deps._name_._name_.mkDerivation.postPatch"><code>nodejs-granular.deps.&lt;name&gt;.&lt;name&gt;.mkDerivation.postPatch</code></a></h2>
+<p>This option has no description.</p>
+<p><em>Type:</em> null or string</p>
+<p><em>Default:</em> <code>null</code></p>
+<p><em>Declared by:</em></p>
+<p><a
+href="https://github.com/nix-community/dream2nix/blob/master/modules/dream2nix/mkDerivation/interface.nix"><code>dream2nix/modules/dream2nix/mkDerivation/interface.nix</code></a></p>
+<h2><a
+href="#opt-nodejs-granular.deps._name_._name_.mkDerivation.postPhases"
+id="opt-nodejs-granular.deps._name_._name_.mkDerivation.postPhases"><code>nodejs-granular.deps.&lt;name&gt;.&lt;name&gt;.mkDerivation.postPhases</code></a></h2>
+<p>This option has no description.</p>
+<p><em>Type:</em> null or (list of anything)</p>
+<p><em>Default:</em> <code>null</code></p>
+<p><em>Declared by:</em></p>
+<p><a
+href="https://github.com/nix-community/dream2nix/blob/master/modules/dream2nix/mkDerivation/interface.nix"><code>dream2nix/modules/dream2nix/mkDerivation/interface.nix</code></a></p>
+<h2><a
+href="#opt-nodejs-granular.deps._name_._name_.mkDerivation.postUnpack"
+id="opt-nodejs-granular.deps._name_._name_.mkDerivation.postUnpack"><code>nodejs-granular.deps.&lt;name&gt;.&lt;name&gt;.mkDerivation.postUnpack</code></a></h2>
+<p>This option has no description.</p>
+<p><em>Type:</em> null or string</p>
+<p><em>Default:</em> <code>null</code></p>
+<p><em>Declared by:</em></p>
+<p><a
+href="https://github.com/nix-community/dream2nix/blob/master/modules/dream2nix/mkDerivation/interface.nix"><code>dream2nix/modules/dream2nix/mkDerivation/interface.nix</code></a></p>
+<h2><a
+href="#opt-nodejs-granular.deps._name_._name_.mkDerivation.preBuild"
+id="opt-nodejs-granular.deps._name_._name_.mkDerivation.preBuild"><code>nodejs-granular.deps.&lt;name&gt;.&lt;name&gt;.mkDerivation.preBuild</code></a></h2>
+<p>This option has no description.</p>
+<p><em>Type:</em> null or string</p>
+<p><em>Default:</em> <code>null</code></p>
+<p><em>Declared by:</em></p>
+<p><a
+href="https://github.com/nix-community/dream2nix/blob/master/modules/dream2nix/mkDerivation/interface.nix"><code>dream2nix/modules/dream2nix/mkDerivation/interface.nix</code></a></p>
+<h2><a
+href="#opt-nodejs-granular.deps._name_._name_.mkDerivation.preBuildPhases"
+id="opt-nodejs-granular.deps._name_._name_.mkDerivation.preBuildPhases"><code>nodejs-granular.deps.&lt;name&gt;.&lt;name&gt;.mkDerivation.preBuildPhases</code></a></h2>
+<p>This option has no description.</p>
+<p><em>Type:</em> null or (list of anything)</p>
+<p><em>Default:</em> <code>null</code></p>
+<p><em>Declared by:</em></p>
+<p><a
+href="https://github.com/nix-community/dream2nix/blob/master/modules/dream2nix/mkDerivation/interface.nix"><code>dream2nix/modules/dream2nix/mkDerivation/interface.nix</code></a></p>
+<h2><a
+href="#opt-nodejs-granular.deps._name_._name_.mkDerivation.preCheck"
+id="opt-nodejs-granular.deps._name_._name_.mkDerivation.preCheck"><code>nodejs-granular.deps.&lt;name&gt;.&lt;name&gt;.mkDerivation.preCheck</code></a></h2>
+<p>This option has no description.</p>
+<p><em>Type:</em> null or string</p>
+<p><em>Default:</em> <code>null</code></p>
+<p><em>Declared by:</em></p>
+<p><a
+href="https://github.com/nix-community/dream2nix/blob/master/modules/dream2nix/mkDerivation/interface.nix"><code>dream2nix/modules/dream2nix/mkDerivation/interface.nix</code></a></p>
+<h2><a
+href="#opt-nodejs-granular.deps._name_._name_.mkDerivation.preConfigure"
+id="opt-nodejs-granular.deps._name_._name_.mkDerivation.preConfigure"><code>nodejs-granular.deps.&lt;name&gt;.&lt;name&gt;.mkDerivation.preConfigure</code></a></h2>
+<p>This option has no description.</p>
+<p><em>Type:</em> null or string</p>
+<p><em>Default:</em> <code>null</code></p>
+<p><em>Declared by:</em></p>
+<p><a
+href="https://github.com/nix-community/dream2nix/blob/master/modules/dream2nix/mkDerivation/interface.nix"><code>dream2nix/modules/dream2nix/mkDerivation/interface.nix</code></a></p>
+<h2><a
+href="#opt-nodejs-granular.deps._name_._name_.mkDerivation.preConfigurePhases"
+id="opt-nodejs-granular.deps._name_._name_.mkDerivation.preConfigurePhases"><code>nodejs-granular.deps.&lt;name&gt;.&lt;name&gt;.mkDerivation.preConfigurePhases</code></a></h2>
+<p>This option has no description.</p>
+<p><em>Type:</em> null or (list of anything)</p>
+<p><em>Default:</em> <code>null</code></p>
+<p><em>Declared by:</em></p>
+<p><a
+href="https://github.com/nix-community/dream2nix/blob/master/modules/dream2nix/mkDerivation/interface.nix"><code>dream2nix/modules/dream2nix/mkDerivation/interface.nix</code></a></p>
+<h2><a
+href="#opt-nodejs-granular.deps._name_._name_.mkDerivation.preDist"
+id="opt-nodejs-granular.deps._name_._name_.mkDerivation.preDist"><code>nodejs-granular.deps.&lt;name&gt;.&lt;name&gt;.mkDerivation.preDist</code></a></h2>
+<p>This option has no description.</p>
+<p><em>Type:</em> null or string</p>
+<p><em>Default:</em> <code>null</code></p>
+<p><em>Declared by:</em></p>
+<p><a
+href="https://github.com/nix-community/dream2nix/blob/master/modules/dream2nix/mkDerivation/interface.nix"><code>dream2nix/modules/dream2nix/mkDerivation/interface.nix</code></a></p>
+<h2><a
+href="#opt-nodejs-granular.deps._name_._name_.mkDerivation.preDistPhases"
+id="opt-nodejs-granular.deps._name_._name_.mkDerivation.preDistPhases"><code>nodejs-granular.deps.&lt;name&gt;.&lt;name&gt;.mkDerivation.preDistPhases</code></a></h2>
+<p>This option has no description.</p>
+<p><em>Type:</em> null or (list of anything)</p>
+<p><em>Default:</em> <code>null</code></p>
+<p><em>Declared by:</em></p>
+<p><a
+href="https://github.com/nix-community/dream2nix/blob/master/modules/dream2nix/mkDerivation/interface.nix"><code>dream2nix/modules/dream2nix/mkDerivation/interface.nix</code></a></p>
+<h2><a
+href="#opt-nodejs-granular.deps._name_._name_.mkDerivation.preFixup"
+id="opt-nodejs-granular.deps._name_._name_.mkDerivation.preFixup"><code>nodejs-granular.deps.&lt;name&gt;.&lt;name&gt;.mkDerivation.preFixup</code></a></h2>
+<p>This option has no description.</p>
+<p><em>Type:</em> null or string</p>
+<p><em>Default:</em> <code>null</code></p>
+<p><em>Declared by:</em></p>
+<p><a
+href="https://github.com/nix-community/dream2nix/blob/master/modules/dream2nix/mkDerivation/interface.nix"><code>dream2nix/modules/dream2nix/mkDerivation/interface.nix</code></a></p>
+<h2><a
+href="#opt-nodejs-granular.deps._name_._name_.mkDerivation.preFixupPhases"
+id="opt-nodejs-granular.deps._name_._name_.mkDerivation.preFixupPhases"><code>nodejs-granular.deps.&lt;name&gt;.&lt;name&gt;.mkDerivation.preFixupPhases</code></a></h2>
+<p>This option has no description.</p>
+<p><em>Type:</em> null or (list of anything)</p>
+<p><em>Default:</em> <code>null</code></p>
+<p><em>Declared by:</em></p>
+<p><a
+href="https://github.com/nix-community/dream2nix/blob/master/modules/dream2nix/mkDerivation/interface.nix"><code>dream2nix/modules/dream2nix/mkDerivation/interface.nix</code></a></p>
+<h2><a
+href="#opt-nodejs-granular.deps._name_._name_.mkDerivation.preInstall"
+id="opt-nodejs-granular.deps._name_._name_.mkDerivation.preInstall"><code>nodejs-granular.deps.&lt;name&gt;.&lt;name&gt;.mkDerivation.preInstall</code></a></h2>
+<p>This option has no description.</p>
+<p><em>Type:</em> null or string</p>
+<p><em>Default:</em> <code>null</code></p>
+<p><em>Declared by:</em></p>
+<p><a
+href="https://github.com/nix-community/dream2nix/blob/master/modules/dream2nix/mkDerivation/interface.nix"><code>dream2nix/modules/dream2nix/mkDerivation/interface.nix</code></a></p>
+<h2><a
+href="#opt-nodejs-granular.deps._name_._name_.mkDerivation.preInstallCheck"
+id="opt-nodejs-granular.deps._name_._name_.mkDerivation.preInstallCheck"><code>nodejs-granular.deps.&lt;name&gt;.&lt;name&gt;.mkDerivation.preInstallCheck</code></a></h2>
+<p>This option has no description.</p>
+<p><em>Type:</em> null or string</p>
+<p><em>Default:</em> <code>null</code></p>
+<p><em>Declared by:</em></p>
+<p><a
+href="https://github.com/nix-community/dream2nix/blob/master/modules/dream2nix/mkDerivation/interface.nix"><code>dream2nix/modules/dream2nix/mkDerivation/interface.nix</code></a></p>
+<h2><a
+href="#opt-nodejs-granular.deps._name_._name_.mkDerivation.preInstallPhases"
+id="opt-nodejs-granular.deps._name_._name_.mkDerivation.preInstallPhases"><code>nodejs-granular.deps.&lt;name&gt;.&lt;name&gt;.mkDerivation.preInstallPhases</code></a></h2>
+<p>This option has no description.</p>
+<p><em>Type:</em> null or (list of anything)</p>
+<p><em>Default:</em> <code>null</code></p>
+<p><em>Declared by:</em></p>
+<p><a
+href="https://github.com/nix-community/dream2nix/blob/master/modules/dream2nix/mkDerivation/interface.nix"><code>dream2nix/modules/dream2nix/mkDerivation/interface.nix</code></a></p>
+<h2><a
+href="#opt-nodejs-granular.deps._name_._name_.mkDerivation.prePatch"
+id="opt-nodejs-granular.deps._name_._name_.mkDerivation.prePatch"><code>nodejs-granular.deps.&lt;name&gt;.&lt;name&gt;.mkDerivation.prePatch</code></a></h2>
+<p>This option has no description.</p>
+<p><em>Type:</em> null or string</p>
+<p><em>Default:</em> <code>null</code></p>
+<p><em>Declared by:</em></p>
+<p><a
+href="https://github.com/nix-community/dream2nix/blob/master/modules/dream2nix/mkDerivation/interface.nix"><code>dream2nix/modules/dream2nix/mkDerivation/interface.nix</code></a></p>
+<h2><a
+href="#opt-nodejs-granular.deps._name_._name_.mkDerivation.prePhases"
+id="opt-nodejs-granular.deps._name_._name_.mkDerivation.prePhases"><code>nodejs-granular.deps.&lt;name&gt;.&lt;name&gt;.mkDerivation.prePhases</code></a></h2>
+<p>This option has no description.</p>
+<p><em>Type:</em> null or (list of anything)</p>
+<p><em>Default:</em> <code>null</code></p>
+<p><em>Declared by:</em></p>
+<p><a
+href="https://github.com/nix-community/dream2nix/blob/master/modules/dream2nix/mkDerivation/interface.nix"><code>dream2nix/modules/dream2nix/mkDerivation/interface.nix</code></a></p>
+<h2><a
+href="#opt-nodejs-granular.deps._name_._name_.mkDerivation.preUnpack"
+id="opt-nodejs-granular.deps._name_._name_.mkDerivation.preUnpack"><code>nodejs-granular.deps.&lt;name&gt;.&lt;name&gt;.mkDerivation.preUnpack</code></a></h2>
+<p>This option has no description.</p>
+<p><em>Type:</em> null or string</p>
+<p><em>Default:</em> <code>null</code></p>
+<p><em>Declared by:</em></p>
+<p><a
+href="https://github.com/nix-community/dream2nix/blob/master/modules/dream2nix/mkDerivation/interface.nix"><code>dream2nix/modules/dream2nix/mkDerivation/interface.nix</code></a></p>
+<h2><a
+href="#opt-nodejs-granular.deps._name_._name_.mkDerivation.preferLocalBuild"
+id="opt-nodejs-granular.deps._name_._name_.mkDerivation.preferLocalBuild"><code>nodejs-granular.deps.&lt;name&gt;.&lt;name&gt;.mkDerivation.preferLocalBuild</code></a></h2>
+<p>This option has no description.</p>
+<p><em>Type:</em> null or (list of string)</p>
+<p><em>Default:</em> <code>null</code></p>
+<p><em>Declared by:</em></p>
+<p><a
+href="https://github.com/nix-community/dream2nix/blob/master/modules/dream2nix/mkDerivation/interface.nix"><code>dream2nix/modules/dream2nix/mkDerivation/interface.nix</code></a></p>
+<h2><a
+href="#opt-nodejs-granular.deps._name_._name_.mkDerivation.prefix"
+id="opt-nodejs-granular.deps._name_._name_.mkDerivation.prefix"><code>nodejs-granular.deps.&lt;name&gt;.&lt;name&gt;.mkDerivation.prefix</code></a></h2>
+<p>This option has no description.</p>
+<p><em>Type:</em> null or string</p>
+<p><em>Default:</em> <code>null</code></p>
+<p><em>Declared by:</em></p>
+<p><a
+href="https://github.com/nix-community/dream2nix/blob/master/modules/dream2nix/mkDerivation/interface.nix"><code>dream2nix/modules/dream2nix/mkDerivation/interface.nix</code></a></p>
+<h2><a
+href="#opt-nodejs-granular.deps._name_._name_.mkDerivation.prefixKey"
+id="opt-nodejs-granular.deps._name_._name_.mkDerivation.prefixKey"><code>nodejs-granular.deps.&lt;name&gt;.&lt;name&gt;.mkDerivation.prefixKey</code></a></h2>
+<p>This option has no description.</p>
+<p><em>Type:</em> null or string</p>
+<p><em>Default:</em> <code>null</code></p>
+<p><em>Declared by:</em></p>
+<p><a
+href="https://github.com/nix-community/dream2nix/blob/master/modules/dream2nix/mkDerivation/interface.nix"><code>dream2nix/modules/dream2nix/mkDerivation/interface.nix</code></a></p>
+<h2><a
+href="#opt-nodejs-granular.deps._name_._name_.mkDerivation.propagatedBuildInputs"
+id="opt-nodejs-granular.deps._name_._name_.mkDerivation.propagatedBuildInputs"><code>nodejs-granular.deps.&lt;name&gt;.&lt;name&gt;.mkDerivation.propagatedBuildInputs</code></a></h2>
+<p>This option has no description.</p>
+<p><em>Type:</em> null or (list of anything)</p>
+<p><em>Default:</em> <code>null</code></p>
+<p><em>Declared by:</em></p>
+<p><a
+href="https://github.com/nix-community/dream2nix/blob/master/modules/dream2nix/mkDerivation/interface.nix"><code>dream2nix/modules/dream2nix/mkDerivation/interface.nix</code></a></p>
+<h2><a
+href="#opt-nodejs-granular.deps._name_._name_.mkDerivation.propagatedNativeBuildInputs"
+id="opt-nodejs-granular.deps._name_._name_.mkDerivation.propagatedNativeBuildInputs"><code>nodejs-granular.deps.&lt;name&gt;.&lt;name&gt;.mkDerivation.propagatedNativeBuildInputs</code></a></h2>
+<p>This option has no description.</p>
+<p><em>Type:</em> null or (list of anything)</p>
+<p><em>Default:</em> <code>null</code></p>
+<p><em>Declared by:</em></p>
+<p><a
+href="https://github.com/nix-community/dream2nix/blob/master/modules/dream2nix/mkDerivation/interface.nix"><code>dream2nix/modules/dream2nix/mkDerivation/interface.nix</code></a></p>
+<h2><a
+href="#opt-nodejs-granular.deps._name_._name_.mkDerivation.propagatedSandboxProfile"
+id="opt-nodejs-granular.deps._name_._name_.mkDerivation.propagatedSandboxProfile"><code>nodejs-granular.deps.&lt;name&gt;.&lt;name&gt;.mkDerivation.propagatedSandboxProfile</code></a></h2>
+<p>This option has no description.</p>
+<p><em>Type:</em> null or string</p>
+<p><em>Default:</em> <code>null</code></p>
+<p><em>Declared by:</em></p>
+<p><a
+href="https://github.com/nix-community/dream2nix/blob/master/modules/dream2nix/mkDerivation/interface.nix"><code>dream2nix/modules/dream2nix/mkDerivation/interface.nix</code></a></p>
+<h2><a
+href="#opt-nodejs-granular.deps._name_._name_.mkDerivation.realBuilder"
+id="opt-nodejs-granular.deps._name_._name_.mkDerivation.realBuilder"><code>nodejs-granular.deps.&lt;name&gt;.&lt;name&gt;.mkDerivation.realBuilder</code></a></h2>
+<p>This option has no description.</p>
+<p><em>Type:</em> null or string or path or package or (submodule)</p>
+<p><em>Default:</em> <code>null</code></p>
+<p><em>Declared by:</em></p>
+<p><a
+href="https://github.com/nix-community/dream2nix/blob/master/modules/dream2nix/mkDerivation/interface.nix"><code>dream2nix/modules/dream2nix/mkDerivation/interface.nix</code></a></p>
+<h2><a
+href="#opt-nodejs-granular.deps._name_._name_.mkDerivation.requiredSystemFeatures"
+id="opt-nodejs-granular.deps._name_._name_.mkDerivation.requiredSystemFeatures"><code>nodejs-granular.deps.&lt;name&gt;.&lt;name&gt;.mkDerivation.requiredSystemFeatures</code></a></h2>
+<p>This option has no description.</p>
+<p><em>Type:</em> null or (list of string)</p>
+<p><em>Default:</em> <code>null</code></p>
+<p><em>Declared by:</em></p>
+<p><a
+href="https://github.com/nix-community/dream2nix/blob/master/modules/dream2nix/mkDerivation/interface.nix"><code>dream2nix/modules/dream2nix/mkDerivation/interface.nix</code></a></p>
+<h2><a
+href="#opt-nodejs-granular.deps._name_._name_.mkDerivation.sandboxProfile"
+id="opt-nodejs-granular.deps._name_._name_.mkDerivation.sandboxProfile"><code>nodejs-granular.deps.&lt;name&gt;.&lt;name&gt;.mkDerivation.sandboxProfile</code></a></h2>
+<p>This option has no description.</p>
+<p><em>Type:</em> null or string</p>
+<p><em>Default:</em> <code>null</code></p>
+<p><em>Declared by:</em></p>
+<p><a
+href="https://github.com/nix-community/dream2nix/blob/master/modules/dream2nix/mkDerivation/interface.nix"><code>dream2nix/modules/dream2nix/mkDerivation/interface.nix</code></a></p>
+<h2><a
+href="#opt-nodejs-granular.deps._name_._name_.mkDerivation.separateDebugInfo"
+id="opt-nodejs-granular.deps._name_._name_.mkDerivation.separateDebugInfo"><code>nodejs-granular.deps.&lt;name&gt;.&lt;name&gt;.mkDerivation.separateDebugInfo</code></a></h2>
+<p>This option has no description.</p>
+<p><em>Type:</em> null or boolean</p>
+<p><em>Default:</em> <code>null</code></p>
+<p><em>Declared by:</em></p>
+<p><a
+href="https://github.com/nix-community/dream2nix/blob/master/modules/dream2nix/mkDerivation/interface.nix"><code>dream2nix/modules/dream2nix/mkDerivation/interface.nix</code></a></p>
+<h2><a
+href="#opt-nodejs-granular.deps._name_._name_.mkDerivation.setSourceRoot"
+id="opt-nodejs-granular.deps._name_._name_.mkDerivation.setSourceRoot"><code>nodejs-granular.deps.&lt;name&gt;.&lt;name&gt;.mkDerivation.setSourceRoot</code></a></h2>
+<p>This option has no description.</p>
+<p><em>Type:</em> null or string</p>
+<p><em>Default:</em> <code>null</code></p>
+<p><em>Declared by:</em></p>
+<p><a
+href="https://github.com/nix-community/dream2nix/blob/master/modules/dream2nix/mkDerivation/interface.nix"><code>dream2nix/modules/dream2nix/mkDerivation/interface.nix</code></a></p>
+<h2><a
+href="#opt-nodejs-granular.deps._name_._name_.mkDerivation.setupHook"
+id="opt-nodejs-granular.deps._name_._name_.mkDerivation.setupHook"><code>nodejs-granular.deps.&lt;name&gt;.&lt;name&gt;.mkDerivation.setupHook</code></a></h2>
+<p>This option has no description.</p>
+<p><em>Type:</em> null or string or path or package or (submodule)</p>
+<p><em>Default:</em> <code>null</code></p>
+<p><em>Declared by:</em></p>
+<p><a
+href="https://github.com/nix-community/dream2nix/blob/master/modules/dream2nix/mkDerivation/interface.nix"><code>dream2nix/modules/dream2nix/mkDerivation/interface.nix</code></a></p>
+<h2><a
+href="#opt-nodejs-granular.deps._name_._name_.mkDerivation.shellHook"
+id="opt-nodejs-granular.deps._name_._name_.mkDerivation.shellHook"><code>nodejs-granular.deps.&lt;name&gt;.&lt;name&gt;.mkDerivation.shellHook</code></a></h2>
+<p>This option has no description.</p>
+<p><em>Type:</em> null or string</p>
+<p><em>Default:</em> <code>null</code></p>
+<p><em>Declared by:</em></p>
+<p><a
+href="https://github.com/nix-community/dream2nix/blob/master/modules/dream2nix/mkDerivation/interface.nix"><code>dream2nix/modules/dream2nix/mkDerivation/interface.nix</code></a></p>
+<h2><a
+href="#opt-nodejs-granular.deps._name_._name_.mkDerivation.sourceRoot"
+id="opt-nodejs-granular.deps._name_._name_.mkDerivation.sourceRoot"><code>nodejs-granular.deps.&lt;name&gt;.&lt;name&gt;.mkDerivation.sourceRoot</code></a></h2>
+<p>This option has no description.</p>
+<p><em>Type:</em> null or string or path or package or (submodule)</p>
+<p><em>Default:</em> <code>null</code></p>
+<p><em>Declared by:</em></p>
+<p><a
+href="https://github.com/nix-community/dream2nix/blob/master/modules/dream2nix/mkDerivation/interface.nix"><code>dream2nix/modules/dream2nix/mkDerivation/interface.nix</code></a></p>
+<h2><a href="#opt-nodejs-granular.deps._name_._name_.mkDerivation.src"
+id="opt-nodejs-granular.deps._name_._name_.mkDerivation.src"><code>nodejs-granular.deps.&lt;name&gt;.&lt;name&gt;.mkDerivation.src</code></a></h2>
+<p>This option has no description.</p>
+<p><em>Type:</em> null or string or path or package or (submodule)</p>
+<p><em>Default:</em> <code>null</code></p>
+<p><em>Declared by:</em></p>
+<p><a
+href="https://github.com/nix-community/dream2nix/blob/master/modules/dream2nix/mkDerivation/interface.nix"><code>dream2nix/modules/dream2nix/mkDerivation/interface.nix</code></a></p>
+<h2><a href="#opt-nodejs-granular.deps._name_._name_.mkDerivation.srcs"
+id="opt-nodejs-granular.deps._name_._name_.mkDerivation.srcs"><code>nodejs-granular.deps.&lt;name&gt;.&lt;name&gt;.mkDerivation.srcs</code></a></h2>
+<p>This option has no description.</p>
+<p><em>Type:</em> null or (list of (string or path or package))</p>
+<p><em>Default:</em> <code>null</code></p>
+<p><em>Declared by:</em></p>
+<p><a
+href="https://github.com/nix-community/dream2nix/blob/master/modules/dream2nix/mkDerivation/interface.nix"><code>dream2nix/modules/dream2nix/mkDerivation/interface.nix</code></a></p>
+<h2><a
+href="#opt-nodejs-granular.deps._name_._name_.mkDerivation.strictDeps"
+id="opt-nodejs-granular.deps._name_._name_.mkDerivation.strictDeps"><code>nodejs-granular.deps.&lt;name&gt;.&lt;name&gt;.mkDerivation.strictDeps</code></a></h2>
+<p>This option has no description.</p>
+<p><em>Type:</em> null or boolean</p>
+<p><em>Default:</em> <code>null</code></p>
+<p><em>Declared by:</em></p>
+<p><a
+href="https://github.com/nix-community/dream2nix/blob/master/modules/dream2nix/mkDerivation/interface.nix"><code>dream2nix/modules/dream2nix/mkDerivation/interface.nix</code></a></p>
+<h2><a
+href="#opt-nodejs-granular.deps._name_._name_.mkDerivation.stripAllFlags"
+id="opt-nodejs-granular.deps._name_._name_.mkDerivation.stripAllFlags"><code>nodejs-granular.deps.&lt;name&gt;.&lt;name&gt;.mkDerivation.stripAllFlags</code></a></h2>
+<p>This option has no description.</p>
+<p><em>Type:</em> null or (list of anything)</p>
+<p><em>Default:</em> <code>null</code></p>
+<p><em>Declared by:</em></p>
+<p><a
+href="https://github.com/nix-community/dream2nix/blob/master/modules/dream2nix/mkDerivation/interface.nix"><code>dream2nix/modules/dream2nix/mkDerivation/interface.nix</code></a></p>
+<h2><a
+href="#opt-nodejs-granular.deps._name_._name_.mkDerivation.stripAllList"
+id="opt-nodejs-granular.deps._name_._name_.mkDerivation.stripAllList"><code>nodejs-granular.deps.&lt;name&gt;.&lt;name&gt;.mkDerivation.stripAllList</code></a></h2>
+<p>This option has no description.</p>
+<p><em>Type:</em> null or (list of anything)</p>
+<p><em>Default:</em> <code>null</code></p>
+<p><em>Declared by:</em></p>
+<p><a
+href="https://github.com/nix-community/dream2nix/blob/master/modules/dream2nix/mkDerivation/interface.nix"><code>dream2nix/modules/dream2nix/mkDerivation/interface.nix</code></a></p>
+<h2><a
+href="#opt-nodejs-granular.deps._name_._name_.mkDerivation.stripDebugFlags"
+id="opt-nodejs-granular.deps._name_._name_.mkDerivation.stripDebugFlags"><code>nodejs-granular.deps.&lt;name&gt;.&lt;name&gt;.mkDerivation.stripDebugFlags</code></a></h2>
+<p>This option has no description.</p>
+<p><em>Type:</em> null or (list of anything)</p>
+<p><em>Default:</em> <code>null</code></p>
+<p><em>Declared by:</em></p>
+<p><a
+href="https://github.com/nix-community/dream2nix/blob/master/modules/dream2nix/mkDerivation/interface.nix"><code>dream2nix/modules/dream2nix/mkDerivation/interface.nix</code></a></p>
+<h2><a
+href="#opt-nodejs-granular.deps._name_._name_.mkDerivation.stripDebugList"
+id="opt-nodejs-granular.deps._name_._name_.mkDerivation.stripDebugList"><code>nodejs-granular.deps.&lt;name&gt;.&lt;name&gt;.mkDerivation.stripDebugList</code></a></h2>
+<p>This option has no description.</p>
+<p><em>Type:</em> null or (list of anything)</p>
+<p><em>Default:</em> <code>null</code></p>
+<p><em>Declared by:</em></p>
+<p><a
+href="https://github.com/nix-community/dream2nix/blob/master/modules/dream2nix/mkDerivation/interface.nix"><code>dream2nix/modules/dream2nix/mkDerivation/interface.nix</code></a></p>
+<h2><a
+href="#opt-nodejs-granular.deps._name_._name_.mkDerivation.tarballs"
+id="opt-nodejs-granular.deps._name_._name_.mkDerivation.tarballs"><code>nodejs-granular.deps.&lt;name&gt;.&lt;name&gt;.mkDerivation.tarballs</code></a></h2>
+<p>This option has no description.</p>
+<p><em>Type:</em> null or (list of anything)</p>
+<p><em>Default:</em> <code>null</code></p>
+<p><em>Declared by:</em></p>
+<p><a
+href="https://github.com/nix-community/dream2nix/blob/master/modules/dream2nix/mkDerivation/interface.nix"><code>dream2nix/modules/dream2nix/mkDerivation/interface.nix</code></a></p>
+<h2><a
+href="#opt-nodejs-granular.deps._name_._name_.mkDerivation.unpackCmd"
+id="opt-nodejs-granular.deps._name_._name_.mkDerivation.unpackCmd"><code>nodejs-granular.deps.&lt;name&gt;.&lt;name&gt;.mkDerivation.unpackCmd</code></a></h2>
+<p>This option has no description.</p>
+<p><em>Type:</em> null or string</p>
+<p><em>Default:</em> <code>null</code></p>
+<p><em>Declared by:</em></p>
+<p><a
+href="https://github.com/nix-community/dream2nix/blob/master/modules/dream2nix/mkDerivation/interface.nix"><code>dream2nix/modules/dream2nix/mkDerivation/interface.nix</code></a></p>
+<h2><a
+href="#opt-nodejs-granular.deps._name_._name_.mkDerivation.unpackPhase"
+id="opt-nodejs-granular.deps._name_._name_.mkDerivation.unpackPhase"><code>nodejs-granular.deps.&lt;name&gt;.&lt;name&gt;.mkDerivation.unpackPhase</code></a></h2>
+<p>This option has no description.</p>
+<p><em>Type:</em> null or string</p>
+<p><em>Default:</em> <code>null</code></p>
+<p><em>Declared by:</em></p>
+<p><a
+href="https://github.com/nix-community/dream2nix/blob/master/modules/dream2nix/mkDerivation/interface.nix"><code>dream2nix/modules/dream2nix/mkDerivation/interface.nix</code></a></p>
+<h2><a
+href="#opt-nodejs-granular.deps._name_._name_.mkDerivation.version"
+id="opt-nodejs-granular.deps._name_._name_.mkDerivation.version"><code>nodejs-granular.deps.&lt;name&gt;.&lt;name&gt;.mkDerivation.version</code></a></h2>
+<p>This option has no description.</p>
+<p><em>Type:</em> null or string</p>
+<p><em>Default:</em> <code>null</code></p>
+<p><em>Declared by:</em></p>
+<p><a
+href="https://github.com/nix-community/dream2nix/blob/master/modules/dream2nix/mkDerivation/interface.nix"><code>dream2nix/modules/dream2nix/mkDerivation/interface.nix</code></a></p>
+<h2><a href="#opt-nodejs-granular.deps._name_._name_.name"
+id="opt-nodejs-granular.deps._name_._name_.name"><code>nodejs-granular.deps.&lt;name&gt;.&lt;name&gt;.name</code></a></h2>
+<p>The name of the package</p>
+<p><em>Type:</em> string</p>
+<p><em>Declared by:</em></p>
+<p><a
+href="https://github.com/nix-community/dream2nix/blob/master/modules/dream2nix/core/ui/interface.nix"><code>dream2nix/modules/dream2nix/core/ui/interface.nix</code></a></p>
+<h2><a href="#opt-nodejs-granular.deps._name_._name_.paths.package"
+id="opt-nodejs-granular.deps._name_._name_.paths.package"><code>nodejs-granular.deps.&lt;name&gt;.&lt;name&gt;.paths.package</code></a></h2>
+<p>Path to the directory containing the definition of the current
+package. Relative to ‘paths.projectRoot’.</p>
+<p>This helps locating package definitions for lock &amp; update
+scripts.</p>
+<p><em>Type:</em> path or string</p>
+<p><em>Declared by:</em></p>
+<p><a
+href="https://github.com/nix-community/dream2nix/blob/master/modules/dream2nix/core/paths/interface.nix"><code>dream2nix/modules/dream2nix/core/paths/interface.nix</code></a></p>
+<h2><a href="#opt-nodejs-granular.deps._name_._name_.paths.cacheFile"
+id="opt-nodejs-granular.deps._name_._name_.paths.cacheFile"><code>nodejs-granular.deps.&lt;name&gt;.&lt;name&gt;.paths.cacheFile</code></a></h2>
+<p>Path to the eval cache file of the current package. Relative to
+“${paths.projectRoot}/${paths.package}”".</p>
+<p><em>Type:</em> string</p>
+<p><em>Default:</em> <code>"cache.json"</code></p>
+<p><em>Declared by:</em></p>
+<p><a
+href="https://github.com/nix-community/dream2nix/blob/master/modules/dream2nix/core/paths/interface.nix"><code>dream2nix/modules/dream2nix/core/paths/interface.nix</code></a></p>
+<h2><a href="#opt-nodejs-granular.deps._name_._name_.paths.lockFile"
+id="opt-nodejs-granular.deps._name_._name_.paths.lockFile"><code>nodejs-granular.deps.&lt;name&gt;.&lt;name&gt;.paths.lockFile</code></a></h2>
+<p>Path to the lock file of the current package. Relative to
+“${paths.projectRoot}/${paths.package}”".</p>
+<p><em>Type:</em> string</p>
+<p><em>Default:</em> <code>"lock.json"</code></p>
+<p><em>Declared by:</em></p>
+<p><a
+href="https://github.com/nix-community/dream2nix/blob/master/modules/dream2nix/core/paths/interface.nix"><code>dream2nix/modules/dream2nix/core/paths/interface.nix</code></a></p>
+<h2><a href="#opt-nodejs-granular.deps._name_._name_.paths.projectRoot"
+id="opt-nodejs-granular.deps._name_._name_.paths.projectRoot"><code>nodejs-granular.deps.&lt;name&gt;.&lt;name&gt;.paths.projectRoot</code></a></h2>
+<p>Path to the root of the project on which dream2nix operates. Must
+contain the marker file specified by ‘paths.projectRootFile’</p>
+<p>This helps locating lock files at evaluation time.</p>
+<p><em>Type:</em> path</p>
+<p><em>Example:</em> <code>./.</code></p>
+<p><em>Declared by:</em></p>
+<p><a
+href="https://github.com/nix-community/dream2nix/blob/master/modules/dream2nix/core/paths/interface.nix"><code>dream2nix/modules/dream2nix/core/paths/interface.nix</code></a></p>
+<h2><a
+href="#opt-nodejs-granular.deps._name_._name_.paths.projectRootFile"
+id="opt-nodejs-granular.deps._name_._name_.paths.projectRootFile"><code>nodejs-granular.deps.&lt;name&gt;.&lt;name&gt;.paths.projectRootFile</code></a></h2>
+<p>File name to look for to determine the root of the project. Ensure
+‘paths.projectRoot’ contains a file named like this.</p>
+<p>This helps locating package definitions for lock &amp; update
+scripts.</p>
+<p><em>Type:</em> string</p>
+<p><em>Default:</em> <code>".git"</code></p>
+<p><em>Example:</em> <code>".git"</code></p>
+<p><em>Declared by:</em></p>
+<p><a
+href="https://github.com/nix-community/dream2nix/blob/master/modules/dream2nix/core/paths/interface.nix"><code>dream2nix/modules/dream2nix/core/paths/interface.nix</code></a></p>
+<h2><a href="#opt-nodejs-granular.deps._name_._name_.public"
+id="opt-nodejs-granular.deps._name_._name_.public"><code>nodejs-granular.deps.&lt;name&gt;.&lt;name&gt;.public</code></a></h2>
+<p>The final result of the evaluated package. Contains everything that
+nix expects from a derivation. Contains fields like name, outputs,
+drvPath, outPath, etc. Can be build with nix-build or
+<code>nix build</code>.</p>
+<p><em>Type:</em> lazy attribute set of anything</p>
+<p><em>Declared by:</em></p>
+<p><a
+href="https://github.com/nix-community/dream2nix/blob/master/modules/dream2nix/core/public/interface.nix"><code>dream2nix/modules/dream2nix/core/public/interface.nix</code></a>,
+<a
+href="https://github.com/nix-community/dream2nix/blob/master/modules/dream2nix/core/docs"><code>dream2nix/modules/dream2nix/core/docs</code></a></p>
+<h2><a href="#opt-nodejs-granular.deps._name_._name_.public.docs"
+id="opt-nodejs-granular.deps._name_._name_.public.docs"><code>nodejs-granular.deps.&lt;name&gt;.&lt;name&gt;.public.docs</code></a></h2>
+<p>The manual of the package as a website</p>
+<p><em>Type:</em> package <em>(read only)</em></p>
+<p><em>Declared by:</em></p>
+<p><a
+href="https://github.com/nix-community/dream2nix/blob/master/modules/dream2nix/core/docs"><code>dream2nix/modules/dream2nix/core/docs</code></a></p>
+<h2><a href="#opt-nodejs-granular.deps._name_._name_.version"
+id="opt-nodejs-granular.deps._name_._name_.version"><code>nodejs-granular.deps.&lt;name&gt;.&lt;name&gt;.version</code></a></h2>
+<p>The version of the package</p>
+<p><em>Type:</em> string</p>
+<p><em>Declared by:</em></p>
+<p><a
+href="https://github.com/nix-community/dream2nix/blob/master/modules/dream2nix/core/ui/interface.nix"><code>dream2nix/modules/dream2nix/core/ui/interface.nix</code></a></p>
+<h2><a href="#opt-nodejs-granular.installMethod"
+id="opt-nodejs-granular.installMethod"><code>nodejs-granular.installMethod</code></a></h2>
+<p>Strategy to use for populating ./node_modules. Symlinking is quicker,
+but often introduces compatibility issues with bundlers like webpack and
+other build tools. Copying is slow, but more reliable;</p>
+<p><em>Type:</em> one of “symlink”, “copy”</p>
+<p><em>Declared by:</em></p>
+<p><a
+href="https://github.com/nix-community/dream2nix/blob/master/modules/dream2nix/nodejs-granular/interface.nix"><code>dream2nix/modules/dream2nix/nodejs-granular/interface.nix</code></a></p>
+<h2><a href="#opt-nodejs-granular.runBuild"
+id="opt-nodejs-granular.runBuild"><code>nodejs-granular.runBuild</code></a></h2>
+<p>Whether to run a package’s build script (aka.
+<code>npm run build</code>)</p>
+<p><em>Type:</em> boolean</p>
+<p><em>Declared by:</em></p>
+<p><a
+href="https://github.com/nix-community/dream2nix/blob/master/modules/dream2nix/nodejs-granular/interface.nix"><code>dream2nix/modules/dream2nix/nodejs-granular/interface.nix</code></a></p>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../options/nodejs-devshell.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+                            <a rel="next" href="../options/nodejs-granular-v3.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../options/nodejs-devshell.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next" href="../options/nodejs-granular-v3.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="../elasticlunr.min.js"></script>
+        <script src="../mark.min.js"></script>
+        <script src="../searcher.js"></script>
+
+        <script src="../clipboard.min.js"></script>
+        <script src="../highlight.js"></script>
+        <script src="../book.js"></script>
+
+        <!-- Custom JS scripts -->
+        <script src="../no-edit-options.js"></script>
+
+
+    </div>
+    </body>
+</html>

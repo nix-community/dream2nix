@@ -1,0 +1,1633 @@
+<!DOCTYPE HTML>
+<html lang="en" class="sidebar-visible no-js light">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>mkDerivation - dream2nix</title>
+
+
+        <!-- Custom HTML head -->
+        
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff" />
+
+        <link rel="shortcut icon" href="../favicon.png">
+        <link rel="stylesheet" href="../css/variables.css">
+        <link rel="stylesheet" href="../css/general.css">
+        <link rel="stylesheet" href="../css/chrome.css">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" href="../highlight.css">
+        <link rel="stylesheet" href="../tomorrow-night.css">
+        <link rel="stylesheet" href="../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+        <link rel="stylesheet" href="../flake-parts.css">
+
+    </head>
+    <body>
+    <div id="body-container">
+        <!-- Provide site root to javascript -->
+        <script>
+            var path_to_root = "../";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
+        </script>
+
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            var html = document.querySelector('html');
+            html.classList.remove('no-js')
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add('js');
+        </script>
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            var html = document.querySelector('html');
+            var sidebar = null;
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+            }
+            html.classList.remove('sidebar-visible');
+            html.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <div class="sidebar-scrollbox">
+                <ol class="chapter"><li class="chapter-item expanded "><a href="../intro.html">Introduction</a></li><li class="chapter-item expanded affix "><li class="part-title">Examples</li><li class="chapter-item expanded "><a href="../examples.html">dream2nix examples</a></li><li class="chapter-item expanded affix "><li class="part-title">Concepts</li><li class="chapter-item expanded "><a href="../modules.html">dream2nix modules</a></li><li class="chapter-item expanded affix "><li class="part-title">Development Roundups</li><li class="chapter-item expanded "><a href="../development-roundups/2022-april-june.html">April - June 2022</a></li><li class="chapter-item expanded "><a href="../development-roundups/2022-july-september.html">July - September 2022</a></li><li class="chapter-item expanded "><div>Reference Documentation</div></li><li><ol class="section"><li class="chapter-item expanded "><a href="../options/WIP-python-pdm.html">WIP-python-pdm</a></li><li class="chapter-item expanded "><a href="../options/WIP-python-pyproject.html">WIP-python-pyproject</a></li><li class="chapter-item expanded "><a href="../options/WIP-spago.html">WIP-spago</a></li><li class="chapter-item expanded "><a href="../options/buildPythonPackage.html">buildPythonPackage</a></li><li class="chapter-item expanded "><a href="../options/buildRustPackage.html">buildRustPackage</a></li><li class="chapter-item expanded "><a href="../options/builtins-derivation.html">builtins-derivation</a></li><li class="chapter-item expanded "><a href="../options/deps.html">deps</a></li><li class="chapter-item expanded "><a href="../options/eval-cache.html">eval-cache</a></li><li class="chapter-item expanded "><a href="../options/groups.html">groups</a></li><li class="chapter-item expanded "><a href="../options/lock.html">lock</a></li><li class="chapter-item expanded "><a href="../options/mkDerivation.html" class="active">mkDerivation</a></li><li class="chapter-item expanded "><a href="../options/nodejs-devshell.html">nodejs-devshell</a></li><li class="chapter-item expanded "><a href="../options/nodejs-granular.html">nodejs-granular</a></li><li class="chapter-item expanded "><a href="../options/nodejs-granular-v3.html">nodejs-granular-v3</a></li><li class="chapter-item expanded "><a href="../options/nodejs-node-modules.html">nodejs-node-modules</a></li><li class="chapter-item expanded "><a href="../options/nodejs-package-json.html">nodejs-package-json</a></li><li class="chapter-item expanded "><a href="../options/nodejs-package-lock.html">nodejs-package-lock</a></li><li class="chapter-item expanded "><a href="../options/nodejs-package-lock-v3.html">nodejs-package-lock-v3</a></li><li class="chapter-item expanded "><a href="../options/package-func.html">package-func</a></li><li class="chapter-item expanded "><a href="../options/paths.html">paths</a></li><li class="chapter-item expanded "><a href="../options/php-composer-lock.html">php-composer-lock</a></li><li class="chapter-item expanded "><a href="../options/php-granular.html">php-granular</a></li><li class="chapter-item expanded "><a href="../options/pip.html">pip</a></li><li class="chapter-item expanded "><a href="../options/public.html">public</a></li><li class="chapter-item expanded "><a href="../options/rust-cargo-lock.html">rust-cargo-lock</a></li><li class="chapter-item expanded "><a href="../options/rust-crane.html">rust-crane</a></li></ol></li></ol>
+            </div>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
+        </nav>
+
+        <!-- Track and set sidebar scroll position -->
+        <script>
+            var sidebarScrollbox = document.querySelector('#sidebar .sidebar-scrollbox');
+            sidebarScrollbox.addEventListener('click', function(e) {
+                if (e.target.tagName === 'A') {
+                    sessionStorage.setItem('sidebar-scroll', sidebarScrollbox.scrollTop);
+                }
+            }, { passive: true });
+            var sidebarScrollTop = sessionStorage.getItem('sidebar-scroll');
+            sessionStorage.removeItem('sidebar-scroll');
+            if (sidebarScrollTop) {
+                // preserve sidebar scroll position when navigating via links within sidebar
+                sidebarScrollbox.scrollTop = sidebarScrollTop;
+            } else {
+                // scroll sidebar to current active section when navigating via "next/previous chapter" buttons
+                var activeSection = document.querySelector('#sidebar .active');
+                if (activeSection) {
+                    activeSection.scrollIntoView({ block: 'center' });
+                }
+            }
+        </script>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <button id="sidebar-toggle" class="icon-button" type="button" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </button>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">dream2nix</h1>
+
+                    <div class="right-buttons">
+                        <a href="https://github.com/nix-community/dream2nix" title="Git repository" aria-label="Git repository">
+                            <i id="git-repository-button" class="fa fa-github"></i>
+                        </a>
+                        <a href="https://github.com/nix-community/dream2nix/edit/main/modules/dream2nix/src/options/mkDerivation.md" title="Suggest an edit" aria-label="Suggest an edit">
+                            <i id="git-edit-button" class="fa fa-edit"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h1 id="mkderivation"><a class="header" href="#mkderivation">mkDerivation</a></h1>
+<p>intro</p>
+<h2 id="installation"><a class="header" href="#installation">Installation</a></h2>
+<p>To import this module into your dream2nix package:</p>
+<pre><code class="language-nix">imports = [
+  dream2nix.modules.dream2nix.mkDerivation
+];
+</code></pre>
+<h2 id="options"><a class="header" href="#options">Options</a></h2>
+<p><a
+href="#opt-mkDerivation.enableParallelBuilding"><code>mkDerivation.enableParallelBuilding</code></a></p>
+<p><a
+href="#opt-mkDerivation.enableParallelChecking"><code>mkDerivation.enableParallelChecking</code></a></p>
+<p><a
+href="#opt-mkDerivation.__contentAddressed"><code>mkDerivation.__contentAddressed</code></a></p>
+<p><a
+href="#opt-mkDerivation.__darwinAllowLocalNetworking"><code>mkDerivation.__darwinAllowLocalNetworking</code></a></p>
+<p><a
+href="#opt-mkDerivation.__impureHostDeps"><code>mkDerivation.__impureHostDeps</code></a></p>
+<p><a
+href="#opt-mkDerivation.__propagatedImpureHostDeps"><code>mkDerivation.__propagatedImpureHostDeps</code></a></p>
+<p><a
+href="#opt-mkDerivation.__structuredAttrs"><code>mkDerivation.__structuredAttrs</code></a></p>
+<p><a
+href="#opt-mkDerivation.allowSubstitutes"><code>mkDerivation.allowSubstitutes</code></a></p>
+<p><a
+href="#opt-mkDerivation.allowedReferences"><code>mkDerivation.allowedReferences</code></a></p>
+<p><a
+href="#opt-mkDerivation.allowedRequisites"><code>mkDerivation.allowedRequisites</code></a></p>
+<p><a
+href="#opt-mkDerivation.args"><code>mkDerivation.args</code></a></p>
+<p><a
+href="#opt-mkDerivation.buildFlags"><code>mkDerivation.buildFlags</code></a></p>
+<p><a
+href="#opt-mkDerivation.buildInputs"><code>mkDerivation.buildInputs</code></a></p>
+<p><a
+href="#opt-mkDerivation.buildPhase"><code>mkDerivation.buildPhase</code></a></p>
+<p><a
+href="#opt-mkDerivation.builder"><code>mkDerivation.builder</code></a></p>
+<p><a
+href="#opt-mkDerivation.checkFLags"><code>mkDerivation.checkFLags</code></a></p>
+<p><a
+href="#opt-mkDerivation.checkInputs"><code>mkDerivation.checkInputs</code></a></p>
+<p><a
+href="#opt-mkDerivation.checkPhase"><code>mkDerivation.checkPhase</code></a></p>
+<p><a
+href="#opt-mkDerivation.checkTarget"><code>mkDerivation.checkTarget</code></a></p>
+<p><a
+href="#opt-mkDerivation.cmakeFlags"><code>mkDerivation.cmakeFlags</code></a></p>
+<p><a
+href="#opt-mkDerivation.configureFlags"><code>mkDerivation.configureFlags</code></a></p>
+<p><a
+href="#opt-mkDerivation.configurePhase"><code>mkDerivation.configurePhase</code></a></p>
+<p><a
+href="#opt-mkDerivation.configurePlatforms"><code>mkDerivation.configurePlatforms</code></a></p>
+<p><a
+href="#opt-mkDerivation.configureScript"><code>mkDerivation.configureScript</code></a></p>
+<p><a
+href="#opt-mkDerivation.depsBuildBuild"><code>mkDerivation.depsBuildBuild</code></a></p>
+<p><a
+href="#opt-mkDerivation.depsBuildBuildPropagated"><code>mkDerivation.depsBuildBuildPropagated</code></a></p>
+<p><a
+href="#opt-mkDerivation.depsBuildTarget"><code>mkDerivation.depsBuildTarget</code></a></p>
+<p><a
+href="#opt-mkDerivation.depsBuildTargetPropagated"><code>mkDerivation.depsBuildTargetPropagated</code></a></p>
+<p><a
+href="#opt-mkDerivation.depsHostHost"><code>mkDerivation.depsHostHost</code></a></p>
+<p><a
+href="#opt-mkDerivation.depsHostHostPropagated"><code>mkDerivation.depsHostHostPropagated</code></a></p>
+<p><a
+href="#opt-mkDerivation.depsTargetTarget"><code>mkDerivation.depsTargetTarget</code></a></p>
+<p><a
+href="#opt-mkDerivation.depsTargetTargetPropagated"><code>mkDerivation.depsTargetTargetPropagated</code></a></p>
+<p><a
+href="#opt-mkDerivation.disallowedReferences"><code>mkDerivation.disallowedReferences</code></a></p>
+<p><a
+href="#opt-mkDerivation.disallowedRequisites"><code>mkDerivation.disallowedRequisites</code></a></p>
+<p><a
+href="#opt-mkDerivation.distFlags"><code>mkDerivation.distFlags</code></a></p>
+<p><a
+href="#opt-mkDerivation.distPhase"><code>mkDerivation.distPhase</code></a></p>
+<p><a
+href="#opt-mkDerivation.distTarget"><code>mkDerivation.distTarget</code></a></p>
+<p><a
+href="#opt-mkDerivation.doCheck"><code>mkDerivation.doCheck</code></a></p>
+<p><a
+href="#opt-mkDerivation.doDist"><code>mkDerivation.doDist</code></a></p>
+<p><a
+href="#opt-mkDerivation.doInstallCheck"><code>mkDerivation.doInstallCheck</code></a></p>
+<p><a
+href="#opt-mkDerivation.dontAddDisableDepTrack"><code>mkDerivation.dontAddDisableDepTrack</code></a></p>
+<p><a
+href="#opt-mkDerivation.dontAddPrefix"><code>mkDerivation.dontAddPrefix</code></a></p>
+<p><a
+href="#opt-mkDerivation.dontAddStaticConfigureFlags"><code>mkDerivation.dontAddStaticConfigureFlags</code></a></p>
+<p><a
+href="#opt-mkDerivation.dontBuild"><code>mkDerivation.dontBuild</code></a></p>
+<p><a
+href="#opt-mkDerivation.dontConfigure"><code>mkDerivation.dontConfigure</code></a></p>
+<p><a
+href="#opt-mkDerivation.dontCopyDist"><code>mkDerivation.dontCopyDist</code></a></p>
+<p><a
+href="#opt-mkDerivation.dontDisableStatic"><code>mkDerivation.dontDisableStatic</code></a></p>
+<p><a
+href="#opt-mkDerivation.dontFixLibtool"><code>mkDerivation.dontFixLibtool</code></a></p>
+<p><a
+href="#opt-mkDerivation.dontFixup"><code>mkDerivation.dontFixup</code></a></p>
+<p><a
+href="#opt-mkDerivation.dontInstall"><code>mkDerivation.dontInstall</code></a></p>
+<p><a
+href="#opt-mkDerivation.dontMakeSourcesWritable"><code>mkDerivation.dontMakeSourcesWritable</code></a></p>
+<p><a
+href="#opt-mkDerivation.dontMoveBin"><code>mkDerivation.dontMoveBin</code></a></p>
+<p><a
+href="#opt-mkDerivation.dontPatch"><code>mkDerivation.dontPatch</code></a></p>
+<p><a
+href="#opt-mkDerivation.dontPatchELF"><code>mkDerivation.dontPatchELF</code></a></p>
+<p><a
+href="#opt-mkDerivation.dontPatchShebangs"><code>mkDerivation.dontPatchShebangs</code></a></p>
+<p><a
+href="#opt-mkDerivation.dontPruneLibtoolFiles"><code>mkDerivation.dontPruneLibtoolFiles</code></a></p>
+<p><a
+href="#opt-mkDerivation.dontStrip"><code>mkDerivation.dontStrip</code></a></p>
+<p><a
+href="#opt-mkDerivation.dontStripHost"><code>mkDerivation.dontStripHost</code></a></p>
+<p><a
+href="#opt-mkDerivation.dontStripTarget"><code>mkDerivation.dontStripTarget</code></a></p>
+<p><a
+href="#opt-mkDerivation.dontUnpack"><code>mkDerivation.dontUnpack</code></a></p>
+<p><a
+href="#opt-mkDerivation.exportReferenceGraph"><code>mkDerivation.exportReferenceGraph</code></a></p>
+<p><a
+href="#opt-mkDerivation.fixupPhase"><code>mkDerivation.fixupPhase</code></a></p>
+<p><a
+href="#opt-mkDerivation.forceShare"><code>mkDerivation.forceShare</code></a></p>
+<p><a
+href="#opt-mkDerivation.hardeningDisable"><code>mkDerivation.hardeningDisable</code></a></p>
+<p><a
+href="#opt-mkDerivation.hardeningEnable"><code>mkDerivation.hardeningEnable</code></a></p>
+<p><a
+href="#opt-mkDerivation.impureEnvVars"><code>mkDerivation.impureEnvVars</code></a></p>
+<p><a
+href="#opt-mkDerivation.installCheckFlags"><code>mkDerivation.installCheckFlags</code></a></p>
+<p><a
+href="#opt-mkDerivation.installCheckInputs"><code>mkDerivation.installCheckInputs</code></a></p>
+<p><a
+href="#opt-mkDerivation.installCheckPhase"><code>mkDerivation.installCheckPhase</code></a></p>
+<p><a
+href="#opt-mkDerivation.installCheckTarget"><code>mkDerivation.installCheckTarget</code></a></p>
+<p><a
+href="#opt-mkDerivation.installFlags"><code>mkDerivation.installFlags</code></a></p>
+<p><a
+href="#opt-mkDerivation.installPhase"><code>mkDerivation.installPhase</code></a></p>
+<p><a
+href="#opt-mkDerivation.installTargets"><code>mkDerivation.installTargets</code></a></p>
+<p><a
+href="#opt-mkDerivation.makeFlags"><code>mkDerivation.makeFlags</code></a></p>
+<p><a
+href="#opt-mkDerivation.makefile"><code>mkDerivation.makefile</code></a></p>
+<p><a
+href="#opt-mkDerivation.mesonFlags"><code>mkDerivation.mesonFlags</code></a></p>
+<p><a
+href="#opt-mkDerivation.meta"><code>mkDerivation.meta</code></a></p>
+<p><a
+href="#opt-mkDerivation.nativeBuildInputs"><code>mkDerivation.nativeBuildInputs</code></a></p>
+<p><a
+href="#opt-mkDerivation.nativeCheckInputs"><code>mkDerivation.nativeCheckInputs</code></a></p>
+<p><a
+href="#opt-mkDerivation.outputHash"><code>mkDerivation.outputHash</code></a></p>
+<p><a
+href="#opt-mkDerivation.outputHashAlgo"><code>mkDerivation.outputHashAlgo</code></a></p>
+<p><a
+href="#opt-mkDerivation.outputHashMode"><code>mkDerivation.outputHashMode</code></a></p>
+<p><a
+href="#opt-mkDerivation.outputs"><code>mkDerivation.outputs</code></a></p>
+<p><a
+href="#opt-mkDerivation.passAsFile"><code>mkDerivation.passAsFile</code></a></p>
+<p><a
+href="#opt-mkDerivation.passthru"><code>mkDerivation.passthru</code></a></p>
+<p><a
+href="#opt-mkDerivation.patchFlags"><code>mkDerivation.patchFlags</code></a></p>
+<p><a
+href="#opt-mkDerivation.patchPhase"><code>mkDerivation.patchPhase</code></a></p>
+<p><a
+href="#opt-mkDerivation.patches"><code>mkDerivation.patches</code></a></p>
+<p><a
+href="#opt-mkDerivation.phases"><code>mkDerivation.phases</code></a></p>
+<p><a href="#opt-mkDerivation.pos"><code>mkDerivation.pos</code></a></p>
+<p><a
+href="#opt-mkDerivation.postBuild"><code>mkDerivation.postBuild</code></a></p>
+<p><a
+href="#opt-mkDerivation.postCheck"><code>mkDerivation.postCheck</code></a></p>
+<p><a
+href="#opt-mkDerivation.postConfigure"><code>mkDerivation.postConfigure</code></a></p>
+<p><a
+href="#opt-mkDerivation.postDist"><code>mkDerivation.postDist</code></a></p>
+<p><a
+href="#opt-mkDerivation.postFixup"><code>mkDerivation.postFixup</code></a></p>
+<p><a
+href="#opt-mkDerivation.postInstalCheck"><code>mkDerivation.postInstalCheck</code></a></p>
+<p><a
+href="#opt-mkDerivation.postInstall"><code>mkDerivation.postInstall</code></a></p>
+<p><a
+href="#opt-mkDerivation.postPatch"><code>mkDerivation.postPatch</code></a></p>
+<p><a
+href="#opt-mkDerivation.postPhases"><code>mkDerivation.postPhases</code></a></p>
+<p><a
+href="#opt-mkDerivation.postUnpack"><code>mkDerivation.postUnpack</code></a></p>
+<p><a
+href="#opt-mkDerivation.preBuild"><code>mkDerivation.preBuild</code></a></p>
+<p><a
+href="#opt-mkDerivation.preBuildPhases"><code>mkDerivation.preBuildPhases</code></a></p>
+<p><a
+href="#opt-mkDerivation.preCheck"><code>mkDerivation.preCheck</code></a></p>
+<p><a
+href="#opt-mkDerivation.preConfigure"><code>mkDerivation.preConfigure</code></a></p>
+<p><a
+href="#opt-mkDerivation.preConfigurePhases"><code>mkDerivation.preConfigurePhases</code></a></p>
+<p><a
+href="#opt-mkDerivation.preDist"><code>mkDerivation.preDist</code></a></p>
+<p><a
+href="#opt-mkDerivation.preDistPhases"><code>mkDerivation.preDistPhases</code></a></p>
+<p><a
+href="#opt-mkDerivation.preFixup"><code>mkDerivation.preFixup</code></a></p>
+<p><a
+href="#opt-mkDerivation.preFixupPhases"><code>mkDerivation.preFixupPhases</code></a></p>
+<p><a
+href="#opt-mkDerivation.preInstall"><code>mkDerivation.preInstall</code></a></p>
+<p><a
+href="#opt-mkDerivation.preInstallCheck"><code>mkDerivation.preInstallCheck</code></a></p>
+<p><a
+href="#opt-mkDerivation.preInstallPhases"><code>mkDerivation.preInstallPhases</code></a></p>
+<p><a
+href="#opt-mkDerivation.prePatch"><code>mkDerivation.prePatch</code></a></p>
+<p><a
+href="#opt-mkDerivation.prePhases"><code>mkDerivation.prePhases</code></a></p>
+<p><a
+href="#opt-mkDerivation.preUnpack"><code>mkDerivation.preUnpack</code></a></p>
+<p><a
+href="#opt-mkDerivation.preferLocalBuild"><code>mkDerivation.preferLocalBuild</code></a></p>
+<p><a
+href="#opt-mkDerivation.prefix"><code>mkDerivation.prefix</code></a></p>
+<p><a
+href="#opt-mkDerivation.prefixKey"><code>mkDerivation.prefixKey</code></a></p>
+<p><a
+href="#opt-mkDerivation.propagatedBuildInputs"><code>mkDerivation.propagatedBuildInputs</code></a></p>
+<p><a
+href="#opt-mkDerivation.propagatedNativeBuildInputs"><code>mkDerivation.propagatedNativeBuildInputs</code></a></p>
+<p><a
+href="#opt-mkDerivation.propagatedSandboxProfile"><code>mkDerivation.propagatedSandboxProfile</code></a></p>
+<p><a
+href="#opt-mkDerivation.realBuilder"><code>mkDerivation.realBuilder</code></a></p>
+<p><a
+href="#opt-mkDerivation.requiredSystemFeatures"><code>mkDerivation.requiredSystemFeatures</code></a></p>
+<p><a
+href="#opt-mkDerivation.sandboxProfile"><code>mkDerivation.sandboxProfile</code></a></p>
+<p><a
+href="#opt-mkDerivation.separateDebugInfo"><code>mkDerivation.separateDebugInfo</code></a></p>
+<p><a
+href="#opt-mkDerivation.setSourceRoot"><code>mkDerivation.setSourceRoot</code></a></p>
+<p><a
+href="#opt-mkDerivation.setupHook"><code>mkDerivation.setupHook</code></a></p>
+<p><a
+href="#opt-mkDerivation.shellHook"><code>mkDerivation.shellHook</code></a></p>
+<p><a
+href="#opt-mkDerivation.sourceRoot"><code>mkDerivation.sourceRoot</code></a></p>
+<p><a href="#opt-mkDerivation.src"><code>mkDerivation.src</code></a></p>
+<p><a
+href="#opt-mkDerivation.srcs"><code>mkDerivation.srcs</code></a></p>
+<p><a
+href="#opt-mkDerivation.strictDeps"><code>mkDerivation.strictDeps</code></a></p>
+<p><a
+href="#opt-mkDerivation.stripAllFlags"><code>mkDerivation.stripAllFlags</code></a></p>
+<p><a
+href="#opt-mkDerivation.stripAllList"><code>mkDerivation.stripAllList</code></a></p>
+<p><a
+href="#opt-mkDerivation.stripDebugFlags"><code>mkDerivation.stripDebugFlags</code></a></p>
+<p><a
+href="#opt-mkDerivation.stripDebugList"><code>mkDerivation.stripDebugList</code></a></p>
+<p><a
+href="#opt-mkDerivation.tarballs"><code>mkDerivation.tarballs</code></a></p>
+<p><a
+href="#opt-mkDerivation.unpackCmd"><code>mkDerivation.unpackCmd</code></a></p>
+<p><a
+href="#opt-mkDerivation.unpackPhase"><code>mkDerivation.unpackPhase</code></a></p>
+<p><a
+href="#opt-mkDerivation.version"><code>mkDerivation.version</code></a></p>
+<h2><a href="#opt-mkDerivation.enableParallelBuilding"
+id="opt-mkDerivation.enableParallelBuilding"><code>mkDerivation.enableParallelBuilding</code></a></h2>
+<p>This option has no description.</p>
+<p><em>Type:</em> null or boolean</p>
+<p><em>Default:</em> <code>null</code></p>
+<p><em>Declared by:</em></p>
+<p><a
+href="https://github.com/nix-community/dream2nix/blob/master/modules/dream2nix/mkDerivation/interface.nix"><code>dream2nix/modules/dream2nix/mkDerivation/interface.nix</code></a></p>
+<h2><a href="#opt-mkDerivation.enableParallelChecking"
+id="opt-mkDerivation.enableParallelChecking"><code>mkDerivation.enableParallelChecking</code></a></h2>
+<p>This option has no description.</p>
+<p><em>Type:</em> null or boolean</p>
+<p><em>Default:</em> <code>null</code></p>
+<p><em>Declared by:</em></p>
+<p><a
+href="https://github.com/nix-community/dream2nix/blob/master/modules/dream2nix/mkDerivation/interface.nix"><code>dream2nix/modules/dream2nix/mkDerivation/interface.nix</code></a></p>
+<h2><a href="#opt-mkDerivation.__contentAddressed"
+id="opt-mkDerivation.__contentAddressed"><code>mkDerivation.__contentAddressed</code></a></h2>
+<p>This option has no description.</p>
+<p><em>Type:</em> null or boolean</p>
+<p><em>Default:</em> <code>null</code></p>
+<p><em>Declared by:</em></p>
+<p><a
+href="https://github.com/nix-community/dream2nix/blob/master/modules/dream2nix/mkDerivation/interface.nix"><code>dream2nix/modules/dream2nix/mkDerivation/interface.nix</code></a></p>
+<h2><a href="#opt-mkDerivation.__darwinAllowLocalNetworking"
+id="opt-mkDerivation.__darwinAllowLocalNetworking"><code>mkDerivation.__darwinAllowLocalNetworking</code></a></h2>
+<p>This option has no description.</p>
+<p><em>Type:</em> null or boolean</p>
+<p><em>Default:</em> <code>null</code></p>
+<p><em>Declared by:</em></p>
+<p><a
+href="https://github.com/nix-community/dream2nix/blob/master/modules/dream2nix/mkDerivation/interface.nix"><code>dream2nix/modules/dream2nix/mkDerivation/interface.nix</code></a></p>
+<h2><a href="#opt-mkDerivation.__impureHostDeps"
+id="opt-mkDerivation.__impureHostDeps"><code>mkDerivation.__impureHostDeps</code></a></h2>
+<p>This option has no description.</p>
+<p><em>Type:</em> null or (list of anything)</p>
+<p><em>Default:</em> <code>null</code></p>
+<p><em>Declared by:</em></p>
+<p><a
+href="https://github.com/nix-community/dream2nix/blob/master/modules/dream2nix/mkDerivation/interface.nix"><code>dream2nix/modules/dream2nix/mkDerivation/interface.nix</code></a></p>
+<h2><a href="#opt-mkDerivation.__propagatedImpureHostDeps"
+id="opt-mkDerivation.__propagatedImpureHostDeps"><code>mkDerivation.__propagatedImpureHostDeps</code></a></h2>
+<p>This option has no description.</p>
+<p><em>Type:</em> null or (list of anything)</p>
+<p><em>Default:</em> <code>null</code></p>
+<p><em>Declared by:</em></p>
+<p><a
+href="https://github.com/nix-community/dream2nix/blob/master/modules/dream2nix/mkDerivation/interface.nix"><code>dream2nix/modules/dream2nix/mkDerivation/interface.nix</code></a></p>
+<h2><a href="#opt-mkDerivation.__structuredAttrs"
+id="opt-mkDerivation.__structuredAttrs"><code>mkDerivation.__structuredAttrs</code></a></h2>
+<p>This option has no description.</p>
+<p><em>Type:</em> null or boolean</p>
+<p><em>Default:</em> <code>null</code></p>
+<p><em>Declared by:</em></p>
+<p><a
+href="https://github.com/nix-community/dream2nix/blob/master/modules/dream2nix/mkDerivation/interface.nix"><code>dream2nix/modules/dream2nix/mkDerivation/interface.nix</code></a></p>
+<h2><a href="#opt-mkDerivation.allowSubstitutes"
+id="opt-mkDerivation.allowSubstitutes"><code>mkDerivation.allowSubstitutes</code></a></h2>
+<p>This option has no description.</p>
+<p><em>Type:</em> null or boolean</p>
+<p><em>Default:</em> <code>null</code></p>
+<p><em>Declared by:</em></p>
+<p><a
+href="https://github.com/nix-community/dream2nix/blob/master/modules/dream2nix/mkDerivation/interface.nix"><code>dream2nix/modules/dream2nix/mkDerivation/interface.nix</code></a></p>
+<h2><a href="#opt-mkDerivation.allowedReferences"
+id="opt-mkDerivation.allowedReferences"><code>mkDerivation.allowedReferences</code></a></h2>
+<p>This option has no description.</p>
+<p><em>Type:</em> null or (list of string)</p>
+<p><em>Default:</em> <code>null</code></p>
+<p><em>Declared by:</em></p>
+<p><a
+href="https://github.com/nix-community/dream2nix/blob/master/modules/dream2nix/mkDerivation/interface.nix"><code>dream2nix/modules/dream2nix/mkDerivation/interface.nix</code></a></p>
+<h2><a href="#opt-mkDerivation.allowedRequisites"
+id="opt-mkDerivation.allowedRequisites"><code>mkDerivation.allowedRequisites</code></a></h2>
+<p>This option has no description.</p>
+<p><em>Type:</em> null or (list of string)</p>
+<p><em>Default:</em> <code>null</code></p>
+<p><em>Declared by:</em></p>
+<p><a
+href="https://github.com/nix-community/dream2nix/blob/master/modules/dream2nix/mkDerivation/interface.nix"><code>dream2nix/modules/dream2nix/mkDerivation/interface.nix</code></a></p>
+<h2><a href="#opt-mkDerivation.args"
+id="opt-mkDerivation.args"><code>mkDerivation.args</code></a></h2>
+<p>This option has no description.</p>
+<p><em>Type:</em> null or (list of (string or path))</p>
+<p><em>Default:</em> <code>null</code></p>
+<p><em>Declared by:</em></p>
+<p><a
+href="https://github.com/nix-community/dream2nix/blob/master/modules/dream2nix/mkDerivation/interface.nix"><code>dream2nix/modules/dream2nix/mkDerivation/interface.nix</code></a></p>
+<h2><a href="#opt-mkDerivation.buildFlags"
+id="opt-mkDerivation.buildFlags"><code>mkDerivation.buildFlags</code></a></h2>
+<p>This option has no description.</p>
+<p><em>Type:</em> null or (list of anything)</p>
+<p><em>Default:</em> <code>null</code></p>
+<p><em>Declared by:</em></p>
+<p><a
+href="https://github.com/nix-community/dream2nix/blob/master/modules/dream2nix/mkDerivation/interface.nix"><code>dream2nix/modules/dream2nix/mkDerivation/interface.nix</code></a></p>
+<h2><a href="#opt-mkDerivation.buildInputs"
+id="opt-mkDerivation.buildInputs"><code>mkDerivation.buildInputs</code></a></h2>
+<p>This option has no description.</p>
+<p><em>Type:</em> null or (list of anything)</p>
+<p><em>Default:</em> <code>null</code></p>
+<p><em>Declared by:</em></p>
+<p><a
+href="https://github.com/nix-community/dream2nix/blob/master/modules/dream2nix/mkDerivation/interface.nix"><code>dream2nix/modules/dream2nix/mkDerivation/interface.nix</code></a></p>
+<h2><a href="#opt-mkDerivation.buildPhase"
+id="opt-mkDerivation.buildPhase"><code>mkDerivation.buildPhase</code></a></h2>
+<p>This option has no description.</p>
+<p><em>Type:</em> null or string</p>
+<p><em>Default:</em> <code>null</code></p>
+<p><em>Declared by:</em></p>
+<p><a
+href="https://github.com/nix-community/dream2nix/blob/master/modules/dream2nix/mkDerivation/interface.nix"><code>dream2nix/modules/dream2nix/mkDerivation/interface.nix</code></a></p>
+<h2><a href="#opt-mkDerivation.builder"
+id="opt-mkDerivation.builder"><code>mkDerivation.builder</code></a></h2>
+<p>This option has no description.</p>
+<p><em>Type:</em> null or string or path or package or (submodule)</p>
+<p><em>Default:</em> <code>null</code></p>
+<p><em>Declared by:</em></p>
+<p><a
+href="https://github.com/nix-community/dream2nix/blob/master/modules/dream2nix/mkDerivation/interface.nix"><code>dream2nix/modules/dream2nix/mkDerivation/interface.nix</code></a></p>
+<h2><a href="#opt-mkDerivation.checkFLags"
+id="opt-mkDerivation.checkFLags"><code>mkDerivation.checkFLags</code></a></h2>
+<p>This option has no description.</p>
+<p><em>Type:</em> null or (list of anything)</p>
+<p><em>Default:</em> <code>null</code></p>
+<p><em>Declared by:</em></p>
+<p><a
+href="https://github.com/nix-community/dream2nix/blob/master/modules/dream2nix/mkDerivation/interface.nix"><code>dream2nix/modules/dream2nix/mkDerivation/interface.nix</code></a></p>
+<h2><a href="#opt-mkDerivation.checkInputs"
+id="opt-mkDerivation.checkInputs"><code>mkDerivation.checkInputs</code></a></h2>
+<p>This option has no description.</p>
+<p><em>Type:</em> null or (list of anything)</p>
+<p><em>Default:</em> <code>null</code></p>
+<p><em>Declared by:</em></p>
+<p><a
+href="https://github.com/nix-community/dream2nix/blob/master/modules/dream2nix/mkDerivation/interface.nix"><code>dream2nix/modules/dream2nix/mkDerivation/interface.nix</code></a></p>
+<h2><a href="#opt-mkDerivation.checkPhase"
+id="opt-mkDerivation.checkPhase"><code>mkDerivation.checkPhase</code></a></h2>
+<p>This option has no description.</p>
+<p><em>Type:</em> null or string</p>
+<p><em>Default:</em> <code>null</code></p>
+<p><em>Declared by:</em></p>
+<p><a
+href="https://github.com/nix-community/dream2nix/blob/master/modules/dream2nix/mkDerivation/interface.nix"><code>dream2nix/modules/dream2nix/mkDerivation/interface.nix</code></a></p>
+<h2><a href="#opt-mkDerivation.checkTarget"
+id="opt-mkDerivation.checkTarget"><code>mkDerivation.checkTarget</code></a></h2>
+<p>This option has no description.</p>
+<p><em>Type:</em> null or string</p>
+<p><em>Default:</em> <code>null</code></p>
+<p><em>Declared by:</em></p>
+<p><a
+href="https://github.com/nix-community/dream2nix/blob/master/modules/dream2nix/mkDerivation/interface.nix"><code>dream2nix/modules/dream2nix/mkDerivation/interface.nix</code></a></p>
+<h2><a href="#opt-mkDerivation.cmakeFlags"
+id="opt-mkDerivation.cmakeFlags"><code>mkDerivation.cmakeFlags</code></a></h2>
+<p>This option has no description.</p>
+<p><em>Type:</em> null or (list of anything)</p>
+<p><em>Default:</em> <code>null</code></p>
+<p><em>Declared by:</em></p>
+<p><a
+href="https://github.com/nix-community/dream2nix/blob/master/modules/dream2nix/mkDerivation/interface.nix"><code>dream2nix/modules/dream2nix/mkDerivation/interface.nix</code></a></p>
+<h2><a href="#opt-mkDerivation.configureFlags"
+id="opt-mkDerivation.configureFlags"><code>mkDerivation.configureFlags</code></a></h2>
+<p>This option has no description.</p>
+<p><em>Type:</em> null or (list of anything)</p>
+<p><em>Default:</em> <code>null</code></p>
+<p><em>Declared by:</em></p>
+<p><a
+href="https://github.com/nix-community/dream2nix/blob/master/modules/dream2nix/mkDerivation/interface.nix"><code>dream2nix/modules/dream2nix/mkDerivation/interface.nix</code></a></p>
+<h2><a href="#opt-mkDerivation.configurePhase"
+id="opt-mkDerivation.configurePhase"><code>mkDerivation.configurePhase</code></a></h2>
+<p>This option has no description.</p>
+<p><em>Type:</em> null or string</p>
+<p><em>Default:</em> <code>null</code></p>
+<p><em>Declared by:</em></p>
+<p><a
+href="https://github.com/nix-community/dream2nix/blob/master/modules/dream2nix/mkDerivation/interface.nix"><code>dream2nix/modules/dream2nix/mkDerivation/interface.nix</code></a></p>
+<h2><a href="#opt-mkDerivation.configurePlatforms"
+id="opt-mkDerivation.configurePlatforms"><code>mkDerivation.configurePlatforms</code></a></h2>
+<p>This option has no description.</p>
+<p><em>Type:</em> null or (list of anything)</p>
+<p><em>Default:</em> <code>null</code></p>
+<p><em>Declared by:</em></p>
+<p><a
+href="https://github.com/nix-community/dream2nix/blob/master/modules/dream2nix/mkDerivation/interface.nix"><code>dream2nix/modules/dream2nix/mkDerivation/interface.nix</code></a></p>
+<h2><a href="#opt-mkDerivation.configureScript"
+id="opt-mkDerivation.configureScript"><code>mkDerivation.configureScript</code></a></h2>
+<p>This option has no description.</p>
+<p><em>Type:</em> null or string</p>
+<p><em>Default:</em> <code>null</code></p>
+<p><em>Declared by:</em></p>
+<p><a
+href="https://github.com/nix-community/dream2nix/blob/master/modules/dream2nix/mkDerivation/interface.nix"><code>dream2nix/modules/dream2nix/mkDerivation/interface.nix</code></a></p>
+<h2><a href="#opt-mkDerivation.depsBuildBuild"
+id="opt-mkDerivation.depsBuildBuild"><code>mkDerivation.depsBuildBuild</code></a></h2>
+<p>This option has no description.</p>
+<p><em>Type:</em> null or (list of anything)</p>
+<p><em>Default:</em> <code>null</code></p>
+<p><em>Declared by:</em></p>
+<p><a
+href="https://github.com/nix-community/dream2nix/blob/master/modules/dream2nix/mkDerivation/interface.nix"><code>dream2nix/modules/dream2nix/mkDerivation/interface.nix</code></a></p>
+<h2><a href="#opt-mkDerivation.depsBuildBuildPropagated"
+id="opt-mkDerivation.depsBuildBuildPropagated"><code>mkDerivation.depsBuildBuildPropagated</code></a></h2>
+<p>This option has no description.</p>
+<p><em>Type:</em> null or (list of anything)</p>
+<p><em>Default:</em> <code>null</code></p>
+<p><em>Declared by:</em></p>
+<p><a
+href="https://github.com/nix-community/dream2nix/blob/master/modules/dream2nix/mkDerivation/interface.nix"><code>dream2nix/modules/dream2nix/mkDerivation/interface.nix</code></a></p>
+<h2><a href="#opt-mkDerivation.depsBuildTarget"
+id="opt-mkDerivation.depsBuildTarget"><code>mkDerivation.depsBuildTarget</code></a></h2>
+<p>This option has no description.</p>
+<p><em>Type:</em> null or (list of anything)</p>
+<p><em>Default:</em> <code>null</code></p>
+<p><em>Declared by:</em></p>
+<p><a
+href="https://github.com/nix-community/dream2nix/blob/master/modules/dream2nix/mkDerivation/interface.nix"><code>dream2nix/modules/dream2nix/mkDerivation/interface.nix</code></a></p>
+<h2><a href="#opt-mkDerivation.depsBuildTargetPropagated"
+id="opt-mkDerivation.depsBuildTargetPropagated"><code>mkDerivation.depsBuildTargetPropagated</code></a></h2>
+<p>This option has no description.</p>
+<p><em>Type:</em> null or (list of anything)</p>
+<p><em>Default:</em> <code>null</code></p>
+<p><em>Declared by:</em></p>
+<p><a
+href="https://github.com/nix-community/dream2nix/blob/master/modules/dream2nix/mkDerivation/interface.nix"><code>dream2nix/modules/dream2nix/mkDerivation/interface.nix</code></a></p>
+<h2><a href="#opt-mkDerivation.depsHostHost"
+id="opt-mkDerivation.depsHostHost"><code>mkDerivation.depsHostHost</code></a></h2>
+<p>This option has no description.</p>
+<p><em>Type:</em> null or (list of anything)</p>
+<p><em>Default:</em> <code>null</code></p>
+<p><em>Declared by:</em></p>
+<p><a
+href="https://github.com/nix-community/dream2nix/blob/master/modules/dream2nix/mkDerivation/interface.nix"><code>dream2nix/modules/dream2nix/mkDerivation/interface.nix</code></a></p>
+<h2><a href="#opt-mkDerivation.depsHostHostPropagated"
+id="opt-mkDerivation.depsHostHostPropagated"><code>mkDerivation.depsHostHostPropagated</code></a></h2>
+<p>This option has no description.</p>
+<p><em>Type:</em> null or (list of anything)</p>
+<p><em>Default:</em> <code>null</code></p>
+<p><em>Declared by:</em></p>
+<p><a
+href="https://github.com/nix-community/dream2nix/blob/master/modules/dream2nix/mkDerivation/interface.nix"><code>dream2nix/modules/dream2nix/mkDerivation/interface.nix</code></a></p>
+<h2><a href="#opt-mkDerivation.depsTargetTarget"
+id="opt-mkDerivation.depsTargetTarget"><code>mkDerivation.depsTargetTarget</code></a></h2>
+<p>This option has no description.</p>
+<p><em>Type:</em> null or (list of anything)</p>
+<p><em>Default:</em> <code>null</code></p>
+<p><em>Declared by:</em></p>
+<p><a
+href="https://github.com/nix-community/dream2nix/blob/master/modules/dream2nix/mkDerivation/interface.nix"><code>dream2nix/modules/dream2nix/mkDerivation/interface.nix</code></a></p>
+<h2><a href="#opt-mkDerivation.depsTargetTargetPropagated"
+id="opt-mkDerivation.depsTargetTargetPropagated"><code>mkDerivation.depsTargetTargetPropagated</code></a></h2>
+<p>This option has no description.</p>
+<p><em>Type:</em> null or (list of anything)</p>
+<p><em>Default:</em> <code>null</code></p>
+<p><em>Declared by:</em></p>
+<p><a
+href="https://github.com/nix-community/dream2nix/blob/master/modules/dream2nix/mkDerivation/interface.nix"><code>dream2nix/modules/dream2nix/mkDerivation/interface.nix</code></a></p>
+<h2><a href="#opt-mkDerivation.disallowedReferences"
+id="opt-mkDerivation.disallowedReferences"><code>mkDerivation.disallowedReferences</code></a></h2>
+<p>This option has no description.</p>
+<p><em>Type:</em> null or (list of string)</p>
+<p><em>Default:</em> <code>null</code></p>
+<p><em>Declared by:</em></p>
+<p><a
+href="https://github.com/nix-community/dream2nix/blob/master/modules/dream2nix/mkDerivation/interface.nix"><code>dream2nix/modules/dream2nix/mkDerivation/interface.nix</code></a></p>
+<h2><a href="#opt-mkDerivation.disallowedRequisites"
+id="opt-mkDerivation.disallowedRequisites"><code>mkDerivation.disallowedRequisites</code></a></h2>
+<p>This option has no description.</p>
+<p><em>Type:</em> null or (list of string)</p>
+<p><em>Default:</em> <code>null</code></p>
+<p><em>Declared by:</em></p>
+<p><a
+href="https://github.com/nix-community/dream2nix/blob/master/modules/dream2nix/mkDerivation/interface.nix"><code>dream2nix/modules/dream2nix/mkDerivation/interface.nix</code></a></p>
+<h2><a href="#opt-mkDerivation.distFlags"
+id="opt-mkDerivation.distFlags"><code>mkDerivation.distFlags</code></a></h2>
+<p>This option has no description.</p>
+<p><em>Type:</em> null or (list of anything)</p>
+<p><em>Default:</em> <code>null</code></p>
+<p><em>Declared by:</em></p>
+<p><a
+href="https://github.com/nix-community/dream2nix/blob/master/modules/dream2nix/mkDerivation/interface.nix"><code>dream2nix/modules/dream2nix/mkDerivation/interface.nix</code></a></p>
+<h2><a href="#opt-mkDerivation.distPhase"
+id="opt-mkDerivation.distPhase"><code>mkDerivation.distPhase</code></a></h2>
+<p>This option has no description.</p>
+<p><em>Type:</em> null or string</p>
+<p><em>Default:</em> <code>null</code></p>
+<p><em>Declared by:</em></p>
+<p><a
+href="https://github.com/nix-community/dream2nix/blob/master/modules/dream2nix/mkDerivation/interface.nix"><code>dream2nix/modules/dream2nix/mkDerivation/interface.nix</code></a></p>
+<h2><a href="#opt-mkDerivation.distTarget"
+id="opt-mkDerivation.distTarget"><code>mkDerivation.distTarget</code></a></h2>
+<p>This option has no description.</p>
+<p><em>Type:</em> null or string</p>
+<p><em>Default:</em> <code>null</code></p>
+<p><em>Declared by:</em></p>
+<p><a
+href="https://github.com/nix-community/dream2nix/blob/master/modules/dream2nix/mkDerivation/interface.nix"><code>dream2nix/modules/dream2nix/mkDerivation/interface.nix</code></a></p>
+<h2><a href="#opt-mkDerivation.doCheck"
+id="opt-mkDerivation.doCheck"><code>mkDerivation.doCheck</code></a></h2>
+<p>This option has no description.</p>
+<p><em>Type:</em> null or boolean</p>
+<p><em>Default:</em> <code>null</code></p>
+<p><em>Declared by:</em></p>
+<p><a
+href="https://github.com/nix-community/dream2nix/blob/master/modules/dream2nix/mkDerivation/interface.nix"><code>dream2nix/modules/dream2nix/mkDerivation/interface.nix</code></a></p>
+<h2><a href="#opt-mkDerivation.doDist"
+id="opt-mkDerivation.doDist"><code>mkDerivation.doDist</code></a></h2>
+<p>This option has no description.</p>
+<p><em>Type:</em> null or boolean</p>
+<p><em>Default:</em> <code>null</code></p>
+<p><em>Declared by:</em></p>
+<p><a
+href="https://github.com/nix-community/dream2nix/blob/master/modules/dream2nix/mkDerivation/interface.nix"><code>dream2nix/modules/dream2nix/mkDerivation/interface.nix</code></a></p>
+<h2><a href="#opt-mkDerivation.doInstallCheck"
+id="opt-mkDerivation.doInstallCheck"><code>mkDerivation.doInstallCheck</code></a></h2>
+<p>This option has no description.</p>
+<p><em>Type:</em> null or boolean</p>
+<p><em>Default:</em> <code>null</code></p>
+<p><em>Declared by:</em></p>
+<p><a
+href="https://github.com/nix-community/dream2nix/blob/master/modules/dream2nix/mkDerivation/interface.nix"><code>dream2nix/modules/dream2nix/mkDerivation/interface.nix</code></a></p>
+<h2><a href="#opt-mkDerivation.dontAddDisableDepTrack"
+id="opt-mkDerivation.dontAddDisableDepTrack"><code>mkDerivation.dontAddDisableDepTrack</code></a></h2>
+<p>This option has no description.</p>
+<p><em>Type:</em> null or boolean</p>
+<p><em>Default:</em> <code>null</code></p>
+<p><em>Declared by:</em></p>
+<p><a
+href="https://github.com/nix-community/dream2nix/blob/master/modules/dream2nix/mkDerivation/interface.nix"><code>dream2nix/modules/dream2nix/mkDerivation/interface.nix</code></a></p>
+<h2><a href="#opt-mkDerivation.dontAddPrefix"
+id="opt-mkDerivation.dontAddPrefix"><code>mkDerivation.dontAddPrefix</code></a></h2>
+<p>This option has no description.</p>
+<p><em>Type:</em> null or boolean</p>
+<p><em>Default:</em> <code>null</code></p>
+<p><em>Declared by:</em></p>
+<p><a
+href="https://github.com/nix-community/dream2nix/blob/master/modules/dream2nix/mkDerivation/interface.nix"><code>dream2nix/modules/dream2nix/mkDerivation/interface.nix</code></a></p>
+<h2><a href="#opt-mkDerivation.dontAddStaticConfigureFlags"
+id="opt-mkDerivation.dontAddStaticConfigureFlags"><code>mkDerivation.dontAddStaticConfigureFlags</code></a></h2>
+<p>This option has no description.</p>
+<p><em>Type:</em> null or boolean</p>
+<p><em>Default:</em> <code>null</code></p>
+<p><em>Declared by:</em></p>
+<p><a
+href="https://github.com/nix-community/dream2nix/blob/master/modules/dream2nix/mkDerivation/interface.nix"><code>dream2nix/modules/dream2nix/mkDerivation/interface.nix</code></a></p>
+<h2><a href="#opt-mkDerivation.dontBuild"
+id="opt-mkDerivation.dontBuild"><code>mkDerivation.dontBuild</code></a></h2>
+<p>This option has no description.</p>
+<p><em>Type:</em> null or boolean</p>
+<p><em>Default:</em> <code>null</code></p>
+<p><em>Declared by:</em></p>
+<p><a
+href="https://github.com/nix-community/dream2nix/blob/master/modules/dream2nix/mkDerivation/interface.nix"><code>dream2nix/modules/dream2nix/mkDerivation/interface.nix</code></a></p>
+<h2><a href="#opt-mkDerivation.dontConfigure"
+id="opt-mkDerivation.dontConfigure"><code>mkDerivation.dontConfigure</code></a></h2>
+<p>This option has no description.</p>
+<p><em>Type:</em> null or boolean</p>
+<p><em>Default:</em> <code>null</code></p>
+<p><em>Declared by:</em></p>
+<p><a
+href="https://github.com/nix-community/dream2nix/blob/master/modules/dream2nix/mkDerivation/interface.nix"><code>dream2nix/modules/dream2nix/mkDerivation/interface.nix</code></a></p>
+<h2><a href="#opt-mkDerivation.dontCopyDist"
+id="opt-mkDerivation.dontCopyDist"><code>mkDerivation.dontCopyDist</code></a></h2>
+<p>This option has no description.</p>
+<p><em>Type:</em> null or boolean</p>
+<p><em>Default:</em> <code>null</code></p>
+<p><em>Declared by:</em></p>
+<p><a
+href="https://github.com/nix-community/dream2nix/blob/master/modules/dream2nix/mkDerivation/interface.nix"><code>dream2nix/modules/dream2nix/mkDerivation/interface.nix</code></a></p>
+<h2><a href="#opt-mkDerivation.dontDisableStatic"
+id="opt-mkDerivation.dontDisableStatic"><code>mkDerivation.dontDisableStatic</code></a></h2>
+<p>This option has no description.</p>
+<p><em>Type:</em> null or boolean</p>
+<p><em>Default:</em> <code>null</code></p>
+<p><em>Declared by:</em></p>
+<p><a
+href="https://github.com/nix-community/dream2nix/blob/master/modules/dream2nix/mkDerivation/interface.nix"><code>dream2nix/modules/dream2nix/mkDerivation/interface.nix</code></a></p>
+<h2><a href="#opt-mkDerivation.dontFixLibtool"
+id="opt-mkDerivation.dontFixLibtool"><code>mkDerivation.dontFixLibtool</code></a></h2>
+<p>This option has no description.</p>
+<p><em>Type:</em> null or boolean</p>
+<p><em>Default:</em> <code>null</code></p>
+<p><em>Declared by:</em></p>
+<p><a
+href="https://github.com/nix-community/dream2nix/blob/master/modules/dream2nix/mkDerivation/interface.nix"><code>dream2nix/modules/dream2nix/mkDerivation/interface.nix</code></a></p>
+<h2><a href="#opt-mkDerivation.dontFixup"
+id="opt-mkDerivation.dontFixup"><code>mkDerivation.dontFixup</code></a></h2>
+<p>This option has no description.</p>
+<p><em>Type:</em> null or boolean</p>
+<p><em>Default:</em> <code>null</code></p>
+<p><em>Declared by:</em></p>
+<p><a
+href="https://github.com/nix-community/dream2nix/blob/master/modules/dream2nix/mkDerivation/interface.nix"><code>dream2nix/modules/dream2nix/mkDerivation/interface.nix</code></a></p>
+<h2><a href="#opt-mkDerivation.dontInstall"
+id="opt-mkDerivation.dontInstall"><code>mkDerivation.dontInstall</code></a></h2>
+<p>This option has no description.</p>
+<p><em>Type:</em> null or boolean</p>
+<p><em>Default:</em> <code>null</code></p>
+<p><em>Declared by:</em></p>
+<p><a
+href="https://github.com/nix-community/dream2nix/blob/master/modules/dream2nix/mkDerivation/interface.nix"><code>dream2nix/modules/dream2nix/mkDerivation/interface.nix</code></a></p>
+<h2><a href="#opt-mkDerivation.dontMakeSourcesWritable"
+id="opt-mkDerivation.dontMakeSourcesWritable"><code>mkDerivation.dontMakeSourcesWritable</code></a></h2>
+<p>This option has no description.</p>
+<p><em>Type:</em> null or boolean</p>
+<p><em>Default:</em> <code>null</code></p>
+<p><em>Declared by:</em></p>
+<p><a
+href="https://github.com/nix-community/dream2nix/blob/master/modules/dream2nix/mkDerivation/interface.nix"><code>dream2nix/modules/dream2nix/mkDerivation/interface.nix</code></a></p>
+<h2><a href="#opt-mkDerivation.dontMoveBin"
+id="opt-mkDerivation.dontMoveBin"><code>mkDerivation.dontMoveBin</code></a></h2>
+<p>This option has no description.</p>
+<p><em>Type:</em> null or boolean</p>
+<p><em>Default:</em> <code>null</code></p>
+<p><em>Declared by:</em></p>
+<p><a
+href="https://github.com/nix-community/dream2nix/blob/master/modules/dream2nix/mkDerivation/interface.nix"><code>dream2nix/modules/dream2nix/mkDerivation/interface.nix</code></a></p>
+<h2><a href="#opt-mkDerivation.dontPatch"
+id="opt-mkDerivation.dontPatch"><code>mkDerivation.dontPatch</code></a></h2>
+<p>This option has no description.</p>
+<p><em>Type:</em> null or boolean</p>
+<p><em>Default:</em> <code>null</code></p>
+<p><em>Declared by:</em></p>
+<p><a
+href="https://github.com/nix-community/dream2nix/blob/master/modules/dream2nix/mkDerivation/interface.nix"><code>dream2nix/modules/dream2nix/mkDerivation/interface.nix</code></a></p>
+<h2><a href="#opt-mkDerivation.dontPatchELF"
+id="opt-mkDerivation.dontPatchELF"><code>mkDerivation.dontPatchELF</code></a></h2>
+<p>This option has no description.</p>
+<p><em>Type:</em> null or boolean</p>
+<p><em>Default:</em> <code>null</code></p>
+<p><em>Declared by:</em></p>
+<p><a
+href="https://github.com/nix-community/dream2nix/blob/master/modules/dream2nix/mkDerivation/interface.nix"><code>dream2nix/modules/dream2nix/mkDerivation/interface.nix</code></a></p>
+<h2><a href="#opt-mkDerivation.dontPatchShebangs"
+id="opt-mkDerivation.dontPatchShebangs"><code>mkDerivation.dontPatchShebangs</code></a></h2>
+<p>This option has no description.</p>
+<p><em>Type:</em> null or boolean</p>
+<p><em>Default:</em> <code>null</code></p>
+<p><em>Declared by:</em></p>
+<p><a
+href="https://github.com/nix-community/dream2nix/blob/master/modules/dream2nix/mkDerivation/interface.nix"><code>dream2nix/modules/dream2nix/mkDerivation/interface.nix</code></a></p>
+<h2><a href="#opt-mkDerivation.dontPruneLibtoolFiles"
+id="opt-mkDerivation.dontPruneLibtoolFiles"><code>mkDerivation.dontPruneLibtoolFiles</code></a></h2>
+<p>This option has no description.</p>
+<p><em>Type:</em> null or boolean</p>
+<p><em>Default:</em> <code>null</code></p>
+<p><em>Declared by:</em></p>
+<p><a
+href="https://github.com/nix-community/dream2nix/blob/master/modules/dream2nix/mkDerivation/interface.nix"><code>dream2nix/modules/dream2nix/mkDerivation/interface.nix</code></a></p>
+<h2><a href="#opt-mkDerivation.dontStrip"
+id="opt-mkDerivation.dontStrip"><code>mkDerivation.dontStrip</code></a></h2>
+<p>This option has no description.</p>
+<p><em>Type:</em> null or boolean</p>
+<p><em>Default:</em> <code>null</code></p>
+<p><em>Declared by:</em></p>
+<p><a
+href="https://github.com/nix-community/dream2nix/blob/master/modules/dream2nix/mkDerivation/interface.nix"><code>dream2nix/modules/dream2nix/mkDerivation/interface.nix</code></a></p>
+<h2><a href="#opt-mkDerivation.dontStripHost"
+id="opt-mkDerivation.dontStripHost"><code>mkDerivation.dontStripHost</code></a></h2>
+<p>This option has no description.</p>
+<p><em>Type:</em> null or boolean</p>
+<p><em>Default:</em> <code>null</code></p>
+<p><em>Declared by:</em></p>
+<p><a
+href="https://github.com/nix-community/dream2nix/blob/master/modules/dream2nix/mkDerivation/interface.nix"><code>dream2nix/modules/dream2nix/mkDerivation/interface.nix</code></a></p>
+<h2><a href="#opt-mkDerivation.dontStripTarget"
+id="opt-mkDerivation.dontStripTarget"><code>mkDerivation.dontStripTarget</code></a></h2>
+<p>This option has no description.</p>
+<p><em>Type:</em> null or boolean</p>
+<p><em>Default:</em> <code>null</code></p>
+<p><em>Declared by:</em></p>
+<p><a
+href="https://github.com/nix-community/dream2nix/blob/master/modules/dream2nix/mkDerivation/interface.nix"><code>dream2nix/modules/dream2nix/mkDerivation/interface.nix</code></a></p>
+<h2><a href="#opt-mkDerivation.dontUnpack"
+id="opt-mkDerivation.dontUnpack"><code>mkDerivation.dontUnpack</code></a></h2>
+<p>This option has no description.</p>
+<p><em>Type:</em> null or boolean</p>
+<p><em>Default:</em> <code>null</code></p>
+<p><em>Declared by:</em></p>
+<p><a
+href="https://github.com/nix-community/dream2nix/blob/master/modules/dream2nix/mkDerivation/interface.nix"><code>dream2nix/modules/dream2nix/mkDerivation/interface.nix</code></a></p>
+<h2><a href="#opt-mkDerivation.exportReferenceGraph"
+id="opt-mkDerivation.exportReferenceGraph"><code>mkDerivation.exportReferenceGraph</code></a></h2>
+<p>This option has no description.</p>
+<p><em>Type:</em> null or (list of (string or package))</p>
+<p><em>Default:</em> <code>null</code></p>
+<p><em>Declared by:</em></p>
+<p><a
+href="https://github.com/nix-community/dream2nix/blob/master/modules/dream2nix/mkDerivation/interface.nix"><code>dream2nix/modules/dream2nix/mkDerivation/interface.nix</code></a></p>
+<h2><a href="#opt-mkDerivation.fixupPhase"
+id="opt-mkDerivation.fixupPhase"><code>mkDerivation.fixupPhase</code></a></h2>
+<p>This option has no description.</p>
+<p><em>Type:</em> null or string</p>
+<p><em>Default:</em> <code>null</code></p>
+<p><em>Declared by:</em></p>
+<p><a
+href="https://github.com/nix-community/dream2nix/blob/master/modules/dream2nix/mkDerivation/interface.nix"><code>dream2nix/modules/dream2nix/mkDerivation/interface.nix</code></a></p>
+<h2><a href="#opt-mkDerivation.forceShare"
+id="opt-mkDerivation.forceShare"><code>mkDerivation.forceShare</code></a></h2>
+<p>This option has no description.</p>
+<p><em>Type:</em> null or (list of anything)</p>
+<p><em>Default:</em> <code>null</code></p>
+<p><em>Declared by:</em></p>
+<p><a
+href="https://github.com/nix-community/dream2nix/blob/master/modules/dream2nix/mkDerivation/interface.nix"><code>dream2nix/modules/dream2nix/mkDerivation/interface.nix</code></a></p>
+<h2><a href="#opt-mkDerivation.hardeningDisable"
+id="opt-mkDerivation.hardeningDisable"><code>mkDerivation.hardeningDisable</code></a></h2>
+<p>This option has no description.</p>
+<p><em>Type:</em> null or (list of anything)</p>
+<p><em>Default:</em> <code>null</code></p>
+<p><em>Declared by:</em></p>
+<p><a
+href="https://github.com/nix-community/dream2nix/blob/master/modules/dream2nix/mkDerivation/interface.nix"><code>dream2nix/modules/dream2nix/mkDerivation/interface.nix</code></a></p>
+<h2><a href="#opt-mkDerivation.hardeningEnable"
+id="opt-mkDerivation.hardeningEnable"><code>mkDerivation.hardeningEnable</code></a></h2>
+<p>This option has no description.</p>
+<p><em>Type:</em> null or (list of anything)</p>
+<p><em>Default:</em> <code>null</code></p>
+<p><em>Declared by:</em></p>
+<p><a
+href="https://github.com/nix-community/dream2nix/blob/master/modules/dream2nix/mkDerivation/interface.nix"><code>dream2nix/modules/dream2nix/mkDerivation/interface.nix</code></a></p>
+<h2><a href="#opt-mkDerivation.impureEnvVars"
+id="opt-mkDerivation.impureEnvVars"><code>mkDerivation.impureEnvVars</code></a></h2>
+<p>This option has no description.</p>
+<p><em>Type:</em> null or (list of string)</p>
+<p><em>Default:</em> <code>null</code></p>
+<p><em>Declared by:</em></p>
+<p><a
+href="https://github.com/nix-community/dream2nix/blob/master/modules/dream2nix/mkDerivation/interface.nix"><code>dream2nix/modules/dream2nix/mkDerivation/interface.nix</code></a></p>
+<h2><a href="#opt-mkDerivation.installCheckFlags"
+id="opt-mkDerivation.installCheckFlags"><code>mkDerivation.installCheckFlags</code></a></h2>
+<p>This option has no description.</p>
+<p><em>Type:</em> null or (list of anything)</p>
+<p><em>Default:</em> <code>null</code></p>
+<p><em>Declared by:</em></p>
+<p><a
+href="https://github.com/nix-community/dream2nix/blob/master/modules/dream2nix/mkDerivation/interface.nix"><code>dream2nix/modules/dream2nix/mkDerivation/interface.nix</code></a></p>
+<h2><a href="#opt-mkDerivation.installCheckInputs"
+id="opt-mkDerivation.installCheckInputs"><code>mkDerivation.installCheckInputs</code></a></h2>
+<p>This option has no description.</p>
+<p><em>Type:</em> null or (list of anything)</p>
+<p><em>Default:</em> <code>null</code></p>
+<p><em>Declared by:</em></p>
+<p><a
+href="https://github.com/nix-community/dream2nix/blob/master/modules/dream2nix/mkDerivation/interface.nix"><code>dream2nix/modules/dream2nix/mkDerivation/interface.nix</code></a></p>
+<h2><a href="#opt-mkDerivation.installCheckPhase"
+id="opt-mkDerivation.installCheckPhase"><code>mkDerivation.installCheckPhase</code></a></h2>
+<p>This option has no description.</p>
+<p><em>Type:</em> null or string</p>
+<p><em>Default:</em> <code>null</code></p>
+<p><em>Declared by:</em></p>
+<p><a
+href="https://github.com/nix-community/dream2nix/blob/master/modules/dream2nix/mkDerivation/interface.nix"><code>dream2nix/modules/dream2nix/mkDerivation/interface.nix</code></a></p>
+<h2><a href="#opt-mkDerivation.installCheckTarget"
+id="opt-mkDerivation.installCheckTarget"><code>mkDerivation.installCheckTarget</code></a></h2>
+<p>This option has no description.</p>
+<p><em>Type:</em> null or string</p>
+<p><em>Default:</em> <code>null</code></p>
+<p><em>Declared by:</em></p>
+<p><a
+href="https://github.com/nix-community/dream2nix/blob/master/modules/dream2nix/mkDerivation/interface.nix"><code>dream2nix/modules/dream2nix/mkDerivation/interface.nix</code></a></p>
+<h2><a href="#opt-mkDerivation.installFlags"
+id="opt-mkDerivation.installFlags"><code>mkDerivation.installFlags</code></a></h2>
+<p>This option has no description.</p>
+<p><em>Type:</em> null or (list of anything)</p>
+<p><em>Default:</em> <code>null</code></p>
+<p><em>Declared by:</em></p>
+<p><a
+href="https://github.com/nix-community/dream2nix/blob/master/modules/dream2nix/mkDerivation/interface.nix"><code>dream2nix/modules/dream2nix/mkDerivation/interface.nix</code></a></p>
+<h2><a href="#opt-mkDerivation.installPhase"
+id="opt-mkDerivation.installPhase"><code>mkDerivation.installPhase</code></a></h2>
+<p>This option has no description.</p>
+<p><em>Type:</em> null or string</p>
+<p><em>Default:</em> <code>null</code></p>
+<p><em>Declared by:</em></p>
+<p><a
+href="https://github.com/nix-community/dream2nix/blob/master/modules/dream2nix/mkDerivation/interface.nix"><code>dream2nix/modules/dream2nix/mkDerivation/interface.nix</code></a></p>
+<h2><a href="#opt-mkDerivation.installTargets"
+id="opt-mkDerivation.installTargets"><code>mkDerivation.installTargets</code></a></h2>
+<p>This option has no description.</p>
+<p><em>Type:</em> null or string</p>
+<p><em>Default:</em> <code>null</code></p>
+<p><em>Declared by:</em></p>
+<p><a
+href="https://github.com/nix-community/dream2nix/blob/master/modules/dream2nix/mkDerivation/interface.nix"><code>dream2nix/modules/dream2nix/mkDerivation/interface.nix</code></a></p>
+<h2><a href="#opt-mkDerivation.makeFlags"
+id="opt-mkDerivation.makeFlags"><code>mkDerivation.makeFlags</code></a></h2>
+<p>This option has no description.</p>
+<p><em>Type:</em> null or (list of anything)</p>
+<p><em>Default:</em> <code>null</code></p>
+<p><em>Declared by:</em></p>
+<p><a
+href="https://github.com/nix-community/dream2nix/blob/master/modules/dream2nix/mkDerivation/interface.nix"><code>dream2nix/modules/dream2nix/mkDerivation/interface.nix</code></a></p>
+<h2><a href="#opt-mkDerivation.makefile"
+id="opt-mkDerivation.makefile"><code>mkDerivation.makefile</code></a></h2>
+<p>This option has no description.</p>
+<p><em>Type:</em> null or string</p>
+<p><em>Default:</em> <code>null</code></p>
+<p><em>Declared by:</em></p>
+<p><a
+href="https://github.com/nix-community/dream2nix/blob/master/modules/dream2nix/mkDerivation/interface.nix"><code>dream2nix/modules/dream2nix/mkDerivation/interface.nix</code></a></p>
+<h2><a href="#opt-mkDerivation.mesonFlags"
+id="opt-mkDerivation.mesonFlags"><code>mkDerivation.mesonFlags</code></a></h2>
+<p>This option has no description.</p>
+<p><em>Type:</em> null or (list of anything)</p>
+<p><em>Default:</em> <code>null</code></p>
+<p><em>Declared by:</em></p>
+<p><a
+href="https://github.com/nix-community/dream2nix/blob/master/modules/dream2nix/mkDerivation/interface.nix"><code>dream2nix/modules/dream2nix/mkDerivation/interface.nix</code></a></p>
+<h2><a href="#opt-mkDerivation.meta"
+id="opt-mkDerivation.meta"><code>mkDerivation.meta</code></a></h2>
+<p>This option has no description.</p>
+<p><em>Type:</em> null or (attribute set)</p>
+<p><em>Default:</em> <code>{ }</code></p>
+<p><em>Declared by:</em></p>
+<p><a
+href="https://github.com/nix-community/dream2nix/blob/master/modules/dream2nix/mkDerivation/interface.nix"><code>dream2nix/modules/dream2nix/mkDerivation/interface.nix</code></a></p>
+<h2><a href="#opt-mkDerivation.nativeBuildInputs"
+id="opt-mkDerivation.nativeBuildInputs"><code>mkDerivation.nativeBuildInputs</code></a></h2>
+<p>This option has no description.</p>
+<p><em>Type:</em> null or (list of anything)</p>
+<p><em>Default:</em> <code>null</code></p>
+<p><em>Declared by:</em></p>
+<p><a
+href="https://github.com/nix-community/dream2nix/blob/master/modules/dream2nix/mkDerivation/interface.nix"><code>dream2nix/modules/dream2nix/mkDerivation/interface.nix</code></a></p>
+<h2><a href="#opt-mkDerivation.nativeCheckInputs"
+id="opt-mkDerivation.nativeCheckInputs"><code>mkDerivation.nativeCheckInputs</code></a></h2>
+<p>This option has no description.</p>
+<p><em>Type:</em> null or (list of anything)</p>
+<p><em>Default:</em> <code>null</code></p>
+<p><em>Declared by:</em></p>
+<p><a
+href="https://github.com/nix-community/dream2nix/blob/master/modules/dream2nix/mkDerivation/interface.nix"><code>dream2nix/modules/dream2nix/mkDerivation/interface.nix</code></a></p>
+<h2><a href="#opt-mkDerivation.outputHash"
+id="opt-mkDerivation.outputHash"><code>mkDerivation.outputHash</code></a></h2>
+<p>This option has no description.</p>
+<p><em>Type:</em> null or string</p>
+<p><em>Default:</em> <code>null</code></p>
+<p><em>Declared by:</em></p>
+<p><a
+href="https://github.com/nix-community/dream2nix/blob/master/modules/dream2nix/mkDerivation/interface.nix"><code>dream2nix/modules/dream2nix/mkDerivation/interface.nix</code></a></p>
+<h2><a href="#opt-mkDerivation.outputHashAlgo"
+id="opt-mkDerivation.outputHashAlgo"><code>mkDerivation.outputHashAlgo</code></a></h2>
+<p>This option has no description.</p>
+<p><em>Type:</em> null or string</p>
+<p><em>Default:</em> <code>null</code></p>
+<p><em>Declared by:</em></p>
+<p><a
+href="https://github.com/nix-community/dream2nix/blob/master/modules/dream2nix/mkDerivation/interface.nix"><code>dream2nix/modules/dream2nix/mkDerivation/interface.nix</code></a></p>
+<h2><a href="#opt-mkDerivation.outputHashMode"
+id="opt-mkDerivation.outputHashMode"><code>mkDerivation.outputHashMode</code></a></h2>
+<p>This option has no description.</p>
+<p><em>Type:</em> null or string</p>
+<p><em>Default:</em> <code>null</code></p>
+<p><em>Declared by:</em></p>
+<p><a
+href="https://github.com/nix-community/dream2nix/blob/master/modules/dream2nix/mkDerivation/interface.nix"><code>dream2nix/modules/dream2nix/mkDerivation/interface.nix</code></a></p>
+<h2><a href="#opt-mkDerivation.outputs"
+id="opt-mkDerivation.outputs"><code>mkDerivation.outputs</code></a></h2>
+<p>This option has no description.</p>
+<p><em>Type:</em> null or (list of string)</p>
+<p><em>Default:</em></p>
+<pre><code>[
+  &quot;out&quot;
+]</code></pre>
+<p><em>Declared by:</em></p>
+<p><a
+href="https://github.com/nix-community/dream2nix/blob/master/modules/dream2nix/mkDerivation/interface.nix"><code>dream2nix/modules/dream2nix/mkDerivation/interface.nix</code></a></p>
+<h2><a href="#opt-mkDerivation.passAsFile"
+id="opt-mkDerivation.passAsFile"><code>mkDerivation.passAsFile</code></a></h2>
+<p>This option has no description.</p>
+<p><em>Type:</em> null or (list of string)</p>
+<p><em>Default:</em> <code>null</code></p>
+<p><em>Declared by:</em></p>
+<p><a
+href="https://github.com/nix-community/dream2nix/blob/master/modules/dream2nix/mkDerivation/interface.nix"><code>dream2nix/modules/dream2nix/mkDerivation/interface.nix</code></a></p>
+<h2><a href="#opt-mkDerivation.passthru"
+id="opt-mkDerivation.passthru"><code>mkDerivation.passthru</code></a></h2>
+<p>This option has no description.</p>
+<p><em>Type:</em> null or (attribute set)</p>
+<p><em>Default:</em> <code>{ }</code></p>
+<p><em>Declared by:</em></p>
+<p><a
+href="https://github.com/nix-community/dream2nix/blob/master/modules/dream2nix/mkDerivation/interface.nix"><code>dream2nix/modules/dream2nix/mkDerivation/interface.nix</code></a></p>
+<h2><a href="#opt-mkDerivation.patchFlags"
+id="opt-mkDerivation.patchFlags"><code>mkDerivation.patchFlags</code></a></h2>
+<p>This option has no description.</p>
+<p><em>Type:</em> null or string</p>
+<p><em>Default:</em> <code>null</code></p>
+<p><em>Declared by:</em></p>
+<p><a
+href="https://github.com/nix-community/dream2nix/blob/master/modules/dream2nix/mkDerivation/interface.nix"><code>dream2nix/modules/dream2nix/mkDerivation/interface.nix</code></a></p>
+<h2><a href="#opt-mkDerivation.patchPhase"
+id="opt-mkDerivation.patchPhase"><code>mkDerivation.patchPhase</code></a></h2>
+<p>This option has no description.</p>
+<p><em>Type:</em> null or string</p>
+<p><em>Default:</em> <code>null</code></p>
+<p><em>Declared by:</em></p>
+<p><a
+href="https://github.com/nix-community/dream2nix/blob/master/modules/dream2nix/mkDerivation/interface.nix"><code>dream2nix/modules/dream2nix/mkDerivation/interface.nix</code></a></p>
+<h2><a href="#opt-mkDerivation.patches"
+id="opt-mkDerivation.patches"><code>mkDerivation.patches</code></a></h2>
+<p>This option has no description.</p>
+<p><em>Type:</em> null or (list of anything)</p>
+<p><em>Default:</em> <code>null</code></p>
+<p><em>Declared by:</em></p>
+<p><a
+href="https://github.com/nix-community/dream2nix/blob/master/modules/dream2nix/mkDerivation/interface.nix"><code>dream2nix/modules/dream2nix/mkDerivation/interface.nix</code></a></p>
+<h2><a href="#opt-mkDerivation.phases"
+id="opt-mkDerivation.phases"><code>mkDerivation.phases</code></a></h2>
+<p>This option has no description.</p>
+<p><em>Type:</em> null or (list of string)</p>
+<p><em>Default:</em> <code>null</code></p>
+<p><em>Declared by:</em></p>
+<p><a
+href="https://github.com/nix-community/dream2nix/blob/master/modules/dream2nix/mkDerivation/interface.nix"><code>dream2nix/modules/dream2nix/mkDerivation/interface.nix</code></a></p>
+<h2><a href="#opt-mkDerivation.pos"
+id="opt-mkDerivation.pos"><code>mkDerivation.pos</code></a></h2>
+<p>This option has no description.</p>
+<p><em>Type:</em> null or (attribute set)</p>
+<p><em>Default:</em> <code>{ }</code></p>
+<p><em>Declared by:</em></p>
+<p><a
+href="https://github.com/nix-community/dream2nix/blob/master/modules/dream2nix/mkDerivation/interface.nix"><code>dream2nix/modules/dream2nix/mkDerivation/interface.nix</code></a></p>
+<h2><a href="#opt-mkDerivation.postBuild"
+id="opt-mkDerivation.postBuild"><code>mkDerivation.postBuild</code></a></h2>
+<p>This option has no description.</p>
+<p><em>Type:</em> null or string</p>
+<p><em>Default:</em> <code>null</code></p>
+<p><em>Declared by:</em></p>
+<p><a
+href="https://github.com/nix-community/dream2nix/blob/master/modules/dream2nix/mkDerivation/interface.nix"><code>dream2nix/modules/dream2nix/mkDerivation/interface.nix</code></a></p>
+<h2><a href="#opt-mkDerivation.postCheck"
+id="opt-mkDerivation.postCheck"><code>mkDerivation.postCheck</code></a></h2>
+<p>This option has no description.</p>
+<p><em>Type:</em> null or string</p>
+<p><em>Default:</em> <code>null</code></p>
+<p><em>Declared by:</em></p>
+<p><a
+href="https://github.com/nix-community/dream2nix/blob/master/modules/dream2nix/mkDerivation/interface.nix"><code>dream2nix/modules/dream2nix/mkDerivation/interface.nix</code></a></p>
+<h2><a href="#opt-mkDerivation.postConfigure"
+id="opt-mkDerivation.postConfigure"><code>mkDerivation.postConfigure</code></a></h2>
+<p>This option has no description.</p>
+<p><em>Type:</em> null or string</p>
+<p><em>Default:</em> <code>null</code></p>
+<p><em>Declared by:</em></p>
+<p><a
+href="https://github.com/nix-community/dream2nix/blob/master/modules/dream2nix/mkDerivation/interface.nix"><code>dream2nix/modules/dream2nix/mkDerivation/interface.nix</code></a></p>
+<h2><a href="#opt-mkDerivation.postDist"
+id="opt-mkDerivation.postDist"><code>mkDerivation.postDist</code></a></h2>
+<p>This option has no description.</p>
+<p><em>Type:</em> null or string</p>
+<p><em>Default:</em> <code>null</code></p>
+<p><em>Declared by:</em></p>
+<p><a
+href="https://github.com/nix-community/dream2nix/blob/master/modules/dream2nix/mkDerivation/interface.nix"><code>dream2nix/modules/dream2nix/mkDerivation/interface.nix</code></a></p>
+<h2><a href="#opt-mkDerivation.postFixup"
+id="opt-mkDerivation.postFixup"><code>mkDerivation.postFixup</code></a></h2>
+<p>This option has no description.</p>
+<p><em>Type:</em> null or string</p>
+<p><em>Default:</em> <code>null</code></p>
+<p><em>Declared by:</em></p>
+<p><a
+href="https://github.com/nix-community/dream2nix/blob/master/modules/dream2nix/mkDerivation/interface.nix"><code>dream2nix/modules/dream2nix/mkDerivation/interface.nix</code></a></p>
+<h2><a href="#opt-mkDerivation.postInstalCheck"
+id="opt-mkDerivation.postInstalCheck"><code>mkDerivation.postInstalCheck</code></a></h2>
+<p>This option has no description.</p>
+<p><em>Type:</em> null or string</p>
+<p><em>Default:</em> <code>null</code></p>
+<p><em>Declared by:</em></p>
+<p><a
+href="https://github.com/nix-community/dream2nix/blob/master/modules/dream2nix/mkDerivation/interface.nix"><code>dream2nix/modules/dream2nix/mkDerivation/interface.nix</code></a></p>
+<h2><a href="#opt-mkDerivation.postInstall"
+id="opt-mkDerivation.postInstall"><code>mkDerivation.postInstall</code></a></h2>
+<p>This option has no description.</p>
+<p><em>Type:</em> null or string</p>
+<p><em>Default:</em> <code>null</code></p>
+<p><em>Declared by:</em></p>
+<p><a
+href="https://github.com/nix-community/dream2nix/blob/master/modules/dream2nix/mkDerivation/interface.nix"><code>dream2nix/modules/dream2nix/mkDerivation/interface.nix</code></a></p>
+<h2><a href="#opt-mkDerivation.postPatch"
+id="opt-mkDerivation.postPatch"><code>mkDerivation.postPatch</code></a></h2>
+<p>This option has no description.</p>
+<p><em>Type:</em> null or string</p>
+<p><em>Default:</em> <code>null</code></p>
+<p><em>Declared by:</em></p>
+<p><a
+href="https://github.com/nix-community/dream2nix/blob/master/modules/dream2nix/mkDerivation/interface.nix"><code>dream2nix/modules/dream2nix/mkDerivation/interface.nix</code></a></p>
+<h2><a href="#opt-mkDerivation.postPhases"
+id="opt-mkDerivation.postPhases"><code>mkDerivation.postPhases</code></a></h2>
+<p>This option has no description.</p>
+<p><em>Type:</em> null or (list of anything)</p>
+<p><em>Default:</em> <code>null</code></p>
+<p><em>Declared by:</em></p>
+<p><a
+href="https://github.com/nix-community/dream2nix/blob/master/modules/dream2nix/mkDerivation/interface.nix"><code>dream2nix/modules/dream2nix/mkDerivation/interface.nix</code></a></p>
+<h2><a href="#opt-mkDerivation.postUnpack"
+id="opt-mkDerivation.postUnpack"><code>mkDerivation.postUnpack</code></a></h2>
+<p>This option has no description.</p>
+<p><em>Type:</em> null or string</p>
+<p><em>Default:</em> <code>null</code></p>
+<p><em>Declared by:</em></p>
+<p><a
+href="https://github.com/nix-community/dream2nix/blob/master/modules/dream2nix/mkDerivation/interface.nix"><code>dream2nix/modules/dream2nix/mkDerivation/interface.nix</code></a></p>
+<h2><a href="#opt-mkDerivation.preBuild"
+id="opt-mkDerivation.preBuild"><code>mkDerivation.preBuild</code></a></h2>
+<p>This option has no description.</p>
+<p><em>Type:</em> null or string</p>
+<p><em>Default:</em> <code>null</code></p>
+<p><em>Declared by:</em></p>
+<p><a
+href="https://github.com/nix-community/dream2nix/blob/master/modules/dream2nix/mkDerivation/interface.nix"><code>dream2nix/modules/dream2nix/mkDerivation/interface.nix</code></a></p>
+<h2><a href="#opt-mkDerivation.preBuildPhases"
+id="opt-mkDerivation.preBuildPhases"><code>mkDerivation.preBuildPhases</code></a></h2>
+<p>This option has no description.</p>
+<p><em>Type:</em> null or (list of anything)</p>
+<p><em>Default:</em> <code>null</code></p>
+<p><em>Declared by:</em></p>
+<p><a
+href="https://github.com/nix-community/dream2nix/blob/master/modules/dream2nix/mkDerivation/interface.nix"><code>dream2nix/modules/dream2nix/mkDerivation/interface.nix</code></a></p>
+<h2><a href="#opt-mkDerivation.preCheck"
+id="opt-mkDerivation.preCheck"><code>mkDerivation.preCheck</code></a></h2>
+<p>This option has no description.</p>
+<p><em>Type:</em> null or string</p>
+<p><em>Default:</em> <code>null</code></p>
+<p><em>Declared by:</em></p>
+<p><a
+href="https://github.com/nix-community/dream2nix/blob/master/modules/dream2nix/mkDerivation/interface.nix"><code>dream2nix/modules/dream2nix/mkDerivation/interface.nix</code></a></p>
+<h2><a href="#opt-mkDerivation.preConfigure"
+id="opt-mkDerivation.preConfigure"><code>mkDerivation.preConfigure</code></a></h2>
+<p>This option has no description.</p>
+<p><em>Type:</em> null or string</p>
+<p><em>Default:</em> <code>null</code></p>
+<p><em>Declared by:</em></p>
+<p><a
+href="https://github.com/nix-community/dream2nix/blob/master/modules/dream2nix/mkDerivation/interface.nix"><code>dream2nix/modules/dream2nix/mkDerivation/interface.nix</code></a></p>
+<h2><a href="#opt-mkDerivation.preConfigurePhases"
+id="opt-mkDerivation.preConfigurePhases"><code>mkDerivation.preConfigurePhases</code></a></h2>
+<p>This option has no description.</p>
+<p><em>Type:</em> null or (list of anything)</p>
+<p><em>Default:</em> <code>null</code></p>
+<p><em>Declared by:</em></p>
+<p><a
+href="https://github.com/nix-community/dream2nix/blob/master/modules/dream2nix/mkDerivation/interface.nix"><code>dream2nix/modules/dream2nix/mkDerivation/interface.nix</code></a></p>
+<h2><a href="#opt-mkDerivation.preDist"
+id="opt-mkDerivation.preDist"><code>mkDerivation.preDist</code></a></h2>
+<p>This option has no description.</p>
+<p><em>Type:</em> null or string</p>
+<p><em>Default:</em> <code>null</code></p>
+<p><em>Declared by:</em></p>
+<p><a
+href="https://github.com/nix-community/dream2nix/blob/master/modules/dream2nix/mkDerivation/interface.nix"><code>dream2nix/modules/dream2nix/mkDerivation/interface.nix</code></a></p>
+<h2><a href="#opt-mkDerivation.preDistPhases"
+id="opt-mkDerivation.preDistPhases"><code>mkDerivation.preDistPhases</code></a></h2>
+<p>This option has no description.</p>
+<p><em>Type:</em> null or (list of anything)</p>
+<p><em>Default:</em> <code>null</code></p>
+<p><em>Declared by:</em></p>
+<p><a
+href="https://github.com/nix-community/dream2nix/blob/master/modules/dream2nix/mkDerivation/interface.nix"><code>dream2nix/modules/dream2nix/mkDerivation/interface.nix</code></a></p>
+<h2><a href="#opt-mkDerivation.preFixup"
+id="opt-mkDerivation.preFixup"><code>mkDerivation.preFixup</code></a></h2>
+<p>This option has no description.</p>
+<p><em>Type:</em> null or string</p>
+<p><em>Default:</em> <code>null</code></p>
+<p><em>Declared by:</em></p>
+<p><a
+href="https://github.com/nix-community/dream2nix/blob/master/modules/dream2nix/mkDerivation/interface.nix"><code>dream2nix/modules/dream2nix/mkDerivation/interface.nix</code></a></p>
+<h2><a href="#opt-mkDerivation.preFixupPhases"
+id="opt-mkDerivation.preFixupPhases"><code>mkDerivation.preFixupPhases</code></a></h2>
+<p>This option has no description.</p>
+<p><em>Type:</em> null or (list of anything)</p>
+<p><em>Default:</em> <code>null</code></p>
+<p><em>Declared by:</em></p>
+<p><a
+href="https://github.com/nix-community/dream2nix/blob/master/modules/dream2nix/mkDerivation/interface.nix"><code>dream2nix/modules/dream2nix/mkDerivation/interface.nix</code></a></p>
+<h2><a href="#opt-mkDerivation.preInstall"
+id="opt-mkDerivation.preInstall"><code>mkDerivation.preInstall</code></a></h2>
+<p>This option has no description.</p>
+<p><em>Type:</em> null or string</p>
+<p><em>Default:</em> <code>null</code></p>
+<p><em>Declared by:</em></p>
+<p><a
+href="https://github.com/nix-community/dream2nix/blob/master/modules/dream2nix/mkDerivation/interface.nix"><code>dream2nix/modules/dream2nix/mkDerivation/interface.nix</code></a></p>
+<h2><a href="#opt-mkDerivation.preInstallCheck"
+id="opt-mkDerivation.preInstallCheck"><code>mkDerivation.preInstallCheck</code></a></h2>
+<p>This option has no description.</p>
+<p><em>Type:</em> null or string</p>
+<p><em>Default:</em> <code>null</code></p>
+<p><em>Declared by:</em></p>
+<p><a
+href="https://github.com/nix-community/dream2nix/blob/master/modules/dream2nix/mkDerivation/interface.nix"><code>dream2nix/modules/dream2nix/mkDerivation/interface.nix</code></a></p>
+<h2><a href="#opt-mkDerivation.preInstallPhases"
+id="opt-mkDerivation.preInstallPhases"><code>mkDerivation.preInstallPhases</code></a></h2>
+<p>This option has no description.</p>
+<p><em>Type:</em> null or (list of anything)</p>
+<p><em>Default:</em> <code>null</code></p>
+<p><em>Declared by:</em></p>
+<p><a
+href="https://github.com/nix-community/dream2nix/blob/master/modules/dream2nix/mkDerivation/interface.nix"><code>dream2nix/modules/dream2nix/mkDerivation/interface.nix</code></a></p>
+<h2><a href="#opt-mkDerivation.prePatch"
+id="opt-mkDerivation.prePatch"><code>mkDerivation.prePatch</code></a></h2>
+<p>This option has no description.</p>
+<p><em>Type:</em> null or string</p>
+<p><em>Default:</em> <code>null</code></p>
+<p><em>Declared by:</em></p>
+<p><a
+href="https://github.com/nix-community/dream2nix/blob/master/modules/dream2nix/mkDerivation/interface.nix"><code>dream2nix/modules/dream2nix/mkDerivation/interface.nix</code></a></p>
+<h2><a href="#opt-mkDerivation.prePhases"
+id="opt-mkDerivation.prePhases"><code>mkDerivation.prePhases</code></a></h2>
+<p>This option has no description.</p>
+<p><em>Type:</em> null or (list of anything)</p>
+<p><em>Default:</em> <code>null</code></p>
+<p><em>Declared by:</em></p>
+<p><a
+href="https://github.com/nix-community/dream2nix/blob/master/modules/dream2nix/mkDerivation/interface.nix"><code>dream2nix/modules/dream2nix/mkDerivation/interface.nix</code></a></p>
+<h2><a href="#opt-mkDerivation.preUnpack"
+id="opt-mkDerivation.preUnpack"><code>mkDerivation.preUnpack</code></a></h2>
+<p>This option has no description.</p>
+<p><em>Type:</em> null or string</p>
+<p><em>Default:</em> <code>null</code></p>
+<p><em>Declared by:</em></p>
+<p><a
+href="https://github.com/nix-community/dream2nix/blob/master/modules/dream2nix/mkDerivation/interface.nix"><code>dream2nix/modules/dream2nix/mkDerivation/interface.nix</code></a></p>
+<h2><a href="#opt-mkDerivation.preferLocalBuild"
+id="opt-mkDerivation.preferLocalBuild"><code>mkDerivation.preferLocalBuild</code></a></h2>
+<p>This option has no description.</p>
+<p><em>Type:</em> null or (list of string)</p>
+<p><em>Default:</em> <code>null</code></p>
+<p><em>Declared by:</em></p>
+<p><a
+href="https://github.com/nix-community/dream2nix/blob/master/modules/dream2nix/mkDerivation/interface.nix"><code>dream2nix/modules/dream2nix/mkDerivation/interface.nix</code></a></p>
+<h2><a href="#opt-mkDerivation.prefix"
+id="opt-mkDerivation.prefix"><code>mkDerivation.prefix</code></a></h2>
+<p>This option has no description.</p>
+<p><em>Type:</em> null or string</p>
+<p><em>Default:</em> <code>null</code></p>
+<p><em>Declared by:</em></p>
+<p><a
+href="https://github.com/nix-community/dream2nix/blob/master/modules/dream2nix/mkDerivation/interface.nix"><code>dream2nix/modules/dream2nix/mkDerivation/interface.nix</code></a></p>
+<h2><a href="#opt-mkDerivation.prefixKey"
+id="opt-mkDerivation.prefixKey"><code>mkDerivation.prefixKey</code></a></h2>
+<p>This option has no description.</p>
+<p><em>Type:</em> null or string</p>
+<p><em>Default:</em> <code>null</code></p>
+<p><em>Declared by:</em></p>
+<p><a
+href="https://github.com/nix-community/dream2nix/blob/master/modules/dream2nix/mkDerivation/interface.nix"><code>dream2nix/modules/dream2nix/mkDerivation/interface.nix</code></a></p>
+<h2><a href="#opt-mkDerivation.propagatedBuildInputs"
+id="opt-mkDerivation.propagatedBuildInputs"><code>mkDerivation.propagatedBuildInputs</code></a></h2>
+<p>This option has no description.</p>
+<p><em>Type:</em> null or (list of anything)</p>
+<p><em>Default:</em> <code>null</code></p>
+<p><em>Declared by:</em></p>
+<p><a
+href="https://github.com/nix-community/dream2nix/blob/master/modules/dream2nix/mkDerivation/interface.nix"><code>dream2nix/modules/dream2nix/mkDerivation/interface.nix</code></a></p>
+<h2><a href="#opt-mkDerivation.propagatedNativeBuildInputs"
+id="opt-mkDerivation.propagatedNativeBuildInputs"><code>mkDerivation.propagatedNativeBuildInputs</code></a></h2>
+<p>This option has no description.</p>
+<p><em>Type:</em> null or (list of anything)</p>
+<p><em>Default:</em> <code>null</code></p>
+<p><em>Declared by:</em></p>
+<p><a
+href="https://github.com/nix-community/dream2nix/blob/master/modules/dream2nix/mkDerivation/interface.nix"><code>dream2nix/modules/dream2nix/mkDerivation/interface.nix</code></a></p>
+<h2><a href="#opt-mkDerivation.propagatedSandboxProfile"
+id="opt-mkDerivation.propagatedSandboxProfile"><code>mkDerivation.propagatedSandboxProfile</code></a></h2>
+<p>This option has no description.</p>
+<p><em>Type:</em> null or string</p>
+<p><em>Default:</em> <code>null</code></p>
+<p><em>Declared by:</em></p>
+<p><a
+href="https://github.com/nix-community/dream2nix/blob/master/modules/dream2nix/mkDerivation/interface.nix"><code>dream2nix/modules/dream2nix/mkDerivation/interface.nix</code></a></p>
+<h2><a href="#opt-mkDerivation.realBuilder"
+id="opt-mkDerivation.realBuilder"><code>mkDerivation.realBuilder</code></a></h2>
+<p>This option has no description.</p>
+<p><em>Type:</em> null or string or path or package or (submodule)</p>
+<p><em>Default:</em> <code>null</code></p>
+<p><em>Declared by:</em></p>
+<p><a
+href="https://github.com/nix-community/dream2nix/blob/master/modules/dream2nix/mkDerivation/interface.nix"><code>dream2nix/modules/dream2nix/mkDerivation/interface.nix</code></a></p>
+<h2><a href="#opt-mkDerivation.requiredSystemFeatures"
+id="opt-mkDerivation.requiredSystemFeatures"><code>mkDerivation.requiredSystemFeatures</code></a></h2>
+<p>This option has no description.</p>
+<p><em>Type:</em> null or (list of string)</p>
+<p><em>Default:</em> <code>null</code></p>
+<p><em>Declared by:</em></p>
+<p><a
+href="https://github.com/nix-community/dream2nix/blob/master/modules/dream2nix/mkDerivation/interface.nix"><code>dream2nix/modules/dream2nix/mkDerivation/interface.nix</code></a></p>
+<h2><a href="#opt-mkDerivation.sandboxProfile"
+id="opt-mkDerivation.sandboxProfile"><code>mkDerivation.sandboxProfile</code></a></h2>
+<p>This option has no description.</p>
+<p><em>Type:</em> null or string</p>
+<p><em>Default:</em> <code>null</code></p>
+<p><em>Declared by:</em></p>
+<p><a
+href="https://github.com/nix-community/dream2nix/blob/master/modules/dream2nix/mkDerivation/interface.nix"><code>dream2nix/modules/dream2nix/mkDerivation/interface.nix</code></a></p>
+<h2><a href="#opt-mkDerivation.separateDebugInfo"
+id="opt-mkDerivation.separateDebugInfo"><code>mkDerivation.separateDebugInfo</code></a></h2>
+<p>This option has no description.</p>
+<p><em>Type:</em> null or boolean</p>
+<p><em>Default:</em> <code>null</code></p>
+<p><em>Declared by:</em></p>
+<p><a
+href="https://github.com/nix-community/dream2nix/blob/master/modules/dream2nix/mkDerivation/interface.nix"><code>dream2nix/modules/dream2nix/mkDerivation/interface.nix</code></a></p>
+<h2><a href="#opt-mkDerivation.setSourceRoot"
+id="opt-mkDerivation.setSourceRoot"><code>mkDerivation.setSourceRoot</code></a></h2>
+<p>This option has no description.</p>
+<p><em>Type:</em> null or string</p>
+<p><em>Default:</em> <code>null</code></p>
+<p><em>Declared by:</em></p>
+<p><a
+href="https://github.com/nix-community/dream2nix/blob/master/modules/dream2nix/mkDerivation/interface.nix"><code>dream2nix/modules/dream2nix/mkDerivation/interface.nix</code></a></p>
+<h2><a href="#opt-mkDerivation.setupHook"
+id="opt-mkDerivation.setupHook"><code>mkDerivation.setupHook</code></a></h2>
+<p>This option has no description.</p>
+<p><em>Type:</em> null or string or path or package or (submodule)</p>
+<p><em>Default:</em> <code>null</code></p>
+<p><em>Declared by:</em></p>
+<p><a
+href="https://github.com/nix-community/dream2nix/blob/master/modules/dream2nix/mkDerivation/interface.nix"><code>dream2nix/modules/dream2nix/mkDerivation/interface.nix</code></a></p>
+<h2><a href="#opt-mkDerivation.shellHook"
+id="opt-mkDerivation.shellHook"><code>mkDerivation.shellHook</code></a></h2>
+<p>This option has no description.</p>
+<p><em>Type:</em> null or string</p>
+<p><em>Default:</em> <code>null</code></p>
+<p><em>Declared by:</em></p>
+<p><a
+href="https://github.com/nix-community/dream2nix/blob/master/modules/dream2nix/mkDerivation/interface.nix"><code>dream2nix/modules/dream2nix/mkDerivation/interface.nix</code></a></p>
+<h2><a href="#opt-mkDerivation.sourceRoot"
+id="opt-mkDerivation.sourceRoot"><code>mkDerivation.sourceRoot</code></a></h2>
+<p>This option has no description.</p>
+<p><em>Type:</em> null or string or path or package or (submodule)</p>
+<p><em>Default:</em> <code>null</code></p>
+<p><em>Declared by:</em></p>
+<p><a
+href="https://github.com/nix-community/dream2nix/blob/master/modules/dream2nix/mkDerivation/interface.nix"><code>dream2nix/modules/dream2nix/mkDerivation/interface.nix</code></a></p>
+<h2><a href="#opt-mkDerivation.src"
+id="opt-mkDerivation.src"><code>mkDerivation.src</code></a></h2>
+<p>This option has no description.</p>
+<p><em>Type:</em> null or string or path or package or (submodule)</p>
+<p><em>Default:</em> <code>null</code></p>
+<p><em>Declared by:</em></p>
+<p><a
+href="https://github.com/nix-community/dream2nix/blob/master/modules/dream2nix/mkDerivation/interface.nix"><code>dream2nix/modules/dream2nix/mkDerivation/interface.nix</code></a></p>
+<h2><a href="#opt-mkDerivation.srcs"
+id="opt-mkDerivation.srcs"><code>mkDerivation.srcs</code></a></h2>
+<p>This option has no description.</p>
+<p><em>Type:</em> null or (list of (string or path or package))</p>
+<p><em>Default:</em> <code>null</code></p>
+<p><em>Declared by:</em></p>
+<p><a
+href="https://github.com/nix-community/dream2nix/blob/master/modules/dream2nix/mkDerivation/interface.nix"><code>dream2nix/modules/dream2nix/mkDerivation/interface.nix</code></a></p>
+<h2><a href="#opt-mkDerivation.strictDeps"
+id="opt-mkDerivation.strictDeps"><code>mkDerivation.strictDeps</code></a></h2>
+<p>This option has no description.</p>
+<p><em>Type:</em> null or boolean</p>
+<p><em>Default:</em> <code>null</code></p>
+<p><em>Declared by:</em></p>
+<p><a
+href="https://github.com/nix-community/dream2nix/blob/master/modules/dream2nix/mkDerivation/interface.nix"><code>dream2nix/modules/dream2nix/mkDerivation/interface.nix</code></a></p>
+<h2><a href="#opt-mkDerivation.stripAllFlags"
+id="opt-mkDerivation.stripAllFlags"><code>mkDerivation.stripAllFlags</code></a></h2>
+<p>This option has no description.</p>
+<p><em>Type:</em> null or (list of anything)</p>
+<p><em>Default:</em> <code>null</code></p>
+<p><em>Declared by:</em></p>
+<p><a
+href="https://github.com/nix-community/dream2nix/blob/master/modules/dream2nix/mkDerivation/interface.nix"><code>dream2nix/modules/dream2nix/mkDerivation/interface.nix</code></a></p>
+<h2><a href="#opt-mkDerivation.stripAllList"
+id="opt-mkDerivation.stripAllList"><code>mkDerivation.stripAllList</code></a></h2>
+<p>This option has no description.</p>
+<p><em>Type:</em> null or (list of anything)</p>
+<p><em>Default:</em> <code>null</code></p>
+<p><em>Declared by:</em></p>
+<p><a
+href="https://github.com/nix-community/dream2nix/blob/master/modules/dream2nix/mkDerivation/interface.nix"><code>dream2nix/modules/dream2nix/mkDerivation/interface.nix</code></a></p>
+<h2><a href="#opt-mkDerivation.stripDebugFlags"
+id="opt-mkDerivation.stripDebugFlags"><code>mkDerivation.stripDebugFlags</code></a></h2>
+<p>This option has no description.</p>
+<p><em>Type:</em> null or (list of anything)</p>
+<p><em>Default:</em> <code>null</code></p>
+<p><em>Declared by:</em></p>
+<p><a
+href="https://github.com/nix-community/dream2nix/blob/master/modules/dream2nix/mkDerivation/interface.nix"><code>dream2nix/modules/dream2nix/mkDerivation/interface.nix</code></a></p>
+<h2><a href="#opt-mkDerivation.stripDebugList"
+id="opt-mkDerivation.stripDebugList"><code>mkDerivation.stripDebugList</code></a></h2>
+<p>This option has no description.</p>
+<p><em>Type:</em> null or (list of anything)</p>
+<p><em>Default:</em> <code>null</code></p>
+<p><em>Declared by:</em></p>
+<p><a
+href="https://github.com/nix-community/dream2nix/blob/master/modules/dream2nix/mkDerivation/interface.nix"><code>dream2nix/modules/dream2nix/mkDerivation/interface.nix</code></a></p>
+<h2><a href="#opt-mkDerivation.tarballs"
+id="opt-mkDerivation.tarballs"><code>mkDerivation.tarballs</code></a></h2>
+<p>This option has no description.</p>
+<p><em>Type:</em> null or (list of anything)</p>
+<p><em>Default:</em> <code>null</code></p>
+<p><em>Declared by:</em></p>
+<p><a
+href="https://github.com/nix-community/dream2nix/blob/master/modules/dream2nix/mkDerivation/interface.nix"><code>dream2nix/modules/dream2nix/mkDerivation/interface.nix</code></a></p>
+<h2><a href="#opt-mkDerivation.unpackCmd"
+id="opt-mkDerivation.unpackCmd"><code>mkDerivation.unpackCmd</code></a></h2>
+<p>This option has no description.</p>
+<p><em>Type:</em> null or string</p>
+<p><em>Default:</em> <code>null</code></p>
+<p><em>Declared by:</em></p>
+<p><a
+href="https://github.com/nix-community/dream2nix/blob/master/modules/dream2nix/mkDerivation/interface.nix"><code>dream2nix/modules/dream2nix/mkDerivation/interface.nix</code></a></p>
+<h2><a href="#opt-mkDerivation.unpackPhase"
+id="opt-mkDerivation.unpackPhase"><code>mkDerivation.unpackPhase</code></a></h2>
+<p>This option has no description.</p>
+<p><em>Type:</em> null or string</p>
+<p><em>Default:</em> <code>null</code></p>
+<p><em>Declared by:</em></p>
+<p><a
+href="https://github.com/nix-community/dream2nix/blob/master/modules/dream2nix/mkDerivation/interface.nix"><code>dream2nix/modules/dream2nix/mkDerivation/interface.nix</code></a></p>
+<h2><a href="#opt-mkDerivation.version"
+id="opt-mkDerivation.version"><code>mkDerivation.version</code></a></h2>
+<p>This option has no description.</p>
+<p><em>Type:</em> null or string</p>
+<p><em>Default:</em> <code>null</code></p>
+<p><em>Declared by:</em></p>
+<p><a
+href="https://github.com/nix-community/dream2nix/blob/master/modules/dream2nix/mkDerivation/interface.nix"><code>dream2nix/modules/dream2nix/mkDerivation/interface.nix</code></a></p>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../options/lock.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+                            <a rel="next" href="../options/nodejs-devshell.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../options/lock.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next" href="../options/nodejs-devshell.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="../elasticlunr.min.js"></script>
+        <script src="../mark.min.js"></script>
+        <script src="../searcher.js"></script>
+
+        <script src="../clipboard.min.js"></script>
+        <script src="../highlight.js"></script>
+        <script src="../book.js"></script>
+
+        <!-- Custom JS scripts -->
+        <script src="../no-edit-options.js"></script>
+
+
+    </div>
+    </body>
+</html>
