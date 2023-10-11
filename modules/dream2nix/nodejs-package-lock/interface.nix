@@ -20,6 +20,7 @@ in {
         The package.json file to use.
       '';
       default = cfg.source + "/package.json";
+      defaultText = "\${cfg.source}/package.json";
     };
     packageJson = {
       type = t.attrs;
@@ -31,6 +32,7 @@ in {
         The package.json file to use.
       '';
       default = cfg.source + "/package-lock.json";
+      defaultText = "\${cfg.source}/package-lock.json";
     };
     packageLock = {
       type = t.attrs;
@@ -39,7 +41,6 @@ in {
     source = {
       type = t.either t.path t.package;
       description = "Source of the package";
-      default = config.mkDerivation.src;
     };
     withDevDependencies = {
       type = t.bool;

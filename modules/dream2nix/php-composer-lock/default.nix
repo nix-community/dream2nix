@@ -49,6 +49,5 @@ in {
       if cfg.composerLockFile != null
       then l.fromJSON (l.readFile cfg.composerLockFile)
       else lib.mkDefault {};
-    source = lib.mkOptionDefault config.mkDerivation.src;
   };
 }
