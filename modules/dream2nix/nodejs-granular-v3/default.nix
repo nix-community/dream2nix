@@ -141,6 +141,10 @@
           (dep: lib.nameValuePair dep.name dep.version)
           deps));
   in {
+    imports = [
+      ./interface.nix
+    ];
+
     deps = {nixpkgs, ...}:
       l.mapAttrs (_: l.mkDefault) {
         inherit

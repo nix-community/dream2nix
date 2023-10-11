@@ -5,8 +5,6 @@
   ...
 }: let
   l = lib // builtins;
-
-  cfg = config.nodejs-devshell;
 in {
   imports = [
     dream2nix.modules.dream2nix.mkDerivation
