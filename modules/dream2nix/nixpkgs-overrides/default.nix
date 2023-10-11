@@ -1,5 +1,6 @@
 {
   config,
+  dream2nix,
   lib,
   options,
   ...
@@ -50,15 +51,16 @@
 in {
   imports = [
     ./interface.nix
+    dream2nix.modules.dream2nix.buildPythonPackage
   ];
 
-  config = l.mkMerge [
-    (l.mkIf cfg.enable {
-      mkDerivation = extractedMkDerivation;
-      buildPythonPackage = extractedBuildPythonPackage;
-      env = extractedEnv;
-    })
+  config =
     {
+      mkDerivation = lib.mkIf cfg.enable extractedMkDerivation;
+      buildPythonPackage = lib.mkIf cfg.enable extractedBuildPythonPackage;
+      env = lib.mkIf cfg.enable extractedEnv;
+    }
+    // {
       nixpkgs-overrides.lib = {inherit extractOverrideAttrs extractPythonAttrs;};
       nixpkgs-overrides.exclude = [
         "all"
@@ -70,6 +72,5 @@ in {
         "src"
         "outputs"
       ];
-    }
-  ];
+    };
 }

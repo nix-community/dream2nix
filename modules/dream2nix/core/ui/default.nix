@@ -1,6 +1,7 @@
 {config, ...}: {
   imports = [
     ./interface.nix
+    ../public
   ];
 
   config.public.name = config.name;

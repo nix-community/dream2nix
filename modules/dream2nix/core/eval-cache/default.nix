@@ -130,6 +130,7 @@
 in {
   imports = [
     ./interface.nix
+    ../deps
   ];
 
   config = l.mkMerge [configIfEnabled configIfDisabled];
