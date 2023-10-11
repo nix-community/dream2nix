@@ -45,30 +45,17 @@
 
     packages = {
       website = pkgs.stdenvNoCC.mkDerivation {
-        name = "site";
+        name = "website";
         nativeBuildInputs = [pkgs.mdbook pkgs.mdbook-linkcheck];
         src = ./.;
         buildPhase = ''
           runHook preBuild
 
-          cp ${self + /docs/theme/highlight.js} ./src/highlight.js
-          cp ${self'.packages.generated-summary-md} ./src/SUMMARY.md
+          rm ./src/intro.md
+          cp ${self + /README.md} ./src/intro.md
+          cat ${self'.packages.generated-summary-md} >> ./src/SUMMARY.md
           mkdir -p ./theme
           cp ${self + /modules/dream2nix/core/docs/theme/favicon.png} ./theme/favicon.png
-
-          {
-            while read ln; do
-              case "$ln" in
-                *end_of_intro*)
-                  break
-                  ;;
-                *)
-                  echo "$ln"
-                  ;;
-              esac
-            done
-            cat src/intro-continued.md
-          } <${self + "/README.md"} >src/README.md
 
           mkdir -p src/options
           for f in ${config.packages.generated-docs}/*.html; do
