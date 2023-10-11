@@ -354,7 +354,6 @@ in {
           # - [Reference Documentation]()
           #   - [core (built in)](./options/core.md)
           generated-summary-md = pkgs.writeText "SUMMARY.md" ''
-            # Summary
             - [Reference Documentation]()
             ${
               lib.concatStringsSep "\n"

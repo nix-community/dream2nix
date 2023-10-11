@@ -5,7 +5,7 @@ In the period of 3 months, [62 pull requests were merged](https://github.com/nix
 ## Most Notable Changes
 
 ### Indexers
-Dream2nix now offers an interface for defining `indexers`. Indexers are programs that can query a package repository (think of npm, or crates.io) for package information. Read [more about indexers in our docs](../intro/indexers.html).
+Dream2nix now offers an interface for defining `indexers`. Indexers are programs that can query a package repository (think of npm, or crates.io) for package information.
 
 Indexers can be used to automatically import packages from all kinds of ecosystems into the nix domain. For example the `libraries-io` indexer can be used to query libraries.io for the 5000 most popular nodejs packages and convert them to nix packages.
 

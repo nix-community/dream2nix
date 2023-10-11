@@ -1,6 +1,0 @@
-[book]
-authors = ["Yusuf Bera Ertan"]
-language = "en"
-multilingual = false
-src = "src"
-title = "dream2nix documentation"
