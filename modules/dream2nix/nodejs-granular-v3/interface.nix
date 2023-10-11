@@ -38,7 +38,6 @@ in {
         imports = [
           dream2nix.modules.dream2nix.core
           dream2nix.modules.dream2nix.mkDerivation
-          ./interface.nix
         ];
         _module.args = {inherit dream2nix packageSets;};
       }));

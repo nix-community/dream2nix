@@ -34,11 +34,10 @@ in {
       '';
     };
     deps = {
-      type = t.attrsOf (t.attrsOf (t.submodule {
+      type = t.lazyAttrsOf (t.lazyAttrsOf (t.submodule {
         imports = [
           dream2nix.modules.dream2nix.core
           dream2nix.modules.dream2nix.mkDerivation
-          ./interface.nix
         ];
         _module.args = {inherit dream2nix packageSets;};
       }));
