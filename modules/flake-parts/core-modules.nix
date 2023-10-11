@@ -14,20 +14,24 @@
     ;
   inherit
     (lib)
-    mapAttrs'
     filterAttrs
+    mapAttrs'
     nameValuePair
     removeSuffix
     ;
 
-  mapModules = path:
+  path = self + "/modules/dream2nix/core";
+
+  dirs = filterAttrs (name: _: name != "default.nix") (readDir path);
+
+  modules =
     mapAttrs'
     (fn: _:
       nameValuePair
       (removeSuffix ".nix" fn)
       (path + "/${fn}"))
-    (filterAttrs (_: type: type == "regular" || type == "directory") (readDir path));
+    (filterAttrs (_: type: type == "regular" || type == "directory") dirs);
 in {
   # generates future flake outputs: `modules.<kind>.<module-name>`
-  config.flake.modules.dream2nix = mapModules (self + "/modules/dream2nix/core");
+  config.flake.modules.dream2nix = modules;
 }

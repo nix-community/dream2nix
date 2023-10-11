@@ -5,6 +5,7 @@
 }: {
   imports = [
     ./interface.nix
+    ../deps
   ];
   deps = {nixpkgs, ...}: {
     python3 = nixpkgs.python3;

@@ -69,6 +69,9 @@
     '';
   };
 in {
+  imports = [
+    ../deps
+  ];
   options = {
     public.docs = l.mkOption {
       type = t.package;

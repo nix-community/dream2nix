@@ -22,6 +22,7 @@ in {
       type = t.nullOr t.package;
       description = "package from which to extract the attributes";
       default = config.deps.python.pkgs.${config.name} or null;
+      defaultText = "config.deps.python.pkgs.\${config.name} or null";
     };
 
     lib.extractOverrideAttrs = l.mkOption {

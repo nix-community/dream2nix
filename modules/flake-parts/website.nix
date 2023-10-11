@@ -9,44 +9,28 @@
     inputs',
     pkgs,
     ...
-  }: {
+  }: let
+    excludes = [
+      # NOT WORKING
+      # TODO: fix those
+      "nixpkgs-overrides"
+      "core"
+      "flags"
+      "ui"
+      "docs"
+      "env"
+      "assertions"
+
+      # doesn't need to be rendered
+      "_template"
+    ];
+  in {
     render.inputs =
       lib.flip lib.mapAttrs
-      (lib.filterAttrs (name: module:
-        lib.elem name [
-          # "buildPythonPackage"
-          # "buildRustPackage"
-          # "builtins-derivation"
-          "core"
-          # "groups"
-          # "mkDerivation"
-          # "mkDerivation-sane-defaults"
-          # "nixpkgs-overrides"
-          "nodejs-devshell"
-          "nodejs-granular"
-          "nodejs-granular-v3"
-          "nodejs-node-modules"
-          "nodejs-package-json"
-          "nodejs-package-lock"
-          "nodejs-package-lock-v3"
-          "package-func"
-          "php-composer-lock"
-          "php-granular"
-
-          "pip"
-          "rust-cargo-lock"
-          "WIP-python-pdm"
-          "WIP-python-pyproject"
-          "WIP-spago"
-
-          "lock"
-          "mkDerivation"
-          "public"
-
-          # NOT WORKING
-          # "rust-crane"
-          # "_template"
-        ]) (self.modules.dream2nix))
+      (lib.filterAttrs
+        (name: module:
+          ! (lib.elem name excludes))
+        (self.modules.dream2nix))
       (name: module: {
         title = name;
         module = self.modules.dream2nix.${name};
