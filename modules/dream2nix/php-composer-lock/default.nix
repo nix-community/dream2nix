@@ -1,5 +1,6 @@
 {
   config,
+  dream2nix,
   lib,
   ...
 }: let
@@ -28,6 +29,7 @@
 in {
   imports = [
     ./interface.nix
+    dream2nix.modules.dream2nix.mkDerivation
   ];
 
   # declare external dependencies
@@ -47,5 +49,6 @@ in {
       if cfg.composerLockFile != null
       then l.fromJSON (l.readFile cfg.composerLockFile)
       else lib.mkDefault {};
+    source = lib.mkOptionDefault config.mkDerivation.src;
   };
 }

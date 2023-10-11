@@ -10,11 +10,13 @@
 in {
   options.php-granular = l.mapAttrs (_: l.mkOption) {
     deps = {
-      type = t.attrsOf (t.attrsOf (t.submodule {
+      type = t.lazyAttrsOf (t.lazyAttrsOf (t.submodule {
         imports = [
           dream2nix.modules.dream2nix.core
-          dream2nix.modules.dream2nix.mkDerivation
-          ./interface.nix
+          # TODO: fix this
+          # putting mkDerivation here leads to an error when generating docs:
+          #   The option `php-granular.deps.<name>.<name>.version' is used but not defined.
+          # dream2nix.modules.dream2nix.mkDerivation
         ];
         _module.args = {inherit dream2nix packageSets;};
       }));

@@ -20,6 +20,9 @@ in {
         The composer.json file to use.
       '';
       default = cfg.source + "/composer.json";
+      defaultText = ''
+        ''${cfg.source}/composer.json
+      '';
     };
     composerJson = {
       type = t.attrs;
@@ -31,6 +34,9 @@ in {
         The composer.lock file to use.
       '';
       default = cfg.source + "/composer.lock";
+      defaultText = ''
+        ''${cfg.source}/composer.lock
+      '';
     };
     composerLock = {
       type = t.attrs;
@@ -39,7 +45,6 @@ in {
     source = {
       type = t.either t.path t.package;
       description = "Source of the package";
-      default = config.mkDerivation.src;
     };
     withDevDependencies = {
       type = t.bool;

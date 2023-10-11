@@ -305,7 +305,11 @@ in {
         version:
         # the submodule for this dependency
         {...}: {
-          imports = [(commonModule name version)];
+          imports = [
+            ./interface.nix
+            (commonModule name version)
+            dream2nix.modules.dream2nix.mkDerivation
+          ];
           inherit name version;
         }
       ))
