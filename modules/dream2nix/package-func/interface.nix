@@ -30,8 +30,17 @@ in {
         The result of calling the final derivation function.
         This is not necessarily the same as `final.package`. The function output might not be compatible to the interface of `final.package` and additional logic might be needed to create `final.package`.
       '';
-      default = config.package-func.func config.package-func.args;
       readOnly = true;
     };
+
+    # add an option for each output, eg. out, bin, lib, etc...
+    # TODO: these dynamic options cannot be rendered into a manual.
+    #   -> removing them for now
+    #   -> maybe refactor `public` to be a submodule which is dynamically created
+    #      This would not improve the manual but allow for type checking
+    # options.public = l.genAttrs outputs (output:
+    #   l.mkOption {
+    #     type = t.path;
+    #   });
   };
 }

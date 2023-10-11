@@ -29,7 +29,7 @@
           # "nodejs-package-json"
           # "nodejs-package-lock"
           # "nodejs-package-lock-v3"
-          # "package-func"
+          "package-func"
           "php-composer-lock"
           "php-granular"
 
