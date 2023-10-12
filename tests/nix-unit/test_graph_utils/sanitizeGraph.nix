@@ -1,4 +1,7 @@
-{lib ? import <nixpkgs/lib>, ...}: let
+{
+  lib ? import <nixpkgs/lib>,
+  ...
+}: let
   util = import ../../../lib/internal/graphUtils.nix {inherit lib;};
 in {
   test_simple = {
