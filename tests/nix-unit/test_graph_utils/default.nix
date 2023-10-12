@@ -1,6 +1,8 @@
-{lib ? import <nixpkgs/lib>, ...}: let
-  findCyclesTests = import ./findCycles.nix {inherit lib;};
+{
+  lib ? import <nixpkgs/lib>,
+  ...
+}: let
   sanitizeGraphTests = import ./sanitizeGraph.nix {inherit lib;};
 in {
-  inherit findCyclesTests sanitizeGraphTests;
+ inherit sanitizeGraphTests; 
 }
