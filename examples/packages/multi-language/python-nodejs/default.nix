@@ -62,6 +62,7 @@ in {
       config.name
     ];
   };
+  blabla = true;
 
   pip = {
     pypiSnapshotDate = "2023-05-30";
