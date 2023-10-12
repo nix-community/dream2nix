@@ -10,6 +10,7 @@ from urllib.parse import urljoin
 import json
 import os
 import requests
+import subprocess
 import sys
 
 with open("./dist-newstyle/cache/plan.json") as f:
@@ -29,6 +30,16 @@ pkgs = list(
 pkg_len = len(pkgs)
 
 lock = {}
+
+
+def to_sri(h):
+    return subprocess.run(
+        ["nix", "hash", "to-sri", "--type", "sha256", h],
+        check=True,
+        capture_output=True,
+        text=True,
+    ).stdout.strip()
+
 
 for i, pkg in enumerate(pkgs):
     name = pkg["pkg-name"]
@@ -56,13 +67,26 @@ for i, pkg in enumerate(pkgs):
         rev_hash = sha256(rev_cabal.encode("utf-8")).hexdigest()
 
         if rev_hash == pkg["pkg-cabal-sha256"]:
+            # Cabal gives hash before unpack, so we need to prefetch the source
+            src_hash = subprocess.run(
+                ["nix-prefetch-url", "--unpack", "--type", "sha256", url],
+                check=True,
+                capture_output=True,
+                text=True,
+            ).stdout.strip()
+            src_hash = to_sri(src_hash)
+
             lock[id] = {
                 "name": name,
                 "version": version,
-                "cabal-sha256": rev_hash,
-                "cabal-url": rev_url,
-                "url": url,
-                "sha256": pkg["pkg-src-sha256"],
+                "cabal": {
+                    "url": rev_url,
+                    "hash": to_sri(rev_hash),
+                },
+                "src": {
+                    "url": url,
+                    "hash": src_hash,
+                },
             }
             break
     else:

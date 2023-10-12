@@ -22,42 +22,20 @@
       ;
   };
 
-  getNameVer = p: "${p.name}-${p.version}";
-
   fetchCabalFile = p:
     config.deps.fetchurl {
-      url = p.cabal-url;
-      sha256 = p.cabal-sha256;
+      inherit (p.cabal) url hash;
     };
 
-  fetchFromHackage = p:
-    config.deps.stdenv.mkDerivation {
-      name = "${getNameVer p}-source";
-
-      # NOTE: Cannot use fetchTarball because cabal gives hash before unpacking
-      src = config.deps.fetchurl {
-        inherit (p) url sha256;
-      };
-
-      # We are fetching cabal file separately to match the revision
-      # p.url contains only "base" release
-      installPhase = ''
-        runHook preInstall
-
-        mkdir unpacked
-        tar -C unpacked -xf "$src"
-        mv unpacked/${getNameVer p} $out
-        cp ${fetchCabalFile p} $out/${p.name}.cabal
-
-        runHook postInstall
-      '';
-
-      dontFixup = true;
+  fetchDependency = p:
+    config.deps.fetchzip {
+      inherit (p.src) url hash;
     };
 
   vendorPackage = p: ''
-    echo "Vendoring ${fetchFromHackage p}"
-    cp -r ${fetchFromHackage p} $VENDOR_DIR/${p.name}
+    echo "Vendoring ${p.name}-${p.version}"
+    cp --no-preserve=all -r ${fetchDependency p} $VENDOR_DIR/${p.name}
+    cp --no-preserve=all    ${fetchCabalFile p}  $VENDOR_DIR/${p.name}/${p.name}.cabal
   '';
 
   vendorPackages =
@@ -123,6 +101,7 @@ in {
       config.deps.cabal-install
       config.deps.haskell-compiler
       config.deps.coreutils
+      config.deps.nix
       (config.deps.python3.withPackages (ps: with ps; [requests]))
     ] ''
       cd $TMPDIR
@@ -139,6 +118,7 @@ in {
         cabal-install
         python3
         fetchurl
+        fetchzip
         stdenv
         coreutils
         bash
