@@ -1,12 +1,11 @@
 {
-  pkgs ? import <nixpkgs> {},
   lib ? import <nixpkgs/lib>,
   ...
 }: let
-  findCycles = import ../../../lib/internal/findCycles.nix {inherit lib;};
+  utils = import ../../../lib/internal/graphUtils.nix {inherit lib;};
 in {
   test_simple = {
-    expr = findCycles {
+    expr = utils.findCycles {
       dependencyGraph = {
         a.v1 = [
           {
@@ -36,7 +35,7 @@ in {
   };
 
   test_cycle_length_3 = {
-    expr = findCycles {
+    expr = utils.findCycles {
       dependencyGraph = {
         a.v1 = [
           {
@@ -72,7 +71,7 @@ in {
   };
 
   test_two_roots_both_chosen = {
-    expr = findCycles {
+    expr = utils.findCycles {
       dependencyGraph = {
         a.v1 = [
           {
@@ -121,7 +120,7 @@ in {
   };
 
   test_two_roots_one_chosen = {
-    expr = findCycles {
+    expr = utils.findCycles {
       dependencyGraph = {
         a.v1 = [
           {
@@ -163,7 +162,7 @@ in {
   };
 
   test_c_visited_twice_no_cycle = {
-    expr = findCycles {
+    expr = utils.findCycles {
       dependencyGraph = {
         a.v1 = [
           {
@@ -188,7 +187,7 @@ in {
   };
 
   test_two_cycles_one_root = {
-    expr = findCycles {
+    expr = utils.findCycles {
       dependencyGraph = {
         a.v1 = [
           {

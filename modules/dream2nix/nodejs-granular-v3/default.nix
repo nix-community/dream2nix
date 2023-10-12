@@ -13,9 +13,9 @@
     inherit (config.deps.stdenv) mkDerivation;
   };
 
-  findCycles = import ../../../lib/internal/findCycles.nix {
+  inherit (import ../../../lib/internal/graphUtils.nix {
     inherit lib;
-  };
+  }) findCycles;
 
   # pdefs.${name}.${version} :: {
   #   // all dependency entries of that package.
