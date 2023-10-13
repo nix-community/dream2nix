@@ -9,7 +9,7 @@
 
   inherit (config.deps) fetchurl;
 
-  nodejsLockUtils = import ../../../lib/internal/nodejsLockUtils.nix { inherit lib; };
+  nodejsLockUtils = import ../../../lib/internal/nodejsLockUtils.nix {inherit lib;};
 
   # Collection of sanitized functions that always return the same type
   isLink = pent: pent.link or false;
@@ -21,10 +21,11 @@
   # getBin = pent: pent.bin or {};
 
   /*
-    Pent :: {
-      See: https://docs.npmjs.com/cli/v9/configuring-npm/package-lock-json#packages
-    }
-    pent is one entry of 'packages'
+  Pent :: {
+    See: https://docs.npmjs.com/cli/v9/configuring-npm/package-lock-json#packages
+  }
+  > We should mention that docs are imcomplete on npmjs.com
+  pent is one entry of 'packages'
   */
   parseSource = pent:
     if isLink pent
@@ -37,19 +38,15 @@
         hash = pent.integrity;
       };
 
-
   getDependencies = lock: path: pent:
-    l.mapAttrs (depName: _semverConstraint: 
-    let
+    l.mapAttrs (depName: _semverConstraint: let
       packageIdent = nodejsLockUtils.findEntry lock path depName;
       depPent = lock.packages.${packageIdent};
-    in
-    {
+    in {
       dev = pent.dev or false;
       version = depPent.version;
     })
     (pent.dependencies or {} // pent.devDependencies or {} // pent.optionalDependencies or {});
-
 
   # Takes one entry of "package" from package-lock.json
   parseEntry = lock: path: entry:
@@ -84,7 +81,8 @@
         };
       };
 
-  mergePdefs = builtins.foldl'
+  mergePdefs =
+    builtins.foldl'
     (acc: entry:
       acc
       // {

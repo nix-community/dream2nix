@@ -297,18 +297,16 @@ in {
       imports = [
         dream2nix.modules.dream2nix.nodejs-package-lock-v3
       ];
-      nodejs-package-lock-v3.packageLock = lib.mkForce {
-        # Example content of lockfile
-        # "lockfileVersion" = 1;
-      };
+      nodejs-package-lock-v3.packageLock =
+        lib.mkForce {
+        };
     };
     config = evaled.config;
   in {
-    expr = builtins.tryEval (config.nodejs-package-lock-v3.pdefs);
-    expected =  {
-      success = false;
-      value = false;
+    expr = config.nodejs-package-lock-v3.pdefs;
+    expectedError = {
+      type = "ThrownError";
+      msg = "Invalid lockfile";
     };
   };
-
 }

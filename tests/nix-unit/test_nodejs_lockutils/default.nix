@@ -74,8 +74,8 @@
     expr = path;
     expected = "node_modules/underscore";
   };
-  
-  # test the lock 
+
+  # test the lock
   test_nodejsLockUtils_lockfile_v3 = let
     plock = {
       name = "foo";
@@ -110,7 +110,69 @@
     };
   in {
     expr = nodejsLockUtils.sanitizeLockfile plock;
-    expectedError = plock;
+    expectedError = {
+      type = "ThrownError";
+      msg = "This lockfile module only supports lockfileVersion 2 and 3";
+    };
   };
 
+  test_nodejsLockUtils_lockfile_missing_name = let
+    plock = {
+      # name = "foo";
+      version = "1.0.0";
+      lockfileVersion = 3;
+      packages = {};
+    };
+  in {
+    expr = nodejsLockUtils.sanitizeLockfile plock;
+    expectedError = {
+      type = "ThrownError";
+      msg = "MUST have a name";
+    };
+  };
+
+  test_nodejsLockUtils_lockfile_missing_version = let
+    plock = {
+      name = "foo";
+      # version = "1.0.0";
+      lockfileVersion = 3;
+      packages = {};
+    };
+  in {
+    expr = nodejsLockUtils.sanitizeLockfile plock;
+    expectedError = {
+      type = "ThrownError";
+      msg = "MUST have a version";
+    };
+  };
+
+  test_nodejsLockUtils_lockfile_missing_lockfileVersion = let
+    plock = {
+      name = "foo";
+      version = "1.0.0";
+      # lockfileVersion = 3;
+      packages = {};
+    };
+  in {
+    expr = nodejsLockUtils.sanitizeLockfile plock;
+    expectedError = {
+      type = "ThrownError";
+      msg = "lockfileVersion";
+    };
+  };
+
+  test_nodejsLockUtils_lockfile_missing_packages = let
+    plock = {
+      name = "foo";
+      version = "1.0.0";
+      lockfileVersion = 3;
+      # packages = {};
+    };
+  in {
+    expr = nodejsLockUtils.sanitizeLockfile plock;
+    expectedError = {
+      type = "ThrownError";
+      msg = "must contain 'packages'";
+    };
+  };
 }

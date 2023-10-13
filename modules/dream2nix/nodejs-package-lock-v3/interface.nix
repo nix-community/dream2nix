@@ -71,7 +71,7 @@ in {
     /*
 
     type: pdefs.${name}.${version} :: {
-      
+
       // Pointing to the source of the package.
       // in most cases this is a tarball (tar.gz) which needs to be unpacked by e.g. unpackPhase
       source :: Derivation | Path
@@ -86,7 +86,7 @@ in {
         }
       }
     }
-   */ 
+    */
     pdefs = {
       type = t.attrsOf (t.attrsOf (t.submodule {
         options.dependencies = l.mkOption {
