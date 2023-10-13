@@ -3,7 +3,7 @@
 
   inputs = {
     dream2nix.url = "github:nix-community/dream2nix";
-    nixpkgs.url = "nixpkgs/nixos-unstable";
+    nixpkgs.follows = "dream2nix/nixpkgs";
   };
 
   outputs = inputs @ {
@@ -18,8 +18,8 @@
     packages.${system} = dream2nix.lib.importPackages {
       projectRoot = ./.;
       # can be changed to ".git" or "flake.nix" to get rid of .project-root
-      projectRootFile = ".project-root";
-      packagesDir = "/packages";
+      projectRootFile = "flake.nix";
+      packagesDir = ./packages;
       packageSets.nixpkgs = nixpkgs.legacyPackages.${system};
     };
   };

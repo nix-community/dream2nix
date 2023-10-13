@@ -8,7 +8,7 @@
   l = lib // builtins;
   t = l.types;
 
-  common-options = import ../derivation-common/options.nix {inherit lib;};
+  common-options = import ../builtins-derivation/derivation-common/options.nix {inherit lib;};
 
   derivationType = t.oneOf [t.str t.path t.package];
 

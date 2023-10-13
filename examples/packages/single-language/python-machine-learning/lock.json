@@ -1,0 +1,278 @@
+{
+  "fetchPipMetadata": {
+    "sources": {
+      "cmake": {
+        "sha256": "c36eb106dec60198264b25d4bd23cd9ea30b0af9200a143ec1db887c095306f7",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/94/87/68536d2dde5acec492742c63bb71f43534eb7d3d83122cce3067c4abca2b/cmake-3.27.4.1-py2.py3-none-manylinux2014_x86_64.manylinux_2_17_x86_64.whl",
+        "version": "3.27.4.1"
+      },
+      "filelock": {
+        "sha256": "f067e40ccc40f2b48395a80fcbd4728262fab54e232e090a4063ab804179efeb",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/52/90/45223db4e1df30ff14e8aebf9a1bf0222da2e7b49e53692c968f36817812/filelock-3.12.3-py3-none-any.whl",
+        "version": "3.12.3"
+      },
+      "jinja2": {
+        "sha256": "6088930bfe239f0e6710546ab9c19c9ef35e29792895fed6e6e31a023a182a61",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/bc/c3/f068337a370801f372f2f8f6bad74a5c140f6fda3d9de154052708dd3c65/Jinja2-3.1.2-py3-none-any.whl",
+        "version": "3.1.2"
+      },
+      "joblib": {
+        "sha256": "ef4331c65f239985f3f2220ecc87db222f08fd22097a3dd5698f693875f8cbb9",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/10/40/d551139c85db202f1f384ba8bcf96aca2f329440a844f924c8a0040b6d02/joblib-1.3.2-py3-none-any.whl",
+        "version": "1.3.2"
+      },
+      "lit": {
+        "sha256": "84623c9c23b6b14763d637f4e63e6b721b3446ada40bf7001d8fee70b8e77a9a",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/bf/fa/0b75c53253ebf3ab566be702a9da16f5783862d8c1ae404c907a8830f283/lit-16.0.6.tar.gz",
+        "version": "16.0.6"
+      },
+      "markupsafe": {
+        "sha256": "65c1a9bcdadc6c28eecee2c119465aebff8f7a584dd719facdd9e825ec61ab52",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/12/b3/d9ed2c0971e1435b8a62354b18d3060b66c8cb1d368399ec0b9baa7c0ee5/MarkupSafe-2.1.3-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl",
+        "version": "2.1.3"
+      },
+      "mpmath": {
+        "sha256": "a0b2b9fe80bbcd81a6647ff13108738cfb482d481d826cc0e02f5b35e5c88d2c",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/43/e3/7d92a15f894aa0c9c4b49b8ee9ac9850d6e63b03c9c32c0367a13ae62209/mpmath-1.3.0-py3-none-any.whl",
+        "version": "1.3.0"
+      },
+      "networkx": {
+        "sha256": "4f33f68cb2afcf86f28a45f43efc27a9386b535d567d2127f8f61d51dec58d36",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/a8/05/9d4f9b78ead6b2661d6e8ea772e111fc4a9fbd866ad0c81906c11206b55e/networkx-3.1-py3-none-any.whl",
+        "version": "3.1"
+      },
+      "numpy": {
+        "sha256": "f08f2e037bba04e707eebf4bc934f1972a315c883a9e0ebfa8a7756eabf9e357",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/71/3c/3b1981c6a1986adc9ee7db760c0c34ea5b14ac3da9ecfcf1ea2a4ec6c398/numpy-1.25.2-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl",
+        "version": "1.25.2"
+      },
+      "nvidia-cublas-cu11": {
+        "sha256": "d32e4d75f94ddfb93ea0a5dda08389bcc65d8916a25cb9f37ac89edaeed3bded",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/ce/41/fdeb62b5437996e841d83d7d2714ca75b886547ee8017ee2fe6ea409d983/nvidia_cublas_cu11-11.10.3.66-py3-none-manylinux1_x86_64.whl",
+        "version": "11.10.3.66"
+      },
+      "nvidia-cuda-cupti-cu11": {
+        "sha256": "e0cfd9854e1f2edaa36ca20d21cd0bdd5dcfca4e3b9e130a082e05b33b6c5895",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/e6/9d/dd0cdcd800e642e3c82ee3b5987c751afd4f3fb9cc2752517f42c3bc6e49/nvidia_cuda_cupti_cu11-11.7.101-py3-none-manylinux1_x86_64.whl",
+        "version": "11.7.101"
+      },
+      "nvidia-cuda-nvrtc-cu11": {
+        "sha256": "9f1562822ea264b7e34ed5930567e89242d266448e936b85bc97a3370feabb03",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/ef/25/922c5996aada6611b79b53985af7999fc629aee1d5d001b6a22431e18fec/nvidia_cuda_nvrtc_cu11-11.7.99-2-py3-none-manylinux1_x86_64.whl",
+        "version": "11.7.99"
+      },
+      "nvidia-cuda-runtime-cu11": {
+        "sha256": "cc768314ae58d2641f07eac350f40f99dcb35719c4faff4bc458a7cd2b119e31",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/36/92/89cf558b514125d2ebd8344dd2f0533404b416486ff681d5434a5832a019/nvidia_cuda_runtime_cu11-11.7.99-py3-none-manylinux1_x86_64.whl",
+        "version": "11.7.99"
+      },
+      "nvidia-cudnn-cu11": {
+        "sha256": "402f40adfc6f418f9dae9ab402e773cfed9beae52333f6d86ae3107a1b9527e7",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/dc/30/66d4347d6e864334da5bb1c7571305e501dcb11b9155971421bb7bb5315f/nvidia_cudnn_cu11-8.5.0.96-2-py3-none-manylinux1_x86_64.whl",
+        "version": "8.5.0.96"
+      },
+      "nvidia-cufft-cu11": {
+        "sha256": "222f9da70c80384632fd6035e4c3f16762d64ea7a843829cb278f98b3cb7dd81",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/74/79/b912a77e38e41f15a0581a59f5c3548d1ddfdda3225936fb67c342719e7a/nvidia_cufft_cu11-10.9.0.58-py3-none-manylinux1_x86_64.whl",
+        "version": "10.9.0.58"
+      },
+      "nvidia-curand-cu11": {
+        "sha256": "eecb269c970fa599a2660c9232fa46aaccbf90d9170b96c462e13bcb4d129e2c",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/8f/11/af78d54b2420e64a4dd19e704f5bb69dcb5a6a3138b4465d6a48cdf59a21/nvidia_curand_cu11-10.2.10.91-py3-none-manylinux1_x86_64.whl",
+        "version": "10.2.10.91"
+      },
+      "nvidia-cusolver-cu11": {
+        "sha256": "72fa7261d755ed55c0074960df5904b65e2326f7adce364cbe4945063c1be412",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/3e/77/66149e3153b19312fb782ea367f3f950123b93916a45538b573fe373570a/nvidia_cusolver_cu11-11.4.0.1-2-py3-none-manylinux1_x86_64.whl",
+        "version": "11.4.0.1"
+      },
+      "nvidia-cusparse-cu11": {
+        "sha256": "a3389de714db63321aa11fbec3919271f415ef19fda58aed7f2ede488c32733d",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/ea/6f/6d032cc1bb7db88a989ddce3f4968419a7edeafda362847f42f614b1f845/nvidia_cusparse_cu11-11.7.4.91-py3-none-manylinux1_x86_64.whl",
+        "version": "11.7.4.91"
+      },
+      "nvidia-nccl-cu11": {
+        "sha256": "5e5534257d1284b8e825bc3a182c6f06acd6eb405e9f89d49340e98cd8f136eb",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/55/92/914cdb650b6a5d1478f83148597a25e90ea37d739bd563c5096b0e8a5f43/nvidia_nccl_cu11-2.14.3-py3-none-manylinux1_x86_64.whl",
+        "version": "2.14.3"
+      },
+      "nvidia-nvtx-cu11": {
+        "sha256": "b22c64eee426a62fc00952b507d6d29cf62b4c9df7a480fcc417e540e05fd5ac",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/23/d5/09493ff0e64fd77523afbbb075108f27a13790479efe86b9ffb4587671b5/nvidia_nvtx_cu11-11.7.91-py3-none-manylinux1_x86_64.whl",
+        "version": "11.7.91"
+      },
+      "pillow": {
+        "sha256": "a74ba0c356aaa3bb8e3eb79606a87669e7ec6444be352870623025d75a14a2bf",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/3d/36/e78f09d510354977e10102dd811e928666021d9c451e05df962d56477772/Pillow-10.0.0-cp310-cp310-manylinux_2_28_x86_64.whl",
+        "version": "10.0.0"
+      },
+      "scikit-learn": {
+        "sha256": "ae80c08834a473d08a204d966982a62e11c976228d306a2648c575e3ead12111",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/5c/e9/ee572691a3fb05555bcde41826faad29ae4bc1fb07982e7f53d54a176879/scikit_learn-1.3.0-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl",
+        "version": "1.3.0"
+      },
+      "scipy": {
+        "sha256": "d690e1ca993c8f7ede6d22e5637541217fc6a4d3f78b3672a6fe454dbb7eb9a7",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/a8/cc/c36f3439f5d47c3b13833ce6687b43a040cc7638c502ac46b41e2d4f3d6f/scipy-1.11.2-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl",
+        "version": "1.11.2"
+      },
+      "setuptools": {
+        "sha256": "eff96148eb336377ab11beee0c73ed84f1709a40c0b870298b0d058828761bae",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/95/79/6b47c6a872b40743a480687dc0c79ffb4202710789f3e4d54a84fff8b550/setuptools-68.2.1-py3-none-any.whl",
+        "version": "68.2.1"
+      },
+      "sympy": {
+        "sha256": "c3588cd4295d0c0f603d0f2ae780587e64e2efeedb3521e46b9bb1d08d184fa5",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/d2/05/e6600db80270777c4a64238a98d442f0fd07cc8915be2a1c16da7f2b9e74/sympy-1.12-py3-none-any.whl",
+        "version": "1.12"
+      },
+      "threadpoolctl": {
+        "sha256": "2b7818516e423bdaebb97c723f86a7c6b0a83d3f3b0970328d66f4d9104dc032",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/81/12/fd4dea011af9d69e1cad05c75f3f7202cdcbeac9b712eea58ca779a72865/threadpoolctl-3.2.0-py3-none-any.whl",
+        "version": "3.2.0"
+      },
+      "torch": {
+        "sha256": "8ced00b3ba471856b993822508f77c98f48a458623596a4c43136158781e306a",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/8c/4d/17e07377c9c3d1a0c4eb3fde1c7c16b5a0ce6133ddbabc08ceef6b7f2645/torch-2.0.1-cp310-cp310-manylinux1_x86_64.whl",
+        "version": "2.0.1"
+      },
+      "triton": {
+        "sha256": "38806ee9663f4b0f7cd64790e96c579374089e58f49aac4a6608121aa55e2505",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/ca/31/ff6be541195daf77aa5c72303b2354661a69e717967d44d91eb4f3fdce32/triton-2.0.0-1-cp310-cp310-manylinux2014_x86_64.manylinux_2_17_x86_64.whl",
+        "version": "2.0.0"
+      },
+      "typing-extensions": {
+        "sha256": "440d5dd3af93b060174bf433bccd69b0babc3b15b1a8dca43789fd7f61514b36",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/ec/6b/63cc3df74987c36fe26157ee12e09e8f9db4de771e0f3404263117e75b95/typing_extensions-4.7.1-py3-none-any.whl",
+        "version": "4.7.1"
+      },
+      "wheel": {
+        "sha256": "75909db2664838d015e3d9139004ee16711748a52c8f336b52882266540215d8",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/b8/8b/31273bf66016be6ad22bb7345c37ff350276cfd46e389a0c2ac5da9d9073/wheel-0.41.2-py3-none-any.whl",
+        "version": "0.41.2"
+      }
+    },
+    "targets": {
+      "default": {
+        "cmake": [],
+        "filelock": [
+          "typing-extensions"
+        ],
+        "jinja2": [
+          "markupsafe"
+        ],
+        "joblib": [],
+        "lit": [],
+        "markupsafe": [],
+        "mpmath": [],
+        "networkx": [],
+        "numpy": [],
+        "nvidia-cublas-cu11": [
+          "setuptools",
+          "wheel"
+        ],
+        "nvidia-cuda-cupti-cu11": [
+          "setuptools",
+          "wheel"
+        ],
+        "nvidia-cuda-nvrtc-cu11": [],
+        "nvidia-cuda-runtime-cu11": [
+          "setuptools",
+          "wheel"
+        ],
+        "nvidia-cudnn-cu11": [
+          "nvidia-cublas-cu11"
+        ],
+        "nvidia-cufft-cu11": [],
+        "nvidia-curand-cu11": [
+          "setuptools",
+          "wheel"
+        ],
+        "nvidia-cusolver-cu11": [
+          "nvidia-cublas-cu11"
+        ],
+        "nvidia-cusparse-cu11": [
+          "setuptools",
+          "wheel"
+        ],
+        "nvidia-nccl-cu11": [],
+        "nvidia-nvtx-cu11": [
+          "setuptools",
+          "wheel"
+        ],
+        "pillow": [],
+        "scikit-learn": [
+          "joblib",
+          "numpy",
+          "scipy",
+          "threadpoolctl"
+        ],
+        "scipy": [
+          "numpy"
+        ],
+        "setuptools": [],
+        "sympy": [
+          "mpmath"
+        ],
+        "threadpoolctl": [],
+        "torch": [
+          "filelock",
+          "jinja2",
+          "networkx",
+          "nvidia-cublas-cu11",
+          "nvidia-cuda-cupti-cu11",
+          "nvidia-cuda-nvrtc-cu11",
+          "nvidia-cuda-runtime-cu11",
+          "nvidia-cudnn-cu11",
+          "nvidia-cufft-cu11",
+          "nvidia-curand-cu11",
+          "nvidia-cusolver-cu11",
+          "nvidia-cusparse-cu11",
+          "nvidia-nccl-cu11",
+          "nvidia-nvtx-cu11",
+          "sympy",
+          "triton",
+          "typing-extensions"
+        ],
+        "triton": [
+          "cmake",
+          "filelock",
+          "lit"
+        ],
+        "typing-extensions": [],
+        "wheel": []
+      }
+    }
+  },
+  "invalidationHash": "73ea7fe0e9b1f7d10f3140984bfd37279a11627f127cf23ea37cba173487d379"
+}

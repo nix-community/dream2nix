@@ -13,9 +13,11 @@
     packagesDir,
     ...
   }: let
+    projectRoot = toString args.projectRoot;
+    packagesDir = toString args.packagesDir;
     packagesDirPath =
-      if ! builtins.isString packagesDir
-      then throw "packagesDir must be a string"
+      if lib.hasPrefix projectRoot packagesDir
+      then packagesDir
       else projectRoot + "/${packagesDir}";
     forwardedArgs = builtins.removeAttrs args [
       "projectRoot"
@@ -28,14 +30,17 @@
       module: type:
         self.lib.evalModules (forwardedArgs
           // {
-            modules = [
-              (packagesDirPath + "/${module}")
-              {
-                paths.projectRoot = projectRoot;
-                paths.projectRootFile = projectRootFile;
-                paths.package = "/${packagesDir}/${module}";
-              }
-            ];
+            modules =
+              args.modules
+              or []
+              ++ [
+                (packagesDirPath + "/${module}")
+                {
+                  paths.projectRoot = projectRoot;
+                  paths.projectRootFile = projectRootFile;
+                  paths.package = packagesDir + "/${module}";
+                }
+              ];
           })
     )
     (builtins.readDir packagesDirPath);
@@ -69,6 +74,7 @@
             // {
               inherit packageSets;
               dream2nix.modules.dream2nix = self.modules.dream2nix;
+              dream2nix.overrides = self.overrides;
               dream2nix.lib.evalModules = self.lib.evalModules;
             };
         }

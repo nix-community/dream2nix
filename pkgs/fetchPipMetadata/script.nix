@@ -26,6 +26,7 @@
   requirementsFiles ? [],
   pipFlags ? [],
   pipVersion ? "23.1",
+  env ? {},
   wheelVersion ? "0.40.0",
   nativeBuildInputs ? [],
   # maximum release date for packages
@@ -65,7 +66,11 @@
     mitmProxy = "${pythonWithMitmproxy}/bin/mitmdump";
 
     # convert pypiSnapshotDate to string and integrate into finalAttrs
-    pypiSnapshotDate = builtins.toString pypiSnapshotDate;
+    pypiSnapshotDate =
+      if pypiSnapshotDate == null
+      # when the snapshot date is disabled, put it far into the future
+      then "9999-01-01"
+      else builtins.toString pypiSnapshotDate;
 
     # add some variables to the derivation to integrate them into finalAttrs
     inherit
@@ -82,6 +87,12 @@
     writePureShellScript
     path
     ''
+      ${
+        lib.foldlAttrs
+        (acc: name: value: acc + "\nexport " + lib.toShellVar name value)
+        ""
+        env
+      }
       ${package}/bin/fetch_pip_metadata \
         --json-args-file ${args} \
         --project-root $(${findRoot})

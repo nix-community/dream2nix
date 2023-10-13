@@ -17,6 +17,10 @@ in {
       type = t.submodule {
         freeformType = t.anything;
       };
+      description = ''
+        The content of the lock file.
+        All fields declared via `lock.fields` are contained pointing to their respective values.
+      '';
     };
 
     fields = l.mkOption {
@@ -45,6 +49,20 @@ in {
       example = {
         pname = true;
         version = true;
+      };
+    };
+
+    invalidationData = l.mkOption {
+      type = t.anything;
+      description = ''
+        Pass any data that should invalidate the lock file when changed.
+        This is useful for example when the lock file should be regenerated
+        when the requirements change.
+      '';
+      default = {};
+      example = {
+        pip.requirements = ["requests" "pillow"];
+        pip.lockVersion = "2";
       };
     };
 

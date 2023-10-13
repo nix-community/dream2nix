@@ -1,6 +1,19 @@
 {
   description = "(modules only) dream2nix: Automate reproducible packaging for various language ecosystems";
 
+  inputs = {
+    nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
+
+    flake-compat.url = "github:nix-community/flake-compat/pull/4/head";
+    flake-compat.flake = false;
+
+    pyproject-nix.url = "github:adisbladis/pyproject.nix";
+    pyproject-nix.flake = false;
+
+    purescript-overlay.url = "github:thomashoneyman/purescript-overlay";
+    purescript-overlay.inputs.nixpkgs.follows = "nixpkgs";
+  };
+
   outputs = _: let
     modulesDir = ./.;
 

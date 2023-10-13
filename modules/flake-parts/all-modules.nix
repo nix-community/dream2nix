@@ -46,7 +46,7 @@ in {
   imports = flakePartsModules;
 
   options.flake.modules = mkOption {
-    type = types.anything;
+    type = types.lazyAttrsOf (types.lazyAttrsOf types.raw);
   };
 
   # generates future flake outputs: `modules.<kind>.<module-name>`

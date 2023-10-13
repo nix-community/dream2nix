@@ -2,9 +2,10 @@
   config,
   lib,
   ...
-}: let
-  l = lib // builtins;
-in {
+}: {
+  imports = [
+    ./interface.nix
+  ];
   config = {
   };
 }

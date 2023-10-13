@@ -16,6 +16,9 @@
     then removeLockFileScript
     else refresh';
 
+  invalidationHashCurrent = l.hashString "sha256" (l.toJSON cfg.invalidationData);
+  invalidationHashLocked = fileContent.invalidationHash or null;
+
   # script to remove the lock file if no fields are defined
   removeLockFileScript = config.deps.writePython3Bin "refresh" {} ''
     import os
@@ -71,6 +74,11 @@
 
 
     lock_data = run_refresh_scripts(refresh_scripts)
+    # error out if invalidation hash is already present
+    if "invalidationHash" in lock_data:
+        raise Exception("invalidationHash already present in lock file")
+    else:
+        lock_data["invalidationHash"] = "${invalidationHashCurrent}"  # noqa: E501
     with open(lock_path, 'w') as out_file:
         json.dump(lock_data, out_file, indent=2)
     print(f"lock file written to {out_file.name}")
@@ -125,31 +133,33 @@
           json.dump(checksum, f, indent=2)
     '';
 
+  updateHint = ''
+    To create or update the lock file, run:
+
+      bash -c $(nix-build ${config.lock.refresh.drvPath} --no-link)/bin/refresh
+
+    Alternatively `nix run` the .lock attribute of your package.
+  '';
+
   errorMissingFile = ''
     The lock file ${config.paths.package}/${config.paths.lockFile}
       for drv-parts module '${config.name}' is missing.
 
-    To update it without flakes:
-
-      bash -c $(nix-build ${config.lock.refresh.drvPath} --no-link)/bin/refresh
-
-    To update it using flakes:
-
-      nix run -L .#${config.name}.config.lock.refresh
+    ${updateHint}
   '';
 
-  errorOutdated = field: ''
+  errorOutdated = ''
+    The lock file ${config.paths.package}/${config.paths.lockFile}
+      for drv-parts module '${config.name}' is outdated.
+
+    ${updateHint}
+  '';
+
+  errorOutdatedField = field: ''
     The lock file ${config.paths.package}/${config.paths.lockFile}
       for drv-parts module '${config.name}' does not contain field `${field}`.
 
-    To update it without flakes:
-
-      bash -c $(nix-build ${config.lock.refresh.drvPath} --no-link)/bin/refresh
-
-    To update it using flakes:
-
-      nix run -L .#${config.name}.config.lock.refresh
-
+    ${updateHint}
   '';
 
   fileContent =
@@ -166,18 +176,29 @@
     then cfg.fields.${field}.default
     else if fileContent ? ${field}
     then fileContent.${field}
-    else throw (errorOutdated field);
+    else throw (errorOutdatedField field);
 
-  loadedContent = l.mapAttrs loadField cfg.fields;
+  loadedContent =
+    if invalidationHashCurrent != invalidationHashLocked
+    then throw errorOutdated
+    else l.mapAttrs loadField cfg.fields;
+
+  # makes a value more lazy to the module system, so it can be overridden
+  # without the original value being evaluated.
+  mkLazy =
+    lib.mkOverride
+    (lib.modules.defaultOverridePriority or lib.modules.defaultPriority);
 in {
   imports = [
     ./interface.nix
+    ../assertions.nix
+    ../deps
   ];
 
   config = {
     lock.refresh = refresh;
 
-    lock.content = loadedContent;
+    lock.content = mkLazy loadedContent;
 
     lock.lib = {inherit computeFODHash;};
 

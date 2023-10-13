@@ -5,3 +5,4 @@
 result
 interpreter
 __pycache__
+*.egg-info

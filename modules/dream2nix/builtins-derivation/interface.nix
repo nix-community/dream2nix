@@ -6,7 +6,7 @@
   l = lib // builtins;
   t = l.types;
 
-  common-options = import ../derivation-common/options.nix {inherit lib;};
+  common-options = import ./derivation-common/options.nix {inherit lib;};
 
   builtin-derivation-options = {
     # basic arguments

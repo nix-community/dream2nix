@@ -1,0 +1,19 @@
+[book]
+authors = ["David Hauer", "Various contributors"]
+language = "en"
+multilingual = false
+src = "src"
+title = "dream2nix"
+
+[output.html]
+git-repository-url = "https://github.com/nix-community/dream2nix"
+edit-url-template = "https://github.com/nix-community/dream2nix/edit/main/modules/dream2nix/{path}"
+additional-js = [ "no-edit-options.js" ]
+additional-css = [ "flake-parts.css" ]
+no-section-label = true
+
+[output.html.print]
+enable = false  # big single page; don't need that
+
+[output.linkcheck]
+follow-web-links = false # no Internet during the build

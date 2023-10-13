@@ -6,17 +6,18 @@
   nix-prefetch-scripts,
 }: let
   package = python3.pkgs.buildPythonPackage {
-    name = "fetch_pip_metadata";
-    format = "flit";
+    name = "fetch-pip-metadata";
+    format = "pyproject";
     src = ./src;
     nativeBuildInputs = [
       gitMinimal
       python3.pkgs.pytestCheckHook
-      nix-prefetch-scripts
     ];
     propagatedBuildInputs = with python3.pkgs; [
       packaging
       certifi
+      flit-core
+      nix-prefetch-scripts
       python-dateutil
       pip
     ];

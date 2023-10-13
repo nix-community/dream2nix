@@ -30,6 +30,26 @@
       packagePath = "/examples/packages/${dirName}/${name}";
     });
 
+  importFlake = flakeFile: let
+    self' = (import flakeFile).outputs {
+      dream2nix = self;
+      nixpkgs = inputs.nixpkgs;
+      self = self';
+    };
+  in
+    self';
+
+  importFlakeSmall = flakeFile: let
+    self' = (import flakeFile).outputs {
+      dream2nix = modulesFlake;
+      nixpkgs = inputs.nixpkgs;
+      self = self';
+    };
+  in
+    self';
+
+  modulesFlake = import (self + /modules) {};
+
   # Type: [ {${name} = {module, packagePath} ]
   allExamples = mapAttrsToList (dirName: _: readExamples dirName) packageCategories;
 
@@ -78,7 +98,6 @@ in {
           nixpkgs = inputs.nixpkgs.legacyPackages.${system};
           writers = config.writers;
         };
-        specialArgs.dream2nix = self;
       };
     in
       evaled.config.public;
@@ -96,7 +115,22 @@ in {
   in {
     # map all modules in /examples to a package output in the flake.
     checks =
-      lib.mapAttrs (_: drvModules: makeDrv drvModules)
-      allModules;
+      lib.optionalAttrs
+      (system == "x86_64-linux")
+      (
+        (lib.mapAttrs (_: drvModules: makeDrv drvModules) allModules)
+        // {
+          example-repo =
+            (import (self + /examples/dream2nix-repo) {
+              dream2nixSource = self;
+              inherit pkgs;
+            })
+            .hello;
+          example-repo-flake =
+            (importFlake (self + /examples/dream2nix-repo-flake/flake.nix)).packages.${system}.hello;
+          example-repo-flake-pdm =
+            (importFlakeSmall (self + /examples/dream2nix-repo-flake-pdm/flake.nix)).packages.${system}.requests;
+        }
+      );
   };
 }

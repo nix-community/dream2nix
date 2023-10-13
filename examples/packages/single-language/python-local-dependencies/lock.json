@@ -1,0 +1,25 @@
+{
+  "fetchPipMetadata": {
+    "sources": {
+      "subpkg1": {
+        "path": "examples/packages/single-language/python-local-dependencies/subpkg1",
+        "type": "local",
+        "version": "0.0.1"
+      },
+      "subpkg2": {
+        "path": "examples/packages/single-language/python-local-dependencies/subpkg2",
+        "type": "local",
+        "version": "0.0.2"
+      }
+    },
+    "targets": {
+      "default": {
+        "subpkg1": [
+          "subpkg2"
+        ],
+        "subpkg2": []
+      }
+    }
+  },
+  "invalidationHash": "226b1267f23fd3705dd88929c9eb630aececd273204130ad42f13a4f7b8e35ca"
+}
