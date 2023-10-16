@@ -215,7 +215,8 @@
   # and dependencies as names.
   # getDepsRecursively :: Attrset -> String -> Attrset
   getDepsRecursively = parseLockData: name: let
-    getDeps = name: let
+    getDeps = unstandardizedName: let
+      name = lib.strings.toLower unstandardizedName;
       dep = parseLockData.${name};
     in
       [{"${name}" = dep;}] ++ lib.flatten (map getDeps dep.dependencies);
