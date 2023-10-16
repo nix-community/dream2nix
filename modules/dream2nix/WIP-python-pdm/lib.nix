@@ -173,9 +173,12 @@
             isUsableFilename {inherit environ filename;}
         )
         sources;
-      parsedDeps = (
+      parsedDeps = with lib.trivial; (
         map
-        libpyproject.pep508.parseString
+        ((flip pipe) [
+          lib.strings.toLower
+          libpyproject.pep508.parseString
+        ])
         item.dependencies or []
       );
       value = {
