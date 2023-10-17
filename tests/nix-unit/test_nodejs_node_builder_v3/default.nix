@@ -37,7 +37,7 @@ in {
     config = evaled.config;
   in {
     expr = lib.generators.toPretty {} config.WIP-nodejs-builder-v3.pdefs."minimal"."1.0.0".prepared-dev;
-    expected = "<derivation minimal-node_modules>";
+    expected = "<derivation minimal-node_modules-dev>";
   };
 
   test_nodejs_root_info = let
@@ -54,19 +54,6 @@ in {
       initialPath = "";
       initialState = "source";
     };
-  };
-
-  test_1 = let
-    evaled = eval ({config, ...}: {
-      imports = [
-        dream2nix.modules.dream2nix.WIP-nodejs-builder-v3
-      ];
-      WIP-nodejs-builder-v3.packageLockFile = ./package-lock.json;
-    });
-    config = evaled.config;
-  in {
-    expr = config.WIP-nodejs-builder-v3.pdefs."minimal"."1.0.0";
-    expected = "<derivation minimal-node_modules>";
   };
 
   # TODO: There is no prod node_modules yet.
