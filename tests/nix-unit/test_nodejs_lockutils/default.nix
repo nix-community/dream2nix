@@ -116,36 +116,6 @@
     };
   };
 
-  test_nodejsLockUtils_lockfile_missing_name = let
-    plock = {
-      # name = "foo";
-      version = "1.0.0";
-      lockfileVersion = 3;
-      packages = {};
-    };
-  in {
-    expr = nodejsLockUtils.sanitizeLockfile plock;
-    expectedError = {
-      type = "ThrownError";
-      msg = "MUST have a name";
-    };
-  };
-
-  test_nodejsLockUtils_lockfile_missing_version = let
-    plock = {
-      name = "foo";
-      # version = "1.0.0";
-      lockfileVersion = 3;
-      packages = {};
-    };
-  in {
-    expr = nodejsLockUtils.sanitizeLockfile plock;
-    expectedError = {
-      type = "ThrownError";
-      msg = "MUST have a version";
-    };
-  };
-
   test_nodejsLockUtils_lockfile_missing_lockfileVersion = let
     plock = {
       name = "foo";
@@ -158,21 +128,6 @@
     expectedError = {
       type = "ThrownError";
       msg = "lockfileVersion";
-    };
-  };
-
-  test_nodejsLockUtils_lockfile_missing_packages = let
-    plock = {
-      name = "foo";
-      version = "1.0.0";
-      lockfileVersion = 3;
-      # packages = {};
-    };
-  in {
-    expr = nodejsLockUtils.sanitizeLockfile plock;
-    expectedError = {
-      type = "ThrownError";
-      msg = "must contain 'packages'";
     };
   };
 }

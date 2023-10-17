@@ -8,22 +8,10 @@
     lib.removeSuffix "/" nextPath;
 
   sanitizeLockfile = lock:
-  # Every project MUST have a name
-    if ! lock ? name
-    then throw "Invalid lockfile: Every project MUST have a name"
-    else
-      # Every project MUST have a version
-      if ! lock ? version
-      then throw "Invalid lockfile: Every project MUST have a version"
-      else
-        # This lockfile module only supports lockfileVersion 2 and 3
-        if ! lock ? lockfileVersion || lock.lockfileVersion <= 1
-        then throw "This lockfile module only supports lockfileVersion 2 and 3"
-        else
-          # The Lockfile must contain a 'packages' attribute.
-          if ! lock ? packages
-          then throw "Invalid lockfile: The Lockfile must contain 'packages' attribute."
-          else lock;
+  # This lockfile module only supports lockfileVersion 2 and 3
+    if ! lock ? lockfileVersion || lock.lockfileVersion <= 1
+    then throw "This lockfile module only supports lockfileVersion 2 and 3"
+    else lock;
 
   findEntry =
     # = "attrs"
