@@ -146,6 +146,7 @@
 in {
   imports = [
     dream2nix.modules.dream2nix.mkDerivation
+    ./interface.nix
   ];
 
   package-func.func = config.deps.rustPlatform.buildRustPackage;
@@ -158,12 +159,14 @@ in {
   deps = {nixpkgs, ...}: {
     inherit
       (nixpkgs)
+      cargo
       fetchurl
       jq
       moreutils
       python3Packages
       runCommandLocal
       rustPlatform
+      writeText
       ;
     inherit
       (nixpkgs.writers)
