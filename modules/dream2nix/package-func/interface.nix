@@ -30,7 +30,6 @@ in {
         The result of calling the final derivation function.
         This is not necessarily the same as `final.package`. The function output might not be compatible to the interface of `final.package` and additional logic might be needed to create `final.package`.
       '';
-      readOnly = true;
     };
 
     # add an option for each output, eg. out, bin, lib, etc...

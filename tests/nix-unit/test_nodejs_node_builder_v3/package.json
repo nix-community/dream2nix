@@ -1,0 +1,10 @@
+{
+  "name": "minimal",
+  "version": "1.0.0",
+  "dependencies": {
+    "kitten": "^0.0.2"
+  },
+  "scripts": {
+    "build": "node ./node_modules/.bin/esparse --version"
+  }
+}
