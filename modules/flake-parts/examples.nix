@@ -112,7 +112,7 @@ in {
         }
       ];
     });
-  in {
+
     # map all modules in /examples to a package output in the flake.
     checks =
       lib.optionalAttrs
@@ -132,5 +132,11 @@ in {
             (importFlakeSmall (self + /examples/dream2nix-repo-flake-pdm/flake.nix)).packages.${system}.requests;
         }
       );
+
+    # work around a bug in nix-fast-build / nix-eval jobs
+    # TODO: remove this
+    checksWithSystem = lib.mapAttrs (_: drv: drv // {inherit system;}) checks;
+  in {
+    checks = checksWithSystem;
   };
 }
