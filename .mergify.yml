@@ -11,6 +11,6 @@ pull_request_rules:
   - name: merge using the merge queue
     conditions:
       - base=main
-      - label~=merge-queue|dependencies
+      - label~=merge-queue|auto-merge|dependencies
     actions:
       queue:
