@@ -26,6 +26,7 @@
           url = plent.resolved;
           hash = plent.integrity;
         };
+        dontBuild = true;
         installPhase = ''
           cp -r . $out
         '';
@@ -103,7 +104,7 @@
         env = {
           FILESYSTEM = builtins.toJSON (getFileSystem pdefs);
         };
-        buildInputs = with config.deps; [jq nodejs];
+        buildInputs = with config.deps; [nodejs];
         buildPhase = ''
           node ${makeNodeModules}
         '';
@@ -113,13 +114,17 @@
         inherit (entry) version;
         name = entry.name + "-dist";
         src = source;
-        buildInputs = with config.deps; [nodejs];
+        buildInputs = with config.deps; [nodejs jq];
         configurePhase = ''
           cp -r ${prepared-dev}/node_modules node_modules
           # TODO: run installScripts of trusted dependencies
+
         '';
         buildPhase = ''
-          npm run build
+          echo "BUILDING... $name"
+          if [ -n "$runBuild" ] && [ "$(jq '.scripts.build' ./package.json)" != "null" ]; then
+            npm run build 
+          fi;
         '';
         installPhase = ''
           cp -r . $out
@@ -196,10 +201,11 @@
           };
         }) (l.filterAttrs (n: v: v.info.initialState == "dist") pdefs'.${name})
     ) {} (l.attrNames pdefs');
+
 in {
   imports = [
     ./interface.nix
-    dream2nix.modules.dream2nix.core
+     dream2nix.modules.dream2nix.mkDerivation
   ];
 
   # declare external dependencies
@@ -208,6 +214,7 @@ in {
       (nixpkgs)
       fetchurl
       jq
+      tree
       ;
     nodejs = nixpkgs.nodejs_latest;
     inherit
@@ -215,6 +222,8 @@ in {
       mkDerivation
       ;
   };
+
+  package-func.result = l.mkForce (pdefs.${config.name}.${config.version}.dist);
 
   # OUTPUTS
   nodejs-node-builder-v3 = {

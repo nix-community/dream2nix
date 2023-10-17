@@ -25,6 +25,7 @@ function createBinEntry([name, target]) {
   fs.chmod(target, fs.constants.S_IXUSR | fs.constants.S_IRUSR, () => {});
   fs.symlink(relTarget, path.join(out, name), (err) => {
     if (err) {
+      console.log(`could NOT symlink: ${name} -> ${target}`);
       console.error(err);
       abort();
     }
@@ -60,3 +61,13 @@ function createEntry([folder, value]) {
 }
 
 Object.entries(JSON.parse(FILESYSTEM)).forEach(createEntry);
+
+if (!fs.existsSync(out)) {
+  fs.mkdirSync(out, { recursive: true }, () => {
+    if (err) {
+      console.error(err);
+      abort();
+    }
+    console.log(`created empty out: ${out}`);
+  });
+}
