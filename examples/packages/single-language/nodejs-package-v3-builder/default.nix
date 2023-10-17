@@ -5,8 +5,7 @@
   ...
 }: {
   imports = [
-   
-    dream2nix.modules.dream2nix.nodejs-node-builder-v3
+    dream2nix.modules.dream2nix.WIP-nodejs-builder-v3
   ];
 
   mkDerivation = {
@@ -26,7 +25,7 @@
       ;
   };
 
-  nodejs-node-builder-v3 = {
+  WIP-nodejs-builder-v3 = {
     packageLockFile = "${config.mkDerivation.src}/package-lock.json";
   };
 

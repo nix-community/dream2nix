@@ -7,7 +7,7 @@
   l = lib // builtins;
   t = l.types;
 in {
-  options.nodejs-node-builder-v3 = l.mapAttrs (_: l.mkOption) {
+  options.WIP-nodejs-builder-v3 = l.mapAttrs (_: l.mkOption) {
     packageLockFile = {
       type = t.nullOr t.path;
       description = ''

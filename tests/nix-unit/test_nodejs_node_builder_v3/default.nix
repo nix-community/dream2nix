@@ -17,39 +17,39 @@ in {
   test_nodejs_eval_dist = let
     evaled = eval ({config, ...}: {
       imports = [
-        dream2nix.modules.dream2nix.nodejs-node-builder-v3
+        dream2nix.modules.dream2nix.WIP-nodejs-builder-v3
       ];
-      nodejs-node-builder-v3.packageLockFile = ./package-lock.json;
+      WIP-nodejs-builder-v3.packageLockFile = ./package-lock.json;
     });
     config = evaled.config;
   in {
-    expr = lib.generators.toPretty {} config.nodejs-node-builder-v3.pdefs."minimal"."1.0.0".dist;
+    expr = lib.generators.toPretty {} config.WIP-nodejs-builder-v3.pdefs."minimal"."1.0.0".dist;
     expected = "<derivation minimal-dist>";
   };
 
   test_nodejs_eval_nodeModules = let
     evaled = eval ({config, ...}: {
       imports = [
-        dream2nix.modules.dream2nix.nodejs-node-builder-v3
+        dream2nix.modules.dream2nix.WIP-nodejs-builder-v3
       ];
-      nodejs-node-builder-v3.packageLockFile = ./package-lock.json;
+      WIP-nodejs-builder-v3.packageLockFile = ./package-lock.json;
     });
     config = evaled.config;
   in {
-    expr = lib.generators.toPretty {} config.nodejs-node-builder-v3.pdefs."minimal"."1.0.0".prepared-dev;
+    expr = lib.generators.toPretty {} config.WIP-nodejs-builder-v3.pdefs."minimal"."1.0.0".prepared-dev;
     expected = "<derivation minimal-node_modules>";
   };
 
   test_nodejs_root_info = let
     evaled = eval ({config, ...}: {
       imports = [
-        dream2nix.modules.dream2nix.nodejs-node-builder-v3
+        dream2nix.modules.dream2nix.WIP-nodejs-builder-v3
       ];
-      nodejs-node-builder-v3.packageLockFile = ./package-lock.json;
+      WIP-nodejs-builder-v3.packageLockFile = ./package-lock.json;
     });
     config = evaled.config;
   in {
-    expr = config.nodejs-node-builder-v3.pdefs."minimal"."1.0.0".info;
+    expr = config.WIP-nodejs-builder-v3.pdefs."minimal"."1.0.0".info;
     expected = {
       initialPath = "";
       initialState = "source";
@@ -59,13 +59,13 @@ in {
   test_1 = let
     evaled = eval ({config, ...}: {
       imports = [
-        dream2nix.modules.dream2nix.nodejs-node-builder-v3
+        dream2nix.modules.dream2nix.WIP-nodejs-builder-v3
       ];
-      nodejs-node-builder-v3.packageLockFile = ./package-lock.json;
+      WIP-nodejs-builder-v3.packageLockFile = ./package-lock.json;
     });
     config = evaled.config;
   in {
-    expr = config.nodejs-node-builder-v3.pdefs."minimal"."1.0.0";
+    expr = config.WIP-nodejs-builder-v3.pdefs."minimal"."1.0.0";
     expected = "<derivation minimal-node_modules>";
   };
 
@@ -73,13 +73,13 @@ in {
   # test_nodejs_eval_nodeModules_prod = let
   #   evaled = eval ({config, ...}: {
   #     imports = [
-  #       dream2nix.modules.dream2nix.nodejs-node-builder-v3
+  #       dream2nix.modules.dream2nix.WIP-nodejs-builder-v3
   #     ];
-  #     nodejs-node-builder-v3.packageLockFile = ./package-lock.json;
+  #     WIP-nodejs-builder-v3.packageLockFile = ./package-lock.json;
   #   });
   #   config = evaled.config;
   # in {
-  #   expr = lib.generators.toPretty {} config.nodejs-node-builder-v3.pdefs."minimal"."1.0.0".prepared-prod;
+  #   expr = lib.generators.toPretty {} config.WIP-nodejs-builder-v3.pdefs."minimal"."1.0.0".prepared-prod;
   #   expected = "<derivation minimal-node_modules-prod>";
   # };
 }

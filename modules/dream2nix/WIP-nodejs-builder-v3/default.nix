@@ -5,7 +5,7 @@
   ...
 }: let
   l = lib // builtins;
-  cfg = config.nodejs-node-builder-v3;
+  cfg = config.WIP-nodejs-builder-v3;
 
   inherit (config.deps) fetchurl;
 
@@ -123,7 +123,7 @@
         buildPhase = ''
           echo "BUILDING... $name"
           if [ -n "$runBuild" ] && [ "$(jq '.scripts.build' ./package.json)" != "null" ]; then
-            npm run build 
+            npm run build
           fi;
         '';
         installPhase = ''
@@ -201,11 +201,10 @@
           };
         }) (l.filterAttrs (n: v: v.info.initialState == "dist") pdefs'.${name})
     ) {} (l.attrNames pdefs');
-
 in {
   imports = [
     ./interface.nix
-     dream2nix.modules.dream2nix.mkDerivation
+    dream2nix.modules.dream2nix.mkDerivation
   ];
 
   # declare external dependencies
@@ -226,7 +225,7 @@ in {
   package-func.result = l.mkForce (pdefs.${config.name}.${config.version}.dist);
 
   # OUTPUTS
-  nodejs-node-builder-v3 = {
+  WIP-nodejs-builder-v3 = {
     inherit pdefs;
     packageLock =
       lib.mkDefault
