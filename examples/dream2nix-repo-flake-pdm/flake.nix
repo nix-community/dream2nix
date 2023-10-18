@@ -33,6 +33,6 @@
       specialArgs.packageSets.nixpkgs = nixpkgs.legacyPackages.x86_64-linux;
     };
   in {
-    packages.${system} = evaled.config.groups.default.public.packages;
+    packages.${system}.requests = evaled.config.groups.default.public.packages.requests."2.31.0";
   };
 }

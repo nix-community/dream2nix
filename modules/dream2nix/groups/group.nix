@@ -22,20 +22,20 @@ in {
       '';
     };
     packages = lib.mkOption {
-      type = t.lazyAttrsOf packageType;
+      type = t.lazyAttrsOf (t.lazyAttrsOf packageType);
       description = ''
         The package configurations to evaluate
       '';
     };
     packagesEval = lib.mkOption {
-      type = t.lazyAttrsOf (t.submoduleWith {modules = [];});
+      type = t.lazyAttrsOf (t.lazyAttrsOf (t.submoduleWith {modules = [];}));
       description = ''
         The evaluated dream2nix package modules
       '';
       internal = true;
     };
     public.packages = lib.mkOption {
-      type = t.lazyAttrsOf t.package;
+      type = t.lazyAttrsOf (t.lazyAttrsOf t.package);
       description = ''
         The evaluated packages ready to consume
       '';
@@ -44,6 +44,9 @@ in {
   };
   config = {
     packagesEval = config.packages;
-    public.packages = lib.mapAttrs (name: pkg: pkg.public) config.packagesEval;
+    public.packages =
+      lib.mapAttrs
+      (name: versions: lib.mapAttrs (version: pkg: pkg.public) versions)
+      config.packagesEval;
   };
 }
