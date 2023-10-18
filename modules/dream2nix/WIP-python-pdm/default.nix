@@ -52,32 +52,34 @@ in {
       };
 
       packages = lib.flip lib.mapAttrs deps' (name: pkg: {
-        inherit name;
-        version = pkg.version;
-        imports = [
-          dream2nix.modules.dream2nix.buildPythonPackage
-          dream2nix.modules.dream2nix.mkDerivation
-          dream2nix.modules.dream2nix.package-func
-        ];
-        buildPythonPackage = {
-          format =
-            if lib.hasSuffix ".whl" pkg.source.file
-            then "wheel"
-            else "pyproject";
-        };
-        mkDerivation = {
-          # required: { pname, file, version, hash, kind, curlOpts ? "" }:
-          src = fetchFromPypi {
-            pname = name;
-            file = pkg.source.file;
-            version = pkg.version;
-            hash = pkg.source.hash;
-            kind = "";
+        ${pkg.version} = {
+          inherit name;
+          version = pkg.version;
+          imports = [
+            dream2nix.modules.dream2nix.buildPythonPackage
+            dream2nix.modules.dream2nix.mkDerivation
+            dream2nix.modules.dream2nix.package-func
+          ];
+          buildPythonPackage = {
+            format =
+              if lib.hasSuffix ".whl" pkg.source.file
+              then "wheel"
+              else "pyproject";
           };
-          propagatedBuildInputs =
-            lib.forEach
-            parsed_lock_data.${name}.dependencies
-            (depName: config.groups.${groupname}.public.packages.${depName});
+          mkDerivation = {
+            # required: { pname, file, version, hash, kind, curlOpts ? "" }:
+            src = fetchFromPypi {
+              pname = name;
+              file = pkg.source.file;
+              version = pkg.version;
+              hash = pkg.source.hash;
+              kind = "";
+            };
+            propagatedBuildInputs =
+              lib.forEach
+              parsed_lock_data.${name}.dependencies
+              (depName: lib.head (lib.attrValues (config.groups.${groupname}.public.packages.${depName})));
+          };
         };
       });
     in {inherit packages;};

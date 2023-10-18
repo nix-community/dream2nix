@@ -24,7 +24,7 @@ in {
       pdm.pyproject = ./../../../examples/dream2nix-repo-flake-pdm/pyproject.toml;
     };
   in {
-    expr = config.groups.default.public.packages.certifi ? drvPath;
+    expr = lib.head (lib.attrValues config.groups.default.public.packages.certifi) ? drvPath;
     expected = true;
   };
 }
