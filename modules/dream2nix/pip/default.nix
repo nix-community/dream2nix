@@ -68,7 +68,7 @@
   };
 
   fetchers = {
-    url = info: l.fetchurl {inherit (info) url sha256;};
+    url = info: config.deps.fetchurl {inherit (info) url sha256;};
     git = info: config.deps.fetchgit {inherit (info) url sha256 rev;};
     local = info: "${config.paths.projectRoot}/${info.path}";
   };
@@ -142,7 +142,7 @@ in {
         pythonInterpreter = "${python}/bin/python";
       };
       setuptools = config.deps.python.pkgs.setuptools;
-      inherit (nixpkgs) nix fetchgit writeText;
+      inherit (nixpkgs) nix fetchgit fetchurl writeText;
       inherit (writers) writePureShellScript;
     };
 
