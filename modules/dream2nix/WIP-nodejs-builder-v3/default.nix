@@ -2,6 +2,7 @@
   config,
   lib,
   dream2nix,
+  specialArgs,
   ...
 }: let
   l = lib // builtins;
@@ -10,6 +11,7 @@
   inherit (config.deps) fetchurl;
 
   nodejsLockUtils = import ../../../lib/internal/nodejsLockUtils.nix {inherit lib;};
+  graphUtils = import ../../../lib/internal/graphUtils.nix {inherit lib;};
 
   isLink = plent: plent ? link && plent.link;
 
@@ -74,6 +76,7 @@
 
   ############################################################
   pdefs = parse cfg.packageLock;
+  groups.all.packages = parse cfg.packageLock;
 
   ############################################################
   # Utility functions #
@@ -91,6 +94,14 @@
         path == ""
       then "source"
       else "dist";
+
+    pdefs' = graphUtils.sanitizeGraph {
+      graph = pdefsToGraph {
+        pdefs = groups.all.packages;
+        root = {inherit (plent) name version;};
+      };
+      roots = ["${plent.name}/${plent.version}"];
+    };
   };
 
   # Type: lock.packages -> Bins
@@ -117,29 +128,62 @@
     })
     (plent.dependencies or {} // plent.devDependencies or {} // plent.optionalDependencies or {});
 
+  /*
+  pdefs.${name}.${version} :: {
+   // [REQUIRED] all dependency entries of that package. (Might be empty)
+   // each dependency is guaranteed to have its own entry in 'pdef'
+   // A package without dependencies has `dependencies = {}` (So dependencies has a constant type)
+   dependencies = {
+     ${name} = {
+       dev = boolean;
+       version :: string;
+     }
+   }
+   ->
+   Graph :: { ${id} :: [ String ] }
+
+  */
+  pdefsToGraph = {
+    pdefs,
+    root,
+  }:
+    l.foldl' (graph: name:
+      graph
+      // (l.foldl' (g: version: let
+          inherit (pdefs.${name}.${version}) dependencies;
+        in
+          g
+          // {
+            "${name}/${version}" = l.map (
+              n: "${n}/${dependencies.${n}.version}"
+              # n: "${n}/${dependencies.${n}.version}"
+            ) (l.attrNames dependencies);
+          }) {}
+        (l.attrNames
+          pdefs.${name})))
+    {} (l.attrNames pdefs);
+
   # Takes one entry of "package" from package-lock.json
   parseEntry = lock: path: entry: let
     info = getInfo path entry;
-    # TODO: Verify this is reasonable default;
-    source = builtins.dirOf cfg.packageLockFile;
     makeNodeModules = ./build-node-modules.mjs;
     installTrusted = ./install-trusted-modules.mjs;
   in
     if path == ""
     then let
+      source = builtins.dirOf cfg.packageLockFile;
       prepared-dev = config.deps.mkDerivation {
         name = entry.name + "-node_modules-dev";
         inherit (entry) version;
         dontUnpack = true;
         env = {
-          FILESYSTEM = builtins.toJSON (getFileSystem pdefs);
+          FILESYSTEM = builtins.toJSON (getFileSystem groups.all.packages);
         };
         buildInputs = with config.deps; [nodejs];
         buildPhase = ''
           node ${makeNodeModules}
         '';
       };
-
       dist = config.deps.mkDerivation {
         inherit (entry) version;
         name = entry.name + "-dist";
@@ -170,6 +214,10 @@
         ${entry.version} = {
           dependencies = getDependencies lock path entry;
           inherit info prepared-dev source dist;
+          public = {
+            out = dist;
+            inherit dist;
+          };
         };
       };
     }
@@ -195,6 +243,11 @@
             # We need to determine the initial state of every package and
             # TODO: define dist and installed if they are in source form. We currently only do this for the root package.
             ${info.initialState} = source;
+            public = {
+              out = source;
+              # TODO: I think this is a hack.
+              inherit (source) drvPath name;
+            };
           };
         };
       };
@@ -232,13 +285,26 @@
               })
               pdefs'.${name}.${version}.bins;
           };
-        }) (l.filterAttrs (n: v: v.info.initialState == "dist") pdefs'.${name})
+        }) (l.filterAttrs (n: value: value.info.initialState == "dist") pdefs'.${name})
     ) {} (l.attrNames pdefs');
 in {
+  inherit groups;
+
   imports = [
     ./interface.nix
     dream2nix.modules.dream2nix.mkDerivation
+    dream2nix.modules.dream2nix.groups
   ];
+
+  commonModule =
+    (import ./types.nix {
+      inherit
+        lib
+        dream2nix
+        specialArgs
+        ;
+    })
+    .pdefEntryOptions;
 
   # declare external dependencies
   deps = {nixpkgs, ...}: {
@@ -255,7 +321,7 @@ in {
       ;
   };
 
-  package-func.result = l.mkForce (pdefs.${config.name}.${config.version}.dist);
+  package-func.result = l.mkForce (config.groups.all.public.packages.${config.name}.${config.version});
 
   # OUTPUTS
   WIP-nodejs-builder-v3 = {
