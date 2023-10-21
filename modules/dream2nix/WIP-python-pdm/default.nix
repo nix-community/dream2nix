@@ -10,9 +10,16 @@
 
   libpyproject = import (dream2nix.inputs.pyproject-nix + "/lib") {inherit lib;};
 
+  selectWheel = import ../../../lib/internal/python/selectWheel.nix {
+    inherit lib;
+    pep599 = libpyproject.pep599;
+    python = config.deps.python3;
+    stdenv = config.deps.stdenv;
+  };
+
   lock_data = lib.importTOML config.pdm.lockfile;
   environ = libpyproject.pep508.mkEnviron config.deps.python3;
-  selector = libpdm.preferWheelSelector;
+  selector = config.pdm.sourceSelector;
 
   pyproject = libpdm.loadPdmPyProject (lib.importTOML config.pdm.pyproject);
 
@@ -33,16 +40,20 @@ in {
     ../core/deps
     ./interface.nix
   ];
+  pdm.sourceSelector = lib.mkDefault selectWheel;
   deps = {nixpkgs, ...}: {
     inherit
       (nixpkgs)
       curl
       jq
       stdenvNoCC
+      python3
+      stdenv
       ;
   };
   commonModule = {
     options.sourceSelector = import ./sourceSelectorOption.nix {inherit lib;};
+    # TODO: per dependency selector isn't yet respected
     config.sourceSelector = lib.mkOptionDefault config.pdm.sourceSelector;
   };
   groups = let
