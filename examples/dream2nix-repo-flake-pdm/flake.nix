@@ -26,6 +26,12 @@
       pdm.lockfile = ./pdm.lock;
       pdm.pyproject = ./pyproject.toml;
       pdm.pythonInterpreter = nixpkgs.legacyPackages.python3;
+      mkDerivation = {
+        src = ./.;
+        buildInputs = [
+          config.deps.python3.pkgs.pdm-backend
+        ];
+      };
     };
     evaled = lib.evalModules {
       modules = [module];
@@ -33,6 +39,8 @@
       specialArgs.packageSets.nixpkgs = nixpkgs.legacyPackages.x86_64-linux;
     };
   in {
-    packages.${system}.requests = evaled.config.groups.default.public.packages.requests."2.31.0";
+    packages.${system} = {
+      my-project = evaled.config.public;
+    };
   };
 }
