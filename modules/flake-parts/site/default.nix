@@ -53,7 +53,24 @@
 
           rm ./src/intro.md
           cp ${self + /README.md} ./src/intro.md
-          cat ${self'.packages.generated-summary-md} >> ./src/SUMMARY.md
+
+          cp ./src/SUMMARY.md SUMMARY.md.orig
+
+          # insert the generated part of the summary into the origin SUMMARY.md
+          {
+            while read ln; do
+              case "$ln" in
+                "# Modules Reference")
+                  echo "# Modules Reference"
+                  cat ${self'.packages.generated-summary-md}
+                  ;;
+                *)
+                  echo "$ln"
+                  ;;
+              esac
+            done
+          } < SUMMARY.md.orig > src/SUMMARY.md
+
           mkdir -p ./theme
           cp ${self + /modules/dream2nix/core/docs/theme/favicon.png} ./theme/favicon.png
 

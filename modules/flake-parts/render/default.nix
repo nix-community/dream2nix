@@ -222,10 +222,10 @@ in {
         installation = mkOption {
           type = types.str;
           description = ''
-            Installation paragraph between installation and options.
+            Paragraph between import and options.
           '';
           default = ''
-            ## Installation
+            ## Import
 
             To import this module into your dream2nix package:
 
@@ -354,7 +354,6 @@ in {
           # - [Reference Documentation]()
           #   - [core (built in)](./options/core.md)
           generated-summary-md = pkgs.writeText "SUMMARY.md" ''
-            - [Reference Documentation]()
             ${
               lib.concatStringsSep "\n"
               (lib.mapAttrsToList

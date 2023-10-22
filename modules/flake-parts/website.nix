@@ -41,7 +41,10 @@
           "dream2nix"
           (lib.strings.escapeNixIdentifier name)
         ];
-        intro = "intro";
+        intro =
+          if lib.pathExists (self + /modules/dream2nix/${name}/README.md)
+          then lib.readFile (self + /modules/dream2nix/${name}/README.md)
+          else "";
         baseUrl = "https://github.com/nix-community/dream2nix/blob/master";
         separateEval = true;
       });
