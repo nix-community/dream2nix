@@ -12,9 +12,9 @@
 
   inherit (config.deps) fetchurl;
 
-  nodejsLockUtils = import ../../../lib/internal/nodejsLockUtils.nix { inherit lib; };
-  graphUtils = import ../../../lib/internal/graphUtils.nix { inherit lib; };
-  utils = import ./utils.nix { inherit lib; };
+  nodejsLockUtils = import ../../../lib/internal/nodejsLockUtils.nix {inherit lib;};
+  graphUtils = import ../../../lib/internal/graphUtils.nix {inherit lib;};
+  utils = import ./utils.nix {inherit lib;};
 
   isLink = plent: plent ? link && plent.link;
 
@@ -86,7 +86,7 @@
                     allPaths =
                       acc.${entry.name}.${version}.info.allPaths
                       or {}
-                      // { ${pkg.info.initialPath} = true; };
+                      // {${pkg.info.initialPath} = true;};
                   };
               }
           ) (entry.value);
@@ -253,7 +253,7 @@
               '';
               buildPhase = ''
                 echo "BUILDING... $name"
-                
+
                 if [ "$(jq -e '.scripts.build' ./package.json)" != "null" ]; then
                   echo "BUILDING... $name"
                   export HOME=.virt

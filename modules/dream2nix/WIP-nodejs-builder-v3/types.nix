@@ -82,7 +82,7 @@
     options.info.fileSystem = l.mkOption {
       type = t.raw;
     };
-    
+
     /*
     "bin": {
       "esparse": "bin/esparse.js",

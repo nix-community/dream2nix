@@ -1,15 +1,12 @@
-  {lib,
-}: let
+{lib}: let
   l = lib // builtins;
   # cfg = config.WIP-nodejs-builder-v3;
-
 
   nodejsLockUtils = import ../../../lib/internal/nodejsLockUtils.nix {inherit lib;};
   graphUtils = import ../../../lib/internal/graphUtils.nix {inherit lib;};
 
-
   isLink = plent: plent ? link && plent.link;
-  
+
   getInfo = path: plent: {
     initialPath = path;
     initialState =
