@@ -14,26 +14,12 @@
   t = l.types;
   cfg = config.nodejs-package-lock-v3;
 
-  derivationType = t.oneOf [t.str t.path t.package];
-
-  # A stricteer submodule type that prevents derivations from being
-  # detected as modules by accident. (derivations are attrs as well as modules)
-  drvPart = let
-    type = t.submoduleWith {
-      modules = [dream2nix.modules.dream2nix.core];
-      inherit specialArgs;
-    };
-  in
-    type
-    // {
-      # Ensure that derivations are never detected as modules by accident.
-      check = val: type.check val && (val.type or null != "derivation");
-    };
-
-  drvPartOrPackage = t.either derivationType drvPart;
+  dreamTypes = import ../../../lib/types {
+    inherit dream2nix lib specialArgs;
+  };
 
   optPackage = l.mkOption {
-    type = drvPartOrPackage;
+    type = dreamTypes.drvPartOrPackage;
     apply = drv: drv.public or drv;
     # default = null;
   };
