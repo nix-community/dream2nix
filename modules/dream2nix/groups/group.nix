@@ -9,12 +9,22 @@
   packageType = t.deferredModuleWith {
     staticModules = [
       dream2nix.modules.dream2nix.core
-      commonModule
       {_module.args = specialArgs;}
+      # the top-level commonModule
+      commonModule
+      # the commonModule of the current group
+      config.commonModule
     ];
   };
 in {
   options = {
+    commonModule = lib.mkOption {
+      type = t.deferredModule;
+      description = ''
+        Common configuration for all packages in all groups
+      '';
+      default = {};
+    };
     overrides = lib.mkOption {
       type = t.attrs;
       description = ''
@@ -28,7 +38,10 @@ in {
       '';
     };
     packagesEval = lib.mkOption {
-      type = t.lazyAttrsOf (t.lazyAttrsOf (t.submoduleWith {modules = [];}));
+      type = t.lazyAttrsOf (t.lazyAttrsOf (t.submoduleWith {
+        modules = [];
+        inherit specialArgs;
+      }));
       description = ''
         The evaluated dream2nix package modules
       '';
