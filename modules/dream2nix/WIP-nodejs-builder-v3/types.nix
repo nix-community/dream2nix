@@ -59,7 +59,11 @@
 
     options.dist = optOptionalPackage;
 
-    # options.installed = optOptionalPackage;
+    options.installed = optOptionalPackage;
+
+    options.dev = l.mkOption {
+      type = t.bool;
+    };
 
     options.info.initialState = l.mkOption {
       type = t.enum ["source" "dist"];
@@ -67,6 +71,18 @@
     options.info.initialPath = l.mkOption {
       type = t.str;
     };
+
+    # One source drv must potentially be installed in multiple other (nested) locations
+    options.info.allPaths = l.mkOption {
+      type = t.attrsOf t.bool;
+    };
+    options.info.pdefs' = l.mkOption {
+      type = t.raw;
+    };
+    options.info.fileSystem = l.mkOption {
+      type = t.raw;
+    };
+    
     /*
     "bin": {
       "esparse": "bin/esparse.js",

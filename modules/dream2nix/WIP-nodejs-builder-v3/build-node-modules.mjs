@@ -27,7 +27,7 @@ function createBinEntry([name, target]) {
     if (err) {
       console.log(`could NOT symlink: ${name} -> ${target}`);
       console.error(err);
-      abort();
+      // abort();
     }
     console.log(`symlinked ${name} -> ${relTarget}`);
   });
