@@ -68,18 +68,13 @@ in {
             "resolved" = "https://registry.npmjs.org/async/-/async-0.2.10.tgz";
             "integrity" = "sha512-eAkdoKxU6/LkKDBzLpT+t6Ff5EtfSF4wx1WfJiPEEV7WNLnDaRXk0oVysiEPm262roaachGexwUv94WhSgN5TQ==";
           };
-          # "node_modules/@org/async" = {
-          #   "version" = "0.2.10";
-          #   "resolved" = "https://registry.npmjs.org/async/-/async-0.2.10.tgz";
-          #   "integrity" = "sha512-eAkdoKxU6/LkKDBzLpT+t6Ff5EtfSF4wx1WfJiPEEV7WNLnDaRXk0oVysiEPm262roaachGexwUv94WhSgN5TQ==";
-          # };
         };
       };
     };
     config = evaled.config;
   in {
-    expr = config.nodejs-package-lock-v3.pdefs."async"."0.2.10".source.type;
-    expected = "derivation";
+    expr = "${config.nodejs-package-lock-v3.pdefs."async"."0.2.10".source}";
+    expected = "/nix/store/sm4v0qaynkjf704lrcqxhlssp003y9h8-async-0.2.10.tgz";
   };
 
   # test if dependencies are ignored successfully in pip.rootDependencies
@@ -297,21 +292,21 @@ in {
     ];
   };
 
-  # TODO: some infinite recursion occurs when accessing pdef.{name}.{version}.source
-  # test_nodejs_parse_lockfile = let
-  #   evaled = eval {
-  #     imports = [
-  #       dream2nix.modules.dream2nix.nodejs-package-lock-v3
-  #     ];
-  #     nodejs-package-lock-v3.packageLockFile = ./package-lock.json;
-  #     nodejs-package-lock-v3.packageLock = lib.mkForce (builtins.fromJSON (builtins.readFile ./package-lock.json));
-  #     # set the root package source
-  #     nodejs-package-lock-v3.pdefs."minimal"."1.0.0".source = "";
-  #   };
-  #   config = evaled.config;
-  # in {
-  #   expr = config.nodejs-package-lock-v3.pdefs."argparse"."0.1.16";
-  #   expected = {
-  #   };
-  # };
+  test_nodejs_wrong_lockfile_version = let
+    evaled = eval {
+      imports = [
+        dream2nix.modules.dream2nix.nodejs-package-lock-v3
+      ];
+      nodejs-package-lock-v3.packageLock =
+        lib.mkForce {
+        };
+    };
+    config = evaled.config;
+  in {
+    expr = config.nodejs-package-lock-v3.pdefs;
+    expectedError = {
+      type = "ThrownError";
+      msg = "Invalid lockfile";
+    };
+  };
 }

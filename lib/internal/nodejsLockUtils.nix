@@ -7,6 +7,12 @@
   in
     lib.removeSuffix "/" nextPath;
 
+  sanitizeLockfile = lock:
+  # This lockfile module only supports lockfileVersion 2 and 3
+    if ! lock ? lockfileVersion || lock.lockfileVersion <= 1
+    then throw "This lockfile module only supports lockfileVersion 2 and 3"
+    else lock;
+
   findEntry =
     # = "attrs"
     packageLock:
@@ -24,5 +30,5 @@
       then throw "${search} not found in package-lock.json."
       else findEntry packageLock (stripPath currentPath) search;
 in {
-  inherit findEntry stripPath;
+  inherit findEntry stripPath sanitizeLockfile;
 }
