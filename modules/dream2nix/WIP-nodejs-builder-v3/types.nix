@@ -10,23 +10,9 @@
   l = lib // builtins;
   t = l.types;
 
-  derivationType = t.oneOf [t.str t.path t.package];
-
-  # A stricter submodule type that prevents derivations from being
-  # detected as modules by accident. (derivations are attrs as well as modules)
-  drvPart = let
-    type = t.submoduleWith {
-      modules = [dream2nix.modules.dream2nix.core];
-      inherit specialArgs;
-    };
-  in
-    type
-    // {
-      # Ensure that derivations are never detected as modules by accident.
-      check = val: type.check val && (val.type or null != "derivation");
-    };
-
-  drvPartOrPackage = t.either derivationType drvPart;
+  dreamTypes = import ../../../lib/types {
+    inherit dream2nix lib specialArgs;
+  };
 
   # optPackage = l.mkOption {
   #   # type = t.raw;
@@ -35,7 +21,7 @@
   #   # default = null;
   # };
   optOptionalPackage = l.mkOption {
-    type = t.nullOr drvPartOrPackage;
+    type = t.nullOr dreamTypes.drvPartOrPackage;
     apply = drv: drv.public or drv;
     default = null;
   };
@@ -144,7 +130,7 @@ in {
   fileSystem = {
     type = t.nullOr (t.attrsOf (t.submodule {
       options.source = l.mkOption {
-        type = t.nullOr drvPartOrPackage;
+        type = t.nullOr dreamTypes.drvPartOrPackage;
       };
       options.bins = optBins;
     }));
