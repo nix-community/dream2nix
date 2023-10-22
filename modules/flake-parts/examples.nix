@@ -129,7 +129,7 @@ in {
           example-repo-flake =
             (importFlake (self + /examples/dream2nix-repo-flake/flake.nix)).packages.${system}.hello;
           example-repo-flake-pdm =
-            (importFlakeSmall (self + /examples/dream2nix-repo-flake-pdm/flake.nix)).packages.${system}.requests;
+            (importFlakeSmall (self + /examples/dream2nix-repo-flake-pdm/flake.nix)).packages.${system}.my-project;
         }
       );
 

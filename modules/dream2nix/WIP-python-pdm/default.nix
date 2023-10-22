@@ -37,24 +37,36 @@
 in {
   imports = [
     dream2nix.modules.dream2nix.groups
+    dream2nix.modules.dream2nix.buildPythonPackage
     ../core/deps
     ./interface.nix
   ];
-  pdm.sourceSelector = lib.mkDefault selectWheel;
+  name = pyproject.pyproject.project.name;
+  version = pyproject.pyproject.project.version;
   deps = {nixpkgs, ...}: {
     inherit
       (nixpkgs)
       curl
       jq
       stdenvNoCC
-      python3
       stdenv
       ;
   };
+  pdm.sourceSelector = lib.mkDefault selectWheel;
   commonModule = {
     options.sourceSelector = import ./sourceSelectorOption.nix {inherit lib;};
     # TODO: per dependency selector isn't yet respected
     config.sourceSelector = lib.mkOptionDefault config.pdm.sourceSelector;
+  };
+  buildPythonPackage = {
+    format = "pyproject";
+  };
+  mkDerivation = {
+    propagatedBuildInputs =
+      map
+      (x: lib.head (lib.attrValues x))
+      # all packages attrs prefixed with version
+      (lib.attrValues config.groups.default.public.packages);
   };
   groups = let
     populateGroup = groupname: deps: let
