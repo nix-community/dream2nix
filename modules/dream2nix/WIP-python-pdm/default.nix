@@ -64,9 +64,9 @@ in {
   mkDerivation = {
     propagatedBuildInputs =
       map
-      (x: lib.head (lib.attrValues x))
+      (x: (lib.head (lib.attrValues x)).public)
       # all packages attrs prefixed with version
-      (lib.attrValues config.groups.default.public.packages);
+      (lib.attrValues config.groups.default.packages);
   };
   groups = let
     populateGroup = groupname: deps: let
@@ -75,7 +75,7 @@ in {
       };
 
       packages = lib.flip lib.mapAttrs deps' (name: pkg: {
-        ${pkg.version} = {
+        ${pkg.version}.conf = {
           inherit name;
           version = pkg.version;
           imports = [
@@ -101,7 +101,7 @@ in {
             propagatedBuildInputs =
               lib.forEach
               parsed_lock_data.${name}.dependencies
-              (depName: lib.head (lib.attrValues (config.groups.${groupname}.public.packages.${depName})));
+              (depName: (lib.head (lib.attrValues (config.groups.${groupname}.packages.${depName}))).public);
           };
         };
       });

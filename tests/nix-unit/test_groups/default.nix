@@ -19,20 +19,20 @@
 in {
   test_groups_simple = let
     config = eval {
-      groups.my-group.packages.hello."1.0.0" = {...}: fixtures.basic-derivation;
+      groups.my-group.packages.hello."1.0.0".conf = {...}: fixtures.basic-derivation;
     };
   in {
-    expr = config.groups.my-group.public.packages.hello."1.0.0" ? drvPath;
+    expr = config.groups.my-group.packages.hello."1.0.0".public ? drvPath;
     expected = true;
   };
 
   test_groups_commonModule = let
     config = eval {
-      groups.my-group.packages.hello."1.0.0" = {...}: fixtures.basic-derivation;
+      groups.my-group.packages.hello."1.0.0".conf = {...}: fixtures.basic-derivation;
       commonModule = {name = lib.mkForce "hello-mod";};
     };
   in {
-    expr = "${config.groups.my-group.public.packages.hello."1.0.0".name}";
+    expr = "${config.groups.my-group.packages.hello."1.0.0".public.name}";
     expected = "hello-mod";
   };
 }

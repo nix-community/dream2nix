@@ -32,34 +32,45 @@ in {
       '';
     };
     packages = lib.mkOption {
-      type = t.lazyAttrsOf (t.lazyAttrsOf packageType);
-      description = ''
-        The package configurations to evaluate
-      '';
-    };
-    packagesEval = lib.mkOption {
+      #      name           version       options
       type = t.lazyAttrsOf (t.lazyAttrsOf (t.submoduleWith {
-        modules = [];
+        modules = [
+          ({config, ...}: {
+            options.conf = lib.mkOption {
+              # this is a deferredModule type
+              type = packageType;
+              description = ''
+                The package configuration
+              '';
+              default = {};
+            };
+            options.evaluated = lib.mkOption {
+              type = t.submoduleWith {
+                modules = [config.conf];
+                inherit specialArgs;
+              };
+              description = ''
+                The evaluated dream2nix package modules
+              '';
+              internal = true;
+              default = {};
+            };
+            options.public = lib.mkOption {
+              type = t.package;
+              description = ''
+                The evaluated package ready to consume
+              '';
+              readOnly = true;
+              default = config.evaluated.public;
+              defaultText = lib.literalExpression "config.evaluated.public";
+            };
+          })
+        ];
         inherit specialArgs;
       }));
       description = ''
-        The evaluated dream2nix package modules
+        The packages for this group
       '';
-      internal = true;
     };
-    public.packages = lib.mkOption {
-      type = t.lazyAttrsOf (t.lazyAttrsOf t.package);
-      description = ''
-        The evaluated packages ready to consume
-      '';
-      readOnly = true;
-    };
-  };
-  config = {
-    packagesEval = config.packages;
-    public.packages =
-      lib.mapAttrs
-      (name: versions: lib.mapAttrs (version: pkg: pkg.public) versions)
-      config.packagesEval;
   };
 }
