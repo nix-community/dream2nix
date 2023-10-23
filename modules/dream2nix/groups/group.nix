@@ -32,6 +32,29 @@ in {
       '';
     };
     packages = lib.mkOption {
+      description = ''
+        Contains all packages for the current group in the forma of a set like:
+        ```
+        {
+          package1."1.0.0" = {
+            module = {
+              # the package configuration
+            };
+            public = {
+              # the evaluated package
+            };
+          };
+          package2."1.0.0" = {
+            module = {
+              # the package configuration
+            };
+            public = {
+              # the evaluated package
+            };
+          };
+        }
+        ```
+      '';
       #      name           version       options
       type = t.lazyAttrsOf (t.lazyAttrsOf (t.submoduleWith {
         modules = [
@@ -68,9 +91,6 @@ in {
         ];
         inherit specialArgs;
       }));
-      description = ''
-        The packages for this group
-      '';
     };
   };
 }

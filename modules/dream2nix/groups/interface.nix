@@ -17,7 +17,8 @@ in {
     groups = lib.mkOption {
       type = t.lazyAttrsOf groupType;
       description = ''
-        A set of packages
+        Holds multiple package sets (eg. groups).
+        Holds shared config (commonModule) and overrides on a global and on a per group basis.
       '';
     };
     commonModule = lib.mkOption {
