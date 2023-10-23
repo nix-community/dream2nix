@@ -36,7 +36,7 @@ in {
       type = t.lazyAttrsOf (t.lazyAttrsOf (t.submoduleWith {
         modules = [
           ({config, ...}: {
-            options.conf = lib.mkOption {
+            options.module = lib.mkOption {
               # this is a deferredModule type
               type = packageType;
               description = ''
@@ -46,7 +46,7 @@ in {
             };
             options.evaluated = lib.mkOption {
               type = t.submoduleWith {
-                modules = [config.conf];
+                modules = [config.module];
                 inherit specialArgs;
               };
               description = ''

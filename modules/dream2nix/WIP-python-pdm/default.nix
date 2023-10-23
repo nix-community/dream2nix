@@ -75,7 +75,7 @@ in {
       };
 
       packages = lib.flip lib.mapAttrs deps' (name: pkg: {
-        ${pkg.version}.conf = {
+        ${pkg.version}.module = {
           inherit name;
           version = pkg.version;
           imports = [
