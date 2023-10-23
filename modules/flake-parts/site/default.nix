@@ -44,6 +44,24 @@
     #   '';
 
     packages = {
+      highlight-js = let
+        highlight-core = pkgs.fetchurl {
+          url = "https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js";
+          hash = "sha256-g3pvpbDHNrUrveKythkPMF2j/J7UFoHbUyFQcFe1yEY=";
+        };
+        highlight-nix = pkgs.fetchurl {
+          url = "https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/nix.min.js";
+          hash = "sha256-BLoZ+/OroDAxMsdZ4GFZtQfsg6ZJeLVNeBzN/82dYgk=";
+        };
+      in
+        pkgs.runCommand "highlight-js" {} ''
+          cat ${highlight-core} > $out
+          cat ${highlight-nix} >> $out
+        '';
+      highlight-style = pkgs.fetchurl {
+        url = "https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/vs.min.css";
+        hash = "sha256-E1kfafj5iO+Tw/04hxdSG+OnvczojOXK2K0iCEYfzSw=";
+      };
       website = pkgs.stdenvNoCC.mkDerivation {
         name = "website";
         nativeBuildInputs = [pkgs.mdbook pkgs.mdbook-linkcheck];
@@ -54,9 +72,13 @@
           rm ./src/intro.md
           cp ${self + /README.md} ./src/intro.md
 
-          cp ./src/SUMMARY.md SUMMARY.md.orig
+          # insert highlight.js
+          cp ${self'.packages.highlight-js} ./src/highlight.js
+          cp ${self'.packages.highlight-style} ./src/highlight.css
+
 
           # insert the generated part of the summary into the origin SUMMARY.md
+          cp ./src/SUMMARY.md SUMMARY.md.orig
           {
             while read ln; do
               case "$ln" in

@@ -17,3 +17,11 @@ h1.menu-title::before {
   /* We don't use numbers, so we can take a consistent amount of space */
   padding: var(--page-padding) !important;
 }
+.hljs {
+  background-color: #f6f7f6;
+}
+@media (prefers-color-scheme: dark) {
+  .hljs {
+    background-color: #1d1f21;
+  }
+}
