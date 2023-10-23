@@ -169,6 +169,66 @@
                 <div id="content" class="content">
                     <main>
                         <h1 id="groups"><a class="header" href="#groups">groups</a></h1>
+<p>Module to deal with package sets (so called groups in dream2nix)</p>
+<h2 id="separate-different-kinds-of-dependencies"><a class="header" href="#separate-different-kinds-of-dependencies">Separate different kinds of dependencies</a></h2>
+<p>Many language specific package managers support declaration of different kinds of dependencies like, for example:</p>
+<ul>
+<li><code>dependencies</code>, <code>devDependencies</code> in nodejs</li>
+<li><code>dependencies</code>, <code>optional-dependencies.dev</code>, <code>optional-dependencies.test</code>, etc. in python</li>
+</ul>
+<p>The dream2nix groups module allows to keep the upstream separation by splitting the dependency definitions into different attribute sets located at:</p>
+<pre><code>config.groups.&lt;group&gt;.packages.&lt;name&gt;.&lt;version&gt;
+</code></pre>
+<p>This separation is relevant because not all dependencies are needed for all targets.
+A devShell for example requires the dev dependencies, while the runtime environment of the built package does not.</p>
+<h2 id="re-use-package-definitions"><a class="header" href="#re-use-package-definitions">Re-use package definitions</a></h2>
+<p>Each package definition in a group contains two important attributes:</p>
+<ul>
+<li><code>[...].packages.&lt;name&gt;.&lt;version&gt;.module</code>: for the package definition</li>
+<li><code>[...].packages.&lt;name&gt;.&lt;version&gt;.public</code>: for the final evaluated derivation</li>
+</ul>
+<p>Having the package definition (<code>module</code>) separated from the result allows to re-use the definition elsewhere.
+For example, a new group could be assembled by referring to the <code>modules</code> of existing groups:</p>
+<pre><code class="language-nix">{config, dream2nix, ...}: {
+
+  # The dev group
+  groups.dev = {
+
+    # a hello package
+    packages.hello.&quot;1.0.0&quot;.module = {
+      imports = [
+        dream2nix.modules.dream2nix.mkDerivation
+      ];
+      name = &quot;hello&quot;;
+      version = &quot;1.0.0&quot;;
+      mkDerivation.buildPhase = lib.mkForce ''echo &quot;Hello World!&quot; &gt; $out''
+    };
+
+    # a modified hello package depending on the original hello definition
+    packages.hello-mod.&quot;1.0.0&quot;.module = {
+      blabla = {inherit wuhu;};
+      imports = [
+        # import the module definition of `hello` from above
+        config.groups.dev.packages.hello.module
+      ];
+      mkDerivation.buildPhase = ''echo &quot;Good Bye World!&quot; &gt; $out'';
+    };
+  };
+
+  # The test group
+  groups.test = {
+
+    # a hello package based on `hello`` from the `dev` group
+    packages.hello.&quot;1.0.0&quot;.module = {
+      imports = [
+        # import the module definition of `hello` from the `dev` group
+        config.groups.dev.packages.hello.module
+      ];
+      mkDerivation.buildPhase = ''echo &quot;Happy testing!&quot; &gt; $out''
+    };
+  }
+}
+</code></pre>
 <h2 id="import"><a class="header" href="#import">Import</a></h2>
 <p>To import this module into your dream2nix package:</p>
 <pre><code class="language-nix">imports = [
@@ -288,14 +348,34 @@ href="#opt-groups._name_.commonModule"><code>groups.&lt;name&gt;.commonModule</c
 <p><a
 href="#opt-groups._name_.overrides"><code>groups.&lt;name&gt;.overrides</code></a></p>
 <h2 id="groups-1"><a class="header" href="#groups-1"><a href="#opt-groups" id="opt-groups"><code>groups</code></a></a></h2>
-<p>A set of packages</p>
+<p>Holds multiple package sets (eg. groups). Holds shared config
+(commonModule) and overrides on a global and on a per group basis.</p>
 <p><em>Type:</em> lazy attribute set of (submodule)</p>
 <p><em>Declared by:</em></p>
 <p><a
 href="https://github.com/nix-community/dream2nix/blob/master/modules/dream2nix/groups/interface.nix"><code>dream2nix/modules/dream2nix/groups/interface.nix</code></a></p>
 <h2><a href="#opt-groups._name_.packages"
 id="opt-groups._name_.packages"><code>groups.&lt;name&gt;.packages</code></a></h2>
-<p>The packages for this group</p>
+<p>Contains all packages for the current group in the forma of a set
+like:</p>
+<pre><code>{
+  package1.&quot;1.0.0&quot; = {
+    module = {
+      # the package configuration
+    };
+    public = {
+      # the evaluated package
+    };
+  };
+  package2.&quot;1.0.0&quot; = {
+    module = {
+      # the package configuration
+    };
+    public = {
+      # the evaluated package
+    };
+  };
+}</code></pre>
 <p><em>Type:</em> lazy attribute set of lazy attribute set of
 (submodule)</p>
 <p><em>Declared by:</em></p>
