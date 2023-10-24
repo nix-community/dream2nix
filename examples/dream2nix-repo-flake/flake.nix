@@ -14,7 +14,8 @@
   }: let
     system = "x86_64-linux";
   in {
-    # all packages defined inside ./packages/
+    # All packages defined in ./packages/<name> are automatically added to the flake outputs
+    # e.g., 'packages/hello/default.nix' becomes '.#packages.hello'
     packages.${system} = dream2nix.lib.importPackages {
       projectRoot = ./.;
       # can be changed to ".git" or "flake.nix" to get rid of .project-root
