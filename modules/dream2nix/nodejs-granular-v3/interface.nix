@@ -8,7 +8,7 @@
   l = lib // builtins;
   t = l.types;
 in {
-  options.nodejs-granular = l.mapAttrs (_: l.mkOption) {
+  options.nodejs-granular-v3 = l.mapAttrs (_: l.mkOption) {
     buildScript = {
       type = t.nullOr (t.oneOf [t.str t.path t.package]);
       description = ''

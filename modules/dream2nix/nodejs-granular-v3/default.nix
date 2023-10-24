@@ -6,7 +6,7 @@
 }: let
   l = lib // builtins;
 
-  cfg = config.nodejs-granular;
+  cfg = config.nodejs-granular-v3;
 
   extractSource = import ../../flake-parts/lib/internal/fetchers/extractSource.nix {
     inherit lib;
@@ -96,7 +96,7 @@
   depsModule = name: version: {config, ...}: {
     name = lib.replaceStrings ["@" "/"] ["__at__" "__slash__"] name;
     inherit version;
-    nodejs-granular = {
+    nodejs-granular-v3 = {
       # only run build on the main package
       runBuild = l.mkOptionDefault false;
     };
@@ -213,7 +213,7 @@
         ;
 
       inherit
-        (config.nodejs-granular)
+        (config.nodejs-granular-v3)
         buildScript
         installMethod
         runBuild
@@ -277,7 +277,7 @@
       linkBins = "${./link-bins.py}";
     };
 
-    nodejs-granular = {
+    nodejs-granular-v3 = {
       /*
       For top-level packages install dependencies as full copies, as this
       reduces errors with build tooling that doesn't cope well with
@@ -314,7 +314,7 @@ in {
       pkg = config.public;
     };
   };
-  nodejs-granular = {
+  nodejs-granular-v3 = {
     deps = nodejsDeps;
     runBuild = l.mkDefault true;
     installMethod = l.mkDefault "copy";
