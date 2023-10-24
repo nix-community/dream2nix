@@ -1,5 +1,5 @@
 {lib ? import <nixpkgs/lib>, ...}: let
-  util = import ../../../lib/internal/graphUtils.nix {inherit lib;};
+  util = import ../../../modules/flake-parts/lib/internal/graphUtils.nix {inherit lib;};
 in {
   test_simple = {
     expr = util.sanitizeGraph {

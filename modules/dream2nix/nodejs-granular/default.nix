@@ -9,26 +9,26 @@
   cfg = config.nodejs-granular;
 
   fetchDreamLockSources =
-    import ../../../lib/internal/fetchDreamLockSources.nix
+    import ../../flake-parts/lib/internal/fetchDreamLockSources.nix
     {inherit lib;};
-  getDreamLockSource = import ../../../lib/internal/getDreamLockSource.nix {inherit lib;};
-  readDreamLock = import ../../../lib/internal/readDreamLock.nix {inherit lib;};
-  hashPath = import ../../../lib/internal/hashPath.nix {
+  getDreamLockSource = import ../../flake-parts/lib/internal/getDreamLockSource.nix {inherit lib;};
+  readDreamLock = import ../../flake-parts/lib/internal/readDreamLock.nix {inherit lib;};
+  hashPath = import ../../flake-parts/lib/internal/hashPath.nix {
     inherit lib;
     inherit (config.deps) runCommandLocal nix;
   };
-  hashFile = import ../../../lib/internal/hashFile.nix {
+  hashFile = import ../../flake-parts/lib/internal/hashFile.nix {
     inherit lib;
     inherit (config.deps) runCommandLocal nix;
   };
 
   # fetchers
   fetchers = {
-    git = import ../../../lib/internal/fetchers/git {
+    git = import ../../flake-parts/lib/internal/fetchers/git {
       inherit hashPath;
       inherit (config.deps) fetchgit;
     };
-    http = import ../../../lib/internal/fetchers/http {
+    http = import ../../flake-parts/lib/internal/fetchers/http {
       inherit hashFile lib;
       inherit (config.deps.stdenv) mkDerivation;
       inherit (config.deps) fetchurl;

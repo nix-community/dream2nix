@@ -10,7 +10,7 @@
 
   common-options = import ../builtins-derivation/derivation-common/options.nix {inherit lib;};
 
-  dreamTypes = import ../../../lib/types {
+  dreamTypes = import ../../flake-parts/lib/types {
     inherit dream2nix lib specialArgs;
   };
 

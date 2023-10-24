@@ -14,7 +14,7 @@
   t = l.types;
   cfg = config.nodejs-package-lock-v3;
 
-  dreamTypes = import ../../../lib/types {
+  dreamTypes = import ../../flake-parts/lib/types {
     inherit dream2nix lib specialArgs;
   };
 

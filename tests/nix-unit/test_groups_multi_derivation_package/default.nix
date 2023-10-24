@@ -22,7 +22,7 @@
       specialArgs,
       ...
     }: let
-      dreamTypes = import ../../../lib/types {
+      dreamTypes = import ../../../modules/flake-parts/lib/types {
         inherit dream2nix lib specialArgs;
       };
     in {
