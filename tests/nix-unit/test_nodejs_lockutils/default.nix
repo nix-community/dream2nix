@@ -1,7 +1,7 @@
 {
   # pkgs ? import <nixpkgs> {},
   lib ? import <nixpkgs/lib>,
-  nodejsLockUtils ? import ../../../lib/internal/nodejsLockUtils.nix {inherit lib;},
+  nodejsLockUtils ? import ../../../modules/flake-parts/lib/internal/nodejsLockUtils.nix {inherit lib;},
 }: {
   # test the path strip function
   test_nodejsLockUtils_stripPath_simple = let

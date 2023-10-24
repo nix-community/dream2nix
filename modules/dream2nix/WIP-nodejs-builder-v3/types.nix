@@ -10,7 +10,7 @@
   l = lib // builtins;
   t = l.types;
 
-  dreamTypes = import ../../../lib/types {
+  dreamTypes = import ../../flake-parts/lib/types {
     inherit dream2nix lib specialArgs;
   };
 

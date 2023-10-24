@@ -10,7 +10,7 @@
 
   libpyproject = import (dream2nix.inputs.pyproject-nix + "/lib") {inherit lib;};
 
-  selectWheel = import ../../../lib/internal/python/selectWheel.nix {
+  selectWheel = import ../../flake-parts/lib/internal/python/selectWheel.nix {
     inherit lib;
     pep599 = libpyproject.pep599;
     python = config.deps.python3;

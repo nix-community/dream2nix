@@ -3,7 +3,7 @@
   lib ? import <nixpkgs/lib>,
   ...
 }: let
-  findCycles = import ../../../lib/internal/findCycles.nix {inherit lib;};
+  findCycles = import ../../../modules/flake-parts/lib/internal/findCycles.nix {inherit lib;};
 in {
   test_simple = {
     expr = findCycles {

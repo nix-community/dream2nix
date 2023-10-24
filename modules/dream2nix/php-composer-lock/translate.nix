@@ -17,7 +17,7 @@
     ...
   }: let
     inherit
-      (import ../../../lib/internal/php-semver.nix {inherit lib;})
+      (import ../../flake-parts/lib/internal/php-semver.nix {inherit lib;})
       satisfies
       multiSatisfies
       ;
