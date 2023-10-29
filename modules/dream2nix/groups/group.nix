@@ -1,5 +1,5 @@
 {
-  commonModule,
+  overrideAll,
   globalOverrides,
 }: {
   config,
@@ -13,10 +13,10 @@
     t.deferredModuleWith {
       staticModules = [
         {_module.args = specialArgs;}
-        # the top-level commonModule
-        commonModule
-        # the commonModule of the current group
-        config.commonModule
+        # the top-level overrideAll
+        overrideAll
+        # the overrideAll of the current group
+        config.overrideAll
         # the global overrides
         (globalOverrides.${name} or {})
         # the overrides of the current group
@@ -25,7 +25,7 @@
     };
 in {
   options = {
-    commonModule = lib.mkOption {
+    overrideAll = lib.mkOption {
       type = t.deferredModule;
       description = ''
         Common configuration for all packages in all groups

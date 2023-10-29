@@ -9,7 +9,7 @@
   groupType = t.submoduleWith {
     modules = [
       (import ./group.nix {
-        inherit (config) commonModule;
+        inherit (config) overrideAll;
         globalOverrides = config.overrides;
       })
     ];
@@ -21,10 +21,10 @@ in {
       type = t.lazyAttrsOf groupType;
       description = ''
         Holds multiple package sets (eg. groups).
-        Holds shared config (commonModule) and overrides on a global and on a per group basis.
+        Holds shared config (overrideAll) and overrides on a global and on a per group basis.
       '';
     };
-    commonModule = lib.mkOption {
+    overrideAll = lib.mkOption {
       type = t.deferredModule;
       description = ''
         Common configuration for all packages in all groups

@@ -26,10 +26,10 @@ in {
     expected = true;
   };
 
-  test_groups_commonModule = let
+  test_groups_overrideAll = let
     config = eval {
       groups.my-group.packages.hello."1.0.0".module = {...}: fixtures.basic-derivation;
-      commonModule = {name = lib.mkForce "hello-mod";};
+      overrideAll = {name = lib.mkForce "hello-mod";};
     };
   in {
     expr = "${config.groups.my-group.packages.hello."1.0.0".public.name}";
