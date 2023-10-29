@@ -7,6 +7,7 @@
     ];
 
     inherit name;
+    version = "1.0.0";
 
     # set options
     builtins-derivation = {

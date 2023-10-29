@@ -35,4 +35,50 @@ in {
     expr = "${config.groups.my-group.packages.hello."1.0.0".public.name}";
     expected = "hello-mod";
   };
+
+  groups_overrides_global = let
+    config = eval {
+      groups.my-group.packages.foo."1.0.0".module = {...}: fixtures.basic-derivation;
+      groups.my-group.packages.bar."1.0.0".module = {...}: fixtures.basic-derivation;
+      overrides = {foo = {version = lib.mkForce "2.0.0";};};
+    };
+  in {
+    test_foo_changed = {
+      expr = "${config.groups.my-group.packages.foo."1.0.0".public.version}";
+      expected = "2.0.0";
+    };
+    test_bar_unchanged = {
+      expr = "${config.groups.my-group.packages.bar."1.0.0".public.version}";
+      expected = "1.0.0";
+    };
+  };
+
+  groups_overrides_local = let
+    config = eval {
+      groups.my-group.packages.foo."1.0.0".module = {...}: fixtures.basic-derivation;
+      groups.my-group.packages.bar."1.0.0".module = {...}: fixtures.basic-derivation;
+      groups.my-group.overrides = {foo = {version = lib.mkForce "2.0.0";};};
+    };
+  in {
+    test_foo_changed = {
+      expr = "${config.groups.my-group.packages.foo."1.0.0".public.version}";
+      expected = "2.0.0";
+    };
+    test_bar_unchanged = {
+      expr = "${config.groups.my-group.packages.bar."1.0.0".public.version}";
+      expected = "1.0.0";
+    };
+  };
+
+  test_groups_overrides_collision = let
+    config = eval {
+      groups.my-group.packages.foo."1.0.0".module = {...}: fixtures.basic-derivation;
+      groups.my-group.packages.bar."1.0.0".module = {...}: fixtures.basic-derivation;
+      overrides = {foo = {version = lib.mkForce "2.0.0";};};
+      groups.my-group.overrides = {foo = {version = lib.mkForce "3.0.0";};};
+    };
+  in {
+    expr = "${config.groups.my-group.packages.foo."1.0.0".public.version}";
+    expectedError.msg = ''The option `groups.my-group.packages.foo."1.0.0".evaluated.version' has conflicting definition values:'';
+  };
 }
