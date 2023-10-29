@@ -53,7 +53,7 @@ in {
       ;
   };
   pdm.sourceSelector = lib.mkDefault selectWheel;
-  commonModule = {
+  overrideAll = {
     options.sourceSelector = import ./sourceSelectorOption.nix {inherit lib;};
     # TODO: per dependency selector isn't yet respected
     config.sourceSelector = lib.mkOptionDefault config.pdm.sourceSelector;
