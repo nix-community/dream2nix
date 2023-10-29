@@ -75,7 +75,10 @@
 
   isValidUniversalWheelFilename = {filename}: let
     parsed_filename = libpyproject.pep427.parseFileName filename;
-    is_valid = parsed_filename.languageTag == "py3" && parsed_filename.abiTag == "none" && parsed_filename.platformTags == ["any"];
+    is_valid =
+      (parsed_filename.languageTag == "py3")
+      && (parsed_filename.abiTag == "none")
+      && (parsed_filename.platformTags == ["any"]);
   in
     is_valid;
 
@@ -90,7 +93,11 @@
     is_valid_implementation = true;
     is_valid_abi = true;
     is_valid_platform = true;
-    is_valid = is_valid_build && is_valid_implementation && is_valid_abi && is_valid_platform;
+    is_valid =
+      is_valid_build
+      && is_valid_implementation
+      && is_valid_abi
+      && is_valid_platform;
   in
     is_valid;
 
@@ -99,7 +106,8 @@
   # If no items match, return null.
   # selectExtension :: [String] -> String -> String
   selectExtension = names: ext: let
-    selected = lib.findSingle (name: lib.hasSuffix ext name) null "multiple" names;
+    selected =
+      lib.findSingle (name: lib.hasSuffix ext name) null "multiple" names;
   in
     if selected == "multiple"
     then throw "Multiple names found with extension ${ext}"
@@ -110,7 +118,6 @@
   # If no valid sdist present we return null.
   # selectSdist :: [String] -> String
   selectSdist = filenames: let
-    # sdists = lib.filter (filename: isUsableSdistFilename {environ = {}; inherit filename;}) filenames;
     select = selectExtension filenames;
     selection = map select valid_sdist_extensions;
     selected = lib.findFirst (name: name != null) null selection;
@@ -120,7 +127,8 @@
   # Select a single wheel from a list of filenames
   # This assumes filtering on usable wheels has already been performed.
   # selectWheel :: [String] ->  String
-  selectWheel = filenames: lib.findFirst (x: lib.hasSuffix ".whl" x) null filenames;
+  selectWheel = filenames:
+    lib.findFirst (x: lib.hasSuffix ".whl" x) null filenames;
 
   # Source selectors.
   # Prefer to select a wheel from a list of filenames.
@@ -207,19 +215,22 @@
     default = requiredDeps' pyproject.dependencies.dependencies;
     # The extras field contains both `project.optional-dependencies` and
     # `tool.pdm.dev-dependencies`.
-    optional_dependencies = lib.mapAttrs (name: value: requiredDeps' value) pyproject.dependencies.extras;
+    optional_dependencies =
+      lib.mapAttrs
+      (name: value: requiredDeps' value)
+      pyproject.dependencies.extras;
 
     all_groups = {inherit default;} // optional_dependencies;
   in
     all_groups;
 
-  # Get a set with all dependencies recursively.
+  # Get a set with all transitive dependencies flattened.
   # For every dependency we have the version, source
   # and dependencies as names.
   # getDepsRecursively :: Attrset -> String -> Attrset
-  getDepsRecursively = parseLockData: name: let
+  getDepsRecursively = parsedLockData: name: let
     getDeps = name: let
-      dep = parseLockData.${name};
+      dep = parsedLockData.${name};
     in
       [{"${name}" = dep;}] ++ lib.flatten (map getDeps dep.dependencies);
   in
