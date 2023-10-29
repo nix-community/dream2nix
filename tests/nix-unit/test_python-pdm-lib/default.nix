@@ -248,7 +248,7 @@
     };
   };
 
-  tests_selectForGroup = let
+  tests_selectForGroups = let
     environ = linux_environ;
     pyproject = libpdm.loadPdmPyProject (lib.importTOML ./../../../examples/dream2nix-repo-flake-pdm/pyproject.toml);
     lock_data = lib.importTOML ./../../../examples/dream2nix-repo-flake-pdm/pdm.lock;
@@ -260,16 +260,20 @@
       environ = linux_environ;
       selector = libpdm.preferWheelSelector;
     };
-    deps_default = libpdm.selectForGroup {
+    deps_default = libpdm.selectForGroups {
       inherit parsed_lock_data groups_with_deps;
-      groupname = "default";
+      groupNames = ["default"];
+    };
+    deps_dev = libpdm.selectForGroups {
+      inherit parsed_lock_data groups_with_deps;
+      groupNames = ["default" "dev"];
     };
   in {
-    test_selectForGroup_names = {
+    test_selectForGroups_names = {
       expr = lib.attrNames deps_default;
       expected = ["certifi" "charset-normalizer" "idna" "requests" "urllib3"];
     };
-    test_selectForGroup_versions = {
+    test_selectForGroups_versions = {
       expr = lib.mapAttrs (key: value: value.version) deps_default;
       expected = {
         certifi = "2023.7.22";
@@ -279,7 +283,7 @@
         urllib3 = "2.0.5";
       };
     };
-    test_selectForGroup_sources = {
+    test_selectForGroups_sources = {
       expr = lib.mapAttrs (key: value: value.source.file) deps_default;
       expected = {
         certifi = "certifi-2023.7.22-py3-none-any.whl";
@@ -289,6 +293,17 @@
         urllib3 = "urllib3-2.0.5-py3-none-any.whl";
       };
     };
+    test_selectForGroups_dev_versions = {
+      expr = lib.mapAttrs (key: value: value.version) deps_dev;
+      expected = {
+        certifi = "2023.7.22";
+        charset-normalizer = "3.2.0";
+        idna = "3.4";
+        requests = "2.31.0";
+        urllib3 = "2.0.5";
+        pi = "0.1.2";
+      };
+    };
   };
 in
-  test_isDependencyRequired // tests_isUsableFilename // tests_isValidUniversalWheel // tests_selectExtension // tests_selectSdist // tests_preferWheelSelector // tests_preferSdistSelector // tests_parseLockData // tests_groupsWithDeps // tests_getDepsRecursively // tests_selectForGroup
+  test_isDependencyRequired // tests_isUsableFilename // tests_isValidUniversalWheel // tests_selectExtension // tests_selectSdist // tests_preferWheelSelector // tests_preferSdistSelector // tests_parseLockData // tests_groupsWithDeps // tests_getDepsRecursively // tests_selectForGroups

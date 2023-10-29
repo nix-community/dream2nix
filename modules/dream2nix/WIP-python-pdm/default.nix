@@ -70,8 +70,9 @@ in {
   };
   groups = let
     populateGroup = groupname: deps: let
-      deps' = libpdm.selectForGroup {
-        inherit groupname parsed_lock_data groups_with_deps;
+      deps' = libpdm.selectForGroups {
+        inherit parsed_lock_data groups_with_deps;
+        groupNames = lib.unique ["default" groupname];
       };
 
       packages = lib.flip lib.mapAttrs deps' (name: pkg: {
