@@ -82,7 +82,7 @@
   in
     is_valid;
 
-  # Check that the given filenameis a valid wheel for our environment.
+  # Check that the given filename is a valid wheel for our environment.
   isUsableWheelFilename = {
     environ,
     filename,
@@ -238,14 +238,17 @@
 
   # Select the dependencies we need in our group.
   # Here we recurse so we get a set with all dependencies.
-  # selectForGroup :: {Attrset, Attrset, String}
-  selectForGroup = {
+  # selectForGroups :: {Attrset, Attrset, String}
+  selectForGroups = {
     parsed_lock_data,
     groups_with_deps,
-    groupname,
+    groupNames,
   }: let
     # List of top-level package names we need.
-    deps_top_level = groups_with_deps.${groupname};
+    deps_top_level =
+      lib.concatMap
+      (groupName: groups_with_deps.${groupName})
+      groupNames;
     getDeps = getDepsRecursively parsed_lock_data;
   in
     lib.attrsets.mergeAttrsList (map getDeps deps_top_level);
