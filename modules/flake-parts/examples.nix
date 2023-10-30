@@ -66,9 +66,9 @@ in {
     // {
       # add repo templates
       repo.description = "Dream2nix repo without flakes";
-      repo.path = self + /examples/dream2nix-repo;
+      repo.path = self + /examples/repo;
       repo-flake.description = "Dream2nix repo with flakes";
-      repo-flake.path = self + /examples/dream2nix-repo-flake;
+      repo-flake.path = self + /examples/repo-flake;
     };
 
   perSystem = {
@@ -121,15 +121,15 @@ in {
         (lib.mapAttrs (_: drvModules: makeDrv drvModules) allModules)
         // {
           example-repo =
-            (import (self + /examples/dream2nix-repo) {
+            (import (self + /examples/repo) {
               dream2nixSource = self;
               inherit pkgs;
             })
             .hello;
           example-repo-flake =
-            (importFlake (self + /examples/dream2nix-repo-flake/flake.nix)).packages.${system}.hello;
+            (importFlake (self + /examples/repo-flake/flake.nix)).packages.${system}.hello;
           example-repo-flake-pdm =
-            (importFlakeSmall (self + /examples/dream2nix-repo-flake-pdm/flake.nix)).packages.${system}.my-project;
+            (importFlakeSmall (self + /examples/repo-flake-pdm/flake.nix)).packages.${system}.my-project;
         }
       );
 
