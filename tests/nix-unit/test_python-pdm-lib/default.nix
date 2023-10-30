@@ -161,7 +161,7 @@
     };
   };
   tests_parseLockData = let
-    lock_data = lib.importTOML ./../../../examples/dream2nix-repo-flake-pdm/pdm.lock;
+    lock_data = lib.importTOML ./../../../examples/repo-flake-pdm/pdm.lock;
     version = "2.31.0";
     parsed = libpdm.parseLockData {
       inherit lock_data;
@@ -194,7 +194,7 @@
   };
   tests_groupsWithDeps = let
     environ = linux_environ;
-    pyproject = libpdm.loadPdmPyProject (lib.importTOML ./../../../examples/dream2nix-repo-flake-pdm/pyproject.toml);
+    pyproject = libpdm.loadPdmPyProject (lib.importTOML ./../../../examples/repo-flake-pdm/pyproject.toml);
     groups_with_deps = libpdm.groupsWithDeps {
       inherit environ pyproject;
     };
@@ -215,7 +215,7 @@
 
   tests_getDepsRecursively = let
     environ = linux_environ;
-    lock_data = lib.importTOML ./../../../examples/dream2nix-repo-flake-pdm/pdm.lock;
+    lock_data = lib.importTOML ./../../../examples/repo-flake-pdm/pdm.lock;
     parsed_lock_data = libpdm.parseLockData {
       inherit environ lock_data;
       selector = libpdm.preferWheelSelector;
@@ -250,8 +250,8 @@
 
   tests_selectForGroups = let
     environ = linux_environ;
-    pyproject = libpdm.loadPdmPyProject (lib.importTOML ./../../../examples/dream2nix-repo-flake-pdm/pyproject.toml);
-    lock_data = lib.importTOML ./../../../examples/dream2nix-repo-flake-pdm/pdm.lock;
+    pyproject = libpdm.loadPdmPyProject (lib.importTOML ./../../../examples/repo-flake-pdm/pyproject.toml);
+    lock_data = lib.importTOML ./../../../examples/repo-flake-pdm/pdm.lock;
     groups_with_deps = libpdm.groupsWithDeps {
       inherit environ pyproject;
     };
