@@ -35,35 +35,7 @@
     nixpkgs,
     pre-commit-hooks,
     ...
-  } @ inp: let
-    l = nixpkgs.lib // builtins;
-
-    inputs = inp;
-
-    perSystem = {
-      config,
-      pkgs,
-      system,
-      inputs',
-      ...
-    }: {
-      apps = {
-        # passes through extra flags to treefmt
-        format.type = "app";
-        format.program = let
-          path = l.makeBinPath [
-            pkgs.alejandra
-            pkgs.python3.pkgs.black
-          ];
-        in
-          l.toString
-          (pkgs.writeScript "format" ''
-            export PATH="${path}"
-            ${pkgs.treefmt}/bin/treefmt --clear-cache "$@"
-          '');
-      };
-    };
-  in
+  } @ inputs:
     flake-parts.lib.mkFlake {inherit inputs;} {
       imports = [
         ./modules/flake-parts/all-modules.nix
@@ -75,6 +47,5 @@
         "x86_64-darwin"
         "aarch64-darwin"
       ];
-      inherit perSystem;
     };
 }
