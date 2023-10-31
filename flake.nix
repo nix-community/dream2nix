@@ -62,27 +62,6 @@
             ${pkgs.treefmt}/bin/treefmt --clear-cache "$@"
           '');
       };
-
-      checks = {
-        pre-commit-check = pre-commit-hooks.lib.${system}.run {
-          src = ./.;
-          hooks = {
-            treefmt = {
-              enable = true;
-              name = "treefmt";
-              pass_filenames = false;
-              entry = l.toString (pkgs.writeScript "treefmt" ''
-                #!${pkgs.bash}/bin/bash
-                export PATH="$PATH:${l.makeBinPath [
-                  pkgs.alejandra
-                  pkgs.python3.pkgs.black
-                ]}"
-                ${pkgs.treefmt}/bin/treefmt --clear-cache --fail-on-change
-              '');
-            };
-          };
-        };
-      };
     };
   in
     flake-parts.lib.mkFlake {inherit inputs;} {
