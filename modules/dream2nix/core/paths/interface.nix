@@ -30,7 +30,7 @@ in {
         path = toString path';
       in
         if path == projectRoot
-        then "./."
+        then "."
         else if lib.hasPrefix projectRoot path
         then lib.path.subpath.normalise "./${lib.removePrefix projectRoot path}"
         else lib.path.subpath.normalise "./${path}";

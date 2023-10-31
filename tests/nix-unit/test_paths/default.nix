@@ -25,7 +25,7 @@ in {
     expr = {inherit (config.paths) projectRoot package;};
     expected = {
       projectRoot = "${./.}";
-      package = "./.";
+      package = ".";
     };
   };
 
