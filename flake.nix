@@ -63,57 +63,6 @@
           '');
       };
 
-      # a dev shell for working on dream2nix
-      # use via 'nix develop . -c $SHELL'
-      devShells = let
-        makeDevshell = import "${inp.devshell}/modules" pkgs;
-        mkShell = config:
-          (makeDevshell {
-            configuration = {
-              inherit config;
-              imports = [];
-            };
-          })
-          .shell;
-      in rec {
-        default = dream2nix-shell;
-        dream2nix-shell = mkShell {
-          devshell.name = "dream2nix-devshell";
-
-          packages =
-            [
-              pkgs.alejandra
-              pkgs.mdbook
-              (pkgs.python3.withPackages (ps: [
-                pkgs.python3.pkgs.black
-              ]))
-            ]
-            ++ (l.optionals pkgs.stdenv.isLinux [
-              inputs'.nix-unit.packages.nix-unit
-            ]);
-
-          commands =
-            [
-              {
-                package = pkgs.treefmt;
-                category = "formatting";
-              }
-            ]
-            # using linux is highly recommended as cntr is amazing for debugging builds
-            ++ l.optional pkgs.stdenv.isLinux {
-              package = pkgs.cntr;
-              category = "debugging";
-            };
-
-          devshell.startup = {
-            preCommitHooks.text = self.checks.${system}.pre-commit-check.shellHook;
-            dream2nixEnv.text = ''
-              export NIX_PATH=nixpkgs=${nixpkgs}
-            '';
-          };
-        };
-      };
-
       checks = {
         pre-commit-check = pre-commit-hooks.lib.${system}.run {
           src = ./.;
