@@ -18,10 +18,10 @@
     readDir
     ;
 
-  packageCategories = readDir (self + "/examples/packages");
+  packageCategories = readDir (../../examples/packages);
 
   readExamples = dirName: let
-    examplesPath = self + /examples/packages + "/${dirName}";
+    examplesPath = ../../examples/packages + "/${dirName}";
     examples = readDir examplesPath;
   in
     flip mapAttrs examples
@@ -39,16 +39,16 @@
   in
     self';
 
-  importFlakeSmall = flakeFile: let
-    self' = (import flakeFile).outputs {
-      dream2nix = modulesFlake;
-      nixpkgs = inputs.nixpkgs;
-      self = self';
-    };
-  in
-    self';
+  # importFlakeSmall = flakeFile: let
+  #   self' = (import flakeFile).outputs {
+  #     dream2nix = dream2nixFlake;
+  #     nixpkgs = inputs.nixpkgs;
+  #     self = self';
+  #   };
+  # in
+  #   self';
 
-  modulesFlake = import (self + /modules) {};
+  # dream2nixFlake = import (../../.) {};
 
   # Type: [ {${name} = {module, packagePath} ]
   allExamplesList = mapAttrsToList (dirName: _: readExamples dirName) packageCategories;
@@ -71,9 +71,9 @@ in {
     // {
       # add repo templates
       repo.description = "Dream2nix repo without flakes";
-      repo.path = self + /examples/repo;
+      repo.path = ../../examples/repo;
       repo-flake.description = "Dream2nix repo with flakes";
-      repo-flake.path = self + /examples/repo-flake;
+      repo-flake.path = ../../examples/repo-flake;
     };
 
   perSystem = {
@@ -95,16 +95,19 @@ in {
       (
         (lib.mapAttrs (_: flakeFile: getPackage flakeFile) allExamples)
         // {
-          example-repo =
-            (import (self + /examples/repo) {
-              dream2nixSource = self;
-              inherit pkgs;
-            })
-            .hello;
+          example-repo = let
+            imported =
+              (import (../../examples/repo) {
+                dream2nixSource = ../..;
+                inherit pkgs;
+              })
+              .hello;
+          in
+           imported;
           example-repo-flake =
-            (importFlake (self + /examples/repo-flake/flake.nix)).packages.${system}.hello;
-          example-repo-flake-pdm =
-            (importFlakeSmall (self + /examples/repo-flake-pdm/flake.nix)).packages.${system}.my-project;
+            (importFlake (../../examples/repo-flake/flake.nix)).packages.${system}.hello;
+          # example-repo-flake-pdm =
+          #   (importFlakeSmall (../../examples/repo-flake-pdm/flake.nix)).packages.${system}.my-project;
         }
       );
 

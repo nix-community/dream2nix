@@ -94,7 +94,7 @@
           } < SUMMARY.md.orig > src/SUMMARY.md
 
           mkdir -p ./theme
-          cp ${self + /modules/dream2nix/core/docs/theme/favicon.png} ./theme/favicon.png
+          cp ${../../dream2nix/core/docs/theme/favicon.png} ./theme/favicon.png
 
           mkdir -p src/options
           for f in ${config.packages.generated-docs}/*.html; do

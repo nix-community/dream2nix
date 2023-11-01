@@ -20,7 +20,7 @@
     removeSuffix
     ;
 
-  path = self + "/modules/dream2nix/core";
+  path = ../dream2nix/core;
 
   dirs = filterAttrs (name: _: name != "default.nix") (readDir path);
 

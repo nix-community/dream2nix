@@ -1,5 +1,5 @@
 # This file provides backward compatibility to nix < 2.4 clients
-inputs: let
+let
   flake =
     import
     (
@@ -13,4 +13,4 @@ inputs: let
     )
     {src = ./.;};
 in
-  flake.defaultNix.overrideInputs inputs
+  flake.defaultNix
