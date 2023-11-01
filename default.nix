@@ -4,7 +4,7 @@ let
     import
     (
       let
-        lock = builtins.fromJSON (builtins.readFile ./flake.lock);
+        lock = builtins.fromJSON (builtins.readFile ./dev-flake/flake.lock);
       in
         fetchTarball {
           url = "https://github.com/edolstra/flake-compat/archive/${lock.nodes.flake-compat.locked.rev}.tar.gz";
@@ -14,3 +14,8 @@ let
     {src = ./.;};
 in
   flake.defaultNix
+  # allow overriding inputs
+  // {
+    __functor = defaultNix: inputs: defaultNix.overrideInputs inputs;
+  }
+

@@ -1,55 +1,52 @@
 {
-  description = "A framework for 2nix tools";
-
-  nixConfig = {
-    extra-trusted-public-keys = "nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs=";
-    extra-substituters = "https://nix-community.cachix.org";
-  };
+  description = "Simplified nix packaging for various programming language ecosystems";
 
   inputs = {
-    nixpkgs.url = "nixpkgs/nixos-unstable";
+    nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
 
-    flake-parts.url = "github:hercules-ci/flake-parts";
-    flake-parts.inputs.nixpkgs-lib.follows = "nixpkgs";
+    pyproject-nix.url = "github:adisbladis/pyproject.nix";
+    pyproject-nix.flake = false;
 
-    flake-compat.url = "github:edolstra/flake-compat";
-    flake-compat.flake = false;
-
-    pre-commit-hooks.url = "github:cachix/pre-commit-hooks.nix";
-    pre-commit-hooks.inputs.nixpkgs.follows = "nixpkgs";
-
-    nix-unit.url = "github:adisbladis/nix-unit";
-    nix-unit.inputs.nixpkgs.follows = "nixpkgs";
-    nix-unit.inputs.flake-parts.follows = "flake-parts";
-
-    devshell = {
-      url = "github:numtide/devshell";
-      flake = false;
-    };
+    purescript-overlay.url = "github:thomashoneyman/purescript-overlay";
+    purescript-overlay.inputs.nixpkgs.follows = "nixpkgs";
   };
 
-  outputs = {
-    self,
-    devshell,
-    flake-parts,
-    nixpkgs,
-    pre-commit-hooks,
-    ...
-  } @ inputs:
-    flake-parts.lib.mkFlake {inherit inputs;} {
-      imports = [
-        ./modules/flake-parts/all-modules.nix
-        ./pkgs/fetchPipMetadata/flake-module.nix
-      ];
-      systems = [
-        "x86_64-linux"
-        "aarch64-linux"
-        "x86_64-darwin"
-        "aarch64-darwin"
-      ];
-      flake.lib = import ./lib {
-        inherit (inputs.nixpkgs) lib;
-        dream2nix = inputs.self;
-      };
-    };
+  outputs = inputs: let
+    inherit
+      (builtins)
+      mapAttrs
+      readDir
+      ;
+
+    inherit
+      (inputs.nixpkgs.lib)
+      filterAttrs
+      mapAttrs'
+      removeSuffix
+      ;
+
+    devFlake = import ./dev-flake;
+
+    modulesDir = ./modules;
+
+    moduleKinds =
+      filterAttrs (_: type: type == "directory") (readDir modulesDir);
+
+    mapModules = kind:
+      mapAttrs'
+      (fn: _: {
+        name = removeSuffix ".nix" fn;
+        value = modulesDir + "/${kind}/${fn}";
+      })
+      (readDir (modulesDir + "/${kind}"));
+  in{
+    inherit
+      (devFlake)
+      checks
+      devShells
+      lib
+      packages
+      ;
+    modules = mapAttrs (kind: _: mapModules kind) moduleKinds;
+  };
 }

@@ -4,9 +4,9 @@
       url = "https://github.com/nix-community/dream2nix/tarball/main";
       # sha256 = "";
     },
-  pkgs ? import (import dream2nixSource).inputs.nixpkgs {},
+  pkgs ? import (import dream2nixSource {}).inputs.nixpkgs {},
 }: let
-  dream2nix = import dream2nixSource;
+  dream2nix = import dream2nixSource {};
   # all packages defined inside ./packages/
   packages = dream2nix.lib.importPackages {
     projectRoot = ./.;

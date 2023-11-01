@@ -7,8 +7,8 @@
     system,
     ...
   }: let
-    modulesFlake = import "${self}/modules" {};
-    inputs = lib.mapAttrs (name: input: "${input.outPath}") modulesFlake.inputs;
+    dream2nixFlake = import ../../. {};
+    inputs = lib.mapAttrs (name: input: "${input.outPath}") dream2nixFlake.inputs;
     inputsFile = builtins.toFile "inputs.json" (builtins.toJSON inputs);
   in
     lib.optionalAttrs (system == "x86_64-linux") {
@@ -21,7 +21,7 @@
         } ''
           export NIX_PATH=nixpkgs=${pkgs.path}
           export HOME=$(realpath .)
-          for test in ${self}/tests/nix-unit/*; do
+          for test in ${../..}/tests/nix-unit/*; do
             if [ -f "$test" ]; then
               continue
             fi
