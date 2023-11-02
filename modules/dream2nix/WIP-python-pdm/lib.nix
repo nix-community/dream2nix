@@ -70,18 +70,6 @@
   in
     is_valid;
 
-  # matchUniversalWheelFileName = lib.match "([^-]+)-([^-]+)(-([[:digit:]][^-]*))?-([^-]+)-([^-]+)-(.+).[tar.gz|zip]";
-  # name: matchUniversalWheelFileName name != null;
-
-  isValidUniversalWheelFilename = {filename}: let
-    parsed_filename = libpyproject.pypa.parseWheelFileName filename;
-    is_valid =
-      (parsed_filename.languageTag == "py3")
-      && (parsed_filename.abiTag == "none")
-      && (parsed_filename.platformTags == ["any"]);
-  in
-    is_valid;
-
   # Check that the given filename is a valid wheel for our environment.
   isUsableWheelFilename = {
     environ,
