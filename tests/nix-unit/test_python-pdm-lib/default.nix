@@ -51,21 +51,6 @@
     };
   };
 
-  tests_isValidUniversalWheel = let
-    testIsValidUniversalWheelFilename = filename:
-      libpdm.isValidUniversalWheelFilename {inherit filename;};
-  in {
-    test_isValidUniversalWheelFilename__wheel_universal = {
-      expr = testIsValidUniversalWheelFilename "certifi-2023.7.22-py3-none-any.whl";
-      expected = true;
-    };
-
-    test_isValidUniversalWheelFilename__wheel_not_universal = {
-      expr = testIsValidUniversalWheelFilename "certifi-2023.7.22-py3-abi3-any.whl";
-      expected = false;
-    };
-  };
-
   tests_selectExtension = let
     names = [
       "certifi-2023.7.22-py3-abi3-any.whl"
@@ -306,4 +291,4 @@
     };
   };
 in
-  test_isDependencyRequired // tests_isUsableFilename // tests_isValidUniversalWheel // tests_selectExtension // tests_selectSdist // tests_preferWheelSelector // tests_preferSdistSelector // tests_parseLockData // tests_groupsWithDeps // tests_getDepsRecursively // tests_selectForGroups
+  test_isDependencyRequired // tests_isUsableFilename // tests_selectExtension // tests_selectSdist // tests_preferWheelSelector // tests_preferSdistSelector // tests_parseLockData // tests_groupsWithDeps // tests_getDepsRecursively // tests_selectForGroups
