@@ -49,7 +49,7 @@
     environ,
     filename,
   }: let
-    is_wheel = libpyproject.pep427.isWheelFileName filename;
+    is_wheel = libpyproject.pypa.isWheelFileName filename;
     func =
       if is_wheel
       then isUsableWheelFilename
@@ -74,7 +74,7 @@
   # name: matchUniversalWheelFileName name != null;
 
   isValidUniversalWheelFilename = {filename}: let
-    parsed_filename = libpyproject.pep427.parseFileName filename;
+    parsed_filename = libpyproject.pypa.parseWheelFileName filename;
     is_valid =
       (parsed_filename.languageTag == "py3")
       && (parsed_filename.abiTag == "none")
@@ -88,7 +88,7 @@
     filename,
   }: let
     # TODO: implement it
-    parsed_filename = libpyproject.pep427.parseFileName filename;
+    parsed_filename = libpyproject.pypa.parseWheelFileName filename;
     is_valid_build = true;
     is_valid_implementation = true;
     is_valid_abi = true;

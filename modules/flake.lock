@@ -17,26 +17,6 @@
         "type": "github"
       }
     },
-    "flake-parts": {
-      "inputs": {
-        "nixpkgs-lib": [
-          "nixpkgs"
-        ]
-      },
-      "locked": {
-        "lastModified": 1698579227,
-        "narHash": "sha256-KVWjFZky+gRuWennKsbo6cWyo7c/z/VgCte5pR9pEKg=",
-        "owner": "hercules-ci",
-        "repo": "flake-parts",
-        "rev": "f76e870d64779109e41370848074ac4eaa1606ec",
-        "type": "github"
-      },
-      "original": {
-        "owner": "hercules-ci",
-        "repo": "flake-parts",
-        "type": "github"
-      }
-    },
     "nixpkgs": {
       "locked": {
         "lastModified": 1695837737,
@@ -77,11 +57,11 @@
     "pyproject-nix": {
       "flake": false,
       "locked": {
-        "lastModified": 1694075710,
-        "narHash": "sha256-B2EzHfVwk6RlW6KGXh/85DkffI8QIaD7ugm119Xz5Hs=",
+        "lastModified": 1698922660,
+        "narHash": "sha256-FhaXC67HjBWARosAc2Xh7S8cxORrEvyGhv2PHoqKY2I=",
         "owner": "adisbladis",
         "repo": "pyproject.nix",
-        "rev": "c66dab8e7bce2a13c10baeebfe8fe63c51df62c3",
+        "rev": "8929485ceb69d26762f84836273eadca01f7660d",
         "type": "github"
       },
       "original": {
@@ -93,7 +73,6 @@
     "root": {
       "inputs": {
         "flake-compat": "flake-compat",
-        "flake-parts": "flake-parts",
         "nixpkgs": "nixpkgs",
         "purescript-overlay": "purescript-overlay",
         "pyproject-nix": "pyproject-nix"
