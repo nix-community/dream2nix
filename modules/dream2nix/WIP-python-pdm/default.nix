@@ -9,6 +9,10 @@
   };
 
   libpyproject = import (dream2nix.inputs.pyproject-nix + "/lib") {inherit lib;};
+  libpyproject-fetchers = import (dream2nix.inputs.pyproject-nix + "/fetchers") {
+    inherit lib;
+    pkgs = config.deps;
+  };
 
   selectWheel = files: let
     wheelFiles = lib.filter libpyproject.pypa.isWheelFileName files;
@@ -31,11 +35,6 @@
   parsed_lock_data = libpdm.parseLockData {
     inherit environ lock_data selector;
   };
-
-  fetchFromPypi = import ./fetch-from-pypi.nix {
-    inherit lib;
-    inherit (config.deps) curl jq stdenvNoCC;
-  };
 in {
   imports = [
     dream2nix.modules.dream2nix.groups
@@ -48,6 +47,7 @@ in {
   deps = {nixpkgs, ...}: {
     inherit
       (nixpkgs)
+      buildPackages
       curl
       jq
       stdenvNoCC
@@ -94,7 +94,7 @@ in {
           };
           mkDerivation = {
             # required: { pname, file, version, hash, kind, curlOpts ? "" }:
-            src = fetchFromPypi {
+            src = libpyproject-fetchers.fetchFromPypi {
               pname = name;
               file = pkg.source.file;
               version = pkg.version;
