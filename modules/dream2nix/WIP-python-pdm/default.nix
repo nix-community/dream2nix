@@ -10,12 +10,14 @@
 
   libpyproject = import (dream2nix.inputs.pyproject-nix + "/lib") {inherit lib;};
 
-  selectWheel = import ../../flake-parts/lib/internal/python/selectWheel.nix {
-    inherit lib;
-    pep599 = libpyproject.pep599;
-    python = config.deps.python3;
-    stdenv = config.deps.stdenv;
-  };
+  selectWheel = files: let
+    wheelFiles = lib.filter libpyproject.pypa.isWheelFileName files;
+    wheels = map libpyproject.pypa.parseWheelFileName wheelFiles;
+    selected = libpyproject.pypa.selectWheels config.deps.python3.stdenv.targetPlatform config.deps.python3 wheels;
+  in
+    if lib.length selected == 0
+    then null
+    else (lib.head selected).filename;
 
   lock_data = lib.importTOML config.pdm.lockfile;
   environ = libpyproject.pep508.mkEnviron config.deps.python3;
