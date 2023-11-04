@@ -11,7 +11,11 @@
   libpyproject = import (dream2nix.inputs.pyproject-nix + "/lib") {inherit lib;};
   libpyproject-fetchers = import (dream2nix.inputs.pyproject-nix + "/fetchers") {
     inherit lib;
-    pkgs = config.deps;
+    curl = config.deps.curl;
+    jq = config.deps.jq;
+    python3 = config.deps.python3;
+    runCommand = config.deps.stdenv.runCommand;
+    stdenvNoCC = config.deps.stdenvNoCC;
   };
 
   selectWheel = files: let
@@ -50,6 +54,7 @@ in {
       buildPackages
       curl
       jq
+      runCommand
       stdenvNoCC
       stdenv
       ;
