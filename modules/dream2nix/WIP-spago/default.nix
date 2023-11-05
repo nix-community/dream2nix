@@ -7,11 +7,7 @@
 }: let
   l = lib // builtins;
 
-  depsFlake = import ../../default.nix {
-    nixpkgs = packageSets.nixpkgs.path;
-  };
-
-  purescript-overlay = depsFlake.inputs.purescript-overlay;
+  purescript-overlay = dream2nix.inputs.purescript-overlay;
   inherit (purescript-overlay.packages.${config.deps.stdenv.system}) purs spago-unstable;
 
   registry-index = config.deps.fetchFromGitHub {

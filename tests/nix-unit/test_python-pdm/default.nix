@@ -1,8 +1,8 @@
 {
   pkgs ? import <nixpkgs> {},
   lib ? import <nixpkgs/lib>,
-  dream2nix ? ((import (../../../modules + "/flake.nix")).outputs inputs),
-  inputs ? (import (../../../modules + "/default.nix")).inputs,
+  inputs ? {},
+  dream2nix ? import ../../.. inputs,
 }: let
   eval = module:
     (lib.evalModules {

@@ -70,7 +70,7 @@
           runHook preBuild
 
           rm ./src/intro.md
-          cp ${self + /README.md} ./src/intro.md
+          cp ${../../../README.md} ./src/intro.md
 
           # insert highlight.js
           cp ${self'.packages.highlight-js} ./src/highlight.js

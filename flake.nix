@@ -25,8 +25,6 @@
       removeSuffix
       ;
 
-    devFlake = import ./dev-flake;
-
     modulesDir = ./modules;
 
     moduleKinds =
@@ -39,14 +37,24 @@
         value = modulesDir + "/${kind}/${fn}";
       })
       (readDir (modulesDir + "/${kind}"));
-  in{
-    inherit
-      (devFlake)
-      checks
-      devShells
-      lib
-      packages
-      ;
+  in {
     modules = mapAttrs (kind: _: mapModules kind) moduleKinds;
+
+    lib = import ./lib {
+      dream2nix = inputs.self;
+      inherit (inputs.nixpkgs) lib;
+    };
+
+    overrides = let
+      overridesDir = ./overrides;
+    in
+      mapAttrs
+      (
+        category: _type:
+          mapAttrs
+          (name: _type: overridesDir + "/${category}/${name}")
+          (readDir (overridesDir + "/${category}"))
+      )
+      (readDir overridesDir);
   };
 }
