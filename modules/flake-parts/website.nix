@@ -42,8 +42,8 @@
           (lib.strings.escapeNixIdentifier name)
         ];
         intro =
-          if lib.pathExists (../dream2nix/${name}/README.md)
-          then lib.readFile (../dream2nix/${name}/README.md)
+          if lib.pathExists ../dream2nix/${name}/README.md
+          then lib.readFile ../dream2nix/${name}/README.md
           else "";
         baseUrl = "https://github.com/nix-community/dream2nix/blob/master";
         separateEval = true;

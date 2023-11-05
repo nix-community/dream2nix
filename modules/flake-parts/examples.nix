@@ -18,7 +18,9 @@
     readDir
     ;
 
-  packageCategories = readDir (../../examples/packages);
+  dream2nixFlake = import ../../. {};
+
+  packageCategories = readDir ../../examples/packages;
 
   readExamples = dirName: let
     examplesPath = ../../examples/packages + "/${dirName}";
@@ -32,23 +34,12 @@
 
   importFlake = flakeFile: let
     self' = (import flakeFile).outputs {
-      dream2nix = self;
+      dream2nix = dream2nixFlake;
       nixpkgs = inputs.nixpkgs;
       self = self';
     };
   in
     self';
-
-  # importFlakeSmall = flakeFile: let
-  #   self' = (import flakeFile).outputs {
-  #     dream2nix = dream2nixFlake;
-  #     nixpkgs = inputs.nixpkgs;
-  #     self = self';
-  #   };
-  # in
-  #   self';
-
-  # dream2nixFlake = import (../../.) {};
 
   # Type: [ {${name} = {module, packagePath} ]
   allExamplesList = mapAttrsToList (dirName: _: readExamples dirName) packageCategories;
@@ -97,17 +88,17 @@ in {
         // {
           example-repo = let
             imported =
-              (import (../../examples/repo) {
+              (import ../../examples/repo {
                 dream2nixSource = ../..;
                 inherit pkgs;
               })
               .hello;
           in
-           imported;
+            imported;
           example-repo-flake =
-            (importFlake (../../examples/repo-flake/flake.nix)).packages.${system}.hello;
-          # example-repo-flake-pdm =
-          #   (importFlakeSmall (../../examples/repo-flake-pdm/flake.nix)).packages.${system}.my-project;
+            (importFlake ../../examples/repo-flake/flake.nix).packages.${system}.hello;
+          example-repo-flake-pdm =
+            (importFlake ../../examples/repo-flake-pdm/flake.nix).packages.${system}.my-project;
         }
       );
 

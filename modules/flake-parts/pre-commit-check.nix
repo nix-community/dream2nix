@@ -13,7 +13,7 @@
   }: {
     checks = {
       pre-commit-check = inputs.pre-commit-hooks.lib.${pkgs.system}.run {
-        src = self;
+        src = ../../.;
         hooks = {
           treefmt = {
             enable = true;

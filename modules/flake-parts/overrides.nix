@@ -1,5 +1,5 @@
 {self, ...}: let
-  overridesDir = self + "/overrides";
+  overridesDir = ../../overrides;
 in {
   flake.overrides =
     builtins.mapAttrs
