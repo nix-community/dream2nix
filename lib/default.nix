@@ -1,13 +1,9 @@
 {
-  self,
   lib,
-  inputs,
+  dream2nix,
   ...
-}: {
-  flake.options.lib = lib.mkOption {
-    type = lib.types.lazyAttrsOf lib.types.raw;
-  };
-  flake.config.lib.importPackages = args @ {
+}: rec {
+  importPackages = args @ {
     projectRoot,
     projectRootFile,
     packagesDir,
@@ -28,7 +24,7 @@
     lib.mapAttrs
     (
       module: type:
-        self.lib.evalModules (forwardedArgs
+        evalModules (forwardedArgs
           // {
             modules =
               args.modules
@@ -45,7 +41,7 @@
     )
     (builtins.readDir packagesDirPath);
 
-  flake.config.lib.evalModules = args @ {
+  evalModules = args @ {
     packageSets,
     modules,
     # If set, returns the result coming form nixpkgs.lib.evalModules as is,
@@ -67,15 +63,16 @@
           modules =
             args.modules
             ++ [
-              self.modules.dream2nix.core
+              dream2nix.modules.dream2nix.core
             ];
           specialArgs =
             specialArgs
             // {
               inherit packageSets;
-              dream2nix.modules.dream2nix = self.modules.dream2nix;
-              dream2nix.overrides = self.overrides;
-              dream2nix.lib.evalModules = self.lib.evalModules;
+              dream2nix.modules.dream2nix = dream2nix.modules.dream2nix;
+              dream2nix.overrides = dream2nix.overrides;
+              dream2nix.lib.evalModules = evalModules;
+              dream2nix.inputs = dream2nix.inputs;
             };
         }
       );

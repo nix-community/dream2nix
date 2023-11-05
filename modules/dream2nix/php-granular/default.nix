@@ -11,22 +11,22 @@
   dreamLock = config.php-composer-lock.dreamLock;
 
   fetchDreamLockSources =
-    import ../../flake-parts/lib/internal/fetchDreamLockSources.nix
+    import ../../../lib/internal/fetchDreamLockSources.nix
     {inherit lib;};
-  getDreamLockSource = import ../../flake-parts/lib/internal/getDreamLockSource.nix {inherit lib;};
-  readDreamLock = import ../../flake-parts/lib/internal/readDreamLock.nix {inherit lib;};
-  hashPath = import ../../flake-parts/lib/internal/hashPath.nix {
+  getDreamLockSource = import ../../../lib/internal/getDreamLockSource.nix {inherit lib;};
+  readDreamLock = import ../../../lib/internal/readDreamLock.nix {inherit lib;};
+  hashPath = import ../../../lib/internal/hashPath.nix {
     inherit lib;
     inherit (config.deps) runCommandLocal nix;
   };
 
   # fetchers
   fetchers = {
-    git = import ../../flake-parts/lib/internal/fetchers/git {
+    git = import ../../../lib/internal/fetchers/git {
       inherit hashPath;
       inherit (config.deps) fetchgit;
     };
-    path = import ../../flake-parts/lib/internal/fetchers/path {
+    path = import ../../../lib/internal/fetchers/path {
       inherit hashPath;
     };
   };
@@ -53,7 +53,7 @@
     packageVersions
     ;
 
-  inherit (import ../../flake-parts/lib/internal/php-semver.nix {inherit lib;}) satisfies;
+  inherit (import ../../../lib/internal/php-semver.nix {inherit lib;}) satisfies;
 
   selectExtensions = all:
     l.attrValues (

@@ -7,11 +7,11 @@
   l = lib // builtins;
   cfg = config.php-composer-lock;
 
-  dreamLockUtils = import ../../flake-parts/lib/internal/dreamLockUtils.nix {inherit lib;};
-  nodejsUtils = import ../../flake-parts/lib/internal/nodejsUtils.nix {inherit lib parseSpdxId;};
-  parseSpdxId = import ../../flake-parts/lib/internal/parseSpdxId.nix {inherit lib;};
-  prepareSourceTree = import ../../flake-parts/lib/internal/prepareSourceTree.nix {inherit lib;};
-  simpleTranslate2 = import ../../flake-parts/lib/internal/simpleTranslate2.nix {inherit lib;};
+  dreamLockUtils = import ../../../lib/internal/dreamLockUtils.nix {inherit lib;};
+  nodejsUtils = import ../../../lib/internal/nodejsUtils.nix {inherit lib parseSpdxId;};
+  parseSpdxId = import ../../../lib/internal/parseSpdxId.nix {inherit lib;};
+  prepareSourceTree = import ../../../lib/internal/prepareSourceTree.nix {inherit lib;};
+  simpleTranslate2 = import ../../../lib/internal/simpleTranslate2.nix {inherit lib;};
 
   translate = import ./translate.nix {
     inherit lib dreamLockUtils nodejsUtils parseSpdxId simpleTranslate2;
