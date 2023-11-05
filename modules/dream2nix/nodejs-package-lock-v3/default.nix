@@ -9,7 +9,7 @@
 
   inherit (config.deps) fetchurl;
 
-  nodejsLockUtils = import ../../flake-parts/lib/internal/nodejsLockUtils.nix {inherit lib;};
+  nodejsLockUtils = import ../../../lib/internal/nodejsLockUtils.nix {inherit lib;};
 
   isLink = plent: plent ? link && plent.link;
 

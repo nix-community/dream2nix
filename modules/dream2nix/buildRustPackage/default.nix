@@ -11,31 +11,31 @@
   sourceRoot = config.mkDerivation.src;
 
   fetchDreamLockSources =
-    import ../../flake-parts/lib/internal/fetchDreamLockSources.nix
+    import ../../../lib/internal/fetchDreamLockSources.nix
     {inherit lib;};
-  getDreamLockSource = import ../../flake-parts/lib/internal/getDreamLockSource.nix {inherit lib;};
-  readDreamLock = import ../../flake-parts/lib/internal/readDreamLock.nix {inherit lib;};
-  hashPath = import ../../flake-parts/lib/internal/hashPath.nix {
+  getDreamLockSource = import ../../../lib/internal/getDreamLockSource.nix {inherit lib;};
+  readDreamLock = import ../../../lib/internal/readDreamLock.nix {inherit lib;};
+  hashPath = import ../../../lib/internal/hashPath.nix {
     inherit lib;
     inherit (config.deps) runCommandLocal nix;
   };
-  hashFile = import ../../flake-parts/lib/internal/hashFile.nix {
+  hashFile = import ../../../lib/internal/hashFile.nix {
     inherit lib;
     inherit (config.deps) runCommandLocal nix;
   };
 
   # fetchers
   fetchers = {
-    git = import ../../flake-parts/lib/internal/fetchers/git {
+    git = import ../../../lib/internal/fetchers/git {
       inherit hashPath;
       inherit (config.deps) fetchgit;
     };
-    http = import ../../flake-parts/lib/internal/fetchers/http {
+    http = import ../../../lib/internal/fetchers/http {
       inherit hashFile lib;
       inherit (config.deps.stdenv) mkDerivation;
       inherit (config.deps) fetchurl;
     };
-    crates-io = import ../../flake-parts/lib/internal/fetchers/crates-io {
+    crates-io = import ../../../lib/internal/fetchers/crates-io {
       inherit hashFile;
       inherit (config.deps) fetchurl runCommandLocal;
     };
@@ -71,7 +71,7 @@
     defaultPackageVersion
     ;
 
-  toTOML = import ../../flake-parts/lib/internal/toTOML.nix {inherit lib;};
+  toTOML = import ../../../lib/internal/toTOML.nix {inherit lib;};
 
   utils = import ./utils.nix {
     inherit dreamLock getSource lib toTOML sourceRoot;

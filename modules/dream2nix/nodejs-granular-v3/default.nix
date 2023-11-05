@@ -8,12 +8,12 @@
 
   cfg = config.nodejs-granular-v3;
 
-  extractSource = import ../../flake-parts/lib/internal/fetchers/extractSource.nix {
+  extractSource = import ../../../lib/internal/fetchers/extractSource.nix {
     inherit lib;
     inherit (config.deps.stdenv) mkDerivation;
   };
 
-  findCycles = import ../../flake-parts/lib/internal/findCycles.nix {
+  findCycles = import ../../../lib/internal/findCycles.nix {
     inherit lib;
   };
 

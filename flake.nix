@@ -47,5 +47,9 @@
         "x86_64-darwin"
         "aarch64-darwin"
       ];
+      flake.lib = import ./lib {
+        inherit (inputs.nixpkgs) lib;
+        dream2nix = inputs.self;
+      };
     };
 }
