@@ -25,6 +25,8 @@
       removeSuffix
       ;
 
+    devFlake = import ./dev-flake;
+
     modulesDir = ./modules;
 
     moduleKinds =
@@ -56,5 +58,13 @@
           (readDir (overridesDir + "/${category}"))
       )
       (readDir overridesDir);
+
+    inherit
+      (devFlake)
+      checks
+      devShells
+      packages
+      templates
+      ;
   };
 }
