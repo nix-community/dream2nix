@@ -1,11 +1,13 @@
 {
   "package-lock": {
     "name": "app",
-    "lockfileVersion": 2,
+    "version": "1.0.0",
+    "lockfileVersion": 3,
     "requires": true,
     "packages": {
       "": {
         "name": "app",
+        "version": "1.0.0",
         "dependencies": {
           "typescript": "^5.1.6"
         },
@@ -25,14 +27,7 @@
           "node": ">=14.17"
         }
       }
-    },
-    "dependencies": {
-      "typescript": {
-        "version": "5.2.2",
-        "resolved": "https://registry.npmjs.org/typescript/-/typescript-5.2.2.tgz",
-        "integrity": "sha512-mI4WrpHsbCIcwT9cF4FZvr80QUeKvsUsUvKDoR+X/7XHQH98xYD8YHZg7ANtz2GtZt/CBq2QJ0thkGJMHfqc1w=="
-      }
     }
   },
-  "invalidationHash": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a"
+  "invalidationHash": "7ac1f84763ee2385dc2a63fded15a83bb6fb293244eed5c0ff65478fb32fb28a"
 }

@@ -138,13 +138,13 @@ in {
           concatMap
           (
             decl: let
-                subpath = removePrefix sourcePathStr (toString decl);
-              in [
-                {
-                  url = baseUrl + subpath;
-                  name = "dream2nix" + subpath;
-                }
-              ]
+              subpath = removePrefix sourcePathStr (toString decl);
+            in [
+              {
+                url = baseUrl + subpath;
+                name = "dream2nix" + subpath;
+              }
+            ]
           )
           opt.declarations;
       in

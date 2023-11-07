@@ -8,8 +8,7 @@
 in {
   imports = [
     dream2nix.modules.dream2nix.nodejs-package-json
-    dream2nix.modules.dream2nix.nodejs-package-lock
-    dream2nix.modules.dream2nix.nodejs-granular
+    dream2nix.modules.dream2nix.nodejs-granular-v3
   ];
 
   deps = {nixpkgs, ...}: {
@@ -20,11 +19,7 @@ in {
       ;
   };
 
-  nodejs-package-lock = {
-    source = lib.cleanSource ./.;
-  };
-
-  nodejs-granular = {
+  nodejs-granular-v3 = {
     buildScript = ''
       tsc ./app.ts
       mv app.js app.js.tmp
@@ -42,7 +37,7 @@ in {
     lib.mkForce "/locks/example-package-nodejs-no-lock/lock-${system}.json";
 
   mkDerivation = {
-    src = config.nodejs-package-lock.source;
+    src = lib.cleanSource ./.;
     checkPhase = ''
       ./app.js | ${config.deps.gnugrep}/bin/grep -q "Hello, World!"
     '';
