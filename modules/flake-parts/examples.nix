@@ -62,9 +62,9 @@ in {
     // {
       # add repo templates
       repo.description = "Dream2nix repo without flakes";
-      repo.path = ../../examples/repo;
+      repo.path = ../../examples/repo-with-packages;
       repo-flake.description = "Dream2nix repo with flakes";
-      repo-flake.path = ../../examples/repo-flake;
+      repo-flake.path = ../../examples/repo-with-packages-flake;
     };
 
   perSystem = {
@@ -86,17 +86,17 @@ in {
       (
         (lib.mapAttrs (_: flakeFile: getPackage flakeFile) allExamples)
         // {
-          example-repo = let
+          repo-with-packages = let
             imported =
-              (import ../../examples/repo {
+              (import ../../examples/repo-with-packages {
                 dream2nixSource = ../..;
                 inherit pkgs;
               })
               .hello;
           in
             imported;
-          example-repo-flake =
-            (importFlake ../../examples/repo-flake/flake.nix).packages.${system}.hello;
+          repo-with-packages-flake =
+            (importFlake ../../examples/repo-with-packages-flake/flake.nix).packages.${system}.hello;
         }
       );
 

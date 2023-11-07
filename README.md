@@ -8,8 +8,8 @@
   Automate reproducible packaging for various language ecosystems
   <br>
   <a href="https://nix-community.github.io/dream2nix/">Documentation</a> |
-  <a href="https://github.com/nix-community/dream2nix/tree/main/examples/repo">Example Repo</a> |
-  <a href="https://github.com/nix-community/dream2nix/tree/main/examples/repo-flake">Example Repo Flake</a> |
+  <a href="https://github.com/nix-community/dream2nix/tree/main/examples/repo-with-packages">Example Repo</a> |
+  <a href="https://github.com/nix-community/dream2nix/tree/main/examples/repo-with-packages-flake">Example Repo Flake</a> |
   <a href="https://github.com/nix-community/dream2nix/tree/main/examples/packages">Example Packages</a>
 </p>
 
