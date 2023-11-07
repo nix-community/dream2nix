@@ -178,7 +178,6 @@
 <h2 id="options"><a class="header" href="#options">Options</a></h2>
 <p><a href="#opt-deps"><code>deps</code></a></p>
 <p><a href="#opt-deps.npm"><code>deps.npm</code></a></p>
-<p><a href="#opt-deps.stdenv"><code>deps.stdenv</code></a></p>
 <p><a
 href="#opt-nodejs-package-json.npmArgs"><code>nodejs-package-json.npmArgs</code></a></p>
 <p><a
@@ -209,25 +208,16 @@ to override it. The name should suffice. (e.g.
 }</code></pre>
 <p><em>Declared by:</em></p>
 <p><a
-href="https://github.com/nix-community/dream2nix/blob/master/nix/store/8ch7sg2nh48cbwp55x3x6imfjbn5dghl-source/modules/dream2nix/core/deps"><code>dream2nix/nix/store/8ch7sg2nh48cbwp55x3x6imfjbn5dghl-source/modules/dream2nix/core/deps</code></a>,
+href="https://github.com/nix-community/dream2nix/blob/master/nix/store/rs4nvizimivss3bhrqhi5q294s33x4ac-source/modules/dream2nix/core/deps"><code>dream2nix/nix/store/rs4nvizimivss3bhrqhi5q294s33x4ac-source/modules/dream2nix/core/deps</code></a>,
 <a
-href="https://github.com/nix-community/dream2nix/blob/master/nix/store/8ch7sg2nh48cbwp55x3x6imfjbn5dghl-source/modules/dream2nix/mkDerivation/interface.nix"><code>dream2nix/nix/store/8ch7sg2nh48cbwp55x3x6imfjbn5dghl-source/modules/dream2nix/mkDerivation/interface.nix</code></a>,
-<a
-href="https://github.com/nix-community/dream2nix/blob/master/nix/store/8ch7sg2nh48cbwp55x3x6imfjbn5dghl-source/modules/dream2nix/nodejs-package-json/interface.nix"><code>dream2nix/nix/store/8ch7sg2nh48cbwp55x3x6imfjbn5dghl-source/modules/dream2nix/nodejs-package-json/interface.nix</code></a></p>
+href="https://github.com/nix-community/dream2nix/blob/master/nix/store/rs4nvizimivss3bhrqhi5q294s33x4ac-source/modules/dream2nix/nodejs-package-json/interface.nix"><code>dream2nix/nix/store/rs4nvizimivss3bhrqhi5q294s33x4ac-source/modules/dream2nix/nodejs-package-json/interface.nix</code></a></p>
 <h2><a href="#opt-deps.npm"
 id="opt-deps.npm"><code>deps.npm</code></a></h2>
 <p>The npm package used to build the lock file</p>
 <p><em>Type:</em> package</p>
 <p><em>Declared by:</em></p>
 <p><a
-href="https://github.com/nix-community/dream2nix/blob/master/nix/store/8ch7sg2nh48cbwp55x3x6imfjbn5dghl-source/modules/dream2nix/nodejs-package-json/interface.nix"><code>dream2nix/nix/store/8ch7sg2nh48cbwp55x3x6imfjbn5dghl-source/modules/dream2nix/nodejs-package-json/interface.nix</code></a></p>
-<h2><a href="#opt-deps.stdenv"
-id="opt-deps.stdenv"><code>deps.stdenv</code></a></h2>
-<p>The stdenv used for building this package</p>
-<p><em>Type:</em> raw value</p>
-<p><em>Declared by:</em></p>
-<p><a
-href="https://github.com/nix-community/dream2nix/blob/master/nix/store/8ch7sg2nh48cbwp55x3x6imfjbn5dghl-source/modules/dream2nix/mkDerivation/interface.nix"><code>dream2nix/nix/store/8ch7sg2nh48cbwp55x3x6imfjbn5dghl-source/modules/dream2nix/mkDerivation/interface.nix</code></a></p>
+href="https://github.com/nix-community/dream2nix/blob/master/nix/store/rs4nvizimivss3bhrqhi5q294s33x4ac-source/modules/dream2nix/nodejs-package-json/interface.nix"><code>dream2nix/nix/store/rs4nvizimivss3bhrqhi5q294s33x4ac-source/modules/dream2nix/nodejs-package-json/interface.nix</code></a></p>
 <h2><a href="#opt-nodejs-package-json.npmArgs"
 id="opt-nodejs-package-json.npmArgs"><code>nodejs-package-json.npmArgs</code></a></h2>
 <p>extra arguments to pass to ‘npm install’</p>
@@ -235,15 +225,15 @@ id="opt-nodejs-package-json.npmArgs"><code>nodejs-package-json.npmArgs</code></a
 <p><em>Default:</em> <code>[ ]</code></p>
 <p><em>Declared by:</em></p>
 <p><a
-href="https://github.com/nix-community/dream2nix/blob/master/nix/store/8ch7sg2nh48cbwp55x3x6imfjbn5dghl-source/modules/dream2nix/nodejs-package-json/interface.nix"><code>dream2nix/nix/store/8ch7sg2nh48cbwp55x3x6imfjbn5dghl-source/modules/dream2nix/nodejs-package-json/interface.nix</code></a></p>
+href="https://github.com/nix-community/dream2nix/blob/master/nix/store/rs4nvizimivss3bhrqhi5q294s33x4ac-source/modules/dream2nix/nodejs-package-json/interface.nix"><code>dream2nix/nix/store/rs4nvizimivss3bhrqhi5q294s33x4ac-source/modules/dream2nix/nodejs-package-json/interface.nix</code></a></p>
 <h2><a href="#opt-nodejs-package-json.source"
 id="opt-nodejs-package-json.source"><code>nodejs-package-json.source</code></a></h2>
 <p>Source of the package</p>
 <p><em>Type:</em> path or package</p>
-<p><em>Default:</em> <code>null</code></p>
+<p><em>Default:</em> <code>"config.mkDerivation.src"</code></p>
 <p><em>Declared by:</em></p>
 <p><a
-href="https://github.com/nix-community/dream2nix/blob/master/nix/store/8ch7sg2nh48cbwp55x3x6imfjbn5dghl-source/modules/dream2nix/nodejs-package-json/interface.nix"><code>dream2nix/nix/store/8ch7sg2nh48cbwp55x3x6imfjbn5dghl-source/modules/dream2nix/nodejs-package-json/interface.nix</code></a></p>
+href="https://github.com/nix-community/dream2nix/blob/master/nix/store/rs4nvizimivss3bhrqhi5q294s33x4ac-source/modules/dream2nix/nodejs-package-json/interface.nix"><code>dream2nix/nix/store/rs4nvizimivss3bhrqhi5q294s33x4ac-source/modules/dream2nix/nodejs-package-json/interface.nix</code></a></p>
 
                     </main>
 
