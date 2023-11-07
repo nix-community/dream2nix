@@ -27,9 +27,13 @@ in {
     overrideAll = lib.mkOption {
       type = t.deferredModule;
       description = ''
-        Common configuration for all packages in all groups
+        Common overrides for all packages.
+        Gets applied on all groups.
       '';
       default = {};
+      example = {
+        mkDerivation.doCheck = false;
+      };
     };
     overrides = lib.mkOption {
       type = t.lazyAttrsOf (t.deferredModuleWith {
@@ -38,7 +42,8 @@ in {
         ];
       });
       description = ''
-        Holds overrides for all packages in all groups
+        Overrides for specific package names.
+        Gets applied on all groups.
       '';
       default = {};
       example = {
