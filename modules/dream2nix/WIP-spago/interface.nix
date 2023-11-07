@@ -10,6 +10,7 @@ in {
     spagoYamlFile = l.mkOption {
       type = t.path;
       default = "${config.mkDerivation.src}/spago.yaml";
+      defaultText = "\${config.mkDerivation.src}/spago.yaml";
     };
 
     sources = l.mkOption {
