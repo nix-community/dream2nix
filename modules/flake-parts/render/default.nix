@@ -120,12 +120,24 @@ in {
       sourcePathStr = toString sourcePath;
     in
       opt: let
+        # get the topLevel option names by inspecting the interface.nix
+        interfaceModuleFile = ../../dream2nix + "/${sourceName}/interface.nix";
+        interfaceModule = import interfaceModuleFile;
+        # call module with fake args just to get the top-level options
+        interface = interfaceModule (
+          (
+            lib.functionArgs interfaceModule
+          )
+          // {inherit lib;}
+        );
+        topLevelOptions =
+          if lib.pathExists interfaceModuleFile
+          then interface.options
+          else {};
         declarations =
           concatMap
           (
-            decl:
-              if hasPrefix sourcePathStr (toString decl)
-              then let
+            decl: let
                 subpath = removePrefix sourcePathStr (toString decl);
               in [
                 {
@@ -133,18 +145,14 @@ in {
                   name = "dream2nix" + subpath;
                 }
               ]
-              else []
           )
           opt.declarations;
       in
         if
-          declarations
-          == []
-          || (
-            (lib.head opt.loc) != sourceName
-          )
-        then opt // {visible = false;}
-        else opt // {inherit declarations;};
+          ((lib.head opt.loc) == sourceName)
+          || (topLevelOptions ? "${(lib.head opt.loc)}")
+        then opt // {inherit declarations;}
+        else opt // {visible = false;};
 
     inputModule = {
       config,
