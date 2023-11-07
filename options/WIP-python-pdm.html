@@ -176,6 +176,50 @@
 ];
 </code></pre>
 <h2 id="options"><a class="header" href="#options">Options</a></h2>
+<p><a href="#opt-pdm.lockfile"><code>pdm.lockfile</code></a></p>
+<p><a href="#opt-pdm.pyproject"><code>pdm.pyproject</code></a></p>
+<p><a
+href="#opt-pdm.pythonInterpreter"><code>pdm.pythonInterpreter</code></a></p>
+<p><a
+href="#opt-pdm.sourceSelector"><code>pdm.sourceSelector</code></a></p>
+<h2><a href="#opt-pdm.lockfile"
+id="opt-pdm.lockfile"><code>pdm.lockfile</code></a></h2>
+<p>This option has no description.</p>
+<p><em>Type:</em> path</p>
+<p><em>Declared by:</em></p>
+<p><a
+href="https://github.com/nix-community/dream2nix/blob/master/nix/store/8ch7sg2nh48cbwp55x3x6imfjbn5dghl-source/modules/dream2nix/WIP-python-pdm/interface.nix"><code>dream2nix/nix/store/8ch7sg2nh48cbwp55x3x6imfjbn5dghl-source/modules/dream2nix/WIP-python-pdm/interface.nix</code></a></p>
+<h2><a href="#opt-pdm.pyproject"
+id="opt-pdm.pyproject"><code>pdm.pyproject</code></a></h2>
+<p>This option has no description.</p>
+<p><em>Type:</em> path</p>
+<p><em>Declared by:</em></p>
+<p><a
+href="https://github.com/nix-community/dream2nix/blob/master/nix/store/8ch7sg2nh48cbwp55x3x6imfjbn5dghl-source/modules/dream2nix/WIP-python-pdm/interface.nix"><code>dream2nix/nix/store/8ch7sg2nh48cbwp55x3x6imfjbn5dghl-source/modules/dream2nix/WIP-python-pdm/interface.nix</code></a></p>
+<h2><a href="#opt-pdm.pythonInterpreter"
+id="opt-pdm.pythonInterpreter"><code>pdm.pythonInterpreter</code></a></h2>
+<p>This option has no description.</p>
+<p><em>Type:</em> package</p>
+<p><em>Declared by:</em></p>
+<p><a
+href="https://github.com/nix-community/dream2nix/blob/master/nix/store/8ch7sg2nh48cbwp55x3x6imfjbn5dghl-source/modules/dream2nix/WIP-python-pdm/interface.nix"><code>dream2nix/nix/store/8ch7sg2nh48cbwp55x3x6imfjbn5dghl-source/modules/dream2nix/WIP-python-pdm/interface.nix</code></a></p>
+<h2><a href="#opt-pdm.sourceSelector"
+id="opt-pdm.sourceSelector"><code>pdm.sourceSelector</code></a></h2>
+<p>A selector function which picks a source for a specific dependency
+Python dependencies can have multiple possible sources, like for
+example:</p>
+<ul>
+<li><p>requests-2.31.0.tar.gz</p></li>
+<li><p>requests-2.31.0-py3-none-any.whl The selector receives a list of
+possible sources and should return either a single source or
+null.</p></li>
+</ul>
+<p><em>Type:</em> function that evaluates to a(n) string</p>
+<p><em>Example:</em></p>
+<pre><code>fnames: lib.findFirst (fname: lib.hasSuffix &quot;none-any.whl&quot;) none fnames</code></pre>
+<p><em>Declared by:</em></p>
+<p><a
+href="https://github.com/nix-community/dream2nix/blob/master/nix/store/8ch7sg2nh48cbwp55x3x6imfjbn5dghl-source/modules/dream2nix/WIP-python-pdm/interface.nix"><code>dream2nix/nix/store/8ch7sg2nh48cbwp55x3x6imfjbn5dghl-source/modules/dream2nix/WIP-python-pdm/interface.nix</code></a></p>
 
                     </main>
 

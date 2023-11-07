@@ -176,6 +176,65 @@
 ];
 </code></pre>
 <h2 id="options"><a class="header" href="#options">Options</a></h2>
+<p><a
+href="#opt-eval-cache.enable"><code>eval-cache.enable</code></a></p>
+<p><a
+href="#opt-eval-cache.content"><code>eval-cache.content</code></a></p>
+<p><a
+href="#opt-eval-cache.fields"><code>eval-cache.fields</code></a></p>
+<p><a
+href="#opt-eval-cache.invalidationFields"><code>eval-cache.invalidationFields</code></a></p>
+<p><a
+href="#opt-eval-cache.refresh"><code>eval-cache.refresh</code></a></p>
+<h2><a href="#opt-eval-cache.enable"
+id="opt-eval-cache.enable"><code>eval-cache.enable</code></a></h2>
+<p>Whether to enable the evaluation cache for this derivation.</p>
+<p><em>Type:</em> boolean</p>
+<p><em>Default:</em> <code>false</code></p>
+<p><em>Example:</em> <code>true</code></p>
+<p><em>Declared by:</em></p>
+<p><a
+href="https://github.com/nix-community/dream2nix/blob/master/nix/store/8ch7sg2nh48cbwp55x3x6imfjbn5dghl-source/modules/dream2nix/core/eval-cache/interface.nix"><code>dream2nix/nix/store/8ch7sg2nh48cbwp55x3x6imfjbn5dghl-source/modules/dream2nix/core/eval-cache/interface.nix</code></a></p>
+<h2><a href="#opt-eval-cache.content"
+id="opt-eval-cache.content"><code>eval-cache.content</code></a></h2>
+<p>The content of the cached fields. For example if fields.pname is set
+to true, then content.pname will exist.</p>
+<p><em>Type:</em> anything</p>
+<p><em>Declared by:</em></p>
+<p><a
+href="https://github.com/nix-community/dream2nix/blob/master/nix/store/8ch7sg2nh48cbwp55x3x6imfjbn5dghl-source/modules/dream2nix/core/eval-cache/interface.nix"><code>dream2nix/nix/store/8ch7sg2nh48cbwp55x3x6imfjbn5dghl-source/modules/dream2nix/core/eval-cache/interface.nix</code></a></p>
+<h2><a href="#opt-eval-cache.fields"
+id="opt-eval-cache.fields"><code>eval-cache.fields</code></a></h2>
+<p>Fields for which to cache evaluation</p>
+<p><em>Type:</em> attribute set of anything</p>
+<p><em>Default:</em> <code>{ }</code></p>
+<p><em>Example:</em></p>
+<pre><code>{
+  pname = true;
+  version = true;
+}</code></pre>
+<p><em>Declared by:</em></p>
+<p><a
+href="https://github.com/nix-community/dream2nix/blob/master/nix/store/8ch7sg2nh48cbwp55x3x6imfjbn5dghl-source/modules/dream2nix/core/eval-cache/interface.nix"><code>dream2nix/nix/store/8ch7sg2nh48cbwp55x3x6imfjbn5dghl-source/modules/dream2nix/core/eval-cache/interface.nix</code></a></p>
+<h2><a href="#opt-eval-cache.invalidationFields"
+id="opt-eval-cache.invalidationFields"><code>eval-cache.invalidationFields</code></a></h2>
+<p>Fields, when changed, require refreshing the cache</p>
+<p><em>Type:</em> attribute set of anything</p>
+<p><em>Default:</em> <code>{ }</code></p>
+<p><em>Example:</em></p>
+<pre><code>{
+  src = true;
+}</code></pre>
+<p><em>Declared by:</em></p>
+<p><a
+href="https://github.com/nix-community/dream2nix/blob/master/nix/store/8ch7sg2nh48cbwp55x3x6imfjbn5dghl-source/modules/dream2nix/core/eval-cache/interface.nix"><code>dream2nix/nix/store/8ch7sg2nh48cbwp55x3x6imfjbn5dghl-source/modules/dream2nix/core/eval-cache/interface.nix</code></a></p>
+<h2><a href="#opt-eval-cache.refresh"
+id="opt-eval-cache.refresh"><code>eval-cache.refresh</code></a></h2>
+<p>Script to refresh the cache file of this package</p>
+<p><em>Type:</em> path <em>(read only)</em></p>
+<p><em>Declared by:</em></p>
+<p><a
+href="https://github.com/nix-community/dream2nix/blob/master/nix/store/8ch7sg2nh48cbwp55x3x6imfjbn5dghl-source/modules/dream2nix/core/eval-cache/interface.nix"><code>dream2nix/nix/store/8ch7sg2nh48cbwp55x3x6imfjbn5dghl-source/modules/dream2nix/core/eval-cache/interface.nix</code></a></p>
 
                     </main>
 
