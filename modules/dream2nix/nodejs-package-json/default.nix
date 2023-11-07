@@ -6,11 +6,6 @@
   l = lib // builtins;
   cfg = config.nodejs-package-json;
 
-  npm =
-    if l.versionOlder config.deps.npm.version "9"
-    then config.deps.npm
-    else throw "The version of config.deps.npm must be < 9";
-
   writers = import ../../../pkgs/writers {
     inherit lib;
     inherit
@@ -28,7 +23,7 @@
 in {
   imports = [
     ./interface.nix
-    ../nodejs-package-lock
+    ../nodejs-package-lock-v3
   ];
   config = {
     deps = {nixpkgs, ...}:
@@ -42,13 +37,14 @@ in {
           writeScript
           writeScriptBin
           ;
+        npm = nixpkgs.nodejs.pkgs.npm;
       };
 
     lock.fields.package-lock.script =
       writers.writePureShellScript
       [
         config.deps.coreutils
-        npm
+        config.deps.npm
       ]
       ''
         source=${cfg.source}
@@ -65,7 +61,11 @@ in {
         popd
       '';
 
-    nodejs-package-lock = {
+    lock.invalidationData = {
+      packageJson = lib.importJSON (config.nodejs-package-json.source + /package.json);
+    };
+
+    nodejs-package-lock-v3 = {
       packageLockFile = null;
       packageLock = l.mkForce config.lock.content.package-lock;
     };
