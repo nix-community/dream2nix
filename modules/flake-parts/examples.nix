@@ -97,8 +97,6 @@ in {
             imported;
           example-repo-flake =
             (importFlake ../../examples/repo-flake/flake.nix).packages.${system}.hello;
-          example-repo-flake-pdm =
-            (importFlake ../../examples/repo-flake-pdm/flake.nix).packages.${system}.my-project;
         }
       );
 
