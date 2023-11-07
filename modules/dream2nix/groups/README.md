@@ -1,6 +1,5 @@
 Module to deal with package sets (so called groups in dream2nix)
 
-
 ## Separate different kinds of dependencies
 
 Many language specific package managers support declaration of different kinds of dependencies like, for example:
@@ -27,6 +26,12 @@ For example, a new group could be assembled by referring to the `modules` of exi
 ```nix
 {config, dream2nix, ...}: {
 
+  # TODO: This is too complex. Defining a selector function should be enough to
+  #   assemble new groups.
+  # Any specifics about a package other than it's `ecosystem`, `name, `version
+  #   are not important, as everything else is expressed via override modules.
+  # Simply naming the keys of packages should be sufficient to assemble groups.
+
   # The dev group
   groups.dev = {
 
@@ -42,7 +47,6 @@ For example, a new group could be assembled by referring to the `modules` of exi
 
     # a modified hello package depending on the original hello definition
     packages.hello-mod."1.0.0".module = {
-      blabla = {inherit wuhu;};
       imports = [
         # import the module definition of `hello` from above
         config.groups.dev.packages.hello.module
@@ -65,3 +69,8 @@ For example, a new group could be assembled by referring to the `modules` of exi
   }
 }
 ```
+
+## TODOs
+
+- Expose all package candidates somehow (not grouped)
+- Create groups by simply defining `selector` functions instead of referring to other group's packages modules.
