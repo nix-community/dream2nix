@@ -5,12 +5,12 @@
   cargo,
   makeSetupHook,
   runCommand,
-  runCommandLocal,
   writeText,
   stdenv,
   zstd,
   jq,
   remarshal,
+  darwin,
 }: let
   importLibFile = name: import "${craneSource}/lib/${name}.nix";
 
@@ -26,7 +26,7 @@
         "cargoHelperFunctionsHook"
         "configureCargoCommonVarsHook"
         "configureCargoVendoredDepsHook"
-        "removeReferencesToVendoredSourcesHook"
+        "replaceCargoLockHook"
       ]
       {};
     installHooks =
@@ -45,6 +45,10 @@
         jq = "${jq}/bin/jq";
       };
     };
+    removeReferencesHook = import "${craneSource}/lib/setupHooks/removeReferencesToVendoredSources.nix" {
+      inherit lib makeSetupHook stdenv;
+      pkgsBuildBuild = {inherit darwin;};
+    };
 
     # These aren't used by dream2nix
     crateNameFromCargoToml = null;
@@ -59,12 +63,14 @@
       inherit lib;
     };
     mkDummySrc = importLibFile "mkDummySrc" {
-      inherit writeText runCommandLocal lib;
+      inherit writeText runCommand lib;
       inherit writeTOML cleanCargoToml findCargoFiles;
     };
 
     mkCargoDerivation = importLibFile "mkCargoDerivation" {
-      inherit stdenv zstd cargo;
+      inherit stdenv zstd cargo lib writeText writeTOML;
+      # the code path that triggers rsync doesn't get used in dream2nix
+      rsync = zstd;
       inherit
         (installHooks)
         inheritCargoArtifactsHook
@@ -75,6 +81,7 @@
         configureCargoCommonVarsHook
         configureCargoVendoredDepsHook
         cargoHelperFunctionsHook
+        replaceCargoLockHook
         ;
       inherit crateNameFromCargoToml vendorCargoDeps;
     };
@@ -96,7 +103,7 @@
         vendorCargoDeps
         mkCargoDerivation
         ;
-      inherit (otherHooks) removeReferencesToVendoredSourcesHook;
+      removeReferencesToVendoredSourcesHook = removeReferencesHook;
     };
   };
 in {
