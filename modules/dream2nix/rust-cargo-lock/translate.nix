@@ -35,8 +35,8 @@
     # where the attribute is instead defined in workspace metadata
     getPackageAttribute = package: attr:
       if package.${attr}.workspace or false
-      then workspacePackage.${attr} or (l.throw "no workspace ${attr} found in root Cargo.toml for ${package.name}")
-      else package.${attr} or (l.throw "no ${attr} found in Cargo.toml for ${package.name}");
+      then workspacePackage.${attr} or (l.warn "no workspace ${attr} found in root Cargo.toml for ${package.name}" null)
+      else package.${attr} or (l.warn "no ${attr} found in Cargo.toml for ${package.name}" null);
     getVersion = package: getPackageAttribute package "version";
     getLicense = package: getPackageAttribute package "license";
 
@@ -314,9 +314,14 @@
           (
             package: let
               pkg = package.value.package;
+              _licenseRaw = getLicense pkg;
+              licenseRaw =
+                if _licenseRaw == null
+                then ""
+                else _licenseRaw;
             in {
               ${pkg.name}.${getVersion pkg} =
-                {license = parseSpdxId (getLicense pkg);}
+                {license = parseSpdxId licenseRaw;}
                 // (
                   l.mapAttrs
                   (name: _: getPackageAttribute pkg name)
