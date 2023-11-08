@@ -7,13 +7,14 @@
   t = l.types;
 in {
   imports = [
-    ../nodejs-package-lock/interface.nix
+    ../nodejs-package-lock-v3/interface.nix
   ];
   options.nodejs-package-json = l.mapAttrs (_: l.mkOption) {
     source = {
       type = t.either t.path t.package;
       description = "Source of the package";
       default = config.mkDerivation.src;
+      defaultText = "config.mkDerivation.src";
     };
     npmArgs = {
       type = t.listOf t.str;

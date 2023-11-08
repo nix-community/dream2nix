@@ -7,7 +7,7 @@
   system = config.deps.stdenv.system;
 in {
   imports = [
-    dream2nix.modules.dream2nix.nodejs-package-json
+    dream2nix.modules.dream2nix.nodejs-package-json-v3
     dream2nix.modules.dream2nix.nodejs-granular-v3
   ];
 
