@@ -31,10 +31,14 @@
       value = projectTree.files."Cargo.toml".tomlContent;
     };
     workspacePackage = rootToml.value.workspace.package or null;
-    getVersion = package:
-      if package.version.workspace or false
-      then workspacePackage.version or (l.warn "no workspace version found in root Cargo.toml for ${package.name}, defaulting to unknown" "unknown")
-      else package.version or (l.warn "no version found in Cargo.toml for ${package.name}, defaulting to unknown" "unknown");
+    # get a package attribute, handles `attr.workspace = true`
+    # where the attribute is instead defined in workspace metadata
+    getPackageAttribute = package: attr:
+      if package.${attr}.workspace or false
+      then workspacePackage.${attr} or (l.throw "no workspace ${attr} found in root Cargo.toml for ${package.name}")
+      else package.${attr} or (l.throw "no ${attr} found in Cargo.toml for ${package.name}");
+    getVersion = package: getPackageAttribute package "version";
+    getLicense = package: getPackageAttribute package "license";
 
     # find all the workspace members if we are in a workspace
     # this is used to figure out what packages we can build
@@ -312,11 +316,15 @@
               pkg = package.value.package;
             in {
               ${pkg.name}.${getVersion pkg} =
-                {license = parseSpdxId (pkg.license or "");}
+                {license = parseSpdxId (getLicense pkg);}
                 // (
-                  l.filterAttrs
-                  (n: v: l.any (on: n == on) ["description" "homepage"])
-                  pkg
+                  l.mapAttrs
+                  (name: _: getPackageAttribute pkg name)
+                  (
+                    l.filterAttrs
+                    (n: v: l.any (on: n == on) ["description" "homepage"])
+                    pkg
+                  )
                 );
             }
           )
