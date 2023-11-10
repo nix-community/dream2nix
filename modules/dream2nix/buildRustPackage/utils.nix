@@ -47,13 +47,15 @@ in rec {
         replacements
       );
   in ''
+    echo "dream2nix: replacing relative dependency paths with absolute paths in Cargo.toml"
     substituteInPlace ./Cargo.toml \
       ${replace}
   '';
 
   # Backup original Cargo.lock if it exists and write our own one
   writeCargoLock = ''
-    mv -f Cargo.lock Cargo.lock.orig || echo "no Cargo.lock"
+    echo "dream2nix: replacing Cargo.lock with ${cargoLock}"
+    mv -f Cargo.lock Cargo.lock.orig || echo "dream2nix: no Cargo.lock was found beforehand"
     cat ${cargoLock} > Cargo.lock
   '';
 

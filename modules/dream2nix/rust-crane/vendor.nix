@@ -34,7 +34,7 @@ in rec {
     '';
     entries = l.map makeEntry subsystemAttrs.gitSources;
   in ''
-    echo "Writing git vendor entries to $CARGO_HOME/config.toml"
+    echo "dream2nix: Writing git vendor entries to $CARGO_HOME/config.toml"
     mkdir -p $CARGO_HOME && touch $CARGO_HOME/config.toml
     cat >> $CARGO_HOME/config.toml <<EOF
     ${l.concatStringsSep "\n" entries}
@@ -141,5 +141,8 @@ in rec {
   # All dependencies in the Cargo.lock file, vendored
   vendoredDependencies = vendorDependencies allDependencies;
 
-  copyVendorDir = from: to: ''cp -rs --no-preserve=mode,ownership ${from} ${to}'';
+  copyVendorDir = from: to: ''
+    echo "dream2nix: installing cargo vendor directory from ${from} to ${to}"
+    cp -rs --no-preserve=mode,ownership ${from} ${to}
+  '';
 }
