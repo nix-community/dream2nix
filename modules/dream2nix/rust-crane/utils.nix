@@ -151,7 +151,7 @@ in rec {
         (sourceSpec.type == "crates-io" && !isMainPackage)
         {checksum = sourceSpec.hash;}
       );
-    package = l.flatten (
+    _package = l.flatten (
       l.mapAttrsToList
       (
         name: versions:
@@ -164,6 +164,21 @@ in rec {
       )
       dreamLock.dependencies
     );
+    package =
+      (
+        # add packages as dependencies because Cargo expects them to be there aswell
+        l.filter
+        (pkg: ! l.any (opkg: pkg.name == opkg.name && pkg.version == opkg.version) _package)
+        (
+          l.mapAttrsToList
+          (pname: version: {
+            name = pname;
+            inherit version;
+          })
+          dreamLock._generic.packages
+        )
+      )
+      ++ _package;
     lockTOML = toTOML {
       # the lockfile we generate is of version 3
       version = 3;

@@ -21,12 +21,12 @@
   genHooks = names: attrs: lib.genAttrs names (makeHook attrs);
 
   crane = rec {
+    dummyHook = makeSetupHook {name = "dummyHook";} (writeText "dummyHook.sh" ":");
     otherHooks =
       genHooks [
         "cargoHelperFunctionsHook"
         "configureCargoCommonVarsHook"
         "configureCargoVendoredDepsHook"
-        "replaceCargoLockHook"
       ]
       {};
     installHooks =
@@ -81,8 +81,9 @@
         configureCargoCommonVarsHook
         configureCargoVendoredDepsHook
         cargoHelperFunctionsHook
-        replaceCargoLockHook
         ;
+      # this hook doesn't matter in our case because we want to do this ourselves in d2n
+      replaceCargoLockHook = dummyHook;
       inherit crateNameFromCargoToml vendorCargoDeps;
     };
     buildDepsOnly = importLibFile "buildDepsOnly" {
