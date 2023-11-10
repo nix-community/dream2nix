@@ -47,13 +47,15 @@ in rec {
         replacements
       );
   in ''
+    echo "dream2nix: replacing relative dependency paths with absolute paths in Cargo.toml"
     substituteInPlace ./Cargo.toml \
       ${replace}
   '';
 
   # Backup original Cargo.lock if it exists and write our own one
   writeCargoLock = ''
-    mv -f Cargo.lock Cargo.lock.orig || echo "no Cargo.lock"
+    echo "dream2nix: replacing Cargo.lock with ${cargoLock}"
+    mv -f Cargo.lock Cargo.lock.orig || echo "dream2nix: no Cargo.lock was found beforehand"
     cat ${cargoLock} > Cargo.lock
   '';
 
@@ -151,7 +153,7 @@ in rec {
         (sourceSpec.type == "crates-io" && !isMainPackage)
         {checksum = sourceSpec.hash;}
       );
-    package = l.flatten (
+    _package = l.flatten (
       l.mapAttrsToList
       (
         name: versions:
@@ -164,6 +166,21 @@ in rec {
       )
       dreamLock.dependencies
     );
+    package =
+      (
+        # add packages as dependencies because Cargo expects them to be there aswell
+        l.filter
+        (pkg: ! l.any (opkg: pkg.name == opkg.name && pkg.version == opkg.version) _package)
+        (
+          l.mapAttrsToList
+          (pname: version: {
+            name = pname;
+            inherit version;
+          })
+          dreamLock._generic.packages
+        )
+      )
+      ++ _package;
     lockTOML = toTOML {
       # the lockfile we generate is of version 3
       version = 3;

@@ -5,12 +5,12 @@
   cargo,
   makeSetupHook,
   runCommand,
-  runCommandLocal,
   writeText,
   stdenv,
   zstd,
   jq,
   remarshal,
+  darwin,
 }: let
   importLibFile = name: import "${craneSource}/lib/${name}.nix";
 
@@ -21,12 +21,12 @@
   genHooks = names: attrs: lib.genAttrs names (makeHook attrs);
 
   crane = rec {
+    dummyHook = makeSetupHook {name = "dummyHook";} (writeText "dummyHook.sh" ":");
     otherHooks =
       genHooks [
         "cargoHelperFunctionsHook"
         "configureCargoCommonVarsHook"
         "configureCargoVendoredDepsHook"
-        "removeReferencesToVendoredSourcesHook"
       ]
       {};
     installHooks =
@@ -45,6 +45,10 @@
         jq = "${jq}/bin/jq";
       };
     };
+    removeReferencesHook = import "${craneSource}/lib/setupHooks/removeReferencesToVendoredSources.nix" {
+      inherit lib makeSetupHook stdenv;
+      pkgsBuildBuild = {inherit darwin;};
+    };
 
     # These aren't used by dream2nix
     crateNameFromCargoToml = null;
@@ -59,12 +63,14 @@
       inherit lib;
     };
     mkDummySrc = importLibFile "mkDummySrc" {
-      inherit writeText runCommandLocal lib;
+      inherit writeText runCommand lib;
       inherit writeTOML cleanCargoToml findCargoFiles;
     };
 
     mkCargoDerivation = importLibFile "mkCargoDerivation" {
-      inherit stdenv zstd cargo;
+      inherit stdenv zstd cargo lib writeText writeTOML;
+      # the code path that triggers rsync doesn't get used in dream2nix
+      rsync = zstd;
       inherit
         (installHooks)
         inheritCargoArtifactsHook
@@ -76,6 +82,8 @@
         configureCargoVendoredDepsHook
         cargoHelperFunctionsHook
         ;
+      # this hook doesn't matter in our case because we want to do this ourselves in d2n
+      replaceCargoLockHook = dummyHook;
       inherit crateNameFromCargoToml vendorCargoDeps;
     };
     buildDepsOnly = importLibFile "buildDepsOnly" {
@@ -96,7 +104,7 @@
         vendorCargoDeps
         mkCargoDerivation
         ;
-      inherit (otherHooks) removeReferencesToVendoredSourcesHook;
+      removeReferencesToVendoredSourcesHook = removeReferencesHook;
     };
   };
 in {
