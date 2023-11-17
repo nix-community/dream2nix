@@ -5,18 +5,8 @@
   ...
 }: {
   imports = [
-    dream2nix.modules.dream2nix.nodejs-devshell
-    dream2nix.modules.dream2nix.nodejs-package-lock
+    dream2nix.modules.dream2nix.nodejs-devshell-v3
   ];
-
-  nodejs-package-lock = {
-    source = config.deps.fetchFromGitHub {
-      owner = "piuccio";
-      repo = "cowsay";
-      rev = "v1.5.0";
-      sha256 = "sha256-TZ3EQGzVptNqK3cNrkLnyP1FzBd81XaszVucEnmBy4Y=";
-    };
-  };
 
   deps = {nixpkgs, ...}: {
     inherit
@@ -32,7 +22,12 @@
   version = "1.5.0";
 
   mkDerivation = {
-    src = config.nodejs-package-lock.source;
+    src = config.deps.fetchFromGitHub {
+      owner = "DavHau";
+      repo = "cowsay";
+      rev = "package-lock-v3";
+      sha256 = "sha256-KuZkGWl5An78IFR5uT/2jVTXdm71oWB+p143svYVkqQ=";
+    };
     # allow devshell to be built -> CI pipeline happy
     buildPhase = "mkdir $out";
   };
