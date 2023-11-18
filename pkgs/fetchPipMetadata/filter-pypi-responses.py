@@ -95,3 +95,11 @@ def response(flow: http.HTTPFlow) -> None:
         print(f"removing the following files form the API response:\n  {badFiles}")
         data["files"] = list(filter(keepFile, data["files"]))
     flow.response.text = json.dumps(data)
+    # prevent the modified response from ending up in the pip cache
+    flow.response.headers["Vary"] = "*"
+    # See this comment in cachecontrol/controller.py in pip:
+    # https://tools.ietf.org/html/rfc7234#section-4.1:
+    # A Vary header field-value of "*" always fails to match.
+    # Storing such a response leads to a deserialization warning
+    # during cache lookup and is not allowed to ever be served,
+    # so storing it can be avoided.
