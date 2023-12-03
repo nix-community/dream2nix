@@ -40,11 +40,11 @@
     "pyproject-nix": {
       "flake": false,
       "locked": {
-        "lastModified": 1699067645,
-        "narHash": "sha256-SJOEPVFARVfS0qQQqbnGywt8uOZMmlV1PazQtGNNCfQ=",
+        "lastModified": 1701558752,
+        "narHash": "sha256-Oj/H9SOCpc2FMvbncx+6wKZO0KIIUrdQ19NaHc1hSxY=",
         "owner": "adisbladis",
         "repo": "pyproject.nix",
-        "rev": "56b5a6ae1ac63a0a3a044d602a3b5d09a5d10dc0",
+        "rev": "936db5085b07c234185726d738d02edbaa94db2e",
         "type": "github"
       },
       "original": {
