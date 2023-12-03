@@ -41,7 +41,7 @@
   };
 in {
   imports = [
-    dream2nix.modules.dream2nix.groups
+    dream2nix.modules.dream2nix.WIP-groups
     dream2nix.modules.dream2nix.buildPythonPackage
     ../core/deps
     ./interface.nix

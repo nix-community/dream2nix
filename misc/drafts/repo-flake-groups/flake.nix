@@ -24,7 +24,7 @@
         ...
       }: {
         imports = [
-          dream2nix.modules.dream2nix.groups
+          dream2nix.modules.dream2nix.WIP-groups
         ];
 
         # Overrides for all package sets
