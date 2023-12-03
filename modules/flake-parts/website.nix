@@ -13,12 +13,9 @@
     excludes = [
       # NOT WORKING
       # TODO: fix those
-      "nixpkgs-overrides"
       "core"
-      "flags"
       "ui"
       "docs"
-      "env"
       "assertions"
 
       # doesn't need to be rendered
@@ -33,7 +30,11 @@
         (self.modules.dream2nix))
       (name: module: {
         title = name;
-        module = self.modules.dream2nix.${name};
+        # module = self.modules.dream2nix.${name};
+        module =
+          if lib.pathExists (self.modules.dream2nix.${name} + /interface.nix)
+          then (self.modules.dream2nix.${name} + /interface.nix)
+          else module;
         sourcePath = self;
         attributePath = [
           "dream2nix"

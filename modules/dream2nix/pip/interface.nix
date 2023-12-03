@@ -30,7 +30,7 @@ in {
       '';
       example = lib.literalExpression ''
         {
-          PIP_FIND_LINKS = "${config.deps.setuptools.dist}";
+          PIP_FIND_LINKS = "''${config.deps.setuptools.dist}";
         }
       '';
     };

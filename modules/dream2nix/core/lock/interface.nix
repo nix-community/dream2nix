@@ -7,6 +7,7 @@
   t = l.types;
 in {
   imports = [
+    ../assertions.nix
     (lib.mkRemovedOptionModule ["lock" "repoRoot"] "Use paths.projectRoot instead.")
     (lib.mkRemovedOptionModule ["lock" "lockFileRel"] "Use paths.package instead.")
   ];

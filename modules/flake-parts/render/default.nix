@@ -115,25 +115,32 @@ in {
       sourceName,
       sourcePath,
       baseUrl,
+      module,
       # coreOptDecls,
     }: let
       sourcePathStr = toString sourcePath;
+      moduleDir =
+        if ! lib.isPath module
+        then throw "module must be a string"
+        else if lib.hasSuffix ".nix" module
+        then builtins.dirOf module
+        else module;
+      # get the topLevel option names by inspecting the interface.nix
+      interfaceModuleFile = moduleDir + "/interface.nix";
+      interfaceModule = import interfaceModuleFile;
+      # call module with fake args just to get the top-level options
+      interface = interfaceModule (
+        (
+          lib.functionArgs interfaceModule
+        )
+        // {inherit lib;}
+      );
+      topLevelOptions =
+        if lib.pathExists interfaceModuleFile
+        then interface.options
+        else {};
     in
       opt: let
-        # get the topLevel option names by inspecting the interface.nix
-        interfaceModuleFile = ../../dream2nix + "/${sourceName}/interface.nix";
-        interfaceModule = import interfaceModuleFile;
-        # call module with fake args just to get the top-level options
-        interface = interfaceModule (
-          (
-            lib.functionArgs interfaceModule
-          )
-          // {inherit lib;}
-        );
-        topLevelOptions =
-          if lib.pathExists interfaceModuleFile
-          then interface.options
-          else {};
         declarations =
           concatMap
           (
@@ -313,7 +320,7 @@ in {
             else opts;
           documentType = "none";
           transformOptions = config.filterTransformOptions {
-            inherit (config) sourceName baseUrl sourcePath;
+            inherit (config) sourceName baseUrl sourcePath module;
             # inherit coreOptDecls;
           };
           warningsAreErrors = false; # not sure if feasible long term
