@@ -36,6 +36,9 @@ in {
         default =
           config.deps.python.stdenv.hostPlatform
           == config.deps.python.stdenv.buildPlatform;
+        defaultText = ''
+          true if the host and build platforms are the same, false otherwise.
+        '';
       };
 
     dontWrapPythonPrograms =

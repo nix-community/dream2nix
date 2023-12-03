@@ -14,6 +14,7 @@ in {
       type = t.either t.path t.package;
       description = "Source of the package";
       default = config.mkDerivation.src;
+      defaultText = "config.mkDerivation.src";
     };
     npmArgs = {
       type = t.listOf t.str;

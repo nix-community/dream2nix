@@ -8,14 +8,14 @@
 in {
   options.nixpkgs-overrides = {
     enable =
-      (l.mkEnableOption "Whether to copy attributes, except those in `excluded` from nixpkgs")
+      (l.mkEnableOption "copying derivation attributes from a similar package in nixpkgs")
       // {
         default = true;
       };
 
     exclude = l.mkOption {
       type = t.listOf t.str;
-      description = "Attributes we do not want to copy from nixpkgs";
+      description = "Attribute names excluded from copying";
     };
 
     from = l.mkOption {

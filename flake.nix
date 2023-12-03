@@ -39,8 +39,25 @@
         value = modulesDir + "/${kind}/${fn}";
       })
       (readDir (modulesDir + "/${kind}"));
+
+    # expose core-modules at the top-level
+    corePath = ./modules/dream2nix/core;
+    coreDirs = filterAttrs (name: _: name != "default.nix") (readDir corePath);
+    coreModules =
+      mapAttrs'
+      (fn: _: {
+        name = removeSuffix ".nix" fn;
+        value = corePath + "/${fn}";
+      })
+      (filterAttrs (_: type: type == "regular" || type == "directory") coreDirs);
   in {
-    modules = mapAttrs (kind: _: mapModules kind) moduleKinds;
+    modules = let
+      allModules = mapAttrs (kind: _: mapModules kind) moduleKinds;
+    in
+      allModules
+      // {
+        dream2nix = allModules.dream2nix or {} // coreModules;
+      };
 
     lib = import ./lib {
       dream2nix = inputs.self;
