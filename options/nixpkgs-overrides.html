@@ -3,7 +3,7 @@
     <head>
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
-        <title>buildRustPackage - dream2nix</title>
+        <title>nixpkgs-overrides - dream2nix</title>
 
 
         <!-- Custom HTML head -->
@@ -82,7 +82,7 @@
 
         <nav id="sidebar" class="sidebar" aria-label="Table of contents">
             <div class="sidebar-scrollbox">
-                <ol class="chapter"><li class="chapter-item expanded "><a href="../intro.html">Introduction</a></li><li class="chapter-item expanded affix "><li class="part-title">Examples</li><li class="chapter-item expanded "><a href="../examples.html">dream2nix examples</a></li><li class="chapter-item expanded affix "><li class="part-title">Concepts</li><li class="chapter-item expanded "><a href="../modules.html">dream2nix modules</a></li><li class="chapter-item expanded affix "><li class="part-title">Modules Reference</li><li class="chapter-item expanded "><a href="../options/WIP-groups.html">WIP-groups</a></li><li class="chapter-item expanded "><a href="../options/WIP-haskell-cabal.html">WIP-haskell-cabal</a></li><li class="chapter-item expanded "><a href="../options/WIP-nodejs-builder-v3.html">WIP-nodejs-builder-v3</a></li><li class="chapter-item expanded "><a href="../options/WIP-python-pdm.html">WIP-python-pdm</a></li><li class="chapter-item expanded "><a href="../options/WIP-python-pyproject.html">WIP-python-pyproject</a></li><li class="chapter-item expanded "><a href="../options/WIP-spago.html">WIP-spago</a></li><li class="chapter-item expanded "><a href="../options/buildPythonPackage.html">buildPythonPackage</a></li><li class="chapter-item expanded "><a href="../options/buildRustPackage.html" class="active">buildRustPackage</a></li><li class="chapter-item expanded "><a href="../options/builtins-derivation.html">builtins-derivation</a></li><li class="chapter-item expanded "><a href="../options/deps.html">deps</a></li><li class="chapter-item expanded "><a href="../options/env.html">env</a></li><li class="chapter-item expanded "><a href="../options/eval-cache.html">eval-cache</a></li><li class="chapter-item expanded "><a href="../options/flags.html">flags</a></li><li class="chapter-item expanded "><a href="../options/lock.html">lock</a></li><li class="chapter-item expanded "><a href="../options/mkDerivation.html">mkDerivation</a></li><li class="chapter-item expanded "><a href="../options/multi-derivation-package.html">multi-derivation-package</a></li><li class="chapter-item expanded "><a href="../options/nixpkgs-overrides.html">nixpkgs-overrides</a></li><li class="chapter-item expanded "><a href="../options/nodejs-devshell.html">nodejs-devshell</a></li><li class="chapter-item expanded "><a href="../options/nodejs-devshell-v3.html">nodejs-devshell-v3</a></li><li class="chapter-item expanded "><a href="../options/nodejs-granular.html">nodejs-granular</a></li><li class="chapter-item expanded "><a href="../options/nodejs-granular-v3.html">nodejs-granular-v3</a></li><li class="chapter-item expanded "><a href="../options/nodejs-node-modules.html">nodejs-node-modules</a></li><li class="chapter-item expanded "><a href="../options/nodejs-node-modules-v3.html">nodejs-node-modules-v3</a></li><li class="chapter-item expanded "><a href="../options/nodejs-package-json.html">nodejs-package-json</a></li><li class="chapter-item expanded "><a href="../options/nodejs-package-json-v3.html">nodejs-package-json-v3</a></li><li class="chapter-item expanded "><a href="../options/nodejs-package-lock.html">nodejs-package-lock</a></li><li class="chapter-item expanded "><a href="../options/nodejs-package-lock-v3.html">nodejs-package-lock-v3</a></li><li class="chapter-item expanded "><a href="../options/package-func.html">package-func</a></li><li class="chapter-item expanded "><a href="../options/paths.html">paths</a></li><li class="chapter-item expanded "><a href="../options/php-composer-lock.html">php-composer-lock</a></li><li class="chapter-item expanded "><a href="../options/php-granular.html">php-granular</a></li><li class="chapter-item expanded "><a href="../options/pip.html">pip</a></li><li class="chapter-item expanded "><a href="../options/public.html">public</a></li><li class="chapter-item expanded "><a href="../options/rust-cargo-lock.html">rust-cargo-lock</a></li><li class="chapter-item expanded "><a href="../options/rust-crane.html">rust-crane</a></li><li class="chapter-item expanded affix "><li class="part-title">Development Roundups</li><li class="chapter-item expanded "><a href="../development-roundups/2022-april-june.html">April - June 2022</a></li><li class="chapter-item expanded "><a href="../development-roundups/2022-july-september.html">July - September 2022</a></li></ol>
+                <ol class="chapter"><li class="chapter-item expanded "><a href="../intro.html">Introduction</a></li><li class="chapter-item expanded affix "><li class="part-title">Examples</li><li class="chapter-item expanded "><a href="../examples.html">dream2nix examples</a></li><li class="chapter-item expanded affix "><li class="part-title">Concepts</li><li class="chapter-item expanded "><a href="../modules.html">dream2nix modules</a></li><li class="chapter-item expanded affix "><li class="part-title">Modules Reference</li><li class="chapter-item expanded "><a href="../options/WIP-groups.html">WIP-groups</a></li><li class="chapter-item expanded "><a href="../options/WIP-haskell-cabal.html">WIP-haskell-cabal</a></li><li class="chapter-item expanded "><a href="../options/WIP-nodejs-builder-v3.html">WIP-nodejs-builder-v3</a></li><li class="chapter-item expanded "><a href="../options/WIP-python-pdm.html">WIP-python-pdm</a></li><li class="chapter-item expanded "><a href="../options/WIP-python-pyproject.html">WIP-python-pyproject</a></li><li class="chapter-item expanded "><a href="../options/WIP-spago.html">WIP-spago</a></li><li class="chapter-item expanded "><a href="../options/buildPythonPackage.html">buildPythonPackage</a></li><li class="chapter-item expanded "><a href="../options/buildRustPackage.html">buildRustPackage</a></li><li class="chapter-item expanded "><a href="../options/builtins-derivation.html">builtins-derivation</a></li><li class="chapter-item expanded "><a href="../options/deps.html">deps</a></li><li class="chapter-item expanded "><a href="../options/env.html">env</a></li><li class="chapter-item expanded "><a href="../options/eval-cache.html">eval-cache</a></li><li class="chapter-item expanded "><a href="../options/flags.html">flags</a></li><li class="chapter-item expanded "><a href="../options/lock.html">lock</a></li><li class="chapter-item expanded "><a href="../options/mkDerivation.html">mkDerivation</a></li><li class="chapter-item expanded "><a href="../options/multi-derivation-package.html">multi-derivation-package</a></li><li class="chapter-item expanded "><a href="../options/nixpkgs-overrides.html" class="active">nixpkgs-overrides</a></li><li class="chapter-item expanded "><a href="../options/nodejs-devshell.html">nodejs-devshell</a></li><li class="chapter-item expanded "><a href="../options/nodejs-devshell-v3.html">nodejs-devshell-v3</a></li><li class="chapter-item expanded "><a href="../options/nodejs-granular.html">nodejs-granular</a></li><li class="chapter-item expanded "><a href="../options/nodejs-granular-v3.html">nodejs-granular-v3</a></li><li class="chapter-item expanded "><a href="../options/nodejs-node-modules.html">nodejs-node-modules</a></li><li class="chapter-item expanded "><a href="../options/nodejs-node-modules-v3.html">nodejs-node-modules-v3</a></li><li class="chapter-item expanded "><a href="../options/nodejs-package-json.html">nodejs-package-json</a></li><li class="chapter-item expanded "><a href="../options/nodejs-package-json-v3.html">nodejs-package-json-v3</a></li><li class="chapter-item expanded "><a href="../options/nodejs-package-lock.html">nodejs-package-lock</a></li><li class="chapter-item expanded "><a href="../options/nodejs-package-lock-v3.html">nodejs-package-lock-v3</a></li><li class="chapter-item expanded "><a href="../options/package-func.html">package-func</a></li><li class="chapter-item expanded "><a href="../options/paths.html">paths</a></li><li class="chapter-item expanded "><a href="../options/php-composer-lock.html">php-composer-lock</a></li><li class="chapter-item expanded "><a href="../options/php-granular.html">php-granular</a></li><li class="chapter-item expanded "><a href="../options/pip.html">pip</a></li><li class="chapter-item expanded "><a href="../options/public.html">public</a></li><li class="chapter-item expanded "><a href="../options/rust-cargo-lock.html">rust-cargo-lock</a></li><li class="chapter-item expanded "><a href="../options/rust-crane.html">rust-crane</a></li><li class="chapter-item expanded affix "><li class="part-title">Development Roundups</li><li class="chapter-item expanded "><a href="../development-roundups/2022-april-june.html">April - June 2022</a></li><li class="chapter-item expanded "><a href="../development-roundups/2022-july-september.html">July - September 2022</a></li></ol>
             </div>
             <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
         </nav>
@@ -139,7 +139,7 @@
                         <a href="https://github.com/nix-community/dream2nix" title="Git repository" aria-label="Git repository">
                             <i id="git-repository-button" class="fa fa-github"></i>
                         </a>
-                        <a href="https://github.com/nix-community/dream2nix/edit/main/modules/dream2nix/src/options/buildRustPackage.md" title="Suggest an edit" aria-label="Suggest an edit">
+                        <a href="https://github.com/nix-community/dream2nix/edit/main/modules/dream2nix/src/options/nixpkgs-overrides.md" title="Suggest an edit" aria-label="Suggest an edit">
                             <i id="git-edit-button" class="fa fa-edit"></i>
                         </a>
 
@@ -168,40 +168,78 @@
 
                 <div id="content" class="content">
                     <main>
-                        <h1 id="buildrustpackage"><a class="header" href="#buildrustpackage">buildRustPackage</a></h1>
+                        <h1 id="nixpkgs-overrides"><a class="header" href="#nixpkgs-overrides">nixpkgs-overrides</a></h1>
 <h2 id="import"><a class="header" href="#import">Import</a></h2>
 <p>To import this module into your dream2nix package:</p>
 <pre><code class="language-nix">imports = [
-  dream2nix.modules.dream2nix.buildRustPackage
+  dream2nix.modules.dream2nix.nixpkgs-overrides
 ];
 </code></pre>
 <h2 id="options"><a class="header" href="#options">Options</a></h2>
-<p><a href="#opt-deps.cargo"><code>deps.cargo</code></a></p>
-<p><a href="#opt-deps.writeText"><code>deps.writeText</code></a></p>
-<h2><a href="#opt-deps.cargo"
-id="opt-deps.cargo"><code>deps.cargo</code></a></h2>
-<p>The cargo package to use</p>
-<p><em>Type:</em> package</p>
+<p><a
+href="#opt-nixpkgs-overrides.enable"><code>nixpkgs-overrides.enable</code></a></p>
+<p><a
+href="#opt-nixpkgs-overrides.exclude"><code>nixpkgs-overrides.exclude</code></a></p>
+<p><a
+href="#opt-nixpkgs-overrides.from"><code>nixpkgs-overrides.from</code></a></p>
+<p><a
+href="#opt-nixpkgs-overrides.lib.extractOverrideAttrs"><code>nixpkgs-overrides.lib.extractOverrideAttrs</code></a></p>
+<p><a
+href="#opt-nixpkgs-overrides.lib.extractPythonAttrs"><code>nixpkgs-overrides.lib.extractPythonAttrs</code></a></p>
+<h2><a href="#opt-nixpkgs-overrides.enable"
+id="opt-nixpkgs-overrides.enable"><code>nixpkgs-overrides.enable</code></a></h2>
+<p>Whether to enable copying derivation attributes from a similar
+package in nixpkgs.</p>
+<p><em>Type:</em> boolean</p>
+<p><em>Default:</em> <code>true</code></p>
+<p><em>Example:</em> <code>true</code></p>
 <p><em>Declared by:</em></p>
 <p><a
-href="https://github.com/nix-community/dream2nix/blob/master/nix/store/j4jgbppq6nwaixgzkywbr4bc1yh87g80-source/modules/dream2nix/buildRustPackage/interface.nix"><code>dream2nix/nix/store/j4jgbppq6nwaixgzkywbr4bc1yh87g80-source/modules/dream2nix/buildRustPackage/interface.nix</code></a></p>
-<h2><a href="#opt-deps.writeText"
-id="opt-deps.writeText"><code>deps.writeText</code></a></h2>
-<p>The function to use to write text to a file</p>
-<p><em>Type:</em> raw value</p>
+href="https://github.com/nix-community/dream2nix/blob/master/nix/store/j4jgbppq6nwaixgzkywbr4bc1yh87g80-source/modules/dream2nix/nixpkgs-overrides/interface.nix"><code>dream2nix/nix/store/j4jgbppq6nwaixgzkywbr4bc1yh87g80-source/modules/dream2nix/nixpkgs-overrides/interface.nix</code></a></p>
+<h2><a href="#opt-nixpkgs-overrides.exclude"
+id="opt-nixpkgs-overrides.exclude"><code>nixpkgs-overrides.exclude</code></a></h2>
+<p>Attribute names excluded from copying</p>
+<p><em>Type:</em> list of string</p>
 <p><em>Declared by:</em></p>
 <p><a
-href="https://github.com/nix-community/dream2nix/blob/master/nix/store/j4jgbppq6nwaixgzkywbr4bc1yh87g80-source/modules/dream2nix/buildRustPackage/interface.nix"><code>dream2nix/nix/store/j4jgbppq6nwaixgzkywbr4bc1yh87g80-source/modules/dream2nix/buildRustPackage/interface.nix</code></a></p>
+href="https://github.com/nix-community/dream2nix/blob/master/nix/store/j4jgbppq6nwaixgzkywbr4bc1yh87g80-source/modules/dream2nix/nixpkgs-overrides/interface.nix"><code>dream2nix/nix/store/j4jgbppq6nwaixgzkywbr4bc1yh87g80-source/modules/dream2nix/nixpkgs-overrides/interface.nix</code></a></p>
+<h2><a href="#opt-nixpkgs-overrides.from"
+id="opt-nixpkgs-overrides.from"><code>nixpkgs-overrides.from</code></a></h2>
+<p>package from which to extract the attributes</p>
+<p><em>Type:</em> null or package</p>
+<p><em>Default:</em>
+<code>"config.deps.python.pkgs.\${config.name} or null"</code></p>
+<p><em>Declared by:</em></p>
+<p><a
+href="https://github.com/nix-community/dream2nix/blob/master/nix/store/j4jgbppq6nwaixgzkywbr4bc1yh87g80-source/modules/dream2nix/nixpkgs-overrides/interface.nix"><code>dream2nix/nix/store/j4jgbppq6nwaixgzkywbr4bc1yh87g80-source/modules/dream2nix/nixpkgs-overrides/interface.nix</code></a></p>
+<h2><a href="#opt-nixpkgs-overrides.lib.extractOverrideAttrs"
+id="opt-nixpkgs-overrides.lib.extractOverrideAttrs"><code>nixpkgs-overrides.lib.extractOverrideAttrs</code></a></h2>
+<p>Helper function to extract attrs from nixpkgs to be re-used as
+overrides.</p>
+<p><em>Type:</em> function that evaluates to a(n) (attribute set)
+<em>(read only)</em></p>
+<p><em>Declared by:</em></p>
+<p><a
+href="https://github.com/nix-community/dream2nix/blob/master/nix/store/j4jgbppq6nwaixgzkywbr4bc1yh87g80-source/modules/dream2nix/nixpkgs-overrides/interface.nix"><code>dream2nix/nix/store/j4jgbppq6nwaixgzkywbr4bc1yh87g80-source/modules/dream2nix/nixpkgs-overrides/interface.nix</code></a></p>
+<h2><a href="#opt-nixpkgs-overrides.lib.extractPythonAttrs"
+id="opt-nixpkgs-overrides.lib.extractPythonAttrs"><code>nixpkgs-overrides.lib.extractPythonAttrs</code></a></h2>
+<p>Helper function to extract python attrs from nixpkgs to be re-used as
+overrides.</p>
+<p><em>Type:</em> function that evaluates to a(n) (attribute set)
+<em>(read only)</em></p>
+<p><em>Declared by:</em></p>
+<p><a
+href="https://github.com/nix-community/dream2nix/blob/master/nix/store/j4jgbppq6nwaixgzkywbr4bc1yh87g80-source/modules/dream2nix/nixpkgs-overrides/interface.nix"><code>dream2nix/nix/store/j4jgbppq6nwaixgzkywbr4bc1yh87g80-source/modules/dream2nix/nixpkgs-overrides/interface.nix</code></a></p>
 
                     </main>
 
                     <nav class="nav-wrapper" aria-label="Page navigation">
                         <!-- Mobile navigation buttons -->
-                            <a rel="prev" href="../options/buildPythonPackage.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                            <a rel="prev" href="../options/multi-derivation-package.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                                 <i class="fa fa-angle-left"></i>
                             </a>
 
-                            <a rel="next" href="../options/builtins-derivation.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                            <a rel="next" href="../options/nodejs-devshell.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                                 <i class="fa fa-angle-right"></i>
                             </a>
 
@@ -211,11 +249,11 @@ href="https://github.com/nix-community/dream2nix/blob/master/nix/store/j4jgbppq6
             </div>
 
             <nav class="nav-wide-wrapper" aria-label="Page navigation">
-                    <a rel="prev" href="../options/buildPythonPackage.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                    <a rel="prev" href="../options/multi-derivation-package.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                         <i class="fa fa-angle-left"></i>
                     </a>
 
-                    <a rel="next" href="../options/builtins-derivation.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                    <a rel="next" href="../options/nodejs-devshell.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                         <i class="fa fa-angle-right"></i>
                     </a>
             </nav>
