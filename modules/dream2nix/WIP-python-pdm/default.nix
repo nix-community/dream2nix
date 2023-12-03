@@ -104,7 +104,6 @@ in {
               file = pkg.source.file;
               version = pkg.version;
               hash = pkg.source.hash;
-              kind = "";
             };
             propagatedBuildInputs =
               lib.forEach
