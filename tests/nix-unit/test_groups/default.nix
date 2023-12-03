@@ -8,7 +8,7 @@
   eval = module:
     (lib.evalModules {
       modules = [
-        dream2nix.modules.dream2nix.groups
+        dream2nix.modules.dream2nix.WIP-groups
         module
       ];
       specialArgs = {
