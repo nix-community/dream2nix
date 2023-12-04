@@ -6,6 +6,9 @@
 }: let
   libpdm = import ./lib.nix {
     inherit lib libpyproject;
+    python3 = config.deps.python3;
+    targetPlatform =
+      lib.systems.elaborate config.deps.python3.stdenv.targetPlatform;
   };
 
   libpyproject = import (dream2nix.inputs.pyproject-nix + "/lib") {inherit lib;};
@@ -18,18 +21,8 @@
     stdenvNoCC = config.deps.stdenvNoCC;
   };
 
-  selectWheel = files: let
-    wheelFiles = lib.filter libpyproject.pypa.isWheelFileName files;
-    wheels = map libpyproject.pypa.parseWheelFileName wheelFiles;
-    selected = libpyproject.pypa.selectWheels config.deps.python3.stdenv.targetPlatform config.deps.python3 wheels;
-  in
-    if lib.length selected == 0
-    then null
-    else (lib.head selected).filename;
-
   lock_data = lib.importTOML config.pdm.lockfile;
   environ = libpyproject.pep508.mkEnviron config.deps.python3;
-  selector = config.pdm.sourceSelector;
 
   pyproject = libpdm.loadPdmPyProject (lib.importTOML config.pdm.pyproject);
 
@@ -37,7 +30,7 @@
     inherit environ pyproject;
   };
   parsed_lock_data = libpdm.parseLockData {
-    inherit environ lock_data selector;
+    inherit environ lock_data;
   };
 in {
   imports = [
@@ -47,7 +40,13 @@ in {
     ./interface.nix
   ];
   name = pyproject.pyproject.project.name;
-  version = pyproject.pyproject.project.version;
+  version = lib.mkDefault (
+    if pyproject.pyproject.project ? version
+    then pyproject.pyproject.project.version
+    else if lib.elem "version" pyproject.pyproject.project.dynamic or []
+    then "dynamic"
+    else "unknown"
+  );
   deps = {nixpkgs, ...}: {
     inherit
       (nixpkgs)
@@ -59,14 +58,12 @@ in {
       stdenv
       ;
   };
-  pdm.sourceSelector = lib.mkDefault selectWheel;
+  pdm.sourceSelector = lib.mkDefault libpdm.preferWheelSelector;
   overrideAll = {
-    options.sourceSelector = import ./sourceSelectorOption.nix {inherit lib;};
-    # TODO: per dependency selector isn't yet respected
     config.sourceSelector = lib.mkOptionDefault config.pdm.sourceSelector;
   };
   buildPythonPackage = {
-    format = "pyproject";
+    format = lib.mkDefault "pyproject";
   };
   mkDerivation = {
     propagatedBuildInputs =
@@ -83,27 +80,39 @@ in {
       };
 
       packages = lib.flip lib.mapAttrs deps' (name: pkg: {
-        ${pkg.version}.module = {
-          inherit name;
-          version = pkg.version;
+        ${pkg.version}.module = {...} @ depConfig: let
+          selector =
+            if lib.isFunction depConfig.config.sourceSelector
+            then depConfig.config.sourceSelector
+            else if depConfig.config.sourceSelector == "wheel"
+            then libpdm.preferWheelSelector
+            else if depConfig.config.sourceSelector == "sdist"
+            then libpdm.preferSdistSelector
+            else throw "Invalid sourceSelector: ${depConfig.config.sourceSelector}";
+          source = pkg.sources.${selector (lib.attrNames pkg.sources)};
+        in {
           imports = [
+            ./interface-dependency.nix
             dream2nix.modules.dream2nix.buildPythonPackage
             dream2nix.modules.dream2nix.mkDerivation
             dream2nix.modules.dream2nix.package-func
           ];
+          inherit name;
+          version = pkg.version;
           buildPythonPackage = {
-            format =
-              if lib.hasSuffix ".whl" pkg.source.file
+            format = lib.mkDefault (
+              if lib.hasSuffix ".whl" source.file
               then "wheel"
-              else "pyproject";
+              else "pyproject"
+            );
           };
           mkDerivation = {
             # required: { pname, file, version, hash, kind, curlOpts ? "" }:
             src = libpyproject-fetchers.fetchFromPypi {
               pname = name;
-              file = pkg.source.file;
+              file = source.file;
               version = pkg.version;
-              hash = pkg.source.hash;
+              hash = source.hash;
             };
             propagatedBuildInputs =
               lib.forEach

@@ -1,6 +1,9 @@
 {lib}:
 lib.mkOption {
-  type = lib.types.functionTo lib.types.str;
+  type =
+    lib.types.either
+    (lib.types.enum ["wheel" "sdist"])
+    (lib.types.functionTo lib.types.str);
   description = ''
     A selector function which picks a source for a specific dependency
     Python dependencies can have multiple possible sources, like for example:

@@ -1,18 +1,25 @@
 {
   pkgs ? import <nixpkgs> {},
   lib ? import <nixpkgs/lib>,
-  dream2nix ? (import (../../../modules + "/flake.nix")).outputs inputs,
-  inputs ? (import (../../../modules + "/default.nix")).inputs,
+  dream2nix ? (import ../../../.),
+  inputs ? (import ../../../.).inputs,
 }: let
   libpdm = (import ../../../modules/dream2nix/WIP-python-pdm/lib.nix) {
     inherit lib libpyproject;
+    python3 = pkgs.python3;
+    targetPlatform = lib.systems.elaborate "x86_64-linux";
   };
   pyproject-nix = inputs.pyproject-nix;
   libpyproject = import (pyproject-nix + "/lib") {inherit lib;};
 
   linux_environ = lib.importJSON ./environ.json;
 
-  test_isDependencyRequired = {
+  testIsUsableSdistFilename = filename: let
+    environ = linux_environ;
+  in
+    libpdm.isUsableSdistFilename {inherit environ filename;};
+in {
+  isDependencyRequired = {
     test_isDependencyRequired__not_required = {
       expr =
         libpdm.isDependencyRequired
@@ -29,12 +36,7 @@
     };
   };
 
-  testIsUsableSdistFilename = filename: let
-    environ = linux_environ;
-  in
-    libpdm.isUsableSdistFilename {inherit environ filename;};
-
-  tests_isUsableFilename = let
+  isUsableFilename = let
     testIsUsableWheelFilename = filename: let
       environ = linux_environ;
     in
@@ -51,7 +53,7 @@
     };
   };
 
-  tests_selectExtension = let
+  selectExtension = let
     names = [
       "certifi-2023.7.22-py3-abi3-any.whl"
       "certifi-2023.7.22.tar.gz"
@@ -72,7 +74,7 @@
     };
   };
 
-  tests_selectSdist = let
+  selectSdist = let
     names = [
       "certifi-2023.7.22-py3-abi3-any.whl"
       "certifi-2023.7.22.tar.gz"
@@ -103,7 +105,18 @@
     };
   };
 
-  tests_preferWheelSelector = {
+  selectWheel = {
+    test_empty = {
+      expr = libpdm.selectWheel [];
+      expected = null;
+    };
+    test_simple_call = {
+      expr = libpdm.selectWheel ["charset_normalizer-3.2.0-cp310-cp310-macosx_10_9_universal2.whl"];
+      expected = null;
+    };
+  };
+
+  preferWheelSelector = {
     test_preferWheelSelector__has_wheel = let
       names = [
         "certifi-2023.7.22-py3-abi3-any.whl"
@@ -124,7 +137,8 @@
       expected = "certifi-2023.7.22.tar.gz";
     };
   };
-  tests_preferSdistSelector = {
+
+  preferSdistSelector = {
     test_preferSdistSelector__has_sdist = let
       names = [
         "certifi-2023.7.22-py3-abi3-any.whl"
@@ -145,25 +159,24 @@
       expected = "certifi-2023.7.22.tar.gz";
     };
   };
-  tests_parseLockData = let
+  parseLockData = let
     lock_data = lib.importTOML ./../../../examples/packages/single-language/python-pdm/pdm.lock;
     version = "2.31.0";
     parsed = libpdm.parseLockData {
       inherit lock_data;
       environ = linux_environ;
-      selector = libpdm.preferWheelSelector;
     };
   in {
     test_parseLockData = {
       expr =
         (parsed ? "requests")
         && (parsed.requests.version == version)
-        && (parsed.requests ? source);
+        && (parsed.requests ? sources);
       expected = true;
     };
 
     test_parseLockData_file = {
-      expr = parsed.requests.source.file;
+      expr = libpdm.preferWheelSelector (lib.attrNames parsed.requests.sources);
       expected = "requests-2.31.0-py3-none-any.whl";
     };
 
@@ -177,7 +190,7 @@
       ];
     };
   };
-  tests_groupsWithDeps = let
+  groupsWithDeps = let
     environ = linux_environ;
     pyproject = libpdm.loadPdmPyProject (lib.importTOML ./../../../examples/packages/single-language/python-pdm/pyproject.toml);
     groups_with_deps = libpdm.groupsWithDeps {
@@ -198,12 +211,11 @@
     };
   };
 
-  tests_getDepsRecursively = let
+  getDepsRecursively = let
     environ = linux_environ;
     lock_data = lib.importTOML ./../../../examples/packages/single-language/python-pdm/pdm.lock;
     parsed_lock_data = libpdm.parseLockData {
       inherit environ lock_data;
-      selector = libpdm.preferWheelSelector;
     };
     deps = libpdm.getDepsRecursively parsed_lock_data "requests";
   in {
@@ -221,11 +233,13 @@
         urllib3 = "2.0.5";
       };
     };
-    test_getDepsRecursively_sources = {
-      expr = lib.mapAttrs (key: value: value.source.file) deps;
+    test_getDepsRecursively_sources = let
+      selectFilename = sources: libpdm.preferWheelSelector (lib.attrNames sources);
+    in {
+      expr = lib.mapAttrs (key: value: selectFilename value.sources) deps;
       expected = {
         certifi = "certifi-2023.7.22-py3-none-any.whl";
-        charset-normalizer = "charset_normalizer-3.2.0-cp310-cp310-macosx_10_9_universal2.whl";
+        charset-normalizer = "charset_normalizer-3.2.0-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl";
         idna = "idna-3.4-py3-none-any.whl";
         requests = "requests-2.31.0-py3-none-any.whl";
         urllib3 = "urllib3-2.0.5-py3-none-any.whl";
@@ -233,7 +247,7 @@
     };
   };
 
-  tests_selectForGroups = let
+  selectForGroups = let
     environ = linux_environ;
     pyproject = libpdm.loadPdmPyProject (lib.importTOML ./../../../examples/packages/single-language/python-pdm/pyproject.toml);
     lock_data = lib.importTOML ./../../../examples/packages/single-language/python-pdm/pdm.lock;
@@ -243,7 +257,6 @@
     parsed_lock_data = libpdm.parseLockData {
       inherit lock_data;
       environ = linux_environ;
-      selector = libpdm.preferWheelSelector;
     };
     deps_default = libpdm.selectForGroups {
       inherit parsed_lock_data groups_with_deps;
@@ -268,11 +281,13 @@
         urllib3 = "2.0.5";
       };
     };
-    test_selectForGroups_sources = {
-      expr = lib.mapAttrs (key: value: value.source.file) deps_default;
+    test_selectForGroups_sources = let
+      selectFilename = sources: libpdm.preferWheelSelector (lib.attrNames sources);
+    in {
+      expr = lib.mapAttrs (key: value: selectFilename value.sources) deps_default;
       expected = {
         certifi = "certifi-2023.7.22-py3-none-any.whl";
-        charset-normalizer = "charset_normalizer-3.2.0-cp310-cp310-macosx_10_9_universal2.whl";
+        charset-normalizer = "charset_normalizer-3.2.0-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl";
         idna = "idna-3.4-py3-none-any.whl";
         requests = "requests-2.31.0-py3-none-any.whl";
         urllib3 = "urllib3-2.0.5-py3-none-any.whl";
@@ -290,5 +305,4 @@
       };
     };
   };
-in
-  test_isDependencyRequired // tests_isUsableFilename // tests_selectExtension // tests_selectSdist // tests_preferWheelSelector // tests_preferSdistSelector // tests_parseLockData // tests_groupsWithDeps // tests_getDepsRecursively // tests_selectForGroups
+}
