@@ -1,6 +1,8 @@
 {
   lib,
   libpyproject,
+  python3,
+  targetPlatform,
 }: rec {
   # Get the filename from an URL.
   # getFilename :: String -> String
@@ -115,8 +117,19 @@
   # Select a single wheel from a list of filenames
   # This assumes filtering on usable wheels has already been performed.
   # selectWheel :: [String] ->  String
-  selectWheel = filenames:
-    lib.findFirst (x: lib.hasSuffix ".whl" x) null filenames;
+  selectWheel = files: let
+    wheelFiles = lib.filter libpyproject.pypa.isWheelFileName files;
+    wheels = map libpyproject.pypa.parseWheelFileName wheelFiles;
+    selected =
+      libpyproject.pypa.selectWheels
+      targetPlatform
+      python3
+      wheels;
+  in (
+    if lib.length selected == 0
+    then null
+    else (lib.head selected).filename
+  );
 
   # Source selectors.
   # Prefer to select a wheel from a list of filenames.
@@ -157,7 +170,6 @@
   parseLockData = {
     lock_data,
     environ, # Output from `libpyproject.pep508.mkEnviron`
-    selector,
   }: let
     # TODO: validate against lock file version.
     parsePackage = item: let
@@ -172,7 +184,6 @@
       parsedDeps = with lib.trivial; (
         map
         ((flip pipe) [
-          lib.strings.toLower
           libpyproject.pep508.parseString
         ])
         item.dependencies or []
@@ -180,7 +191,7 @@
       value = {
         dependencies = requiredDeps environ parsedDeps;
         inherit (item) version;
-        source = sources.${selector (lib.attrNames compatibleSources)};
+        sources = compatibleSources;
         # In the future we could add additional meta data fields
         # such as summary
       };
