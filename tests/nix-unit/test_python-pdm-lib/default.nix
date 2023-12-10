@@ -82,11 +82,11 @@ in {
       "certifi-2023.7.22.zip"
     ];
   in {
-    test_selectSdist__tar_gz = {
+    test_tar_gz = {
       expr = libpdm.selectSdist names;
       expected = "certifi-2023.7.22.tar.gz";
     };
-    test_selectSdist__no_sdist = let
+    test_no_sdist = let
       names = [
         "certifi-2023.7.22-py3-abi3-any.whl"
       ];
@@ -94,7 +94,7 @@ in {
       expr = libpdm.selectSdist names;
       expected = null;
     };
-    test_selectSdist__order = let
+    test_order = let
       names = [
         "certifi-2023.7.22.zip"
         "certifi-2023.7.22.tar.gz"
@@ -117,7 +117,7 @@ in {
   };
 
   preferWheelSelector = {
-    test_preferWheelSelector__has_wheel = let
+    test_has_wheel = let
       names = [
         "certifi-2023.7.22-py3-abi3-any.whl"
         "certifi-2023.7.22.tar.gz"
@@ -127,7 +127,7 @@ in {
       expr = libpdm.preferWheelSelector names;
       expected = "certifi-2023.7.22-py3-abi3-any.whl";
     };
-    test_preferWheelSelector__only_sdist = let
+    test_only_sdist = let
       names = [
         "certifi-2023.7.22.zip"
         "certifi-2023.7.22.tar.gz"
@@ -139,7 +139,7 @@ in {
   };
 
   preferSdistSelector = {
-    test_preferSdistSelector__has_sdist = let
+    test_has_sdist = let
       names = [
         "certifi-2023.7.22-py3-abi3-any.whl"
         "certifi-2023.7.22.tar.gz"
@@ -149,7 +149,7 @@ in {
       expr = libpdm.preferSdistSelector names;
       expected = "certifi-2023.7.22.tar.gz";
     };
-    test_preferSdistSelectorr__only_sdist = let
+    test_only_sdist = let
       names = [
         "certifi-2023.7.22.zip"
         "certifi-2023.7.22.tar.gz"
@@ -159,29 +159,90 @@ in {
       expected = "certifi-2023.7.22.tar.gz";
     };
   };
+
+  parsePackage = {
+    test_simple = {
+      expr = libpdm.parsePackage linux_environ {
+        name = "foo";
+        version = "1.0.0";
+        extras = ["extra1" "extra2"];
+        requires_python = ">=3.9";
+        files = [
+          {
+            file = "foo-1.0.0-py3-none-any.whl";
+            hash = "sha256:foo";
+          }
+          {
+            file = "foo-1.0.0.tar.gz";
+            hash = "sha256:bar";
+          }
+        ];
+        dependencies = [
+          "bar[security,performance]==1.0.0"
+        ];
+      };
+      expected = {
+        name = "foo";
+        version = "1.0.0";
+        extras = ["extra1" "extra2"];
+        dependencies = [
+          {
+            conditions = [
+              {
+                op = "==";
+                version = {
+                  dev = null;
+                  epoch = 0;
+                  local = null;
+                  post = null;
+                  pre = null;
+                  release = [1 0 0];
+                };
+              }
+            ];
+            extras = ["security" "performance"];
+            markers = null;
+            name = "bar";
+            url = null;
+          }
+        ];
+        sources = {
+          "foo-1.0.0-py3-none-any.whl" = {
+            file = "foo-1.0.0-py3-none-any.whl";
+            hash = "sha256:foo";
+          };
+          "foo-1.0.0.tar.gz" = {
+            file = "foo-1.0.0.tar.gz";
+            hash = "sha256:bar";
+          };
+        };
+      };
+    };
+  };
+
   parseLockData = let
-    lock_data = lib.importTOML ./../../../examples/packages/single-language/python-pdm/pdm.lock;
+    lock_data = lib.importTOML ./fixtures/pdm-example1.lock;
     version = "2.31.0";
     parsed = libpdm.parseLockData {
       inherit lock_data;
       environ = linux_environ;
     };
   in {
-    test_parseLockData = {
+    test_simple = {
       expr =
         (parsed ? "requests")
-        && (parsed.requests.version == version)
-        && (parsed.requests ? sources);
+        && (parsed.requests.default.version == version)
+        && (parsed.requests.default ? sources);
       expected = true;
     };
 
-    test_parseLockData_file = {
-      expr = libpdm.preferWheelSelector (lib.attrNames parsed.requests.sources);
+    test_file = {
+      expr = libpdm.preferWheelSelector (lib.attrNames parsed.requests.default.sources);
       expected = "requests-2.31.0-py3-none-any.whl";
     };
 
-    test_parseLockData_dependencies = {
-      expr = parsed.requests.dependencies;
+    test_dependencies = {
+      expr = map (dep: dep.name) parsed.requests.default.dependencies;
       expected = [
         "certifi"
         "charset-normalizer"
@@ -189,68 +250,150 @@ in {
         "urllib3"
       ];
     };
+    test_candidates_with_different_extras = rec {
+      expr = libpdm.parseLockData {
+        environ = linux_environ;
+        lock_data = {
+          package = [
+            {
+              name = "foo";
+              version = "1.0.0";
+              extras = [];
+              dependencies = [
+                "dep1==1.0.0"
+              ];
+              files = [
+                {
+                  file = "foo-1.0.0.tar.gz";
+                  hash = "sha256:bar";
+                }
+              ];
+            }
+            {
+              name = "foo";
+              version = "1.0.0";
+              extras = ["extra1" "extra2"];
+              dependencies = [
+                "extradep1==1.0.0"
+              ];
+              files = [
+                {
+                  file = "foo-1.0.0.tar.gz";
+                  hash = "sha256:bar";
+                }
+              ];
+            }
+          ];
+        };
+      };
+      expected = {
+        foo = {
+          default = {
+            name = "foo";
+            version = "1.0.0";
+            extras = [];
+            dependencies = expr.foo.default.dependencies;
+            sources = expr.foo.default.sources;
+          };
+          "extra1,extra2" = {
+            name = "foo";
+            version = "1.0.0";
+            extras = ["extra1" "extra2"];
+            dependencies = expr.foo."extra1,extra2".dependencies;
+            sources = expr.foo."extra1,extra2".sources;
+          };
+        };
+      };
+    };
   };
   groupsWithDeps = let
     environ = linux_environ;
-    pyproject = libpdm.loadPdmPyProject (lib.importTOML ./../../../examples/packages/single-language/python-pdm/pyproject.toml);
+    pyproject = libpdm.loadPdmPyProject (lib.importTOML ./fixtures/pyproject.toml);
     groups_with_deps = libpdm.groupsWithDeps {
       inherit environ pyproject;
     };
   in {
-    test_groupsWithDeps__has_main_group = {
+    test_has_main_group = {
       expr = groups_with_deps ? "default";
       expected = true;
     };
-    test_groupsWithDeps__main_group_has_deps = {
-      expr = groups_with_deps.default;
+    test_main_group_has_deps = {
+      expr = map (dep: dep.name) groups_with_deps.default;
       expected = ["requests"];
     };
-    test_groupsWithDeps__optionals_dev_has_deps = {
-      expr = groups_with_deps.dev;
+    test_optionals_dev_has_deps = {
+      expr = map (dep: dep.name) groups_with_deps.dev;
       expected = ["pi"];
     };
   };
 
-  getDepsRecursively = let
+  getClosure = let
     environ = linux_environ;
-    lock_data = lib.importTOML ./../../../examples/packages/single-language/python-pdm/pdm.lock;
-    parsed_lock_data = libpdm.parseLockData {
-      inherit environ lock_data;
+    lock_data_2 = lib.importTOML ./fixtures/pdm-example1.lock;
+    parsed_lock_data_2 = libpdm.parseLockData {
+      inherit environ;
+      lock_data = lock_data_2;
     };
-    deps = libpdm.getDepsRecursively parsed_lock_data "requests";
-  in {
-    test_getDepsRecursively_names = {
-      expr = lib.attrNames deps;
-      expected = ["certifi" "charset-normalizer" "idna" "requests" "urllib3"];
-    };
-    test_getDepsRecursively_versions = {
-      expr = lib.mapAttrs (key: value: value.version) deps;
+  in rec {
+    deps = libpdm.getClosure parsed_lock_data_2 "requests" [];
+
+    test_versions = {
+      expr = lib.mapAttrs (name: dep: dep.version) deps;
       expected = {
         certifi = "2023.7.22";
         charset-normalizer = "3.2.0";
         idna = "3.4";
-        requests = "2.31.0";
         urllib3 = "2.0.5";
       };
     };
-    test_getDepsRecursively_sources = let
+
+    test_sources = let
       selectFilename = sources: libpdm.preferWheelSelector (lib.attrNames sources);
     in {
-      expr = lib.mapAttrs (key: value: selectFilename value.sources) deps;
+      expr = lib.mapAttrs (name: dep: selectFilename dep.sources) deps;
       expected = {
         certifi = "certifi-2023.7.22-py3-none-any.whl";
         charset-normalizer = "charset_normalizer-3.2.0-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl";
         idna = "idna-3.4-py3-none-any.whl";
-        requests = "requests-2.31.0-py3-none-any.whl";
         urllib3 = "urllib3-2.0.5-py3-none-any.whl";
+      };
+    };
+
+    test_no_cycles = let
+      lock_data = lib.importTOML ./fixtures/pdm-with-cycles.lock;
+      parsed_lock_data = libpdm.parseLockData {
+        inherit environ lock_data;
+      };
+      deps = libpdm.getClosure parsed_lock_data "pyjwt" ["crypto"];
+    in {
+      expr = lib.mapAttrs (name: dep: dep.version) deps;
+      expected = {
+        cffi = "1.16.0";
+        cryptography = "41.0.7";
+        pycparser = "2.21";
+      };
+    };
+
+    test_closure_collects_all_extras = let
+      lock_data = lib.importTOML ./fixtures/pdm-extras.lock;
+      parsed_lock_data = libpdm.parseLockData {
+        inherit environ lock_data;
+      };
+      deps = libpdm.getClosure parsed_lock_data "root" [];
+    in {
+      expr.foo = deps.foo.extras;
+      expr.bar = deps.bar.extras;
+      expected = {
+        foo = ["extra1"];
+        bar = ["extra2"];
       };
     };
   };
 
-  selectForGroups = let
+  closureForGroups = let
     environ = linux_environ;
-    pyproject = libpdm.loadPdmPyProject (lib.importTOML ./../../../examples/packages/single-language/python-pdm/pyproject.toml);
-    lock_data = lib.importTOML ./../../../examples/packages/single-language/python-pdm/pdm.lock;
+    pyproject = libpdm.loadPdmPyProject (lib.importTOML ./fixtures/pyproject.toml);
+    lock_data = lib.importTOML ./fixtures/pdm-example1.lock;
     groups_with_deps = libpdm.groupsWithDeps {
       inherit environ pyproject;
     };
@@ -258,20 +401,20 @@ in {
       inherit lock_data;
       environ = linux_environ;
     };
-    deps_default = libpdm.selectForGroups {
+    deps_default = libpdm.closureForGroups {
       inherit parsed_lock_data groups_with_deps;
       groupNames = ["default"];
     };
-    deps_dev = libpdm.selectForGroups {
+    deps_dev = libpdm.closureForGroups {
       inherit parsed_lock_data groups_with_deps;
       groupNames = ["default" "dev"];
     };
   in {
-    test_selectForGroups_names = {
+    test_names = {
       expr = lib.attrNames deps_default;
       expected = ["certifi" "charset-normalizer" "idna" "requests" "urllib3"];
     };
-    test_selectForGroups_versions = {
+    test_versions = {
       expr = lib.mapAttrs (key: value: value.version) deps_default;
       expected = {
         certifi = "2023.7.22";
@@ -281,7 +424,7 @@ in {
         urllib3 = "2.0.5";
       };
     };
-    test_selectForGroups_sources = let
+    test_closureForGroups_sources = let
       selectFilename = sources: libpdm.preferWheelSelector (lib.attrNames sources);
     in {
       expr = lib.mapAttrs (key: value: selectFilename value.sources) deps_default;
@@ -293,7 +436,7 @@ in {
         urllib3 = "urllib3-2.0.5-py3-none-any.whl";
       };
     };
-    test_selectForGroups_dev_versions = {
+    test_dev_versions = {
       expr = lib.mapAttrs (key: value: value.version) deps_dev;
       expected = {
         certifi = "2023.7.22";
