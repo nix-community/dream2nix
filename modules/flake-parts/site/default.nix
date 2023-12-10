@@ -84,7 +84,7 @@
               case "$ln" in
                 "# Modules Reference")
                   echo "# Modules Reference"
-                  cat ${self'.packages.generated-summary-md}
+                  cat ${config.generated-docs.generated-summary-md}
                   ;;
                 *)
                   echo "$ln"
@@ -97,7 +97,7 @@
           cp ${../../dream2nix/core/docs/theme/favicon.png} ./theme/favicon.png
 
           mkdir -p src/options
-          for f in ${config.packages.generated-docs}/*.html; do
+          for f in ${config.generated-docs.generated-docs}/*.html; do
             cp "$f" "src/options/$(basename "$f" .html).md"
           done
           mdbook build --dest-dir $TMPDIR/out

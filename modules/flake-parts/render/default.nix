@@ -355,9 +355,14 @@ in {
           type = types.attrsOf (types.submodule inputModule);
         };
       };
+      generated-docs = mkOption {
+        type = types.raw;
+        description = "Generated documentation.";
+        readOnly = true;
+      };
     };
     config = {
-      packages =
+      generated-docs =
         lib.mapAttrs' (name: inputCfg: {
           name = "generated-docs-${name}";
           value = inputCfg.rendered;
