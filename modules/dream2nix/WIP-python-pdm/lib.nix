@@ -156,12 +156,52 @@
     then wheel
     else null;
 
-  # Get the dependency names out from a list of parsed deps
+  # Get the dependency names out from a list of parsed deps which are
+  #   required due to the current environment.
   # requiredDeps :: Attrset -> [Attrset] -> [String]
   requiredDeps = environ: parsed_deps: let
     requiredDeps' = lib.filter (isDependencyRequired environ) parsed_deps;
   in
-    map (dep: dep.name) requiredDeps';
+    requiredDeps';
+
+  # TODO: validate against lock file version.
+  parsePackage = environ: item: let
+    sources = sourcesToAttrs item.files;
+    compatibleSources =
+      lib.filterAttrs
+      (
+        filename: source:
+          isUsableFilename {inherit environ filename;}
+      )
+      sources;
+    parsedDeps = map libpyproject.pep508.parseString item.dependencies or [];
+  in {
+    inherit (item) name version;
+    extras = item.extras or [];
+    dependencies = requiredDeps environ parsedDeps;
+    sources = compatibleSources;
+    # In the future we could add additional meta data fields
+    # such as summary
+  };
+
+  # Create a string identified for a set of extras.
+  mkExtrasKey = dep @ {extras ? [], ...}:
+    if extras == []
+    then "default"
+    else lib.concatStringsSep "," extras;
+
+  # Constructs dependency entry for internal use.
+  # We could use the pyproject.nix representation directly instead, but it seems
+  #   easier to test this code if we only keep the data we need.
+  mkDepEntry = parsed_lock_data: dep @ {
+    name,
+    extras,
+    ...
+  }: {
+    extras = extras;
+    sources = parsed_lock_data.${name}.${mkExtrasKey {inherit extras;}}.sources;
+    version = parsed_lock_data.${name}.${mkExtrasKey {inherit extras;}}.version;
+  };
 
   # Parse lockfile data.
   # Returns a set with package name as key
@@ -170,36 +210,20 @@
   parseLockData = {
     lock_data,
     environ, # Output from `libpyproject.pep508.mkEnviron`
-  }: let
-    # TODO: validate against lock file version.
-    parsePackage = item: let
-      sources = sourcesToAttrs item.files;
-      compatibleSources =
-        lib.filterAttrs
-        (
-          filename: source:
-            isUsableFilename {inherit environ filename;}
-        )
-        sources;
-      parsedDeps = with lib.trivial; (
-        map
-        ((flip pipe) [
-          libpyproject.pep508.parseString
-        ])
-        item.dependencies or []
-      );
-      value = {
-        dependencies = requiredDeps environ parsedDeps;
-        inherit (item) version;
-        sources = compatibleSources;
-        # In the future we could add additional meta data fields
-        # such as summary
-      };
-    in
-      lib.nameValuePair item.name value;
-  in
-    # TODO: packages need to be filtered on environment.
-    lib.listToAttrs (map parsePackage lock_data.package);
+  }:
+    lib.foldl
+    (acc: dep:
+      acc
+      // {
+        "${dep.name}" =
+          acc.${dep.name}
+          or {}
+          // {
+            "${mkExtrasKey dep}" = dep;
+          };
+      })
+    {}
+    (map (parsePackage environ) lock_data.package);
 
   # Create an overview of all groups and dependencies
   # Keys are group names, and values lists with strings.
@@ -224,31 +248,76 @@
     all_groups;
 
   # Get a set with all transitive dependencies flattened.
-  # For every dependency we have the version, source
-  # and dependencies as names.
-  # getDepsRecursively :: Attrset -> String -> Attrset
-  getDepsRecursively = parsedLockData: name: let
-    getDeps = name: let
-      dep = parsedLockData.${name};
-    in
-      [{"${name}" = dep;}] ++ lib.flatten (map getDeps dep.dependencies);
-  in
-    lib.attrsets.mergeAttrsList (lib.unique (getDeps name));
+  # For every dependency we have the version, sources and extras.
+  # getClosure :: Attrset -> String -> [String] -> Attrset
+  getClosure = parsed_lock_data: name: extras: let
+    closure = builtins.genericClosure {
+      startSet = [
+        {
+          key = "${name}#${mkExtrasKey {inherit extras;}}";
+          value = parsed_lock_data.${name}.${mkExtrasKey {inherit extras;}};
+        }
+      ];
+      operator = item:
+        lib.forEach item.value.dependencies or [] (dep: {
+          key = "${dep.name}#${mkExtrasKey dep}";
+          value = parsed_lock_data.${dep.name}.${mkExtrasKey dep};
+        });
+    };
 
-  # Select the dependencies we need in our group.
-  # Here we recurse so we get a set with all dependencies.
-  # selectForGroups :: {Attrset, Attrset, String}
-  selectForGroups = {
+    # mapping of all dependencies by name with merged extras.
+    depsByNames =
+      lib.foldl'
+      (
+        acc: x: let
+          dep = x.value;
+        in
+          acc
+          // {
+            "${dep.name}" =
+              acc.${dep.name}
+              or {}
+              // {
+                extras =
+                  lib.sort (x: y: x > y)
+                  (lib.unique (acc.${dep.name}.extras or [] ++ dep.extras));
+                version = dep.version;
+                sources = dep.sources;
+              };
+          }
+      )
+      {}
+      closure;
+  in
+    # remove self references from the closure to prevent cycles
+    builtins.removeAttrs depsByNames [name];
+
+  # Compute the dependency closure for the given groups.
+  # closureForGroups :: {Attrset, Attrset, String}
+  closureForGroups = {
     parsed_lock_data,
     groups_with_deps,
     groupNames,
   }: let
-    # List of top-level package names we need.
+    # List of all top-level dependencies for the given groups.
     deps_top_level =
       lib.concatMap
       (groupName: groups_with_deps.${groupName})
       groupNames;
-    getDeps = getDepsRecursively parsed_lock_data;
+    # Top-level dependencies in expected format.
+    #   Children are already returned in correct format by 'getClosure'.
+    topLevelEntries =
+      map
+      (dep: {
+        name = dep.name;
+        value = mkDepEntry parsed_lock_data dep;
+      })
+      deps_top_level;
+    # helper to get the closure for a single dependency.
+    getClosureForDep = dep: getClosure parsed_lock_data dep.name dep.extras;
   in
-    lib.attrsets.mergeAttrsList (map getDeps deps_top_level);
+    # top-level dependencies
+    (lib.listToAttrs topLevelEntries)
+    # transitive dependencies
+    // (lib.attrsets.mergeAttrsList (map getClosureForDep deps_top_level));
 }

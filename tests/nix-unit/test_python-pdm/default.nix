@@ -1,8 +1,8 @@
 {
   pkgs ? import <nixpkgs> {},
   lib ? import <nixpkgs/lib>,
-  inputs ? {},
-  dream2nix ? import ../../.. inputs,
+  dream2nix ? import ../../../. inputs,
+  inputs ? (import ../../../.).inputs,
 }: let
   eval = module:
     (lib.evalModules {
@@ -19,9 +19,8 @@
 in {
   test_pdm = let
     config = eval {
-      # TODO: create fixtures
-      pdm.lockfile = ./../../../examples/packages/single-language/python-pdm/pdm.lock;
-      pdm.pyproject = ./../../../examples/packages/single-language/python-pdm/pyproject.toml;
+      pdm.lockfile = ./../test_python-pdm-lib/fixtures/pdm-example1.lock;
+      pdm.pyproject = ./../test_python-pdm-lib/fixtures/pyproject.toml;
     };
   in {
     expr = (lib.head (lib.attrValues config.groups.default.packages.certifi)).public ? drvPath;

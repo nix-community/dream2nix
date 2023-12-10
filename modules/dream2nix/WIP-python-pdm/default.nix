@@ -32,6 +32,10 @@
   parsed_lock_data = libpdm.parseLockData {
     inherit environ lock_data;
   };
+  buildSystemNames =
+    map
+    (name: (libpyproject.pep508.parseString name).name)
+    (pyproject.pyproject.build-system.requires or []);
 in {
   imports = [
     dream2nix.modules.dream2nix.WIP-groups
@@ -66,6 +70,7 @@ in {
     format = lib.mkDefault "pyproject";
   };
   mkDerivation = {
+    buildInputs = map (name: config.deps.python3.pkgs.${name}) buildSystemNames;
     propagatedBuildInputs =
       map
       (x: (lib.head (lib.attrValues x)).public)
@@ -73,13 +78,16 @@ in {
       (lib.attrValues config.groups.default.packages);
   };
   groups = let
-    populateGroup = groupname: deps: let
-      deps' = libpdm.selectForGroups {
+    groupNames = lib.attrNames groups_with_deps;
+    populateGroup = groupname: let
+      # Get transitive closure for specific group.
+      # The 'default' group is always included no matter the selection.
+      transitiveGroupDeps = libpdm.closureForGroups {
         inherit parsed_lock_data groups_with_deps;
         groupNames = lib.unique ["default" groupname];
       };
 
-      packages = lib.flip lib.mapAttrs deps' (name: pkg: {
+      packages = lib.flip lib.mapAttrs transitiveGroupDeps (name: pkg: {
         ${pkg.version}.module = {...} @ depConfig: let
           selector =
             if lib.isFunction depConfig.config.sourceSelector
@@ -108,20 +116,20 @@ in {
           };
           mkDerivation = {
             # required: { pname, file, version, hash, kind, curlOpts ? "" }:
-            src = libpyproject-fetchers.fetchFromPypi {
+            src = lib.mkDefault (libpyproject-fetchers.fetchFromPypi {
               pname = name;
               file = source.file;
               version = pkg.version;
               hash = source.hash;
-            };
+            });
             propagatedBuildInputs =
-              lib.forEach
-              parsed_lock_data.${name}.dependencies
-              (depName: (lib.head (lib.attrValues (config.groups.${groupname}.packages.${depName}))).public);
+              lib.mapAttrsToList
+              (name: dep: (lib.head (lib.attrValues (config.groups.${groupname}.packages.${name}))).public)
+              (libpdm.getClosure parsed_lock_data name pkg.extras);
           };
         };
       });
     in {inherit packages;};
   in
-    lib.mapAttrs populateGroup groups_with_deps;
+    lib.genAttrs groupNames populateGroup;
 }
