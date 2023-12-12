@@ -17,7 +17,7 @@
     curl = config.deps.curl;
     jq = config.deps.jq;
     python3 = config.deps.python3;
-    runCommand = config.deps.stdenv.runCommand;
+    runCommand = config.deps.runCommand;
     stdenvNoCC = config.deps.stdenvNoCC;
   };
 
@@ -115,12 +115,12 @@ in {
             );
           };
           mkDerivation = {
-            # required: { pname, file, version, hash, kind, curlOpts ? "" }:
-            src = lib.mkDefault (libpyproject-fetchers.fetchFromPypi {
+            # TODO: handle sources outside pypi.org
+            src = lib.mkDefault (libpyproject-fetchers.fetchFromLegacy {
               pname = name;
               file = source.file;
-              version = pkg.version;
               hash = source.hash;
+              url = "https://pypi.org/simple";
             });
             propagatedBuildInputs =
               lib.mapAttrsToList
