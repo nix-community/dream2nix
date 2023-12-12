@@ -38,16 +38,18 @@
     extracted;
 
   extractedEnv =
-    l.filterAttrs
-    (
-      name: _:
-        ! (
-          extractedMkDerivation
-          ? ${name}
-          || extractedBuildPythonPackage ? ${name}
-        )
-    )
-    extracted;
+    (l.filterAttrs
+      (
+        name: _:
+          ! (
+            extractedMkDerivation
+            ? ${name}
+            || extractedBuildPythonPackage ? ${name}
+          )
+          && name != "env"
+      )
+      extracted)
+    // extracted.env or {};
 in {
   imports = [
     ./interface.nix

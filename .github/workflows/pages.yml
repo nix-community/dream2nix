@@ -20,7 +20,7 @@ jobs:
           nix_path: nixpkgs=channel:nixos-unstable
 
       - name: Build documentation book
-        run: nix build -L --show-trace .#docs
+        run: nix build -L --show-trace .#website
 
       - name: Deploy
         uses: peaceiris/actions-gh-pages@373f7f263a76c20808c831209c920827a82a2847  # v3.9.3

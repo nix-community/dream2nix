@@ -4,7 +4,7 @@
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
 
-    pyproject-nix.url = "github:adisbladis/pyproject.nix";
+    pyproject-nix.url = "github:nix-community/pyproject.nix/pull/42/head";
     pyproject-nix.flake = false;
 
     purescript-overlay.url = "github:thomashoneyman/purescript-overlay";

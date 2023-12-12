@@ -25,6 +25,7 @@ in {
     stdenv = lib.mkForce nixpkgs.stdenv;
     jq = lib.mkForce nixpkgs.jq;
     fetchFromGitHub = nixpkgs.fetchFromGitHub;
+    python = nixpkgs.python310;
   };
 
   nodejs-package-lock = {

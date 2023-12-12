@@ -26,9 +26,9 @@
         "version": "2022.12.7"
       },
       "cffi": {
-        "sha256": "4f2c9f67e9821cad2e5f480bc8d83b8742896f1242dba247911072d4fa94c192",
+        "sha256": "5d598b938678ebf3c67377cdd45e09d431369c3b1a5b331058c338e201f12b27",
         "type": "url",
-        "url": "https://files.pythonhosted.org/packages/b7/8b/06f30caa03b5b3ac006de4f93478dbd0239e2a16566d81a106c322dc4f79/cffi-1.15.1-cp38-cp38-manylinux_2_17_x86_64.manylinux2014_x86_64.whl",
+        "url": "https://files.pythonhosted.org/packages/2d/86/3ca57cddfa0419f6a95d1c8478f8f622ba597e3581fd501bbb915b20eb75/cffi-1.15.1-cp39-cp39-manylinux_2_17_x86_64.manylinux2014_x86_64.whl",
         "version": "1.15.1"
       },
       "chardet": {
@@ -38,9 +38,9 @@
         "version": "5.1.0"
       },
       "charset-normalizer": {
-        "sha256": "de5695a6f1d8340b12a5d6d4484290ee74d61e467c39ff03b39e30df62cf83a0",
+        "sha256": "21fa558996782fc226b529fdd2ed7866c2c6ec91cee82735c98a197fae39f706",
         "type": "url",
-        "url": "https://files.pythonhosted.org/packages/74/5f/361202de730532028458b729781b8435f320e31a622c27f30e25eec80513/charset_normalizer-3.1.0-cp38-cp38-manylinux_2_17_x86_64.manylinux2014_x86_64.whl",
+        "url": "https://files.pythonhosted.org/packages/33/97/9967fb2d364a9da38557e4af323abcd58cc05bdd8f77e9fd5ae4882772cc/charset_normalizer-3.1.0-cp39-cp39-manylinux_2_17_x86_64.manylinux2014_x86_64.whl",
         "version": "3.1.0"
       },
       "cryptography": {
@@ -68,15 +68,15 @@
         "version": "0.19"
       },
       "gevent": {
-        "sha256": "6c04ee32c11e9fcee47c1b431834878dc987a7a2cc4fe126ddcae3bad723ce89",
+        "sha256": "319d8b1699b7b8134de66d656cd739b308ab9c45ace14d60ae44de7775b456c9",
         "type": "url",
-        "url": "https://files.pythonhosted.org/packages/5b/df/43c29c43c6bc3754f04fd94f2af66cf3fb60a83387ee62b10b1ec730e0c1/gevent-22.10.2-cp38-cp38-manylinux_2_17_x86_64.manylinux2014_x86_64.whl",
+        "url": "https://files.pythonhosted.org/packages/76/eb/69d278e3b29dfa081a7af0b16ec616ea43fa68854c258713f6c1c52ebd22/gevent-22.10.2-cp39-cp39-manylinux_2_17_x86_64.manylinux2014_x86_64.whl",
         "version": "22.10.2"
       },
       "greenlet": {
-        "sha256": "acd2162a36d3de67ee896c43effcd5ee3de247eb00354db411feb025aa319857",
+        "sha256": "94c817e84245513926588caf1152e3b559ff794d505555211ca041f032abbb6b",
         "type": "url",
-        "url": "https://files.pythonhosted.org/packages/7c/5f/ee39d27a08ae6b93f14faa953a6593dad888df75ae55ff479135e64ad4fe/greenlet-2.0.2-cp38-cp38-manylinux_2_17_x86_64.manylinux2014_x86_64.whl",
+        "url": "https://files.pythonhosted.org/packages/e9/29/2ae545c4c0218b042c2bb0760c0f65e114cca1ab5e552dc23b0f118e428a/greenlet-2.0.2-cp39-cp39-manylinux_2_17_x86_64.manylinux2014_x86_64.whl",
         "version": "2.0.2"
       },
       "idna": {
@@ -104,15 +104,15 @@
         "version": "0.22.0"
       },
       "lxml": {
-        "sha256": "8e20cb5a47247e383cf4ff523205060991021233ebd6f924bca927fcf25cf86f",
+        "sha256": "5b4545b8a40478183ac06c073e81a5ce4cf01bf1734962577cf2bb569a5b3bbf",
         "type": "url",
-        "url": "https://files.pythonhosted.org/packages/3f/2f/8379eb85d10f06c01cab2b8a93fe676b6d7234e43441b17d348fdc735420/lxml-4.9.2-cp38-cp38-manylinux_2_17_x86_64.manylinux2014_x86_64.manylinux_2_24_x86_64.whl",
+        "url": "https://files.pythonhosted.org/packages/95/79/450c6284d26f7f2abd1ec3506f494b6d848eed3ff7233be60220fef70c85/lxml-4.9.2-cp39-cp39-manylinux_2_17_x86_64.manylinux2014_x86_64.manylinux_2_24_x86_64.whl",
         "version": "4.9.2"
       },
       "markupsafe": {
-        "sha256": "4cf06cdc1dda95223e9d2d3c58d3b178aa5dacb35ee7e3bbac10e4e1faacb419",
+        "sha256": "40dfd3fefbef579ee058f139733ac336312663c6706d1163b82b3003fb1925c4",
         "type": "url",
-        "url": "https://files.pythonhosted.org/packages/9d/80/8320f182d06a9b289b1a9f266f593feb91d3781c7e104bbe09e0c4c11439/MarkupSafe-2.1.2-cp38-cp38-manylinux_2_17_x86_64.manylinux2014_x86_64.whl",
+        "url": "https://files.pythonhosted.org/packages/06/3b/d026c21cd1dbee89f41127e93113dcf5fa85c6660d108847760b59b3a66d/MarkupSafe-2.1.2-cp39-cp39-manylinux_2_17_x86_64.manylinux2014_x86_64.whl",
         "version": "2.1.2"
       },
       "num2words": {
@@ -140,9 +140,9 @@
         "version": "1.7.4"
       },
       "pillow": {
-        "sha256": "a96e6e23f2b79433390273eaf8cc94fec9c6370842e577ab10dabdcc7ea0a66b",
+        "sha256": "e8c5cf126889a4de385c02a2c3d3aba4b00f70234bfddae82a5eaa3ee6d5e3e6",
         "type": "url",
-        "url": "https://files.pythonhosted.org/packages/77/ba/2f29a6b7224b3e81ddb4d755c66d311d7f3e7c97e40a7f6ccb628b118633/Pillow-9.4.0-cp38-cp38-manylinux_2_28_x86_64.whl",
+        "url": "https://files.pythonhosted.org/packages/de/e2/d1dda94185dba4fc019744076e52e2c6b450620938b2ded7b31ba90bd559/Pillow-9.4.0-cp39-cp39-manylinux_2_28_x86_64.whl",
         "version": "9.4.0"
       },
       "platformdirs": {
@@ -242,9 +242,9 @@
         "version": "7.4.2"
       },
       "reportlab": {
-        "sha256": "db62bed0774778fdf82c609cb9efd0062f2fdcd285be527d01f6be9fd9755888",
+        "sha256": "907f7cd4832bb295d0c1573de15cc5aab5988282caf2ee7a2b1276fb6cdf502b",
         "type": "url",
-        "url": "https://files.pythonhosted.org/packages/a5/60/830efc11c1e4f971b83dca6e744797dcf7bb64269f855e765f09644306e1/reportlab-3.6.12-cp38-cp38-manylinux_2_17_x86_64.manylinux2014_x86_64.whl",
+        "url": "https://files.pythonhosted.org/packages/ba/81/47e4f7b6a5ee0f98e3a06cf73fe63de43afbaeb5c85def5f282629e4a125/reportlab-3.6.12-cp39-cp39-manylinux_2_17_x86_64.manylinux2014_x86_64.whl",
         "version": "3.6.12"
       },
       "requests": {
@@ -338,18 +338,16 @@
         "version": "4.6"
       },
       "zope-interface": {
-        "sha256": "4c3d7dfd897a588ec27e391edbe3dd320a03684457470415870254e714126b1f",
+        "sha256": "4407b1435572e3e1610797c9203ad2753666c62883b921318c5403fb7139dec2",
         "type": "url",
-        "url": "https://files.pythonhosted.org/packages/21/b9/c2c62c3f104493b946a0be989c967c4f9241e3f2ec79f9818a04a1ec67d5/zope.interface-6.0-cp38-cp38-manylinux_2_5_x86_64.manylinux1_x86_64.manylinux_2_17_x86_64.manylinux2014_x86_64.whl",
+        "url": "https://files.pythonhosted.org/packages/52/a4/0542257be378de62e5c7fc092f26eba284bfb628de76ff3b5f9d152d4819/zope.interface-6.0-cp39-cp39-manylinux_2_5_x86_64.manylinux1_x86_64.manylinux_2_17_x86_64.manylinux2014_x86_64.whl",
         "version": "6.0"
       }
     },
     "targets": {
       "default": {
         "attrs": [],
-        "babel": [
-          "pytz"
-        ],
+        "babel": [],
         "beautifulsoup4": [
           "soupsieve"
         ],
@@ -507,5 +505,5 @@
       }
     }
   },
-  "invalidationHash": "5b35c65abebebe7254231b4dda4d54faafd9e6bfc8acb660e8163b9aa32bb5ec"
+  "invalidationHash": "5bfb25a26f8952e3cf46ae5c3a8e4e364312c17306e83b9a7a80e6ffbae478a4"
 }

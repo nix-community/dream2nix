@@ -1,0 +1,39 @@
+# Tests: When 'root' is resolved,
+
+[metadata]
+groups = ["default"]
+strategy = ["cross_platform"]
+lock_version = "4.4"
+
+[[package]]
+name = "foo"
+version = "1.0.0"
+files = []
+
+[[package]]
+name = "foo"
+extras = ["extra1"]
+version = "1.0.0"
+files = []
+
+[[package]]
+name = "bar"
+version = "1.0.0"
+files = []
+
+[[package]]
+name = "bar"
+extras = ["extra2"]
+version = "1.0.0"
+files = []
+
+[[package]]
+name = "root"
+version = "1.0.0"
+dependencies = [
+    "foo[extra1]==1.0.0",
+    "foo==1.0.0",
+    "bar==1.0.0",
+    "bar[extra2]==1.0.0"
+]
+files = []

@@ -10,7 +10,26 @@
     pkgs,
     lib,
     ...
-  }: {
+  }: let
+    highlight-js = let
+      highlight-core = pkgs.fetchurl {
+        url = "https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js";
+        hash = "sha256-g3pvpbDHNrUrveKythkPMF2j/J7UFoHbUyFQcFe1yEY=";
+      };
+      highlight-nix = pkgs.fetchurl {
+        url = "https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/nix.min.js";
+        hash = "sha256-BLoZ+/OroDAxMsdZ4GFZtQfsg6ZJeLVNeBzN/82dYgk=";
+      };
+    in
+      pkgs.runCommand "highlight-js" {} ''
+        cat ${highlight-core} > $out
+        cat ${highlight-nix} >> $out
+      '';
+    highlight-style = pkgs.fetchurl {
+      url = "https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/vs.min.css";
+      hash = "sha256-E1kfafj5iO+Tw/04hxdSG+OnvczojOXK2K0iCEYfzSw=";
+    };
+  in {
     /*
     Check the links, including anchors (not currently supported by mdbook)
 
@@ -44,24 +63,6 @@
     #   '';
 
     packages = {
-      highlight-js = let
-        highlight-core = pkgs.fetchurl {
-          url = "https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js";
-          hash = "sha256-g3pvpbDHNrUrveKythkPMF2j/J7UFoHbUyFQcFe1yEY=";
-        };
-        highlight-nix = pkgs.fetchurl {
-          url = "https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/nix.min.js";
-          hash = "sha256-BLoZ+/OroDAxMsdZ4GFZtQfsg6ZJeLVNeBzN/82dYgk=";
-        };
-      in
-        pkgs.runCommand "highlight-js" {} ''
-          cat ${highlight-core} > $out
-          cat ${highlight-nix} >> $out
-        '';
-      highlight-style = pkgs.fetchurl {
-        url = "https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/vs.min.css";
-        hash = "sha256-E1kfafj5iO+Tw/04hxdSG+OnvczojOXK2K0iCEYfzSw=";
-      };
       website = pkgs.stdenvNoCC.mkDerivation {
         name = "website";
         nativeBuildInputs = [pkgs.mdbook pkgs.mdbook-linkcheck];
@@ -73,8 +74,8 @@
           cp ${../../../README.md} ./src/intro.md
 
           # insert highlight.js
-          cp ${self'.packages.highlight-js} ./src/highlight.js
-          cp ${self'.packages.highlight-style} ./src/highlight.css
+          cp ${highlight-js} ./src/highlight.js
+          cp ${highlight-style} ./src/highlight.css
 
 
           # insert the generated part of the summary into the origin SUMMARY.md
@@ -84,7 +85,7 @@
               case "$ln" in
                 "# Modules Reference")
                   echo "# Modules Reference"
-                  cat ${self'.packages.generated-summary-md}
+                  cat ${config.generated-docs.generated-summary-md}
                   ;;
                 *)
                   echo "$ln"
@@ -97,7 +98,7 @@
           cp ${../../dream2nix/core/docs/theme/favicon.png} ./theme/favicon.png
 
           mkdir -p src/options
-          for f in ${config.packages.generated-docs}/*.html; do
+          for f in ${config.generated-docs.generated-docs}/*.html; do
             cp "$f" "src/options/$(basename "$f" .html).md"
           done
           mdbook build --dest-dir $TMPDIR/out
