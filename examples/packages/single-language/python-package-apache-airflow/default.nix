@@ -21,7 +21,7 @@ in {
       git
       fetchFromGitHub
       ;
-    python = nixpkgs.python3;
+    python = nixpkgs.python310;
   };
 
   name = "apache-airflow";
@@ -43,6 +43,9 @@ in {
     ];
   };
 
+  # workaround because the setuptools hook propagates its inputs resulting in conflicts
+  buildPythonPackage.catchConflicts = false;
+
   pip = {
     pypiSnapshotDate = "2023-01-01";
     requirementsList = [
@@ -61,14 +64,15 @@ in {
           exclude = ["propagatedBuildInputs"];
         };
       };
-      lazy-object-proxy.mkDerivation = {
+      lazy-object-proxy = {
         # setuptools-scm is required by lazy-object-proxy,
         # we include it in our requirements above instead of
         # using the version from nixpkgs to ensure that
-        # transistive dependencies (i.e. typing-extensions) are
+        # transitive dependencies (i.e. typing-extensions) are
         # compatible with the rest of our lock file.
-
-        buildInputs = [config.pip.drvs.setuptools-scm.public];
+        mkDerivation.buildInputs = [config.pip.drvs.setuptools-scm.public];
+        # workaround because the setuptools hook propagates its inputs resulting in conflicts
+        buildPythonPackage.catchConflicts = false;
       };
     };
   };

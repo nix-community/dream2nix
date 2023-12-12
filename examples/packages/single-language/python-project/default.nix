@@ -11,6 +11,10 @@ in {
     dream2nix.modules.dream2nix.pip
   ];
 
+  deps = {nixpkgs, ...}: {
+    python = nixpkgs.python310;
+  };
+
   inherit (pyproject.project) name version;
 
   mkDerivation = {

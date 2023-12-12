@@ -9,11 +9,15 @@
     buildPythonPackage.format = "pyproject";
     mkDerivation.buildInputs = [config.deps.python.pkgs.setuptools];
   };
-in rec {
+in {
   imports = [
     dream2nix.modules.dream2nix.pip
     buildWithSetuptools
   ];
+
+  deps = {nixpkgs, ...}: {
+    python = nixpkgs.python310;
+  };
 
   inherit (pyproject.project) name version;
 
