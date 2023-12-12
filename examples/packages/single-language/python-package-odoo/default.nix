@@ -4,7 +4,6 @@
   dream2nix,
   ...
 }: let
-  python = config.deps.python;
   src = config.deps.fetchFromGitHub {
     owner = "odoo";
     repo = "odoo";
@@ -23,7 +22,7 @@ in {
       postgresql
       fetchFromGitHub
       ;
-    python = nixpkgs.python38;
+    python = nixpkgs.python39;
   };
 
   name = "odoo";
