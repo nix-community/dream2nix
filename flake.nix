@@ -4,7 +4,8 @@
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
 
-    pyproject-nix.url = "github:nix-community/pyproject.nix/pull/42/head";
+    # TODO: go back to upstream after PRs are merged
+    pyproject-nix.url = "github:davhau/pyproject.nix/dream2nix";
     pyproject-nix.flake = false;
 
     purescript-overlay.url = "github:thomashoneyman/purescript-overlay";
