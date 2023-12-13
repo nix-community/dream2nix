@@ -40,16 +40,16 @@
     "pyproject-nix": {
       "flake": false,
       "locked": {
-        "lastModified": 1702361602,
-        "narHash": "sha256-kcOhJ4lzAQKYvrunVVIvTcN0+DD0dfC3jvKBXpKW/Kg=",
-        "owner": "nix-community",
+        "lastModified": 1702448246,
+        "narHash": "sha256-hFg5s/hoJFv7tDpiGvEvXP0UfFvFEDgTdyHIjDVHu1I=",
+        "owner": "davhau",
         "repo": "pyproject.nix",
-        "rev": "74d1f8486a7378b1c5e06202c952341ac98921d6",
+        "rev": "5a06a2697b228c04dd2f35659b4b659ca74f7aeb",
         "type": "github"
       },
       "original": {
-        "owner": "nix-community",
-        "ref": "pull/42/head",
+        "owner": "davhau",
+        "ref": "dream2nix",
         "repo": "pyproject.nix",
         "type": "github"
       }
