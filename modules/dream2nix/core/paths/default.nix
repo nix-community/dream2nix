@@ -8,7 +8,7 @@
     ../deps
   ];
   deps = {nixpkgs, ...}: {
-    python3 = nixpkgs.python3;
+    python3 = lib.mkDefault nixpkgs.python3;
     substituteAll = nixpkgs.substituteAll;
   };
   paths = {
