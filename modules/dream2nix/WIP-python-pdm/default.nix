@@ -54,6 +54,7 @@ in {
   deps = {nixpkgs, ...}: {
     inherit
       (nixpkgs)
+      autoPatchelfHook
       buildPackages
       curl
       jq
@@ -126,7 +127,16 @@ in {
               lib.mapAttrsToList
               (name: dep: (lib.head (lib.attrValues (config.groups.${groupname}.packages.${name}))).public)
               (libpdm.getClosure parsed_lock_data name pkg.extras);
+            nativeBuildInputs =
+              lib.optionals config.deps.stdenv.isLinux [config.deps.autoPatchelfHook];
+            preFixup = lib.optionalString config.deps.stdenv.isLinux ''
+              addAutoPatchelfSearchPath $propagatedBuildInputs
+            '';
+            doCheck = lib.mkDefault false;
+            dontStrip = lib.mkDefault true;
           };
+          # required for python3.withPackages to recognize it as a python package.
+          public.pythonModule = config.deps.python3;
         };
       });
     in {inherit packages;};
