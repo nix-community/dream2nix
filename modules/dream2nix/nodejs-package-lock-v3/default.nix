@@ -7,7 +7,7 @@
   l = lib // builtins;
   cfg = config.nodejs-package-lock-v3;
 
-  inherit (config.deps) fetchurl;
+  inherit (config.deps) fetchurl fetchGit;
 
   nodejsLockUtils = import ../../../lib/internal/nodejsLockUtils.nix {inherit lib;};
 
@@ -18,6 +18,15 @@
     then
       # entry is local file
       (builtins.dirOf config.nodejs-package-lock-v3.packageLockFile) + "/${plent.resolved}"
+    else if (l.hasPrefix "git+" plent.resolved)
+    then let
+      split = l.splitString "#" plent.resolved;
+    in
+      fetchGit {
+        url = l.removePrefix "git+" (builtins.head split);
+        allRefs = true;
+        rev = builtins.head (builtins.tail split);
+      }
     else
       fetchurl {
         url = plent.resolved;
@@ -93,6 +102,10 @@ in {
     inherit
       (nixpkgs)
       fetchurl
+      ;
+    inherit
+      (builtins)
+      fetchGit
       ;
   };
 
