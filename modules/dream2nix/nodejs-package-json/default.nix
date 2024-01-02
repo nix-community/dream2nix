@@ -38,6 +38,7 @@ in {
           bash
           coreutils
           gawk
+          git
           path
           writeScript
           writeScriptBin
@@ -48,6 +49,7 @@ in {
       writers.writePureShellScript
       [
         config.deps.coreutils
+        config.deps.git
         npm
       ]
       ''
