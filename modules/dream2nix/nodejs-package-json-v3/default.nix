@@ -33,6 +33,7 @@ in {
           bash
           coreutils
           gawk
+          git
           path
           writeScript
           writeScriptBin
@@ -45,6 +46,7 @@ in {
       [
         config.deps.coreutils
         config.deps.npm
+        config.deps.git
       ]
       ''
         source=${cfg.source}
