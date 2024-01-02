@@ -20,7 +20,10 @@
 
   dream2nixFlake = import ../../. {};
 
-  packageCategories = readDir ../../examples/packages;
+  packageCategories =
+    lib.filterAttrs
+    (name: type: type == "directory")
+    (readDir ../../examples/packages);
 
   readExamples = dirName: let
     examplesPath = ../../examples/packages + "/${dirName}";
