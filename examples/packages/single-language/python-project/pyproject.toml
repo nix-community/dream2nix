@@ -6,6 +6,13 @@ build-backend = "setuptools.build_meta"
 name = "my-tool"
 description = "my tool"
 version = "1.0.0"
+
+requires-python = ">=3.11.0"
 dependencies = [
-  "requests"
+	"requests",
 ]
+
+[tool.dream2nix]
+project-folder = "my_project"
+python-version = "python311"
+pypi-snapshot-date = "2024-03-01"

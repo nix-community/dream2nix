@@ -12,7 +12,7 @@ in {
   ];
 
   deps = {nixpkgs, ...}: {
-    python = nixpkgs.python310;
+    python = nixpkgs.${pyproject.tool.dream2nix.python-version};
   };
 
   inherit (pyproject.project) name version;
@@ -24,12 +24,12 @@ in {
   buildPythonPackage = {
     format = lib.mkForce "pyproject";
     pythonImportsCheck = [
-      "my_tool"
+      pyproject.tool.dream2nix.project-folder 
     ];
   };
 
   pip = {
-    pypiSnapshotDate = "2023-08-27";
+    pypiSnapshotDate = pyproject.tool.dream2nix.pypi-snapshot-date;
     requirementsList =
       pyproject.build-system.requires
       or []
