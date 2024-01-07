@@ -1,0 +1,16 @@
+[build-system]
+requires = [ "setuptools" ]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "my-tool"
+description = "my tool"
+version = "1.0.0"
+dependencies = [
+  # This depends on setuptools at runtime as well as during build time
+  # It must not lead to a conflict with the nixpkgs setuptools
+  "websocket"
+]
+
+[project.scripts]
+my-tool = "my_tool:main"

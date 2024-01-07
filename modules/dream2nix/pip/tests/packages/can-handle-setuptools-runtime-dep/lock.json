@@ -1,0 +1,64 @@
+{
+  "fetchPipMetadata": {
+    "sources": {
+      "gevent": {
+        "sha256": "c92b837b60e850c50fc6d723d1e363e786d37fd9d51e564e07df52ad5e8a86d4",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/f7/88/76bde5b2dd9cbe0897257853ca0bf620342bec8cf05a7197b97fec7116de/gevent-23.7.0-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl",
+        "version": "23.7.0"
+      },
+      "greenlet": {
+        "sha256": "d75209eed723105f9596807495d58d10b3470fa6732dd6756595e89925ce2470",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/6e/11/a1f1af20b6a1a8069bc75012569d030acb89fd7ef70f888b6af2f85accc6/greenlet-2.0.2-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl",
+        "version": "2.0.2"
+      },
+      "setuptools": {
+        "sha256": "3d8083eed2d13afc9426f227b24fd1659489ec107c0e86cec2ffdde5c92e790b",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/4f/ab/0bcfebdfc3bfa8554b2b2c97a555569c4c1ebc74ea288741ea8326c51906/setuptools-68.1.2-py3-none-any.whl",
+        "version": "68.1.2"
+      },
+      "websocket": {
+        "sha256": "42b506fae914ac5ed654e23ba9742e6a342b1a1c3eb92632b6166c65256469a4",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/f2/6d/a60d620ea575c885510c574909d2e3ed62129b121fa2df00ca1c81024c87/websocket-0.2.1.tar.gz",
+        "version": "0.2.1"
+      },
+      "zope-event": {
+        "sha256": "2832e95014f4db26c47a13fdaef84cef2f4df37e66b59d8f1f4a8f319a632c26",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/fe/42/f8dbc2b9ad59e927940325a22d6d3931d630c3644dae7e2369ef5d9ba230/zope.event-5.0-py3-none-any.whl",
+        "version": "5.0"
+      },
+      "zope-interface": {
+        "sha256": "48f4d38cf4b462e75fac78b6f11ad47b06b1c568eb59896db5b6ec1094eb467f",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/36/79/a99f5798a53df407554e00c1cc70ac5a900fc879853cc1a9edd7016bf2d2/zope.interface-6.0-cp310-cp310-manylinux_2_5_x86_64.manylinux1_x86_64.manylinux_2_17_x86_64.manylinux2014_x86_64.whl",
+        "version": "6.0"
+      }
+    },
+    "targets": {
+      "default": {
+        "gevent": [
+          "greenlet",
+          "zope-event",
+          "zope-interface"
+        ],
+        "greenlet": [],
+        "setuptools": [],
+        "websocket": [
+          "gevent",
+          "greenlet"
+        ],
+        "zope-event": [
+          "setuptools"
+        ],
+        "zope-interface": [
+          "setuptools"
+        ]
+      }
+    }
+  },
+  "invalidationHash": "106f9e28cb3d91f0e8ea99c146f59ee00fef841eff5b0846c5e829eeb4fc67e7"
+}
