@@ -90,14 +90,15 @@ in {
 
       packages = lib.flip lib.mapAttrs transitiveGroupDeps (name: pkg: {
         ${pkg.version}.module = {...} @ depConfig: let
+          cfg = depConfig.config;
           selector =
-            if lib.isFunction depConfig.config.sourceSelector
-            then depConfig.config.sourceSelector
-            else if depConfig.config.sourceSelector == "wheel"
+            if lib.isFunction cfg.sourceSelector
+            then cfg.sourceSelector
+            else if cfg.sourceSelector == "wheel"
             then libpdm.preferWheelSelector
-            else if depConfig.config.sourceSelector == "sdist"
+            else if cfg.sourceSelector == "sdist"
             then libpdm.preferSdistSelector
-            else throw "Invalid sourceSelector: ${depConfig.config.sourceSelector}";
+            else throw "Invalid sourceSelector: ${cfg.sourceSelector}";
           source = pkg.sources.${selector (lib.attrNames pkg.sources)};
         in {
           imports = [
@@ -105,6 +106,7 @@ in {
             dream2nix.modules.dream2nix.buildPythonPackage
             dream2nix.modules.dream2nix.mkDerivation
             dream2nix.modules.dream2nix.package-func
+            (dream2nix.overrides.python.${name} or {})
           ];
           inherit name;
           version = pkg.version;
