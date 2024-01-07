@@ -44,9 +44,10 @@
     )
     metadata.sources;
 
-  dependencyModule = {config, ...}: let
+  dependencyModule = depConfig: let
+    cfg = depConfig.config;
     setuptools =
-      if config.name == "setuptools"
+      if cfg.name == "setuptools"
       then config.deps.python.pkgs.setuptools
       else config.pip.drvs.setuptools.public or config.deps.python.pkgs.setuptools;
   in {
@@ -54,13 +55,13 @@
     #   infinite recursion.
     deps = {inherit python;};
     buildPythonPackage.format = l.mkDefault (
-      if l.hasSuffix ".whl" config.mkDerivation.src
+      if l.hasSuffix ".whl" cfg.mkDerivation.src
       then "wheel"
       else "pyproject"
     );
     mkDerivation.buildInputs =
       lib.optionals
-      (! lib.hasSuffix ".whl" config.mkDerivation.src)
+      (! lib.hasSuffix ".whl" cfg.mkDerivation.src)
       [setuptools];
   };
 
