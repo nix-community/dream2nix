@@ -11,7 +11,7 @@
   data = l.fromJSON (l.readFile file);
   fileExists = l.pathExists file;
 
-  refresh =
+  generatedRefreshScript =
     if cfg.fields == {}
     then removeLockFileScript
     else refresh';
@@ -196,7 +196,21 @@ in {
   ];
 
   config = {
-    lock.refresh = refresh;
+    lock.refresh = config.deps.writeScriptBin "refresh" ''
+      #!/usr/bin/env bash
+      set -Eeuo pipefail
+
+      ### Executing auto generated refresh script
+
+      currDir="$(realpath .)"
+      ${generatedRefreshScript}/bin/refresh
+      cd "$currDir"
+
+
+      ### Executing custom scripts defined via lock.extraScrips
+
+      ${lib.concatStringsSep "\n" (map toString cfg.extraScripts)}
+    '';
 
     lock.content = mkLazy loadedContent;
 
@@ -204,7 +218,7 @@ in {
 
     deps = {nixpkgs, ...}:
       l.mapAttrs (_: l.mkDefault) {
-        inherit (nixpkgs) nix;
+        inherit (nixpkgs) nix writeScriptBin;
         inherit (nixpkgs.writers) writePython3 writePython3Bin;
       };
   };

@@ -42,6 +42,7 @@ in {
     dream2nix.modules.dream2nix.buildPythonPackage
     ../core/deps
     ./interface.nix
+    ./lock.nix
   ];
   name = pyproject.pyproject.project.name;
   version = lib.mkDefault (
