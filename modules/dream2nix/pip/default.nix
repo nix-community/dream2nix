@@ -44,15 +44,24 @@
     )
     metadata.sources;
 
-  dependencyModule = {config, ...}: {
+  dependencyModule = {config, ...}: let
+    setuptools =
+      if config.name == "setuptools"
+      then config.deps.python.pkgs.setuptools
+      else config.pip.drvs.setuptools.public or config.deps.python.pkgs.setuptools;
+  in {
     # deps.python cannot be defined in commonModule as this would trigger an
     #   infinite recursion.
     deps = {inherit python;};
     buildPythonPackage.format = l.mkDefault (
       if l.hasSuffix ".whl" config.mkDerivation.src
       then "wheel"
-      else "setuptools"
+      else "pyproject"
     );
+    mkDerivation.buildInputs =
+      lib.optionals
+      (! lib.hasSuffix ".whl" config.mkDerivation.src)
+      [setuptools];
   };
 
   fetchers = {
