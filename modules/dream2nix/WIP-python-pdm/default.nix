@@ -36,6 +36,19 @@
     map
     (name: (libpyproject.pep508.parseString name).name)
     (pyproject.pyproject.build-system.requires or []);
+
+  commonModule = depConfig: let
+    cfg = depConfig.config;
+    setuptools =
+      if cfg.name == "setuptools"
+      then config.deps.python.pkgs.setuptools
+      else config.pip.drvs.setuptools.public or config.deps.python.pkgs.setuptools;
+  in {
+    mkDerivation.buildInputs =
+      lib.optionals
+      (! lib.hasSuffix ".whl" cfg.mkDerivation.src)
+      [setuptools];
+  };
 in {
   imports = [
     dream2nix.modules.dream2nix.WIP-groups
@@ -43,6 +56,7 @@ in {
     ../core/deps
     ./interface.nix
     ./lock.nix
+    commonModule
   ];
   name = pyproject.pyproject.project.name;
   version = lib.mkDefault (
@@ -63,11 +77,17 @@ in {
       stdenvNoCC
       stdenv
       ;
+    python = config.deps.python3;
+  };
+  overrideAll = {
+    imports = [commonModule];
+    deps = {nixpkgs, ...}: {
+      python3 = config.deps.python3;
+      python = config.deps.python3;
+    };
+    sourceSelector = lib.mkOptionDefault config.pdm.sourceSelector;
   };
   pdm.sourceSelector = lib.mkDefault libpdm.preferWheelSelector;
-  overrideAll = {
-    config.sourceSelector = lib.mkOptionDefault config.pdm.sourceSelector;
-  };
   buildPythonPackage = {
     format = lib.mkDefault "pyproject";
   };

@@ -7,10 +7,11 @@
     ./interface.nix
     ../deps
   ];
-  deps = {nixpkgs, ...}: {
-    python3 = nixpkgs.python3;
-    substituteAll = nixpkgs.substituteAll;
-  };
+  deps = {nixpkgs, ...}:
+    lib.mapAttrs (_: opt: lib.mkOverride 49 opt) {
+      python3 = nixpkgs.python3;
+      substituteAll = nixpkgs.substituteAll;
+    };
   paths = {
     lockFileAbs =
       config.paths.projectRoot + "/${config.paths.package}/${config.paths.lockFile}";
