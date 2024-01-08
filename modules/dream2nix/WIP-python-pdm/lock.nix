@@ -27,7 +27,7 @@
     pushd "$(${config.paths.findRoot})/${config.paths.package}"
 
     echo ${config.deps.python3}/bin/python3 > .pdm-python
-    pdm -c ${pdmConfig} lock --refresh
+    pdm -c ${pdmConfig} lock
 
     popd
   '';
