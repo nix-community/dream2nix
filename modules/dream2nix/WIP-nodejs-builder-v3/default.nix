@@ -27,8 +27,37 @@
           hash = plent.integrity;
         };
         dontBuild = true;
+        unpackPhase = ''
+          runHook preUnpack
+          unpackFallback(){
+            local fn="$1"
+            tar xf "$fn"
+          }
+          unpackCmdHooks+=(unpackFallback)
+          unpackFile $src
+          chmod -R +X .
+          runHook postUnpack
+        '';
         installPhase = ''
-          cp -r . $out
+          if [ -f "$src" ]
+          then
+            # Figure out what directory has been unpacked
+            packageDir="$(find . -maxdepth 1 -type d | tail -1)"
+            echo "packageDir $packageDir"
+            # Restore write permissions
+            find "$packageDir" -type d -exec chmod u+x {} \;
+            chmod -R u+w -- "$packageDir"
+            # Move the extracted tarball into the output folder
+            mv -- "$packageDir" $out
+          elif [ -d "$src" ]
+          then
+            strippedName="$(stripHash $src)"
+            echo "strippedName $strippedName"
+            # Restore write permissions
+            chmod -R u+w -- "$strippedName"
+            # Move the extracted directory into the output folder
+            mv -- "$strippedName" $out
+          fi
         '';
       };
   # Lock -> Pdefs
