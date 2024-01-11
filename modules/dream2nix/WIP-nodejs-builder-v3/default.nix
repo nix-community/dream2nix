@@ -123,6 +123,7 @@
     # TODO: Verify this is reasonable default;
     source = builtins.dirOf cfg.packageLockFile;
     makeNodeModules = ./build-node-modules.mjs;
+    installTrusted = ./install-trusted-modules.mjs;
   in
     if path == ""
     then let
@@ -144,14 +145,17 @@
         name = entry.name + "-dist";
         src = source;
         buildInputs = with config.deps; [nodejs jq];
+        env = {
+          TRUSTED = builtins.toJSON cfg.trustedDeps;
+        };
         configurePhase = ''
           cp -r ${prepared-dev}/node_modules node_modules
-          # TODO: run installScripts of trusted dependencies
-
+          node ${installTrusted}
         '';
         buildPhase = ''
           echo "BUILDING... $name"
-          if [ -n "$runBuild" ] && [ "$(jq '.scripts.build' ./package.json)" != "null" ]; then
+          if [ "$(jq '.scripts.build' ./package.json)" != "null" ]; then
+            echo "npm run build"
             npm run build
           fi;
         '';
