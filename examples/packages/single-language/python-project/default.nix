@@ -24,7 +24,7 @@ in {
   buildPythonPackage = {
     format = lib.mkForce "pyproject";
     pythonImportsCheck = [
-      pyproject.tool.dream2nix.project-folder 
+      pyproject.tool.dream2nix.project-folder
     ];
   };
 
