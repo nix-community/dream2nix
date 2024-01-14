@@ -26,7 +26,7 @@ in {
 
     extraScripts = l.mkOption {
       type = t.listOf t.path;
-      default = "";
+      default = [];
       description = ''
         Extra shell scripts to execute when `nix run .#{package}.lock` is called.
 
