@@ -82,8 +82,8 @@ in {
   overrideAll = {
     imports = [commonModule];
     deps = {nixpkgs, ...}: {
-      python3 = config.deps.python3;
-      python = config.deps.python3;
+      python3 = lib.mkDefault config.deps.python3;
+      python = lib.mkDefault config.deps.python3;
     };
     sourceSelector = lib.mkOptionDefault config.pdm.sourceSelector;
   };
