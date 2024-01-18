@@ -368,7 +368,12 @@ in {
       ;
   };
 
-  public = l.mkForce (config.groups.all.packages.${config.name}.${config.version}.public);
+  public = l.mkForce (
+    (config.groups.all.packages.${config.name}.${config.version}.public)
+    // {
+      inherit config;
+    }
+  );
 
   # OUTPUTS
   WIP-nodejs-builder-v3 = {
