@@ -3,179 +3,115 @@
 in {
   test_simple = {
     expr = util.sanitizeGraph {
-      graph = {
-        a = [
-          "b"
-        ];
-        b = [
-          "a"
-        ];
+      root = {
+        name = "a";
+        version = "1.0.0";
       };
-      roots = ["a"];
+      graph = {
+        a."1.0.0" = {
+          dependencies = {
+            b.version = "1.0.0";
+          };
+          dev = true;
+        };
+        b."1.0.0" = {
+          dependencies = {
+            a.version = "1.0.0";
+          };
+          dev = true;
+        };
+      };
     };
-    expected = {
-      # __virtRoot = ["a"];
-      a = ["b"];
-      b = [];
-    };
+    expected = [
+      {
+        isRoot = true;
+        key = ["a" "1.0.0"];
+        name = "a";
+        version = "1.0.0";
+      }
+      {
+        dev = true;
+        key = ["b" "1.0.0"];
+        name = "b";
+        parent = {
+          name = "a";
+          version = "1.0.0";
+        };
+        version = "1.0.0";
+      }
+    ];
   };
   test_two_cycles = {
     expr = util.sanitizeGraph {
+      root = {
+        name = "a";
+        version = "1.0.0";
+      };
       graph = {
-        a = [
-          "c"
-        ];
-        b = [
-          "c"
-        ];
-        c = [
-          "d"
-        ];
-        d = [
-          "a"
-          "b"
-        ];
+        a."1.0.0" = {
+          dependencies = {
+            c.version = "1.0.0";
+          };
+          dev = true;
+        };
+        b."1.0.0" = {
+          dependencies = {
+            c.version = "1.0.0";
+          };
+          dev = true;
+        };
+        c."1.0.0" = {
+          dependencies = {
+            d.version = "1.0.0";
+          };
+          dev = true;
+        };
+        d."1.0.0" = {
+          dependencies = {
+            a.version = "1.0.0";
+            b.version = "1.0.0";
+          };
+          dev = true;
+        };
       };
-      roots = ["a" "b"];
     };
-    expected = {
-      # __virtRoot = ["a" "b"];
-      a = ["c"];
-      b = [];
-      c = ["d"];
-      d = [];
-    };
-  };
-
-  # Compat conversion methods
-  ###################################################
-
-  # convert into normalized format
-  test_convert_from_dep_graph_simple = {
-    expr = util.fromDependencyGraph {
-      "@org/a"."1.0.0" = [
-        {
-          name = "b";
-          version = "1.0.0";
-        }
-      ];
-      "@scope/b"."1.0.0" = [
-        {
+    expected = [
+      {
+        isRoot = true;
+        key = ["a" "1.0.0"];
+        name = "a";
+        version = "1.0.0";
+      }
+      {
+        dev = true;
+        key = ["c" "1.0.0"];
+        name = "c";
+        parent = {
           name = "a";
           version = "1.0.0";
-        }
-      ];
-    };
-    expected = {
-      "@org/a/1.0.0" = ["b/1.0.0"];
-      "@scope/b/1.0.0" = ["a/1.0.0"];
-    };
-  };
-  test_convert_from_dep_graph_conflicts = {
-    expr = util.fromDependencyGraph {
-      "a"."1.0.0" = [
-        {
-          name = "@org/a";
-          version = "1.1.0";
-        }
-      ];
-      "@org/a"."1.1.0" = [
-        {
-          name = "a";
-          version = "1.0.0";
-        }
-      ];
-    };
-    expected = {
-      "a/1.0.0" = ["@org/a/1.1.0"];
-      "@org/a/1.1.0" = ["a/1.0.0"];
-    };
-  };
-
-  # convert back from normalized graph format
-  test_convert_to_dep_graph_simple = {
-    expr = util.toDependencyGraph {
-      "a/1" = ["c/1"];
-      "b/1" = [];
-      "c/1" = ["d/1"];
-      "d/1" = [];
-    };
-    expected = {
-      a = {
-        "1" = [
-          {
-            name = "c";
-            version = "1";
-          }
-        ];
-      };
-      b = {"1" = [];};
-      c = {
-        "1" = [
-          {
-            name = "d";
-            version = "1";
-          }
-        ];
-      };
-      d = {"1" = [];};
-    };
-  };
-
-  test_convert_to_dep_graph_unknown_versions = {
-    expr = util.toDependencyGraph {
-      "a" = ["c"];
-      b = [];
-      c = ["d"];
-      d = [];
-    };
-    expected = {
-      a.unknown = [
-        {
+        };
+        version = "1.0.0";
+      }
+      {
+        dev = true;
+        key = ["d" "1.0.0"];
+        name = "d";
+        parent = {
           name = "c";
-          version = "unknown";
-        }
-      ];
-
-      b.unknown = [];
-      c.unknown = [
-        {
+          version = "1.0.0";
+        };
+        version = "1.0.0";
+      }
+      {
+        dev = true;
+        key = ["b" "1.0.0"];
+        name = "b";
+        parent = {
           name = "d";
-          version = "unknown";
-        }
-      ];
-      d.unknown = [];
-    };
-  };
-
-  test_simple_legacy = {
-    expr = util.toDependencyGraph (util.sanitizeGraph {
-      graph = util.fromDependencyGraph {
-        a.v1 = [
-          {
-            name = "b";
-            version = "v1";
-          }
-        ];
-        b.v1 = [
-          {
-            name = "a";
-            version = "v1";
-          }
-        ];
-      };
-      roots = [
-        "a/v1"
-      ];
-    });
-    expected = {
-      a.v1 = [
-        {
-          name = "b";
-          version = "v1";
-        }
-      ];
-      b.v1 = [];
-    };
+          version = "1.0.0";
+        };
+        version = "1.0.0";
+      }
+    ];
   };
 }

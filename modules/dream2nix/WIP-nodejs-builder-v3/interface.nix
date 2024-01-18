@@ -67,6 +67,7 @@ in {
           ;
       })
       fileSystem
+      pdefs
       ;
   };
 }

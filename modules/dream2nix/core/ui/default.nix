@@ -1,11 +1,15 @@
-{config, ...}: {
+{
+  config,
+  lib,
+  ...
+}: {
   imports = [
     ./interface.nix
     ../public
   ];
 
-  config.public.name = config.name;
-  config.public.version = config.version;
+  config.public.name = lib.mkDefault config.name;
+  config.public.version = lib.mkDefault config.version;
   config.public.${
     if config ? lock
     then "lock"

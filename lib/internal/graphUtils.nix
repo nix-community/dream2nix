@@ -12,7 +12,7 @@ A collection of tools needed to interact with graphs (i.e. A dependencyTree)
   # Params
 
   - graph :: { ${path} :: [ [ string ] ] }
-  GenericGraph; An AttrSet of nodeIds, pointing to neighboring nodes. (could be cylic).
+  GenericGraph; An AttrSet of nodeIds, pointing to neighboring nodes. (could be cyclic).
 
   - roots :: [ String ]
   A list of root ids
@@ -38,6 +38,7 @@ A collection of tools needed to interact with graphs (i.e. A dependencyTree)
     }
   ]
   */
+  # TODO(hsjobeki): inherit dev attribute lazy
   sanitizeGraph = {
     graph,
     root,
@@ -68,7 +69,7 @@ A collection of tools needed to interact with graphs (i.e. A dependencyTree)
               };
             }
           )
-          (builtins.trace (lib.attrNames graph.${parentName}.${parentVersion}) graph.${parentName}.${parentVersion}.dependencies);
+          graph.${parentName}.${parentVersion}.dependencies;
       in
         l.filter (
           entry:

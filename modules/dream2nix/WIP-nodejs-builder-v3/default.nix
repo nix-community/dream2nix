@@ -18,6 +18,8 @@
 
   isLink = plent: plent ? link && plent.link;
 
+  pdefs = parse cfg.packageLock;
+
   parseSource = plent: name:
     if isLink plent
     then
@@ -98,7 +100,15 @@
   ############################################################
   # pdefs = parse cfg.packageLock;
   # {name}.{version}.{...}
-  groups.all.packages = parse cfg.packageLock;
+  groups.all.packages =
+    lib.mapAttrs
+    (
+      name: versions:
+        lib.mapAttrs
+        (version: entry: {module = entry;})
+        versions
+    )
+    pdefs;
 
   ############################################################
   # Utility functions #
@@ -142,13 +152,24 @@
       rinfo = info // {inherit fileSystem;};
       name = plent.name or lock.name;
 
-      fileSystem = graphUtils.getFileSystem groups.all.packages (info.pdefs' {
-        graph = groups.all.packages;
+      fileSystem = graphUtils.getFileSystem pdefs (info.pdefs' {
+        graph = pdefs;
         root = {
           inherit name;
           inherit (plent) version;
         };
       });
+      fileSystemProd = graphUtils.getFileSystem pdefs (info.pdefs' {
+        graph = pdefs;
+        root = {
+          inherit name;
+          inherit (plent) version;
+        };
+        opt = {
+          dev = false;
+        };
+      });
+
       self = config.groups.all.packages.${name}.${plent.version}.evaluated;
 
       prepared-dev = let
@@ -179,25 +200,13 @@
       prepared-prod = let
         module = {
           imports = [
-            # config.groups.all.packages.${name}.${plent.version}
             dream2nix.modules.dream2nix.mkDerivation
           ];
           config = {
             inherit (plent) version;
-            name = name + "-node_modules-dev";
+            name = name + "-node_modules-prod";
             env = {
-              FILESYSTEM = builtins.toJSON (
-                graphUtils.getFileSystem groups.all.packages (info.pdefs' {
-                  graph = groups.all.packages;
-                  root = {
-                    inherit name;
-                    inherit (plent) version;
-                  };
-                  opt = {
-                    dev = false;
-                  };
-                })
-              );
+              FILESYSTEM = builtins.toJSON fileSystemProd;
             };
             mkDerivation = {
               dontUnpack = true;
@@ -218,12 +227,12 @@
         name = name + "-installed";
         nativeBuildInputs = with config.deps; [jq];
         buildInputs = with config.deps; [nodejs];
-        src = null;
-        # src = self.dist;
+        src = self.dist;
         env = {
           BINS = builtins.toJSON bins;
         };
         configurePhase = ''
+          cp -r ${self.prepared-prod}/node_modules node_modules
         '';
         installPhase = ''
           mkdir -p $out/lib/node_modules/${name}
@@ -235,7 +244,6 @@
       };
       dist = {
         imports = [
-          # config.groups.all.packages.${name}.${plent.version}
           dream2nix.modules.dream2nix.mkDerivation
         ];
         config = {
@@ -247,7 +255,6 @@
           mkDerivation = {
             # inherit (entry) version;
             src = builtins.dirOf cfg.packageLockFile;
-            # src = null;
             buildInputs = with config.deps; [nodejs jq];
             configurePhase = ''
               cp -r ${self.prepared-dev}/node_modules node_modules
@@ -274,7 +281,6 @@
           };
         };
       };
-      # dist = config.deps.mkDerivation
     in {
       # Root level package
       name = name;
@@ -284,7 +290,12 @@
           dev = plent.dev or false;
           info = rinfo;
           inherit bins prepared-dev dist prepared-prod installed;
-          public = self.dist;
+          # -- self = groups.all.packages.name.version.evaluated
+          public =
+            self.dist
+            // {
+              inherit installed;
+            };
         };
       };
     }
@@ -357,11 +368,11 @@ in {
       ;
   };
 
-  package-func.result = l.mkForce (config.groups.all.packages.${config.name}.${config.version}.public);
+  public = l.mkForce (config.groups.all.packages.${config.name}.${config.version}.public);
 
   # OUTPUTS
   WIP-nodejs-builder-v3 = {
-    # inherit pdefs;
+    inherit pdefs;
     packageLock =
       lib.mkDefault
       (builtins.fromJSON (builtins.readFile cfg.packageLockFile));

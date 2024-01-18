@@ -43,6 +43,9 @@
   dependenciesType = t.attrsOf depEntryType;
 
   pdefEntryOptions = {
+    imports = [
+      dream2nix.modules.dream2nix.public
+    ];
     options.dependencies = l.mkOption {
       type = dependenciesType;
     };
