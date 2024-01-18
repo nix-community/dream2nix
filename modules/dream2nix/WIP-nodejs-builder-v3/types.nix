@@ -14,12 +14,6 @@
     inherit dream2nix lib specialArgs;
   };
 
-  # optPackage = l.mkOption {
-  #   # type = t.raw;
-  #   type = drvPartOrPackage;
-  #   apply = drv: drv.public or drv;
-  #   # default = null;
-  # };
   optOptionalPackage = l.mkOption {
     type = t.nullOr dreamTypes.drvPartOrPackage;
     apply = drv: drv.public or drv;
@@ -47,7 +41,55 @@
   #     }
   #   }
   dependenciesType = t.attrsOf depEntryType;
+
+  pdefEntryOptions = {
+    imports = [
+      dream2nix.modules.dream2nix.public
+    ];
+    options.dependencies = l.mkOption {
+      type = dependenciesType;
+    };
+    options.source = optOptionalPackage;
+
+    options.prepared-dev = optOptionalPackage;
+    options.prepared-prod = optOptionalPackage;
+
+    options.dist = optOptionalPackage;
+
+    options.installed = optOptionalPackage;
+
+    options.dev = l.mkOption {
+      type = t.bool;
+    };
+
+    options.info.initialState = l.mkOption {
+      type = t.enum ["source" "dist"];
+    };
+    options.info.initialPath = l.mkOption {
+      type = t.str;
+    };
+
+    # One source drv must potentially be installed in multiple other (nested) locations
+    options.info.allPaths = l.mkOption {
+      type = t.attrsOf t.bool;
+    };
+    options.info.pdefs' = l.mkOption {
+      type = t.raw;
+    };
+    options.info.fileSystem = l.mkOption {
+      type = t.raw;
+    };
+
+    /*
+    "bin": {
+      "esparse": "bin/esparse.js",
+      "esvalidate": "bin/esvalidate.js"
+    }
+    */
+    options.bins = optBins;
+  };
 in {
+  inherit pdefEntryOptions;
   /*
   pdefs.${name}.${version} :: {
     // [REQUIRED] all dependency entries of that package. (Might be empty)
@@ -92,33 +134,7 @@ in {
   }
   */
   pdefs = {
-    type = t.attrsOf (t.attrsOf (t.submodule {
-      options.dependencies = l.mkOption {
-        type = dependenciesType;
-      };
-      options.source = optOptionalPackage;
-
-      options.prepared-dev = optOptionalPackage;
-      options.prepared-prod = optOptionalPackage;
-
-      options.dist = optOptionalPackage;
-
-      # options.installed = optOptionalPackage;
-
-      options.info.initialState = l.mkOption {
-        type = t.enum ["source" "dist"];
-      };
-      options.info.initialPath = l.mkOption {
-        type = t.str;
-      };
-      /*
-      "bin": {
-        "esparse": "bin/esparse.js",
-        "esvalidate": "bin/esvalidate.js"
-      }
-      */
-      options.bins = optBins;
-    }));
+    type = t.attrsOf (t.attrsOf (t.submodule pdefEntryOptions));
   };
 
   /*

@@ -11,8 +11,8 @@ A collection of tools needed to interact with graphs (i.e. A dependencyTree)
 
   # Params
 
-  - graph :: { ${id} :: [ String ] }
-  GenericGraph; An AttrSet of nodeIds, pointing to neighboring nodes. (could be cylic).
+  - graph :: { ${path} :: [ [ string ] ] }
+  GenericGraph; An AttrSet of nodeIds, pointing to neighboring nodes. (could be cyclic).
 
   - roots :: [ String ]
   A list of root ids
@@ -23,144 +23,128 @@ A collection of tools needed to interact with graphs (i.e. A dependencyTree)
 
   GenericGraph :: [ { key :: String; parent :: String; } ]
   */
-  __sanitizeGraph = {
+  # returns
+  /*
+  [
+    {
+      name :: String;
+      version :: String;
+
+      // True if the parent requires as dev dependency
+      dev :: Bool;
+      isRoot? :: true;
+      // Needed for generic closure
+      key :: [ name version];
+    }
+  ]
+  */
+  # TODO(hsjobeki): inherit dev attribute lazy
+  sanitizeGraph = {
     graph,
-    roots,
+    root,
+    pred ? null,
   }:
     l.genericClosure {
-      startSet = map (key: {inherit key;}) roots;
-      operator = {key, ...} @ prev:
-        map (
-          key: {
-            inherit key;
-            parent = prev.key;
-          }
+      startSet = [
+        {
+          key = [root.name root.version];
+          inherit (root) name version;
+          isRoot = true;
+        }
+      ];
+      operator = {key, ...} @ prev: let
+        parentName = builtins.elemAt prev.key 0;
+        parentVersion = builtins.elemAt prev.key 1;
+
+        results =
+          l.mapAttrsToList (
+            name: depEntry: {
+              key = [name depEntry.version];
+              inherit name;
+              inherit (depEntry) version;
+              inherit (graph.${name}.${depEntry.version}) dev;
+              parent = {
+                name = parentName;
+                version = parentVersion;
+              };
+            }
+          )
+          graph.${parentName}.${parentVersion}.dependencies;
+      in
+        l.filter (
+          entry:
+            if l.isFunction pred
+            then pred entry && true
+            else true
         )
-        graph.${prev.key};
+        results;
+      # if l.isFunction pred
+      # then l.filter (entry: pred entry) results
+      # else results;
     };
 
   /*
-  Sanitize a potentially cyclic graph. Returns all items interconnected but with at least connections as possible.
-
-  # Params
-
-  - graph :: { ${id} :: [ String ] }
-  Attribute set of nodeIds, pointing to neighboring nodes. (could be cylic).
-
-  - roots :: [ String ]
-  A list of root ids
-
-  # Returns
-
-  The same GenericGraph without cycles.
-
-  GenericGraph :: { ${id} :: [ String ] }
-  */
-  sanitizeGraph = v: l.pipe v [__sanitizeGraph invertTree];
-
-  # [ { key :: String; parent :: String; } ] -> GenericGraph :: { ${id} :: [ String ] }
-  invertTree = l.foldl' (
-    finalTree: item:
-      if item ? parent
-      then
-        finalTree
-        // {
-          ${item.parent} = finalTree.${item.parent} or [] ++ [item.key];
-          ${item.key} = finalTree.${item.key} or [];
-        }
-      else
-        finalTree
-        // {
-          ${item.key} = finalTree.${item.key} or [];
-        }
-  ) {};
-
-  # { name :: String; version :: String; } -> String
-  fromNameVersionPair = {
-    name,
-    version,
-  }: "${name}/${version}";
-
-  # String -> { name :: String; version :: String; }
-  identToNameVersionPair = str: let
-    pieces = l.splitString "/" str;
-    version = l.last pieces;
-  in
-    if pieces == [str]
-    then {
-      name = str;
-      version = "unknown";
+  Function that returns instructions to create the file system (aka. node_modules directory)
+  Every `source` entry here is created. Bins are symlinked to their target.
+  This behavior is implemented via the prepared-builder script.
+  @argument pdefs'
+  # The filtered and sanititized pdefs containing no cycles.
+  # Only pdefs required by the current root and environment.
+  # e.g. all buildtime dependencies of top-level package.
+  []
+  ->
+  fileSystem :: {
+    "node_modules/typescript": {
+      source: <derivation typescript-dist>
+      bins: {
+        "node_modules/.bin/tsc": "node_modules/typescript/bin/tsc"
+      }
     }
-    else {
-      inherit version;
-      name = l.concatStringsSep "/" (l.filter (p: p != version) pieces);
-    };
-
-  /*
-  Takes the "DependencyGraph" format (same format as findCycles)
-  returns a GenericGraph :: { ${id} :: [ String ] }
-  Can be used as an adapter method between 'findCycles' and 'sanitizeGraph';
+  }
   */
-  fromDependencyGraph = depGraph:
+  getFileSystem = pdefs: pdefs':
     l.foldl' (
-      res: name: let
-        versions = l.attrNames depGraph.${name};
+      /*
+      set :: {
+          name ::
+          version ::
+          dev ::
+          isRoot ? :: true;
+          key :: [];
+      }
+
+      */
+      res: set: let
+        filteredSet = l.filterAttrs (_: value: value.info.initialState == "dist") pdefs.${set.name};
       in
         res
         // l.foldl' (
-          acc: version:
+          acc: version: let
+            entry = filteredSet.${version};
+          in
             acc
-            // {
-              "${fromNameVersionPair {inherit name version;}}" = map fromNameVersionPair depGraph.${name}.${version};
-            }
-        ) {}
-        versions
-    ) {} (l.attrNames depGraph);
-
-  /*
-  Takes a GenericGraph and returns the "DependencyGraph" format
-
-  Can be used as an adapter method between 'findCycles' and 'sanitizeGraph';
-
-  # Example
-
-  toDependencyGraph {
-      "a/1.0.0" = ["@org/a/1.1.0"];
-      "@org/a/1.1.0" = ["a/1.0.0"];
-  }
-  =>
-  {
-    "a"."1.0.0" = [
-      {
-        name = "@org/a";
-        version = "1.1.0";
-      }
-    ];
-    "@org/a"."1.1.0" = [
-      {
-        name = "a";
-        version = "1.0.0";
-      }
-    ];
-  };
-
-  */
-  toDependencyGraph = graph:
-    l.foldl' (
-      res: ident: let
-        inherit (identToNameVersionPair ident) name version;
-        deps = graph.${ident};
-      in
-        res // {${name} = res.${name} or {} // {${version} = res.${name}.${version} or [] ++ map identToNameVersionPair deps;};}
-    ) {} (l.attrNames graph);
-  ##########################################
-  # Currently only used for legacy modules ported to v1.
+            // l.foldl' (res: path:
+              if entry.info.allPaths.${path}
+              then
+                res
+                // {
+                  ${path} = {
+                    source = entry.dist;
+                    bins =
+                      l.mapAttrs' (name: target: {
+                        name = (builtins.dirOf path) + "/.bin/" + name;
+                        value = path + "/" + target;
+                      })
+                      pdefs.${set.name}.${version}.bins;
+                  };
+                }
+              else res) {} (l.attrNames (entry.info.allPaths))
+        ) {} (l.attrNames filteredSet)
+    ) {}
+    pdefs';
 in {
   inherit
     sanitizeGraph
-    fromDependencyGraph
-    identToNameVersionPair
-    fromNameVersionPair
-    toDependencyGraph
+    getFileSystem
     ;
 }

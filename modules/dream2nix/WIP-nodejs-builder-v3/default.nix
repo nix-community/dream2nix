@@ -2,16 +2,23 @@
   config,
   lib,
   dream2nix,
+  specialArgs,
   ...
 }: let
   l = lib // builtins;
   cfg = config.WIP-nodejs-builder-v3;
 
+  # debugMsg = msg: val: builtins.trace "${msg} ${(builtins.toJSON "")}" val;
+
   inherit (config.deps) fetchurl;
 
   nodejsLockUtils = import ../../../lib/internal/nodejsLockUtils.nix {inherit lib;};
+  graphUtils = import ../../../lib/internal/graphUtils.nix {inherit lib;};
+  utils = import ./utils.nix {inherit lib;};
 
   isLink = plent: plent ? link && plent.link;
+
+  pdefs = parse cfg.packageLock;
 
   parseSource = plent: name:
     if isLink plent
@@ -66,32 +73,45 @@
     (acc: entry:
       acc
       // {
-        ${entry.name} = acc.${entry.name} or {} // entry.value;
+        # Merge package paths
+        # { "5.3.0" = <CODE>; }
+        ${entry.name} =
+          acc.${entry.name}
+          or {}
+          // builtins.mapAttrs (
+            version: pkg:
+              pkg
+              // {
+                info =
+                  pkg.info
+                  // {
+                    allPaths =
+                      acc.${entry.name}.${version}.info.allPaths
+                      or {}
+                      // {${pkg.info.initialPath} = true;};
+                  };
+              }
+          ) (entry.value);
       })
     {}
     # [{name=; value=;} ...]
     (l.mapAttrsToList (parseEntry lock) lock.packages);
 
   ############################################################
-  pdefs = parse cfg.packageLock;
+  # pdefs = parse cfg.packageLock;
+  # {name}.{version}.{...}
+  groups.all.packages =
+    lib.mapAttrs
+    (
+      name: versions:
+        lib.mapAttrs
+        (version: entry: {module = entry;})
+        versions
+    )
+    pdefs;
 
   ############################################################
   # Utility functions #
-
-  # Type: lock.packages -> Info
-  getInfo = path: plent: {
-    initialPath = path;
-    initialState =
-      if
-        isLink plent
-        ||
-        /*
-        IsRoot
-        */
-        path == ""
-      then "source"
-      else "dist";
-  };
 
   # Type: lock.packages -> Bins
   getBins = path: plent:
@@ -104,6 +124,7 @@
       else throw ""
     else {};
 
+  # Collect all dependencies of a package.
   getDependencies = lock: path: plent:
     l.mapAttrs (name: _descriptor: {
       dev = plent.dev or false;
@@ -118,72 +139,178 @@
     (plent.dependencies or {} // plent.devDependencies or {} // plent.optionalDependencies or {});
 
   # Takes one entry of "package" from package-lock.json
-  parseEntry = lock: path: entry: let
-    info = getInfo path entry;
-    # TODO: Verify this is reasonable default;
-    source = builtins.dirOf cfg.packageLockFile;
+  # lock :: Whole lockfile.
+  # path :: Key of the package e.g. "/node_modules/prettier". Could also be nested
+  # plent :: The lock entry. Includes meta information about the package.
+  parseEntry = lock: path: plent: let
+    info = utils.getInfo path plent;
     makeNodeModules = ./build-node-modules.mjs;
     installTrusted = ./install-trusted-modules.mjs;
   in
     if path == ""
     then let
-      prepared-dev = config.deps.mkDerivation {
-        name = entry.name + "-node_modules-dev";
-        inherit (entry) version;
-        dontUnpack = true;
-        env = {
-          FILESYSTEM = builtins.toJSON (getFileSystem pdefs);
-        };
-        buildInputs = with config.deps; [nodejs];
-        buildPhase = ''
-          node ${makeNodeModules}
-        '';
-      };
+      rinfo = info // {inherit fileSystem;};
+      name = plent.name or lock.name;
 
-      dist = config.deps.mkDerivation {
-        inherit (entry) version;
-        name = entry.name + "-dist";
-        src = source;
-        buildInputs = with config.deps; [nodejs jq];
+      fileSystem = graphUtils.getFileSystem pdefs (info.pdefs' {
+        graph = pdefs;
+        root = {
+          inherit name;
+          inherit (plent) version;
+        };
+      });
+      fileSystemProd = graphUtils.getFileSystem pdefs (info.pdefs' {
+        graph = pdefs;
+        root = {
+          inherit name;
+          inherit (plent) version;
+        };
+        opt = {
+          dev = false;
+        };
+      });
+
+      self = config.groups.all.packages.${name}.${plent.version}.evaluated;
+
+      prepared-dev = let
+        module = {
+          imports = [
+            # config.groups.all.packages.${name}.${plent.version}
+            dream2nix.modules.dream2nix.mkDerivation
+          ];
+          config = {
+            inherit (plent) version;
+            name = name + "-node_modules-dev";
+            env = {
+              FILESYSTEM = builtins.toJSON fileSystem;
+            };
+
+            mkDerivation = {
+              dontUnpack = true;
+              buildInputs = with config.deps; [nodejs];
+              buildPhase = ''
+                node ${makeNodeModules}
+              '';
+            };
+          };
+        };
+      in
+        module;
+
+      prepared-prod = let
+        module = {
+          imports = [
+            dream2nix.modules.dream2nix.mkDerivation
+          ];
+          config = {
+            inherit (plent) version;
+            name = name + "-node_modules-prod";
+            env = {
+              FILESYSTEM = builtins.toJSON fileSystemProd;
+            };
+            mkDerivation = {
+              dontUnpack = true;
+              buildInputs = with config.deps; [nodejs];
+              buildPhase = ''
+                node ${makeNodeModules}
+              '';
+            };
+          };
+        };
+      in
+        module;
+
+      bins = getBins path plent;
+
+      installed = config.deps.mkDerivation {
+        inherit (plent) version;
+        name = name + "-installed";
+        nativeBuildInputs = with config.deps; [jq];
+        buildInputs = with config.deps; [nodejs];
+        src = self.dist;
         env = {
-          TRUSTED = builtins.toJSON cfg.trustedDeps;
+          BINS = builtins.toJSON bins;
         };
         configurePhase = ''
-          cp -r ${prepared-dev}/node_modules node_modules
-          node ${installTrusted}
-        '';
-        buildPhase = ''
-          echo "BUILDING... $name"
-          if [ "$(jq '.scripts.build' ./package.json)" != "null" ]; then
-            echo "npm run build"
-            npm run build
-          fi;
+          cp -r ${self.prepared-prod}/node_modules node_modules
         '';
         installPhase = ''
-          cp -r . $out
+          mkdir -p $out/lib/node_modules/${name}
+          cp -r . $out/lib/node_modules/${name}
+
+          mkdir -p $out/bin
+          echo $BINS | jq 'to_entries | map("ln -s $out/lib/node_modules/${name}/\(.value) $out/bin/\(.key); ") | .[]' -r | bash
         '';
+      };
+      dist = {
+        imports = [
+          dream2nix.modules.dream2nix.mkDerivation
+        ];
+        config = {
+          inherit (plent) version;
+          name = name + "-dist";
+          env = {
+            TRUSTED = builtins.toJSON cfg.trustedDeps;
+          };
+          mkDerivation = {
+            # inherit (entry) version;
+            src = builtins.dirOf cfg.packageLockFile;
+            buildInputs = with config.deps; [nodejs jq];
+            configurePhase = ''
+              cp -r ${self.prepared-dev}/node_modules node_modules
+              chmod -R +w node_modules
+              node ${installTrusted}
+            '';
+            buildPhase = ''
+              echo "BUILDING... $name"
+
+              if [ "$(jq -e '.scripts.build' ./package.json)" != "null" ]; then
+                echo "BUILDING... $name"
+                export HOME=.virt
+                npm run build
+              else
+                echo "$(jq -e '.scripts.build' ./package.json)"
+                echo "No build script";
+              fi;
+            '';
+            installPhase = ''
+              # TODO: filter files
+              rm -rf node_modules
+              cp -r . $out
+            '';
+          };
+        };
       };
     in {
       # Root level package
-      name = entry.name;
+      name = name;
       value = {
-        ${entry.version} = {
-          dependencies = getDependencies lock path entry;
-          inherit info prepared-dev source dist;
+        ${plent.version} = {
+          dependencies = getDependencies lock path plent;
+          dev = plent.dev or false;
+          info = rinfo;
+          inherit bins prepared-dev dist prepared-prod installed;
+          # -- self = groups.all.packages.name.version.evaluated
+          public =
+            self.dist
+            // {
+              inherit installed;
+            };
         };
       };
     }
+    # End Root level package
     else let
       name = l.last (builtins.split "node_modules/" path);
-      source = parseSource entry name;
-      bins = getBins path entry;
+      source = parseSource plent name;
+      bins = getBins path plent;
       version =
-        if isLink entry
+        if isLink plent
         then let
           pjs = l.fromJSON (l.readFile (source + "/package.json"));
         in
           pjs.version
-        else entry.version;
+        else plent.version;
     in
       # Every other package
       {
@@ -191,54 +318,40 @@
         value = {
           ${version} = {
             inherit info bins;
-            dependencies = getDependencies lock path entry;
+
+            dev = plent.dev or false;
+
+            dependencies = getDependencies lock path plent;
             # We need to determine the initial state of every package and
             # TODO: define dist and installed if they are in source form. We currently only do this for the root package.
-            ${info.initialState} = source;
+            "dist" = source;
+            public = source;
           };
         };
       };
-
-  /*
-  Function that returns instructions to create the file system (aka. node_modules directory)
-  Every `source` entry here is created. Bins are symlinked to their target.
-  This behavior is implemented via the prepared-builder script.
-  @argument pdefs'
-  # The filtered and sanititized pdefs containing no cycles.
-  # Only pdefs required by the current root and environment.
-  # e.g. all buildtime dependencies of top-level package.
-  ->
-  fileSystem :: {
-    "node_modules/typescript": {
-      source: <derivation typescript-dist>
-      bins: {
-        "node_modules/.bin/tsc": "node_modules/typescript/bin/tsc"
-      }
-    }
-  }
-  */
-  getFileSystem = pdefs':
-    l.foldl' (
-      res: name:
-        res
-        // l.mapAttrs' (version: entry: {
-          name = entry.info.initialPath;
-          value = {
-            source = entry.dist;
-            bins =
-              l.mapAttrs' (name: target: {
-                name = (builtins.dirOf entry.info.initialPath) + "/.bin/" + name;
-                value = entry.info.initialPath + "/" + target;
-              })
-              pdefs'.${name}.${version}.bins;
-          };
-        }) (l.filterAttrs (n: v: v.info.initialState == "dist") pdefs'.${name})
-    ) {} (l.attrNames pdefs');
 in {
+  inherit groups;
+
   imports = [
     ./interface.nix
     dream2nix.modules.dream2nix.mkDerivation
+    dream2nix.modules.dream2nix.WIP-groups
   ];
+
+  overrideAll =
+    {
+      imports = [
+        dream2nix.modules.dream2nix.core
+      ];
+    }
+    // (import ./types.nix {
+      inherit
+        lib
+        dream2nix
+        specialArgs
+        ;
+    })
+    .pdefEntryOptions;
 
   # declare external dependencies
   deps = {nixpkgs, ...}: {
@@ -255,7 +368,7 @@ in {
       ;
   };
 
-  package-func.result = l.mkForce (pdefs.${config.name}.${config.version}.dist);
+  public = l.mkForce (config.groups.all.packages.${config.name}.${config.version}.public);
 
   # OUTPUTS
   WIP-nodejs-builder-v3 = {
