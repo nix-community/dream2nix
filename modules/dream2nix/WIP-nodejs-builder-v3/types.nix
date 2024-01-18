@@ -14,12 +14,6 @@
     inherit dream2nix lib specialArgs;
   };
 
-  # optPackage = l.mkOption {
-  #   # type = t.raw;
-  #   type = drvPartOrPackage;
-  #   apply = drv: drv.public or drv;
-  #   # default = null;
-  # };
   optOptionalPackage = l.mkOption {
     type = t.nullOr dreamTypes.drvPartOrPackage;
     apply = drv: drv.public or drv;

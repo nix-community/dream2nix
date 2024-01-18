@@ -68,7 +68,7 @@ A collection of tools needed to interact with graphs (i.e. A dependencyTree)
               };
             }
           )
-          graph.${parentName}.${parentVersion}.dependencies;
+          (builtins.trace (lib.attrNames graph.${parentName}.${parentVersion}) graph.${parentName}.${parentVersion}.dependencies);
       in
         l.filter (
           entry:
