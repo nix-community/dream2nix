@@ -98,9 +98,9 @@
 
         ```nix
         {
-          "node_modules/tap-dot" = { 
+          "node_modules/tap-dot" = {
             bins = {
-              "node_modules/.bin/tap-dot" = "node_modules/tap-dot/bin/dot"; 
+              "node_modules/.bin/tap-dot" = "node_modules/tap-dot/bin/dot";
             };
             source = «derivation tap-dot.drv»;
           };
