@@ -72,12 +72,42 @@
     # One source drv must potentially be installed in multiple other (nested) locations
     options.info.allPaths = l.mkOption {
       type = t.attrsOf t.bool;
-    };
-    options.info.pdefs' = l.mkOption {
-      type = t.raw;
+      description = ''
+        In case of conflicting versions a dependency must be installed in multiple nested locations.
+
+        In this example: Because the root "node_modules/ansi-regex" is a different version.
+        The current version must be installed privately if anyone depdends on it.
+
+        {
+          "node_modules/cliui/node_modules/ansi-regex" = true;
+          "node_modules/wrap-ansi/node_modules/ansi-regex" = true;
+          "node_modules/yargs/node_modules/ansi-regex" = true;
+        };
+
+        npm usually already resolved this, can be manually adjusted via this option.
+      '';
     };
     options.info.fileSystem = l.mkOption {
-      type = t.raw;
+      type = t.nullOr t.raw;
+      default = null;
+      description = ''
+        A json serializable attribute-set.
+        Holds all directories and bin symlinks realized the build script.
+
+        Example:
+
+        ```nix
+        {
+          "node_modules/tap-dot" = { 
+            bins = {
+              "node_modules/.bin/tap-dot" = "node_modules/tap-dot/bin/dot"; 
+            };
+            source = «derivation tap-dot.drv»;
+          };
+          # ..
+        }
+        ```
+      '';
     };
 
     /*
@@ -135,6 +165,16 @@ in {
   */
   pdefs = {
     type = t.attrsOf (t.attrsOf (t.submodule pdefEntryOptions));
+    description = ''
+      Also known as 'graph'.
+
+      Holds all information, including cyclic references.
+
+      Use this structure to access meta information from the lockfile.
+      Such as bins, path etc.
+
+      Can be JSON serialized.
+    '';
   };
 
   /*
@@ -143,24 +183,24 @@ in {
     ${nodePath} :: Derivation
   }
   */
-  fileSystem = {
-    type = t.nullOr (t.attrsOf (t.submodule {
-      options.source = l.mkOption {
-        type = t.nullOr dreamTypes.drvPartOrPackage;
-      };
-      options.bins = optBins;
-    }));
-    #   options.bins = l.mkOption {
-    #     type = t.attrsOf (t.submodule {
-    #       options.name = l.mkOption {
-    #         type = t.str;
-    #       };
-    #       options.target = l.mkOption {
-    #         type = t.str;
-    #       };
-    #     });
-    #   };
-    # }));
-    # default = null;
-  };
+  # TODO: Make lazy enough. then replace info.fileSystem with this
+  # fileSystem = {
+  #   type = t.nullOr (t.attrsOf (t.submodule {
+  #     options.source = l.mkOption {
+  #       type = t.nullOr dreamTypes.drvPartOrPackage;
+  #     };
+  #     options.bins = optBins;
+  #   }));
+  #   options.bins = l.mkOption {
+  #     type = t.attrsOf (t.submodule {
+  #       options.name = l.mkOption {
+  #         type = t.str;
+  #       };
+  #       options.target = l.mkOption {
+  #         type = t.str;
+  #       };
+  #       });
+  #     };
+  #   }));
+  # };
 }

@@ -152,20 +152,12 @@
       rinfo = info // {inherit fileSystem;};
       name = plent.name or lock.name;
 
-      fileSystem = graphUtils.getFileSystem pdefs (info.pdefs' {
-        graph = pdefs;
-        root = {
-          inherit name;
-          inherit (plent) version;
-        };
+      fileSystem = graphUtils.getFileSystem pdefs (utils.getSanitizedGraph {
+        inherit plent pdefs;
       });
-      fileSystemProd = graphUtils.getFileSystem pdefs (info.pdefs' {
-        graph = pdefs;
-        root = {
-          inherit name;
-          inherit (plent) version;
-        };
-        opt = {
+      fileSystemProd = graphUtils.getFileSystem pdefs (utils.getSanitizedGraph {
+        inherit pdefs plent;
+        filterTree = {
           dev = false;
         };
       });

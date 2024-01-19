@@ -66,7 +66,6 @@ in {
           specialArgs
           ;
       })
-      fileSystem
       pdefs
       ;
   };
