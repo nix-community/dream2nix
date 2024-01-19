@@ -11,7 +11,15 @@ A collection of tools needed to interact with graphs (i.e. A dependencyTree)
 
   # Params
 
-  - graph :: { ${path} :: [ [ string ] ] }
+  - Graph :: {
+      ${name}.${version} :: {
+        dependencies = {
+          ${dep.name}.version = String;
+        };
+        dev :: Bool;
+      };
+    };
+
   GenericGraph; An AttrSet of nodeIds, pointing to neighboring nodes. (could be cyclic).
 
   - roots :: [ String ]
@@ -102,46 +110,60 @@ A collection of tools needed to interact with graphs (i.e. A dependencyTree)
     }
   }
   */
-  getFileSystem = pdefs: pdefs':
+  getFileSystem = graph: sanitizedGraph:
     l.foldl' (
       /*
-      set :: {
+      sanitziedGraphEntry :: {
           name ::
           version ::
           dev ::
           isRoot ? :: true;
           key :: [];
       }
-
       */
-      res: set: let
-        filteredSet = l.filterAttrs (_: value: value.info.initialState == "dist") pdefs.${set.name};
+      res: sanitizedGraphEntry: let
+        /*
+
+        filteredSet :: graph
+
+        Example:
+
+        All versions of "next" that are in the dist state.
+
+        */
+        distVersions = l.filterAttrs (_version: e: e.info.initialState == "dist") graph.${sanitizedGraphEntry.name};
       in
         res
-        // l.foldl' (
-          acc: version: let
-            entry = filteredSet.${version};
+        // l.foldlAttrs (
+          acc: version: entry: let
+            pdef = graph.${sanitizedGraphEntry.name}.${version};
           in
             acc
-            // l.foldl' (res: path:
-              if entry.info.allPaths.${path}
+            // l.foldlAttrs (fileSystem: path: pathInfo:
+              if pathInfo
               then
-                res
-                // {
-                  ${path} = {
-                    source = entry.dist;
-                    bins =
-                      l.mapAttrs' (name: target: {
-                        name = (builtins.dirOf path) + "/.bin/" + name;
-                        value = path + "/" + target;
-                      })
-                      pdefs.${set.name}.${version}.bins;
-                  };
-                }
-              else res) {} (l.attrNames (entry.info.allPaths))
-        ) {} (l.attrNames filteredSet)
+                fileSystem
+                // getFileSystemInfo path pdef entry
+              else fileSystem) {} (entry.info.allPaths)
+        ) {}
+        distVersions
     ) {}
-    pdefs';
+    sanitizedGraph;
+
+  getFileSystemInfo = path: pdef: entry: let
+    info = {
+      ${path} = {
+        source = entry.dist;
+        bins =
+          l.mapAttrs' (name: target: {
+            name = (builtins.dirOf path) + "/.bin/" + name;
+            value = path + "/" + target;
+          })
+          pdef.bins;
+      };
+    };
+  in
+    info;
 in {
   inherit
     sanitizeGraph
