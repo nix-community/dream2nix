@@ -40,6 +40,7 @@
   refresh' = config.deps.writePython3Bin "refresh" {} ''
     import tempfile
     import subprocess
+    import os
     import json
     from pathlib import Path
 
@@ -55,9 +56,11 @@
 
     def run_refresh_script(script):
         with tempfile.NamedTemporaryFile() as out_file:
+            env = os.environ.copy()
+            env["out"] = out_file.name
             subprocess.run(
                 [script],
-                check=True, shell=True, env={"out": out_file.name})
+                check=True, shell=True, env=env)
             # open the file again via its name (it might have been replaced)
             with open(out_file.name) as out:
                 return json.load(out)
