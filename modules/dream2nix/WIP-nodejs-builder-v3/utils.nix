@@ -20,54 +20,55 @@
       else "dist";
   };
 
-  /**
-    A Convinient wrapper around sanitizeGraph
-    which allows to pass options such as { dev=false; }
+  /*
+  *
+  A Convinient wrapper around sanitizeGraph
+  which allows to pass options such as { dev=false; }
 
   */
   getSanitizedGraph = {
-      # The lockfile entry; One depdency used as a root.
-      plent,
-      # The dependency 'graph'. See: sanitizeGraph
-      pdefs,
-      /** 
-        Drops dependencies including their subtree connection by filter attribute. 
-        
-        for example:
+    # The lockfile entry; One depdency used as a root.
+    plent,
+    # The dependency 'graph'. See: sanitizeGraph
+    pdefs,
+    /*
+    *
+    Drops dependencies including their subtree connection by filter attribute.
 
-        ```
-        filterTree = {
-          dev = false;
-        };
-        ```
+    for example:
 
-        Will filter out all dev dependencies including all children below dev-dependencies.
+    ```
+    filterTree = {
+      dev = false;
+    };
+    ```
 
-        Which will result in a prod only tree.
-      */
-      filterTree ? {},
-    }:
-    let 
+    Will filter out all dev dependencies including all children below dev-dependencies.
+
+    Which will result in a prod only tree.
+    */
+    filterTree ? {},
+  }: let
     root = {
-        name = plent.name;
-        version = plent.version;
+      name = plent.name;
+      version = plent.version;
     };
     graph = pdefs;
-    in 
-      graphUtils.sanitizeGraph {
-        inherit root graph;
-        pred = (
-          e:
-            l.foldlAttrs (
-              res: name: value:
-                if res == false
-                then false
-                else value == e.${name}
-            )
-            true
-            filterTree
-        );
-      };
+  in
+    graphUtils.sanitizeGraph {
+      inherit root graph;
+      pred = (
+        e:
+          l.foldlAttrs (
+            res: name: value:
+              if res == false
+              then false
+              else value == e.${name}
+          )
+          true
+          filterTree
+      );
+    };
 in {
   inherit getInfo getSanitizedGraph;
 }

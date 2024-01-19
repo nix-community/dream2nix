@@ -35,6 +35,58 @@ in {
       };
     };
   };
+  # Currently only "dist" packages
+  # can be used to populate node_modules
+  test_only_dist = let
+    graph = {
+      "a"."1" = {
+        dist = "<Source A Derivation>";
+        dependencies = {
+          b.version = "1";
+        };
+        dev = false;
+        bins = {
+        };
+        info = {
+          initialState = "source";
+          allPaths = {
+            "" = true;
+          };
+        };
+      };
+      "b"."1" = {
+        dist = "<B Derivation>";
+        dependencies = {};
+        dev = false;
+        bins = {
+        };
+        info = {
+          initialState = "dist";
+          allPaths = {
+            "node_modules/b" = true;
+          };
+        };
+      };
+    };
+
+    sanitizedGraph = utils.sanitizeGraph {
+      inherit graph;
+      root = {
+        name = "a";
+        version = "1";
+      };
+    };
+
+    fileSystem = utils.getFileSystem graph sanitizedGraph;
+  in {
+    expr = fileSystem;
+    expected = {
+      "node_modules/b" = {
+        bins = {};
+        source = "<B Derivation>";
+      };
+    };
+  };
 
   test_cyclic_dependency = let
     graph = {
