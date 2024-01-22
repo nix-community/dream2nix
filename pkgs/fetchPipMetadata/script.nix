@@ -42,6 +42,7 @@
   gitMinimal,
   writePureShellScript,
   nix-prefetch-scripts,
+  openssh,
 }: let
   package = import ./package.nix {
     inherit
@@ -57,7 +58,7 @@
     python3.withPackages
     (ps: [ps.mitmproxy ps.python-dateutil]);
 
-  path = [nix gitMinimal] ++ nativeBuildInputs;
+  path = [nix gitMinimal openssh] ++ nativeBuildInputs;
 
   args = writeText "pip-args" (builtins.toJSON {
     filterPypiResponsesScript = ./filter-pypi-responses.py;
