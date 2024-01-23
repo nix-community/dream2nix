@@ -36,7 +36,6 @@ in {
           git
           path
           writeScript
-          writeScriptBin
           ;
         npm = nixpkgs.nodejs.pkgs.npm;
       };
