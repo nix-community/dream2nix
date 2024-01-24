@@ -7,13 +7,16 @@
   imports = [
     dream2nix.modules.dream2nix.WIP-python-pdm
   ];
+  # select python 3.10
+  deps = {nixpkgs, ...}: {
+    python = nixpkgs.python310;
+  };
   pdm.lockfile = ./pdm.lock;
   pdm.pyproject = ./pyproject.toml;
-  pdm.pythonInterpreter = config.deps.python3;
   mkDerivation = {
     src = ./.;
     buildInputs = [
-      config.deps.python3.pkgs.pdm-backend
+      config.deps.python.pkgs.pdm-backend
     ];
   };
 }

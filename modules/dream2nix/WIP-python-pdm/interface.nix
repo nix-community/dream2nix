@@ -14,9 +14,6 @@ in {
     pyproject = l.mkOption {
       type = t.path;
     };
-    pythonInterpreter = l.mkOption {
-      type = t.package;
-    };
 
     sourceSelector = import ./sourceSelectorOption.nix {inherit lib;};
   };

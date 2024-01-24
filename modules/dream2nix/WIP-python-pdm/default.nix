@@ -6,9 +6,9 @@
 }: let
   libpdm = import ./lib.nix {
     inherit lib libpyproject;
-    python3 = config.deps.python3;
+    python3 = config.deps.python;
     targetPlatform =
-      lib.systems.elaborate config.deps.python3.stdenv.targetPlatform;
+      lib.systems.elaborate config.deps.python.stdenv.targetPlatform;
   };
 
   libpyproject = import (dream2nix.inputs.pyproject-nix + "/lib") {inherit lib;};
@@ -16,13 +16,13 @@
     inherit lib;
     curl = config.deps.curl;
     jq = config.deps.jq;
-    python3 = config.deps.python3;
+    python3 = config.deps.python;
     runCommand = config.deps.runCommand;
     stdenvNoCC = config.deps.stdenvNoCC;
   };
 
   lock_data = lib.importTOML config.pdm.lockfile;
-  environ = libpyproject.pep508.mkEnviron config.deps.python3;
+  environ = libpyproject.pep508.mkEnviron config.deps.python;
 
   pyproject = libpdm.loadPdmPyProject (lib.importTOML config.pdm.pyproject);
 
@@ -79,13 +79,12 @@ in {
       stdenvNoCC
       stdenv
       ;
-    python = config.deps.python3;
+    python = lib.mkDefault config.deps.python3;
   };
   overrideAll = {
     imports = [commonModule];
     deps = {nixpkgs, ...}: {
-      python3 = lib.mkDefault config.deps.python3;
-      python = lib.mkDefault config.deps.python3;
+      python = lib.mkDefault config.deps.python;
     };
     sourceSelector = lib.mkOptionDefault config.pdm.sourceSelector;
   };
@@ -94,7 +93,7 @@ in {
     format = lib.mkDefault "pyproject";
   };
   mkDerivation = {
-    buildInputs = map (name: config.deps.python3.pkgs.${name}) buildSystemNames;
+    buildInputs = map (name: config.deps.python.pkgs.${name}) buildSystemNames;
     propagatedBuildInputs =
       map
       (x: (lib.head (lib.attrValues x)).public)
@@ -160,8 +159,8 @@ in {
             doCheck = lib.mkDefault false;
             dontStrip = lib.mkDefault true;
           };
-          # required for python3.withPackages to recognize it as a python package.
-          public.pythonModule = config.deps.python3;
+          # required for python.withPackages to recognize it as a python package.
+          public.pythonModule = config.deps.python;
         };
       });
     in {inherit packages;};
