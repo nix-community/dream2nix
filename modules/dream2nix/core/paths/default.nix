@@ -8,7 +8,7 @@
     ../deps
   ];
   deps = {nixpkgs, ...}:
-    lib.mapAttrs (_: opt: lib.mkOverride 49 opt) {
+    lib.mapAttrs (_: opt: lib.mkOverride 1003 opt) {
       python3 = nixpkgs.python3;
       substituteAll = nixpkgs.substituteAll;
     };

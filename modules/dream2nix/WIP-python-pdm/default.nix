@@ -42,7 +42,9 @@
     setuptools =
       if cfg.name == "setuptools"
       then config.deps.python.pkgs.setuptools
-      else config.pip.drvs.setuptools.public or config.deps.python.pkgs.setuptools;
+      else if config.groups.default.packages ? setuptools
+      then (lib.head (lib.attrValues config.groups.default.packages.setuptools)).public
+      else config.deps.python.pkgs.setuptools;
   in {
     mkDerivation.buildInputs =
       lib.optionals
