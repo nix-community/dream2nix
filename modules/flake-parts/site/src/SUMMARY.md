@@ -1,5 +1,7 @@
 
 - [Introduction](./intro.md)
+- [Getting started](./gettingstarted.md)
+- [Contact](./contact.md)
 
 # Examples
 - [dream2nix examples](./examples.md)
