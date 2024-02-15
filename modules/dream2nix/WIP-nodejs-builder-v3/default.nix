@@ -144,14 +144,10 @@
   # plent :: The lock entry. Includes meta information about the package.
   parseEntry = lock: path: plent: let
     info = utils.getInfo path plent;
-    makeNodeModules = ./build-node-modules.mjs;
-    installTrusted = ./install-trusted-modules.mjs;
   in
     if path == ""
     then let
-      rinfo = info // {inherit fileSystem;};
-      name = plent.name or lock.name;
-
+      ## ----------- Metainformations ----------
       fileSystem = graphUtils.getFileSystem pdefs (utils.getSanitizedGraph {
         inherit plent pdefs;
       });
@@ -162,57 +158,50 @@
         };
       });
 
+      rinfo = info // {inherit fileSystem;};
+      name = plent.name or lock.name;
+
       self = config.groups.all.packages.${name}.${plent.version}.evaluated;
 
-      prepared-dev = let
-        module = {
-          imports = [
-            # config.groups.all.packages.${name}.${plent.version}
-            dream2nix.modules.dream2nix.mkDerivation
-          ];
-          config = {
-            inherit (plent) version;
-            name = name + "-node_modules-dev";
-            env = {
-              FILESYSTEM = builtins.toJSON fileSystem;
-            };
-
-            mkDerivation = {
-              dontUnpack = true;
-              buildInputs = with config.deps; [nodejs];
-              buildPhase = ''
-                node ${makeNodeModules}
-              '';
-            };
-          };
-        };
-      in
-        module;
-
-      prepared-prod = let
-        module = {
-          imports = [
-            dream2nix.modules.dream2nix.mkDerivation
-          ];
-          config = {
-            inherit (plent) version;
-            name = name + "-node_modules-prod";
-            env = {
-              FILESYSTEM = builtins.toJSON fileSystemProd;
-            };
-            mkDerivation = {
-              dontUnpack = true;
-              buildInputs = with config.deps; [nodejs];
-              buildPhase = ''
-                node ${makeNodeModules}
-              '';
-            };
-          };
-        };
-      in
-        module;
-
       bins = getBins path plent;
+
+      ## ----------- Output derviations ----------
+
+      prepared-dev = {
+        imports = [
+          ./modules/prepared-dev.nix
+        ];
+        _module.args = {
+          packageName = name;
+          inherit plent fileSystem;
+          inherit (config.deps) nodejs;
+        };
+      };
+
+      dist = {
+        imports = [
+          ./modules/dist.nix
+        ];
+        _module.args = {
+          packageName = name;
+          inherit plent;
+          inherit (cfg) packageLockFile trustedDeps;
+          inherit (self) prepared-dev;
+          inherit (config.deps) nodejs jq;
+        };
+      };
+
+      prepared-prod = {
+        imports = [
+          ./modules/prepared-prod.nix
+        ];
+        _module.args = {
+          packageName = name;
+          fileSystem = fileSystemProd;
+          inherit plent;
+          inherit (config.deps) nodejs;
+        };
+      };
 
       installed = config.deps.mkDerivation {
         inherit (plent) version;
@@ -233,45 +222,6 @@
           mkdir -p $out/bin
           echo $BINS | jq 'to_entries | map("ln -s $out/lib/node_modules/${name}/\(.value) $out/bin/\(.key); ") | .[]' -r | bash
         '';
-      };
-      dist = {
-        imports = [
-          dream2nix.modules.dream2nix.mkDerivation
-        ];
-        config = {
-          inherit (plent) version;
-          name = name + "-dist";
-          env = {
-            TRUSTED = builtins.toJSON cfg.trustedDeps;
-          };
-          mkDerivation = {
-            # inherit (entry) version;
-            src = builtins.dirOf cfg.packageLockFile;
-            buildInputs = with config.deps; [nodejs jq];
-            configurePhase = ''
-              cp -r ${self.prepared-dev}/node_modules node_modules
-              chmod -R +w node_modules
-              node ${installTrusted}
-            '';
-            buildPhase = ''
-              echo "BUILDING... $name"
-
-              if [ "$(jq -e '.scripts.build' ./package.json)" != "null" ]; then
-                echo "BUILDING... $name"
-                export HOME=.virt
-                npm run build
-              else
-                echo "$(jq -e '.scripts.build' ./package.json)"
-                echo "No build script";
-              fi;
-            '';
-            installPhase = ''
-              # TODO: filter files
-              rm -rf node_modules
-              cp -r . $out
-            '';
-          };
-        };
       };
     in {
       # Root level package
