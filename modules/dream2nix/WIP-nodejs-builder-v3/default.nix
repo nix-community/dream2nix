@@ -144,9 +144,8 @@
   # plent :: The lock entry. Includes meta information about the package.
   parseEntry = lock: path: plent: let
     info = utils.getInfo path plent;
-  in
-    if path == ""
-    then let
+
+    rootPackage = let
       ## ----------- Metainformations ----------
       fileSystem = graphUtils.getFileSystem pdefs (utils.getSanitizedGraph {
         inherit plent pdefs;
@@ -203,28 +202,18 @@
         };
       };
 
-      installed = config.deps.mkDerivation {
-        inherit (plent) version;
-        name = name + "-installed";
-        nativeBuildInputs = with config.deps; [jq];
-        buildInputs = with config.deps; [nodejs];
-        src = self.dist;
-        env = {
-          BINS = builtins.toJSON bins;
+      installed = {
+        imports = [
+          ./modules/installed.nix
+        ];
+        _module.args = {
+          packageName = name;
+          inherit bins plent;
+          inherit (self) dist prepared-prod;
+          inherit (config.deps) nodejs jq;
         };
-        configurePhase = ''
-          cp -r ${self.prepared-prod}/node_modules node_modules
-        '';
-        installPhase = ''
-          mkdir -p $out/lib/node_modules/${name}
-          cp -r . $out/lib/node_modules/${name}
-
-          mkdir -p $out/bin
-          echo $BINS | jq 'to_entries | map("ln -s $out/lib/node_modules/${name}/\(.value) $out/bin/\(.key); ") | .[]' -r | bash
-        '';
       };
     in {
-      # Root level package
       name = name;
       value = {
         ${plent.version} = {
@@ -236,13 +225,15 @@
           public =
             self.dist
             // {
-              inherit installed;
+              # other derivations
+              inherit (self) installed prepared-dev prepared-prod;
             };
         };
       };
-    }
-    # End Root level package
-    else let
+    };
+
+    ## --------- leaf package ------------
+    leafPackage = let
       name = l.last (builtins.split "node_modules/" path);
       source = parseSource plent name;
       bins = getBins path plent;
@@ -271,6 +262,10 @@
           };
         };
       };
+  in
+    if path == ""
+    then rootPackage
+    else leafPackage;
 in {
   inherit groups;
 
