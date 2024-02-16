@@ -37,7 +37,7 @@ in {
 
       if [ "$(jq -e '.scripts.build' ./package.json)" != "null" ]; then
         echo "BUILDING... $name"
-        export HOME=.virt
+        export HOME=.virt-home
         npm run build
       else
         echo "$(jq -e '.scripts.build' ./package.json)"
