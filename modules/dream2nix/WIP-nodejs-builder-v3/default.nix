@@ -13,6 +13,10 @@
   inherit (config.deps) fetchurl;
 
   nodejsLockUtils = import ../../../lib/internal/nodejsLockUtils.nix {inherit lib;};
+  nodejsUtils = import ../../../lib/internal/nodejsUtils.nix {
+    inherit lib;
+    parseSpdxId = _: _;
+  };
   graphUtils = import ../../../lib/internal/graphUtils.nix {inherit lib;};
   utils = import ./utils.nix {inherit lib;};
 
@@ -21,52 +25,66 @@
   pdefs = parse cfg.packageLock;
 
   parseSource = plent: name:
-    if isLink plent
-    then
-      # entry is local file
-      (builtins.dirOf cfg.packageLockFile) + "/${plent.resolved}"
-    else
-      config.deps.mkDerivation {
-        inherit name;
-        inherit (plent) version;
-        src = fetchurl {
-          url = plent.resolved;
-          hash = plent.integrity;
-        };
-        dontBuild = true;
-        unpackPhase = ''
-          runHook preUnpack
-          unpackFallback(){
-            local fn="$1"
-            tar xf "$fn"
-          }
-          unpackCmdHooks+=(unpackFallback)
-          unpackFile $src
-          chmod -R +X .
-          runHook postUnpack
-        '';
-        installPhase = ''
-          if [ -f "$src" ]
-          then
-            # Figure out what directory has been unpacked
-            packageDir="$(find . -maxdepth 1 -type d | tail -1)"
-            echo "packageDir $packageDir"
-            # Restore write permissions
-            find "$packageDir" -type d -exec chmod u+x {} \;
-            chmod -R u+w -- "$packageDir"
-            # Move the extracted tarball into the output folder
-            mv -- "$packageDir" $out
-          elif [ -d "$src" ]
-          then
-            strippedName="$(stripHash $src)"
-            echo "strippedName $strippedName"
-            # Restore write permissions
-            chmod -R u+w -- "$strippedName"
-            # Move the extracted directory into the output folder
-            mv -- "$strippedName" $out
-          fi
-        '';
-      };
+    l.warnIfNot (plent ? resolved) "Package ${name}/${plent.version} didn't provide 'resolved' where the package can be fetched from."
+    (
+      if isLink plent
+      then
+        # entry is local file
+        (builtins.dirOf cfg.packageLockFile) + "/${plent.resolved}"
+      else if nodejsUtils.identifyGitUrl plent.resolved
+      then
+        # entry is a git dependency
+        builtins.fetchGit
+        (nodejsUtils.parseGitUrl plent.resolved)
+        // {
+          shallow = true;
+        }
+      else
+        # entry is a regular tarball / archive
+        # which usually comes from the npmjs registry
+        l.warnIfNot (plent ? integrity) "Package ${name}/${plent.version} didn't provide 'integrity' field, which is required for url dependencies."
+        config.deps.mkDerivation {
+          inherit name;
+          inherit (plent) version;
+          src = fetchurl {
+            url = plent.resolved;
+            hash = plent.integrity;
+          };
+          dontBuild = true;
+          unpackPhase = ''
+            runHook preUnpack
+            unpackFallback(){
+              local fn="$1"
+              tar xf "$fn"
+            }
+            unpackCmdHooks+=(unpackFallback)
+            unpackFile $src
+            chmod -R +X .
+            runHook postUnpack
+          '';
+          installPhase = ''
+            if [ -f "$src" ]
+            then
+              # Figure out what directory has been unpacked
+              packageDir="$(find . -maxdepth 1 -type d | tail -1)"
+              echo "packageDir $packageDir"
+              # Restore write permissions
+              find "$packageDir" -type d -exec chmod u+x {} \;
+              chmod -R u+w -- "$packageDir"
+              # Move the extracted tarball into the output folder
+              mv -- "$packageDir" $out
+            elif [ -d "$src" ]
+            then
+              strippedName="$(stripHash $src)"
+              echo "strippedName $strippedName"
+              # Restore write permissions
+              chmod -R u+w -- "$strippedName"
+              # Move the extracted directory into the output folder
+              mv -- "$strippedName" $out
+            fi
+          '';
+        }
+    );
   # Lock -> Pdefs
   parse = lock:
     builtins.foldl'
