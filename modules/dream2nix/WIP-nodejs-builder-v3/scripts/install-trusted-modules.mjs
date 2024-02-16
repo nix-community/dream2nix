@@ -6,7 +6,14 @@ const { TRUSTED } = process.env;
 
 /**@type {string[]} */
 const trusted = JSON.parse(TRUSTED);
-console.log({ trusted });
+console.log(`
+---
+The following dependencies are trusted.
+---
+${trusted}
+--- 
+Change this list via 'trustedDeps' 
+`);
 
 /**
  * @type {fs.Dirent[]}*/
