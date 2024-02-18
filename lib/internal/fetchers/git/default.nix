@@ -57,10 +57,10 @@ in {
         (b.fetchGit
           (refAndRev
             // {
-              inherit url;
+              inherit url submodules;
               # disable fetching all refs if the source specifies a ref
+              shallow = true;
               allRefs = ! hasGitRef;
-              inherit submodules;
             }));
 
       # git can either be verified via revision or hash.
@@ -74,9 +74,8 @@ in {
             b.fetchGit
             (refAndRev
               // {
-                inherit url;
-                allRefs = true;
-                inherit submodules;
+                inherit url submodules;
+                shallow = true;
               })
         else
           fetchgit

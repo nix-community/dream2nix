@@ -24,6 +24,7 @@
     in
       fetchGit {
         url = l.removePrefix "git+" (builtins.head split);
+        shallow = true;
         allRefs = true;
         rev = builtins.head (builtins.tail split);
       }

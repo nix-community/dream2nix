@@ -68,6 +68,8 @@ in {
     builtins.fetchGit {
       inherit (dep) rev;
       url = dep.repo;
+      shallow = true;
+      allRefs = true;
     })
   config.lock.content.spago-lock;
 
