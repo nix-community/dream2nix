@@ -43,15 +43,14 @@
           outPath =
             builtins.fetchGit
             (
-              {url = info.url;}
+              {
+                url = info.url;
+                shallow = true;
+                allRefs = true;
+              }
               // (
                 if info ? rev
                 then {inherit (info) rev;}
-                else {}
-              )
-              // (
-                if info ? ref
-                then {inherit (info) ref;}
                 else {}
               )
               // (
