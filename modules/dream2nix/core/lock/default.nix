@@ -27,7 +27,7 @@
 
     repo_path = Path(subprocess.run(
         ['${config.paths.findRoot}'],  # noqa: E501
-        check=True, text=True, capture_output=True
+        check=True, text=True, stdout=subprocess.PIPE
     ).stdout.strip())
     lock_path_rel = Path('${config.paths.package}/${config.paths.lockFile}')  # noqa: E501
     lock_path = repo_path / lock_path_rel.relative_to(lock_path_rel.anchor)
