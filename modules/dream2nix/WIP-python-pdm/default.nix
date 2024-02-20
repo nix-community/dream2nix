@@ -75,6 +75,7 @@ in {
       buildPackages
       curl
       jq
+      mkShell
       runCommand
       stdenvNoCC
       stdenv
@@ -100,6 +101,12 @@ in {
       # all packages attrs prefixed with version
       (lib.attrValues config.groups.default.packages);
   };
+  public.devShell = let
+    interpreter = config.deps.python.withPackages (ps: config.mkDerivation.propagatedBuildInputs);
+  in
+    config.deps.mkShell {
+      packages = [interpreter];
+    };
   groups = let
     groupNames = lib.attrNames groups_with_deps;
     populateGroup = groupname: let
@@ -131,7 +138,7 @@ in {
             (dream2nix.overrides.python.${name} or {})
           ];
           inherit name;
-          version = pkg.version;
+          version = lib.mkDefault pkg.version;
           buildPythonPackage = {
             format = lib.mkDefault (
               if lib.hasSuffix ".whl" source.file
