@@ -135,7 +135,7 @@ in {
         inherit (cfg) env pypiSnapshotDate pipFlags pipVersion requirementsList requirementsFiles nativeBuildInputs;
         inherit (config.deps) writePureShellScript nix;
         inherit (config.paths) findRoot;
-        inherit (nixpkgs) gitMinimal nix-prefetch-scripts python3 writeText openssh;
+        inherit (nixpkgs) fetchFromGitHub fetchurl gitMinimal nix-prefetch-scripts openssh python3 rustPlatform writeText;
         pythonInterpreter = "${python}/bin/python";
       };
       setuptools = config.deps.python.pkgs.setuptools;

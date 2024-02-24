@@ -61,7 +61,7 @@ in {
           dream2nix.modules.dream2nix.nixpkgs-overrides
         ];
         nixpkgs-overrides = {
-          exclude = ["propagatedBuildInputs"];
+          exclude = ["propagatedBuildInputs" "dependencies"];
         };
       };
       lazy-object-proxy = {

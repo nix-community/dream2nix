@@ -200,7 +200,13 @@
 
     rootOverrides =
       mapAttrs'
-      (input: lockKey: nameValuePair lockKey (impureOverrides.${input} or null))
+      (input: lockKey': let
+        lockKey =
+          if builtins.isList lockKey'
+          then builtins.concatStringsSep "/" lockKey'
+          else lockKey';
+      in
+        nameValuePair lockKey (impureOverrides.${input} or null))
       lockFile.nodes.${lockFile.root}.inputs;
 
     allNodes =

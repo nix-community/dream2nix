@@ -79,7 +79,7 @@ in {
 
     refresh = l.mkOption {
       type = t.package;
-      description = "Script to refresh the cache file of this package";
+      description = "Script to refresh the lock file";
       readOnly = true;
     };
 

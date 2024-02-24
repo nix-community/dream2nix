@@ -7,7 +7,7 @@
   };
 
   inputs = {
-    nixpkgs.url = "nixpkgs/nixos-unstable";
+    nixpkgs.url = "nixpkgs/nixpkgs-unstable";
 
     flake-parts.url = "github:hercules-ci/flake-parts";
     flake-parts.inputs.nixpkgs-lib.follows = "nixpkgs";
@@ -19,7 +19,7 @@
     pre-commit-hooks.inputs.nixpkgs.follows = "nixpkgs";
 
     nix-unit.url = "github:nix-community/nix-unit";
-    # nix-unit.inputs.nixpkgs.follows = "nixpkgs";
+    nix-unit.inputs.nixpkgs.follows = "nixpkgs";
     nix-unit.inputs.flake-parts.follows = "flake-parts";
 
     devshell = {
