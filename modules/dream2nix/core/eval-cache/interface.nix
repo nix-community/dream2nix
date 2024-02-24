@@ -49,7 +49,7 @@ in {
 
     refresh = l.mkOption {
       type = t.path;
-      description = "Script to refresh the cache file of this package";
+      description = "Script to refresh the eval cache file";
       readOnly = true;
     };
   };
