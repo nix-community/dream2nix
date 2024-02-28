@@ -179,11 +179,11 @@
 <p>To package a piece of software with dream2nix, you'd typically start with
 a bare-bones dream2nix flake like this:</p>
 <pre><code class="language-nix">{
-  description = &quot;My flake a dream2nix package&quot;;
+  description = "My flake a dream2nix package";
 
   inputs = {
-    dream2nix.url = &quot;github:nix-community/dream2nix&quot;;
-    nixpkgs.follows = &quot;dream2nix/nixpkgs&quot;;
+    dream2nix.url = "github:nix-community/dream2nix";
+    nixpkgs.follows = "dream2nix/nixpkgs";
   };
 
   outputs = inputs @ {
@@ -192,7 +192,7 @@ a bare-bones dream2nix flake like this:</p>
     nixpkgs,
     ...
   }: let
-    system = &quot;x86_64-linux&quot;;
+    system = "x86_64-linux";
   in {
     packages.${system}.default = dream2nix.lib.evalModules {
       packageSets.nixpkgs = inputs.dream2nix.inputs.nixpkgs.legacyPackages.${system};
@@ -200,7 +200,7 @@ a bare-bones dream2nix flake like this:</p>
         ./default.nix
         {
           paths.projectRoot = ./.;
-          paths.projectRootFile = &quot;flake.nix&quot;;
+          paths.projectRootFile = "flake.nix";
           paths.package = ./.;
         }
       ];
@@ -223,8 +223,8 @@ a bare-bones dream2nix flake like this:</p>
     # dependencies go here
   };
 
-  name = &quot;my-package-name&quot;;
-  version = &quot;2.7.1&quot;;
+  name = "my-package-name";
+  version = "2.7.1";
 
   # Ecosystem-dependent package definition goes here
 }

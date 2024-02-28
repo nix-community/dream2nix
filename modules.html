@@ -185,7 +185,7 @@ Also I recommend watching @edolstra 's <a href="https://www.youtube.com/watch?v=
 <pre><code class="language-nix">{
   htop-mod = let
     htop-overridden = pkgs.htop.overrideAttrs (old: {
-      pname = &quot;htop-mod&quot;;
+      pname = "htop-mod";
     });
   in
     htop-overridden.override (old: {
@@ -197,7 +197,7 @@ Also I recommend watching @edolstra 's <a href="https://www.youtube.com/watch?v=
 <pre><code class="language-nix">{
   htop-mod = {
     imports = [./htop.nix];
-    name = lib.mkForce &quot;htop-mod&quot;;
+    name = lib.mkForce "htop-mod";
     flags.sensorsSupport = false;
   };
 }
@@ -207,7 +207,7 @@ Also I recommend watching @edolstra 's <a href="https://www.youtube.com/watch?v=
 <p>The following code in nixpkgs mkDerivation mysteriously skips the patches:</p>
 <pre><code class="language-nix">mkDerivation {
   # ...
-  dontPatch = &quot;false&quot;;
+  dontPatch = "false";
 }
 </code></pre>
 <p>... while doing the same using <code>dream2nix</code> raises an informative type error:</p>
@@ -232,7 +232,7 @@ Defining <code>SOME_VARIABLE</code> at the top-level, would raise:</p>
 <pre><code class="language-nix">{
   my-package = {
     # ...
-    env.SOME_VARIABLE = &quot;example&quot;;
+    env.SOME_VARIABLE = "example";
   };
 }
 </code></pre>
