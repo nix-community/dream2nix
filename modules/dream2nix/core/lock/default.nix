@@ -220,7 +220,7 @@ in {
     lock.lib = {inherit computeFODHash;};
 
     deps = {nixpkgs, ...}:
-      l.mapAttrs (_: l.mkDefault) {
+      l.mapAttrs (_: l.mkOverride 1004) {
         inherit (nixpkgs) bash nix writeScriptBin;
         inherit (nixpkgs.writers) writePython3 writePython3Bin;
       };
