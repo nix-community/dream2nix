@@ -56,7 +56,7 @@
   });
 
   allExamples = flip mapAttrs' exampleFlakes (name: example: {
-    name = "example-package-${name}";
+    name = "example-${name}";
     value = example.flake;
   });
 in {
