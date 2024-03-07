@@ -6,9 +6,6 @@ on:
 
 jobs:
   lockfile:
-    strategy:
-      matrix:
-        flake-dir: [ ".", "./dev-flake" ]
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
@@ -16,9 +13,9 @@ jobs:
       - name: Install Nix
         uses: DeterminateSystems/nix-installer-action@main
       - name: Update flake.lock
-        uses: DeterminateSystems/update-flake-lock@main
+        uses: DavHau/update-flake-lock@main
         with:
           pr-title: "Update nixpkgs"
           pr-labels: dependencies
           inputs: nixpkgs
-          path-to-flake-dir: ${{ matrix.flake-dir }}
+          flake-dirs: . ./dev-flake

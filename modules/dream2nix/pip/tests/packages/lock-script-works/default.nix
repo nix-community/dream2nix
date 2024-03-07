@@ -42,9 +42,9 @@ in {
       # - the path to the nixpkgs
       # - TODO: the implementation of the fetch script
       name = let
-        hash = builtins.hashString "sha256" (builtins.unsafeDiscardStringContext ''
-          ${pkgs.path}
-        '');
+        hash =
+          builtins.hashString "sha256"
+          (builtins.unsafeDiscardStringContext (toString pkgs.path));
       in "pip-lock-script-works-${lib.substring 0 16 hash}";
     } ''
       cp -r ${config.mkDerivation.src}/* .
