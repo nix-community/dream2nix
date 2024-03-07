@@ -21,6 +21,16 @@
       # doesn't need to be rendered
       "_template"
     ];
+    public = lib.genAttrs [
+      "nodejs-devshell-v3"
+      "nodejs-node-modules-v3"
+      "nodejs-package-json-v3"
+      "nodejs-package-lock-v3"
+      "php-composer-lock"
+      "pip"
+      "rust-cargo-lock"
+      "rust-crane"
+    ] (name: null);
   in {
     render.inputs =
       lib.flip lib.mapAttrs
@@ -48,6 +58,10 @@
           else "";
         baseUrl = "https://github.com/nix-community/dream2nix/blob/master";
         separateEval = true;
+        chapter =
+          if public ? ${name}
+          then "Modules"
+          else "Modules (Internal + Experimental)";
       });
   };
 }

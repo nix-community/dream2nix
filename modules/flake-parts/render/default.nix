@@ -307,6 +307,14 @@ in {
             Remove local anchor links, a workaround for proper {option}`` support in the doc tooling.
           '';
         };
+
+        chapter = mkOption {
+          type = types.str;
+          default = "Chapter";
+          description = ''
+            Name of the chapter to put this modules docs in.
+          '';
+        };
       };
       config = {
         _nixosOptionsDoc = pkgs.nixosOptionsDoc {
@@ -373,14 +381,33 @@ in {
           # Summary
           # - [Reference Documentation]()
           #   - [core (built in)](./options/core.md)
-          generated-summary-md = pkgs.writeText "SUMMARY.md" ''
-            ${
-              lib.concatStringsSep "\n"
-              (lib.mapAttrsToList
-                (name: inputCfg: "  - [${inputCfg.sourceName}](./options/${name}.md)")
-                cfg.inputs)
-            }
-          '';
+          generated-summary-md = let
+            chapters = lib.zipAttrs (
+              lib.mapAttrsToList
+              (name: inputCfg: {
+                ${inputCfg.chapter} = inputCfg // {inherit name;};
+              })
+              cfg.inputs
+            );
+          in
+            pkgs.writeText "SUMMARY.md" ''
+              ${
+                lib.concatStringsSep "\n"
+                (
+                  lib.flatten (
+                    lib.mapAttrsToList
+                    (
+                      chapter: inputs:
+                        ["  - [${chapter}]()"]
+                        ++ (map
+                          (inputCfg: "    - [${inputCfg.sourceName}](./options/${inputCfg.name}.md)")
+                          inputs)
+                    )
+                    chapters
+                  )
+                )
+              }
+            '';
           generated-docs =
             pkgs.runCommand "generated-docs"
             {
