@@ -13,7 +13,7 @@ To use multiple packages in a repository, keep only each packages' `default.nix`
 
 ## Usage example
 
-For example, in order to initialize a php-package from `packages/single-language/php-package/`:
+For example, in order to initialize a php-package from `packages/languages/php-packaging/`:
 
 ```shellSession
 # create new single package repo for php

@@ -61,9 +61,7 @@ And a `default.nix` that looks like this:
 
 To find out which dream2nix modules to import, browse through the modules
 on the left and the [examples](./examples.md). When getting started, the
-'single-language' collection will be most helpful. Once you're comfortable
-packaging a single single-language project, you could look into packaging
-a repository containing multiple packages, or a multi-language package.
+'/packages/languages' collection will be most helpful.
 
 Once you have imported a module, this module will make ecosystem-dependent
 functions available to create your package definition, such as `mkDerivation`
