@@ -1,0 +1,16 @@
+
+[project]
+name = "my-project"
+version = "0.1.0"
+description = ""
+requires-python = ">=3.10"
+license = {text = "MIT"}
+dependencies = [
+    "jupyterlab>=4.1.4",
+]
+
+
+[tool.pdm.options]
+add = ["--no-sync", "--no-self"]
+update = ["--no-sync", "--no-self"]
+remove = ["--no-sync", "--no-self"]

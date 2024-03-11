@@ -76,6 +76,7 @@ in {
       curl
       jq
       mkShell
+      pdm
       runCommand
       stdenvNoCC
       stdenv
@@ -102,10 +103,16 @@ in {
       (lib.attrValues config.groups.default.packages);
   };
   public.devShell = let
-    interpreter = config.deps.python.withPackages (ps: config.mkDerivation.propagatedBuildInputs);
+    interpreter = config.deps.python.withPackages (
+      ps:
+        config.mkDerivation.propagatedBuildInputs
+    );
   in
     config.deps.mkShell {
-      packages = [interpreter];
+      packages = [
+        config.deps.pdm
+        interpreter
+      ];
     };
   groups = let
     groupNames = lib.attrNames groups_with_deps;
