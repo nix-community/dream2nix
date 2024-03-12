@@ -176,76 +176,6 @@
                 <div id="content" class="content">
                     <main>
                         <h1 id="wip-groups"><a class="header" href="#wip-groups">WIP-groups</a></h1>
-<p>Module to deal with package sets (so called groups in dream2nix)</p>
-<h2 id="separate-different-kinds-of-dependencies"><a class="header" href="#separate-different-kinds-of-dependencies">Separate different kinds of dependencies</a></h2>
-<p>Many language specific package managers support declaration of different kinds of dependencies like, for example:</p>
-<ul>
-<li><code>dependencies</code>, <code>devDependencies</code> in nodejs</li>
-<li><code>dependencies</code>, <code>optional-dependencies.dev</code>, <code>optional-dependencies.test</code>, etc. in python</li>
-</ul>
-<p>The dream2nix groups module allows to keep the upstream separation by splitting the dependency definitions into different attribute sets located at:</p>
-<pre><code>config.groups.&lt;group&gt;.packages.&lt;name&gt;.&lt;version&gt;
-</code></pre>
-<p>This separation is relevant because not all dependencies are needed for all targets.
-A devShell for example requires the dev dependencies, while the runtime environment of the built package does not.</p>
-<h2 id="re-use-package-definitions"><a class="header" href="#re-use-package-definitions">Re-use package definitions</a></h2>
-<p>Each package definition in a group contains two important attributes:</p>
-<ul>
-<li><code>[...].packages.&lt;name&gt;.&lt;version&gt;.module</code>: for the package definition</li>
-<li><code>[...].packages.&lt;name&gt;.&lt;version&gt;.public</code>: for the final evaluated derivation</li>
-</ul>
-<p>Having the package definition (<code>module</code>) separated from the result allows to re-use the definition elsewhere.
-For example, a new group could be assembled by referring to the <code>modules</code> of existing groups:</p>
-<pre><code class="language-nix">{config, dream2nix, ...}: {
-
-  # TODO: This is too complex. Defining a selector function should be enough to
-  #   assemble new groups.
-  # Any specifics about a package other than it's `ecosystem`, `name, `version
-  #   are not important, as everything else is expressed via override modules.
-  # Simply naming the keys of packages should be sufficient to assemble groups.
-
-  # The dev group
-  groups.dev = {
-
-    # a hello package
-    packages.hello."1.0.0".module = {
-      imports = [
-        dream2nix.modules.dream2nix.mkDerivation
-      ];
-      name = "hello";
-      version = "1.0.0";
-      mkDerivation.buildPhase = lib.mkForce ''echo "Hello World!" &gt; $out''
-    };
-
-    # a modified hello package depending on the original hello definition
-    packages.hello-mod."1.0.0".module = {
-      imports = [
-        # import the module definition of `hello` from above
-        config.groups.dev.packages.hello.module
-      ];
-      mkDerivation.buildPhase = ''echo "Good Bye World!" &gt; $out'';
-    };
-  };
-
-  # The test group
-  groups.test = {
-
-    # a hello package based on `hello`` from the `dev` group
-    packages.hello."1.0.0".module = {
-      imports = [
-        # import the module definition of `hello` from the `dev` group
-        config.groups.dev.packages.hello.module
-      ];
-      mkDerivation.buildPhase = ''echo "Happy testing!" &gt; $out''
-    };
-  }
-}
-</code></pre>
-<h2 id="todos"><a class="header" href="#todos">TODOs</a></h2>
-<ul>
-<li>Expose all package candidates somehow (not grouped)</li>
-<li>Create groups by simply defining <code>selector</code> functions instead of referring to other group's packages modules.</li>
-</ul>
 <h2 id="import"><a class="header" href="#import">Import</a></h2>
 <p>To import this module into your dream2nix package:</p>
 <pre><code class="language-nix">imports = [
@@ -272,7 +202,7 @@ href="#opt-groups._name_.overrides"><code>groups.&lt;name&gt;.overrides</code></
 <p><em>Type:</em> lazy attribute set of (submodule)</p>
 <p><em>Declared by:</em></p>
 <p><a
-href="https://github.com/nix-community/dream2nix/blob/master/nix/store/3n4j94v9jp8fjap4b76lxsknp37b6pqw-source/modules/dream2nix/WIP-groups/interface.nix"><code>dream2nix/nix/store/3n4j94v9jp8fjap4b76lxsknp37b6pqw-source/modules/dream2nix/WIP-groups/interface.nix</code></a></p>
+href="https://github.com/nix-community/dream2nix/blob/master/nix/store/qdnlhspb0r8pwdphxzqvpj7f3n7w7mh8-source/modules/dream2nix/WIP-groups/interface.nix"><code>dream2nix/nix/store/qdnlhspb0r8pwdphxzqvpj7f3n7w7mh8-source/modules/dream2nix/WIP-groups/interface.nix</code></a></p>
 <h2><a href="#opt-groups._name_.packages"
 id="opt-groups._name_.packages"><code>groups.&lt;name&gt;.packages</code></a></h2>
 <p>Contains all packages for the current group in the forma of a set
@@ -299,7 +229,7 @@ like:</p>
 (submodule)</p>
 <p><em>Declared by:</em></p>
 <p><a
-href="https://github.com/nix-community/dream2nix/blob/master/nix/store/3n4j94v9jp8fjap4b76lxsknp37b6pqw-source/modules/dream2nix/WIP-groups/interface.nix"><code>dream2nix/nix/store/3n4j94v9jp8fjap4b76lxsknp37b6pqw-source/modules/dream2nix/WIP-groups/interface.nix</code></a></p>
+href="https://github.com/nix-community/dream2nix/blob/master/nix/store/qdnlhspb0r8pwdphxzqvpj7f3n7w7mh8-source/modules/dream2nix/WIP-groups/interface.nix"><code>dream2nix/nix/store/qdnlhspb0r8pwdphxzqvpj7f3n7w7mh8-source/modules/dream2nix/WIP-groups/interface.nix</code></a></p>
 <h2><a href="#opt-groups._name_.packages._name_._name_.module"
 id="opt-groups._name_.packages._name_._name_.module"><code>groups.&lt;name&gt;.packages.&lt;name&gt;.&lt;name&gt;.module</code></a></h2>
 <p>The package configuration</p>
@@ -307,7 +237,7 @@ id="opt-groups._name_.packages._name_._name_.module"><code>groups.&lt;name&gt;.p
 <p><em>Default:</em> <code>{ }</code></p>
 <p><em>Declared by:</em></p>
 <p><a
-href="https://github.com/nix-community/dream2nix/blob/master/nix/store/3n4j94v9jp8fjap4b76lxsknp37b6pqw-source/modules/dream2nix/WIP-groups/interface.nix"><code>dream2nix/nix/store/3n4j94v9jp8fjap4b76lxsknp37b6pqw-source/modules/dream2nix/WIP-groups/interface.nix</code></a></p>
+href="https://github.com/nix-community/dream2nix/blob/master/nix/store/qdnlhspb0r8pwdphxzqvpj7f3n7w7mh8-source/modules/dream2nix/WIP-groups/interface.nix"><code>dream2nix/nix/store/qdnlhspb0r8pwdphxzqvpj7f3n7w7mh8-source/modules/dream2nix/WIP-groups/interface.nix</code></a></p>
 <h2><a href="#opt-groups._name_.packages._name_._name_.public"
 id="opt-groups._name_.packages._name_._name_.public"><code>groups.&lt;name&gt;.packages.&lt;name&gt;.&lt;name&gt;.public</code></a></h2>
 <p>The evaluated package ready to consume</p>
@@ -315,7 +245,7 @@ id="opt-groups._name_.packages._name_._name_.public"><code>groups.&lt;name&gt;.p
 <p><em>Default:</em> <code>config.evaluated.public</code></p>
 <p><em>Declared by:</em></p>
 <p><a
-href="https://github.com/nix-community/dream2nix/blob/master/nix/store/3n4j94v9jp8fjap4b76lxsknp37b6pqw-source/modules/dream2nix/WIP-groups/interface.nix"><code>dream2nix/nix/store/3n4j94v9jp8fjap4b76lxsknp37b6pqw-source/modules/dream2nix/WIP-groups/interface.nix</code></a></p>
+href="https://github.com/nix-community/dream2nix/blob/master/nix/store/qdnlhspb0r8pwdphxzqvpj7f3n7w7mh8-source/modules/dream2nix/WIP-groups/interface.nix"><code>dream2nix/nix/store/qdnlhspb0r8pwdphxzqvpj7f3n7w7mh8-source/modules/dream2nix/WIP-groups/interface.nix</code></a></p>
 <h2><a href="#opt-groups._name_.overrideAll"
 id="opt-groups._name_.overrideAll"><code>groups.&lt;name&gt;.overrideAll</code></a></h2>
 <p>Common configuration for all packages in all groups</p>
@@ -323,7 +253,7 @@ id="opt-groups._name_.overrideAll"><code>groups.&lt;name&gt;.overrideAll</code><
 <p><em>Default:</em> <code>{ }</code></p>
 <p><em>Declared by:</em></p>
 <p><a
-href="https://github.com/nix-community/dream2nix/blob/master/nix/store/3n4j94v9jp8fjap4b76lxsknp37b6pqw-source/modules/dream2nix/WIP-groups/interface.nix"><code>dream2nix/nix/store/3n4j94v9jp8fjap4b76lxsknp37b6pqw-source/modules/dream2nix/WIP-groups/interface.nix</code></a></p>
+href="https://github.com/nix-community/dream2nix/blob/master/nix/store/qdnlhspb0r8pwdphxzqvpj7f3n7w7mh8-source/modules/dream2nix/WIP-groups/interface.nix"><code>dream2nix/nix/store/qdnlhspb0r8pwdphxzqvpj7f3n7w7mh8-source/modules/dream2nix/WIP-groups/interface.nix</code></a></p>
 <h2><a href="#opt-groups._name_.overrides"
 id="opt-groups._name_.overrides"><code>groups.&lt;name&gt;.overrides</code></a></h2>
 <p>Holds overrides for the packages in the current groups</p>
@@ -331,7 +261,7 @@ id="opt-groups._name_.overrides"><code>groups.&lt;name&gt;.overrides</code></a><
 <p><em>Default:</em> <code>{ }</code></p>
 <p><em>Declared by:</em></p>
 <p><a
-href="https://github.com/nix-community/dream2nix/blob/master/nix/store/3n4j94v9jp8fjap4b76lxsknp37b6pqw-source/modules/dream2nix/WIP-groups/interface.nix"><code>dream2nix/nix/store/3n4j94v9jp8fjap4b76lxsknp37b6pqw-source/modules/dream2nix/WIP-groups/interface.nix</code></a></p>
+href="https://github.com/nix-community/dream2nix/blob/master/nix/store/qdnlhspb0r8pwdphxzqvpj7f3n7w7mh8-source/modules/dream2nix/WIP-groups/interface.nix"><code>dream2nix/nix/store/qdnlhspb0r8pwdphxzqvpj7f3n7w7mh8-source/modules/dream2nix/WIP-groups/interface.nix</code></a></p>
 <h2><a href="#opt-overrideAll"
 id="opt-overrideAll"><code>overrideAll</code></a></h2>
 <p>Common overrides for all packages. Gets applied on all groups.</p>
@@ -345,7 +275,7 @@ id="opt-overrideAll"><code>overrideAll</code></a></h2>
 }</code></pre>
 <p><em>Declared by:</em></p>
 <p><a
-href="https://github.com/nix-community/dream2nix/blob/master/nix/store/3n4j94v9jp8fjap4b76lxsknp37b6pqw-source/modules/dream2nix/WIP-groups/interface.nix"><code>dream2nix/nix/store/3n4j94v9jp8fjap4b76lxsknp37b6pqw-source/modules/dream2nix/WIP-groups/interface.nix</code></a></p>
+href="https://github.com/nix-community/dream2nix/blob/master/nix/store/qdnlhspb0r8pwdphxzqvpj7f3n7w7mh8-source/modules/dream2nix/WIP-groups/interface.nix"><code>dream2nix/nix/store/qdnlhspb0r8pwdphxzqvpj7f3n7w7mh8-source/modules/dream2nix/WIP-groups/interface.nix</code></a></p>
 <h2><a href="#opt-overrides"
 id="opt-overrides"><code>overrides</code></a></h2>
 <p>Overrides for specific package names. Gets applied on all groups.</p>
@@ -361,7 +291,7 @@ id="opt-overrides"><code>overrides</code></a></h2>
 }</code></pre>
 <p><em>Declared by:</em></p>
 <p><a
-href="https://github.com/nix-community/dream2nix/blob/master/nix/store/3n4j94v9jp8fjap4b76lxsknp37b6pqw-source/modules/dream2nix/WIP-groups/interface.nix"><code>dream2nix/nix/store/3n4j94v9jp8fjap4b76lxsknp37b6pqw-source/modules/dream2nix/WIP-groups/interface.nix</code></a></p>
+href="https://github.com/nix-community/dream2nix/blob/master/nix/store/qdnlhspb0r8pwdphxzqvpj7f3n7w7mh8-source/modules/dream2nix/WIP-groups/interface.nix"><code>dream2nix/nix/store/qdnlhspb0r8pwdphxzqvpj7f3n7w7mh8-source/modules/dream2nix/WIP-groups/interface.nix</code></a></p>
 
                     </main>
 
