@@ -46,7 +46,10 @@
       then (lib.head (lib.attrValues config.groups.default.packages.setuptools)).public
       else config.deps.python.pkgs.setuptools;
   in {
-    mkDerivation.buildInputs =
+    imports = [
+      dream2nix.modules.dream2nix.mkDerivation
+    ];
+    config.mkDerivation.buildInputs =
       lib.optionals
       (! lib.hasSuffix ".whl" cfg.mkDerivation.src)
       [setuptools];
@@ -88,7 +91,6 @@ in {
     deps = {nixpkgs, ...}: {
       python = lib.mkDefault config.deps.python;
     };
-    sourceSelector = lib.mkOptionDefault config.pdm.sourceSelector;
   };
   pdm.sourceSelector = lib.mkDefault libpdm.preferWheelSelector;
   buildPythonPackage = {
@@ -146,6 +148,7 @@ in {
           ];
           inherit name;
           version = lib.mkDefault pkg.version;
+          sourceSelector = lib.mkOptionDefault config.pdm.sourceSelector;
           buildPythonPackage = {
             format = lib.mkDefault (
               if lib.hasSuffix ".whl" source.file
