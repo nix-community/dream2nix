@@ -27,9 +27,6 @@
       "_template"
     ];
     public = lib.genAttrs [
-      "nodejs-devshell-v3"
-      "nodejs-node-modules-v3"
-      "nodejs-package-json-v3"
       "nodejs-package-lock-v3"
       "php-composer-lock"
       "pip"
