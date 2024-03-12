@@ -9,6 +9,7 @@
     inputs',
     pkgs,
     lib,
+    system,
     ...
   }: let
     highlight-js = let
@@ -62,7 +63,7 @@
     #     touch $out
     #   '';
 
-    packages = {
+    packages = lib.optionalAttrs (system == "x86_64-linux") {
       website = pkgs.stdenvNoCC.mkDerivation {
         name = "website";
         nativeBuildInputs = [pkgs.mdbook pkgs.mdbook-linkcheck];
@@ -71,7 +72,7 @@
           runHook preBuild
 
           rm ./src/intro.md
-          cp ${../../../README.md} ./src/intro.md
+          cp ${../../../../README.md} ./src/intro.md
 
           # insert highlight.js
           cp ${highlight-js} ./src/highlight.js
@@ -95,7 +96,7 @@
           } < SUMMARY.md.orig > src/SUMMARY.md
 
           mkdir -p ./theme
-          cp ${../../dream2nix/core/docs/theme/favicon.png} ./theme/favicon.png
+          cp ${../../../dream2nix/core/docs/theme/favicon.png} ./theme/favicon.png
 
           mkdir -p src/options
           for f in ${config.generated-docs.generated-docs}/*.html; do
