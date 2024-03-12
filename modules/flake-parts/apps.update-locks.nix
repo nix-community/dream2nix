@@ -1,4 +1,4 @@
-# custom app to update the eval-cache of each exported package.
+# custom app to update the lock file of each exported package.
 {
   self,
   lib,

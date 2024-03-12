@@ -4,8 +4,6 @@
     ./docs
     ./deps
     ./env
-    ./eval-cache
-    ./flags
     ./lock
     ./paths
     ./public
