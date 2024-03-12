@@ -26,7 +26,7 @@
               continue
             fi
             echo -e "Executing tests from file $test"
-            ${inputs'.nix-unit.packages.nix-unit}/bin/nix-unit \
+            ${pkgs.nix-unit}/bin/nix-unit \
               "$test" \
               --eval-store $(realpath .) \
               --arg inputs 'builtins.fromJSON (builtins.readFile ${inputsFile})'
