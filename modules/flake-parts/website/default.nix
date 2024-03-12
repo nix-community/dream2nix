@@ -3,6 +3,10 @@
   lib,
   ...
 }: {
+  imports = [
+    ./render
+    ./site
+  ];
   perSystem = {
     config,
     self',
