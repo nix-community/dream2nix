@@ -21,6 +21,7 @@
       "ui"
       "docs"
       "assertions"
+      "nixpkgs-overrides"
 
       # doesn't need to be rendered
       "_template"
@@ -43,12 +44,8 @@
           ! (lib.elem name excludes))
         (self.modules.dream2nix))
       (name: module: {
+        inherit module;
         title = name;
-        # module = self.modules.dream2nix.${name};
-        module =
-          if lib.pathExists (self.modules.dream2nix.${name} + /interface.nix)
-          then (self.modules.dream2nix.${name} + /interface.nix)
-          else module;
         sourcePath = self;
         attributePath = [
           "dream2nix"

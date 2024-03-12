@@ -155,11 +155,7 @@ in {
           )
           opt.declarations;
       in
-        if
-          ((lib.head opt.loc) == sourceName)
-          || (topLevelOptions ? "${(lib.head opt.loc)}")
-        then opt // {inherit declarations;}
-        else opt // {visible = false;};
+        opt // {inherit declarations;};
 
     inputModule = {
       config,
