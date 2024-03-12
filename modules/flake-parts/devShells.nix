@@ -35,7 +35,7 @@
             ]))
           ]
           ++ (lib.optionals pkgs.stdenv.isLinux [
-            inputs'.nix-unit.packages.nix-unit
+            pkgs.nix-unit
           ]);
 
         commands =
