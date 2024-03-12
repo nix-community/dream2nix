@@ -11,21 +11,25 @@ in {
   options = {
     package-func.outputs = l.mkOption {
       type = t.listOf t.str;
+      internal = true;
       description = "Outputs of the derivation this package function produces";
     };
 
     package-func.args = l.mkOption {
       type = t.lazyAttrsOf (t.either (t.listOf t.raw) t.anything);
+      internal = true;
       description = "The arguments which will be passed to `package-func.func`";
     };
 
     package-func.func = l.mkOption {
       type = t.raw;
+      internal = true;
       description = "Will be called with `package-func.args` in order to derive `package-func.result`";
     };
 
     package-func.result = l.mkOption {
       type = t.raw;
+      internal = true;
       description = ''
         The result of calling the final derivation function.
         This is not necessarily the same as `final.package`. The function output might not be compatible to the interface of `final.package` and additional logic might be needed to create `final.package`.

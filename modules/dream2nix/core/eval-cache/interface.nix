@@ -14,6 +14,7 @@ in {
       type = t.submodule {
         freeformType = t.anything;
       };
+      internal = true;
       description = ''
         The content of the cached fields.
         For example if fields.pname is set to true, then content.pname will exist.
@@ -22,6 +23,7 @@ in {
 
     invalidationFields = l.mkOption {
       type = t.attrsOf t.anything;
+      internal = true;
       description = "Fields, when changed, require refreshing the cache";
       default = {};
       example = {
@@ -31,6 +33,7 @@ in {
 
     fields = l.mkOption {
       type = t.attrsOf t.anything;
+      internal = true;
       description = "Fields for which to cache evaluation";
       default = {};
       example = {
@@ -49,6 +52,7 @@ in {
 
     refresh = l.mkOption {
       type = t.path;
+      internal = true;
       description = "Script to refresh the eval cache file";
       readOnly = true;
     };

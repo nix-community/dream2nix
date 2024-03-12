@@ -10,6 +10,7 @@ in {
   # select mkDerivation as a backend for this package
   imports = [
     dream2nix.modules.dream2nix.mkDerivation
+    dream2nix.modules.dream2nix.flags
   ];
 
   config = {
