@@ -53,7 +53,7 @@ in {
       "setuptools-scm"
     ];
 
-    drvs = {
+    overrides = {
       # We include fixes from nixpkgs for pendulum, but keep
       # our dependencies to avoid version conflicts
       pendulum = {
