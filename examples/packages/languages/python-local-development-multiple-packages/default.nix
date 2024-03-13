@@ -38,6 +38,6 @@ in {
       "${config.paths.package}/subpkg1"
       "${config.paths.package}/subpkg2"
     ];
-    drvs.subpkg2 = buildWithSetuptools;
+    overrides.subpkg2 = buildWithSetuptools;
   };
 }

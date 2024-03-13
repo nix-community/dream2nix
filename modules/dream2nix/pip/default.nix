@@ -33,6 +33,8 @@
         imports = [
           commonModule
           dependencyModule
+          cfg.overrideAll
+          (cfg.overrides.${name} or {})
           # include community overrides
           (dream2nix.overrides.python.${name} or {})
         ];

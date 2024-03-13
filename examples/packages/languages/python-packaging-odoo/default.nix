@@ -45,7 +45,7 @@ in {
     nativeBuildInputs = [config.deps.postgresql];
 
     # fix some builds via package-specific overrides
-    drvs = {
+    overrides = {
       psycopg2 = {
         imports = [
           dream2nix.modules.dream2nix.nixpkgs-overrides

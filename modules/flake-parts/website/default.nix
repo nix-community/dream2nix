@@ -27,8 +27,10 @@
       "_template"
     ];
     public = lib.genAttrs [
+      "nodejs-granular-v3"
       "nodejs-package-lock-v3"
       "php-composer-lock"
+      "php-granular"
       "pip"
       "rust-cargo-lock"
       "rust-crane"
