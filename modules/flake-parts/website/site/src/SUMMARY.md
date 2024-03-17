@@ -4,9 +4,10 @@
 - [Contact](./contact.md)
 
 # Examples
-- [examples](./examples.md)
+- [Examples](./examples.md)
 # Concepts
-- [modules](./modules.md)
+- [Modules](./modules.md)
+- [Overriding Dependencies](./overrides.md)
 
 # Modules Reference
 
