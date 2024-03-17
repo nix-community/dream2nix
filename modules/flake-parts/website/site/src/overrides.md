@@ -16,7 +16,7 @@ There are three primary methods to override dependencies in dream2nix:
 
 Global overrides apply universally to all dependencies within a specific language module in dream2nix. For instance, the Python `pip` module provides a `pip.overrideAll` option. This is particularly useful for modifying global defaults across all dependencies managed by the module.
 
-### Example
+### Global Overrides Example
 
 By default, the `pip` module disables testing for dependencies. To enable testing globally, use `overrideAll` as shown below:
 
@@ -30,7 +30,7 @@ By default, the `pip` module disables testing for dependencies. To enable testin
 
 Local overrides are specific to individual packages. This method allows for precise control over the build instructions for certain packages.
 
-### Example
+### Local Overrides Example
 
 The following override applies exclusively to the `opencv-python` package, ensuring specific build dependencies are included:
 
@@ -60,7 +60,7 @@ To contribute your overrides to the community, add them to the dream2nix source 
 
 Conditional overrides offer flexibility by allowing overrides to be applied based on specific criteria, such as dependency versions or feature flags.
 
-### Example
+### Conditionals Example
 
 The following conditional override disables tests for versions of the `pillow` package version `10.0.0` or higher:
 
@@ -74,3 +74,9 @@ The following conditional override disables tests for versions of the `pillow` p
       };
     }
     ```
+
+## List of Options
+
+Different dream2nix modules offer different options to override.
+Refer to the [documentation](https://nix-community.github.io/dream2nix) of the specific language module to see the options.
+Alternatively enter `{module-name}.overrides` into the documentation search.
