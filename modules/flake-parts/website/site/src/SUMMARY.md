@@ -4,9 +4,9 @@
 - [Contact](./contact.md)
 
 # Examples
-- [dream2nix examples](./examples.md)
+- [examples](./examples.md)
 # Concepts
-- [dream2nix modules](./modules.md)
+- [modules](./modules.md)
 
 # Modules Reference
 

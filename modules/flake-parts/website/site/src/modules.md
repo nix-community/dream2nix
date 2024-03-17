@@ -1,8 +1,10 @@
 # Why Modules?
 
 Declaring derivations as modules solves a number of issues.
-For more details on the problems, visit [DavHau/pkgs-modules](https://github.com/DavHau/pkgs-modules).
-Also I recommend watching @edolstra 's [talk about this topic](https://www.youtube.com/watch?v=dTd499Y31ig).
+
+For some more background information, check out the initial exploration of this idea at [DavHau/pkgs-modules](https://github.com/DavHau/pkgs-modules).
+
+@edolstra 's [talk about this topic](https://www.youtube.com/watch?v=dTd499Y31ig) is also worth watching.
 
 # Benefits
 
@@ -35,7 +37,7 @@ Changing options of packages in nixpkgs can require chaining different override 
 }
 ```
 
-See htop module definition [here](https://github.com/nix-community/dream2nix/blob/main/examples/dream2nix-packages-simple/htop-with-flags/default.nix).
+See htop module definition [here](https://github.com/nix-community/dream2nix/blob/main/examples/packages/basics/htop-with-flags/default.nix).
 
 ## Type safety
 
@@ -91,7 +93,7 @@ Instead it has to be defined under `env.`:
 }
 ```
 
-## Documentaiton / Discoverability
+## Documentation / Discoverability
 
 No more digging the source code to find possible options to override.
 
@@ -102,8 +104,6 @@ Every package built with `dream2nix` has a `.docs` attribute that builds an html
 ## Package blueprints
 
 With `dream2nix`, packages don't need to be fully declared. Options can be left without defaults, requiring the consumer to complete the definition.
-
-For example, this can be useful for lang2nix tools, where `src` and `version` are dynamically provided by a lock file parser.
 
 ## Flexibility
 
