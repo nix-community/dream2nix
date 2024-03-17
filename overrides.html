@@ -190,7 +190,7 @@
 </ul>
 <h2 id="global-overrides"><a class="header" href="#global-overrides">Global Overrides</a></h2>
 <p>Global overrides apply universally to all dependencies within a specific language module in dream2nix. For instance, the Python <code>pip</code> module provides a <code>pip.overrideAll</code> option. This is particularly useful for modifying global defaults across all dependencies managed by the module.</p>
-<h3 id="example"><a class="header" href="#example">Example</a></h3>
+<h3 id="global-overrides-example"><a class="header" href="#global-overrides-example">Global Overrides Example</a></h3>
 <p>By default, the <code>pip</code> module disables testing for dependencies. To enable testing globally, use <code>overrideAll</code> as shown below:</p>
 <pre><code>```nix
 {config, lib, ...}: {
@@ -200,7 +200,7 @@
 </code></pre>
 <h2 id="local-overrides"><a class="header" href="#local-overrides">Local Overrides</a></h2>
 <p>Local overrides are specific to individual packages. This method allows for precise control over the build instructions for certain packages.</p>
-<h3 id="example-1"><a class="header" href="#example-1">Example</a></h3>
+<h3 id="local-overrides-example"><a class="header" href="#local-overrides-example">Local Overrides Example</a></h3>
 <p>The following override applies exclusively to the <code>opencv-python</code> package, ensuring specific build dependencies are included:</p>
 <pre><code>```nix
 {config, lib, ...}: {
@@ -221,7 +221,7 @@
 <p>To contribute your overrides to the community, add them to the dream2nix source tree under <code>/overrides/{language}/{dependency-name}/default.nix</code>. Each dependency within an ecosystem should have its own override file. This structure ensures automatic application of these overrides during dependency resolution.</p>
 <h2 id="conditionals"><a class="header" href="#conditionals">Conditionals</a></h2>
 <p>Conditional overrides offer flexibility by allowing overrides to be applied based on specific criteria, such as dependency versions or feature flags.</p>
-<h3 id="example-2"><a class="header" href="#example-2">Example</a></h3>
+<h3 id="conditionals-example"><a class="header" href="#conditionals-example">Conditionals Example</a></h3>
 <p>The following conditional override disables tests for versions of the <code>pillow</code> package version <code>10.0.0</code> or higher:</p>
 <pre><code>```nix
 {config, lib, ...}: {
@@ -234,6 +234,10 @@
 }
 ```
 </code></pre>
+<h2 id="list-of-options"><a class="header" href="#list-of-options">List of Options</a></h2>
+<p>Different dream2nix modules offer different options to override.
+Refer to the <a href="https://nix-community.github.io/dream2nix">documentation</a> of the specific language module to see the options.
+Alternatively enter <code>{module-name}.overrides</code> into the documentation search.</p>
 
                     </main>
 
