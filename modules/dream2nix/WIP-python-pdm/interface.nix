@@ -1,7 +1,7 @@
 {
   config,
   lib,
-  dream2nix,
+  specialArgs,
   ...
 }: let
   l = lib // builtins;
@@ -17,4 +17,10 @@ in {
 
     sourceSelector = import ./sourceSelectorOption.nix {inherit lib;};
   };
+  options.groups =
+    (import ../WIP-groups/groups-option.nix {inherit config lib specialArgs;})
+    // {
+      internal = true;
+      visible = "shallow";
+    };
 }
