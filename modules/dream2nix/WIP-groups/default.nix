@@ -5,5 +5,6 @@
 }: {
   imports = [
     ./interface.nix
+    ../overrides
   ];
 }
