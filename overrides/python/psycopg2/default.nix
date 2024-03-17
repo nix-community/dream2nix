@@ -16,7 +16,4 @@ in {
 
   # add postgresql to nativeBuildInputs
   mkDerivation.nativeBuildInputs = lib.mkIf isSdist [config.deps.postgresql];
-
-  # TODO: upstream: fix setuptools collision (build-hook propagates setuptools)
-  buildPythonPackage.catchConflicts = ! isSdist;
 }

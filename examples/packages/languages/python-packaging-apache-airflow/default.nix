@@ -43,9 +43,6 @@ in {
     ];
   };
 
-  # workaround because the setuptools hook propagates its inputs resulting in conflicts
-  buildPythonPackage.catchConflicts = false;
-
   pip = {
     pypiSnapshotDate = "2023-01-01";
     requirementsList = [
@@ -71,8 +68,6 @@ in {
         # transitive dependencies (i.e. typing-extensions) are
         # compatible with the rest of our lock file.
         mkDerivation.buildInputs = [config.pip.drvs.setuptools-scm.public];
-        # workaround because the setuptools hook propagates its inputs resulting in conflicts
-        buildPythonPackage.catchConflicts = false;
       };
     };
   };
