@@ -56,9 +56,9 @@
   };
 in {
   imports = [
-    dream2nix.modules.dream2nix.WIP-groups
     dream2nix.modules.dream2nix.buildPythonPackage
     ../core/deps
+    ../overrides
     ./interface.nix
     ./lock.nix
     commonModule
@@ -86,8 +86,10 @@ in {
       ;
     python = lib.mkDefault config.deps.python3;
   };
-  overrideAll = {
+  overrideType = {
     imports = [commonModule];
+  };
+  overrideAll = {
     deps = {nixpkgs, ...}: {
       python = lib.mkDefault config.deps.python;
     };
