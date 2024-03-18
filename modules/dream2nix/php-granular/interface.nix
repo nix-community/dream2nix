@@ -24,11 +24,12 @@ in {
       deps = {
         internal = true;
         visible = "shallow";
-        type = t.lazyAttrsOf (t.lazyAttrsOf (t.submodule {
-          imports = [
+        type = t.lazyAttrsOf (t.lazyAttrsOf (t.submoduleWith {
+          modules = [
             dream2nix.modules.dream2nix.core
             cfg.overrideType
           ];
+          inherit specialArgs;
         }));
       };
       composerInstallFlags = {

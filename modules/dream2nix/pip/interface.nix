@@ -139,8 +139,8 @@ in {
         # hack because internal=true doesn't propagate to the submodule options
         visible = "shallow";
         type = t.lazyAttrsOf (t.submoduleWith {
+          inherit specialArgs;
           modules = [dream2nix.modules.dream2nix.core];
-          specialArgs = {inherit packageSets dream2nix;};
         });
         description = "drv-parts modules that define python dependencies";
       };

@@ -281,6 +281,7 @@ in {
   imports = [
     ./interface.nix
     dream2nix.modules.dream2nix.mkDerivation
+    dream2nix.modules.dream2nix.core
     (commonModule defaultPackageName defaultPackageVersion)
   ];
   deps = {nixpkgs, ...}:

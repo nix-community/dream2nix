@@ -76,6 +76,7 @@
   commonModule = {config, ...}: {
     imports = [
       dream2nix.modules.dream2nix.mkDerivation
+      dream2nix.modules.dream2nix.core
       ../buildPythonPackage
     ];
     config = {

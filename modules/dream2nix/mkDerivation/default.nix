@@ -1,10 +1,10 @@
 {
   config,
   lib,
+  dream2nix,
   ...
 }: let
   l = lib // builtins;
-  t = l.types;
 
   cfg = config.mkDerivation;
 
@@ -42,8 +42,10 @@
 in {
   imports = [
     ./interface.nix
-    ../core
     ../package-func
+    dream2nix.modules.dream2nix.deps
+    dream2nix.modules.dream2nix.env
+    dream2nix.modules.dream2nix.ui
   ];
 
   config.package-func.outputs = cfg.outputs;

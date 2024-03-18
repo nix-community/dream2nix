@@ -169,6 +169,7 @@
     {config, ...}: {
       imports = [
         dream2nix.modules.dream2nix.mkDerivation
+        dream2nix.modules.dream2nix.core
       ];
       deps = {nixpkgs, ...}:
         l.mapAttrs (_: l.mkDefault) {

@@ -1,6 +1,7 @@
 {
   config,
   lib,
+  dream2nix,
   ...
 }: let
   pdmConfig = config.deps.writeText "pdm-config.toml" ''
@@ -32,6 +33,9 @@
     popd
   '';
 in {
+  imports = [
+    dream2nix.modules.dream2nix.lock
+  ];
   lock.extraScripts = [script];
   deps = {nixpkgs, ...}:
     lib.mapAttrs (_: lib.mkDefault) {

@@ -22,7 +22,6 @@ in {
   version = "0.13.0";
 
   deps = {nixpkgs, ...}: {
-    stdenv = lib.mkForce nixpkgs.stdenv;
     jq = lib.mkForce nixpkgs.jq;
     fetchFromGitHub = nixpkgs.fetchFromGitHub;
     python = nixpkgs.python310;
