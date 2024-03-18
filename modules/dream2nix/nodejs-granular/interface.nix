@@ -2,7 +2,7 @@
   config,
   lib,
   dream2nix,
-  packageSets,
+  specialArgs,
   ...
 }: let
   l = lib // builtins;
@@ -34,12 +34,12 @@ in {
       '';
     };
     deps = {
-      type = t.lazyAttrsOf (t.lazyAttrsOf (t.submodule {
-        imports = [
+      type = t.lazyAttrsOf (t.lazyAttrsOf (t.submoduleWith {
+        modules = [
           dream2nix.modules.dream2nix.core
           dream2nix.modules.dream2nix.mkDerivation
         ];
-        _module.args = {inherit dream2nix packageSets;};
+        inherit specialArgs;
       }));
     };
   };

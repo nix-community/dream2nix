@@ -32,9 +32,12 @@ in {
       default = {};
     };
     overrides = lib.mkOption {
+      # TODO: This version of deferredModuleWith might lead to an infinite
+      #   recursion because it doesn't support specialArgs
+      #   (see custom deferredModuleWith in ../overrides/default.nix)
       type = t.lazyAttrsOf (t.deferredModuleWith {
         staticModules = [
-          {_module.args = specialArgs;}
+          {_module.args = specialArgs // {inherit specialArgs;};}
         ];
       });
       description = ''

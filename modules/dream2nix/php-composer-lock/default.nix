@@ -30,6 +30,7 @@ in {
   imports = [
     ./interface.nix
     dream2nix.modules.dream2nix.mkDerivation
+    dream2nix.modules.dream2nix.core
   ];
 
   # declare external dependencies

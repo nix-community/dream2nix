@@ -8,7 +8,8 @@
 in {
   imports = [
     ./interface.nix
-    ../mkDerivation
+    dream2nix.modules.dream2nix.mkDerivation
+    dream2nix.modules.dream2nix.deps
   ];
   config = {
     package-func.func = config.deps.python.pkgs.buildPythonPackage;

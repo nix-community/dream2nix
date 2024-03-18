@@ -83,7 +83,10 @@ in {
             #   version = "dummy-version";
             # }
           ];
-        specialArgs.dream2nix = self;
+        specialArgs.dream2nix =
+          # trace website modules
+          # lib.trace modules
+          self;
         specialArgs.packageSets.nixpkgs = pkgs;
       };
     # inputs.flake-parts.lib.evalFlakeModule

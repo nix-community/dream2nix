@@ -5,14 +5,36 @@
   ...
 }: let
   t = lib.types;
-  staticModules = [
-    {_module.args = specialArgs;}
-    config.overrideType
-  ];
+
+  # Monkey patch deferredModuleWith to accept specialArgs
+  # TODO: upstream specialArgs to deferredModuleWith in nixpkgs
+  deferredModuleWith = attrs @ {
+    staticModules ? [],
+    specialArgs ? {},
+  }:
+    t.deferredModuleWith {inherit staticModules;}
+    // {
+      inherit
+        (t.submoduleWith {
+          modules = staticModules;
+          inherit specialArgs;
+        })
+        getSubOptions
+        getSubModules
+        ;
+      substSubModules = m:
+        deferredModuleWith (attrs
+          // {
+            staticModules = m;
+          });
+    };
 in {
   options = {
     overrideAll = lib.mkOption {
-      type = t.deferredModuleWith {inherit staticModules;};
+      type = deferredModuleWith {
+        inherit specialArgs;
+        staticModules = [config.overrideType];
+      };
       description = ''
         Overrides applied on all dependencies.
       '';
@@ -23,7 +45,10 @@ in {
     };
 
     overrides = lib.mkOption {
-      type = t.attrsOf (t.deferredModuleWith {inherit staticModules;});
+      type = t.attrsOf (deferredModuleWith {
+        inherit specialArgs;
+        staticModules = [config.overrideType];
+      });
       description = ''
         Overrides applied only on dependencies matching the specified name.
       '';
@@ -37,7 +62,9 @@ in {
 
     ## INTERNAL
     overrideType = lib.mkOption {
-      type = t.deferredModule;
+      type = deferredModuleWith {
+        inherit specialArgs;
+      };
       default = {};
       internal = true;
     };

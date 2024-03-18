@@ -47,7 +47,7 @@
       else config.deps.python.pkgs.setuptools;
   in {
     imports = [
-      dream2nix.modules.dream2nix.mkDerivation
+      dream2nix.modules.dream2nix.buildPythonPackage
     ];
     config.mkDerivation.buildInputs =
       lib.optionals
@@ -56,8 +56,6 @@
   };
 in {
   imports = [
-    dream2nix.modules.dream2nix.buildPythonPackage
-    ../core/deps
     ../overrides
     ./interface.nix
     ./lock.nix

@@ -18,6 +18,7 @@ in {
     config.overrideType = {
       imports = [
         dream2nix.modules.dream2nix.mkDerivation
+        dream2nix.modules.dream2nix.core
       ];
     };
     options = l.mapAttrs (_: l.mkOption) {
@@ -49,10 +50,11 @@ in {
         internal = true;
         # hack because internal doesn't propagate to submodule options
         visible = "shallow";
-        type = t.attrsOf (t.attrsOf (t.submodule {
-          imports = [
+        type = t.attrsOf (t.attrsOf (t.submoduleWith {
+          modules = [
             cfg.overrideType
           ];
+          inherit specialArgs;
         }));
       };
     };
