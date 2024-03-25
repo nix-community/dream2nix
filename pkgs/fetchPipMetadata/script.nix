@@ -64,18 +64,30 @@
         [17:42:11.909][[::1]:56958] server connect pypi.org:443 (151.101.64.223:443)
         [17:42:11.958] Deferring layer decision, not enough data: [...]
       */
-      mitmproxy = prev.mitmproxy.overridePythonAttrs (old: rec {
-        version = "10.1.6";
-        src = fetchFromGitHub {
-          owner = "mitmproxy";
-          repo = "mitmproxy";
-          rev = "refs/tags/${version}";
-          hash = "sha256-W+gxK5bNCit1jK9ojwE/HVjUz6OJcNw6Ac1lN5FxGgw=";
-        };
-        doCheck = false;
-        pyproject = true;
-        # format = "pyproject";
-      });
+
+      aioquic-mitmproxy = curr.callPackage ./aioquic-mitmproxy.nix {};
+      urwid-mitmproxy = curr.callPackage ./urwid-mitmproxy.nix {};
+
+      mitmproxy = curr.callPackage ./mitmproxy.nix {};
+
+      # mitmproxy = prev.mitmproxy.overridePythonAttrs (old: rec {
+      #   version = "10.1.6";
+      #   src = fetchFromGitHub {
+      #     owner = "mitmproxy";
+      #     repo = "mitmproxy";
+      #     rev = "refs/tags/${version}";
+      #     hash = "sha256-W+gxK5bNCit1jK9ojwE/HVjUz6OJcNw6Ac1lN5FxGgw=";
+      #   };
+      #   doCheck = false;
+      #   pyproject = true;
+      #   pythonRelaxDeps = [
+      #     "pyopenssl"
+      #     "cryptography"
+      #   ];
+      #   propagatedBuildInputs = [
+      #     curr.aioquic-mitmproxy
+      #   ];
+      # });
       mitmproxy-rs = prev.mitmproxy-rs.overrideAttrs (old: rec {
         version = "0.4.1";
         src = fetchFromGitHub {
