@@ -54,12 +54,10 @@ in {
       # We include fixes from nixpkgs for pendulum, but keep
       # our dependencies to avoid version conflicts
       pendulum = {
-        imports = [
-          dream2nix.modules.dream2nix.nixpkgs-overrides
+        env.pyproject = null;
+        mkDerivation.propagatedBuildInputs = [
+          python.pkgs.poetry-core
         ];
-        nixpkgs-overrides = {
-          exclude = ["propagatedBuildInputs" "dependencies"];
-        };
       };
       lazy-object-proxy = {
         # setuptools-scm is required by lazy-object-proxy,
