@@ -2,7 +2,7 @@
   description = "My flake with dream2nix packages";
 
   inputs = {
-    dream2nix.url = "github:nix-community/dream2nix/pythonEnv";
+    dream2nix.url = "github:nix-community/dream2nix";
     nixpkgs.follows = "dream2nix/nixpkgs";
     flake-parts.url = "github:hercules-ci/flake-parts";
   };
