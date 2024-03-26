@@ -131,6 +131,14 @@
     else (lib.head selected).filename
   );
 
+  noValidFilenameError = filenames:
+    throw ''
+      No valid filename found in the list of filenames:
+        - ${lib.concatStringsSep "\n  - " filenames}
+      System: ${targetPlatform.system}
+      Python version: ${python3.version}
+    '';
+
   # Source selectors.
   # Prefer to select a wheel from a list of filenames.
   # Filenames should already have been filtered on environment usability.
@@ -143,7 +151,7 @@
     then wheel
     else if sdist != null
     then sdist
-    else null;
+    else noValidFilenameError filenames;
 
   # preferSdistSelector :: [String] -> String
   preferSdistSelector = filenames: let
@@ -154,7 +162,7 @@
     then sdist
     else if wheel != null
     then wheel
-    else null;
+    else noValidFilenameError filenames;
 
   # Get the dependency names out from a list of parsed deps which are
   #   required due to the current environment.
