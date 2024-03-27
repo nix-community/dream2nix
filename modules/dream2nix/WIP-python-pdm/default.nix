@@ -112,8 +112,8 @@ in {
   in
     config.deps.mkShell {
       packages = [
-        config.deps.pdm
         interpreter
+        config.deps.pdm
       ];
     };
   groups = let
