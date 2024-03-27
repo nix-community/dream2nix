@@ -108,6 +108,17 @@ in {
     interpreter = config.deps.python.withPackages (
       ps:
         config.mkDerivation.propagatedBuildInputs
+        ++ [
+          (import ./editable.nix {
+            inherit (config.deps) runCommand python;
+            inherit (pyproject) pyproject;
+            inherit libpyproject;
+            inherit lib;
+            editablePackageSources = {
+              "${pyproject.pyproject.project.name}" = /${builtins.getEnv "PWD"}/src;
+            };
+          })
+        ]
     );
   in
     config.deps.mkShell {
