@@ -8,12 +8,16 @@ title = "dream2nix"
 [output.html]
 git-repository-url = "https://github.com/nix-community/dream2nix"
 edit-url-template = "https://github.com/nix-community/dream2nix/edit/main/modules/dream2nix/{path}"
-additional-js = [ "no-edit-options.js" ]
-additional-css = [ "flake-parts.css" ]
 no-section-label = true
+additional-css = [ "style.css" ]
+additional-js = [ "no-edit-options.js" ]
 
 [output.html.print]
 enable = false  # big single page; don't need that
 
 [output.linkcheck]
 follow-web-links = false # no Internet during the build
+
+[preprocessor.toc]
+command = "mdbook-toc"
+renderer = ["html"]
