@@ -25,3 +25,7 @@ h1.menu-title::before {
     background-color: #1d1f21;
   }
 }
+/* prevents chapters without links to be grey */
+.chapter li {
+  color: #000;
+}
