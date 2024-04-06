@@ -192,18 +192,15 @@
 <p>Global overrides apply universally to all dependencies within a specific language module in dream2nix. For instance, the Python <code>pip</code> module provides a <code>pip.overrideAll</code> option. This is particularly useful for modifying global defaults across all dependencies managed by the module.</p>
 <h3 id="global-overrides-example"><a class="header" href="#global-overrides-example">Global Overrides Example</a></h3>
 <p>By default, the <code>pip</code> module disables testing for dependencies. To enable testing globally, use <code>overrideAll</code> as shown below:</p>
-<pre><code>```nix
-{config, lib, ...}: {
+<pre><code class="language-nix">{config, lib, ...}: {
   pip.overrideAll.mkDerivation.doCheck = true;
 }
-```
 </code></pre>
 <h2 id="local-overrides"><a class="header" href="#local-overrides">Local Overrides</a></h2>
 <p>Local overrides are specific to individual packages. This method allows for precise control over the build instructions for certain packages.</p>
 <h3 id="local-overrides-example"><a class="header" href="#local-overrides-example">Local Overrides Example</a></h3>
 <p>The following override applies exclusively to the <code>opencv-python</code> package, ensuring specific build dependencies are included:</p>
-<pre><code>```nix
-{config, lib, ...}: {
+<pre><code class="language-nix">{config, lib, ...}: {
   pip.overrides.opencv-python = {
     env.autoPatchelfIgnoreMissingDeps = true;
     mkDerivation.buildInputs = [
@@ -212,7 +209,6 @@
     ];
   };
 }
-```
 </code></pre>
 <p>Note: For ecosystems like Node.js that may include multiple versions of a dependency, local overrides affect all versions by default. For version-specific overrides, refer to the <a href="#conditionals">Conditionals</a> section.</p>
 <h2 id="community-overrides"><a class="header" href="#community-overrides">Community Overrides</a></h2>
@@ -223,8 +219,7 @@
 <p>Conditional overrides offer flexibility by allowing overrides to be applied based on specific criteria, such as dependency versions or feature flags.</p>
 <h3 id="conditionals-example"><a class="header" href="#conditionals-example">Conditionals Example</a></h3>
 <p>The following conditional override disables tests for versions of the <code>pillow</code> package version <code>10.0.0</code> or higher:</p>
-<pre><code>```nix
-{config, lib, ...}: {
+<pre><code class="language-nix">{config, lib, ...}: {
   pip.overrides.pillow = {
     mkDerivation.doCheck =
       if lib.versionAtLeast "10.0.0" config.version
@@ -232,7 +227,6 @@
       else true;
   };
 }
-```
 </code></pre>
 <h2 id="list-of-options"><a class="header" href="#list-of-options">List of Options</a></h2>
 <p>Different dream2nix modules offer different options to override.
