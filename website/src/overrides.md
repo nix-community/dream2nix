@@ -20,11 +20,11 @@ Global overrides apply universally to all dependencies within a specific languag
 
 By default, the `pip` module disables testing for dependencies. To enable testing globally, use `overrideAll` as shown below:
 
-    ```nix
-    {config, lib, ...}: {
-      pip.overrideAll.mkDerivation.doCheck = true;
-    }
-    ```
+```nix
+{config, lib, ...}: {
+  pip.overrideAll.mkDerivation.doCheck = true;
+}
+```
 
 ## Local Overrides
 
@@ -34,17 +34,17 @@ Local overrides are specific to individual packages. This method allows for prec
 
 The following override applies exclusively to the `opencv-python` package, ensuring specific build dependencies are included:
 
-    ```nix
-    {config, lib, ...}: {
-      pip.overrides.opencv-python = {
-        env.autoPatchelfIgnoreMissingDeps = true;
-        mkDerivation.buildInputs = [
-          pkgs.libglvnd
-          pkgs.glib
-        ];
-      };
-    }
-    ```
+```nix
+{config, lib, ...}: {
+  pip.overrides.opencv-python = {
+    env.autoPatchelfIgnoreMissingDeps = true;
+    mkDerivation.buildInputs = [
+      pkgs.libglvnd
+      pkgs.glib
+    ];
+  };
+}
+```
 
 Note: For ecosystems like Node.js that may include multiple versions of a dependency, local overrides affect all versions by default. For version-specific overrides, refer to the [Conditionals](#conditionals) section.
 
@@ -64,16 +64,16 @@ Conditional overrides offer flexibility by allowing overrides to be applied base
 
 The following conditional override disables tests for versions of the `pillow` package version `10.0.0` or higher:
 
-    ```nix
-    {config, lib, ...}: {
-      pip.overrides.pillow = {
-        mkDerivation.doCheck =
-          if lib.versionAtLeast "10.0.0" config.version
-          then false
-          else true;
-      };
-    }
-    ```
+```nix
+{config, lib, ...}: {
+  pip.overrides.pillow = {
+    mkDerivation.doCheck =
+      if lib.versionAtLeast "10.0.0" config.version
+      then false
+      else true;
+  };
+}
+```
 
 ## List of Options
 
