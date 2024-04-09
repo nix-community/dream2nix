@@ -76,6 +76,7 @@ in {
               // {
                 inherit url submodules;
                 shallow = true;
+                allRefs = ! hasGitRef;
               })
         else
           fetchgit
