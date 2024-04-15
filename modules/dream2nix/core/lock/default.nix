@@ -210,7 +210,7 @@ in {
       cd "$currDir"
 
 
-      ### Executing custom scripts defined via lock.extraScrips
+      ### Executing custom scripts defined via lock.extraScripts
 
       ${lib.concatStringsSep "\n" (map toString cfg.extraScripts)}
     '';
