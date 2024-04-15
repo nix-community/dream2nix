@@ -30,12 +30,7 @@
   wheelVersion ? "0.40.0",
   nativeBuildInputs ? [],
   # maximum release date for packages
-  pypiSnapshotDate ?
-    throw ''
-      'pypiSnapshotDate' must be specified for fetchPipMetadata.
-      Choose any date from the past.
-      Example value: "2023-01-01"
-    '',
+  pypiSnapshotDate ? null,
   # executable that returns the project root
   findRoot,
   nix,
@@ -130,17 +125,22 @@
   path = [nix gitMinimal openssh] ++ nativeBuildInputs;
 
   args = writeText "pip-args" (builtins.toJSON {
-    filterPypiResponsesScript = ./filter-pypi-responses.py;
-
-    # the python interpreter used to run the proxy script
-    mitmProxy = "${pythonWithMitmproxy}/bin/mitmdump";
-
     # convert pypiSnapshotDate to string and integrate into finalAttrs
     pypiSnapshotDate =
       if pypiSnapshotDate == null
-      # when the snapshot date is disabled, put it far into the future
-      then "9999-01-01"
+      then null
       else builtins.toString pypiSnapshotDate;
+
+    filterPypiResponsesScript =
+      if pypiSnapshotDate == null
+      then null
+      else ./filter-pypi-responses.py;
+
+    # the python interpreter used to run the proxy script
+    mitmProxy =
+      if pypiSnapshotDate == null
+      then null
+      else "${pythonWithMitmproxy}/bin/mitmdump";
 
     # add some variables to the derivation to integrate them into finalAttrs
     inherit
