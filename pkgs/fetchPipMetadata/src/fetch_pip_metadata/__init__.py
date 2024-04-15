@@ -64,21 +64,23 @@ def fetch_pip_metadata():
     with tempfile.TemporaryDirectory() as home:
         home = Path(home)
 
-        print(
-            f"selected maximum release date for python packages: {get_max_date(json_args['pypiSnapshotDate'])}",  # noqa: E501
-            file=sys.stderr,
-        )
-
-        proxy = PypiProxy(
-            executable=json_args["mitmProxy"],
-            args=[
-                "--ignore-hosts",
-                ".*files.pythonhosted.org.*",
-                "--script",
-                json_args["filterPypiResponsesScript"],
-            ],
-            env={"pypiSnapshotDate": json_args["pypiSnapshotDate"], "HOME": home},
-        )
+        if json_args.get("pypiSnapshotDate", False):
+            print(
+                f"selected maximum release date for python packages: {get_max_date(json_args['pypiSnapshotDate'])}",  # noqa: E501
+                file=sys.stderr,
+            )
+            proxy = PypiProxy(
+                executable=json_args["mitmProxy"],
+                args=[
+                    "--ignore-hosts",
+                    ".*files.pythonhosted.org.*",
+                    "--script",
+                    json_args["filterPypiResponsesScript"],
+                ],
+                env={"pypiSnapshotDate": json_args["pypiSnapshotDate"], "HOME": home},
+            )
+        else:
+            proxy = False
 
         venv_path = prepare_venv(
             (home / ".venv").absolute(),
@@ -88,15 +90,18 @@ def fetch_pip_metadata():
         )  # noqa: 501
 
         flags = json_args["pipFlags"] + [
-            "--proxy",
-            f"https://localhost:{proxy.port}",
             "--progress-bar",
             "off",
-            "--cert",
-            proxy.cafile,
             "--report",
             str(home / "report.json"),
         ]
+        if proxy:
+            flags += [
+                "--proxy",
+                f"https://localhost:{proxy.port}",
+                "--cert",
+                proxy.cafile,
+            ]
         for req in json_args["requirementsList"]:
             if req:
                 flags.append(req)
@@ -117,7 +122,8 @@ def fetch_pip_metadata():
             stdout=sys.stderr,
             stderr=sys.stderr,
         )
-        proxy.kill()
+        if proxy:
+            proxy.kill()
 
         with open(home / "report.json", "r") as f:
             report = json.load(f)
