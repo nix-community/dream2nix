@@ -15,6 +15,10 @@
     flake-compat.url = "github:nix-community/flake-compat/pull/4/head";
     flake-compat.flake = false;
 
+    # TODO: remove once merged: https://github.com/badboy/mdbook-toc/pull/52
+    mdbook-toc.url = "github:DavHau/mdbook-toc";
+    mdbook-toc.inputs.nixpkgs.follows = "nixpkgs";
+
     pre-commit-hooks.url = "github:cachix/pre-commit-hooks.nix";
     pre-commit-hooks.inputs.nixpkgs.follows = "nixpkgs";
 

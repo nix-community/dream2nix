@@ -104,18 +104,23 @@ in {
       # all packages attrs prefixed with version
       (lib.attrValues config.groups.default.packages);
   };
-  public.devShell = let
-    interpreter = config.deps.python.withPackages (
-      ps:
-        config.mkDerivation.propagatedBuildInputs
-    );
+
+  public.pyEnv = let
+    pyEnv' = config.deps.python.withPackages (ps: config.mkDerivation.propagatedBuildInputs);
   in
-    config.deps.mkShell {
-      packages = [
-        config.deps.pdm
-        interpreter
-      ];
-    };
+    pyEnv'.override (old: {
+      # namespaced packages are triggering a collision error, but this can be
+      # safely ignored. They are still set up correctly and can be imported.
+      ignoreCollisions = true;
+    });
+
+  public.devShell = config.deps.mkShell {
+    packages = [
+      config.public.pyEnv
+      config.deps.pdm
+    ];
+  };
+
   groups = let
     groupNames = lib.attrNames groups_with_deps;
     populateGroup = groupname: let

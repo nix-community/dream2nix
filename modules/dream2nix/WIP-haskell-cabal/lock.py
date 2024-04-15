@@ -46,10 +46,10 @@ for i, pkg in enumerate(pkgs):
     id = pkg["id"]
     version = pkg["pkg-version"]
 
-    print(f"[{i+1}/{pkg_len}] Resolving revision for {name}")
+    print(f"[{i+1}/{pkg_len}] Resolving revision for {name}-{version}")
 
     revisions = requests.get(
-        f"https://hackage.haskell.org/package/{name}/revisions/",
+        f"https://hackage.haskell.org/package/{name}-{version}/revisions/",
         headers={"Accept": "application/json"},
     ).json()
 

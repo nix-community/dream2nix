@@ -171,7 +171,7 @@
 
     # check phase
     checkTarget = optNullOrStr;
-    checkFLags = optList;
+    checkFlags = optList;
 
     # install phase
     installTargets = optNullOrStr;
