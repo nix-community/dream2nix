@@ -205,12 +205,12 @@ in {
 
       ### Executing auto generated refresh script
 
-      currDir="$(realpath .)"
+      currDir="$(${config.deps.coreutils}/bin/realpath .)"
       ${generatedRefreshScript}/bin/refresh
       cd "$currDir"
 
 
-      ### Executing custom scripts defined via lock.extraScrips
+      ### Executing custom scripts defined via lock.extraScripts
 
       ${lib.concatStringsSep "\n" (map toString cfg.extraScripts)}
     '';
@@ -221,7 +221,7 @@ in {
 
     deps = {nixpkgs, ...}:
       l.mapAttrs (_: l.mkOverride 1004) {
-        inherit (nixpkgs) bash nix writeScriptBin;
+        inherit (nixpkgs) bash coreutils nix writeScriptBin;
         inherit (nixpkgs.writers) writePython3 writePython3Bin;
       };
   };
