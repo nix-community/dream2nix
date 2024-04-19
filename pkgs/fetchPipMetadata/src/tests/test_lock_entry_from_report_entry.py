@@ -9,6 +9,7 @@ def metadata(**kwargs):
             name="test",
             version="0.0.0",
         ),
+        is_direct=False,
         **kwargs,
     )
 
@@ -19,6 +20,7 @@ def expect(install, sha256=None):
         url=install["download_info"]["url"],
         version=install["metadata"]["version"],
         sha256=sha256,
+        is_direct=install["is_direct"],
     )
 
 
@@ -90,6 +92,7 @@ def test_git(monkeypatch):
             "name": "mypy",
             "version": "1.7.0+dev.df4717ee2cbbeb9e47fbd0e60edcaa6f81bbd7bb",
         },
+        "is_direct": True,
     }
     expected = "mypy", {
         "rev": "df4717ee2cbbeb9e47fbd0e60edcaa6f81bbd7bb",
@@ -97,5 +100,6 @@ def test_git(monkeypatch):
         "type": "git",
         "url": "https://github.com/python/mypy",
         "version": "1.7.0+dev.df4717ee2cbbeb9e47fbd0e60edcaa6f81bbd7bb",
+        "is_direct": True,
     }
     assert l.lock_entry_from_report_entry(install, Path("foo")) == expected
