@@ -34,6 +34,26 @@ in {
         description = "the names of the selected top-level dependencies";
       };
 
+      editables = l.mkOption {
+        type = t.attrsOf (t.submodule {
+          options = {
+            drv = l.mkOption {
+              type = t.package;
+            };
+            path = l.mkOption {
+              default = null;
+              type = t.nullOr t.path;
+            };
+          };
+        });
+        internal = true;
+      };
+
+      editablesShellHook = l.mkOption {
+        type = t.str;
+        readOnly = true;
+      };
+
       # user interface
       env = l.mkOption {
         type = t.attrsOf t.str;
@@ -47,6 +67,7 @@ in {
           }
         '';
       };
+
       pypiSnapshotDate = l.mkOption {
         type = t.nullOr t.str;
         description = ''

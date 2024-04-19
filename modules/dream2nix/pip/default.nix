@@ -41,6 +41,7 @@
         config = {
           inherit name;
           inherit (info) version;
+          buildPythonPackage.editable = info.is_direct or false;
         };
       }
     )
@@ -176,6 +177,19 @@ in {
     drvs = drvs;
     rootDependencies =
       l.genAttrs (targets.default.${config.name} or []) (_: true);
+    editables =
+      lib.mapAttrs
+      (name: value: {drv = value;})
+      (lib.filterAttrs
+        (name: value: value.buildPythonPackage.editable or false)
+        cfg.drvs);
+    editablesShellHook =
+      (import ./editable.nix {
+        inherit lib;
+        inherit (config.public) pyEnv;
+        inherit (config.pip) editables;
+      })
+      .shellHook;
   };
 
   mkDerivation = {
@@ -200,6 +214,7 @@ in {
     pyEnv' = config.deps.python.withPackages (ps: config.mkDerivation.propagatedBuildInputs);
   in
     pyEnv'.override (old: {
+      # TODO do we still need this with the new catchCollisonsHook?
       # namespaced packages are triggering a collision error, but this can be
       # safely ignored. They are still set up correctly and can be imported.
       ignoreCollisions = true;
