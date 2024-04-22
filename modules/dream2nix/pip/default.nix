@@ -29,22 +29,35 @@
 
   drvs =
     l.mapAttrs (
-      name: info: {
-        imports = [
-          commonModule
-          dependencyModule
-          cfg.overrideAll
-          (cfg.overrides.${name} or {})
-          # include community overrides
-          (dream2nix.overrides.python.${name} or {})
-        ];
-        config = {
-          inherit name;
-          inherit (info) version;
-        };
-      }
+      name: info:
+        if cfg.preferredDrvs ? ${name}
+        then preferredDrvModule name
+        else {
+          imports = [
+            commonModule
+            dependencyModule
+            cfg.overrideAll
+            (cfg.overrides.${name} or {})
+            # include community overrides
+            (dream2nix.overrides.python.${name} or {})
+          ];
+          config = {
+            inherit name;
+            inherit (info) version;
+          };
+        }
     )
     metadata.sources;
+
+  preferredDrvModule = name: {config, ...}: {
+    inherit name;
+    imports = [
+      dream2nix.modules.dream2nix.package-func
+    ];
+    package-func.args = cfg.preferredDrvs;
+    package-func.func = lib.mkForce (lib.getAttrFromPath [config.name]);
+    package-func.outputs = ["out" "dist"];
+  };
 
   dependencyModule = depConfig: let
     cfg = depConfig.config;

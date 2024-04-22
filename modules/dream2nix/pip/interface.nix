@@ -134,6 +134,18 @@ in {
         '';
       };
 
+      preferredDrvs = l.mkOption {
+        type = t.lazyAttrsOf t.package;
+        default = {};
+        description = ''
+          disable dream2nix machinery and use the specified drv directly if
+          it can be found in this attribute set
+        '';
+        example = lib.literalExpression ''
+          config.deps.python.pkgs
+        '';
+      };
+
       drvs = l.mkOption {
         internal = true;
         # hack because internal=true doesn't propagate to the submodule options
