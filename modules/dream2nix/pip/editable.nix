@@ -42,9 +42,13 @@
 
     if [ -e "$editable_dir/src" ]
     then
-         echo "$editable_dir/src" > "$site_dir/${name}.pth"
+      echo "$editable_dir/src" > "$site_dir/${name}.pth"
     else
-         echo "$editable_dir" > "$site_dir/${name}.pth"
+      # TODO this approach is risky as it puts everything inside
+      # upstreams repo on $PYTHONPATH. Maybe we should try to
+      # get packages from toplevel.txt first and if found,
+      # create a dir with only them linked?
+      echo "$editable_dir" > "$site_dir/${name}.pth"
     fi
 
     # Create a .dist-info directory based on the non-editable install
@@ -64,6 +68,8 @@
   '';
 in {
   shellHook = ''
+    # TODO wrap console_scripts.
+
     # TODO pre-build envWithoutEditables
     nix build "${envWithoutEditables.drvPath}^out"
 

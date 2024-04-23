@@ -12,7 +12,7 @@ in {
   ];
 
   deps = {nixpkgs, ...}: {
-    python = nixpkgs.python310;
+    python = nixpkgs.python3;
   };
 
   inherit (pyproject.project) name version;
@@ -29,11 +29,12 @@ in {
   };
 
   pip = {
-    pypiSnapshotDate = "2023-08-27";
     requirementsList =
       pyproject.build-system.requires
       or []
       ++ pyproject.project.dependencies;
     flattenDependencies = true;
+
+    overrides.click.mkDerivation.nativeBuildInputs = [config.deps.python.pkgs.flit-core];
   };
 }

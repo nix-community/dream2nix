@@ -13,11 +13,10 @@
     ...
   }: let
     system = "x86_64-linux";
+    pkgs = inputs.dream2nix.inputs.nixpkgs.legacyPackages.${system};
   in {
-    # All packages defined in ./packages/<name> are automatically added to the flake outputs
-    # e.g., 'packages/hello/default.nix' becomes '.#packages.hello'
     packages.${system}.default = dream2nix.lib.evalModules {
-      packageSets.nixpkgs = inputs.dream2nix.inputs.nixpkgs.legacyPackages.${system};
+      packageSets.nixpkgs = pkgs;
       modules = [
         ./default.nix
         {
@@ -26,7 +25,18 @@
           paths.projectRootFile = "flake.nix";
           paths.package = ./.;
         }
+        {
+          # TODO rewrite interface to name -> bool or path
+          pip.editables.my_tool = {
+            path = "/home/phaer/src/dream2nix/examples/packages/languages/python-local-development";
+          };
+        }
       ];
+    };
+    devShells.${system}.default = pkgs.mkShell {
+      shellHook = ''
+        ${self.packages.${system}.default.config.pip.editablesShellHook}
+      '';
     };
   };
 }

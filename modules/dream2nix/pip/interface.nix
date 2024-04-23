@@ -38,7 +38,8 @@ in {
         type = t.attrsOf (t.submodule {
           options = {
             drv = l.mkOption {
-              type = t.package;
+              type = t.nullOr t.package;
+              default = null;
             };
             path = l.mkOption {
               default = null;
@@ -46,6 +47,17 @@ in {
             };
           };
         });
+        # Automatically set drv for the top-level
+        # editable.
+        apply = l.mapAttrs (
+          name: args:
+            if args.drv == null
+            then
+              if name == (l.replaceStrings ["-"] ["_"] config.name)
+              then args // {drv = config;}
+              else throw "No drv set for editable ${name}"
+            else args
+        );
         internal = true;
       };
 
