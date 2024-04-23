@@ -35,29 +35,7 @@ in {
       };
 
       editables = l.mkOption {
-        type = t.attrsOf (t.submodule {
-          options = {
-            drv = l.mkOption {
-              type = t.nullOr t.package;
-              default = null;
-            };
-            path = l.mkOption {
-              default = null;
-              type = t.nullOr t.path;
-            };
-          };
-        });
-        # Automatically set drv for the top-level
-        # editable.
-        apply = l.mapAttrs (
-          name: args:
-            if args.drv == null
-            then
-              if name == (l.replaceStrings ["-"] ["_"] config.name)
-              then args // {drv = config;}
-              else throw "No drv set for editable ${name}"
-            else args
-        );
+        type = t.attrsOf (t.nullOr t.path);
         internal = true;
       };
 

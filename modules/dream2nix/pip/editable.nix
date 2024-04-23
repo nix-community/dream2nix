@@ -2,20 +2,20 @@
   lib,
   pyEnv,
   editables,
+  drvs,
 }: let
   # TODO refactor
   envWithoutEditables = pyEnv.override (old: {
     extraLibs = builtins.filter (drv: !(lib.elem drv.pname (lib.attrNames editables))) old.extraLibs;
   });
 
-  mkEditable = name: {
-    path,
-    drv,
-  }: ''
+  mkEditable = name: path: let
+    drv = drvs.${name};
+  in ''
     source="${
       if path != null
       then path
-      else ""
+      else drv.mkDerivation.src
     }"
     editable_dir="$editables_dir/${name}"
     mkdir -p "$editable_dir"
@@ -29,9 +29,8 @@
       nix build "${drv.public.drvPath}^out"
     fi
 
-    if [ -z "$source" ]
+    if [[ "$source" == /nix/store/* ]]
     then
-      source="${drv.mkDerivation.src}"
       echo "Copying editable source from $source to $editable_dir" >/dev/stderr
       cp --recursive --remove-destination "$source/." "$editable_dir/"
       chmod -R u+w "$editable_dir"

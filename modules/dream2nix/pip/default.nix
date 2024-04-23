@@ -179,7 +179,7 @@ in {
       l.genAttrs (targets.default.${config.name} or []) (_: true);
     editables =
       lib.mapAttrs
-      (name: value: {drv = value;})
+      (name: value: lib.mkDefault null)
       (lib.filterAttrs
         (name: value: value.buildPythonPackage.editable or false)
         cfg.drvs);
@@ -188,6 +188,7 @@ in {
         inherit lib;
         inherit (config.public) pyEnv;
         inherit (config.pip) editables;
+        drvs = config.pip.drvs // {${l.replaceStrings ["-"] ["_"] config.name} = config;};
       })
       .shellHook;
   };

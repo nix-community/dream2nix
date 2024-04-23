@@ -26,10 +26,7 @@
           paths.package = ./.;
         }
         {
-          # TODO rewrite interface to name -> bool or path
-          pip.editables.my_tool = {
-            path = "/home/phaer/src/dream2nix/examples/packages/languages/python-local-development";
-          };
+          pip.editables.my_tool = "/home/phaer/src/dream2nix/examples/packages/languages/python-local-development";
         }
       ];
     };
