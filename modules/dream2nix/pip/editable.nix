@@ -1,10 +1,15 @@
 {
   lib,
+  findRoot,
   pyEnv,
   editables,
   drvs,
 }: let
-  # TODO refactor
+  # We add editables using a sitecustomize.py and site.addsitedir().
+  # The latter only supports appending to pythons path, not prepending.
+  # This means that the normal, non-editable instannce of a given package
+  # would end up in pythons bath *before* our editable, effectively overriding
+  # it. To avoid this, we build a python environment without those packages.
   envWithoutEditables = pyEnv.override (old: {
     extraLibs = builtins.filter (drv: !(lib.elem drv.pname (lib.attrNames editables))) old.extraLibs;
   });
@@ -69,12 +74,12 @@ in {
   shellHook = ''
     # TODO wrap console_scripts.
 
-    # TODO pre-build envWithoutEditables
+    # Ensure the python env is realized.
     nix build "${envWithoutEditables.drvPath}^out"
 
-    # TODO PWD might not be ideal, but PRJ_ROOT or such can't be assumed
-    editables_dir="''${PWD}/.dream2nix/editables"
-    site_dir="''${PWD}/.dream2nix/site"
+    dream2nix_dir="''$(${findRoot})/.dream2nix"
+    editables_dir="$dream2nix_dir/editables"
+    site_dir="$dream2nix_dir/site"
     mkdir -p "$editables_dir" "$site_dir"
 
     ${lib.concatStrings (lib.mapAttrsToList mkEditable editables)}

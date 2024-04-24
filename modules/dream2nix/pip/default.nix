@@ -185,6 +185,7 @@ in {
     editablesShellHook =
       (import ./editable.nix {
         inherit lib;
+        inherit (config.paths) findRoot;
         inherit (config.public) pyEnv;
         inherit (config.pip) editables;
         drvs = config.pip.drvs // {${l.replaceStrings ["-"] ["_"] config.name} = config;};
