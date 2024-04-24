@@ -182,15 +182,26 @@ in {
       l.genAttrs
       (l.filter (name: config.lock.content.fetchPipMetadata.sources.${name}.is_direct) (l.attrNames cfg.drvs))
       (n: lib.mkDefault null);
-    editablesShellHook =
-      (import ./editable.nix {
-        inherit lib;
-        inherit (config.deps) unzip;
-        inherit (config.paths) findRoot;
-        inherit (config.public) pyEnv;
-        inherit (config.pip) editables;
-        drvs = config.pip.drvs // {${l.replaceStrings ["-"] ["_"] config.name} = config;};
-      });
+    editablesShellHook = import ./editable.nix {
+      inherit lib;
+      inherit (config.deps) unzip;
+      inherit (config.paths) findRoot;
+      inherit (cfg) editables;
+      # Add the top-level package to drvs here, so it can be editable as well.
+      drvs = config.pip.drvs // {${l.replaceStrings ["-"] ["_"] config.name} = config;};
+      # We add editables using a sitecustomize.py and site.addsitedir().
+      # The latter only supports appending to pythons path, not prepending.
+      # This means that the normal, non-editable instannce of a given package
+      # would end up in pythons bath *before* our editable, effectively overriding
+      # it. To avoid this, we build a python environment without those packages.
+      pyEnv = let
+        filterInputs = fn: drv:
+          lib.unique (lib.flatten ([drv] ++ (map (drv: filterInputs fn drv) (lib.filter fn drv.propagatedBuildInputs))));
+        depsWithoutEditables =
+          filterInputs (drv: !(lib.elem drv.pname (lib.attrNames cfg.editables)));
+      in
+        config.deps.python.withPackages (ps: depsWithoutEditables);
+    };
   };
 
   mkDerivation = {
