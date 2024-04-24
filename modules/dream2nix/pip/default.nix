@@ -41,7 +41,6 @@
         config = {
           inherit name;
           inherit (info) version;
-          buildPythonPackage.editable = info.is_direct or false;
         };
       }
     )
@@ -178,11 +177,11 @@ in {
     rootDependencies =
       l.genAttrs (targets.default.${config.name} or []) (_: true);
     editables =
-      lib.mapAttrs
-      (name: value: lib.mkDefault null)
-      (lib.filterAttrs
-        (name: value: value.buildPythonPackage.editable or false)
-        cfg.drvs);
+      # Add all packages which have is_direct set to true in the lock files to editables.
+      # This affects requirements such as "click @ git+https://github.com/pallets/click.git@main"
+      l.genAttrs
+      (l.filter (name: config.lock.content.fetchPipMetadata.sources.${name}.is_direct) (l.attrNames cfg.drvs))
+      (n: lib.mkDefault null);
     editablesShellHook =
       (import ./editable.nix {
         inherit lib;

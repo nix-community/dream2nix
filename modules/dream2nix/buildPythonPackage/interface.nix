@@ -87,14 +87,6 @@ in {
         '';
       };
 
-    editable =
-      boolOpt
-      // {
-        description = ''
-          Whether this package should be installed as an "editable install".
-        '';
-      };
-
     format = l.mkOption {
       type = t.str;
       default = "setuptools";
