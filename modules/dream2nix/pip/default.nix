@@ -185,6 +185,7 @@ in {
     editablesShellHook =
       (import ./editable.nix {
         inherit lib;
+        inherit (config.deps) unzip;
         inherit (config.paths) findRoot;
         inherit (config.public) pyEnv;
         inherit (config.pip) editables;
