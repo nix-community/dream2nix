@@ -89,9 +89,19 @@
   ))}
 
     cat > "$site_dir/sitecustomize.py" <<EOF
+  import sys
   import site
   site.addsitedir("$site_dir")
+
+  # addsitedir only supports appending to the path, not prepending.
+  # As we already include a non-editable instance of each package
+  # in our pyEnv, those would shadow the editables. So we move
+  # the editables to the front of sys.path.
+  for index, path in enumerate(sys.path):
+    if path.startswith("$editables_dir"):
+      sys.path.insert(0, sys.path.pop(index))
   EOF
+
     export PYTHONPATH="$site_dir:${pyEnv}/${pyEnv.sitePackages}:$PYTHONPATH"
     export PATH="${pyEnv}/bin:$PATH"
   }
