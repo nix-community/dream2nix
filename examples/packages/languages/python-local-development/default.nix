@@ -18,7 +18,15 @@ in {
   inherit (pyproject.project) name version;
 
   mkDerivation = {
-    src = ./.;
+    src = lib.cleanSourceWith {
+      src = lib.cleanSource ./.;
+      filter = name: type:
+        !(builtins.any (x: x) [
+          (lib.hasSuffix ".nix" name)
+          (lib.hasPrefix "." (builtins.baseNameOf name))
+          (lib.hasSuffix "flake.lock" name)
+        ]);
+    };
   };
 
   buildPythonPackage = {
