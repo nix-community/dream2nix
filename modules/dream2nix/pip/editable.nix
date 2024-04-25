@@ -11,6 +11,12 @@
     local source="$2"
     local dist_info_installed="$3"
     local editable_dir="$editables_dir/$name"
+    if [ -e "$editable_dir" ]
+    then
+      echo "Skipping existing editable source in $editable_dir" >/dev/stderr
+      return
+    fi
+
     if [[ "$source" == /nix/store/*.whl ]]
     then
       echo "Extracting editable source from $source to $editable_dir" >/dev/stderr
@@ -21,7 +27,7 @@
       cp --recursive --remove-destination "$source/." "$editable_dir/"
       chmod -R u+w "$editable_dir"
     else
-      echo "Linking editable source from $source to $editable_dir"
+      echo "Linking editable source from $source to $editable_dir" >/dev/stderr
       ln -sf "$source" "$editable_dir"
     fi
 
