@@ -25,9 +25,6 @@
           paths.projectRootFile = "flake.nix";
           paths.package = ./.;
         }
-        {
-          pip.editables.my_tool = "/home/phaer/src/dream2nix/examples/packages/languages/python-local-development";
-        }
       ];
     };
     devShells.${system}.default = pkgs.mkShell {
