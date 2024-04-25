@@ -4,6 +4,7 @@
   unzip,
   pyEnv,
   editables,
+  rootName,
   drvs,
 }: ''
   dream2nix-mkEditable() {
@@ -60,7 +61,7 @@
 
   dream2nix-editablesHook() {
     # Ensure the python env is realized.
-    nix build "${pyEnv.drvPath}^out"
+    nix build --no-link "${pyEnv.drvPath}^out"
 
     local dream2nix_dir="''$(${findRoot})/.dream2nix"
     local editables_dir="$dream2nix_dir/editables"
@@ -69,21 +70,25 @@
 
     ${lib.concatStrings ((lib.flip lib.mapAttrsToList) editables (
     name: path: ''
-      # if it's not in /nix/store already. We need its
-      # .dist-info directory and might need it's unpackaged
+      # Build the non-editable package if it's not in /nix/store already.
+      # We need its .dist-info directory and might need it's unpackaged
       # source below.
       if [ ! -e "${drvs.${name}.public.out}" ]
       then
-        nix build "${drvs.${name}.public.drvPath}^out"
+        nix build --no-link "${drvs.${name}.public.drvPath}^out"
       fi
+
+      local source="${
+        if path != null
+        then path
+        else if name == rootName
+        then "$(${findRoot})"
+        else drvs.${name}.mkDerivation.src
+      }"
       # Build the editable
       dream2nix-mkEditable \
         "${lib.replaceStrings ["-"] ["_"] name}" \
-        "${
-        if path != null
-        then path
-        else drvs.${name}.mkDerivation.src
-      }" \
+         "$source" \
         "$(find ${drvs.${name}.public.out}/${pyEnv.sitePackages} -name '*.dist-info' -print -quit)"
     ''
   ))}

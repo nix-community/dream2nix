@@ -188,8 +188,9 @@ in {
       inherit (config.paths) findRoot;
       inherit (config.public) pyEnv;
       inherit (cfg) editables;
+      rootName = config.name;
       # Add the top-level package to drvs here, so it can be editable as well.
-      drvs = config.pip.drvs // {${l.replaceStrings ["-"] ["_"] config.name} = config;};
+      drvs = config.pip.drvs // {${config.name} = config;};
     };
   };
 
