@@ -25,6 +25,10 @@ in {
 
   nodejs-package-lock-v3.packageLockFile = "${config.mkDerivation.src}/package-lock.json";
 
+  deps = { nixpkgs, ... }: {
+    rsync = nixpkgs.rsync;
+  };
+
   # rsync the node_modules folder
   # - tracks node-modules store path via .dream2nix/.node_modules_id
   # - omits copying if store path did not change
