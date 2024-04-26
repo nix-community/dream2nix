@@ -66,6 +66,10 @@
     local dream2nix_dir="''$(${findRoot})/.dream2nix"
     local editables_dir="$dream2nix_dir/editables"
     local site_dir="$dream2nix_dir/site"
+    # Reset the site dir every time, so that editables which are
+    # removed are removed from the path. Don't remove $editables_dir,
+    # as that might contain uncommited changes.
+    rm -rf "$site_dir"
     mkdir -p "$editables_dir" "$site_dir"
 
     ${lib.concatStrings ((lib.flip lib.mapAttrsToList) editables (
@@ -79,6 +83,9 @@
       fi
 
       local source="${
+        # If an explicit path is set, use that one.
+        # If not, use the current project root for the root package,
+        # and copy mkDerivation.src for other packages.
         if path != null
         then path
         else if name == rootName
