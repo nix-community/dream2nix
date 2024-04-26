@@ -26,7 +26,7 @@ in {
   nodejs-package-lock-v3.packageLockFile = "${config.mkDerivation.src}/package-lock.json";
 
   deps = { nixpkgs, ... }: {
-    rsync = nixpkgs.rsync;
+    rsync = lib.mkDefault nixpkgs.rsync;
   };
 
   # rsync the node_modules folder
