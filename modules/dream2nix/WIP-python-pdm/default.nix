@@ -119,6 +119,33 @@ in {
       config.public.pyEnv
       config.deps.pdm
     ];
+    shellHook = let
+      name = libpyproject.pypa.normalizePackageName pyproject.pyproject.project.name;
+      pkgInfoFields = {
+        Metadata-Version = "2.1";
+        Name = name;
+        Version = pyproject.pyproject.project.version;
+        Summary = pyproject.pyproject.project.description;
+      };
+      pkgInfo = lib.concatStringsSep "\n" (lib.mapAttrsToList (key: value: "${key}: ${value}") pkgInfoFields);
+    in ''
+      DREAM_SITE=$PWD/.dream2nix/pdm/site-packages
+         	#Prepare .dream2nix/pdm/site-packages
+      mkdir -p $DREAM_SITE
+      export PYTHONPATH=$DREAM_SITE:$PYTHONPATH
+      touch $DREAM_SITE/sitecustomize.py
+      echo "import site; site.addsitedir('$DREAM_SITE')" > $DREAM_SITE/sitecustomize.py
+      touch $DREAM_SITE/pdm-editable.pth
+
+      #Add PTH locations
+      echo "$PWD/src" > $DREAM_SITE/pdm-editable.pth
+      echo "$PWD" >> $DREAM_SITE/pdm-editable.pth
+
+      #Add editable packages
+      mkdir -p $DREAM_SITE/${name}.egg-info
+      touch $DREAM_SITE/${name}.egg-info/PKG-INFO
+      echo "${pkgInfo}" > $DREAM_SITE/${name}.egg-info/PKG-INFO
+    '';
   };
 
   groups = let
