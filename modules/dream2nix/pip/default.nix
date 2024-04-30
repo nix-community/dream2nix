@@ -216,10 +216,6 @@ in {
     pyEnv' = config.deps.python.withPackages (ps: config.mkDerivation.propagatedBuildInputs);
   in
     pyEnv'.override (old: {
-      # TODO do we still need this with the new catchCollisonsHook?
-      # namespaced packages are triggering a collision error, but this can be
-      # safely ignored. They are still set up correctly and can be imported.
-      ignoreCollisions = true;
     });
 
   public.devShell = config.public.pyEnv.env;
