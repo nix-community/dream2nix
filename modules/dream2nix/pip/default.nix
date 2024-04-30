@@ -216,6 +216,18 @@ in {
     pyEnv' = config.deps.python.withPackages (ps: config.mkDerivation.propagatedBuildInputs);
   in
     pyEnv'.override (old: {
+      postBuild =
+        old.postBuild
+        or ""
+        + ''
+          # Nixpkgs ships a sitecustomize.py with all of it's pyEnvs to add suport for NIX_PYTHONPATH.
+          # This is unfortunate as sitecustomize is a regular module, so there can only be one.
+          # So we move nixpkgs to _sitecustomize.py, effectively removing it but allowing users
+          # to re-activate it by doing "import _sitecustomize".
+          # https://github.com/NixOS/nixpkgs/pull/297628 would fix this, but it was reverted for now in
+          # https://github.com/NixOS/nixpkgs/pull/302385
+          mv "$out/${pyEnv'.sitePackages}/sitecustomize.py" "$out/${pyEnv'.sitePackages}/_sitecustomize.py"
+        '';
     });
 
   public.devShell = config.public.pyEnv.env;

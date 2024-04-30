@@ -103,6 +103,12 @@
     cat > "$site_dir/sitecustomize.py" <<EOF
   import sys
   import site
+
+  try:
+    import _sitecustomize
+  except ImportError:
+    pass
+
   site.addsitedir("$site_dir")
 
   # addsitedir only supports appending to the path, not prepending.
