@@ -142,7 +142,7 @@ in {
         pythonInterpreter = "${python}/bin/python";
       };
       setuptools = config.deps.python.pkgs.setuptools;
-      inherit (nixpkgs) nix fetchgit;
+      inherit (nixpkgs) nix fetchgit writeText;
       inherit (writers) writePureShellScript;
     };
 
@@ -184,7 +184,7 @@ in {
       (n: lib.mkDefault null);
     editablesShellHook = import ./editable.nix {
       inherit lib;
-      inherit (config.deps) unzip;
+      inherit (config.deps) unzip writeText;
       inherit (config.paths) findRoot;
       inherit (config.public) pyEnv;
       inherit (cfg) editables;
