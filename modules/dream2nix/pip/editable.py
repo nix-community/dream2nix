@@ -1,5 +1,6 @@
 import sys
 import json
+import shutil
 import subprocess
 from pathlib import Path
 
@@ -87,15 +88,7 @@ if __name__ == "__main__":
                 f"Copying editable source from {source} to {editable_dir}",
                 file=sys.stderr,
             )
-            run(
-                [
-                    "cp",
-                    "--recursive",
-                    "--remove-destination",
-                    f"{source}/.",
-                    f"{editable_dir}/",
-                ]
-            )
+            shutil.copytree(source, editable_dir, symlinks=True)
             run(["chmod", "-R", "u+w", editable_dir])
         else:
             print(
@@ -122,15 +115,7 @@ if __name__ == "__main__":
         assert len(installed_dist_infos) == 1
         installed_dist_info = installed_dist_infos[0]
         editable_dist_info = site_dir / installed_dist_info.name
-        run(
-            [
-                "cp",
-                "--recursive",
-                "--remove-destination",
-                f"{installed_dist_info}/.",
-                f"{editable_dist_info}/",
-            ]
-        )
+        shutil.copytree(installed_dist_info, editable_dist_info, symlinks=True)
         run(["chmod", "-R", "u+w", editable_dist_info])
 
         if (editable_dist_info / "RECORD").exists():
