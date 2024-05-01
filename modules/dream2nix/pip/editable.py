@@ -1,7 +1,10 @@
+import os
 import sys
 import json
 import shutil
 import subprocess
+import configparser
+from textwrap import dedent
 from pathlib import Path
 
 
@@ -20,7 +23,16 @@ def run(args):
         sys.exit(1)
 
 
-def make_editable(site_dir, editables_dir, site_packages, drvs, name, path):
+def make_editable(
+    python_environment,
+    bin_dir,
+    site_dir,
+    editables_dir,
+    site_packages,
+    drvs,
+    name,
+    path,
+):
     normalized_name = name.replace("-", "_")
     editable_dir = editables_dir / name
     drv_out = Path(drvs[name]["out"])
@@ -36,14 +48,18 @@ def make_editable(site_dir, editables_dir, site_packages, drvs, name, path):
 
     make_editable_source(editable_dir, normalized_name, path)
     make_pth(site_dir, editable_dir, normalized_name)
-    make_dist_info(site_dir, editable_dir, site_packages, drv_out)
+    editable_dist_info = make_dist_info(site_dir, editable_dir, site_packages, drv_out)
+    make_entrypoints(python_environment, bin_dir, editable_dist_info)
 
 
 def make_editable_source(editable_dir, normalized_name, path):
+    # If a(n absolute) path is found, we use that.
     if path != None:
         source = path
+    # For the root package, we default to as symlink to this projects root
     elif name == root_name:
         source = root_dir
+    # For all others, we copy mkDerivation.src from /nix/store.
     else:
         source = drvs[name]["src"]
 
@@ -112,6 +128,42 @@ def make_dist_info(site_dir, editable_dir, site_packages, drv_out):
             f,
             indent=2,
         )
+    return editable_dist_info
+
+
+def make_entrypoints(python_environment, bin_dir, dist_info):
+    entry_points_file = dist_info / "entry_points.txt"
+    if not entry_points_file.exists():
+        return
+    entry_points = configparser.ConfigParser()
+    entry_points.read(entry_points_file)
+    if "console_scripts" not in entry_points:
+        return
+    for name, spec in entry_points["console_scripts"].items():
+        # https://setuptools.pypa.io/en/latest/userguide/entry_point.html#entry-points-syntax
+        package, obj_attrs = spec.split(":", 1) if ":" in spec else (spec, None)
+        obj, attrs = (
+            obj_attrs.split(".", 1)
+            if obj_attrs and "." in obj_attrs
+            else (obj_attrs, None)
+        )
+        script = (
+            f"#!{python_environment}/bin/python\n"
+            + dedent(
+                f"""
+                from {package} import {obj}
+                {obj}{f".{attrs}" if attrs else ""}()
+            """
+                if obj
+                else f"""
+                import {package}
+                {package}()
+            """
+            ).strip()
+        )
+        with open(bin_dir / name, "w") as f:
+            f.write(script)
+        os.chmod(bin_dir / name, 0o755)
 
 
 if __name__ == "__main__":
@@ -130,8 +182,10 @@ if __name__ == "__main__":
     root_dir = Path(run([find_root]))
     dream2nix_dir = root_dir / ".dream2nix"
     editables_dir = dream2nix_dir / "editables"
+    bin_dir = dream2nix_dir / "bin"
     site_dir = dream2nix_dir / "site"
 
+    bin_dir.mkdir(parents=True, exist_ok=True)
     editables_dir.mkdir(parents=True, exist_ok=True)
     site_dir.mkdir(parents=True, exist_ok=True)
 
@@ -139,7 +193,16 @@ if __name__ == "__main__":
     run(["nix", "build", "--no-link", python_environment])
 
     for name, path in editables.items():
-        make_editable(site_dir, editables_dir, site_packages, drvs, name, path)
+        make_editable(
+            python_environment,
+            bin_dir,
+            site_dir,
+            editables_dir,
+            site_packages,
+            drvs,
+            name,
+            path,
+        )
 
     with open(site_dir / "sitecustomize.py", "w") as f:
         f.write(
@@ -166,6 +229,6 @@ for index, path in enumerate(sys.path):
     print(
         f"""
 export PYTHONPATH="{site_dir}:{python_environment / site_packages}:$PYTHONPATH"
-export PATH="${python_environment}/bin:$PATH"
+export PATH="{bin_dir}:${python_environment}/bin:$PATH"
     """
     )
