@@ -181,7 +181,7 @@ in {
       # This affects requirements such as "click @ git+https://github.com/pallets/click.git@main"
       l.genAttrs
       (l.filter (name: config.lock.content.fetchPipMetadata.sources.${name}.is_direct) (l.attrNames cfg.drvs))
-      (n: lib.mkDefault null);
+      (n: lib.mkDefault true);
     editablesShellHook = import ./editable.nix {
       inherit lib;
       inherit (config.deps) unzip writeText;
@@ -220,7 +220,7 @@ in {
         old.postBuild
         or ""
         + ''
-          # Nixpkgs ships a sitecustomize.py with all of it's pyEnvs to add suport for NIX_PYTHONPATH.
+          # Nixpkgs ships a sitecustomize.py with all of it's pyEnvs to add support for NIX_PYTHONPATH.
           # This is unfortunate as sitecustomize is a regular module, so there can only be one.
           # So we move nixpkgs to _sitecustomize.py, effectively removing it but allowing users
           # to re-activate it by doing "import _sitecustomize".
@@ -230,5 +230,11 @@ in {
         '';
     });
 
-  public.devShell = config.public.pyEnv.env;
+  # a shell hook for composition purposes
+  public.shellHook = config.pip.editablesShellHook;
+  # a dev shell for development
+  public.devShell = config.deps.mkShell {
+    packages = [config.public.pyEnv];
+    shellHook = config.public.shellHook;
+  };
 }

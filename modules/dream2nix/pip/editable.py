@@ -54,7 +54,7 @@ def make_editable(
 
 def make_editable_source(editable_dir, normalized_name, path):
     # If a(n absolute) path is found, we use that.
-    if path != None:
+    if path != True:
         source = path
     # For the root package, we default to as symlink to this projects root
     elif name == root_name:
@@ -193,16 +193,17 @@ if __name__ == "__main__":
     run(["nix", "build", "--no-link", python_environment])
 
     for name, path in editables.items():
-        make_editable(
-            python_environment,
-            bin_dir,
-            site_dir,
-            editables_dir,
-            site_packages,
-            drvs,
-            name,
-            path,
-        )
+        if path:
+            make_editable(
+                python_environment,
+                bin_dir,
+                site_dir,
+                editables_dir,
+                site_packages,
+                drvs,
+                name,
+                path,
+            )
 
     with open(site_dir / "sitecustomize.py", "w") as f:
         f.write(

@@ -10,3 +10,6 @@ dependencies = [
   "requests",
   "click @ git+https://github.com/pallets/click.git@main"
 ]
+
+[project.scripts]
+my-tool = "my_tool:main"

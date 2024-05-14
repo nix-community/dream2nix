@@ -41,8 +41,9 @@ in {
     # for the root package (my-tool here), or otherwise copy the contents of mkDerivation.src
     # to .dream2nix/editables to make them writeable.
     # Alternatively you can point it to an existing checkout via an absolute path, i.e.:
-    editables.charset-normalizer = null; # "/home/my-user/src/charset-normalizer";
-    editables.my-tool = null;
+    #   editables.charset-normalizer = "/home/my-user/src/charset-normalizer";
+    editables.charset-normalizer = true;
+    editables.my-tool = true;
 
     requirementsList =
       pyproject.build-system.requires

@@ -35,8 +35,7 @@ in {
       };
 
       editables = l.mkOption {
-        type = t.attrsOf (t.nullOr t.path);
-        internal = true;
+        type = t.attrsOf (t.either t.bool t.path);
       };
 
       editablesShellHook = l.mkOption {

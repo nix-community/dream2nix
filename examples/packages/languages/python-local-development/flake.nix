@@ -27,10 +27,6 @@
         }
       ];
     };
-    devShells.${system}.default = pkgs.mkShell {
-      shellHook = ''
-        ${self.packages.${system}.default.config.pip.editablesShellHook}
-      '';
-    };
+    devShells.${system}.default = self.packages.${system}.default.devShell;
   };
 }
