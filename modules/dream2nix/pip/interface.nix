@@ -1,8 +1,6 @@
 {
-  config,
   lib,
   dream2nix,
-  packageSets,
   specialArgs,
   ...
 }: let
@@ -35,7 +33,7 @@ in {
       };
 
       editables = l.mkOption {
-        type = t.attrsOf (t.either t.bool t.path);
+        type = t.attrsOf t.str;
       };
 
       editablesShellHook = l.mkOption {

@@ -42,7 +42,7 @@ in {
     # to .dream2nix/editables to make them writeable.
     # Alternatively you can point it to an existing checkout via an absolute path, i.e.:
     #   editables.charset-normalizer = "/home/my-user/src/charset-normalizer";
-    editables.charset-normalizer = true;
+    editables.charset-normalizer = ".editables/charset_normalizer";
 
     requirementsList =
       pyproject.build-system.requires

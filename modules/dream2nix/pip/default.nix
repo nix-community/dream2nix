@@ -181,12 +181,7 @@ in {
       l.genAttrs (targets.default.${config.name} or []) (_: true);
     editables =
       # make root package always editable
-      {${config.name} = true;}
-      # Add all packages which have is_direct set to true in the lock files to editables.
-      # This affects requirements such as "click @ git+https://github.com/pallets/click.git@main"
-      // l.genAttrs
-      (l.filter (name: config.lock.content.fetchPipMetadata.sources.${name}.is_direct) (l.attrNames cfg.drvs))
-      (n: lib.mkDefault true);
+      {${config.name} = config.paths.package;};
     editablesShellHook = import ./editable.nix {
       inherit lib;
       inherit (config.deps) unzip writeText;
@@ -194,12 +189,6 @@ in {
       inherit (config.public) pyEnv;
       inherit (cfg) editables;
       rootName = config.name;
-      # Pass dependency sources to the editables hook.
-      # Whenever an editable is set to true instead of a path, the editable path
-      #   is created by copying its `mkDerivation.src` from the nix store.
-      sources =
-        lib.mapAttrs (_name: drv: drv.mkDerivation.src)
-        (lib.filterAttrs (name: _drv: config.pip.editables.${name} or null == true) config.pip.drvs);
     };
   };
 

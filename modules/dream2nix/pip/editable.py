@@ -13,6 +13,15 @@ from tempfile import TemporaryDirectory
 import tomli
 
 
+class Colors:
+    ENDC = "\033[0m"
+    CYAN = "\033[96m"
+    GREEN = "\033[92m"
+    PURPLE = "\033[95m"
+    BOLD = "\033[1m"
+    WARNING = "\033[93m"
+
+
 def run(args):
     try:
         proc = subprocess.run(
@@ -34,73 +43,29 @@ def make_editable(
     site_dir,
     editables_dir,
     site_packages,
-    sources,
     name,
     path,
     root_dir,
 ):
     normalized_name = name.replace("-", "_")
     editable_dir = editables_dir / name
+    full_path = path if path.is_absolute() else root_dir / path
     if editable_dir.exists():
-        relative_editable_dir = os.path.relpath(editable_dir, root_dir)
-        print(
-            f"Skipping existing editable source in {relative_editable_dir}",
-            file=sys.stderr,
-        )
+        relative_editable_dir = editable_dir.relative_to(root_dir)
         return
-    source = source_for(path, sources)
-    make_editable_source(editable_dir, site_dir, normalized_name, source)
-    make_pth(site_dir, editable_dir, normalized_name)
-    if str(source).endswith(".whl"):
-        editable_dist_info = make_dist_info_for_wheel(site_dir, normalized_name, source)
-    else:
-        editable_dist_info = make_dist_info(
-            site_dir, editable_dir, site_packages, normalized_name
+    if not full_path.exists():
+        print(
+            f"Error: The python dependency {name} of {root_name} is configured to be installed in editable mode, but the provided source location {full_path} does not exist.\n"
+            f"Please provide a path to a local copy of the source code of {name}.",
+            file=sys.stderr,
         )
+        exit(1)
+    # link_editable_source(editable_dir, site_dir, normalized_name, full_path)
+    make_pth(site_dir, full_path, normalized_name)
+    editable_dist_info = make_dist_info(
+        site_dir, full_path, site_packages, normalized_name
+    )
     make_entrypoints(python_environment, bin_dir, editable_dist_info)
-
-
-def source_for(path, sources):
-    # If a(n absolute) path is found, we use that.
-    if isinstance(path, str) and os.path.isabs(path):
-        return path
-    # For the root package, we default to as symlink to this projects root
-    elif name == root_name:
-        return root_dir
-    # For all others, we copy mkDerivation.src from /nix/store.
-    return sources[name]
-
-
-def make_editable_source(editable_dir, site_dir, normalized_name, source):
-    # Create a copy of the source in editable_dir
-    if str(source).startswith("/nix/store") and str(source).endswith(".whl"):
-        print(
-            f"Extracting editable source from {source} to {editable_dir}",
-            file=sys.stderr,
-        )
-        run(
-            [
-                f"{unzip}/bin/unzip",
-                "-q",
-                "-d",
-                str(editable_dir),
-                source,
-                f"{normalized_name}/*",
-            ]
-        )
-    elif str(source).startswith("/nix/store"):
-        print(
-            f"Copying editable source from {source} to {editable_dir}",
-            file=sys.stderr,
-        )
-        shutil.copytree(source, editable_dir, symlinks=True)
-        run(["chmod", "-R", "u+w", editable_dir])
-    else:
-        print(
-            f"Linking editable source from {source} to {editable_dir}",
-            file=sys.stderr,
-        )
-        run(["ln", "-sf", source, editable_dir])
 
 
 def make_pth(site_dir, editable_dir, normalized_name):
@@ -118,23 +83,7 @@ def make_pth(site_dir, editable_dir, normalized_name):
         f.write(f"{pth}\n")
 
 
-def make_dist_info_for_wheel(site_dir, normalized_name, source):
-    run(
-        [
-            f"{unzip}/bin/unzip",
-            "-q",
-            "-d",
-            str(site_dir),
-            source,
-            f"{normalized_name}*.dist-info/*",
-        ]
-    )
-    dist_info_path = next(site_dir.glob(f"{normalized_name}*.dist-info"))
-    write_direct_url_json(dist_info_path, source)
-    return dist_info_path
-
-
-# make_dist_info based on importlib.metadata instead of copying the .dist-info from the non-editable derivation
+# create a packages .dist-info by calling its build backend
 def make_dist_info(site_dir, editable_dir, site_packages, normalized_name):
     os.chdir(editable_dir)
     pyproject_file = editable_dir / "pyproject.toml"
@@ -216,12 +165,34 @@ def make_entrypoints(python_environment, bin_dir, dist_info):
         os.chmod(bin_dir / name, 0o755)
 
 
-def is_state_valid(args, dream2nix_python_dir):
+def needs_update(args, dream2nix_python_dir):
     if not (dream2nix_python_dir / "editable-args.json").exists():
-        return False
+        return True
     with open(dream2nix_python_dir / "editable-args.json", "r") as f:
         old_args = json.load(f)
-    return old_args == args
+    return old_args != args
+
+
+def pretty_print_editables(editables, root_dir, root_name):
+    if os.environ.get("D2N_QUIET"):
+        return
+    C = Colors
+    print(
+        f"{C.WARNING}Some python dependencies of {C.GREEN}{C.BOLD}{root_name}{C.ENDC}{C.WARNING} are installed in editable mode",
+        file=sys.stderr,
+    )
+    for name, path in editables.items():
+        if name == root_name:
+            continue
+        print(
+            f"  {C.BOLD}{C.CYAN}{name}{C.ENDC}{C.ENDC}\n"
+            f"    installed at: {C.PURPLE}{path}{C.ENDC}\n",
+            file=sys.stderr,
+        )
+    print(
+        f"{C.WARNING}To disable editable mode for a package, remove the corresponding entry from the 'editables' field in the dream2nix configuration file.{C.ENDC}",
+        file=sys.stderr,
+    )
 
 
 if __name__ == "__main__":
@@ -233,7 +204,6 @@ if __name__ == "__main__":
     python_environment = Path(args["pyEnv"])
     root_name = args["rootName"]
     site_packages = args["sitePackages"]
-    sources = args["sources"]
     editables = args["editables"]
 
     # directories to use
@@ -244,27 +214,28 @@ if __name__ == "__main__":
     site_dir = dream2nix_python_dir / "site"
 
     # remove dream2nix python dir if args changed
-    if not is_state_valid(args, dream2nix_python_dir):
+    if needs_update(args, dream2nix_python_dir):
         if dream2nix_python_dir.exists():
             shutil.rmtree(dream2nix_python_dir)
+    else:
+        pretty_print_editables(editables, root_dir, root_name)
+        exit(0)
 
     bin_dir.mkdir(parents=True, exist_ok=True)
     editables_dir.mkdir(parents=True, exist_ok=True)
     site_dir.mkdir(parents=True, exist_ok=True)
 
     for name, path in editables.items():
-        if path:
-            make_editable(
-                python_environment,
-                bin_dir,
-                site_dir,
-                editables_dir,
-                site_packages,
-                sources,
-                name,
-                path,
-                root_dir,
-            )
+        make_editable(
+            python_environment,
+            bin_dir,
+            site_dir,
+            editables_dir,
+            site_packages,
+            name,
+            Path(path),
+            root_dir,
+        )
 
     with open(site_dir / "sitecustomize.py", "w") as f:
         f.write(
@@ -297,3 +268,5 @@ export PATH="{bin_dir}:${python_environment}/bin:$PATH"
 
     with open(dream2nix_python_dir / "editable-args.json", "w") as f:
         json.dump(args, f, indent=2)
+
+    pretty_print_editables(editables, root_dir, root_name)
