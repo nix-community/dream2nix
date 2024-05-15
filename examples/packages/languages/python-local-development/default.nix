@@ -43,7 +43,6 @@ in {
     # Alternatively you can point it to an existing checkout via an absolute path, i.e.:
     #   editables.charset-normalizer = "/home/my-user/src/charset-normalizer";
     editables.charset-normalizer = true;
-    editables.my-tool = true;
 
     requirementsList =
       pyproject.build-system.requires

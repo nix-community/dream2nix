@@ -6,17 +6,11 @@
   pyEnv,
   editables,
   rootName,
-  drvs,
+  sources,
 }: let
   args = writeText "args" (builtins.toJSON {
-    inherit findRoot unzip rootName pyEnv editables;
+    inherit findRoot unzip rootName pyEnv editables sources;
     inherit (pyEnv) sitePackages;
-    drvs =
-      lib.mapAttrs (n: v: {
-        inherit (v.public) out;
-        inherit (v.mkDerivation) src;
-      })
-      drvs;
   });
 in ''
   source <(${pyEnv}/bin/python ${./editable.py} ${args})

@@ -4,8 +4,13 @@ import json
 import shutil
 import subprocess
 import configparser
+import importlib
+from contextlib import redirect_stdout
 from textwrap import dedent
 from pathlib import Path
+from tempfile import TemporaryDirectory
+
+import tomli
 
 
 def run(args):
@@ -29,40 +34,44 @@ def make_editable(
     site_dir,
     editables_dir,
     site_packages,
-    drvs,
+    sources,
     name,
     path,
+    root_dir,
 ):
     normalized_name = name.replace("-", "_")
     editable_dir = editables_dir / name
-    drv_out = Path(drvs[name]["out"])
     if editable_dir.exists():
-        print(f"Skipping existing editable source in {editable_dir}", file=sys.stderr)
+        relative_editable_dir = os.path.relpath(editable_dir, root_dir)
+        print(
+            f"Skipping existing editable source in {relative_editable_dir}",
+            file=sys.stderr,
+        )
         return
-
-    # Build the non-editable package if it's not in /nix/store already.
-    # We need its .dist-info directory and might need it's unpackaged
-    # source below.
-    if not drv_out.exists():
-        run(["nix", "build", "--no-link", drv_out])
-
-    make_editable_source(editable_dir, normalized_name, path)
+    source = source_for(path, sources)
+    make_editable_source(editable_dir, site_dir, normalized_name, source)
     make_pth(site_dir, editable_dir, normalized_name)
-    editable_dist_info = make_dist_info(site_dir, editable_dir, site_packages, drv_out)
+    if str(source).endswith(".whl"):
+        editable_dist_info = make_dist_info_for_wheel(site_dir, normalized_name, source)
+    else:
+        editable_dist_info = make_dist_info(
+            site_dir, editable_dir, site_packages, normalized_name
+        )
     make_entrypoints(python_environment, bin_dir, editable_dist_info)
 
 
-def make_editable_source(editable_dir, normalized_name, path):
+def source_for(path, sources):
     # If a(n absolute) path is found, we use that.
-    if path != True:
-        source = path
+    if isinstance(path, str) and os.path.isabs(path):
+        return path
     # For the root package, we default to as symlink to this projects root
     elif name == root_name:
-        source = root_dir
+        return root_dir
     # For all others, we copy mkDerivation.src from /nix/store.
-    else:
-        source = drvs[name]["src"]
+    return sources[name]
 
+
+def make_editable_source(editable_dir, site_dir, normalized_name, source):
     # Create a copy of the source in editable_dir
     if str(source).startswith("/nix/store") and str(source).endswith(".whl"):
         print(
@@ -109,26 +118,67 @@ def make_pth(site_dir, editable_dir, normalized_name):
         f.write(f"{pth}\n")
 
 
-def make_dist_info(site_dir, editable_dir, site_packages, drv_out):
-    # Reuse dist_info from the non-editable derivation and make it editable
-    installed_dist_infos = list((drv_out / site_packages).glob("*.dist-info"))
-    assert len(installed_dist_infos) == 1
-    installed_dist_info = installed_dist_infos[0]
-    editable_dist_info = site_dir / installed_dist_info.name
-    shutil.copytree(installed_dist_info, editable_dist_info, symlinks=True)
-    run(["chmod", "-R", "u+w", editable_dist_info])
+def make_dist_info_for_wheel(site_dir, normalized_name, source):
+    run(
+        [
+            f"{unzip}/bin/unzip",
+            "-q",
+            "-d",
+            str(site_dir),
+            source,
+            f"{normalized_name}*.dist-info/*",
+        ]
+    )
+    dist_info_path = next(site_dir.glob(f"{normalized_name}*.dist-info"))
+    write_direct_url_json(dist_info_path, source)
+    return dist_info_path
 
-    if (editable_dist_info / "RECORD").exists():
-        # PEP-660 says RECORD should not be included
-        (editable_dist_info / "RECORD").unlink()
 
-    with open(editable_dist_info / "direct_url.json", "w") as f:
+# make_dist_info based on importlib.metadata instead of copying the .dist-info from the non-editable derivation
+def make_dist_info(site_dir, editable_dir, site_packages, normalized_name):
+    os.chdir(editable_dir)
+    pyproject_file = editable_dir / "pyproject.toml"
+    if pyproject_file.exists():
+        with open(pyproject_file, "rb") as f:
+            pyproject = tomli.load(f)
+        build_system = (
+            pyproject["build-system"] if "build-system" in pyproject else "setuptools"
+        )
+        build_backend = (
+            build_system["build-backend"]
+            if "build-backend" in build_system
+            else "setuptools.build_meta.__legacy__"
+        )
+        build_system_import = (
+            build_backend
+            if build_backend != "setuptools.build_meta.__legacy__"
+            else "setuptools.build_meta"
+        )
+    else:
+        build_system_import = "setuptools.build_meta"
+    backend = importlib.import_module(build_system_import)
+    with redirect_stdout(open(os.devnull, "w")), TemporaryDirectory() as tmp_dir:
+        if hasattr(backend, "prepare_metadata_for_build_editable"):
+            # redirect stdout to stderr to avoid leaking the metadata to the user
+            dist_info_name = backend.prepare_metadata_for_build_editable(tmp_dir)
+        else:
+            dist_info_name = backend.prepare_metadata_for_build_wheel(tmp_dir)
+        # copy the dist-info to the site-packages
+        shutil.copytree(Path(tmp_dir) / dist_info_name, site_dir / dist_info_name)
+    dist_info_path = site_dir / dist_info_name
+    for egg_info in site_dir.glob("*.egg-info"):
+        shutil.rmtree(egg_info)
+    write_direct_url_json(dist_info_path, editable_dir)
+    return dist_info_path
+
+
+def write_direct_url_json(dist_info_path, editable_dir):
+    with open(dist_info_path / "direct_url.json", "w") as f:
         json.dump(
             {"url": f"file://{editable_dir}", "dir_info": {"editable": True}},
             f,
             indent=2,
         )
-    return editable_dist_info
 
 
 def make_entrypoints(python_environment, bin_dir, dist_info):
@@ -166,6 +216,14 @@ def make_entrypoints(python_environment, bin_dir, dist_info):
         os.chmod(bin_dir / name, 0o755)
 
 
+def is_state_valid(args, dream2nix_python_dir):
+    if not (dream2nix_python_dir / "editable-args.json").exists():
+        return False
+    with open(dream2nix_python_dir / "editable-args.json", "r") as f:
+        old_args = json.load(f)
+    return old_args == args
+
+
 if __name__ == "__main__":
     with open(sys.argv[1], "r") as f:
         args = json.load(f)
@@ -175,22 +233,24 @@ if __name__ == "__main__":
     python_environment = Path(args["pyEnv"])
     root_name = args["rootName"]
     site_packages = args["sitePackages"]
-    drvs = args["drvs"]
+    sources = args["sources"]
     editables = args["editables"]
 
     # directories to use
     root_dir = Path(run([find_root]))
-    dream2nix_dir = root_dir / ".dream2nix"
-    editables_dir = dream2nix_dir / "editables"
-    bin_dir = dream2nix_dir / "bin"
-    site_dir = dream2nix_dir / "site"
+    dream2nix_python_dir = root_dir / ".dream2nix" / "python"
+    editables_dir = dream2nix_python_dir / "editables"
+    bin_dir = dream2nix_python_dir / "bin"
+    site_dir = dream2nix_python_dir / "site"
+
+    # remove dream2nix python dir if args changed
+    if not is_state_valid(args, dream2nix_python_dir):
+        if dream2nix_python_dir.exists():
+            shutil.rmtree(dream2nix_python_dir)
 
     bin_dir.mkdir(parents=True, exist_ok=True)
     editables_dir.mkdir(parents=True, exist_ok=True)
     site_dir.mkdir(parents=True, exist_ok=True)
-
-    # ensure the python env is realized
-    run(["nix", "build", "--no-link", python_environment])
 
     for name, path in editables.items():
         if path:
@@ -200,9 +260,10 @@ if __name__ == "__main__":
                 site_dir,
                 editables_dir,
                 site_packages,
-                drvs,
+                sources,
                 name,
                 path,
+                root_dir,
             )
 
     with open(site_dir / "sitecustomize.py", "w") as f:
@@ -233,3 +294,6 @@ export PYTHONPATH="{site_dir}:{python_environment / site_packages}:$PYTHONPATH"
 export PATH="{bin_dir}:${python_environment}/bin:$PATH"
     """
     )
+
+    with open(dream2nix_python_dir / "editable-args.json", "w") as f:
+        json.dump(args, f, indent=2)
