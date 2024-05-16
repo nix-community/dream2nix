@@ -21,6 +21,8 @@
       python-dateutil
       pip
     ];
+
+    meta.mainProgram = "fetch_pip_metadata";
   };
 in
   package

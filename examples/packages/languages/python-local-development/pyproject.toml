@@ -7,5 +7,9 @@ name = "my-tool"
 description = "my tool"
 version = "1.0.0"
 dependencies = [
-  "requests"
+  "requests",
+  "click @ git+https://github.com/pallets/click.git@main"
 ]
+
+[project.scripts]
+my-tool = "my_tool:main"
