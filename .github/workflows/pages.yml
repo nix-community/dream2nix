@@ -13,7 +13,7 @@ jobs:
       - uses: actions/checkout@1d96c772d19495a3b5c517cd2bc0cb401ea0529f  # v4.1.3
 
       - name: Install nix
-        uses: cachix/install-nix-action@8887e596b4ee1134dae06b98d573bd674693f47c  # v26
+        uses: cachix/install-nix-action@ba0dd844c9180cbf77aa72a116d6fbc515d0e87b  # v27
         with:
           extra_nix_config: |
             experimental-features = nix-command flakes
