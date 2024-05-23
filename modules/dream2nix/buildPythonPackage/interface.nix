@@ -87,11 +87,57 @@ in {
         '';
       };
 
+    pyproject = l.mkOption {
+      type = t.nullOr t.bool;
+      default = null;
+      description = ''
+        Whether the pyproject format should be used. When set to `true`,
+        `pypaBuildHook` will be used, and you can add the required build dependencies
+        from `build-system.requires` to `build-system`. Note that the pyproject
+        format falls back to using `setuptools`, so you can use `pyproject = true`
+        even if the package only has a `setup.py`. When set to `false`, you can
+        use the existing hooks or provide your own logic to build the
+        package. This can be useful for packages that don't support the pyproject
+        format. When unset, the legacy `setuptools` hooks are used for backwards
+        compatibility.
+      '';
+    };
+
+    build-system = l.mkOption {
+      type = t.listOf (t.oneOf [t.str t.path t.package]);
+      default = [];
+      description = ''
+        Build-time only Python dependencies. Items listed in `build-system.requires`/`setup_requires`.
+      '';
+    };
+
+    dependencies = l.mkOption {
+      type = t.listOf (t.oneOf [t.str t.path t.package]);
+      default = [];
+      description = ''
+        List of runtime python dependencies. Aside from propagating dependencies,
+        `buildPythonPackage` also injects code into and wraps executables with the
+        paths included in this list. Items listed in `install_requires` go here.
+      '';
+    };
+
+    optional-dependencies = l.mkOption {
+      type = t.attrsOf (t.oneOf [t.str t.path t.package]);
+      default = {};
+      description = ''
+        Optional feature flagged dependencies. Items listed in `extras_requires` go here.
+      '';
+    };
+
     format = l.mkOption {
-      type = t.str;
-      default = "setuptools";
+      type = t.nullOr t.str;
+      default =
+        if config.buildPythonPackage.pyproject == null
+        then "setuptools"
+        else null;
       description = ''
         Several package formats are supported:
+          `null`: Disable this legacy option and use the new `pyproject` option instead.
           "setuptools" : Install a common setuptools/distutils based package. This builds a wheel.
           "wheel" : Install from a pre-compiled wheel.
           "flit" : Install a flit package. This builds a wheel.
