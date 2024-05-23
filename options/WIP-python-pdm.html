@@ -177,7 +177,9 @@
                     <main>
                         <h1 id="wip-python-pdm---options"><a class="header" href="#wip-python-pdm---options">WIP-python-pdm - options</a></h1>
 <ul>
+<li><a href="#buildpythonpackagebuild-system">buildPythonPackage.build-system</a></li>
 <li><a href="#buildpythonpackagecatchconflicts">buildPythonPackage.catchConflicts</a></li>
+<li><a href="#buildpythonpackagedependencies">buildPythonPackage.dependencies</a></li>
 <li><a href="#buildpythonpackagedisabled">buildPythonPackage.disabled</a></li>
 <li><a href="#buildpythonpackagedisabledtestpaths">buildPythonPackage.disabledTestPaths</a></li>
 <li><a href="#buildpythonpackagedisabledtests">buildPythonPackage.disabledTests</a></li>
@@ -185,8 +187,10 @@
 <li><a href="#buildpythonpackagedontwrappythonprograms">buildPythonPackage.dontWrapPythonPrograms</a></li>
 <li><a href="#buildpythonpackageformat">buildPythonPackage.format</a></li>
 <li><a href="#buildpythonpackagemakewrapperargs">buildPythonPackage.makeWrapperArgs</a></li>
+<li><a href="#buildpythonpackageoptional-dependencies">buildPythonPackage.optional-dependencies</a></li>
 <li><a href="#buildpythonpackagepermitusersite">buildPythonPackage.permitUserSite</a></li>
 <li><a href="#buildpythonpackagepipinstallflags">buildPythonPackage.pipInstallFlags</a></li>
+<li><a href="#buildpythonpackagepyproject">buildPythonPackage.pyproject</a></li>
 <li><a href="#buildpythonpackagepytestflagsarray">buildPythonPackage.pytestFlagsArray</a></li>
 <li><a href="#buildpythonpackagepythonimportscheck">buildPythonPackage.pythonImportsCheck</a></li>
 <li><a href="#buildpythonpackageremovebinbytecode">buildPythonPackage.removeBinBytecode</a></li>
@@ -344,7 +348,9 @@
 <li><a href="#mkderivationversion">mkDerivation.version</a></li>
 <li><a href="#name">name</a></li>
 <li><a href="#overrideall">overrideAll</a></li>
+<li><a href="#overrideallbuildpythonpackagebuild-system">overrideAll.buildPythonPackage.build-system</a></li>
 <li><a href="#overrideallbuildpythonpackagecatchconflicts">overrideAll.buildPythonPackage.catchConflicts</a></li>
+<li><a href="#overrideallbuildpythonpackagedependencies">overrideAll.buildPythonPackage.dependencies</a></li>
 <li><a href="#overrideallbuildpythonpackagedisabled">overrideAll.buildPythonPackage.disabled</a></li>
 <li><a href="#overrideallbuildpythonpackagedisabledtestpaths">overrideAll.buildPythonPackage.disabledTestPaths</a></li>
 <li><a href="#overrideallbuildpythonpackagedisabledtests">overrideAll.buildPythonPackage.disabledTests</a></li>
@@ -352,8 +358,10 @@
 <li><a href="#overrideallbuildpythonpackagedontwrappythonprograms">overrideAll.buildPythonPackage.dontWrapPythonPrograms</a></li>
 <li><a href="#overrideallbuildpythonpackageformat">overrideAll.buildPythonPackage.format</a></li>
 <li><a href="#overrideallbuildpythonpackagemakewrapperargs">overrideAll.buildPythonPackage.makeWrapperArgs</a></li>
+<li><a href="#overrideallbuildpythonpackageoptional-dependencies">overrideAll.buildPythonPackage.optional-dependencies</a></li>
 <li><a href="#overrideallbuildpythonpackagepermitusersite">overrideAll.buildPythonPackage.permitUserSite</a></li>
 <li><a href="#overrideallbuildpythonpackagepipinstallflags">overrideAll.buildPythonPackage.pipInstallFlags</a></li>
+<li><a href="#overrideallbuildpythonpackagepyproject">overrideAll.buildPythonPackage.pyproject</a></li>
 <li><a href="#overrideallbuildpythonpackagepytestflagsarray">overrideAll.buildPythonPackage.pytestFlagsArray</a></li>
 <li><a href="#overrideallbuildpythonpackagepythonimportscheck">overrideAll.buildPythonPackage.pythonImportsCheck</a></li>
 <li><a href="#overrideallbuildpythonpackageremovebinbytecode">overrideAll.buildPythonPackage.removeBinBytecode</a></li>
@@ -505,7 +513,9 @@
 <li><a href="#overrideallpublic">overrideAll.public</a></li>
 <li><a href="#overrideallversion">overrideAll.version</a></li>
 <li><a href="#overrides">overrides</a></li>
+<li><a href="#overridesnamebuildpythonpackagebuild-system">overrides.&lt;name&gt;.buildPythonPackage.build-system</a></li>
 <li><a href="#overridesnamebuildpythonpackagecatchconflicts">overrides.&lt;name&gt;.buildPythonPackage.catchConflicts</a></li>
+<li><a href="#overridesnamebuildpythonpackagedependencies">overrides.&lt;name&gt;.buildPythonPackage.dependencies</a></li>
 <li><a href="#overridesnamebuildpythonpackagedisabled">overrides.&lt;name&gt;.buildPythonPackage.disabled</a></li>
 <li><a href="#overridesnamebuildpythonpackagedisabledtestpaths">overrides.&lt;name&gt;.buildPythonPackage.disabledTestPaths</a></li>
 <li><a href="#overridesnamebuildpythonpackagedisabledtests">overrides.&lt;name&gt;.buildPythonPackage.disabledTests</a></li>
@@ -513,8 +523,10 @@
 <li><a href="#overridesnamebuildpythonpackagedontwrappythonprograms">overrides.&lt;name&gt;.buildPythonPackage.dontWrapPythonPrograms</a></li>
 <li><a href="#overridesnamebuildpythonpackageformat">overrides.&lt;name&gt;.buildPythonPackage.format</a></li>
 <li><a href="#overridesnamebuildpythonpackagemakewrapperargs">overrides.&lt;name&gt;.buildPythonPackage.makeWrapperArgs</a></li>
+<li><a href="#overridesnamebuildpythonpackageoptional-dependencies">overrides.&lt;name&gt;.buildPythonPackage.optional-dependencies</a></li>
 <li><a href="#overridesnamebuildpythonpackagepermitusersite">overrides.&lt;name&gt;.buildPythonPackage.permitUserSite</a></li>
 <li><a href="#overridesnamebuildpythonpackagepipinstallflags">overrides.&lt;name&gt;.buildPythonPackage.pipInstallFlags</a></li>
+<li><a href="#overridesnamebuildpythonpackagepyproject">overrides.&lt;name&gt;.buildPythonPackage.pyproject</a></li>
 <li><a href="#overridesnamebuildpythonpackagepytestflagsarray">overrides.&lt;name&gt;.buildPythonPackage.pytestFlagsArray</a></li>
 <li><a href="#overridesnamebuildpythonpackagepythonimportscheck">overrides.&lt;name&gt;.buildPythonPackage.pythonImportsCheck</a></li>
 <li><a href="#overridesnamebuildpythonpackageremovebinbytecode">overrides.&lt;name&gt;.buildPythonPackage.removeBinBytecode</a></li>
@@ -671,6 +683,16 @@
 <li><a href="#public">public</a></li>
 <li><a href="#version">version</a></li>
 </ul>
+<h2 id="buildpythonpackagebuild-system"><a class="header" href="#buildpythonpackagebuild-system">buildPythonPackage.build-system</a></h2>
+<p>Build-time only Python dependencies. Items listed in <code>build-system.requires</code>/<code>setup_requires</code>.</p>
+<p><em>Type:</em>
+list of (string or path or package)</p>
+<p><em>Default:</em>
+<code>[ ]</code></p>
+<p><em>Declared by:</em></p>
+<ul>
+<li><a href="https://github.com/nix-community/dream2nix/blob/master/modules/dream2nix/buildPythonPackage/interface.nix">dream2nix/modules/dream2nix/buildPythonPackage/interface.nix</a></li>
+</ul>
 <h2 id="buildpythonpackagecatchconflicts"><a class="header" href="#buildpythonpackagecatchconflicts">buildPythonPackage.catchConflicts</a></h2>
 <p>Raise an error if two packages are installed with the same name
 TODO: For cross we probably need a different PYTHONPATH, or not
@@ -682,6 +704,18 @@ boolean</p>
   true if the host and build platforms are the same, false otherwise.
 ''
 </code></pre>
+<p><em>Declared by:</em></p>
+<ul>
+<li><a href="https://github.com/nix-community/dream2nix/blob/master/modules/dream2nix/buildPythonPackage/interface.nix">dream2nix/modules/dream2nix/buildPythonPackage/interface.nix</a></li>
+</ul>
+<h2 id="buildpythonpackagedependencies"><a class="header" href="#buildpythonpackagedependencies">buildPythonPackage.dependencies</a></h2>
+<p>List of runtime python dependencies. Aside from propagating dependencies,
+<code>buildPythonPackage</code> also injects code into and wraps executables with the
+paths included in this list. Items listed in <code>install_requires</code> go here.</p>
+<p><em>Type:</em>
+list of (string or path or package)</p>
+<p><em>Default:</em>
+<code>[ ]</code></p>
 <p><em>Declared by:</em></p>
 <ul>
 <li><a href="https://github.com/nix-community/dream2nix/blob/master/modules/dream2nix/buildPythonPackage/interface.nix">dream2nix/modules/dream2nix/buildPythonPackage/interface.nix</a></li>
@@ -740,6 +774,7 @@ boolean</p>
 </ul>
 <h2 id="buildpythonpackageformat"><a class="header" href="#buildpythonpackageformat">buildPythonPackage.format</a></h2>
 <p>Several package formats are supported:
+<code>null</code>: Disable this legacy option and use the new <code>pyproject</code> option instead.
 “setuptools” : Install a common setuptools/distutils based package. This builds a wheel.
 “wheel” : Install from a pre-compiled wheel.
 “flit” : Install a flit package. This builds a wheel.
@@ -747,7 +782,7 @@ boolean</p>
 “egg”: Install a package from an egg.
 “other” : Provide your own buildPhase and installPhase.</p>
 <p><em>Type:</em>
-string</p>
+null or string</p>
 <p><em>Default:</em>
 <code>"setuptools"</code></p>
 <p><em>Declared by:</em></p>
@@ -760,6 +795,16 @@ string</p>
 list of string</p>
 <p><em>Default:</em>
 <code>[ ]</code></p>
+<p><em>Declared by:</em></p>
+<ul>
+<li><a href="https://github.com/nix-community/dream2nix/blob/master/modules/dream2nix/buildPythonPackage/interface.nix">dream2nix/modules/dream2nix/buildPythonPackage/interface.nix</a></li>
+</ul>
+<h2 id="buildpythonpackageoptional-dependencies"><a class="header" href="#buildpythonpackageoptional-dependencies">buildPythonPackage.optional-dependencies</a></h2>
+<p>Optional feature flagged dependencies. Items listed in <code>extras_requires</code> go here.</p>
+<p><em>Type:</em>
+attribute set of (string or path or package)</p>
+<p><em>Default:</em>
+<code>{ }</code></p>
 <p><em>Declared by:</em></p>
 <ul>
 <li><a href="https://github.com/nix-community/dream2nix/blob/master/modules/dream2nix/buildPythonPackage/interface.nix">dream2nix/modules/dream2nix/buildPythonPackage/interface.nix</a></li>
@@ -780,6 +825,24 @@ boolean</p>
 list of string</p>
 <p><em>Default:</em>
 <code>[ ]</code></p>
+<p><em>Declared by:</em></p>
+<ul>
+<li><a href="https://github.com/nix-community/dream2nix/blob/master/modules/dream2nix/buildPythonPackage/interface.nix">dream2nix/modules/dream2nix/buildPythonPackage/interface.nix</a></li>
+</ul>
+<h2 id="buildpythonpackagepyproject"><a class="header" href="#buildpythonpackagepyproject">buildPythonPackage.pyproject</a></h2>
+<p>Whether the pyproject format should be used. When set to <code>true</code>,
+<code>pypaBuildHook</code> will be used, and you can add the required build dependencies
+from <code>build-system.requires</code> to <code>build-system</code>. Note that the pyproject
+format falls back to using <code>setuptools</code>, so you can use <code>pyproject = true</code>
+even if the package only has a <code>setup.py</code>. When set to <code>false</code>, you can
+use the existing hooks or provide your own logic to build the
+package. This can be useful for packages that don’t support the pyproject
+format. When unset, the legacy <code>setuptools</code> hooks are used for backwards
+compatibility.</p>
+<p><em>Type:</em>
+null or boolean</p>
+<p><em>Default:</em>
+<code>null</code></p>
 <p><em>Declared by:</em></p>
 <ul>
 <li><a href="https://github.com/nix-community/dream2nix/blob/master/modules/dream2nix/buildPythonPackage/interface.nix">dream2nix/modules/dream2nix/buildPythonPackage/interface.nix</a></li>
@@ -2387,6 +2450,16 @@ module</p>
 <ul>
 <li><a href="https://github.com/nix-community/dream2nix/blob/master/modules/dream2nix/overrides/interface.nix">dream2nix/modules/dream2nix/overrides/interface.nix</a></li>
 </ul>
+<h2 id="overrideallbuildpythonpackagebuild-system"><a class="header" href="#overrideallbuildpythonpackagebuild-system">overrideAll.buildPythonPackage.build-system</a></h2>
+<p>Build-time only Python dependencies. Items listed in <code>build-system.requires</code>/<code>setup_requires</code>.</p>
+<p><em>Type:</em>
+list of (string or path or package)</p>
+<p><em>Default:</em>
+<code>[ ]</code></p>
+<p><em>Declared by:</em></p>
+<ul>
+<li><a href="https://github.com/nix-community/dream2nix/blob/master/modules/dream2nix/buildPythonPackage/interface.nix">dream2nix/modules/dream2nix/buildPythonPackage/interface.nix</a></li>
+</ul>
 <h2 id="overrideallbuildpythonpackagecatchconflicts"><a class="header" href="#overrideallbuildpythonpackagecatchconflicts">overrideAll.buildPythonPackage.catchConflicts</a></h2>
 <p>Raise an error if two packages are installed with the same name
 TODO: For cross we probably need a different PYTHONPATH, or not
@@ -2398,6 +2471,18 @@ boolean</p>
   true if the host and build platforms are the same, false otherwise.
 ''
 </code></pre>
+<p><em>Declared by:</em></p>
+<ul>
+<li><a href="https://github.com/nix-community/dream2nix/blob/master/modules/dream2nix/buildPythonPackage/interface.nix">dream2nix/modules/dream2nix/buildPythonPackage/interface.nix</a></li>
+</ul>
+<h2 id="overrideallbuildpythonpackagedependencies"><a class="header" href="#overrideallbuildpythonpackagedependencies">overrideAll.buildPythonPackage.dependencies</a></h2>
+<p>List of runtime python dependencies. Aside from propagating dependencies,
+<code>buildPythonPackage</code> also injects code into and wraps executables with the
+paths included in this list. Items listed in <code>install_requires</code> go here.</p>
+<p><em>Type:</em>
+list of (string or path or package)</p>
+<p><em>Default:</em>
+<code>[ ]</code></p>
 <p><em>Declared by:</em></p>
 <ul>
 <li><a href="https://github.com/nix-community/dream2nix/blob/master/modules/dream2nix/buildPythonPackage/interface.nix">dream2nix/modules/dream2nix/buildPythonPackage/interface.nix</a></li>
@@ -2456,6 +2541,7 @@ boolean</p>
 </ul>
 <h2 id="overrideallbuildpythonpackageformat"><a class="header" href="#overrideallbuildpythonpackageformat">overrideAll.buildPythonPackage.format</a></h2>
 <p>Several package formats are supported:
+<code>null</code>: Disable this legacy option and use the new <code>pyproject</code> option instead.
 “setuptools” : Install a common setuptools/distutils based package. This builds a wheel.
 “wheel” : Install from a pre-compiled wheel.
 “flit” : Install a flit package. This builds a wheel.
@@ -2463,7 +2549,7 @@ boolean</p>
 “egg”: Install a package from an egg.
 “other” : Provide your own buildPhase and installPhase.</p>
 <p><em>Type:</em>
-string</p>
+null or string</p>
 <p><em>Default:</em>
 <code>"setuptools"</code></p>
 <p><em>Declared by:</em></p>
@@ -2476,6 +2562,16 @@ string</p>
 list of string</p>
 <p><em>Default:</em>
 <code>[ ]</code></p>
+<p><em>Declared by:</em></p>
+<ul>
+<li><a href="https://github.com/nix-community/dream2nix/blob/master/modules/dream2nix/buildPythonPackage/interface.nix">dream2nix/modules/dream2nix/buildPythonPackage/interface.nix</a></li>
+</ul>
+<h2 id="overrideallbuildpythonpackageoptional-dependencies"><a class="header" href="#overrideallbuildpythonpackageoptional-dependencies">overrideAll.buildPythonPackage.optional-dependencies</a></h2>
+<p>Optional feature flagged dependencies. Items listed in <code>extras_requires</code> go here.</p>
+<p><em>Type:</em>
+attribute set of (string or path or package)</p>
+<p><em>Default:</em>
+<code>{ }</code></p>
 <p><em>Declared by:</em></p>
 <ul>
 <li><a href="https://github.com/nix-community/dream2nix/blob/master/modules/dream2nix/buildPythonPackage/interface.nix">dream2nix/modules/dream2nix/buildPythonPackage/interface.nix</a></li>
@@ -2496,6 +2592,24 @@ boolean</p>
 list of string</p>
 <p><em>Default:</em>
 <code>[ ]</code></p>
+<p><em>Declared by:</em></p>
+<ul>
+<li><a href="https://github.com/nix-community/dream2nix/blob/master/modules/dream2nix/buildPythonPackage/interface.nix">dream2nix/modules/dream2nix/buildPythonPackage/interface.nix</a></li>
+</ul>
+<h2 id="overrideallbuildpythonpackagepyproject"><a class="header" href="#overrideallbuildpythonpackagepyproject">overrideAll.buildPythonPackage.pyproject</a></h2>
+<p>Whether the pyproject format should be used. When set to <code>true</code>,
+<code>pypaBuildHook</code> will be used, and you can add the required build dependencies
+from <code>build-system.requires</code> to <code>build-system</code>. Note that the pyproject
+format falls back to using <code>setuptools</code>, so you can use <code>pyproject = true</code>
+even if the package only has a <code>setup.py</code>. When set to <code>false</code>, you can
+use the existing hooks or provide your own logic to build the
+package. This can be useful for packages that don’t support the pyproject
+format. When unset, the legacy <code>setuptools</code> hooks are used for backwards
+compatibility.</p>
+<p><em>Type:</em>
+null or boolean</p>
+<p><em>Default:</em>
+<code>null</code></p>
 <p><em>Declared by:</em></p>
 <ul>
 <li><a href="https://github.com/nix-community/dream2nix/blob/master/modules/dream2nix/buildPythonPackage/interface.nix">dream2nix/modules/dream2nix/buildPythonPackage/interface.nix</a></li>
@@ -4032,6 +4146,16 @@ attribute set of module</p>
 <ul>
 <li><a href="https://github.com/nix-community/dream2nix/blob/master/modules/dream2nix/overrides/interface.nix">dream2nix/modules/dream2nix/overrides/interface.nix</a></li>
 </ul>
+<h2 id="overridesnamebuildpythonpackagebuild-system"><a class="header" href="#overridesnamebuildpythonpackagebuild-system">overrides.&lt;name&gt;.buildPythonPackage.build-system</a></h2>
+<p>Build-time only Python dependencies. Items listed in <code>build-system.requires</code>/<code>setup_requires</code>.</p>
+<p><em>Type:</em>
+list of (string or path or package)</p>
+<p><em>Default:</em>
+<code>[ ]</code></p>
+<p><em>Declared by:</em></p>
+<ul>
+<li><a href="https://github.com/nix-community/dream2nix/blob/master/modules/dream2nix/buildPythonPackage/interface.nix">dream2nix/modules/dream2nix/buildPythonPackage/interface.nix</a></li>
+</ul>
 <h2 id="overridesnamebuildpythonpackagecatchconflicts"><a class="header" href="#overridesnamebuildpythonpackagecatchconflicts">overrides.&lt;name&gt;.buildPythonPackage.catchConflicts</a></h2>
 <p>Raise an error if two packages are installed with the same name
 TODO: For cross we probably need a different PYTHONPATH, or not
@@ -4043,6 +4167,18 @@ boolean</p>
   true if the host and build platforms are the same, false otherwise.
 ''
 </code></pre>
+<p><em>Declared by:</em></p>
+<ul>
+<li><a href="https://github.com/nix-community/dream2nix/blob/master/modules/dream2nix/buildPythonPackage/interface.nix">dream2nix/modules/dream2nix/buildPythonPackage/interface.nix</a></li>
+</ul>
+<h2 id="overridesnamebuildpythonpackagedependencies"><a class="header" href="#overridesnamebuildpythonpackagedependencies">overrides.&lt;name&gt;.buildPythonPackage.dependencies</a></h2>
+<p>List of runtime python dependencies. Aside from propagating dependencies,
+<code>buildPythonPackage</code> also injects code into and wraps executables with the
+paths included in this list. Items listed in <code>install_requires</code> go here.</p>
+<p><em>Type:</em>
+list of (string or path or package)</p>
+<p><em>Default:</em>
+<code>[ ]</code></p>
 <p><em>Declared by:</em></p>
 <ul>
 <li><a href="https://github.com/nix-community/dream2nix/blob/master/modules/dream2nix/buildPythonPackage/interface.nix">dream2nix/modules/dream2nix/buildPythonPackage/interface.nix</a></li>
@@ -4101,6 +4237,7 @@ boolean</p>
 </ul>
 <h2 id="overridesnamebuildpythonpackageformat"><a class="header" href="#overridesnamebuildpythonpackageformat">overrides.&lt;name&gt;.buildPythonPackage.format</a></h2>
 <p>Several package formats are supported:
+<code>null</code>: Disable this legacy option and use the new <code>pyproject</code> option instead.
 “setuptools” : Install a common setuptools/distutils based package. This builds a wheel.
 “wheel” : Install from a pre-compiled wheel.
 “flit” : Install a flit package. This builds a wheel.
@@ -4108,7 +4245,7 @@ boolean</p>
 “egg”: Install a package from an egg.
 “other” : Provide your own buildPhase and installPhase.</p>
 <p><em>Type:</em>
-string</p>
+null or string</p>
 <p><em>Default:</em>
 <code>"setuptools"</code></p>
 <p><em>Declared by:</em></p>
@@ -4121,6 +4258,16 @@ string</p>
 list of string</p>
 <p><em>Default:</em>
 <code>[ ]</code></p>
+<p><em>Declared by:</em></p>
+<ul>
+<li><a href="https://github.com/nix-community/dream2nix/blob/master/modules/dream2nix/buildPythonPackage/interface.nix">dream2nix/modules/dream2nix/buildPythonPackage/interface.nix</a></li>
+</ul>
+<h2 id="overridesnamebuildpythonpackageoptional-dependencies"><a class="header" href="#overridesnamebuildpythonpackageoptional-dependencies">overrides.&lt;name&gt;.buildPythonPackage.optional-dependencies</a></h2>
+<p>Optional feature flagged dependencies. Items listed in <code>extras_requires</code> go here.</p>
+<p><em>Type:</em>
+attribute set of (string or path or package)</p>
+<p><em>Default:</em>
+<code>{ }</code></p>
 <p><em>Declared by:</em></p>
 <ul>
 <li><a href="https://github.com/nix-community/dream2nix/blob/master/modules/dream2nix/buildPythonPackage/interface.nix">dream2nix/modules/dream2nix/buildPythonPackage/interface.nix</a></li>
@@ -4141,6 +4288,24 @@ boolean</p>
 list of string</p>
 <p><em>Default:</em>
 <code>[ ]</code></p>
+<p><em>Declared by:</em></p>
+<ul>
+<li><a href="https://github.com/nix-community/dream2nix/blob/master/modules/dream2nix/buildPythonPackage/interface.nix">dream2nix/modules/dream2nix/buildPythonPackage/interface.nix</a></li>
+</ul>
+<h2 id="overridesnamebuildpythonpackagepyproject"><a class="header" href="#overridesnamebuildpythonpackagepyproject">overrides.&lt;name&gt;.buildPythonPackage.pyproject</a></h2>
+<p>Whether the pyproject format should be used. When set to <code>true</code>,
+<code>pypaBuildHook</code> will be used, and you can add the required build dependencies
+from <code>build-system.requires</code> to <code>build-system</code>. Note that the pyproject
+format falls back to using <code>setuptools</code>, so you can use <code>pyproject = true</code>
+even if the package only has a <code>setup.py</code>. When set to <code>false</code>, you can
+use the existing hooks or provide your own logic to build the
+package. This can be useful for packages that don’t support the pyproject
+format. When unset, the legacy <code>setuptools</code> hooks are used for backwards
+compatibility.</p>
+<p><em>Type:</em>
+null or boolean</p>
+<p><em>Default:</em>
+<code>null</code></p>
 <p><em>Declared by:</em></p>
 <ul>
 <li><a href="https://github.com/nix-community/dream2nix/blob/master/modules/dream2nix/buildPythonPackage/interface.nix">dream2nix/modules/dream2nix/buildPythonPackage/interface.nix</a></li>
