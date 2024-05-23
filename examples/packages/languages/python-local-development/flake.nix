@@ -13,11 +13,10 @@
     ...
   }: let
     system = "x86_64-linux";
+    pkgs = nixpkgs.legacyPackages.${system};
   in {
-    # All packages defined in ./packages/<name> are automatically added to the flake outputs
-    # e.g., 'packages/hello/default.nix' becomes '.#packages.hello'
     packages.${system}.default = dream2nix.lib.evalModules {
-      packageSets.nixpkgs = inputs.dream2nix.inputs.nixpkgs.legacyPackages.${system};
+      packageSets.nixpkgs = pkgs;
       modules = [
         ./default.nix
         {
@@ -26,6 +25,14 @@
           paths.projectRootFile = "flake.nix";
           paths.package = ./.;
         }
+      ];
+    };
+    devShells.${system}.default = pkgs.mkShell {
+      # inherit from the dream2nix generated dev shell
+      inputsFrom = [self.packages.${system}.default.devShell];
+      # add extra packages
+      packages = [
+        pkgs.hello
       ];
     };
   };

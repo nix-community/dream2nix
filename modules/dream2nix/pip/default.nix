@@ -14,6 +14,9 @@
   isRootDrv = drv: cfg.rootDependencies.${drv.name} or false;
   isBuildInput = drv: cfg.buildDependencies.${drv.name} or false;
 
+  # actually wanted editables (minus the ones set to false)
+  editables = lib.filterAttrs (_name: path: path != false) config.pip.editables;
+
   writers = import ../../../pkgs/writers {
     inherit lib;
     inherit
@@ -142,7 +145,7 @@ in {
         pythonInterpreter = "${python}/bin/python";
       };
       setuptools = config.deps.python.pkgs.setuptools;
-      inherit (nixpkgs) nix fetchgit;
+      inherit (nixpkgs) nix fetchgit writeText;
       inherit (writers) writePureShellScript;
     };
 
@@ -176,6 +179,17 @@ in {
     drvs = drvs;
     rootDependencies =
       l.genAttrs (targets.default.${config.name} or []) (_: true);
+    editables =
+      # make root package always editable
+      {${config.name} = config.paths.package;};
+    editablesShellHook = import ./editable.nix {
+      inherit lib;
+      inherit (config.deps) unzip writeText;
+      inherit (config.paths) findRoot;
+      inherit (config.public) pyEnv;
+      inherit (cfg) editables;
+      rootName = config.name;
+    };
   };
 
   mkDerivation = {
@@ -197,13 +211,46 @@ in {
   };
 
   public.pyEnv = let
-    pyEnv' = config.deps.python.withPackages (ps: config.mkDerivation.propagatedBuildInputs);
+    pyEnv' = config.deps.python.withPackages (
+      ps:
+        config.mkDerivation.propagatedBuildInputs
+        # the editableShellHook requires wheel and other build system deps.
+        ++ config.mkDerivation.buildInputs
+        ++ [config.deps.python.pkgs.wheel]
+    );
   in
     pyEnv'.override (old: {
-      # namespaced packages are triggering a collision error, but this can be
-      # safely ignored. They are still set up correctly and can be imported.
-      ignoreCollisions = true;
+      postBuild =
+        old.postBuild
+        or ""
+        + ''
+          # Nixpkgs ships a sitecustomize.py with all of it's pyEnvs to add support for NIX_PYTHONPATH.
+          # This is unfortunate as sitecustomize is a regular module, so there can only be one.
+          # So we move nixpkgs to _sitecustomize.py, effectively removing it but allowing users
+          # to re-activate it by doing "import _sitecustomize".
+          # https://github.com/NixOS/nixpkgs/pull/297628 would fix this, but it was reverted for now in
+          # https://github.com/NixOS/nixpkgs/pull/302385
+          mv "$out/${pyEnv'.sitePackages}/sitecustomize.py" "$out/${pyEnv'.sitePackages}/_sitecustomize.py"
+        '';
     });
 
-  public.devShell = config.public.pyEnv.env;
+  # a shell hook for composition purposes
+  public.shellHook = config.pip.editablesShellHook;
+  # a dev shell for development
+  public.devShell = config.deps.mkShell {
+    packages = [config.public.pyEnv];
+    shellHook = config.public.shellHook;
+    buildInputs =
+      [(config.pip.drvs.tomli.public or config.deps.python.pkgs.tomli)]
+      ++ lib.flatten (
+        lib.mapAttrsToList
+        (name: _path: config.pip.drvs.${name}.mkDerivation.buildInputs or [])
+        editables
+      );
+    nativeBuildInputs = lib.flatten (
+      lib.mapAttrsToList
+      (name: _path: config.pip.drvs.${name}.mkDerivation.nativeBuildInputs or [])
+      editables
+    );
+  };
 }

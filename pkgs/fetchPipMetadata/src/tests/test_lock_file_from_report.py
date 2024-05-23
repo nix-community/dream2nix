@@ -31,6 +31,7 @@ def test_simple():
                     name="test",
                     version="0.0.0",
                 ),
+                is_direct=False,
                 download_info=dict(url="https://example.com"),
             )
         ],
@@ -42,6 +43,7 @@ def test_simple():
                 sha256=None,
                 url="https://example.com",
                 version="0.0.0",
+                is_direct=False,
             )
         ),
         targets=dict(
@@ -64,6 +66,7 @@ def test_multiple_requested():
                     version="0.0.0",
                 ),
                 download_info=dict(url="https://example.com"),
+                is_direct=False,
             ),
             dict(
                 requested=True,
@@ -71,6 +74,7 @@ def test_multiple_requested():
                     name="bar",
                     version="0.0.0",
                 ),
+                is_direct=True,
                 download_info=dict(url="https://example.com"),
             ),
         ],
@@ -82,12 +86,14 @@ def test_multiple_requested():
                 sha256=None,
                 url="https://example.com",
                 version="0.0.0",
+                is_direct=False,
             ),
             bar=dict(
                 type="url",
                 sha256=None,
                 url="https://example.com",
                 version="0.0.0",
+                is_direct=True,
             ),
         ),
         targets=dict(

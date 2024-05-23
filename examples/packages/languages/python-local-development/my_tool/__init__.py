@@ -1,4 +1,5 @@
 import requests
 
 
-print("Hello World!")
+def main():
+    print("Hello World!")

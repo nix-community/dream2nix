@@ -157,6 +157,7 @@ def lock_entry_from_report_entry(install, project_root: Path):
         info = lock_info_fallback(download_info)
 
     return name, dict(
+        is_direct=install["is_direct"],
         version=install["metadata"]["version"],
         **info,
     )

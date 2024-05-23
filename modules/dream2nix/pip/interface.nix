@@ -1,8 +1,6 @@
 {
-  config,
   lib,
   dream2nix,
-  packageSets,
   specialArgs,
   ...
 }: let
@@ -34,6 +32,15 @@ in {
         description = "the names of the selected top-level dependencies";
       };
 
+      editables = l.mkOption {
+        type = t.attrsOf t.str;
+      };
+
+      editablesShellHook = l.mkOption {
+        type = t.str;
+        readOnly = true;
+      };
+
       # user interface
       env = l.mkOption {
         type = t.attrsOf t.str;
@@ -47,6 +54,7 @@ in {
           }
         '';
       };
+
       pypiSnapshotDate = l.mkOption {
         type = t.nullOr t.str;
         description = ''
