@@ -3,7 +3,7 @@ requires = [ "setuptools" ]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "my-tool"
+name = "mytool"
 description = "my tool"
 version = "1.0.0"
 dependencies = [
