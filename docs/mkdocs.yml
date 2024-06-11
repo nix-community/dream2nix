@@ -1,0 +1,5 @@
+site_name: Dream2Nix
+docs_dir: "src"
+site_url: "https://nix-community.github.io/dream2nix"
+site_dir: !ENV out
+
