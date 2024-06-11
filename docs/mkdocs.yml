@@ -48,9 +48,6 @@ theme:
   name: material
   favicon: favicon.png
   logo: favicon.png
-  font:
-    text: Roboto
-    code: Roboto Mono
   features:
     - search.suggest
     - search.highlight
