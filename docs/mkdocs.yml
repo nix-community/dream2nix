@@ -8,12 +8,15 @@ plugins:
   - search
 
 nav:
-  - "Introduction": intro.md
+  - "Introduction": index.md
   - "Getting Started": gettingstarted.md
-  - Examples: examples.md
-  - Modules: modules.md
-  - "Overriding Dependencies": overrides.md
-  - "Contact": contact.md
+  - Concepts:
+      - Modules: modules.md
+      - "Overriding Dependencies": overrides.md
+  - Examples:
+      - "👉 example repository": https://github.com/nix-community/dream2nix/tree/main/examples/repo-with-packages
+      - "👉 example repository using flakes": https://github.com/nix-community/dream2nix/tree/main/examples/repo-with-packages-flake)
+      - "👉 example packages": https://github.com/nix-community/dream2nix/tree/main/examples/packages)
 
 
 markdown_extensions:
@@ -26,6 +29,7 @@ markdown_extensions:
   - pymdownx.snippets
   - pymdownx.superfences
   - pymdownx.tasklist
+  - pymdownx.details
 
 validation:
   omitted_files: warn

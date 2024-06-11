@@ -1,5 +1,3 @@
-## Getting started
-
 To package a piece of software with dream2nix, you'd typically start with
 a bare-bones dream2nix flake like this:
 
