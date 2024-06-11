@@ -12,10 +12,10 @@ extra_css:
 
 
 nav:
-  - "Introduction": index.md
+  - "Home": index.md
   - "Getting Started": gettingstarted.md
   - Concepts:
-      - Modules: modules.md
+      - "Modules": modules.md
       - "Overriding Dependencies": overrides.md
   - Examples:
       - "👉 example repository": https://github.com/nix-community/dream2nix/tree/main/examples/repo-with-packages
@@ -56,9 +56,7 @@ theme:
     - navigation.instant.prefetch
     - navigation.instant.progress
     - navigation.tracking
-    - navigation.sections
     - navigation.path
-    - navigation.prune
     - navigation.top
     - toc.follow
     - toc.integrate
