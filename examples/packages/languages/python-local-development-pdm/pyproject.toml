@@ -8,8 +8,17 @@ description = "my tool"
 version = "1.0.0"
 dependencies = [
   "requests",
-  "click @ git+https://github.com/pallets/click.git@main"
 ]
+requires-python = ">=3.8"
 
 [project.scripts]
 my-tool = "my_tool:main"
+
+[project.optional-dependencies]
+extra = [
+    "simplejson>=3.19.2",
+]
+[tool.pdm.dev-dependencies]
+test = [
+    "pytest>=8.2.1",
+]

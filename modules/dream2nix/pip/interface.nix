@@ -11,6 +11,7 @@ in {
   options.pip = mkSubmodule {
     imports = [
       ../overrides
+      ../python-editables
     ];
 
     config.overrideType = {
@@ -30,15 +31,6 @@ in {
         type = t.attrsOf t.bool;
         internal = true;
         description = "the names of the selected top-level dependencies";
-      };
-
-      editables = l.mkOption {
-        type = t.attrsOf t.str;
-      };
-
-      editablesShellHook = l.mkOption {
-        type = t.str;
-        readOnly = true;
       };
 
       # user interface
