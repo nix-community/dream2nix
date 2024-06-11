@@ -3,3 +3,64 @@ docs_dir: "src"
 site_url: "https://nix-community.github.io/dream2nix"
 site_dir: !ENV out
 
+plugins:
+  - generate_options
+  - search
+
+nav:
+  - "Introduction": intro.md
+  - "Getting Started": gettingstarted.md
+  - Examples: examples.md
+  - Modules: modules.md
+  - "Overriding Dependencies": overrides.md
+  - "Contact": contact.md
+
+
+markdown_extensions:
+  - tables
+  - admonition
+  - pymdownx.escapeall
+  - pymdownx.highlight:
+      anchor_linenums: true
+  - pymdownx.inlinehilite
+  - pymdownx.snippets
+  - pymdownx.superfences
+  - pymdownx.tasklist
+
+validation:
+  omitted_files: warn
+  absolute_links: warn
+  unrecognized_links: warn
+  anchors: warn
+
+theme:
+  name: material
+  favicon: favicon.png
+  logo: favicon.png
+  font:
+    text: Roboto
+    code: Roboto Mono
+  features:
+    - search.suggest
+    - search.highlight
+    - instant
+    - navigation.instant
+    - navigation.instant.prefetch
+    - navigation.instant.progress
+    - navigation.tracking
+    - navigation.sections
+    - navigation.path
+    - navigation.prune
+    - navigation.top
+    - toc.follow
+    - toc.integrate
+    - content.code.annotate
+
+extra:
+  social:
+    - icon: fontawesome/brands/github
+      link: https://github.com/nix-community/dream2nix
+      name: Dream2nix on Github
+    - icon: fontawesome/solid/comments
+      link: https://matrix.to/#/#dream2nix:nixos.org
+      name: Dream2nix Matrix Channel

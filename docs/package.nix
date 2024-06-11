@@ -11,6 +11,7 @@
     ];
     propagatedBuildInputs = with python3.pkgs; [
       mkdocs
+      mkdocs-material
     ];
   };
 in
