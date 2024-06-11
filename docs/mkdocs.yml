@@ -62,7 +62,6 @@ theme:
     - navigation.path
     - navigation.top
     - toc.follow
-    - toc.integrate
     - content.code.annotate
 
 extra:
