@@ -94,7 +94,8 @@
     website =
       pkgs.runCommand "website" {
         nativeBuildInputs = [
-          self.packages.${system}.mkdocs
+          pkgs.python3.pkgs.mkdocs
+          pkgs.python3.pkgs.mkdocs-material
           referenceDocs
         ];
       } ''
@@ -106,10 +107,10 @@
     packages.reference = referenceDocs;
     packages.website = website;
     devShells.mkdocs = let
-      package = self.packages.${system}.mkdocs;
       pythonWithDeps = pkgs.python3.withPackages (
-      ps: [
-          package
+        ps: [
+          self.packages.${system}.mkdocs
+          self.packages.${system}.mkdocs-material
           ps.ipython
           ps.black
           ps.pytest
@@ -122,10 +123,5 @@
           pythonWithDeps
         ];
       };
-
-    packages.mkdocs = import ../../../docs/package.nix {
-      inherit lib;
-      inherit (pkgs) python3;
-    };
   };
 }

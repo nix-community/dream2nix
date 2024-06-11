@@ -4,7 +4,6 @@ site_url: "https://nix-community.github.io/dream2nix"
 site_dir: !ENV out
 
 plugins:
-  - generate_options
   - search
 
 extra_css:
