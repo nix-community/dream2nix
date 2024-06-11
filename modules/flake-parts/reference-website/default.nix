@@ -82,7 +82,7 @@
       createReference = name: sourcePath: ''
         target_dir="$out/${name}/"
         mkdir -p "$target_dir"
-        ln -s ${sourcePath}/README.md "$target_dir"
+        ln -s ${sourcePath}/README.md "$target_dir/index.md"
         ln -s ${options.docs.${name}.optionsJSON}/share/doc/nixos/options.json "$target_dir"
       '';
     in
