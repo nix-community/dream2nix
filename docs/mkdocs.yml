@@ -7,6 +7,10 @@ plugins:
   - generate_options
   - search
 
+extra_css:
+  - style.css
+
+
 nav:
   - "Introduction": index.md
   - "Getting Started": gettingstarted.md
