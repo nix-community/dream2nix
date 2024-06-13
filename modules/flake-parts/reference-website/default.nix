@@ -106,11 +106,9 @@
   in {
     packages.reference = referenceDocs;
     packages.website = website;
-    devShells.mkdocs = let
+    devShells.website = let
       pythonWithDeps = pkgs.python3.withPackages (
         ps: [
-          self.packages.${system}.mkdocs
-          self.packages.${system}.mkdocs-material
           ps.ipython
           ps.black
           ps.pytest
@@ -119,6 +117,7 @@
       );
     in
       pkgs.mkShell {
+        inputsFrom = [self.packages.${system}.website];
         packages = [
           pythonWithDeps
         ];
