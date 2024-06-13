@@ -1,3 +1,10 @@
+---
+title: "groups"
+state: experimental
+maintainers:
+  - DavHau
+---
+
 Module to deal with package sets (so called groups in dream2nix)
 
 ## Separate different kinds of dependencies
