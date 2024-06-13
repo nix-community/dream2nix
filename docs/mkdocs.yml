@@ -5,26 +5,13 @@ site_dir: !ENV out
 
 plugins:
   - search
+  - awesome-pages
 
 hooks:
   - hooks/render_options.py
 
 extra_css:
   - style.css
-
-
-nav:
-  - "Home": index.md
-  - "Getting Started": gettingstarted.md
-  - Concepts:
-      - "Modules": modules.md
-      - "Overriding Dependencies": overrides.md
-  - Examples:
-      - "👉 example repository": https://github.com/nix-community/dream2nix/tree/main/examples/repo-with-packages
-      - "👉 example repository using flakes": https://github.com/nix-community/dream2nix/tree/main/examples/repo-with-packages-flake)
-      - "👉 example packages": https://github.com/nix-community/dream2nix/tree/main/examples/packages)
-  - Reference:
-      - "pip": reference/pip/index.md
 
 markdown_extensions:
   - tables

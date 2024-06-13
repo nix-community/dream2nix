@@ -84,6 +84,11 @@
         mkdir -p "$target_dir"
         ln -s ${sourcePath}/README.md "$target_dir/index.md"
         ln -s ${options.docs.${name}.optionsJSON}/share/doc/nixos/options.json "$target_dir"
+        cat > "$target_dir/.pages" <<EOF
+        collapse_single_pages: true
+        nav:
+          - ...
+        EOF
       '';
     in
       pkgs.runCommand "reference" {
@@ -96,6 +101,7 @@
         nativeBuildInputs = [
           pkgs.python3.pkgs.mkdocs
           pkgs.python3.pkgs.mkdocs-material
+          self.packages.${system}.mkdocs-awesome-pages-plugin
           referenceDocs
         ];
       } ''
@@ -104,6 +110,21 @@
         mkdocs build
       '';
   in {
+    packages.mkdocs-awesome-pages-plugin = pkgs.callPackage ./mkdocs-awesome-pages-plugin.nix {
+      inherit
+        (pkgs.python3.pkgs)
+        buildPythonPackage
+        mkdocs
+        wcmatch
+        natsort
+        beautifulsoup4
+        mock-open
+        importlib-metadata
+        poetry-core
+        pytestCheckHook
+        pythonOlder
+        ;
+    };
     packages.reference = referenceDocs;
     packages.website = website;
     devShells.website = let
