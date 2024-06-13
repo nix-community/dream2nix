@@ -142,6 +142,15 @@
         packages = [
           pythonWithDeps
         ];
+
+        shellHook = ''
+          cd $PRJ_ROOT/docs
+          if [ ! -d src/reference ]; then
+            echo "linking .#reference to src/reference, you need to update this manually\
+            and remove it before a production build"
+            ln -s $(nix build ..#reference --no-link --print-out-paths) src/reference
+          fi
+        '';
       };
   };
 }
