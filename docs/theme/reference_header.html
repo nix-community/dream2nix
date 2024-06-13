@@ -1,0 +1,16 @@
+<table style="float: right;">
+    <tr>
+        <td>state:</td>
+        <td>{{ meta.state | default("experimental") }}</td>
+    </tr>
+    <tr>
+        <td>maintainers:</td>
+        <td>
+            {% if meta.maintainers -%}
+            {% for m in meta.maintainers -%}<a href="https://github.com/{{m}}">@{{m}}</a>{{ ", " if not loop.last else "" }}{%- endfor -%}
+            {%- else -%}
+            noone, maybe <strong>you</strong>?
+            {% endif %}
+        </td>
+    </tr>
+</table>

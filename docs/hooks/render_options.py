@@ -43,18 +43,17 @@ def on_page_markdown(
 ) -> str | None:
     if not is_reference_page(page):
         return markdown
-
     src_path = Path(config.docs_dir) / page.file.src_path
+    env = config.theme.get_env()
+
+    header = env.get_template("reference_header.html").render(meta=page.meta)
+
     options_path = src_path.parent / "options.json"
     if not options_path.exists():
         log.error(f"{options_path} does not exist")
-
-    env = config.theme.get_env()
-    env.filters["slugify"] = slugify
-    options_template = env.get_template("reference_options.html")
+        return None
     with open(options_path, "r") as f:
-        options = json.load(f)
+        options = preprocess_options(json.load(f))
+    reference = env.get_template("reference_options.html").render(options=options)
 
-    tree = preprocess_options(options)
-    rendered = options_template.render(options=tree)
-    return markdown + rendered
+    return "\n\n".join([header, markdown, reference])

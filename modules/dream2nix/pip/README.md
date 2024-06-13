@@ -1,8 +1,8 @@
 ---
+title: "pip"
 state: released
-maintainers: @phaer
+maintainers:
+  - phaer
 ---
-
-# pip
 
 Python packaging via [pip](https://pip.pypa.io/).
