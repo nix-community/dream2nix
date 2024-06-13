@@ -31,6 +31,7 @@ validation:
   unrecognized_links: warn
 
 theme:
+  custom_dir: theme
   name: material
   favicon: favicon.png
   logo: favicon.png

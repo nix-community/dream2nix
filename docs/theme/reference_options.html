@@ -1,0 +1,37 @@
+## Options
+{%- for name, children in options.items() recursive %}
+
+##{{loop.depth * "#"}} {{ name }}
+
+{% if "type" in children -%}
+
+{{ children.description }}
+
+<table>
+    <tr>
+        <td>type</td>
+        <td><code>{{ children.type }}</code> {{ "(read only)" if children.readOnly else "" }}</td>
+    </tr>
+    <tr>
+        <td>source</td>
+        <td>{%- for d in children.declarations -%}<a href="{{d.url}}">{{d.name}}</a>{{ ", " if not loop.last else "" }}{%- endfor -%}</td>
+    </tr>
+    {%- if children.default -%}
+    <tr>
+        <td>default</td>
+        <td><pre>{{(children.default | default({})).text}}</pre></td>
+    </tr>
+    {%- endif -%}
+    {%- if children.exampl -%}
+    <tr>
+        <td>example</td>
+        <td>
+            <pre>{{(children.example | default({})).text | replace("\n", "\\n")}}</pre>
+        </td>
+    </tr>
+    {%- endif -%}
+</table>
+{%- else -%}
+{{ loop(children.items()) }}
+{%- endif %}
+{%- endfor %}

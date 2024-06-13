@@ -38,7 +38,9 @@ def preprocess_options(options):
     return tree
 
 
-def on_page_markdown(markdown: str, page: Page, config: MkDocsConfig, files: Files):
+def on_page_markdown(
+    markdown: str, page: Page, config: MkDocsConfig, files: Files
+) -> str | None:
     if not is_reference_page(page):
         return markdown
 
@@ -47,57 +49,9 @@ def on_page_markdown(markdown: str, page: Page, config: MkDocsConfig, files: Fil
     if not options_path.exists():
         log.error(f"{options_path} does not exist")
 
-    jinja = config.theme.get_env()
-    jinja.filters["slugify"] = slugify
-    options_template = jinja.from_string(
-        """
-## Options
-{%- for name, children in options.items() recursive %}
-
-##{{loop.depth * "#"}} {{ name }}
-
-{% if "type" in children -%}
-
-{{ children.description }}
-
-<table>
-    <tr>
-        <td>type</td>
-        <td><code>{{ children.type }}</code> {{ "(read only)" if children.readOnly else "" }}</td>
-    </tr>
-    <tr>
-        <td>source</td>
-        <td>{%- for d in children.declarations -%}<a href="{{d.url}}">{{d.name}}</a>{{ ", " if not loop.last else "" }}{%- endfor -%}</td>
-    </tr>
-    {%- if children.default -%}
-    <tr>
-        <td>default</td>
-        <td><pre>{{(children.default | default({})).text}}</pre></td>
-    </tr>
-    {%- endif -%}
-    {%- if children.exampl -%}
-    <tr>
-        <td>example</td>
-        <td>
-                <pre>{{(children.example | default({})).text | replace("\n", "\\n")}}</pre>
-    </td>
-    </tr>
-    {%- endif -%}
-</table>
-
-{#
-```json
-{{ children | tojson(indent=2)}}
-```
-#}
-
-{%- else -%}
-{{ loop(children.items()) }}
-{%- endif %}
-{%- endfor %}
-"""
-    )
-
+    env = config.theme.get_env()
+    env.filters["slugify"] = slugify
+    options_template = env.get_template("reference_options.html")
     with open(options_path, "r") as f:
         options = json.load(f)
 
