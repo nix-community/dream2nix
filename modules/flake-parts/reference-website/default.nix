@@ -132,7 +132,7 @@
       (lib.flip lib.mapAttrsToList chapters (
         name: chapter:
           "${spacing depth}[${name}](${chapterUrl nesting name})"
-          + lib.optionalString (nesting > 0) (renderChapters (depth + 1) (nesting - 1) chapter)
+          + lib.optionalString (nesting > 0) ("\n" + (renderChapters (depth + 1) (nesting - 1) chapter))
       ));
 
     summaryMdFile =
