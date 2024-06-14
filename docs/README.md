@@ -32,7 +32,7 @@ i.e. from inside the shell in `./docs`:
 
 ``` shellsession
 # update
-ln -sfT $(nix build --print-out-paths --no-link ..#reference) ./src/reference
+ln -sfT $(nix build --print-out-paths --no-link ..#optionsReference) ./src/reference
 # remove
 rm ./src/reference
 ```
