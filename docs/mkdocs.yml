@@ -18,6 +18,8 @@ extra_css:
   - style.css
 
 markdown_extensions:
+  - toc:
+      permalink: true
   - tables
   - admonition
   - pymdownx.escapeall
