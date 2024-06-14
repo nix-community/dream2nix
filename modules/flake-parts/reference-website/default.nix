@@ -106,7 +106,7 @@
         ];
       } ''
         cp -rL --no-preserve=mode  ${dream2nixRoot}/docs/* .
-        ln -s ${referenceDocs} ./src/reference
+        ln -sfT ${referenceDocs} ./src/reference
         mkdocs build
       '';
   in {
@@ -148,7 +148,7 @@
           if [ ! -d src/reference ]; then
             echo "linking .#reference to src/reference, you need to update this manually\
             and remove it before a production build"
-            ln -s $(nix build ..#reference --no-link --print-out-paths) src/reference
+            ln -sfT $(nix build ..#reference --no-link --print-out-paths) src/reference
           fi
         '';
       };
