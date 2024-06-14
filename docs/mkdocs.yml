@@ -3,6 +3,10 @@ docs_dir: "src"
 site_url: "https://nix-community.github.io/dream2nix"
 site_dir: !ENV out
 
+repo_url: https://github.com/nix-community/dream2nix
+repo_name: nix-community/dream2nix
+edit_uri: edit/main/docs/src/
+
 plugins:
   - search
   - awesome-pages
