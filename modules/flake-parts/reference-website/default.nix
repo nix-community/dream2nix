@@ -74,7 +74,7 @@
       inherit modules;
     };
 
-    referenceDocs = let
+    optionsReference = let
       publicModules =
         lib.filterAttrs
         (n: v: lib.pathExists (v + "/README.md"))
@@ -102,11 +102,11 @@
           pkgs.python3.pkgs.mkdocs
           pkgs.python3.pkgs.mkdocs-material
           self.packages.${system}.mkdocs-awesome-pages-plugin
-          referenceDocs
+          optionsReference
         ];
       } ''
         cp -rL --no-preserve=mode  ${dream2nixRoot}/docs/* .
-        ln -sfT ${referenceDocs} ./src/reference
+        ln -sfT ${optionsReference} ./src/reference
         mkdocs build
       '';
   in {
@@ -125,7 +125,7 @@
         pythonOlder
         ;
     };
-    packages.reference = referenceDocs;
+    packages.optionsReference = optionsReference;
     packages.website = website;
     devShells.website = let
       pythonWithDeps = pkgs.python3.withPackages (
