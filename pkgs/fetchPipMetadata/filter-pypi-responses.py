@@ -85,6 +85,11 @@ Response format:
 """
 
 
+def responseheaders(flow: http.HTTPFlow) -> None:
+    if "/simple/" not in flow.request.url:
+        flow.response.stream = True
+
+
 def response(flow: http.HTTPFlow) -> None:
     if not "/simple/" in flow.request.url:
         return
