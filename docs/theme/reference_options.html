@@ -3,10 +3,9 @@
 
 ##{{loop.depth * "#"}} {{ name }}
 
-{% if "type" in option -%}
+{{ option.description or '' }}
 
-{{ option.description }}
-
+{% if "type" in option %}
 <table>
     <tr>
         <td>type</td>
@@ -31,7 +30,8 @@
     </tr>
     {%- endif -%}
 </table>
-{%- else -%}
-{{ loop(option.items()) }}
+{% endif %}
+{%- if option.children -%}
+{{ loop(option.children.items()) }}
 {%- endif %}
 {%- endfor %}

@@ -19,7 +19,7 @@ def slugify(name: str) -> str:
 
 
 def preprocess_options(options):
-    tree = {}
+    tree = dict()
     for name, option in options.items():
         if name.startswith("_module"):
             continue
@@ -28,13 +28,12 @@ def preprocess_options(options):
         for index, part in enumerate(parts):
             if part not in cursor:
                 if index + 1 == len(parts):
-                    cursor[part] = option
+                    cursor[part] = dict(**option, children={})
                 else:
-                    cursor[part] = dict()
+                    cursor[part] = dict(children=dict())
                     cursor = cursor[part]
             else:
-                cursor = cursor[part]
-
+                cursor = cursor[part]["children"]
     return tree
 
 
