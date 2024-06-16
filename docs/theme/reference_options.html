@@ -1,7 +1,7 @@
 ## Options
 {%- for name, option in options.items() recursive %}
 
-##{{loop.depth * "#"}} {{ name }}
+##{{loop.depth * "#"}} {{ name.replace("<", "&lt;").replace(">", "&gt;") }}
 
 {{ option.description or '' }}
 
