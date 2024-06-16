@@ -1,6 +1,8 @@
 import logging
 import json
 from pathlib import Path
+from collections import OrderedDict
+from typing import Dict, Tuple
 
 from mkdocs.structure.pages import Page
 from mkdocs.structure.files import Files
@@ -16,6 +18,20 @@ def is_reference_page(page: Page) -> bool:
 
 def slugify(name: str) -> str:
     return name.lower().replace(".", "-")
+
+
+def sort_options(item: Tuple[str, Dict]):
+    """
+    Sort the modules. First the one the page is about,
+    then single options, then the rest, alphabetically
+    """
+    name, option = item
+    if name == "pip":
+        return -1
+    elif len(option["children"]) == 0:
+        return 0
+    else:
+        return ord(name[0])
 
 
 def preprocess_options(options):
@@ -34,7 +50,7 @@ def preprocess_options(options):
                     cursor = cursor[part]
             else:
                 cursor = cursor[part]["children"]
-    return tree
+    return OrderedDict(sorted(tree.items(), key=sort_options))
 
 
 def on_page_markdown(
