@@ -3,11 +3,13 @@ import json
 from pathlib import Path
 from collections import OrderedDict
 from typing import Dict, Tuple
+from urllib.request import UnknownHandler
 
 from mkdocs.structure.pages import Page
+from mkdocs.structure.nav import Navigation, Section
 from mkdocs.structure.files import Files
 from mkdocs.config.defaults import MkDocsConfig
-
+from mkdocs.plugins import event_priority
 
 from pygments import highlight
 from pygments.lexers import get_lexer_by_name
@@ -61,6 +63,13 @@ def preprocess_options(options, module_name):
 def on_page_markdown(
     markdown: str, page: Page, config: MkDocsConfig, files: Files
 ) -> str | None:
+    """Check whether the source path starts with "reference/".
+    If it does:
+    - render a header template, containing values from the source markdown file
+    - render the source markdown file
+    - render an options.json file containing nixos option definitions from the
+      same directory where the source file is found. Then render those options.
+    """
     if not is_reference_page(page):
         return markdown
     src_path = Path(config.docs_dir) / page.file.src_path
@@ -79,3 +88,35 @@ def on_page_markdown(
     reference = env.get_template("reference_options.html").render(options=options)
 
     return "\n\n".join([header, markdown, reference])
+
+
+@event_priority(-100)
+def on_nav(nav: Navigation, config: MkDocsConfig, files: Files) -> Navigation | None:
+    """Customize the navigation: If a reference section is found,
+    filter for a "state" variable defined in a markdown files front-matter.
+    Leave all items where "state" equals "released" as-is, but put
+    all others in an "experimental" section below that."""
+    try:
+        reference_section = next(filter(lambda i: i.title == "Reference", nav.items))
+        reference_index = nav.items.index(reference_section)
+    except StopIteration:
+        # Return the navigation as-is if we don't find
+        # a reference section
+        return nav
+
+    released = []
+    experimental = []
+    for page in reference_section.children:
+        # to have metadata from the yaml front-matter available
+        page.read_source(config)
+        state = page.meta.get("state")
+        if state == "released":
+            released.append(page)
+        else:
+            experimental.append(page)
+
+    experimental_section = Section("Experimental", experimental)
+    reference_section.children = released + [experimental_section]
+
+    nav.items[reference_index] = reference_section
+    return nav
