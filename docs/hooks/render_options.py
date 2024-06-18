@@ -115,7 +115,7 @@ def on_nav(nav: Navigation, config: MkDocsConfig, files: Files) -> Navigation | 
         else:
             experimental.append(page)
 
-    experimental_section = Section("Experimental", experimental)
+    experimental_section = Section("Experimental Modules", experimental)
     reference_section.children = released + [experimental_section]
 
     nav.items[reference_index] = reference_section
