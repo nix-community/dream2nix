@@ -1,3 +1,6 @@
+# Can be removed from dream2nix repo when
+# https://github.com/NixOS/nixpkgs/pull/320709
+# is in nixpkgs-unstable
 {
   lib,
   buildPythonPackage,
