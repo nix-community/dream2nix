@@ -3,13 +3,15 @@
 
 ##{{loop.depth * "#"}} {{ ((option.loc | join (".")) or name).replace("<", "&lt;").replace(">", "&gt;") }}
 
+{% if (option.description or '') != "This option has no description." -%}
 {{ option.description or '' }}
+{%- endif %}
 
 {% if "type" in option %}
 <table>
     <tr>
         <td>type</td>
-        <td><code>{{ option.type }}</code> {{ "(read only)" if option.readOnly else "" }}</td>
+        <td>{{ option.type}} {{ "(read only)" if option.readOnly else "" }}</td>
     </tr>
     <tr>
         <td>source</td>
@@ -18,14 +20,14 @@
     {%- if option.default -%}
     <tr>
         <td>default</td>
-        <td><pre>{{(option.default | default({})).text | pygments("nix")}}</pre></td>
+        <td>{{(option.default | default({})).text | pygments("nix")}}</td>
     </tr>
     {%- endif -%}
     {%- if option.example -%}
     <tr>
         <td>example</td>
         <td>
-            <pre>{{(option.example | default({})).text | pygments("nix")}}</pre>
+            {{(option.example | default({})).text | pygments("nix")}}
         </td>
     </tr>
     {%- endif -%}
