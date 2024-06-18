@@ -29,7 +29,11 @@
             {%- endif %}
             <a href="{{ toc_item.url }}" class="md-nav__link">
                 <span class="md-ellipsis">
+                    {%- if page.url.split("/")[-3] == "reference" -%}
+                    {{ toc_item.title.split(".")[-1] }}
+                    {%- else -%}
                     {{ toc_item.title }}
+                    {%- endif -%}
                 </span>
             </a>
          {% if should_collapse -%}
