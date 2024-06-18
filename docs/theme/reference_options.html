@@ -1,7 +1,7 @@
 ## Options
 {%- for name, option in options.items() recursive %}
 
-##{{loop.depth * "#"}} {{ name.replace("<", "&lt;").replace(">", "&gt;") }}
+##{{loop.depth * "#"}} {{ ((option.loc | join (".")) or name).replace("<", "&lt;").replace(">", "&gt;") }}
 
 {{ option.description or '' }}
 
@@ -29,6 +29,7 @@
         </td>
     </tr>
     {%- endif -%}
+
 </table>
 {% endif %}
 {%- if option.children -%}
