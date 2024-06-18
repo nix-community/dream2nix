@@ -9,6 +9,11 @@ from mkdocs.structure.files import Files
 from mkdocs.config.defaults import MkDocsConfig
 
 
+from pygments import highlight
+from pygments.lexers import get_lexer_by_name
+from pygments.formatters import HtmlFormatter
+
+
 log = logging.getLogger("mkdocs")
 
 
@@ -16,8 +21,8 @@ def is_reference_page(page: Page) -> bool:
     return page.file.src_path.startswith("reference/")
 
 
-def slugify(name: str) -> str:
-    return name.lower().replace(".", "-")
+def pygments(code: str, lang: str) -> str:
+    return highlight(code, get_lexer_by_name(lang), HtmlFormatter())
 
 
 def sort_options(item: Tuple[str, Dict]):
@@ -60,6 +65,7 @@ def on_page_markdown(
         return markdown
     src_path = Path(config.docs_dir) / page.file.src_path
     env = config.theme.get_env()
+    env.filters["pygments"] = pygments
 
     header = env.get_template("reference_header.html").render(meta=page.meta)
 

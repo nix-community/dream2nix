@@ -18,14 +18,14 @@
     {%- if option.default -%}
     <tr>
         <td>default</td>
-        <td><pre>{{(option.default | default({})).text}}</pre></td>
+        <td><pre>{{(option.default | default({})).text | pygments("nix")}}</pre></td>
     </tr>
     {%- endif -%}
     {%- if option.example -%}
     <tr>
         <td>example</td>
         <td>
-            <pre>{{(option.example | default({})).text}}</pre>
+            <pre>{{(option.example | default({})).text | pygments("nix")}}</pre>
         </td>
     </tr>
     {%- endif -%}
