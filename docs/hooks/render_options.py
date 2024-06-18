@@ -25,13 +25,13 @@ def pygments(code: str, lang: str) -> str:
     return highlight(code, get_lexer_by_name(lang), HtmlFormatter())
 
 
-def sort_options(item: Tuple[str, Dict]):
+def sort_options(item: Tuple[str, Dict], module_name: str) -> int:
     """
     Sort the modules. First the one the page is about,
     then single options, then the rest, alphabetically
     """
     name, option = item
-    if name == "pip":
+    if name == module_name:
         return -1
     elif len(option["children"]) == 0:
         return 0
@@ -39,7 +39,7 @@ def sort_options(item: Tuple[str, Dict]):
         return ord(name[0])
 
 
-def preprocess_options(options):
+def preprocess_options(options, module_name):
     tree = dict()
     for name, option in options.items():
         if name.startswith("_module"):
@@ -55,7 +55,7 @@ def preprocess_options(options):
                     cursor = cursor[part]
             else:
                 cursor = cursor[part]["children"]
-    return OrderedDict(sorted(tree.items(), key=sort_options))
+    return OrderedDict(sorted(tree.items(), key=lambda i: sort_options(i, module_name)))
 
 
 def on_page_markdown(
@@ -64,6 +64,7 @@ def on_page_markdown(
     if not is_reference_page(page):
         return markdown
     src_path = Path(config.docs_dir) / page.file.src_path
+    module_name = src_path.parent.stem
     env = config.theme.get_env()
     env.filters["pygments"] = pygments
 
@@ -74,7 +75,7 @@ def on_page_markdown(
         log.error(f"{options_path} does not exist")
         return None
     with open(options_path, "r") as f:
-        options = preprocess_options(json.load(f))
+        options = preprocess_options(json.load(f), module_name)
     reference = env.get_template("reference_options.html").render(options=options)
 
     return "\n\n".join([header, markdown, reference])
