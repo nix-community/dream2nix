@@ -192,12 +192,15 @@ in {
             else null
           );
           mkDerivation = {
-            # TODO: handle sources outside pypi.org
             src = lib.mkDefault (libpyproject-fetchers.fetchFromLegacy {
               pname = name;
               file = source.file;
               hash = source.hash;
-              url = "https://pypi.org/simple";
+              urls =
+                [
+                  "https://pypi.org/simple"
+                ]
+                ++ lib.optionals (lib.hasAttrByPath ["tool" "pdm" "source"] pyproject.pyproject) (builtins.map (source: source.url) pyproject.pyproject.tool.pdm.source);
             });
             propagatedBuildInputs =
               lib.mapAttrsToList
