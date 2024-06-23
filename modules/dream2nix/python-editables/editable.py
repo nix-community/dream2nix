@@ -1,14 +1,14 @@
-import os
-import sys
-import json
-import shutil
-import subprocess
 import configparser
 import importlib
+import json
+import os
+import shutil
+import subprocess
+import sys
 from contextlib import redirect_stdout
-from textwrap import dedent
 from pathlib import Path
 from tempfile import TemporaryDirectory
+from textwrap import dedent
 
 import tomli
 
@@ -173,6 +173,15 @@ def needs_update(args, dream2nix_python_dir):
     return old_args != args
 
 
+def export_environment_vars(python_environment, bin_dir, site_dir, site_packages):
+    print(
+        f"""
+    export PYTHONPATH="{site_dir}:{python_environment / site_packages}:$PYTHONPATH"
+    export PATH="{bin_dir}:${python_environment}/bin:$PATH"
+        """
+    )
+
+
 def pretty_print_editables(editables, root_dir, root_name):
     if os.environ.get("D2N_QUIET"):
         return
@@ -218,6 +227,7 @@ if __name__ == "__main__":
         if dream2nix_python_dir.exists():
             shutil.rmtree(dream2nix_python_dir)
     else:
+        export_environment_vars(python_environment, bin_dir, site_dir, site_packages)
         pretty_print_editables(editables, root_dir, root_name)
         exit(0)
 
@@ -259,14 +269,8 @@ for index, path in enumerate(sys.path):
         """
         )
 
-    print(
-        f"""
-export PYTHONPATH="{site_dir}:{python_environment / site_packages}:$PYTHONPATH"
-export PATH="{bin_dir}:${python_environment}/bin:$PATH"
-    """
-    )
-
     with open(dream2nix_python_dir / "editable-args.json", "w") as f:
         json.dump(args, f, indent=2)
 
+    export_environment_vars(python_environment, bin_dir, site_dir, site_packages)
     pretty_print_editables(editables, root_dir, root_name)
