@@ -30,7 +30,7 @@ in {
   };
 
   buildPythonPackage = {
-    format = lib.mkForce "pyproject";
+    pyproject = true;
     pythonImportsCheck = [
       "mytool"
     ];

@@ -19,7 +19,7 @@ in {
   };
 
   buildPythonPackage = {
-    format = "pyproject";
+    pyproject = true;
   };
 
   name = pyproject.project.name;

@@ -6,7 +6,7 @@
 }: let
   pyproject = lib.importTOML ./subpkg1/pyproject.toml;
   buildWithSetuptools = {
-    buildPythonPackage.format = "pyproject";
+    buildPythonPackage.pyproject = true;
     mkDerivation.buildInputs = [config.deps.python.pkgs.setuptools];
   };
 in {

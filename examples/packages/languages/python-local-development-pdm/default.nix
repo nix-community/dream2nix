@@ -9,10 +9,6 @@
     dream2nix.modules.dream2nix.WIP-python-pdm
   ];
 
-  deps = {nixpkgs, ...}: {
-    python = nixpkgs.python3;
-  };
-
   mkDerivation = {
     src = lib.cleanSourceWith {
       src = lib.cleanSource ./.;
@@ -28,7 +24,6 @@
   pdm.pyproject = ./pyproject.toml;
 
   buildPythonPackage = {
-    format = lib.mkForce "pyproject";
     pythonImportsCheck = [
       "mytool"
     ];
