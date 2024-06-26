@@ -6,9 +6,9 @@ For some more background information, check out the initial exploration of this 
 
 @edolstra 's [talk about this topic](https://www.youtube.com/watch?v=dTd499Y31ig) is also worth watching.
 
-# Benefits
+## Benefits
 
-## Deprecate override functions
+### Deprecate override functions
 
 Changing options of packages in nixpkgs can require chaining different override functions like this:
 
@@ -39,7 +39,7 @@ Changing options of packages in nixpkgs can require chaining different override 
 
 See htop module definition [here](https://github.com/nix-community/dream2nix/blob/main/examples/packages/basics/htop-with-flags/default.nix).
 
-## Type safety
+### Type safety
 
 The following code in nixpkgs mkDerivation mysteriously skips the patches:
 
@@ -56,7 +56,7 @@ mkDerivation {
 A definition for option `[...].dontPatch' is not of type `boolean' [...]
 ```
 
-## Catch typos
+### Catch typos
 
 The following code in nixpkgs mkDerivation builds **without** openssl_3.
 
@@ -73,7 +73,7 @@ mkDerivation {
 The option `[...].nativBuildInputs' does not exist
 ```
 
-## Environment variables clearly defined
+### Environment variables clearly defined
 
 `dream2nix` requires a clear distinction between known parameters and user-defined variables.
 Defining `SOME_VARIABLE` at the top-level, would raise:
@@ -93,7 +93,7 @@ Instead it has to be defined under `env.`:
 }
 ```
 
-## Documentation / Discoverability
+### Documentation / Discoverability
 
 No more digging the source code to find possible options to override.
 
@@ -101,11 +101,11 @@ Documentation similar to [search.nixos.org](https://search.nixos.org) can be gen
 
 Every package built with `dream2nix` has a `.docs` attribute that builds an html documentation describing it's options.
 
-## Package blueprints
+### Package blueprints
 
 With `dream2nix`, packages don't need to be fully declared. Options can be left without defaults, requiring the consumer to complete the definition.
 
-## Flexibility
+### Flexibility
 
 The nixos module system gives maintainers more freedom over how packages are split into modules. Separation of concerns can be implemented more easily.
 For example, the dependency tree of a package set can be factored out into a separate module, allowing for simpler modification.

@@ -1,0 +1,65 @@
+site_name: Dream2Nix
+docs_dir: "src"
+site_url: "https://nix-community.github.io/dream2nix"
+site_dir: !ENV out
+
+repo_url: https://github.com/nix-community/dream2nix
+repo_name: nix-community/dream2nix
+edit_uri: edit/main/docs/src/
+
+plugins:
+  - search
+  - awesome-pages
+
+hooks:
+  - hooks/render_options.py
+
+extra_css:
+  - style.css
+
+markdown_extensions:
+  - toc:
+      permalink: true
+  - tables
+  - admonition
+  - pymdownx.escapeall
+  - pymdownx.highlight:
+      anchor_linenums: true
+  - pymdownx.inlinehilite
+  - pymdownx.snippets
+  - pymdownx.superfences
+  - pymdownx.tasklist
+  - pymdownx.details
+
+validation:
+  omitted_files: warn
+  absolute_links: warn
+  unrecognized_links: warn
+
+theme:
+  custom_dir: theme
+  name: material
+  favicon: favicon.png
+  logo: favicon.png
+  features:
+    - search.suggest
+    - search.highlight
+    - instant
+    - navigation.instant
+    - navigation.instant.prefetch
+    - navigation.instant.progress
+    - navigation.tracking
+    - navigation.path
+    - navigation.top
+    - toc.follow
+    - content.code.copy
+    - content.code.annotate
+
+extra:
+  social:
+    - icon: fontawesome/brands/github
+      link: https://github.com/nix-community/dream2nix
+      name: Dream2nix on Github
+    - icon: fontawesome/solid/comments
+      link: https://matrix.to/#/#dream2nix:nixos.org
+      name: Dream2nix Matrix Channel

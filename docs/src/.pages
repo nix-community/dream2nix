@@ -1,0 +1,15 @@
+nav:
+  - "Home": index.md
+  - "Getting Started": gettingstarted.md
+  - Concepts:
+      - "Modules": modules.md
+      - "Overriding Dependencies": overrides.md
+  - Reference: reference
+  - Examples:
+      - "👉 example repository": https://github.com/nix-community/dream2nix/tree/main/examples/repo-with-packages
+      - "👉 example repository using flakes": https://github.com/nix-community/dream2nix/tree/main/examples/repo-with-packages-flake)
+      - "👉 example packages": https://github.com/nix-community/dream2nix/tree/main/examples/packages)
+  - Documentation: docs.md
+  - Notes:
+    - "v1 API design docs": v1-api
+    - development-roundups

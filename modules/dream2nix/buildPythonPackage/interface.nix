@@ -93,13 +93,15 @@ in {
       description = ''
         Whether the pyproject format should be used. When set to `true`,
         `pypaBuildHook` will be used, and you can add the required build dependencies
-        from `build-system.requires` to `build-system`. Note that the pyproject
-        format falls back to using `setuptools`, so you can use `pyproject = true`
-        even if the package only has a `setup.py`. When set to `false`, you can
-        use the existing hooks or provide your own logic to build the
-        package. This can be useful for packages that don't support the pyproject
-        format. When unset, the legacy `setuptools` hooks are used for backwards
-        compatibility.
+        from `build-system.requires` to `build-system`.
+
+        Note that the pyproject format falls back to using `setuptools`, so
+        you can use `pyproject = true` even if the package only has a `setup.py`.
+        When set to `false`, you can use the existing hooks or provide your own
+        logic to build the package. This can be useful for packages that don't
+        support the pyproject format.
+
+        When unset, the legacy `setuptools` hooks are used for backwards compatibility.
       '';
     };
 

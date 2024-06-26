@@ -13,7 +13,9 @@
   <a href="https://github.com/nix-community/dream2nix/tree/main/examples/packages">Example Packages</a>
 </p>
 
-!!! Warning: dream2nix is unstable software. While simple UX is one of our main focus points, the APIs  are still under development. Do expect changes that will break your setup.
+!!! warning
+
+    dream2nix is unstable software. While simple UX is one of our main focus points, the APIs  are still under development. Do expect changes that will break your setup.
 
 ### legacy dream2nix
 
