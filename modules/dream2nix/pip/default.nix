@@ -14,9 +14,6 @@
   isRootDrv = drv: cfg.rootDependencies.${drv.name} or false;
   isBuildInput = drv: cfg.buildDependencies.${drv.name} or false;
 
-  # actually wanted editables (minus the ones set to false)
-  editables = lib.filterAttrs (_name: path: path != false) config.pip.editables;
-
   writers = import ../../../pkgs/writers {
     inherit lib;
     inherit
@@ -177,19 +174,14 @@ in {
 
   pip = {
     drvs = drvs;
+    inherit (config) name paths;
+    inherit (config.public) pyEnv;
+    # make root package always editable
+    editables = {
+      ${config.name} = config.paths.package;
+    };
     rootDependencies =
       l.genAttrs (targets.default.${config.name} or []) (_: true);
-    editables =
-      # make root package always editable
-      {${config.name} = config.paths.package;};
-    editablesShellHook = import ./editable.nix {
-      inherit lib;
-      inherit (config.deps) unzip writeText;
-      inherit (config.paths) findRoot;
-      inherit (config.public) pyEnv;
-      inherit (cfg) editables;
-      rootName = config.name;
-    };
   };
 
   mkDerivation = {
@@ -239,18 +231,18 @@ in {
   # a dev shell for development
   public.devShell = config.deps.mkShell {
     packages = [config.public.pyEnv];
-    shellHook = config.public.shellHook;
+    shellHook = config.pip.editablesShellHook;
     buildInputs =
-      [(config.pip.drvs.tomli.public or config.deps.python.pkgs.tomli)]
+      [(config.drvs.tomli.public or config.deps.python.pkgs.tomli)]
       ++ lib.flatten (
         lib.mapAttrsToList
-        (name: _path: config.pip.drvs.${name}.mkDerivation.buildInputs or [])
-        editables
+        (name: _path: config.drvs.${name}.mkDerivation.buildInputs or [])
+        config.pip.editables
       );
     nativeBuildInputs = lib.flatten (
       lib.mapAttrsToList
-      (name: _path: config.pip.drvs.${name}.mkDerivation.nativeBuildInputs or [])
-      editables
+      (name: _path: config.drvs.${name}.mkDerivation.nativeBuildInputs or [])
+      config.pip.editables
     );
   };
 }

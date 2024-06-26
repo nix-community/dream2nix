@@ -81,6 +81,8 @@ in {
       runCommand
       stdenvNoCC
       stdenv
+      writeText
+      unzip
       ;
     python = lib.mkDefault config.deps.python3;
   };
@@ -92,7 +94,16 @@ in {
       python = lib.mkDefault config.deps.python;
     };
   };
-  pdm.sourceSelector = lib.mkDefault libpdm.preferWheelSelector;
+  pdm = {
+    sourceSelector = lib.mkDefault libpdm.preferWheelSelector;
+    inherit (config) overrides overrideAll;
+    inherit (config) name paths;
+    inherit (config.public) pyEnv;
+    # make root package always editable
+    editables = {
+      ${config.name} = config.paths.package;
+    };
+  };
   buildPythonPackage = {
     format = lib.mkDefault "pyproject";
   };
@@ -106,19 +117,41 @@ in {
   };
 
   public.pyEnv = let
-    pyEnv' = config.deps.python.withPackages (ps: config.mkDerivation.propagatedBuildInputs);
+    pyEnv' = config.deps.python.withPackages (
+      ps:
+        config.mkDerivation.propagatedBuildInputs
+        # the editableShellHook requires wheel and other build system deps.
+        ++ config.mkDerivation.buildInputs
+        ++ [config.deps.python.pkgs.wheel]
+    );
   in
     pyEnv'.override (old: {
       # namespaced packages are triggering a collision error, but this can be
       # safely ignored. They are still set up correctly and can be imported.
       ignoreCollisions = true;
     });
+  public.shellHook = config.pdm.editablesShellHook;
 
   public.devShell = config.deps.mkShell {
+    shellHook = config.public.shellHook;
     packages = [
       config.public.pyEnv
       config.deps.pdm
     ];
+    buildInputs =
+      [
+        config.groups.default.packages.tomli.public or config.deps.python.pkgs.tomli
+      ]
+      ++ lib.flatten (
+        lib.mapAttrsToList
+        (name: _path: config.groups.default.packages.${name}.evaluated.mkDerivation.buildInputs or [])
+        config.pdm.editables
+      );
+    nativeBuildInputs = lib.flatten (
+      lib.mapAttrsToList
+      (name: _path: config.groups.default.packages.${name}.evaluated.mkDerivation.nativeBuildInputs or [])
+      config.pdm.editables
+    );
   };
 
   groups = let

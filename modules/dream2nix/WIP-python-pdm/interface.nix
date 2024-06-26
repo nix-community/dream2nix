@@ -6,16 +6,23 @@
 }: let
   l = lib // builtins;
   t = l.types;
+  mkSubmodule = import ../../../lib/internal/mkSubmodule.nix {inherit lib specialArgs;};
 in {
-  options.pdm = {
-    lockfile = l.mkOption {
-      type = t.path;
-    };
-    pyproject = l.mkOption {
-      type = t.path;
-    };
+  options.pdm = mkSubmodule {
+    imports = [
+      ../overrides
+      ../python-editables
+    ];
+    options = {
+      lockfile = l.mkOption {
+        type = t.path;
+      };
+      pyproject = l.mkOption {
+        type = t.path;
+      };
 
-    sourceSelector = import ./sourceSelectorOption.nix {inherit lib;};
+      sourceSelector = import ./sourceSelectorOption.nix {inherit lib;};
+    };
   };
   options.groups =
     (import ../WIP-groups/groups-option.nix {inherit config lib specialArgs;})

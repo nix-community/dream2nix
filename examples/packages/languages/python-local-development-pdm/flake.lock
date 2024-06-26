@@ -1,12 +1,32 @@
 {
   "nodes": {
+    "dream2nix": {
+      "inputs": {
+        "nixpkgs": "nixpkgs",
+        "purescript-overlay": "purescript-overlay",
+        "pyproject-nix": "pyproject-nix"
+      },
+      "locked": {
+        "lastModified": 1718044496,
+        "narHash": "sha256-IBfzTEq2twaEDdBenwl2k60QASIpU18yUAMyifoYkaM=",
+        "owner": "nix-community",
+        "repo": "dream2nix",
+        "rev": "2ab68c8d27a3cd6083e7a2f27d6363577d8532e1",
+        "type": "github"
+      },
+      "original": {
+        "owner": "nix-community",
+        "repo": "dream2nix",
+        "type": "github"
+      }
+    },
     "nixpkgs": {
       "locked": {
-        "lastModified": 1719285171,
-        "narHash": "sha256-kOUKtKfYEh8h8goL/P6lKF4Jb0sXnEkFyEganzdTGvo=",
+        "lastModified": 1717893485,
+        "narHash": "sha256-WMU6ZRZrBgEUDIF0siu2aIyVAXcxfElSwzZtS/mSpN4=",
         "owner": "NixOS",
         "repo": "nixpkgs",
-        "rev": "cfb89a95f19bea461fc37228dc4d07b22fe617c2",
+        "rev": "3bcedce9f4de37570242faf16e1e143583407eab",
         "type": "github"
       },
       "original": {
@@ -19,6 +39,7 @@
     "purescript-overlay": {
       "inputs": {
         "nixpkgs": [
+          "dream2nix",
           "nixpkgs"
         ],
         "slimlock": "slimlock"
@@ -56,14 +77,17 @@
     },
     "root": {
       "inputs": {
-        "nixpkgs": "nixpkgs",
-        "purescript-overlay": "purescript-overlay",
-        "pyproject-nix": "pyproject-nix"
+        "dream2nix": "dream2nix",
+        "nixpkgs": [
+          "dream2nix",
+          "nixpkgs"
+        ]
       }
     },
     "slimlock": {
       "inputs": {
         "nixpkgs": [
+          "dream2nix",
           "purescript-overlay",
           "nixpkgs"
         ]
