@@ -8,23 +8,25 @@
       
       
       
-        <link rel="canonical" href="https://nix-community.github.io/dream2nix/">
+        <link rel="canonical" href="https://nix-community.github.io/dream2nix/development-roundups/2022-april-problems-of-nixos-module-system/">
       
       
+        <link rel="prev" href="../2022-april-june/">
       
-        <link rel="next" href="gettingstarted/">
+      
+        <link rel="next" href="../2022-july-september/">
       
       
-      <link rel="icon" href="favicon.png">
+      <link rel="icon" href="../../favicon.png">
       <meta name="generator" content="mkdocs-1.5.3, mkdocs-material-9.5.18">
     
     
       
-        <title>Dream2Nix</title>
+        <title>Thoughts on the current nixos module system - Dream2Nix</title>
       
     
     
-      <link rel="stylesheet" href="assets/stylesheets/main.66ac8b77.min.css">
+      <link rel="stylesheet" href="../../assets/stylesheets/main.66ac8b77.min.css">
       
       
 
@@ -43,9 +45,9 @@
       
     
     
-      <link rel="stylesheet" href="style.css">
+      <link rel="stylesheet" href="../../style.css">
     
-    <script>__md_scope=new URL(".",location),__md_hash=e=>[...e].reduce((e,_)=>(e<<5)-e+_.charCodeAt(0),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce((e,_)=>(e<<5)-e+_.charCodeAt(0),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
       
 
@@ -64,7 +66,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#legacy-dream2nix" class="md-skip">
+        <a href="#thoughts-on-the-current-nixos-module-system" class="md-skip">
           Skip to content
         </a>
       
@@ -80,9 +82,9 @@
 
 <header class="md-header md-header--shadow" data-md-component="header">
   <nav class="md-header__inner md-grid" aria-label="Header">
-    <a href="." title="Dream2Nix" class="md-header__button md-logo" aria-label="Dream2Nix" data-md-component="logo">
+    <a href="../.." title="Dream2Nix" class="md-header__button md-logo" aria-label="Dream2Nix" data-md-component="logo">
       
-  <img src="favicon.png" alt="logo">
+  <img src="../../favicon.png" alt="logo">
 
     </a>
     <label class="md-header__button md-icon" for="__drawer">
@@ -99,7 +101,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Home
+              Thoughts on the current nixos module system
             
           </span>
         </div>
@@ -188,9 +190,9 @@
 
 <nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
   <label class="md-nav__title" for="__drawer">
-    <a href="." title="Dream2Nix" class="md-nav__button md-logo" aria-label="Dream2Nix" data-md-component="logo">
+    <a href="../.." title="Dream2Nix" class="md-nav__button md-logo" aria-label="Dream2Nix" data-md-component="logo">
       
-  <img src="favicon.png" alt="logo">
+  <img src="../../favicon.png" alt="logo">
 
     </a>
     Dream2Nix
@@ -214,28 +216,10 @@
       
   
   
-    
   
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
-      
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          
-  
-  <span class="md-ellipsis">
-    Home
-  </span>
-  
-
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <a href="." class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -244,262 +228,6 @@
   
 
       </a>
-      
-        
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <!--
-     Copyright (c) 2016-2024 Martin Donath <martin.donath@squidfunk.com>
-
-     Permission is hereby granted, free of charge, to any person obtaining a copy
-     of this software and associated documentation files (the "Software"), to
-     deal in the Software without restriction, including without limitation the
-     rights to use, copy, modify, merge, publish, distribute, sublicense, and/or
-     sell copies of the Software, and to permit persons to whom the Software is
-     furnished to do so, subject to the following conditions:
-
-     The above copyright notice and this permission notice shall be included in
-     all copies or substantial portions of the Software.
-
-     THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-     IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-     FITNESS FOR A PARTICULAR PURPOSE AND NON-INFRINGEMENT. IN NO EVENT SHALL THE
-     AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-     LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
-     FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
-     IN THE SOFTWARE.
--->
-
-<!-- Table of contents item -->
-<li class="md-nav__item">
-            <a href="#legacy-dream2nix" class="md-nav__link">
-                <span class="md-ellipsis">legacy dream2nix</span>
-            </a>
-         
-
-        <!-- Table of contents list -->
-        
-        
-</li>
-      
-        <!--
-     Copyright (c) 2016-2024 Martin Donath <martin.donath@squidfunk.com>
-
-     Permission is hereby granted, free of charge, to any person obtaining a copy
-     of this software and associated documentation files (the "Software"), to
-     deal in the Software without restriction, including without limitation the
-     rights to use, copy, modify, merge, publish, distribute, sublicense, and/or
-     sell copies of the Software, and to permit persons to whom the Software is
-     furnished to do so, subject to the following conditions:
-
-     The above copyright notice and this permission notice shall be included in
-     all copies or substantial portions of the Software.
-
-     THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-     IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-     FITNESS FOR A PARTICULAR PURPOSE AND NON-INFRINGEMENT. IN NO EVENT SHALL THE
-     AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-     LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
-     FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
-     IN THE SOFTWARE.
--->
-
-<!-- Table of contents item -->
-<li class="md-nav__item">
-            <a href="#funding" class="md-nav__link">
-                <span class="md-ellipsis">Funding</span>
-            </a>
-         
-
-        <!-- Table of contents list -->
-        
-        
-</li>
-      
-        <!--
-     Copyright (c) 2016-2024 Martin Donath <martin.donath@squidfunk.com>
-
-     Permission is hereby granted, free of charge, to any person obtaining a copy
-     of this software and associated documentation files (the "Software"), to
-     deal in the Software without restriction, including without limitation the
-     rights to use, copy, modify, merge, publish, distribute, sublicense, and/or
-     sell copies of the Software, and to permit persons to whom the Software is
-     furnished to do so, subject to the following conditions:
-
-     The above copyright notice and this permission notice shall be included in
-     all copies or substantial portions of the Software.
-
-     THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-     IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-     FITNESS FOR A PARTICULAR PURPOSE AND NON-INFRINGEMENT. IN NO EVENT SHALL THE
-     AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-     LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
-     FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
-     IN THE SOFTWARE.
--->
-
-<!-- Table of contents item -->
-<li class="md-nav__item">
-            <a href="#documentation" class="md-nav__link">
-                <span class="md-ellipsis">Documentation</span>
-            </a>
-         
-
-        <!-- Table of contents list -->
-        
-        
-</li>
-      
-        <!--
-     Copyright (c) 2016-2024 Martin Donath <martin.donath@squidfunk.com>
-
-     Permission is hereby granted, free of charge, to any person obtaining a copy
-     of this software and associated documentation files (the "Software"), to
-     deal in the Software without restriction, including without limitation the
-     rights to use, copy, modify, merge, publish, distribute, sublicense, and/or
-     sell copies of the Software, and to permit persons to whom the Software is
-     furnished to do so, subject to the following conditions:
-
-     The above copyright notice and this permission notice shall be included in
-     all copies or substantial portions of the Software.
-
-     THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-     IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-     FITNESS FOR A PARTICULAR PURPOSE AND NON-INFRINGEMENT. IN NO EVENT SHALL THE
-     AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-     LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
-     FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
-     IN THE SOFTWARE.
--->
-
-<!-- Table of contents item -->
-<li class="md-nav__item">
-            <a href="#presentations" class="md-nav__link">
-                <span class="md-ellipsis">Presentations</span>
-            </a>
-         
-
-        <!-- Table of contents list -->
-        
-        
-</li>
-      
-        <!--
-     Copyright (c) 2016-2024 Martin Donath <martin.donath@squidfunk.com>
-
-     Permission is hereby granted, free of charge, to any person obtaining a copy
-     of this software and associated documentation files (the "Software"), to
-     deal in the Software without restriction, including without limitation the
-     rights to use, copy, modify, merge, publish, distribute, sublicense, and/or
-     sell copies of the Software, and to permit persons to whom the Software is
-     furnished to do so, subject to the following conditions:
-
-     The above copyright notice and this permission notice shall be included in
-     all copies or substantial portions of the Software.
-
-     THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-     IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-     FITNESS FOR A PARTICULAR PURPOSE AND NON-INFRINGEMENT. IN NO EVENT SHALL THE
-     AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-     LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
-     FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
-     IN THE SOFTWARE.
--->
-
-<!-- Table of contents item -->
-<li class="md-nav__item">
-            <a href="#get-in-touch" class="md-nav__link">
-                <span class="md-ellipsis">Get in touch</span>
-            </a>
-         
-
-        <!-- Table of contents list -->
-        
-        
-</li>
-      
-        <!--
-     Copyright (c) 2016-2024 Martin Donath <martin.donath@squidfunk.com>
-
-     Permission is hereby granted, free of charge, to any person obtaining a copy
-     of this software and associated documentation files (the "Software"), to
-     deal in the Software without restriction, including without limitation the
-     rights to use, copy, modify, merge, publish, distribute, sublicense, and/or
-     sell copies of the Software, and to permit persons to whom the Software is
-     furnished to do so, subject to the following conditions:
-
-     The above copyright notice and this permission notice shall be included in
-     all copies or substantial portions of the Software.
-
-     THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-     IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-     FITNESS FOR A PARTICULAR PURPOSE AND NON-INFRINGEMENT. IN NO EVENT SHALL THE
-     AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-     LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
-     FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
-     IN THE SOFTWARE.
--->
-
-<!-- Table of contents item -->
-<li class="md-nav__item">
-            <a href="#contribute" class="md-nav__link">
-                <span class="md-ellipsis">Contribute</span>
-            </a>
-         
-
-        <!-- Table of contents list -->
-        
-        
-</li>
-      
-        <!--
-     Copyright (c) 2016-2024 Martin Donath <martin.donath@squidfunk.com>
-
-     Permission is hereby granted, free of charge, to any person obtaining a copy
-     of this software and associated documentation files (the "Software"), to
-     deal in the Software without restriction, including without limitation the
-     rights to use, copy, modify, merge, publish, distribute, sublicense, and/or
-     sell copies of the Software, and to permit persons to whom the Software is
-     furnished to do so, subject to the following conditions:
-
-     The above copyright notice and this permission notice shall be included in
-     all copies or substantial portions of the Software.
-
-     THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-     IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-     FITNESS FOR A PARTICULAR PURPOSE AND NON-INFRINGEMENT. IN NO EVENT SHALL THE
-     AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-     LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
-     FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
-     IN THE SOFTWARE.
--->
-
-<!-- Table of contents item -->
-<li class="md-nav__item">
-            <a href="#goals" class="md-nav__link">
-                <span class="md-ellipsis">Goals</span>
-            </a>
-         
-
-        <!-- Table of contents list -->
-        
-        
-</li>
-      
-    </ul>
-  
-</nav>
-      
     </li>
   
 
@@ -511,7 +239,7 @@
   
   
     <li class="md-nav__item">
-      <a href="gettingstarted/" class="md-nav__link">
+      <a href="../../gettingstarted/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -566,7 +294,7 @@
   
   
     <li class="md-nav__item">
-      <a href="modules/" class="md-nav__link">
+      <a href="../../modules/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -587,7 +315,7 @@
   
   
     <li class="md-nav__item">
-      <a href="overrides/" class="md-nav__link">
+      <a href="../../overrides/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -650,7 +378,7 @@
   
   
     <li class="md-nav__item">
-      <a href="reference/buildPythonPackage/" class="md-nav__link">
+      <a href="../../reference/buildPythonPackage/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -671,7 +399,7 @@
   
   
     <li class="md-nav__item">
-      <a href="reference/buildRustPackage/" class="md-nav__link">
+      <a href="../../reference/buildRustPackage/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -692,7 +420,7 @@
   
   
     <li class="md-nav__item">
-      <a href="reference/builtins-derivation/" class="md-nav__link">
+      <a href="../../reference/builtins-derivation/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -713,7 +441,7 @@
   
   
     <li class="md-nav__item">
-      <a href="reference/mkDerivation/" class="md-nav__link">
+      <a href="../../reference/mkDerivation/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -734,7 +462,7 @@
   
   
     <li class="md-nav__item">
-      <a href="reference/multi-derivation-package/" class="md-nav__link">
+      <a href="../../reference/multi-derivation-package/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -755,7 +483,7 @@
   
   
     <li class="md-nav__item">
-      <a href="reference/nodejs-devshell/" class="md-nav__link">
+      <a href="../../reference/nodejs-devshell/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -776,7 +504,7 @@
   
   
     <li class="md-nav__item">
-      <a href="reference/nodejs-devshell-v3/" class="md-nav__link">
+      <a href="../../reference/nodejs-devshell-v3/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -797,7 +525,7 @@
   
   
     <li class="md-nav__item">
-      <a href="reference/nodejs-granular/" class="md-nav__link">
+      <a href="../../reference/nodejs-granular/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -818,7 +546,7 @@
   
   
     <li class="md-nav__item">
-      <a href="reference/nodejs-granular-v3/" class="md-nav__link">
+      <a href="../../reference/nodejs-granular-v3/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -839,7 +567,7 @@
   
   
     <li class="md-nav__item">
-      <a href="reference/nodejs-node-modules/" class="md-nav__link">
+      <a href="../../reference/nodejs-node-modules/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -860,7 +588,7 @@
   
   
     <li class="md-nav__item">
-      <a href="reference/nodejs-node-modules-v3/" class="md-nav__link">
+      <a href="../../reference/nodejs-node-modules-v3/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -881,7 +609,7 @@
   
   
     <li class="md-nav__item">
-      <a href="reference/nodejs-package-json/" class="md-nav__link">
+      <a href="../../reference/nodejs-package-json/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -902,7 +630,7 @@
   
   
     <li class="md-nav__item">
-      <a href="reference/nodejs-package-json-v3/" class="md-nav__link">
+      <a href="../../reference/nodejs-package-json-v3/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -923,7 +651,7 @@
   
   
     <li class="md-nav__item">
-      <a href="reference/nodejs-package-lock/" class="md-nav__link">
+      <a href="../../reference/nodejs-package-lock/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -944,7 +672,7 @@
   
   
     <li class="md-nav__item">
-      <a href="reference/nodejs-package-lock-v3/" class="md-nav__link">
+      <a href="../../reference/nodejs-package-lock-v3/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -965,7 +693,7 @@
   
   
     <li class="md-nav__item">
-      <a href="reference/overrides/" class="md-nav__link">
+      <a href="../../reference/overrides/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -986,7 +714,7 @@
   
   
     <li class="md-nav__item">
-      <a href="reference/package-func/" class="md-nav__link">
+      <a href="../../reference/package-func/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1007,7 +735,7 @@
   
   
     <li class="md-nav__item">
-      <a href="reference/php-composer-lock/" class="md-nav__link">
+      <a href="../../reference/php-composer-lock/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1028,7 +756,7 @@
   
   
     <li class="md-nav__item">
-      <a href="reference/php-granular/" class="md-nav__link">
+      <a href="../../reference/php-granular/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1049,7 +777,7 @@
   
   
     <li class="md-nav__item">
-      <a href="reference/pip/" class="md-nav__link">
+      <a href="../../reference/pip/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1070,7 +798,7 @@
   
   
     <li class="md-nav__item">
-      <a href="reference/rust-cargo-lock/" class="md-nav__link">
+      <a href="../../reference/rust-cargo-lock/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1091,7 +819,7 @@
   
   
     <li class="md-nav__item">
-      <a href="reference/rust-crane/" class="md-nav__link">
+      <a href="../../reference/rust-crane/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1147,7 +875,7 @@
   
   
     <li class="md-nav__item">
-      <a href="reference/WIP-groups/" class="md-nav__link">
+      <a href="../../reference/WIP-groups/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1168,7 +896,7 @@
   
   
     <li class="md-nav__item">
-      <a href="reference/WIP-haskell-cabal/" class="md-nav__link">
+      <a href="../../reference/WIP-haskell-cabal/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1189,7 +917,7 @@
   
   
     <li class="md-nav__item">
-      <a href="reference/WIP-nodejs-builder-v3/" class="md-nav__link">
+      <a href="../../reference/WIP-nodejs-builder-v3/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1210,7 +938,7 @@
   
   
     <li class="md-nav__item">
-      <a href="reference/WIP-python-pdm/" class="md-nav__link">
+      <a href="../../reference/WIP-python-pdm/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1231,7 +959,7 @@
   
   
     <li class="md-nav__item">
-      <a href="reference/WIP-python-pyproject/" class="md-nav__link">
+      <a href="../../reference/WIP-python-pyproject/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1252,7 +980,7 @@
   
   
     <li class="md-nav__item">
-      <a href="reference/WIP-spago/" class="md-nav__link">
+      <a href="../../reference/WIP-spago/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1393,7 +1121,7 @@
   
   
     <li class="md-nav__item">
-      <a href="docs/" class="md-nav__link">
+      <a href="../../docs/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1410,17 +1138,19 @@
       
   
   
+    
   
   
+  
     
     
     
     
-    <li class="md-nav__item md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_7" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_7" checked>
         
           
           <label class="md-nav__link" for="__nav_7" id="__nav_7_label" tabindex="0">
@@ -1434,7 +1164,7 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_7_label" aria-expanded="false">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_7_label" aria-expanded="true">
           <label class="md-nav__title" for="__nav_7">
             <span class="md-nav__icon md-icon"></span>
             Notes
@@ -1483,7 +1213,7 @@
   
   
     <li class="md-nav__item">
-      <a href="v1-api/summary/" class="md-nav__link">
+      <a href="../../v1-api/summary/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1504,7 +1234,7 @@
   
   
     <li class="md-nav__item">
-      <a href="v1-api/problems/" class="md-nav__link">
+      <a href="../../v1-api/problems/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1525,7 +1255,7 @@
   
   
     <li class="md-nav__item">
-      <a href="v1-api/users/" class="md-nav__link">
+      <a href="../../v1-api/users/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1581,7 +1311,7 @@
   
   
     <li class="md-nav__item">
-      <a href="v1-api/consuming/inspect-options/" class="md-nav__link">
+      <a href="../../v1-api/consuming/inspect-options/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1602,7 +1332,7 @@
   
   
     <li class="md-nav__item">
-      <a href="v1-api/consuming/override/" class="md-nav__link">
+      <a href="../../v1-api/consuming/override/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1666,7 +1396,7 @@
   
   
     <li class="md-nav__item">
-      <a href="v1-api/integrating/integrate-lang2nix-impure/" class="md-nav__link">
+      <a href="../../v1-api/integrating/integrate-lang2nix-impure/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1687,7 +1417,7 @@
   
   
     <li class="md-nav__item">
-      <a href="v1-api/integrating/integrate-lang2nix-pure/" class="md-nav__link">
+      <a href="../../v1-api/integrating/integrate-lang2nix-pure/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1751,7 +1481,7 @@
   
   
     <li class="md-nav__item">
-      <a href="v1-api/packaging/monorepo/" class="md-nav__link">
+      <a href="../../v1-api/packaging/monorepo/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1772,7 +1502,7 @@
   
   
     <li class="md-nav__item">
-      <a href="v1-api/packaging/nodejs-init-project/" class="md-nav__link">
+      <a href="../../v1-api/packaging/nodejs-init-project/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1793,7 +1523,7 @@
   
   
     <li class="md-nav__item">
-      <a href="v1-api/packaging/nodejs-multiple-repos/" class="md-nav__link">
+      <a href="../../v1-api/packaging/nodejs-multiple-repos/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1814,7 +1544,7 @@
   
   
     <li class="md-nav__item">
-      <a href="v1-api/packaging/nodejs-workspaces/" class="md-nav__link">
+      <a href="../../v1-api/packaging/nodejs-workspaces/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1848,17 +1578,19 @@
                 
   
   
+    
   
   
+  
     
     
     
     
-    <li class="md-nav__item md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_7_2" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_7_2" checked>
         
           
           <label class="md-nav__link" for="__nav_7_2" id="__nav_7_2_label" tabindex="0">
@@ -1872,7 +1604,7 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_7_2_label" aria-expanded="false">
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_7_2_label" aria-expanded="true">
           <label class="md-nav__title" for="__nav_7_2">
             <span class="md-nav__icon md-icon"></span>
             Development roundups
@@ -1886,7 +1618,7 @@
   
   
     <li class="md-nav__item">
-      <a href="development-roundups/2022-april-june/" class="md-nav__link">
+      <a href="../2022-april-june/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1904,10 +1636,30 @@
                 
   
   
+    
   
   
-    <li class="md-nav__item">
-      <a href="development-roundups/2022-april-problems-of-nixos-module-system/" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  <span class="md-ellipsis">
+    Thoughts on the current nixos module system
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         
   
   <span class="md-ellipsis">
@@ -1916,6 +1668,264 @@
   
 
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <!--
+     Copyright (c) 2016-2024 Martin Donath <martin.donath@squidfunk.com>
+
+     Permission is hereby granted, free of charge, to any person obtaining a copy
+     of this software and associated documentation files (the "Software"), to
+     deal in the Software without restriction, including without limitation the
+     rights to use, copy, modify, merge, publish, distribute, sublicense, and/or
+     sell copies of the Software, and to permit persons to whom the Software is
+     furnished to do so, subject to the following conditions:
+
+     The above copyright notice and this permission notice shall be included in
+     all copies or substantial portions of the Software.
+
+     THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+     IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+     FITNESS FOR A PARTICULAR PURPOSE AND NON-INFRINGEMENT. IN NO EVENT SHALL THE
+     AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+     LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+     FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
+     IN THE SOFTWARE.
+-->
+
+<!-- Table of contents item -->
+<li class="md-nav__item">
+            <a href="#problem-1-bad-control-over-module-dependencies" class="md-nav__link">
+                <span class="md-ellipsis">Problem 1: Bad control over module dependencies</span>
+            </a>
+         
+
+        <!-- Table of contents list -->
+        
+        
+</li>
+      
+        <!--
+     Copyright (c) 2016-2024 Martin Donath <martin.donath@squidfunk.com>
+
+     Permission is hereby granted, free of charge, to any person obtaining a copy
+     of this software and associated documentation files (the "Software"), to
+     deal in the Software without restriction, including without limitation the
+     rights to use, copy, modify, merge, publish, distribute, sublicense, and/or
+     sell copies of the Software, and to permit persons to whom the Software is
+     furnished to do so, subject to the following conditions:
+
+     The above copyright notice and this permission notice shall be included in
+     all copies or substantial portions of the Software.
+
+     THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+     IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+     FITNESS FOR A PARTICULAR PURPOSE AND NON-INFRINGEMENT. IN NO EVENT SHALL THE
+     AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+     LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+     FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
+     IN THE SOFTWARE.
+-->
+
+<!-- Table of contents item -->
+<li class="md-nav__item">
+            <a href="#problem-2-module-identificationduplication-issues" class="md-nav__link">
+                <span class="md-ellipsis">Problem 2: Module identification/duplication issues</span>
+            </a>
+         
+
+        <!-- Table of contents list -->
+        
+        
+</li>
+      
+        <!--
+     Copyright (c) 2016-2024 Martin Donath <martin.donath@squidfunk.com>
+
+     Permission is hereby granted, free of charge, to any person obtaining a copy
+     of this software and associated documentation files (the "Software"), to
+     deal in the Software without restriction, including without limitation the
+     rights to use, copy, modify, merge, publish, distribute, sublicense, and/or
+     sell copies of the Software, and to permit persons to whom the Software is
+     furnished to do so, subject to the following conditions:
+
+     The above copyright notice and this permission notice shall be included in
+     all copies or substantial portions of the Software.
+
+     THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+     IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+     FITNESS FOR A PARTICULAR PURPOSE AND NON-INFRINGEMENT. IN NO EVENT SHALL THE
+     AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+     LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+     FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
+     IN THE SOFTWARE.
+-->
+
+<!-- Table of contents item -->
+<li class="md-nav__item">
+            <a href="#problem-3-result-type-and-location-not-discoverable" class="md-nav__link">
+                <span class="md-ellipsis">Problem 3: Result type and location not discoverable</span>
+            </a>
+         
+
+        <!-- Table of contents list -->
+        
+        
+</li>
+      
+        <!--
+     Copyright (c) 2016-2024 Martin Donath <martin.donath@squidfunk.com>
+
+     Permission is hereby granted, free of charge, to any person obtaining a copy
+     of this software and associated documentation files (the "Software"), to
+     deal in the Software without restriction, including without limitation the
+     rights to use, copy, modify, merge, publish, distribute, sublicense, and/or
+     sell copies of the Software, and to permit persons to whom the Software is
+     furnished to do so, subject to the following conditions:
+
+     The above copyright notice and this permission notice shall be included in
+     all copies or substantial portions of the Software.
+
+     THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+     IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+     FITNESS FOR A PARTICULAR PURPOSE AND NON-INFRINGEMENT. IN NO EVENT SHALL THE
+     AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+     LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+     FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
+     IN THE SOFTWARE.
+-->
+
+<!-- Table of contents item -->
+<li class="md-nav__item">
+            <a href="#problem-4-unprotected-gloabl-scope" class="md-nav__link">
+                <span class="md-ellipsis">Problem 4: Unprotected gloabl scope</span>
+            </a>
+         
+
+        <!-- Table of contents list -->
+        
+        
+</li>
+      
+        <!--
+     Copyright (c) 2016-2024 Martin Donath <martin.donath@squidfunk.com>
+
+     Permission is hereby granted, free of charge, to any person obtaining a copy
+     of this software and associated documentation files (the "Software"), to
+     deal in the Software without restriction, including without limitation the
+     rights to use, copy, modify, merge, publish, distribute, sublicense, and/or
+     sell copies of the Software, and to permit persons to whom the Software is
+     furnished to do so, subject to the following conditions:
+
+     The above copyright notice and this permission notice shall be included in
+     all copies or substantial portions of the Software.
+
+     THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+     IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+     FITNESS FOR A PARTICULAR PURPOSE AND NON-INFRINGEMENT. IN NO EVENT SHALL THE
+     AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+     LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+     FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
+     IN THE SOFTWARE.
+-->
+
+<!-- Table of contents item -->
+<li class="md-nav__item">
+            <a href="#proposal-1" class="md-nav__link">
+                <span class="md-ellipsis">Proposal 1</span>
+            </a>
+         
+
+        <!-- Table of contents list -->
+        
+        
+</li>
+      
+        <!--
+     Copyright (c) 2016-2024 Martin Donath <martin.donath@squidfunk.com>
+
+     Permission is hereby granted, free of charge, to any person obtaining a copy
+     of this software and associated documentation files (the "Software"), to
+     deal in the Software without restriction, including without limitation the
+     rights to use, copy, modify, merge, publish, distribute, sublicense, and/or
+     sell copies of the Software, and to permit persons to whom the Software is
+     furnished to do so, subject to the following conditions:
+
+     The above copyright notice and this permission notice shall be included in
+     all copies or substantial portions of the Software.
+
+     THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+     IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+     FITNESS FOR A PARTICULAR PURPOSE AND NON-INFRINGEMENT. IN NO EVENT SHALL THE
+     AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+     LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+     FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
+     IN THE SOFTWARE.
+-->
+
+<!-- Table of contents item -->
+<li class="md-nav__item">
+            <a href="#proposal-2" class="md-nav__link">
+                <span class="md-ellipsis">Proposal 2</span>
+            </a>
+         
+
+        <!-- Table of contents list -->
+        
+        
+</li>
+      
+        <!--
+     Copyright (c) 2016-2024 Martin Donath <martin.donath@squidfunk.com>
+
+     Permission is hereby granted, free of charge, to any person obtaining a copy
+     of this software and associated documentation files (the "Software"), to
+     deal in the Software without restriction, including without limitation the
+     rights to use, copy, modify, merge, publish, distribute, sublicense, and/or
+     sell copies of the Software, and to permit persons to whom the Software is
+     furnished to do so, subject to the following conditions:
+
+     The above copyright notice and this permission notice shall be included in
+     all copies or substantial portions of the Software.
+
+     THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+     IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+     FITNESS FOR A PARTICULAR PURPOSE AND NON-INFRINGEMENT. IN NO EVENT SHALL THE
+     AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+     LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+     FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
+     IN THE SOFTWARE.
+-->
+
+<!-- Table of contents item -->
+<li class="md-nav__item">
+            <a href="#proposal-3" class="md-nav__link">
+                <span class="md-ellipsis">Proposal 3</span>
+            </a>
+         
+
+        <!-- Table of contents list -->
+        
+        
+</li>
+      
+    </ul>
+  
+</nav>
+      
     </li>
   
 
@@ -1928,7 +1938,7 @@
   
   
     <li class="md-nav__item">
-      <a href="development-roundups/2022-july-september/" class="md-nav__link">
+      <a href="../2022-july-september/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1974,6 +1984,8 @@
   
   
   
+    
+  
   
     <label class="md-nav__title" for="__toc">
       <span class="md-nav__icon md-icon"></span>
@@ -2005,8 +2017,8 @@
 
 <!-- Table of contents item -->
 <li class="md-nav__item">
-            <a href="#legacy-dream2nix" class="md-nav__link">
-                <span class="md-ellipsis">legacy dream2nix</span>
+            <a href="#problem-1-bad-control-over-module-dependencies" class="md-nav__link">
+                <span class="md-ellipsis">Problem 1: Bad control over module dependencies</span>
             </a>
          
 
@@ -2039,8 +2051,8 @@
 
 <!-- Table of contents item -->
 <li class="md-nav__item">
-            <a href="#funding" class="md-nav__link">
-                <span class="md-ellipsis">Funding</span>
+            <a href="#problem-2-module-identificationduplication-issues" class="md-nav__link">
+                <span class="md-ellipsis">Problem 2: Module identification/duplication issues</span>
             </a>
          
 
@@ -2073,8 +2085,8 @@
 
 <!-- Table of contents item -->
 <li class="md-nav__item">
-            <a href="#documentation" class="md-nav__link">
-                <span class="md-ellipsis">Documentation</span>
+            <a href="#problem-3-result-type-and-location-not-discoverable" class="md-nav__link">
+                <span class="md-ellipsis">Problem 3: Result type and location not discoverable</span>
             </a>
          
 
@@ -2107,8 +2119,8 @@
 
 <!-- Table of contents item -->
 <li class="md-nav__item">
-            <a href="#presentations" class="md-nav__link">
-                <span class="md-ellipsis">Presentations</span>
+            <a href="#problem-4-unprotected-gloabl-scope" class="md-nav__link">
+                <span class="md-ellipsis">Problem 4: Unprotected gloabl scope</span>
             </a>
          
 
@@ -2141,8 +2153,8 @@
 
 <!-- Table of contents item -->
 <li class="md-nav__item">
-            <a href="#get-in-touch" class="md-nav__link">
-                <span class="md-ellipsis">Get in touch</span>
+            <a href="#proposal-1" class="md-nav__link">
+                <span class="md-ellipsis">Proposal 1</span>
             </a>
          
 
@@ -2175,8 +2187,8 @@
 
 <!-- Table of contents item -->
 <li class="md-nav__item">
-            <a href="#contribute" class="md-nav__link">
-                <span class="md-ellipsis">Contribute</span>
+            <a href="#proposal-2" class="md-nav__link">
+                <span class="md-ellipsis">Proposal 2</span>
             </a>
          
 
@@ -2209,8 +2221,8 @@
 
 <!-- Table of contents item -->
 <li class="md-nav__item">
-            <a href="#goals" class="md-nav__link">
-                <span class="md-ellipsis">Goals</span>
+            <a href="#proposal-3" class="md-nav__link">
+                <span class="md-ellipsis">Proposal 3</span>
             </a>
          
 
@@ -2237,58 +2249,95 @@
   
 
 
-  <h1>Home</h1>
-
-<p align="center">
-  <picture>
-    <source width="600" media="(prefers-color-scheme: dark)" srcset="https://gist.githubusercontent.com/DavHau/755fed3774e89c0b9b8953a0a25309fa/raw/0312cc4f785de36212f4303d23298f07c13549dc/dream2nix-dark.png">
-    <source width="600" media="(prefers-color-scheme: light)" srcset="https://gist.githubusercontent.com/DavHau/755fed3774e89c0b9b8953a0a25309fa/raw/e2a12a60ae49aa5eb11b42775abdd1652dbe63c0/dream2nix-01.png">
-    <img width="600" alt="dream2nix - A framework for automated nix packaging" src="https://gist.githubusercontent.com/DavHau/755fed3774e89c0b9b8953a0a25309fa/raw/e2a12a60ae49aa5eb11b42775abdd1652dbe63c0/dream2nix-01.png">
-  </picture>
-  <br>
-  Automate reproducible packaging for various language ecosystems
-  <br>
-  <a href="https://nix-community.github.io/dream2nix/">Documentation</a> |
-  <a href="https://github.com/nix-community/dream2nix/tree/main/examples/repo-with-packages">Example Repo</a> |
-  <a href="https://github.com/nix-community/dream2nix/tree/main/examples/repo-with-packages-flake">Example Repo Flake</a> |
-  <a href="https://github.com/nix-community/dream2nix/tree/main/examples/packages">Example Packages</a>
-</p>
-
-<div class="admonition warning">
-<p class="admonition-title">Warning</p>
-<p>dream2nix is unstable software. While simple UX is one of our main focus points, the APIs  are still under development. Do expect changes that will break your setup.</p>
-</div>
-<h3 id="legacy-dream2nix">legacy dream2nix<a class="headerlink" href="#legacy-dream2nix" title="Permanent link">&para;</a></h3>
-<p>Dream2nix is currently in the process of being refactored to make use of drv-parts. Not all features and subsystems are migrated yet. If you prefer continue using the <code>makeFlakeOutputs</code> interface, please refer to the <a href="https://github.com/nix-community/dream2nix/tree/legacy">legacy branch</a> of dream2nix.</p>
-<h3 id="funding">Funding<a class="headerlink" href="#funding" title="Permanent link">&para;</a></h3>
-<p>This project was funded through the <a href="https://nlnet.nl/assure">NGI Assure</a> Fund, a fund established by <a href="https://nlnet.nl/">NLnet</a> with financial support from the European Commission's <a href="https://ngi.eu/">Next Generation Internet</a> programme, under the aegis of DG Communications Networks, Content and Technology under grant agreement No 957073. <strong>Applications are still open, you can <a href="https://nlnet.nl/propose">apply today</a></strong>.</p>
-<p>If your organization wants to support the project with extra funding in order to add support for more languages or new features, please contact one of the maintainers.</p>
-<h3 id="documentation">Documentation<a class="headerlink" href="#documentation" title="Permanent link">&para;</a></h3>
-<p><a href="https://nix-community.github.io/dream2nix">👉 To the docs</a></p>
-<h3 id="presentations">Presentations<a class="headerlink" href="#presentations" title="Permanent link">&para;</a></h3>
+<h1 id="thoughts-on-the-current-nixos-module-system">Thoughts on the current nixos module system<a class="headerlink" href="#thoughts-on-the-current-nixos-module-system" title="Permanent link">&para;</a></h1>
+<p>This document covers observed problems with the current nixos module system that arose after using it for dream2nix and proposes changes to the module system.</p>
+<h2 id="problem-1-bad-control-over-module-dependencies">Problem 1: Bad control over module dependencies<a class="headerlink" href="#problem-1-bad-control-over-module-dependencies" title="Permanent link">&para;</a></h2>
+<p>It is easy to depend on a module unintentionally.</p>
+<p>It is hard to guarantee that a module works with a limited set of other modules.</p>
+<p>A module can import arbitrary paths, which makes it hard to limit the modules of the evaluation.</p>
+<h2 id="problem-2-module-identificationduplication-issues">Problem 2: Module identification/duplication issues<a class="headerlink" href="#problem-2-module-identificationduplication-issues" title="Permanent link">&para;</a></h2>
+<p>References to the same module in different ways (file vs imported file), are sometimes accidentally detected as two different modules leading to a collision error.</p>
+<p>It is possible to prevent this by setting <code>_file</code>, but this still not optimal, as not all modules are forced to define this field.
+Not having a unique ID by default is not optimal.</p>
+<h2 id="problem-3-result-type-and-location-not-discoverable">Problem 3: Result type and location not discoverable<a class="headerlink" href="#problem-3-result-type-and-location-not-discoverable" title="Permanent link">&para;</a></h2>
+<p>Usually the evaluation of a set of modules leads to a result or a set of results. But neither the type of the result nor the location of the result within <code>config</code> can be discovered by the caller without looking at the modules implementation.</p>
+<p>For example NixOS exports the results via <code>config.system</code>, drv-parts uses <code>config.public</code> etc.
+For the user calling <code>evalModules</code> it is not clear how exactly to get to the final result out of the evaluation.</p>
+<p>Strictly speaking, the result is the <code>config</code>, but apart from the final result, <code>config</code> also contains other things, like user interfaces and intermediary result. This confuses a user who is only interested in the final result.</p>
+<h2 id="problem-4-unprotected-gloabl-scope">Problem 4: Unprotected gloabl scope<a class="headerlink" href="#problem-4-unprotected-gloabl-scope" title="Permanent link">&para;</a></h2>
+<p>Using the global scope to pass data between modules is not optimal, because:
+- collisions: option declarations and definitions of different modules can collide accidentally.
+- unlimited access: A module can read and write to arbitrary fields of arbitrary other modules by default. This can result in unwanted side effects and hidden dependencies on other modules. Even if a module doesn't declare a dependency on module X it can depend on module X setting some option of module Y correctly. These unwanted interactions can be very complex and hard to find and prevent.</p>
+<p>Considered workaround:
+We established the following pattern:</p>
 <ul>
-<li><a href="https://www.youtube.com/watch?v=AsCvRZukX0E">👉 2023: dream2nix based on drv-parts</a></li>
-<li><a href="https://www.youtube.com/watch?v=jqCfHMvCsfQ">👉 2021: Original dream2nix presentation</a> (Examples are outdated)</li>
+<li>Each module prefixes all its options with the modules name, for example:</li>
+<li>module <code>mkDerivation</code> defines options <code>mkDerivation.src</code> and <code>mkDerivation.buildPhase</code></li>
+<li>module <code>buildPythonPackages</code> defines options <code>buildPythonPackage.format</code> ...</li>
 </ul>
-<h3 id="get-in-touch">Get in touch<a class="headerlink" href="#get-in-touch" title="Permanent link">&para;</a></h3>
-<p><a href="https://matrix.to/#/#dream2nix:nixos.org">👉 matrix chat room</a></p>
-<h3 id="contribute">Contribute<a class="headerlink" href="#contribute" title="Permanent link">&para;</a></h3>
-<p><a href="https://github.com/nix-community/dream2nix">👉 GitHub repo</a></p>
-<p><a href="https://github.com/nix-community/dream2nix/issues">👉 issues</a></p>
-<h3 id="goals">Goals<a class="headerlink" href="#goals" title="Permanent link">&para;</a></h3>
-<p>dream2nix focuses on the following aspects:</p>
+<p>Benefit of the workaround:
+This prevents collisions (assuming module names are unique)</p>
+<p>Disadvantage of the workaround:</p>
 <ul>
-<li>Modularity</li>
-<li>Customizability</li>
-<li>Maintainability</li>
-<li>Code de-duplication across 2nix solutions</li>
-<li>Common UI across 2nix solutions</li>
-<li>Reduce effort to develop new 2nix solutions</li>
-<li>Exploration and adoption of new nix features</li>
-<li>Simplified updating of packages</li>
+<li>It still allows global read/write access between all modules.</li>
+<li>It prevents composition of interfaces: We cannot nicely mix the options of <code>mkDerivation</code> and <code>buildPythonPackage</code> to create a new module, as all options have a hardcoded prefix that cannot be changed anymore</li>
+<li>Using the module as submodule is more annoying, as because of the hardcoded prefix, it always adds an additional layer of nesting that might not be desired.</li>
 </ul>
-<p>The goal of this project is to create a standardized, generic, modular framework for automated packaging solutions, aiming for better flexibility, maintainability and usability.</p>
-<p>The intention is to integrate many existing 2nix converters into this framework, thereby improving many of the previously named aspects and providing a unified UX for all 2nix solutions.</p>
+<h2 id="proposal-1">Proposal 1<a class="headerlink" href="#proposal-1" title="Permanent link">&para;</a></h2>
+<p>Solves:</p>
+<ul>
+<li>Problem 1 (Bad control over module dependencies)</li>
+<li>Problem 2 (Module identification/duplication issues)</li>
+</ul>
+<p>Proposed Changes:</p>
+<ul>
+<li>generally separate <code>dependency declaration</code> from <code>dependency satisfaction</code></li>
+<li>for example, add a flag to evalModules that changes the behavior of <code>imports</code></li>
+<li>force modules to declare <code>imports</code> by name (never by path)</li>
+<li>have a <code>resolver</code> resolving requested names against a set of named modules provided by the user</li>
+<li>allow inspecting the requested dependencies before evaluation</li>
+</ul>
+<p>Effects:</p>
+<ul>
+<li>users can discover module dependencies</li>
+<li>users can override the resolved module and thereby replace it's implementation</li>
+<li>maintainers can discover and prevent hidden dependencies easily</li>
+<li>lay the grounds for better input management (derive flake inputs from modules)</li>
+</ul>
+<h2 id="proposal-2">Proposal 2<a class="headerlink" href="#proposal-2" title="Permanent link">&para;</a></h2>
+<p>Solves:</p>
+<ul>
+<li>Problem 3 (Result type and location not discoverable)</li>
+</ul>
+<p>Proposed Changes:</p>
+<ul>
+<li>standardize a specific field under config to contain the final result(s), like for example <code>config.exports</code>.</li>
+</ul>
+<p>Effects:</p>
+<ul>
+<li>the result type is discoverable by inspecting the type of <code>options.exports</code></li>
+<li>allows adding helper <code>callModule</code> which is like <code>evalModules</code> but just returns the result.</li>
+<li>allows users to treat modules like functions that can be called and return a result.</li>
+<li>modules are more approachable by high-level users</li>
+<li>modules are more portable.</li>
+</ul>
+<h2 id="proposal-3">Proposal 3<a class="headerlink" href="#proposal-3" title="Permanent link">&para;</a></h2>
+<p>Solves:</p>
+<ul>
+<li>Problem 4 (Unprotected global scope)</li>
+</ul>
+<p>Proposed Changes:</p>
+<ul>
+<li>disallow nested option declarations</li>
+<li>disallow inline definitions for submodules</li>
+</ul>
+<p>(This limitation could be toggled via a flag in evalModules)</p>
+<p>Effects:</p>
+<ul>
+<li>This forces maintainers to use submodules (defined in files) to create nested options</li>
+<li>This leads to an extensive use of submodules</li>
+<li>Using submodules encourages passing information explicitly between modules while discouraging the use of global fields for communication</li>
+</ul>
 
 
 
@@ -2363,10 +2412,10 @@
       <div class="md-progress" data-md-component="progress" role="progressbar"></div>
     
     
-    <script id="__config" type="application/json">{"base": ".", "features": ["search.suggest", "search.highlight", "instant", "navigation.instant", "navigation.instant.prefetch", "navigation.instant.progress", "navigation.tracking", "navigation.path", "navigation.top", "toc.follow", "content.code.copy", "content.code.annotate"], "search": "assets/javascripts/workers/search.b8dbb3d2.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
+    <script id="__config" type="application/json">{"base": "../..", "features": ["search.suggest", "search.highlight", "instant", "navigation.instant", "navigation.instant.prefetch", "navigation.instant.progress", "navigation.tracking", "navigation.path", "navigation.top", "toc.follow", "content.code.copy", "content.code.annotate"], "search": "../../assets/javascripts/workers/search.b8dbb3d2.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
     
     
-      <script src="assets/javascripts/bundle.3220b9d7.min.js"></script>
+      <script src="../../assets/javascripts/bundle.3220b9d7.min.js"></script>
       
     
   </body>

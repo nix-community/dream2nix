@@ -8,23 +8,25 @@
       
       
       
-        <link rel="canonical" href="https://nix-community.github.io/dream2nix/">
+        <link rel="canonical" href="https://nix-community.github.io/dream2nix/overrides/">
       
       
+        <link rel="prev" href="../modules/">
       
-        <link rel="next" href="gettingstarted/">
+      
+        <link rel="next" href="../reference/WIP-groups/">
       
       
-      <link rel="icon" href="favicon.png">
+      <link rel="icon" href="../favicon.png">
       <meta name="generator" content="mkdocs-1.5.3, mkdocs-material-9.5.18">
     
     
       
-        <title>Dream2Nix</title>
+        <title>Overriding Dependencies - Dream2Nix</title>
       
     
     
-      <link rel="stylesheet" href="assets/stylesheets/main.66ac8b77.min.css">
+      <link rel="stylesheet" href="../assets/stylesheets/main.66ac8b77.min.css">
       
       
 
@@ -43,9 +45,9 @@
       
     
     
-      <link rel="stylesheet" href="style.css">
+      <link rel="stylesheet" href="../style.css">
     
-    <script>__md_scope=new URL(".",location),__md_hash=e=>[...e].reduce((e,_)=>(e<<5)-e+_.charCodeAt(0),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce((e,_)=>(e<<5)-e+_.charCodeAt(0),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
       
 
@@ -64,7 +66,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#legacy-dream2nix" class="md-skip">
+        <a href="#overriding-dependencies-in-dream2nix" class="md-skip">
           Skip to content
         </a>
       
@@ -80,9 +82,9 @@
 
 <header class="md-header md-header--shadow" data-md-component="header">
   <nav class="md-header__inner md-grid" aria-label="Header">
-    <a href="." title="Dream2Nix" class="md-header__button md-logo" aria-label="Dream2Nix" data-md-component="logo">
+    <a href=".." title="Dream2Nix" class="md-header__button md-logo" aria-label="Dream2Nix" data-md-component="logo">
       
-  <img src="favicon.png" alt="logo">
+  <img src="../favicon.png" alt="logo">
 
     </a>
     <label class="md-header__button md-icon" for="__drawer">
@@ -99,7 +101,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Home
+              Overriding Dependencies
             
           </span>
         </div>
@@ -188,9 +190,9 @@
 
 <nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
   <label class="md-nav__title" for="__drawer">
-    <a href="." title="Dream2Nix" class="md-nav__button md-logo" aria-label="Dream2Nix" data-md-component="logo">
+    <a href=".." title="Dream2Nix" class="md-nav__button md-logo" aria-label="Dream2Nix" data-md-component="logo">
       
-  <img src="favicon.png" alt="logo">
+  <img src="../favicon.png" alt="logo">
 
     </a>
     Dream2Nix
@@ -214,6 +216,104 @@
       
   
   
+  
+  
+    <li class="md-nav__item">
+      <a href=".." class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Home
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../gettingstarted/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Getting Started
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Concepts
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            Concepts
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../modules/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Modules
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
     
   
   
@@ -223,23 +323,25 @@
       <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
       
       
+        
+      
       
         <label class="md-nav__link md-nav__link--active" for="__toc">
           
   
   <span class="md-ellipsis">
-    Home
+    Overriding Dependencies
   </span>
   
 
           <span class="md-nav__icon md-icon"></span>
         </label>
       
-      <a href="." class="md-nav__link md-nav__link--active">
+      <a href="./" class="md-nav__link md-nav__link--active">
         
   
   <span class="md-ellipsis">
-    Home
+    Overriding Dependencies
   </span>
   
 
@@ -250,6 +352,8 @@
 <nav class="md-nav md-nav--secondary" aria-label="Table of contents">
   
   
+  
+    
   
   
     <label class="md-nav__title" for="__toc">
@@ -282,12 +386,52 @@
 
 <!-- Table of contents item -->
 <li class="md-nav__item">
-            <a href="#legacy-dream2nix" class="md-nav__link">
-                <span class="md-ellipsis">legacy dream2nix</span>
+            <a href="#global-overrides" class="md-nav__link">
+                <span class="md-ellipsis">Global Overrides</span>
             </a>
          
 
         <!-- Table of contents list -->
+        
+        <nav class="md-nav" aria-label="Global Overrides">
+            <ul class="md-nav__list">
+                
+                <!--
+     Copyright (c) 2016-2024 Martin Donath <martin.donath@squidfunk.com>
+
+     Permission is hereby granted, free of charge, to any person obtaining a copy
+     of this software and associated documentation files (the "Software"), to
+     deal in the Software without restriction, including without limitation the
+     rights to use, copy, modify, merge, publish, distribute, sublicense, and/or
+     sell copies of the Software, and to permit persons to whom the Software is
+     furnished to do so, subject to the following conditions:
+
+     The above copyright notice and this permission notice shall be included in
+     all copies or substantial portions of the Software.
+
+     THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+     IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+     FITNESS FOR A PARTICULAR PURPOSE AND NON-INFRINGEMENT. IN NO EVENT SHALL THE
+     AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+     LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+     FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
+     IN THE SOFTWARE.
+-->
+
+<!-- Table of contents item -->
+<li class="md-nav__item">
+            <a href="#global-overrides-example" class="md-nav__link">
+                <span class="md-ellipsis">Global Overrides Example</span>
+            </a>
+         
+
+        <!-- Table of contents list -->
+        
+        
+</li>
+                
+            </ul>
+        </nav>
         
         
 </li>
@@ -316,12 +460,52 @@
 
 <!-- Table of contents item -->
 <li class="md-nav__item">
-            <a href="#funding" class="md-nav__link">
-                <span class="md-ellipsis">Funding</span>
+            <a href="#local-overrides" class="md-nav__link">
+                <span class="md-ellipsis">Local Overrides</span>
             </a>
          
 
         <!-- Table of contents list -->
+        
+        <nav class="md-nav" aria-label="Local Overrides">
+            <ul class="md-nav__list">
+                
+                <!--
+     Copyright (c) 2016-2024 Martin Donath <martin.donath@squidfunk.com>
+
+     Permission is hereby granted, free of charge, to any person obtaining a copy
+     of this software and associated documentation files (the "Software"), to
+     deal in the Software without restriction, including without limitation the
+     rights to use, copy, modify, merge, publish, distribute, sublicense, and/or
+     sell copies of the Software, and to permit persons to whom the Software is
+     furnished to do so, subject to the following conditions:
+
+     The above copyright notice and this permission notice shall be included in
+     all copies or substantial portions of the Software.
+
+     THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+     IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+     FITNESS FOR A PARTICULAR PURPOSE AND NON-INFRINGEMENT. IN NO EVENT SHALL THE
+     AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+     LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+     FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
+     IN THE SOFTWARE.
+-->
+
+<!-- Table of contents item -->
+<li class="md-nav__item">
+            <a href="#local-overrides-example" class="md-nav__link">
+                <span class="md-ellipsis">Local Overrides Example</span>
+            </a>
+         
+
+        <!-- Table of contents list -->
+        
+        
+</li>
+                
+            </ul>
+        </nav>
         
         
 </li>
@@ -350,12 +534,52 @@
 
 <!-- Table of contents item -->
 <li class="md-nav__item">
-            <a href="#documentation" class="md-nav__link">
-                <span class="md-ellipsis">Documentation</span>
+            <a href="#community-overrides" class="md-nav__link">
+                <span class="md-ellipsis">Community Overrides</span>
             </a>
          
 
         <!-- Table of contents list -->
+        
+        <nav class="md-nav" aria-label="Community Overrides">
+            <ul class="md-nav__list">
+                
+                <!--
+     Copyright (c) 2016-2024 Martin Donath <martin.donath@squidfunk.com>
+
+     Permission is hereby granted, free of charge, to any person obtaining a copy
+     of this software and associated documentation files (the "Software"), to
+     deal in the Software without restriction, including without limitation the
+     rights to use, copy, modify, merge, publish, distribute, sublicense, and/or
+     sell copies of the Software, and to permit persons to whom the Software is
+     furnished to do so, subject to the following conditions:
+
+     The above copyright notice and this permission notice shall be included in
+     all copies or substantial portions of the Software.
+
+     THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+     IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+     FITNESS FOR A PARTICULAR PURPOSE AND NON-INFRINGEMENT. IN NO EVENT SHALL THE
+     AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+     LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+     FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
+     IN THE SOFTWARE.
+-->
+
+<!-- Table of contents item -->
+<li class="md-nav__item">
+            <a href="#contributing-to-community-overrides" class="md-nav__link">
+                <span class="md-ellipsis">Contributing to Community Overrides</span>
+            </a>
+         
+
+        <!-- Table of contents list -->
+        
+        
+</li>
+                
+            </ul>
+        </nav>
         
         
 </li>
@@ -384,12 +608,52 @@
 
 <!-- Table of contents item -->
 <li class="md-nav__item">
-            <a href="#presentations" class="md-nav__link">
-                <span class="md-ellipsis">Presentations</span>
+            <a href="#conditionals" class="md-nav__link">
+                <span class="md-ellipsis">Conditionals</span>
             </a>
          
 
         <!-- Table of contents list -->
+        
+        <nav class="md-nav" aria-label="Conditionals">
+            <ul class="md-nav__list">
+                
+                <!--
+     Copyright (c) 2016-2024 Martin Donath <martin.donath@squidfunk.com>
+
+     Permission is hereby granted, free of charge, to any person obtaining a copy
+     of this software and associated documentation files (the "Software"), to
+     deal in the Software without restriction, including without limitation the
+     rights to use, copy, modify, merge, publish, distribute, sublicense, and/or
+     sell copies of the Software, and to permit persons to whom the Software is
+     furnished to do so, subject to the following conditions:
+
+     The above copyright notice and this permission notice shall be included in
+     all copies or substantial portions of the Software.
+
+     THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+     IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+     FITNESS FOR A PARTICULAR PURPOSE AND NON-INFRINGEMENT. IN NO EVENT SHALL THE
+     AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+     LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+     FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
+     IN THE SOFTWARE.
+-->
+
+<!-- Table of contents item -->
+<li class="md-nav__item">
+            <a href="#conditionals-example" class="md-nav__link">
+                <span class="md-ellipsis">Conditionals Example</span>
+            </a>
+         
+
+        <!-- Table of contents list -->
+        
+        
+</li>
+                
+            </ul>
+        </nav>
         
         
 </li>
@@ -418,76 +682,8 @@
 
 <!-- Table of contents item -->
 <li class="md-nav__item">
-            <a href="#get-in-touch" class="md-nav__link">
-                <span class="md-ellipsis">Get in touch</span>
-            </a>
-         
-
-        <!-- Table of contents list -->
-        
-        
-</li>
-      
-        <!--
-     Copyright (c) 2016-2024 Martin Donath <martin.donath@squidfunk.com>
-
-     Permission is hereby granted, free of charge, to any person obtaining a copy
-     of this software and associated documentation files (the "Software"), to
-     deal in the Software without restriction, including without limitation the
-     rights to use, copy, modify, merge, publish, distribute, sublicense, and/or
-     sell copies of the Software, and to permit persons to whom the Software is
-     furnished to do so, subject to the following conditions:
-
-     The above copyright notice and this permission notice shall be included in
-     all copies or substantial portions of the Software.
-
-     THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-     IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-     FITNESS FOR A PARTICULAR PURPOSE AND NON-INFRINGEMENT. IN NO EVENT SHALL THE
-     AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-     LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
-     FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
-     IN THE SOFTWARE.
--->
-
-<!-- Table of contents item -->
-<li class="md-nav__item">
-            <a href="#contribute" class="md-nav__link">
-                <span class="md-ellipsis">Contribute</span>
-            </a>
-         
-
-        <!-- Table of contents list -->
-        
-        
-</li>
-      
-        <!--
-     Copyright (c) 2016-2024 Martin Donath <martin.donath@squidfunk.com>
-
-     Permission is hereby granted, free of charge, to any person obtaining a copy
-     of this software and associated documentation files (the "Software"), to
-     deal in the Software without restriction, including without limitation the
-     rights to use, copy, modify, merge, publish, distribute, sublicense, and/or
-     sell copies of the Software, and to permit persons to whom the Software is
-     furnished to do so, subject to the following conditions:
-
-     The above copyright notice and this permission notice shall be included in
-     all copies or substantial portions of the Software.
-
-     THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-     IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-     FITNESS FOR A PARTICULAR PURPOSE AND NON-INFRINGEMENT. IN NO EVENT SHALL THE
-     AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-     LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
-     FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
-     IN THE SOFTWARE.
--->
-
-<!-- Table of contents item -->
-<li class="md-nav__item">
-            <a href="#goals" class="md-nav__link">
-                <span class="md-ellipsis">Goals</span>
+            <a href="#list-of-options" class="md-nav__link">
+                <span class="md-ellipsis">List of Options</span>
             </a>
          
 
@@ -500,102 +696,6 @@
   
 </nav>
       
-    </li>
-  
-
-    
-      
-      
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="gettingstarted/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    Getting Started
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-    
-      
-      
-  
-  
-  
-  
-    
-    
-    
-    
-    <li class="md-nav__item md-nav__item--nested">
-      
-        
-        
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
-        
-          
-          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
-            
-  
-  <span class="md-ellipsis">
-    Concepts
-  </span>
-  
-
-            <span class="md-nav__icon md-icon"></span>
-          </label>
-        
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_3">
-            <span class="md-nav__icon md-icon"></span>
-            Concepts
-          </label>
-          <ul class="md-nav__list" data-md-scrollfix>
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="modules/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    Modules
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="overrides/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    Overriding Dependencies
-  </span>
-  
-
-      </a>
     </li>
   
 
@@ -650,7 +750,7 @@
   
   
     <li class="md-nav__item">
-      <a href="reference/buildPythonPackage/" class="md-nav__link">
+      <a href="../reference/buildPythonPackage/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -671,7 +771,7 @@
   
   
     <li class="md-nav__item">
-      <a href="reference/buildRustPackage/" class="md-nav__link">
+      <a href="../reference/buildRustPackage/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -692,7 +792,7 @@
   
   
     <li class="md-nav__item">
-      <a href="reference/builtins-derivation/" class="md-nav__link">
+      <a href="../reference/builtins-derivation/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -713,7 +813,7 @@
   
   
     <li class="md-nav__item">
-      <a href="reference/mkDerivation/" class="md-nav__link">
+      <a href="../reference/mkDerivation/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -734,7 +834,7 @@
   
   
     <li class="md-nav__item">
-      <a href="reference/multi-derivation-package/" class="md-nav__link">
+      <a href="../reference/multi-derivation-package/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -755,7 +855,7 @@
   
   
     <li class="md-nav__item">
-      <a href="reference/nodejs-devshell/" class="md-nav__link">
+      <a href="../reference/nodejs-devshell/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -776,7 +876,7 @@
   
   
     <li class="md-nav__item">
-      <a href="reference/nodejs-devshell-v3/" class="md-nav__link">
+      <a href="../reference/nodejs-devshell-v3/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -797,7 +897,7 @@
   
   
     <li class="md-nav__item">
-      <a href="reference/nodejs-granular/" class="md-nav__link">
+      <a href="../reference/nodejs-granular/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -818,7 +918,7 @@
   
   
     <li class="md-nav__item">
-      <a href="reference/nodejs-granular-v3/" class="md-nav__link">
+      <a href="../reference/nodejs-granular-v3/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -839,7 +939,7 @@
   
   
     <li class="md-nav__item">
-      <a href="reference/nodejs-node-modules/" class="md-nav__link">
+      <a href="../reference/nodejs-node-modules/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -860,7 +960,7 @@
   
   
     <li class="md-nav__item">
-      <a href="reference/nodejs-node-modules-v3/" class="md-nav__link">
+      <a href="../reference/nodejs-node-modules-v3/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -881,7 +981,7 @@
   
   
     <li class="md-nav__item">
-      <a href="reference/nodejs-package-json/" class="md-nav__link">
+      <a href="../reference/nodejs-package-json/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -902,7 +1002,7 @@
   
   
     <li class="md-nav__item">
-      <a href="reference/nodejs-package-json-v3/" class="md-nav__link">
+      <a href="../reference/nodejs-package-json-v3/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -923,7 +1023,7 @@
   
   
     <li class="md-nav__item">
-      <a href="reference/nodejs-package-lock/" class="md-nav__link">
+      <a href="../reference/nodejs-package-lock/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -944,7 +1044,7 @@
   
   
     <li class="md-nav__item">
-      <a href="reference/nodejs-package-lock-v3/" class="md-nav__link">
+      <a href="../reference/nodejs-package-lock-v3/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -965,7 +1065,7 @@
   
   
     <li class="md-nav__item">
-      <a href="reference/overrides/" class="md-nav__link">
+      <a href="../reference/overrides/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -986,7 +1086,7 @@
   
   
     <li class="md-nav__item">
-      <a href="reference/package-func/" class="md-nav__link">
+      <a href="../reference/package-func/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1007,7 +1107,7 @@
   
   
     <li class="md-nav__item">
-      <a href="reference/php-composer-lock/" class="md-nav__link">
+      <a href="../reference/php-composer-lock/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1028,7 +1128,7 @@
   
   
     <li class="md-nav__item">
-      <a href="reference/php-granular/" class="md-nav__link">
+      <a href="../reference/php-granular/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1049,7 +1149,7 @@
   
   
     <li class="md-nav__item">
-      <a href="reference/pip/" class="md-nav__link">
+      <a href="../reference/pip/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1070,7 +1170,7 @@
   
   
     <li class="md-nav__item">
-      <a href="reference/rust-cargo-lock/" class="md-nav__link">
+      <a href="../reference/rust-cargo-lock/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1091,7 +1191,7 @@
   
   
     <li class="md-nav__item">
-      <a href="reference/rust-crane/" class="md-nav__link">
+      <a href="../reference/rust-crane/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1147,7 +1247,7 @@
   
   
     <li class="md-nav__item">
-      <a href="reference/WIP-groups/" class="md-nav__link">
+      <a href="../reference/WIP-groups/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1168,7 +1268,7 @@
   
   
     <li class="md-nav__item">
-      <a href="reference/WIP-haskell-cabal/" class="md-nav__link">
+      <a href="../reference/WIP-haskell-cabal/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1189,7 +1289,7 @@
   
   
     <li class="md-nav__item">
-      <a href="reference/WIP-nodejs-builder-v3/" class="md-nav__link">
+      <a href="../reference/WIP-nodejs-builder-v3/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1210,7 +1310,7 @@
   
   
     <li class="md-nav__item">
-      <a href="reference/WIP-python-pdm/" class="md-nav__link">
+      <a href="../reference/WIP-python-pdm/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1231,7 +1331,7 @@
   
   
     <li class="md-nav__item">
-      <a href="reference/WIP-python-pyproject/" class="md-nav__link">
+      <a href="../reference/WIP-python-pyproject/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1252,7 +1352,7 @@
   
   
     <li class="md-nav__item">
-      <a href="reference/WIP-spago/" class="md-nav__link">
+      <a href="../reference/WIP-spago/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1393,7 +1493,7 @@
   
   
     <li class="md-nav__item">
-      <a href="docs/" class="md-nav__link">
+      <a href="../docs/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1483,7 +1583,7 @@
   
   
     <li class="md-nav__item">
-      <a href="v1-api/summary/" class="md-nav__link">
+      <a href="../v1-api/summary/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1504,7 +1604,7 @@
   
   
     <li class="md-nav__item">
-      <a href="v1-api/problems/" class="md-nav__link">
+      <a href="../v1-api/problems/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1525,7 +1625,7 @@
   
   
     <li class="md-nav__item">
-      <a href="v1-api/users/" class="md-nav__link">
+      <a href="../v1-api/users/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1581,7 +1681,7 @@
   
   
     <li class="md-nav__item">
-      <a href="v1-api/consuming/inspect-options/" class="md-nav__link">
+      <a href="../v1-api/consuming/inspect-options/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1602,7 +1702,7 @@
   
   
     <li class="md-nav__item">
-      <a href="v1-api/consuming/override/" class="md-nav__link">
+      <a href="../v1-api/consuming/override/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1666,7 +1766,7 @@
   
   
     <li class="md-nav__item">
-      <a href="v1-api/integrating/integrate-lang2nix-impure/" class="md-nav__link">
+      <a href="../v1-api/integrating/integrate-lang2nix-impure/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1687,7 +1787,7 @@
   
   
     <li class="md-nav__item">
-      <a href="v1-api/integrating/integrate-lang2nix-pure/" class="md-nav__link">
+      <a href="../v1-api/integrating/integrate-lang2nix-pure/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1751,7 +1851,7 @@
   
   
     <li class="md-nav__item">
-      <a href="v1-api/packaging/monorepo/" class="md-nav__link">
+      <a href="../v1-api/packaging/monorepo/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1772,7 +1872,7 @@
   
   
     <li class="md-nav__item">
-      <a href="v1-api/packaging/nodejs-init-project/" class="md-nav__link">
+      <a href="../v1-api/packaging/nodejs-init-project/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1793,7 +1893,7 @@
   
   
     <li class="md-nav__item">
-      <a href="v1-api/packaging/nodejs-multiple-repos/" class="md-nav__link">
+      <a href="../v1-api/packaging/nodejs-multiple-repos/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1814,7 +1914,7 @@
   
   
     <li class="md-nav__item">
-      <a href="v1-api/packaging/nodejs-workspaces/" class="md-nav__link">
+      <a href="../v1-api/packaging/nodejs-workspaces/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1886,7 +1986,7 @@
   
   
     <li class="md-nav__item">
-      <a href="development-roundups/2022-april-june/" class="md-nav__link">
+      <a href="../development-roundups/2022-april-june/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1907,7 +2007,7 @@
   
   
     <li class="md-nav__item">
-      <a href="development-roundups/2022-april-problems-of-nixos-module-system/" class="md-nav__link">
+      <a href="../development-roundups/2022-april-problems-of-nixos-module-system/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1928,7 +2028,7 @@
   
   
     <li class="md-nav__item">
-      <a href="development-roundups/2022-july-september/" class="md-nav__link">
+      <a href="../development-roundups/2022-july-september/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1974,6 +2074,8 @@
   
   
   
+    
+  
   
     <label class="md-nav__title" for="__toc">
       <span class="md-nav__icon md-icon"></span>
@@ -2005,12 +2107,52 @@
 
 <!-- Table of contents item -->
 <li class="md-nav__item">
-            <a href="#legacy-dream2nix" class="md-nav__link">
-                <span class="md-ellipsis">legacy dream2nix</span>
+            <a href="#global-overrides" class="md-nav__link">
+                <span class="md-ellipsis">Global Overrides</span>
             </a>
          
 
         <!-- Table of contents list -->
+        
+        <nav class="md-nav" aria-label="Global Overrides">
+            <ul class="md-nav__list">
+                
+                <!--
+     Copyright (c) 2016-2024 Martin Donath <martin.donath@squidfunk.com>
+
+     Permission is hereby granted, free of charge, to any person obtaining a copy
+     of this software and associated documentation files (the "Software"), to
+     deal in the Software without restriction, including without limitation the
+     rights to use, copy, modify, merge, publish, distribute, sublicense, and/or
+     sell copies of the Software, and to permit persons to whom the Software is
+     furnished to do so, subject to the following conditions:
+
+     The above copyright notice and this permission notice shall be included in
+     all copies or substantial portions of the Software.
+
+     THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+     IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+     FITNESS FOR A PARTICULAR PURPOSE AND NON-INFRINGEMENT. IN NO EVENT SHALL THE
+     AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+     LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+     FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
+     IN THE SOFTWARE.
+-->
+
+<!-- Table of contents item -->
+<li class="md-nav__item">
+            <a href="#global-overrides-example" class="md-nav__link">
+                <span class="md-ellipsis">Global Overrides Example</span>
+            </a>
+         
+
+        <!-- Table of contents list -->
+        
+        
+</li>
+                
+            </ul>
+        </nav>
         
         
 </li>
@@ -2039,12 +2181,52 @@
 
 <!-- Table of contents item -->
 <li class="md-nav__item">
-            <a href="#funding" class="md-nav__link">
-                <span class="md-ellipsis">Funding</span>
+            <a href="#local-overrides" class="md-nav__link">
+                <span class="md-ellipsis">Local Overrides</span>
             </a>
          
 
         <!-- Table of contents list -->
+        
+        <nav class="md-nav" aria-label="Local Overrides">
+            <ul class="md-nav__list">
+                
+                <!--
+     Copyright (c) 2016-2024 Martin Donath <martin.donath@squidfunk.com>
+
+     Permission is hereby granted, free of charge, to any person obtaining a copy
+     of this software and associated documentation files (the "Software"), to
+     deal in the Software without restriction, including without limitation the
+     rights to use, copy, modify, merge, publish, distribute, sublicense, and/or
+     sell copies of the Software, and to permit persons to whom the Software is
+     furnished to do so, subject to the following conditions:
+
+     The above copyright notice and this permission notice shall be included in
+     all copies or substantial portions of the Software.
+
+     THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+     IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+     FITNESS FOR A PARTICULAR PURPOSE AND NON-INFRINGEMENT. IN NO EVENT SHALL THE
+     AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+     LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+     FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
+     IN THE SOFTWARE.
+-->
+
+<!-- Table of contents item -->
+<li class="md-nav__item">
+            <a href="#local-overrides-example" class="md-nav__link">
+                <span class="md-ellipsis">Local Overrides Example</span>
+            </a>
+         
+
+        <!-- Table of contents list -->
+        
+        
+</li>
+                
+            </ul>
+        </nav>
         
         
 </li>
@@ -2073,12 +2255,52 @@
 
 <!-- Table of contents item -->
 <li class="md-nav__item">
-            <a href="#documentation" class="md-nav__link">
-                <span class="md-ellipsis">Documentation</span>
+            <a href="#community-overrides" class="md-nav__link">
+                <span class="md-ellipsis">Community Overrides</span>
             </a>
          
 
         <!-- Table of contents list -->
+        
+        <nav class="md-nav" aria-label="Community Overrides">
+            <ul class="md-nav__list">
+                
+                <!--
+     Copyright (c) 2016-2024 Martin Donath <martin.donath@squidfunk.com>
+
+     Permission is hereby granted, free of charge, to any person obtaining a copy
+     of this software and associated documentation files (the "Software"), to
+     deal in the Software without restriction, including without limitation the
+     rights to use, copy, modify, merge, publish, distribute, sublicense, and/or
+     sell copies of the Software, and to permit persons to whom the Software is
+     furnished to do so, subject to the following conditions:
+
+     The above copyright notice and this permission notice shall be included in
+     all copies or substantial portions of the Software.
+
+     THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+     IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+     FITNESS FOR A PARTICULAR PURPOSE AND NON-INFRINGEMENT. IN NO EVENT SHALL THE
+     AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+     LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+     FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
+     IN THE SOFTWARE.
+-->
+
+<!-- Table of contents item -->
+<li class="md-nav__item">
+            <a href="#contributing-to-community-overrides" class="md-nav__link">
+                <span class="md-ellipsis">Contributing to Community Overrides</span>
+            </a>
+         
+
+        <!-- Table of contents list -->
+        
+        
+</li>
+                
+            </ul>
+        </nav>
         
         
 </li>
@@ -2107,12 +2329,52 @@
 
 <!-- Table of contents item -->
 <li class="md-nav__item">
-            <a href="#presentations" class="md-nav__link">
-                <span class="md-ellipsis">Presentations</span>
+            <a href="#conditionals" class="md-nav__link">
+                <span class="md-ellipsis">Conditionals</span>
             </a>
          
 
         <!-- Table of contents list -->
+        
+        <nav class="md-nav" aria-label="Conditionals">
+            <ul class="md-nav__list">
+                
+                <!--
+     Copyright (c) 2016-2024 Martin Donath <martin.donath@squidfunk.com>
+
+     Permission is hereby granted, free of charge, to any person obtaining a copy
+     of this software and associated documentation files (the "Software"), to
+     deal in the Software without restriction, including without limitation the
+     rights to use, copy, modify, merge, publish, distribute, sublicense, and/or
+     sell copies of the Software, and to permit persons to whom the Software is
+     furnished to do so, subject to the following conditions:
+
+     The above copyright notice and this permission notice shall be included in
+     all copies or substantial portions of the Software.
+
+     THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+     IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+     FITNESS FOR A PARTICULAR PURPOSE AND NON-INFRINGEMENT. IN NO EVENT SHALL THE
+     AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+     LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+     FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
+     IN THE SOFTWARE.
+-->
+
+<!-- Table of contents item -->
+<li class="md-nav__item">
+            <a href="#conditionals-example" class="md-nav__link">
+                <span class="md-ellipsis">Conditionals Example</span>
+            </a>
+         
+
+        <!-- Table of contents list -->
+        
+        
+</li>
+                
+            </ul>
+        </nav>
         
         
 </li>
@@ -2141,76 +2403,8 @@
 
 <!-- Table of contents item -->
 <li class="md-nav__item">
-            <a href="#get-in-touch" class="md-nav__link">
-                <span class="md-ellipsis">Get in touch</span>
-            </a>
-         
-
-        <!-- Table of contents list -->
-        
-        
-</li>
-      
-        <!--
-     Copyright (c) 2016-2024 Martin Donath <martin.donath@squidfunk.com>
-
-     Permission is hereby granted, free of charge, to any person obtaining a copy
-     of this software and associated documentation files (the "Software"), to
-     deal in the Software without restriction, including without limitation the
-     rights to use, copy, modify, merge, publish, distribute, sublicense, and/or
-     sell copies of the Software, and to permit persons to whom the Software is
-     furnished to do so, subject to the following conditions:
-
-     The above copyright notice and this permission notice shall be included in
-     all copies or substantial portions of the Software.
-
-     THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-     IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-     FITNESS FOR A PARTICULAR PURPOSE AND NON-INFRINGEMENT. IN NO EVENT SHALL THE
-     AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-     LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
-     FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
-     IN THE SOFTWARE.
--->
-
-<!-- Table of contents item -->
-<li class="md-nav__item">
-            <a href="#contribute" class="md-nav__link">
-                <span class="md-ellipsis">Contribute</span>
-            </a>
-         
-
-        <!-- Table of contents list -->
-        
-        
-</li>
-      
-        <!--
-     Copyright (c) 2016-2024 Martin Donath <martin.donath@squidfunk.com>
-
-     Permission is hereby granted, free of charge, to any person obtaining a copy
-     of this software and associated documentation files (the "Software"), to
-     deal in the Software without restriction, including without limitation the
-     rights to use, copy, modify, merge, publish, distribute, sublicense, and/or
-     sell copies of the Software, and to permit persons to whom the Software is
-     furnished to do so, subject to the following conditions:
-
-     The above copyright notice and this permission notice shall be included in
-     all copies or substantial portions of the Software.
-
-     THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-     IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-     FITNESS FOR A PARTICULAR PURPOSE AND NON-INFRINGEMENT. IN NO EVENT SHALL THE
-     AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-     LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
-     FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
-     IN THE SOFTWARE.
--->
-
-<!-- Table of contents item -->
-<li class="md-nav__item">
-            <a href="#goals" class="md-nav__link">
-                <span class="md-ellipsis">Goals</span>
+            <a href="#list-of-options" class="md-nav__link">
+                <span class="md-ellipsis">List of Options</span>
             </a>
          
 
@@ -2237,58 +2431,63 @@
   
 
 
-  <h1>Home</h1>
-
-<p align="center">
-  <picture>
-    <source width="600" media="(prefers-color-scheme: dark)" srcset="https://gist.githubusercontent.com/DavHau/755fed3774e89c0b9b8953a0a25309fa/raw/0312cc4f785de36212f4303d23298f07c13549dc/dream2nix-dark.png">
-    <source width="600" media="(prefers-color-scheme: light)" srcset="https://gist.githubusercontent.com/DavHau/755fed3774e89c0b9b8953a0a25309fa/raw/e2a12a60ae49aa5eb11b42775abdd1652dbe63c0/dream2nix-01.png">
-    <img width="600" alt="dream2nix - A framework for automated nix packaging" src="https://gist.githubusercontent.com/DavHau/755fed3774e89c0b9b8953a0a25309fa/raw/e2a12a60ae49aa5eb11b42775abdd1652dbe63c0/dream2nix-01.png">
-  </picture>
-  <br>
-  Automate reproducible packaging for various language ecosystems
-  <br>
-  <a href="https://nix-community.github.io/dream2nix/">Documentation</a> |
-  <a href="https://github.com/nix-community/dream2nix/tree/main/examples/repo-with-packages">Example Repo</a> |
-  <a href="https://github.com/nix-community/dream2nix/tree/main/examples/repo-with-packages-flake">Example Repo Flake</a> |
-  <a href="https://github.com/nix-community/dream2nix/tree/main/examples/packages">Example Packages</a>
-</p>
-
-<div class="admonition warning">
-<p class="admonition-title">Warning</p>
-<p>dream2nix is unstable software. While simple UX is one of our main focus points, the APIs  are still under development. Do expect changes that will break your setup.</p>
-</div>
-<h3 id="legacy-dream2nix">legacy dream2nix<a class="headerlink" href="#legacy-dream2nix" title="Permanent link">&para;</a></h3>
-<p>Dream2nix is currently in the process of being refactored to make use of drv-parts. Not all features and subsystems are migrated yet. If you prefer continue using the <code>makeFlakeOutputs</code> interface, please refer to the <a href="https://github.com/nix-community/dream2nix/tree/legacy">legacy branch</a> of dream2nix.</p>
-<h3 id="funding">Funding<a class="headerlink" href="#funding" title="Permanent link">&para;</a></h3>
-<p>This project was funded through the <a href="https://nlnet.nl/assure">NGI Assure</a> Fund, a fund established by <a href="https://nlnet.nl/">NLnet</a> with financial support from the European Commission's <a href="https://ngi.eu/">Next Generation Internet</a> programme, under the aegis of DG Communications Networks, Content and Technology under grant agreement No 957073. <strong>Applications are still open, you can <a href="https://nlnet.nl/propose">apply today</a></strong>.</p>
-<p>If your organization wants to support the project with extra funding in order to add support for more languages or new features, please contact one of the maintainers.</p>
-<h3 id="documentation">Documentation<a class="headerlink" href="#documentation" title="Permanent link">&para;</a></h3>
-<p><a href="https://nix-community.github.io/dream2nix">👉 To the docs</a></p>
-<h3 id="presentations">Presentations<a class="headerlink" href="#presentations" title="Permanent link">&para;</a></h3>
+<h1 id="overriding-dependencies-in-dream2nix">Overriding Dependencies in Dream2nix<a class="headerlink" href="#overriding-dependencies-in-dream2nix" title="Permanent link">&para;</a></h1>
+<p>Dream2nix automates the generation of build instructions for packages, including their dependencies. Occasionally, these instructions may require manual adjustments, called overrides, in situations where:</p>
 <ul>
-<li><a href="https://www.youtube.com/watch?v=AsCvRZukX0E">👉 2023: dream2nix based on drv-parts</a></li>
-<li><a href="https://www.youtube.com/watch?v=jqCfHMvCsfQ">👉 2021: Original dream2nix presentation</a> (Examples are outdated)</li>
+<li>A package fails to build.</li>
+<li>A package does not function as expected.</li>
+<li>A package needs to be compiled with specific features.</li>
 </ul>
-<h3 id="get-in-touch">Get in touch<a class="headerlink" href="#get-in-touch" title="Permanent link">&para;</a></h3>
-<p><a href="https://matrix.to/#/#dream2nix:nixos.org">👉 matrix chat room</a></p>
-<h3 id="contribute">Contribute<a class="headerlink" href="#contribute" title="Permanent link">&para;</a></h3>
-<p><a href="https://github.com/nix-community/dream2nix">👉 GitHub repo</a></p>
-<p><a href="https://github.com/nix-community/dream2nix/issues">👉 issues</a></p>
-<h3 id="goals">Goals<a class="headerlink" href="#goals" title="Permanent link">&para;</a></h3>
-<p>dream2nix focuses on the following aspects:</p>
+<p>There are three primary methods to override dependencies in dream2nix:</p>
 <ul>
-<li>Modularity</li>
-<li>Customizability</li>
-<li>Maintainability</li>
-<li>Code de-duplication across 2nix solutions</li>
-<li>Common UI across 2nix solutions</li>
-<li>Reduce effort to develop new 2nix solutions</li>
-<li>Exploration and adoption of new nix features</li>
-<li>Simplified updating of packages</li>
+<li><strong>Global Overrides</strong>: Configured via <code>overrideAll</code>, affecting all dependencies of the current package.</li>
+<li><strong>Local Overrides</strong>: Configured via <code>overrides.${name}</code>, targeting dependencies with a specific name.</li>
+<li><strong>Community Overrides</strong>: Predefined in dream2nix, applied automatically to relevant dependencies.</li>
 </ul>
-<p>The goal of this project is to create a standardized, generic, modular framework for automated packaging solutions, aiming for better flexibility, maintainability and usability.</p>
-<p>The intention is to integrate many existing 2nix converters into this framework, thereby improving many of the previously named aspects and providing a unified UX for all 2nix solutions.</p>
+<h2 id="global-overrides">Global Overrides<a class="headerlink" href="#global-overrides" title="Permanent link">&para;</a></h2>
+<p>Global overrides apply universally to all dependencies within a specific language module in dream2nix. For instance, the Python <code>pip</code> module provides a <code>pip.overrideAll</code> option. This is particularly useful for modifying global defaults across all dependencies managed by the module.</p>
+<h3 id="global-overrides-example">Global Overrides Example<a class="headerlink" href="#global-overrides-example" title="Permanent link">&para;</a></h3>
+<p>By default, the <code>pip</code> module disables testing for dependencies. To enable testing globally, use <code>overrideAll</code> as shown below:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="p">{</span>config<span class="p">,</span> lib<span class="p">,</span> <span class="o">...</span><span class="p">}:</span> <span class="p">{</span>
+<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>  pip<span class="o">.</span>overrideAll<span class="o">.</span>mkDerivation<span class="o">.</span><span class="ss">doCheck</span> <span class="o">=</span> <span class="no">true</span><span class="p">;</span>
+<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="p">}</span>
+</code></pre></div>
+<h2 id="local-overrides">Local Overrides<a class="headerlink" href="#local-overrides" title="Permanent link">&para;</a></h2>
+<p>Local overrides are specific to individual packages. This method allows for precise control over the build instructions for certain packages.</p>
+<h3 id="local-overrides-example">Local Overrides Example<a class="headerlink" href="#local-overrides-example" title="Permanent link">&para;</a></h3>
+<p>The following override applies exclusively to the <code>opencv-python</code> package, ensuring specific build dependencies are included:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="p">{</span>config<span class="p">,</span> lib<span class="p">,</span> <span class="o">...</span><span class="p">}:</span> <span class="p">{</span>
+<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>  pip<span class="o">.</span>overrides<span class="o">.</span><span class="ss">opencv-python</span> <span class="o">=</span> <span class="p">{</span>
+<a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>    env<span class="o">.</span><span class="ss">autoPatchelfIgnoreMissingDeps</span> <span class="o">=</span> <span class="no">true</span><span class="p">;</span>
+<a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a>    mkDerivation<span class="o">.</span><span class="ss">buildInputs</span> <span class="o">=</span> <span class="p">[</span>
+<a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a>      pkgs<span class="o">.</span>libglvnd
+<a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a>      pkgs<span class="o">.</span>glib
+<a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a>    <span class="p">];</span>
+<a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a>  <span class="p">};</span>
+<a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a><span class="p">}</span>
+</code></pre></div>
+<p>Note: For ecosystems like Node.js that may include multiple versions of a dependency, local overrides affect all versions by default. For version-specific overrides, refer to the <a href="#conditionals">Conditionals</a> section.</p>
+<h2 id="community-overrides">Community Overrides<a class="headerlink" href="#community-overrides" title="Permanent link">&para;</a></h2>
+<p>Community overrides are akin to local overrides but are provided with dream2nix, applying automatically to their respective dependencies. They represent collective knowledge and fixes for common issues contributed by the user community.</p>
+<h3 id="contributing-to-community-overrides">Contributing to Community Overrides<a class="headerlink" href="#contributing-to-community-overrides" title="Permanent link">&para;</a></h3>
+<p>To contribute your overrides to the community, add them to the dream2nix source tree under <code>/overrides/{language}/{dependency-name}/default.nix</code>. Each dependency within an ecosystem should have its own override file. This structure ensures automatic application of these overrides during dependency resolution.</p>
+<h2 id="conditionals">Conditionals<a class="headerlink" href="#conditionals" title="Permanent link">&para;</a></h2>
+<p>Conditional overrides offer flexibility by allowing overrides to be applied based on specific criteria, such as dependency versions or feature flags.</p>
+<h3 id="conditionals-example">Conditionals Example<a class="headerlink" href="#conditionals-example" title="Permanent link">&para;</a></h3>
+<p>The following conditional override disables tests for versions of the <code>pillow</code> package version <code>10.0.0</code> or higher:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="p">{</span>config<span class="p">,</span> lib<span class="p">,</span> <span class="o">...</span><span class="p">}:</span> <span class="p">{</span>
+<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>  pip<span class="o">.</span>overrides<span class="o">.</span><span class="ss">pillow</span> <span class="o">=</span> <span class="p">{</span>
+<a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a>    mkDerivation<span class="o">.</span><span class="ss">doCheck</span> <span class="o">=</span>
+<a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a>      <span class="k">if</span> lib<span class="o">.</span>versionAtLeast <span class="s2">&quot;10.0.0&quot;</span> config<span class="o">.</span>version
+<a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a>      <span class="k">then</span> <span class="no">false</span>
+<a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a>      <span class="k">else</span> <span class="no">true</span><span class="p">;</span>
+<a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a>  <span class="p">};</span>
+<a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a><span class="p">}</span>
+</code></pre></div>
+<h2 id="list-of-options">List of Options<a class="headerlink" href="#list-of-options" title="Permanent link">&para;</a></h2>
+<p>Different dream2nix modules offer different options to override.
+Refer to the <a href="https://nix-community.github.io/dream2nix">documentation</a> of the specific language module to see the options.
+Alternatively enter <code>{module-name}.overrides</code> into the documentation search.</p>
 
 
 
@@ -2363,10 +2562,10 @@
       <div class="md-progress" data-md-component="progress" role="progressbar"></div>
     
     
-    <script id="__config" type="application/json">{"base": ".", "features": ["search.suggest", "search.highlight", "instant", "navigation.instant", "navigation.instant.prefetch", "navigation.instant.progress", "navigation.tracking", "navigation.path", "navigation.top", "toc.follow", "content.code.copy", "content.code.annotate"], "search": "assets/javascripts/workers/search.b8dbb3d2.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
+    <script id="__config" type="application/json">{"base": "..", "features": ["search.suggest", "search.highlight", "instant", "navigation.instant", "navigation.instant.prefetch", "navigation.instant.progress", "navigation.tracking", "navigation.path", "navigation.top", "toc.follow", "content.code.copy", "content.code.annotate"], "search": "../assets/javascripts/workers/search.b8dbb3d2.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
     
     
-      <script src="assets/javascripts/bundle.3220b9d7.min.js"></script>
+      <script src="../assets/javascripts/bundle.3220b9d7.min.js"></script>
       
     
   </body>

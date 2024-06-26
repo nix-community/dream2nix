@@ -1,31 +1,12 @@
-h1.menu-title::before {
-  content: "";
-  display: inline-block;
-  background-image: url(./favicon.png);
-  background-repeat: no-repeat;
-  background-size: contain;
-  width: 1.8ex;
-  height: 1.8ex;
-  margin-right: 0.9ex;
-  vertical-align: middle;
+.md-header .md-logo {
+    background-color: white;
+    border-radius: 100%;
 }
-.light {
-  --links: #058;
-  --sidebar-active: #0af;
+
+[data-md-component="toc"] .md-nav__link {
+    display: inline-flex;
 }
-.sidebar .sidebar-scrollbox {
-  /* We don't use numbers, so we can take a consistent amount of space */
-  padding: var(--page-padding) !important;
-}
-.hljs {
-  background-color: #f6f7f6;
-}
-@media (prefers-color-scheme: dark) {
-  .hljs {
-    background-color: #1d1f21;
-  }
-}
-/* prevents chapters without links to be grey */
-.chapter li {
-  color: #000;
+
+.md-typeset td pre {
+    margin: 0;
 }
