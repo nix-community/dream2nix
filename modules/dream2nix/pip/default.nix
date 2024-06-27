@@ -56,11 +56,12 @@
     # deps.python cannot be defined in commonModule as this would trigger an
     #   infinite recursion.
     deps = {inherit python;};
-    buildPythonPackage.format = l.mkDefault (
-      if l.hasSuffix ".whl" cfg.mkDerivation.src
+    buildPythonPackage.format = lib.mkDefault (
+      if lib.hasSuffix ".whl" cfg.mkDerivation.src
       then "wheel"
-      else "pyproject"
+      else null
     );
+
     mkDerivation.buildInputs =
       lib.optionals
       (! lib.hasSuffix ".whl" cfg.mkDerivation.src)

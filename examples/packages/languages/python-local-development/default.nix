@@ -30,7 +30,7 @@ in {
   };
 
   buildPythonPackage = {
-    format = lib.mkForce "pyproject";
+    pyproject = true;
     pythonImportsCheck = [
       "mytool"
     ];
@@ -50,6 +50,9 @@ in {
       ++ pyproject.project.dependencies;
     flattenDependencies = true;
 
-    overrides.click.mkDerivation.nativeBuildInputs = [config.deps.python.pkgs.flit-core];
+    overrides.click = {
+      buildPythonPackage.pyproject = true;
+      mkDerivation.nativeBuildInputs = [config.deps.python.pkgs.flit-core];
+    };
   };
 }

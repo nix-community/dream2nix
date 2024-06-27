@@ -7,7 +7,7 @@
 }: let
   package = python3.pkgs.buildPythonPackage {
     name = "fetch-pip-metadata";
-    format = "pyproject";
+    pyproject = true;
     src = ./src;
     nativeBuildInputs = [
       gitMinimal
