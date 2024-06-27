@@ -84,7 +84,6 @@ in {
       writeText
       unzip
       ;
-    python = lib.mkDefault config.deps.python3;
   };
   overrideType = {
     imports = [commonModule];
