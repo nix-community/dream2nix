@@ -22,11 +22,11 @@
   version = "1.5.0";
 
   mkDerivation = {
-    src = config.deps.fetchFromGitHub {
-      owner = "DavHau";
-      repo = "cowsay";
-      rev = "package-lock-v3";
-      sha256 = "sha256-KuZkGWl5An78IFR5uT/2jVTXdm71oWB+p143svYVkqQ=";
+    src = builtins.fetchGit {
+      shallow = true;
+      url = "https://github.com/DavHau/cowsay";
+      ref = "package-lock-v3";
+      rev = "c89952cb75e3e54b8ca0033bd3499297610083c7";
     };
     # allow devshell to be built -> CI pipeline happy
     buildPhase = "mkdir $out";
