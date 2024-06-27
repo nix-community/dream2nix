@@ -186,14 +186,11 @@ in {
           inherit name;
           version = lib.mkDefault pkg.version;
           sourceSelector = lib.mkOptionDefault config.pdm.sourceSelector;
-          buildPythonPackage =
+          buildPythonPackage.format = lib.mkDefault (
             if lib.hasSuffix ".whl" source.file
-            then {
-              format = lib.mkDefault "wheel";
-            }
-            else {
-              pyproject = lib.mkDefault true;
-            };
+            then "wheel"
+            else null
+          );
           mkDerivation = {
             # TODO: handle sources outside pypi.org
             src = lib.mkDefault (libpyproject-fetchers.fetchFromLegacy {
