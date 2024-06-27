@@ -9,39 +9,33 @@
     system,
     ...
   }: let
-    modules' = self.modules.dream2nix;
-    modules = lib.filterAttrs (name: _: ! lib.elem name excludes) modules';
     dream2nixRoot = ../../../.;
     dream2nix = import dream2nixRoot;
-    excludes = [
-      # NOT WORKING
-      # TODO: fix those
-      "core"
-      "ui"
-      "docs"
-      "assertions"
-      "nixpkgs-overrides"
-
-      # doesn't need to be rendered
-      "_template"
-    ];
-    public = lib.genAttrs [
-      "nodejs-granular-v3"
-      "nodejs-package-lock-v3"
-      "php-composer-lock"
-      "php-granular"
-      "pip"
-      "rust-cargo-lock"
-      "rust-crane"
-    ] (name: null);
-
-    # interface
-    sourcePathStr = toString dream2nix;
     baseUrl = "https://github.com/nix-community/dream2nix/blob/master";
-    specialArgs = {
-      inherit dream2nix;
-      packageSets.nixpkgs = pkgs;
+
+    getOptions = {modules}: let
+      options = lib.flip lib.mapAttrs modules (
+        name: module: let
+          evaluated = lib.evalModules {
+            specialArgs = {
+              inherit dream2nix;
+              packageSets.nixpkgs = pkgs;
+            };
+            modules = [module];
+          };
+        in
+          evaluated.options
+      );
+      docs = lib.flip lib.mapAttrs options (name: options:
+        pkgs.nixosOptionsDoc {
+          inherit options;
+          inherit transformOptions;
+          warningsAreErrors = false;
+        });
+    in {
+      inherit options docs;
     };
+
     transformOptions = opt:
       opt
       // {
@@ -49,7 +43,7 @@
           map
           (
             decl: let
-              subpath = lib.removePrefix sourcePathStr (toString decl);
+              subpath = lib.removePrefix (toString dream2nix) (toString decl);
             in {
               url = baseUrl + subpath;
               name = "dream2nix" + subpath;
@@ -57,144 +51,106 @@
           )
           opt.declarations;
       };
-    # 0 = no chapters, 1 = one level of chapters, 2 = two levels of chapters ...
-    chaptersNesting = 1;
-    # A tree where nodes are (sub)chapters and leafs are options.
-    # Nesting can be arbitrary
-    chaptersTree = {
-      "Modules" =
-        lib.filterAttrs (name: _: public ? ${name}) optionsTree;
-      "Modules (Internal + Experimental)" =
-        lib.filterAttrs (name: _: ! public ? ${name}) optionsTree;
-    };
-    optionsTree = lib.flip lib.mapAttrs modules (
-      name: module: let
-        evaluated = lib.evalModules {
-          inherit specialArgs;
-          modules = [module];
-        };
-      in
-        # lib.trace "Rendering Module ${name}"
-        (builtins.removeAttrs evaluated.options ["_module"])
-    );
 
-    # implementation
-    highlight-js = let
-      highlight-core = pkgs.fetchurl {
-        url = "https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js";
-        hash = "sha256-g3pvpbDHNrUrveKythkPMF2j/J7UFoHbUyFQcFe1yEY=";
-      };
-      highlight-nix = pkgs.fetchurl {
-        url = "https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/nix.min.js";
-        hash = "sha256-BLoZ+/OroDAxMsdZ4GFZtQfsg6ZJeLVNeBzN/82dYgk=";
-      };
-    in
-      pkgs.runCommand "highlight-js" {} ''
-        cat ${highlight-core} > $out
-        cat ${highlight-nix} >> $out
+    modules =
+      lib.filterAttrs (
+        name: _:
+          ! lib.elem name
+          [
+            # NOT WORKING
+            # TODO: fix those
+            "core"
+            "ui"
+            "docs"
+            "assertions"
+            "nixpkgs-overrides"
+            # doesn't need to be rendered
+            "_template"
+          ]
+      )
+      dream2nix.modules.dream2nix;
+
+    options = getOptions {
+      inherit modules;
+    };
+
+    optionsReference = let
+      publicModules =
+        lib.filterAttrs
+        (n: v: lib.pathExists (v + "/README.md"))
+        modules;
+      createReference = name: sourcePath: ''
+        target_dir="$out/${name}/"
+        mkdir -p "$target_dir"
+        ln -s ${sourcePath}/README.md "$target_dir/index.md"
+        ln -s ${options.docs.${name}.optionsJSON}/share/doc/nixos/options.json "$target_dir"
+        cat > "$target_dir/.pages" <<EOF
+        collapse_single_pages: true
+        nav:
+          - ...
+        EOF
       '';
-    highlight-style = pkgs.fetchurl {
-      url = "https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/vs.min.css";
-      hash = "sha256-E1kfafj5iO+Tw/04hxdSG+OnvczojOXK2K0iCEYfzSw=";
-    };
-    optionsToMdFile = options: let
-      docs = pkgs.nixosOptionsDoc {
-        inherit options;
-        inherit transformOptions;
-        warningsAreErrors = false;
-      };
     in
-      docs.optionsCommonMark;
-
-    mdFiles = nesting: chapters:
-      if nesting == 0
-      then lib.mapAttrs (name: optionsToMdFile) chapters
-      else lib.concatMapAttrs (name: mdFiles (nesting - 1)) chapters;
-
-    mdFilesDir = pkgs.runCommand "md-files-dir" {} ''
-      mkdir -p $out
-      cp -r ${lib.concatStringsSep "\n cp -r " (lib.mapAttrsToList (name: file: "${file} $out/${name}.md") (mdFiles chaptersNesting chaptersTree))}
-    '';
-
-    spacing = depth:
-      if depth == 0
-      then "- "
-      else "  " + spacing (depth - 1);
-
-    # returns "" for chapters with nesting or an md file for chapters with options
-    chapterUrl = nesting: name:
-      if nesting == 0
-      then "options/${name}.md"
-      else "";
-
-    renderChapters = depth: nesting: chapters:
-      lib.concatStringsSep "\n"
-      (lib.flip lib.mapAttrsToList chapters (
-        name: chapter:
-          "${spacing depth}[${name}](${chapterUrl nesting name})"
-          + lib.optionalString (nesting > 0) (renderChapters (depth + 1) (nesting - 1) chapter)
-      ));
-
-    summaryMdFile =
-      pkgs.writeText "summary.md"
-      (renderChapters 0 chaptersNesting chaptersTree);
-
-    mdBookSource = pkgs.runCommand "website-src" {} ''
-      mkdir -p $out/options
-      cp ${summaryMdFile} $out/SUMMARY.md
-      cp -r ${mdFilesDir}/* $out/options/
-
-      # add table of contents for each md file
-      for file in $out/options/*.md; do
-        name="$(basename "$file")"
-        name="''${name%.md}"
-        echo "# $name - options" > "$file.tmp"
-        echo '<!-- toc -->' | cat - "$file" >> "$file.tmp"
-        mv $file.tmp $file
-      done
-    '';
+      pkgs.runCommand "reference" {
+      } ''
+        ${lib.concatStringsSep "\n" (lib.attrValues (lib.mapAttrs createReference publicModules))}
+      '';
 
     website =
       pkgs.runCommand "website" {
         nativeBuildInputs = [
-          pkgs.mdbook
-          pkgs.mdbook-linkcheck
-          # This inserts a table of contents at each '<!-- toc -->'
-          inputs.mdbook-toc.defaultPackage.${system}
+          pkgs.python3.pkgs.mkdocs
+          pkgs.python3.pkgs.mkdocs-material
+          self.packages.${system}.mkdocs-awesome-pages-plugin
+          optionsReference
         ];
       } ''
-        cp -rL --no-preserve=mode ${dream2nixRoot}/website/* ./
-        cp -r ${mdBookSource}/* src/
-
-        # insert highlight.js
-        cp ${highlight-js} ./src/highlight.js
-        cp ${highlight-style} ./src/highlight.css
-
-        # merge original and generated SUMMARY.md
-        cp ${dream2nixRoot}/website/src/SUMMARY.md SUMMARY.md.orig
-        {
-          while read ln; do
-            case "$ln" in
-              "# Modules Reference")
-                echo "# Modules Reference"
-                cat ${mdBookSource}/SUMMARY.md
-                ;;
-              *)
-                echo "$ln"
-                ;;
-            esac
-          done
-        } < SUMMARY.md.orig > src/SUMMARY.md
-
-        # insert icon
-        mkdir -p ./theme
-        cp ${../../../modules/dream2nix/core/docs/theme/favicon.png} ./theme/favicon.png
-
-        ${pkgs.mdbook}/bin/mdbook build --dest-dir out
-        mv out/html $out
+        cp -rL --no-preserve=mode  ${dream2nixRoot}/docs/* .
+        ln -sfT ${optionsReference} ./src/reference
+        mkdocs build
       '';
   in {
+    packages.mkdocs-awesome-pages-plugin = pkgs.callPackage ./mkdocs-awesome-pages-plugin.nix {
+      inherit
+        (pkgs.python3.pkgs)
+        buildPythonPackage
+        mkdocs
+        wcmatch
+        natsort
+        beautifulsoup4
+        mock-open
+        importlib-metadata
+        poetry-core
+        pytestCheckHook
+        pythonOlder
+        ;
+    };
+    packages.optionsReference = optionsReference;
     packages.website = website;
-    packages.docs-generated-mdbook-src = mdBookSource;
+    devShells.website = let
+      pythonWithDeps = pkgs.python3.withPackages (
+        ps: [
+          ps.ipython
+          ps.black
+          ps.pytest
+          ps.pytest-cov
+        ]
+      );
+    in
+      pkgs.mkShell {
+        inputsFrom = [self.packages.${system}.website];
+        packages = [
+          pythonWithDeps
+        ];
+
+        shellHook = ''
+          cd $PRJ_ROOT/docs
+          if [ ! -d src/reference ]; then
+            echo "linking .#reference to src/reference, you need to update this manually\
+            and remove it before a production build"
+            ln -sfT $(nix build ..#reference --no-link --print-out-paths) src/reference
+          fi
+        '';
+      };
   };
 }

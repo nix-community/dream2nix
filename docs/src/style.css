@@ -1,0 +1,12 @@
+.md-header .md-logo {
+    background-color: white;
+    border-radius: 100%;
+}
+
+[data-md-component="toc"] .md-nav__link {
+    display: inline-flex;
+}
+
+.md-typeset td pre {
+    margin: 0;
+}

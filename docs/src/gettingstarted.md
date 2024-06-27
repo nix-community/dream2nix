@@ -1,5 +1,3 @@
-## Getting started
-
 To package a piece of software with dream2nix, you'd typically start with
 a bare-bones dream2nix flake like this:
 
@@ -60,8 +58,8 @@ And a `default.nix` that looks like this:
 ```
 
 To find out which dream2nix modules to import, browse through the modules
-on the left and the [examples](./examples.md). When getting started, the
-'/packages/languages' collection will be most helpful.
+on the left and the [examples](https://github.com/nix-community/dream2nix/tree/main/examples/packages). When getting started, the
+`./packages/languages` collection will be most helpful.
 
 Once you have imported a module, this module will make ecosystem-dependent
 functions available to create your package definition, such as `mkDerivation`

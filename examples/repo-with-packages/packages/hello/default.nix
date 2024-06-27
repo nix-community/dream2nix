@@ -9,7 +9,7 @@
   ];
 
   name = "hello";
-  version = "2.12";
+  version = "2.12.1";
 
   deps = {nixpkgs, ...}: {
     inherit
@@ -21,7 +21,7 @@
   mkDerivation = {
     src = builtins.fetchTarball {
       url = "https://ftp.gnu.org/gnu/hello/hello-${config.version}.tar.gz";
-      sha256 = "sha256-4GQeKLIxoWfYiOraJub5RsHNVQBr2H+3bfPP22PegdU=";
+      sha256 = "0xw6cr5jgi1ir13q6apvrivwmmpr5j8vbymp0x6ll0kcv6366hnn";
     };
   };
 }

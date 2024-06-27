@@ -1,0 +1,40 @@
+## Options
+{%- for name, option in options.items() recursive %}
+
+##{{loop.depth * "#"}} {{ ((option.loc | join (".")) or name).replace("<", "&lt;").replace(">", "&gt;") }}
+
+{% if (option.description or '') != "This option has no description." -%}
+{{ option.description or '' }}
+{%- endif %}
+
+{% if "type" in option %}
+<table>
+    <tr>
+        <td>type</td>
+        <td>{{ option.type}} {{ "(read only)" if option.readOnly else "" }}</td>
+    </tr>
+    <tr>
+        <td>source</td>
+        <td>{%- for d in option.declarations -%}<a href="{{d.url}}">{{d.name}}</a>{{ ", " if not loop.last else "" }}{%- endfor -%}</td>
+    </tr>
+    {%- if option.default -%}
+    <tr>
+        <td>default</td>
+        <td>{{(option.default | default({})).text | pygments("nix")}}</td>
+    </tr>
+    {%- endif -%}
+    {%- if option.example -%}
+    <tr>
+        <td>example</td>
+        <td>
+            {{(option.example | default({})).text | pygments("nix")}}
+        </td>
+    </tr>
+    {%- endif -%}
+
+</table>
+{% endif %}
+{%- if option.children -%}
+{{ loop(option.children.items()) }}
+{%- endif %}
+{%- endfor %}

@@ -6,3 +6,5 @@ result
 interpreter
 __pycache__
 *.egg-info
+# symlink for devshell
+docs/src/reference
