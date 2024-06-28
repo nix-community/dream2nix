@@ -10,7 +10,7 @@
   ];
 
   deps = {nixpkgs, ...}: {
-    inherit (nixpkgs) fetchFromGitHub;
+    inherit (nixpkgs) fetchFromGitHub iconv;
   };
 
   name = lib.mkForce "ripgrep";
@@ -25,6 +25,7 @@
       rev = config.version;
       sha256 = "sha256-udEh+Re2PeO3DnX4fQThsaT1Y3MBHFfrX5Q5EN2XrF0=";
     };
+    buildInputs = lib.optionals config.deps.stdenv.isDarwin [config.deps.iconv];
   };
 
   rust-crane = {
