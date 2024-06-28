@@ -78,7 +78,6 @@ in {
       spago-unstable
       purs
       config.deps.git
-      config.deps.breakpointHook
       config.deps.esbuild
       config.deps.yq-go
     ];
@@ -139,7 +138,6 @@ in {
         git
         esbuild # used by spago bundle
         fetchFromGitHub
-        breakpointHook
         runCommand
         nodejs
         ;
