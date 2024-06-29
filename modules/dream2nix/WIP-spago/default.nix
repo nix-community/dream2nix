@@ -50,10 +50,15 @@
       tar -cvzf $out .
     '';
 
+  cacheDir =
+    if config.deps.stdenv.isDarwin
+    then "$HOME/Library/Caches/spago-nodejs"
+    else "$HOME/.cache/spago-nodejs";
+
   installSource = depName: dep: ''
     ln -s ${dep} .spago/packages/${depName}-${lock.${depName}.version}
-    mkdir -p $HOME/.cache/spago-nodejs/packages/${depName}
-    cp ${mkTarball depName} $HOME/.cache/spago-nodejs/packages/${depName}/${l.removePrefix "v" lock.${depName}.version}.tar.gz
+    mkdir -p ${cacheDir}/packages/${depName}
+    cp ${mkTarball depName} ${cacheDir}/packages/${depName}/${l.removePrefix "v" lock.${depName}.version}.tar.gz
   '';
 
   installSources = l.mapAttrsToList installSource cfg.sources;
@@ -78,7 +83,6 @@ in {
       spago-unstable
       purs
       config.deps.git
-      config.deps.breakpointHook
       config.deps.esbuild
       config.deps.yq-go
     ];
@@ -87,9 +91,9 @@ in {
     ];
     buildPhase = ''
       export HOME="$(realpath .)"
-      mkdir -p "$HOME/.cache/spago-nodejs"
-      ln -s ${registry} "$HOME/.cache/spago-nodejs/registry"
-      ln -s ${registry-index} "$HOME/.cache/spago-nodejs/registry-index"
+      mkdir -p "${cacheDir}"
+      ln -s ${registry} "${cacheDir}/registry"
+      ln -s ${registry-index} "${cacheDir}/registry-index"
       mkdir -p .spago/packages
       ${toString installSources}
       spago bundle --verbose
@@ -139,7 +143,6 @@ in {
         git
         esbuild # used by spago bundle
         fetchFromGitHub
-        breakpointHook
         runCommand
         nodejs
         ;

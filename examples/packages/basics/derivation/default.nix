@@ -15,6 +15,5 @@
   builtins-derivation = {
     builder = "/bin/sh";
     args = ["-c" "echo $name > $out"];
-    system = "x86_64-linux";
   };
 }

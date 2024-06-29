@@ -84,24 +84,20 @@ in {
 
     # map all modules in /examples to a package output in the flake.
     checks =
-      lib.optionalAttrs
-      (system == "x86_64-linux")
-      (
-        (lib.mapAttrs (_: flakeFile: getPackage flakeFile) allExamples)
-        // {
-          repo-with-packages = let
-            imported =
-              (import ../../examples/repo-with-packages {
-                dream2nixSource = ../..;
-                inherit pkgs;
-              })
-              .hello;
-          in
-            imported;
-          repo-with-packages-flake =
-            (importFlake ../../examples/repo-with-packages-flake/flake.nix).packages.${system}.hello;
-        }
-      );
+      (lib.mapAttrs (_: flakeFile: getPackage flakeFile) allExamples)
+      // {
+        repo-with-packages = let
+          imported =
+            (import ../../examples/repo-with-packages {
+              dream2nixSource = ../..;
+              inherit pkgs;
+            })
+            .hello;
+        in
+          imported;
+        repo-with-packages-flake =
+          (importFlake ../../examples/repo-with-packages-flake/flake.nix).packages.${system}.hello;
+      };
 
     # work around a bug in nix-fast-build / nix-eval jobs
     # TODO: remove this
