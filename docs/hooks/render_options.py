@@ -54,7 +54,7 @@ def preprocess_options(options, module_name):
                     cursor[part] = dict(**option, children={})
                 else:
                     cursor[part] = dict(children=dict())
-                    cursor = cursor[part]
+                    cursor = cursor[part]["children"]
             else:
                 cursor = cursor[part]["children"]
     return OrderedDict(sorted(tree.items(), key=lambda i: sort_options(i, module_name)))
