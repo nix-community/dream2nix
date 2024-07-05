@@ -136,7 +136,7 @@ in {
       # with the intention to keep modules independent.
       fetchPipMetadataScript = import ../../../pkgs/fetchPipMetadata/script.nix {
         inherit lib;
-        inherit (cfg) env pypiSnapshotDate pipFlags pipVersion requirementsList requirementsFiles nativeBuildInputs;
+        inherit (cfg) env pipFlags pipVersion requirementsList requirementsFiles nativeBuildInputs;
         inherit (config.deps) writePureShellScript nix;
         inherit (config.paths) findRoot;
         inherit (nixpkgs) fetchFromGitHub fetchurl gitMinimal nix-prefetch-scripts openssh python3 rustPlatform writeText;
