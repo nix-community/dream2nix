@@ -44,7 +44,6 @@ in {
   };
 
   pip = {
-    pypiSnapshotDate = "2023-01-01";
     requirementsList = [
       "apache-airflow"
       "setuptools-scm"

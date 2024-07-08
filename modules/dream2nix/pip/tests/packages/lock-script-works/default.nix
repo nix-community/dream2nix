@@ -24,7 +24,6 @@ in {
   };
 
   pip = {
-    pypiSnapshotDate = "2023-08-27";
     requirementsList =
       pyproject.build-system.requires
       or []

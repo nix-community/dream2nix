@@ -64,7 +64,6 @@ in {
   };
 
   pip = {
-    pypiSnapshotDate = "2023-05-30";
     requirementsList = [
       "${config.name}==${config.version}"
       "setuptools"

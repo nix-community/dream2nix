@@ -33,7 +33,6 @@ in {
   ];
 
   pip = {
-    pypiSnapshotDate = "2023-09-19";
     requirementsList = [
       "${config.paths.package}/subpkg1"
       "${config.paths.package}/subpkg2"
