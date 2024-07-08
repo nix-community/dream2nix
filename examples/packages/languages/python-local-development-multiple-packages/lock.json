@@ -2,11 +2,13 @@
   "fetchPipMetadata": {
     "sources": {
       "subpkg1": {
+        "is_direct": true,
         "path": "subpkg1",
         "type": "local",
         "version": "0.0.1"
       },
       "subpkg2": {
+        "is_direct": true,
         "path": "subpkg2",
         "type": "local",
         "version": "0.0.2"
@@ -21,5 +23,5 @@
       }
     }
   },
-  "invalidationHash": "bc71d202ddaae6e0f6c82dd44fd81ed0c6971b9a18e84a24d633365be1ef30fb"
+  "invalidationHash": "1c3ea22f49efe9faefcac00ba72b8bf9f2d9f657dd6c091252f11624a671e25b"
 }
