@@ -55,6 +55,10 @@ in {
         '';
         example = "2023-01-01";
         default = null;
+        apply = d:
+          if d != null
+          then l.warn "pypiSnapshot date has been removed, as we didn't see a need for it anymore. Please let us now if you do." d
+          else d;
       };
       pipFlags = l.mkOption {
         type = t.listOf t.str;

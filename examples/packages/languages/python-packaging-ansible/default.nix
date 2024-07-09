@@ -22,7 +22,6 @@
   };
 
   pip = {
-    pypiSnapshotDate = "2023-01-01";
     requirementsList = ["${config.name}==${config.version}"];
   };
 }

@@ -33,7 +33,6 @@ in {
   };
 
   pip = {
-    pypiSnapshotDate = "2023-04-01";
     requirementsList = [
       "${src}"
     ];

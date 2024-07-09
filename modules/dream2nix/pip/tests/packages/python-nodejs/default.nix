@@ -9,9 +9,7 @@
   lib,
   dream2nix,
   ...
-}: let
-  l = lib // builtins;
-in {
+}: {
   imports = [
     dream2nix.modules.dream2nix.nodejs-package-lock
     dream2nix.modules.dream2nix.nodejs-granular
@@ -64,7 +62,6 @@ in {
   };
 
   pip = {
-    pypiSnapshotDate = "2023-05-30";
     requirementsList = [
       "${config.name}==${config.version}"
       "setuptools"

@@ -15,10 +15,8 @@
     ];
     propagatedBuildInputs = with python3.pkgs; [
       packaging
-      certifi
       flit-core
       nix-prefetch-scripts
-      python-dateutil
       pip
     ];
 

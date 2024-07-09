@@ -2,40 +2,46 @@
   "fetchPipMetadata": {
     "sources": {
       "gevent": {
-        "sha256": "c92b837b60e850c50fc6d723d1e363e786d37fd9d51e564e07df52ad5e8a86d4",
+        "is_direct": false,
+        "sha256": "6f947a9abc1a129858391b3d9334c45041c08a0f23d14333d5b844b6e5c17a07",
         "type": "url",
-        "url": "https://files.pythonhosted.org/packages/f7/88/76bde5b2dd9cbe0897257853ca0bf620342bec8cf05a7197b97fec7116de/gevent-23.7.0-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl",
-        "version": "23.7.0"
+        "url": "https://files.pythonhosted.org/packages/15/9e/e775a6b261bd871f37a2aae4c335d150f2c64c54c166e8dd8cf63210b445/gevent-24.2.1-cp310-cp310-macosx_11_0_universal2.whl",
+        "version": "24.2.1"
       },
       "greenlet": {
-        "sha256": "d75209eed723105f9596807495d58d10b3470fa6732dd6756595e89925ce2470",
+        "is_direct": false,
+        "sha256": "9da2bd29ed9e4f15955dd1595ad7bc9320308a3b766ef7f837e23ad4b4aac31a",
         "type": "url",
-        "url": "https://files.pythonhosted.org/packages/6e/11/a1f1af20b6a1a8069bc75012569d030acb89fd7ef70f888b6af2f85accc6/greenlet-2.0.2-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl",
-        "version": "2.0.2"
+        "url": "https://files.pythonhosted.org/packages/a6/64/bea53c592e3e45799f7c8039a8ee7d6883c518eafef1fcae60beb776070f/greenlet-3.0.3-cp310-cp310-macosx_11_0_universal2.whl",
+        "version": "3.0.3"
       },
       "setuptools": {
-        "sha256": "3d8083eed2d13afc9426f227b24fd1659489ec107c0e86cec2ffdde5c92e790b",
+        "is_direct": false,
+        "sha256": "b8b8060bb426838fbe942479c90296ce976249451118ef566a5a0b7d8b78fb05",
         "type": "url",
-        "url": "https://files.pythonhosted.org/packages/4f/ab/0bcfebdfc3bfa8554b2b2c97a555569c4c1ebc74ea288741ea8326c51906/setuptools-68.1.2-py3-none-any.whl",
-        "version": "68.1.2"
+        "url": "https://files.pythonhosted.org/packages/42/54/2a8ecfcc9a714a6fbf86559a4b0f50b126a4ac4269ea8134f2c75c3e73de/setuptools-70.2.0-py3-none-any.whl",
+        "version": "70.2.0"
       },
       "websocket": {
+        "is_direct": false,
         "sha256": "42b506fae914ac5ed654e23ba9742e6a342b1a1c3eb92632b6166c65256469a4",
         "type": "url",
         "url": "https://files.pythonhosted.org/packages/f2/6d/a60d620ea575c885510c574909d2e3ed62129b121fa2df00ca1c81024c87/websocket-0.2.1.tar.gz",
         "version": "0.2.1"
       },
       "zope-event": {
+        "is_direct": false,
         "sha256": "2832e95014f4db26c47a13fdaef84cef2f4df37e66b59d8f1f4a8f319a632c26",
         "type": "url",
         "url": "https://files.pythonhosted.org/packages/fe/42/f8dbc2b9ad59e927940325a22d6d3931d630c3644dae7e2369ef5d9ba230/zope.event-5.0-py3-none-any.whl",
         "version": "5.0"
       },
       "zope-interface": {
-        "sha256": "48f4d38cf4b462e75fac78b6f11ad47b06b1c568eb59896db5b6ec1094eb467f",
+        "is_direct": false,
+        "sha256": "762e616199f6319bb98e7f4f27d254c84c5fb1c25c908c2a9d0f92b92fb27530",
         "type": "url",
-        "url": "https://files.pythonhosted.org/packages/36/79/a99f5798a53df407554e00c1cc70ac5a900fc879853cc1a9edd7016bf2d2/zope.interface-6.0-cp310-cp310-manylinux_2_5_x86_64.manylinux1_x86_64.manylinux_2_17_x86_64.manylinux2014_x86_64.whl",
-        "version": "6.0"
+        "url": "https://files.pythonhosted.org/packages/41/02/cb716bc3e9cc8c18fb94d49dcacadf771120df8866b389302acdb811557d/zope.interface-6.4.post2-cp310-cp310-macosx_11_0_arm64.whl",
+        "version": "6.4.post2"
       }
     },
     "targets": {
@@ -60,5 +66,5 @@
       }
     }
   },
-  "invalidationHash": "106f9e28cb3d91f0e8ea99c146f59ee00fef841eff5b0846c5e829eeb4fc67e7"
+  "invalidationHash": "3eb166ae439855ab9d30d807d3c42b4be4d87927881af564cc1a73420219fbe3"
 }

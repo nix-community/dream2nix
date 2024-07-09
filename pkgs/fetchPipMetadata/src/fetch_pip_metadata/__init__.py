@@ -4,21 +4,12 @@ import sys
 import subprocess
 import tempfile
 import json
-import dateutil.parser
 from pathlib import Path
 
 from .lock_file_from_report import lock_file_from_report
-from .pypi_proxy import PypiProxy
 
 
 __version__ = "1.0.0"
-
-
-def get_max_date(snapshot_date):
-    try:
-        return int(snapshot_date)
-    except ValueError:
-        return dateutil.parser.parse(snapshot_date)
 
 
 def prepare_venv(venv_path, pip_version, wheel_version, python_interpreter: Path):
@@ -64,24 +55,6 @@ def fetch_pip_metadata():
     with tempfile.TemporaryDirectory() as home:
         home = Path(home)
 
-        if json_args.get("pypiSnapshotDate", False):
-            print(
-                f"selected maximum release date for python packages: {get_max_date(json_args['pypiSnapshotDate'])}",  # noqa: E501
-                file=sys.stderr,
-            )
-            proxy = PypiProxy(
-                executable=json_args["mitmProxy"],
-                args=[
-                    "--ignore-hosts",
-                    ".*files.pythonhosted.org.*",
-                    "--script",
-                    json_args["filterPypiResponsesScript"],
-                ],
-                env={"pypiSnapshotDate": json_args["pypiSnapshotDate"], "HOME": home},
-            )
-        else:
-            proxy = False
-
         venv_path = prepare_venv(
             (home / ".venv").absolute(),
             json_args["pipVersion"],
@@ -95,13 +68,6 @@ def fetch_pip_metadata():
             "--report",
             str(home / "report.json"),
         ]
-        if proxy:
-            flags += [
-                "--proxy",
-                f"https://localhost:{proxy.port}",
-                "--cert",
-                proxy.cafile,
-            ]
         for req in json_args["requirementsList"]:
             if req:
                 flags.append(req)
@@ -122,9 +88,6 @@ def fetch_pip_metadata():
             stdout=sys.stderr,
             stderr=sys.stderr,
         )
-        if proxy:
-            proxy.kill()
-
         with open(home / "report.json", "r") as f:
             report = json.load(f)
 
