@@ -1,6 +1,6 @@
 nav:
   - "Home": index.md
-  - "Getting Started": gettingstarted.md
+  - Guides: guides
   - Concepts:
       - "Modules": modules.md
       - "Overriding Dependencies": overrides.md
