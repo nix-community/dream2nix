@@ -18,7 +18,7 @@ We start by creating a new git repository with the following two files:
 - `hello.nix` declares a dream2nix module that imports [mkDerivation](../reference/mkDerivation/index.md) and
   uses that to build GNU hello.
 
-Check out the code below and its annotations to learn more!
+Check out the code below and don't miss the annotations, hidden behind those little plusses, to learn more!
 
 !!! note
 
