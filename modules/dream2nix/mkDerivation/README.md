@@ -1,6 +1,6 @@
 ---
 title: "mkDerivation"
-state: released
+state: "internal"
 maintainers:
   - DavHau
 ---

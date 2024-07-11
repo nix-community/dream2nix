@@ -1,6 +1,6 @@
 ---
 title: "nodejs-package-json"
-state: "released"
+state: "internal"
 maintainers:
   - DavHau
 ---

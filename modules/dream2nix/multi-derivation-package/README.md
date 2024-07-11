@@ -1,6 +1,6 @@
 ---
 title: "multi-derivation-package"
-state: "released"
+state: "internal"
 maintainers:
   - DavHau
 ---

@@ -1,6 +1,6 @@
 ---
 title: "nodejs-devshell"
-state: "released"
+state: "internal"
 maintainers:
   - DavHau
 ---

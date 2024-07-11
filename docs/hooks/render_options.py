@@ -104,19 +104,23 @@ def on_nav(nav: Navigation, config: MkDocsConfig, files: Files) -> Navigation | 
         # a reference section
         return nav
 
-    released = []
     experimental = []
+    internal = []
+    released = []
     for page in reference_section.children:
         # to have metadata from the yaml front-matter available
         page.read_source(config)
         state = page.meta.get("state")
-        if state == "released":
+        if state == "internal":
+            internal.append(page)
+        elif state == "released":
             released.append(page)
         else:
             experimental.append(page)
 
     experimental_section = Section("Experimental Modules", experimental)
-    reference_section.children = released + [experimental_section]
+    internal_section = Section("Internal Modules", internal)
+    reference_section.children = released + [experimental_section, internal_section]
 
     nav.items[reference_index] = reference_section
     return nav

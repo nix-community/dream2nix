@@ -1,6 +1,6 @@
 ---
 title: "nodejs-package-lock"
-state: "released"
+state: "internal"
 maintainers:
   - DavHau
 ---

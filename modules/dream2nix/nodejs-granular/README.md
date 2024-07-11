@@ -1,6 +1,6 @@
 ---
 title: "nodejs-granular"
-state: "released"
+state: "internal"
 maintainers:
   - DavHau
 ---

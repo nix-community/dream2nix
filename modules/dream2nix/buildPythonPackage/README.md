@@ -1,6 +1,6 @@
 ---
 title: "buildPythonPackage"
-state: "released"
+state: "internal"
 maintainers:
   - DavHau
 ---

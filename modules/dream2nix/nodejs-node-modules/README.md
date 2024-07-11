@@ -1,6 +1,6 @@
 ---
 title: "nodejs-node-modules"
-state: "released"
+state: "internal"
 maintainers:
   - DavHau
 ---

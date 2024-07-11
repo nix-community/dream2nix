@@ -1,6 +1,6 @@
 ---
 title: "nodejs-devshell-v3"
-state: "released"
+state: "internal"
 maintainers:
   - DavHau
 ---
