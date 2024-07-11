@@ -23,8 +23,3 @@ lock file.
 
 During building, it uses this lock file to build each dependency as well as the top-level package in separate derivations
 while allowing overrides and further customization via [dream2nix module system](../../modules.md).
-
-## Getting started
-
-See [Build a python project with pip](../../guides/pip.md).
-
