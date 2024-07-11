@@ -164,3 +164,94 @@ $ nix build .#default
 Congratulations, you just built your first python package with dream2nix! The resulting package can be used with any other nix python package as long as it uses the same version of python.
 
 
+## Example: Local python project
+
+In our second example, we package are going to package a simple, fictional python package called `my_tool`. 
+Its code and nix expressions are  available in full in [./examples/packages/languages/python-local-development](https://github.com/nix-community/dream2nix/tree/main/examples/packages/languages/python-local-development).
+
+### Code
+
+```nix title="default.nix"
+{
+  config,
+  lib,
+  dream2nix,
+  ...
+}: let
+  pyproject = lib.importTOML (config.mkDerivation.src + /pyproject.toml); # (1)
+in {
+  imports = [
+    dream2nix.modules.dream2nix.pip # (2)
+  ];
+
+  deps = {nixpkgs, ...}: {
+    python = nixpkgs.python3; # (3)
+  };
+
+  inherit (pyproject.project) name version; # (4)
+
+  mkDerivation = {
+    src = lib.cleanSourceWith { # (5)
+      src = lib.cleanSource ./.;
+      filter = name: type:
+        !(builtins.any (x: x) [
+          (lib.hasSuffix ".nix" name)
+          (lib.hasPrefix "." (builtins.baseNameOf name))
+          (lib.hasSuffix "flake.lock" name)
+        ]);
+    };
+  };
+ 
+  buildPythonPackage = {
+    pyproject = true;  # (6)
+    pythonImportsCheck = [ # (7)
+      "mytool"
+    ];
+  };
+
+  pip = {
+    # (8)
+    requirementsList =
+      pyproject.build-system.requires or []
+      ++ pyproject.project.dependencies or [];
+      
+    flattenDependencies = true; # (9)
+
+    overrides.click = { # (10)
+      buildPythonPackage.pyproject = true;
+      mkDerivation.nativeBuildInputs = [config.deps.python.pkgs.flit-core];
+    };
+  };
+}
+```
+
+1. Load `pyproject.toml` from our source directory, which is the filtered
+source defined in `mkDerivation.src` below.
+2. Import the dream2nix [pip module](../reference/pip/index.md) into our module
+3. Define external, non-python dependencies. We use whatever the latest `python3` in nixpkgs is as our python.
+4. Get our projects `name` and `version` straight from `pyproject.toml`. You could of course also hard-code them here if e.g. your project still uses `setup.py`.
+5. Define the source for our project. Here we take the current directory, but filter out `*.nix` files, hidden files and `flake.lock` before copying to `/nix/store` in order to avoid unecessary rebuilds.
+6. Tell the dream2nix [buildPythonPackage module](../reference/buildPythonPackage/index.md), imported by the pip module to use pyproject-specific hooks here.
+Don't set it if your project doesn't include a `pyproject.toml` or your are using a wheel.
+7. Tell the [buildPythonPackage module](../reference/buildPythonPackage/index.md) to verify that it can import the given python module from our package after a build.
+8. Declare a list of requirements for `pip` to lock by concatenating
+both the build-systems and normal dependencies in `pyproject.toml`.
+9. By default, the [pip module](../reference/pip/index.md) assumes that it finds the top-level package inside the lock file. This isn't the case
+here as the top-level package comes from the local repository. So we
+instruct the module to just install all requirements into a flat environment.
+10. Declare overrides for package attributes that can't be detected heuristically by dream2nix yet. Here: use pyproject-hooks for click and
+add `poetry-core` to its build-time dependencies.
+
+### Build it
+
+Just as in the same example, we need to lock our python dependencies
+and add the lock file before we build our package:
+
+```shell-session
+$ git init
+$ git add flake.nix default.nix
+$ nix run .#default.lock
+$ git add lock.json
+$ nix build .#
+$ ./result/bin/my_tool
+```
