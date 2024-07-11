@@ -1,6 +1,6 @@
 ---
 title: "core"
-state: "released"
+state: "internal"
 maintainers:
   - DavHau
 ---

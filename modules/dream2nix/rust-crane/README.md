@@ -1,6 +1,6 @@
 ---
 title: "rust-crane"
-state: "released"
+state: "experimental"
 maintainers:
   - DavHau
 ---

@@ -1,6 +1,6 @@
 ---
 title: "groups"
-state: experimental
+state: internal
 maintainers:
   - DavHau
 ---

@@ -1,6 +1,6 @@
 ---
 title: "rust-cargo-lock"
-state: "released"
+state: "experimental"
 maintainers:
   - DavHau
 ---

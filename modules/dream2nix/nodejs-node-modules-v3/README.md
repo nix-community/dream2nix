@@ -1,6 +1,6 @@
 ---
 title: "nodejs-node-modules-v3"
-state: "released"
+state: "internal"
 maintainers:
   - DavHau
 ---

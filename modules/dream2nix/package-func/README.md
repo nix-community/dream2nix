@@ -1,6 +1,6 @@
 ---
 title: "package-func"
-state: "released"
+state: "internal"
 maintainers:
   - DavHau
 ---

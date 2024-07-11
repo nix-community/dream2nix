@@ -1,6 +1,6 @@
 ---
 title: "nixpkgs-overrides"
-state: "released"
+state: "internal"
 maintainers:
   - DavHau
 ---

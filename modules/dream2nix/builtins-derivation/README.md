@@ -1,6 +1,6 @@
 ---
 title: "builtins-derivation"
-state: "released"
+state: "internal"
 maintainers:
   - DavHau
 ---
