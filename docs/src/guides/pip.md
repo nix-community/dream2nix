@@ -56,7 +56,7 @@ are the packages name, `default` instead of `hello`:
 1. We call our package attribute `default` here...
 2. ...and the nix file `default.nix` here.
 
-## Pillow
+## Example: Pillow
 
 Things get a bit more interesting in `default.nix` where we define a package module which fetches Pillow from pypi and builds it with minial features - just JPEG support. Click the plus to expand any code annotation below for details.
 The code we are going to end up with is also available in [./examples/packages/languages/python-packaging-pillow](https://github.com/nix-community/dream2nix/tree/main/examples/packages/languages/python-packaging-pillow).
@@ -152,6 +152,8 @@ $ git add lock.json
 
     Check out the [pdm module](../reference/WIP-python-pdm/index.md) if you need a solution that
     allows locking for multiple platforms at once!
+
+### Build it
 
 After that's done, we can finally build it:
 
