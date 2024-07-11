@@ -10,3 +10,14 @@
 .md-typeset td pre {
     margin: 0;
 }
+
+/* increase the width of the while site */
+.md-grid {
+    max-width: 80rem;
+}
+
+/* increase the width of the right hand side bar to display long option names better*/
+.md-sidebar--secondary {
+    width: 25rem !important;
+    left: -25rem !important;
+}
