@@ -11,7 +11,7 @@
   ];
 
   deps = {nixpkgs, ...}: {
-    python = nixpkgs.python39;
+    python = nixpkgs.python311;
     inherit
       (nixpkgs)
       pkg-config
@@ -21,7 +21,7 @@
   };
 
   name = "pillow";
-  version = "9.5.0";
+  version = "10.4.0";
 
   mkDerivation = {
     nativeBuildInputs = [
