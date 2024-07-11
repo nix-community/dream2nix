@@ -1,7 +1,7 @@
 ## Options
 {%- for name, option in options.items() recursive %}
 
-##{{loop.depth * "#"}} {{ ((option.loc | join (".")) or name).replace("<", "&lt;").replace(">", "&gt;") }}
+##{{"##"}} {{ ((option.loc | join (".")) or name).replace("<", "&lt;").replace(">", "&gt;") }}
 
 {% if (option.description or '') != "This option has no description." -%}
 {{ option.description or '' }}
