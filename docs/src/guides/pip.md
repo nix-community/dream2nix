@@ -143,10 +143,22 @@ $ nix run .#default.lock
 $ git add lock.json
 ```
 
+!!! note
+
+    Due to limitations in `pip`s cross-platform support, the resulting
+    lock-files are platform-specific!
+    We therefore recommend setting `paths.lockFile` to `lock.${system}.json`
+    for all projects where you use the pip module.
+
+    Check out the [pdm module](../reference/WIP-python-pdm/index.md) if you need a solution that
+    allows locking for multiple platforms at once!
+
 After that's done, we can finally build it:
 
 ```shell-session
 $ nix build .#default
 ```
+
+Congratulations, you just built your first python package with dream2nix! The resulting package can be used with any other nix python package as long as it uses the same version of python.
 
 
