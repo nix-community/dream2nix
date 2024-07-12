@@ -41,7 +41,7 @@ are the packages name, `default` instead of `hello`:
     default = dream2nix.lib.evalModules { # (1)
       packageSets.nixpkgs = nixpkgs.legacyPackages.${system};
       modules = [
-        ./default.nix (2)
+        ./default.nix # (2)
         {
           paths.projectRoot = ./.;
           paths.projectRootFile = "flake.nix";
@@ -58,7 +58,7 @@ are the packages name, `default` instead of `hello`:
 
 ## Example: Pillow
 
-Things get a bit more interesting in `default.nix` where we define a package module which fetches Pillow from pypi and builds it with minial features - just JPEG support. Click the plus to expand any code annotation below for details.
+Things get a bit more interesting in `default.nix` where we define a package module which fetches Pillow from pypi and builds it with minimal features - just JPEG support. Click the plus to expand any code annotation below for details.
 The code we are going to end up with is also available in [./examples/packages/languages/python-packaging-pillow](https://github.com/nix-community/dream2nix/tree/main/examples/packages/languages/python-packaging-pillow).
 
 ### Code
@@ -75,7 +75,7 @@ The code we are going to end up with is also available in [./examples/packages/l
   ];
 
   deps = {nixpkgs, ...}: {
-    python = nixpkgs.python311; # (2)
+    python = nixpkgs.python3; # (2)
     inherit # (3)
       (nixpkgs)
       pkg-config
@@ -122,8 +122,7 @@ during build-time, while the libraries should be propagated. We use `config.deps
 6. Tell the [buildPythonPackage module](../reference/buildPythonPackage/index.md) to verify that it can import the given python module from our package after a build.
 7. Tell the [pip module](../reference/pip/index.md) which dependencies to lock using the same syntax as 
 a `requirements.txt` file. Here: `pillow==10.4.0`.
-8. `pip` uses binary wheel files if available by default, we well it not to do so in order to ensure
-a build from source.
+8. `pip` uses binary wheel files if available by default. We will not do so in order to ensure a build from source.
 
 ### Initialise the repostory
 
