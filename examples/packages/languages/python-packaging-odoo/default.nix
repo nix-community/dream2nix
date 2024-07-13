@@ -32,6 +32,7 @@ in {
     inherit src;
   };
 
+  paths.lockFile = "lock.${config.deps.stdenv.system}.json";
   pip = {
     requirementsList = [
       "${src}"
