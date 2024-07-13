@@ -147,6 +147,9 @@ in {
       inherit (writers) writePureShellScript;
     };
 
+  # pips lock files are platform-specific, so lets make this visible in its path
+  paths.lockFile = l.mkDefault "lock.${config.deps.python.system}.json";
+
   # Keep package metadata fetched by Pip in our lockfile
   lock.fields.fetchPipMetadata = {
     script = config.deps.fetchPipMetadataScript;

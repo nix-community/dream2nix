@@ -32,6 +32,7 @@ in {
     "subpkg2"
   ];
 
+  paths.lockFile = "lock.${config.deps.stdenv.system}.json";
   pip = {
     requirementsList = [
       "${config.paths.package}/subpkg1"

@@ -36,6 +36,7 @@ in {
     ];
   };
 
+  paths.lockFile = "lock.${config.deps.stdenv.system}.json";
   pip = {
     # Setting editables.$pkg.null will link the current project root as an editable
     # for the root package (my-tool here), or otherwise copy the contents of mkDerivation.src

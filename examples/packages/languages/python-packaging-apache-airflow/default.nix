@@ -43,6 +43,7 @@ in {
     ];
   };
 
+  paths.lockFile = "lock.${config.deps.stdenv.system}.json";
   pip = {
     requirementsList = [
       "apache-airflow"
