@@ -17,9 +17,9 @@
   # list of requirements.txt files
   requirementsFiles ? [],
   pipFlags ? [],
-  pipVersion ? "23.1",
+  pipVersion ? "24.0",
   env ? {},
-  wheelVersion ? "0.40.0",
+  wheelVersion ? "0.43.0",
   nativeBuildInputs ? [],
   # executable that returns the project root
   findRoot,
