@@ -919,9 +919,27 @@
         <ul class="md-nav__list">
           
             <li class="md-nav__item">
-    <a href="#mkderivation" class="md-nav__link">
+    <a href="#deps" class="md-nav__link">
       <span class="md-ellipsis">
-        mkDerivation
+        deps
+      </span>
+    </a>
+    
+</li>
+          
+            <li class="md-nav__item">
+    <a href="#depsstdenv" class="md-nav__link">
+      <span class="md-ellipsis">
+        deps.<wbr>stdenv
+      </span>
+    </a>
+    
+</li>
+          
+            <li class="md-nav__item">
+    <a href="#env" class="md-nav__link">
+      <span class="md-ellipsis">
+        env
       </span>
     </a>
     
@@ -2188,15 +2206,6 @@
 </li>
           
             <li class="md-nav__item">
-    <a href="#env" class="md-nav__link">
-      <span class="md-ellipsis">
-        env
-      </span>
-    </a>
-    
-</li>
-          
-            <li class="md-nav__item">
     <a href="#name" class="md-nav__link">
       <span class="md-ellipsis">
         name
@@ -2218,24 +2227,6 @@
     <a href="#version" class="md-nav__link">
       <span class="md-ellipsis">
         version
-      </span>
-    </a>
-    
-</li>
-          
-            <li class="md-nav__item">
-    <a href="#deps" class="md-nav__link">
-      <span class="md-ellipsis">
-        deps
-      </span>
-    </a>
-    
-</li>
-          
-            <li class="md-nav__item">
-    <a href="#depsstdenv" class="md-nav__link">
-      <span class="md-ellipsis">
-        deps.<wbr>stdenv
       </span>
     </a>
     
@@ -3200,9 +3191,27 @@
         <ul class="md-nav__list">
           
             <li class="md-nav__item">
-    <a href="#mkderivation" class="md-nav__link">
+    <a href="#deps" class="md-nav__link">
       <span class="md-ellipsis">
-        mkDerivation
+        deps
+      </span>
+    </a>
+    
+</li>
+          
+            <li class="md-nav__item">
+    <a href="#depsstdenv" class="md-nav__link">
+      <span class="md-ellipsis">
+        deps.<wbr>stdenv
+      </span>
+    </a>
+    
+</li>
+          
+            <li class="md-nav__item">
+    <a href="#env" class="md-nav__link">
+      <span class="md-ellipsis">
+        env
       </span>
     </a>
     
@@ -4469,15 +4478,6 @@
 </li>
           
             <li class="md-nav__item">
-    <a href="#env" class="md-nav__link">
-      <span class="md-ellipsis">
-        env
-      </span>
-    </a>
-    
-</li>
-          
-            <li class="md-nav__item">
     <a href="#name" class="md-nav__link">
       <span class="md-ellipsis">
         name
@@ -4499,24 +4499,6 @@
     <a href="#version" class="md-nav__link">
       <span class="md-ellipsis">
         version
-      </span>
-    </a>
-    
-</li>
-          
-            <li class="md-nav__item">
-    <a href="#deps" class="md-nav__link">
-      <span class="md-ellipsis">
-        deps
-      </span>
-    </a>
-    
-</li>
-          
-            <li class="md-nav__item">
-    <a href="#depsstdenv" class="md-nav__link">
-      <span class="md-ellipsis">
-        deps.<wbr>stdenv
       </span>
     </a>
     
@@ -4563,7 +4545,65 @@
 <h2 id="introduction">Introduction<a class="headerlink" href="#introduction" title="Permanent link">&para;</a></h2>
 <p>A package module based on the mkDerivation builder from nixpkgs</p>
 <h2 id="options">Options<a class="headerlink" href="#options" title="Permanent link">&para;</a></h2>
-<h4 id="mkderivation">mkDerivation<a class="headerlink" href="#mkderivation" title="Permanent link">&para;</a></h4>
+<h4 id="deps">deps<a class="headerlink" href="#deps" title="Permanent link">&para;</a></h4>
+<p>All dependencies of the package. This option should be set by the "outer world" and can be used to inherit attributes from <code>pkgs</code> or <code>inputs</code> etc.</p>
+<p>By separating the task of retrieving things from the outside world, it is ensured that the dependencies are overridable.
+Nothing will stop users from adding <code>nixpkgs</code> itself as a dependency, but this will make it very hard for the user of the package to override any dependencies, because they'd have to figure out a way to insert their changes into the Nixpkgs fixpoint. By adding specific attributes to <code>deps</code> instead, the user has a realistic chance of overriding those dependencies.</p>
+<p>So deps should be specific, but not overly specific. For instance, the caller shouldn't have to know the version of a dependency in order to override it. The name should suffice. (e.g. <code>nix = nixVersions.nix_2_12</code> instead of <code>inherit (nixVersions) nix_2_12</code>.</p>
+<table>
+    <tr>
+        <td>type</td>
+        <td>lazy attribute set of raw value </td>
+    </tr>
+    <tr>
+        <td>source</td>
+        <td><a href="https://github.com/nix-community/dream2nix/blob/master/modules/dream2nix/core/deps">dream2nix/modules/dream2nix/core/deps</a>, <a href="https://github.com/nix-community/dream2nix/blob/master/modules/dream2nix/mkDerivation/interface.nix">dream2nix/modules/dream2nix/mkDerivation/interface.nix</a></td>
+    </tr><tr>
+        <td>default</td>
+        <td><div class="highlight"><pre><span></span><span class="p">{</span> <span class="p">}</span>
+</pre></div>
+</td>
+    </tr><tr>
+        <td>example</td>
+        <td>
+            <div class="highlight"><pre><span></span><span class="p">{</span>nixpkgs<span class="p">,</span> <span class="o">...</span><span class="p">}:</span> <span class="p">{</span>
+  <span class="k">inherit</span> <span class="p">(</span>nixpkgs<span class="p">)</span> stdenv<span class="p">;</span>
+  <span class="k">inherit</span> <span class="p">(</span>nixpkgs<span class="o">.</span>haskellPackages<span class="p">)</span> pandoc<span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+
+        </td>
+    </tr></table>
+
+<h4 id="depsstdenv">deps.stdenv<a class="headerlink" href="#depsstdenv" title="Permanent link">&para;</a></h4>
+<p>The stdenv used for building this package</p>
+<table>
+    <tr>
+        <td>type</td>
+        <td>raw value </td>
+    </tr>
+    <tr>
+        <td>source</td>
+        <td><a href="https://github.com/nix-community/dream2nix/blob/master/modules/dream2nix/mkDerivation/interface.nix">dream2nix/modules/dream2nix/mkDerivation/interface.nix</a></td>
+    </tr></table>
+
+<h4 id="env">env<a class="headerlink" href="#env" title="Permanent link">&para;</a></h4>
+<p>environment variables passed to the build environment</p>
+<table>
+    <tr>
+        <td>type</td>
+        <td>attribute set of (null or boolean or signed integer or string or path or package or list of (boolean or signed integer or string or path or package)) </td>
+    </tr>
+    <tr>
+        <td>source</td>
+        <td><a href="https://github.com/nix-community/dream2nix/blob/master/modules/dream2nix/core/env">dream2nix/modules/dream2nix/core/env</a></td>
+    </tr><tr>
+        <td>default</td>
+        <td><div class="highlight"><pre><span></span><span class="p">{</span> <span class="p">}</span>
+</pre></div>
+</td>
+    </tr></table>
+
 <h4 id="mkderivation__contentaddressed">mkDerivation.__contentAddressed<a class="headerlink" href="#mkderivation__contentaddressed" title="Permanent link">&para;</a></h4>
 <table>
     <tr>
@@ -6806,23 +6846,6 @@
 </td>
     </tr></table>
 
-<h4 id="env">env<a class="headerlink" href="#env" title="Permanent link">&para;</a></h4>
-<p>environment variables passed to the build environment</p>
-<table>
-    <tr>
-        <td>type</td>
-        <td>attribute set of (null or boolean or signed integer or string or path or package or list of (boolean or signed integer or string or path or package)) </td>
-    </tr>
-    <tr>
-        <td>source</td>
-        <td><a href="https://github.com/nix-community/dream2nix/blob/master/modules/dream2nix/core/env">dream2nix/modules/dream2nix/core/env</a></td>
-    </tr><tr>
-        <td>default</td>
-        <td><div class="highlight"><pre><span></span><span class="p">{</span> <span class="p">}</span>
-</pre></div>
-</td>
-    </tr></table>
-
 <h4 id="name">name<a class="headerlink" href="#name" title="Permanent link">&para;</a></h4>
 <p>The name of the package</p>
 <table>
@@ -6860,48 +6883,6 @@ Can be build with nix-build or <code>nix build</code>.</p>
     <tr>
         <td>source</td>
         <td><a href="https://github.com/nix-community/dream2nix/blob/master/modules/dream2nix/core/ui/interface.nix">dream2nix/modules/dream2nix/core/ui/interface.nix</a></td>
-    </tr></table>
-
-<h4 id="deps">deps<a class="headerlink" href="#deps" title="Permanent link">&para;</a></h4>
-<p>All dependencies of the package. This option should be set by the "outer world" and can be used to inherit attributes from <code>pkgs</code> or <code>inputs</code> etc.</p>
-<p>By separating the task of retrieving things from the outside world, it is ensured that the dependencies are overridable.
-Nothing will stop users from adding <code>nixpkgs</code> itself as a dependency, but this will make it very hard for the user of the package to override any dependencies, because they'd have to figure out a way to insert their changes into the Nixpkgs fixpoint. By adding specific attributes to <code>deps</code> instead, the user has a realistic chance of overriding those dependencies.</p>
-<p>So deps should be specific, but not overly specific. For instance, the caller shouldn't have to know the version of a dependency in order to override it. The name should suffice. (e.g. <code>nix = nixVersions.nix_2_12</code> instead of <code>inherit (nixVersions) nix_2_12</code>.</p>
-<table>
-    <tr>
-        <td>type</td>
-        <td>lazy attribute set of raw value </td>
-    </tr>
-    <tr>
-        <td>source</td>
-        <td><a href="https://github.com/nix-community/dream2nix/blob/master/modules/dream2nix/core/deps">dream2nix/modules/dream2nix/core/deps</a>, <a href="https://github.com/nix-community/dream2nix/blob/master/modules/dream2nix/mkDerivation/interface.nix">dream2nix/modules/dream2nix/mkDerivation/interface.nix</a></td>
-    </tr><tr>
-        <td>default</td>
-        <td><div class="highlight"><pre><span></span><span class="p">{</span> <span class="p">}</span>
-</pre></div>
-</td>
-    </tr><tr>
-        <td>example</td>
-        <td>
-            <div class="highlight"><pre><span></span><span class="p">{</span>nixpkgs<span class="p">,</span> <span class="o">...</span><span class="p">}:</span> <span class="p">{</span>
-  <span class="k">inherit</span> <span class="p">(</span>nixpkgs<span class="p">)</span> stdenv<span class="p">;</span>
-  <span class="k">inherit</span> <span class="p">(</span>nixpkgs<span class="o">.</span>haskellPackages<span class="p">)</span> pandoc<span class="p">;</span>
-<span class="p">}</span>
-</pre></div>
-
-        </td>
-    </tr></table>
-
-<h4 id="depsstdenv">deps.stdenv<a class="headerlink" href="#depsstdenv" title="Permanent link">&para;</a></h4>
-<p>The stdenv used for building this package</p>
-<table>
-    <tr>
-        <td>type</td>
-        <td>raw value </td>
-    </tr>
-    <tr>
-        <td>source</td>
-        <td><a href="https://github.com/nix-community/dream2nix/blob/master/modules/dream2nix/mkDerivation/interface.nix">dream2nix/modules/dream2nix/mkDerivation/interface.nix</a></td>
     </tr></table>
 
 

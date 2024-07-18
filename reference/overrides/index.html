@@ -1108,18 +1108,18 @@
         <ul class="md-nav__list">
           
             <li class="md-nav__item">
-    <a href="#overrides" class="md-nav__link">
+    <a href="#overrideall" class="md-nav__link">
       <span class="md-ellipsis">
-        overrides
+        overrideAll
       </span>
     </a>
     
 </li>
           
             <li class="md-nav__item">
-    <a href="#overrideall" class="md-nav__link">
+    <a href="#overrides" class="md-nav__link">
       <span class="md-ellipsis">
-        overrideAll
+        overrides
       </span>
     </a>
     
@@ -1895,18 +1895,18 @@
         <ul class="md-nav__list">
           
             <li class="md-nav__item">
-    <a href="#overrides" class="md-nav__link">
+    <a href="#overrideall" class="md-nav__link">
       <span class="md-ellipsis">
-        overrides
+        overrideAll
       </span>
     </a>
     
 </li>
           
             <li class="md-nav__item">
-    <a href="#overrideall" class="md-nav__link">
+    <a href="#overrides" class="md-nav__link">
       <span class="md-ellipsis">
-        overrideAll
+        overrides
       </span>
     </a>
     
@@ -1952,6 +1952,34 @@
 
 <h2 id="introduction">Introduction<a class="headerlink" href="#introduction" title="Permanent link">&para;</a></h2>
 <h2 id="options">Options<a class="headerlink" href="#options" title="Permanent link">&para;</a></h2>
+<h4 id="overrideall">overrideAll<a class="headerlink" href="#overrideall" title="Permanent link">&para;</a></h4>
+<p>Overrides applied on all dependencies.</p>
+<table>
+    <tr>
+        <td>type</td>
+        <td>module </td>
+    </tr>
+    <tr>
+        <td>source</td>
+        <td><a href="https://github.com/nix-community/dream2nix/blob/master/modules/dream2nix/overrides/interface.nix">dream2nix/modules/dream2nix/overrides/interface.nix</a></td>
+    </tr><tr>
+        <td>default</td>
+        <td><div class="highlight"><pre><span></span><span class="p">{</span> <span class="p">}</span>
+</pre></div>
+</td>
+    </tr><tr>
+        <td>example</td>
+        <td>
+            <div class="highlight"><pre><span></span><span class="p">{</span>
+  <span class="ss">mkDerivation</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="ss">doCheck</span> <span class="o">=</span> <span class="no">false</span><span class="p">;</span>
+  <span class="p">};</span>
+<span class="p">}</span>
+</pre></div>
+
+        </td>
+    </tr></table>
+
 <h4 id="overrides">overrides<a class="headerlink" href="#overrides" title="Permanent link">&para;</a></h4>
 <p>Overrides applied only on dependencies matching the specified name.</p>
 <table>
@@ -1977,34 +2005,6 @@
 <span class="s s-Multiline">        substituteInPlace Makefile --replace /usr/local /usr</span>
 <span class="s s-Multiline">      &#39;&#39;</span><span class="p">;</span>
     <span class="p">};</span>
-  <span class="p">};</span>
-<span class="p">}</span>
-</pre></div>
-
-        </td>
-    </tr></table>
-
-<h4 id="overrideall">overrideAll<a class="headerlink" href="#overrideall" title="Permanent link">&para;</a></h4>
-<p>Overrides applied on all dependencies.</p>
-<table>
-    <tr>
-        <td>type</td>
-        <td>module </td>
-    </tr>
-    <tr>
-        <td>source</td>
-        <td><a href="https://github.com/nix-community/dream2nix/blob/master/modules/dream2nix/overrides/interface.nix">dream2nix/modules/dream2nix/overrides/interface.nix</a></td>
-    </tr><tr>
-        <td>default</td>
-        <td><div class="highlight"><pre><span></span><span class="p">{</span> <span class="p">}</span>
-</pre></div>
-</td>
-    </tr><tr>
-        <td>example</td>
-        <td>
-            <div class="highlight"><pre><span></span><span class="p">{</span>
-  <span class="ss">mkDerivation</span> <span class="o">=</span> <span class="p">{</span>
-    <span class="ss">doCheck</span> <span class="o">=</span> <span class="no">false</span><span class="p">;</span>
   <span class="p">};</span>
 <span class="p">}</span>
 </pre></div>
