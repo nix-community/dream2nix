@@ -148,7 +148,7 @@
           if [ ! -d src/reference ]; then
             echo "linking .#reference to src/reference, you need to update this manually\
             and remove it before a production build"
-            ln -sfT $(nix build ..#reference --no-link --print-out-paths) src/reference
+            ln -sfT $(nix build .#optionsReference --no-link --print-out-paths) src/reference
           fi
         '';
       };

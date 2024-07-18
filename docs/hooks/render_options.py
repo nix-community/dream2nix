@@ -41,25 +41,6 @@ def sort_options(item: Tuple[str, Dict], module_name: str) -> int:
         return ord(name[0])
 
 
-def preprocess_options(options, module_name):
-    tree = dict()
-    for name, option in options.items():
-        if name.startswith("_module"):
-            continue
-        cursor = tree
-        parts = name.split(".")
-        for index, part in enumerate(parts):
-            if part not in cursor:
-                if index + 1 == len(parts):
-                    cursor[part] = dict(**option, children={})
-                else:
-                    cursor[part] = dict(children=dict())
-                    cursor = cursor[part]["children"]
-            else:
-                cursor = cursor[part]["children"]
-    return OrderedDict(sorted(tree.items(), key=lambda i: sort_options(i, module_name)))
-
-
 def on_page_markdown(
     markdown: str, page: Page, config: MkDocsConfig, files: Files
 ) -> str | None:
@@ -84,7 +65,8 @@ def on_page_markdown(
         log.error(f"{options_path} does not exist")
         return None
     with open(options_path, "r") as f:
-        options = preprocess_options(json.load(f), module_name)
+        options = json.load(f)
+    del options["_module.args"]
     reference = env.get_template("reference_options.html").render(options=options)
 
     return "\n\n".join([header, markdown, reference])
