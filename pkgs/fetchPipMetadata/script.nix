@@ -55,6 +55,12 @@
       ;
   });
 
+  env' =
+    {
+      PKG_CONFIG_PATH = lib.concatMapStringsSep ":" (n: "${n}/lib/pkgconfig") nativeBuildInputs;
+    }
+    // env;
+
   script =
     writePureShellScript
     path
@@ -63,7 +69,7 @@
         lib.foldlAttrs
         (acc: name: value: acc + "\nexport " + lib.toShellVar name value)
         ""
-        env
+        env'
       }
       ${package}/bin/fetch_pip_metadata \
         --json-args-file ${args} \
