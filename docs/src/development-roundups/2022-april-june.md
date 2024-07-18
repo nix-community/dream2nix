@@ -25,7 +25,7 @@ This is why we established a unit testing suit for pure translators. This is rea
 - Improved usage examples in readme
 - Improvements on several subsystems including nodejs and rust
 - New documentation website:
-https://nix-community.github.io/dream2nix/
+https://dream2nix.dev/
 
 - Added subsystems:
   - python

@@ -7,7 +7,7 @@
   <br>
   Automate reproducible packaging for various language ecosystems
   <br>
-  <a href="https://nix-community.github.io/dream2nix/">Documentation</a> |
+  <a href="https://dream2nix.dev/">Documentation</a> |
   <a href="https://github.com/nix-community/dream2nix/tree/main/examples/repo-with-packages">Example Repo</a> |
   <a href="https://github.com/nix-community/dream2nix/tree/main/examples/repo-with-packages-flake">Example Repo Flake</a> |
   <a href="https://github.com/nix-community/dream2nix/tree/main/examples/packages">Example Packages</a>
@@ -29,7 +29,7 @@ If your organization wants to support the project with extra funding in order to
 
 ### Documentation
 
-[👉 To the docs](https://nix-community.github.io/dream2nix)
+[👉 To the docs](https://dream2nix.dev)
 
 ### Presentations
 
