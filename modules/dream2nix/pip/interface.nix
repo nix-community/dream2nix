@@ -72,7 +72,7 @@ in {
         description = ''
           pip version to use to generate the report
         '';
-        default = "23.1";
+        default = "24.0";
       };
       requirementsList = l.mkOption {
         type = t.listOf t.str;
