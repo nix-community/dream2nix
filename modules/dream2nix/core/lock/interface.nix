@@ -83,6 +83,14 @@ in {
       readOnly = true;
     };
 
+    isValid = l.mkOption {
+      type = t.bool;
+      description = ''
+        Check whether the current lock file is valid, which means we don't need to lock again.
+      '';
+      readOnly = true;
+    };
+
     lib.computeFODHash = l.mkOption {
       type = t.functionTo t.path;
       description = ''

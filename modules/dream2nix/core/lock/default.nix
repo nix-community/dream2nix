@@ -18,6 +18,7 @@
 
   invalidationHashCurrent = l.hashString "sha256" (l.toJSON cfg.invalidationData);
   invalidationHashLocked = fileContent.invalidationHash or null;
+  isValid = invalidationHashCurrent == invalidationHashLocked;
 
   # script to remove the lock file if no fields are defined
   removeLockFileScript = config.deps.writePython3Bin "refresh" {} ''
@@ -182,7 +183,7 @@
     else throw (errorOutdatedField field);
 
   loadedContent =
-    if invalidationHashCurrent != invalidationHashLocked
+    if !isValid
     then throw errorOutdated
     else l.mapAttrs loadField cfg.fields;
 
@@ -217,6 +218,7 @@ in {
 
     lock.content = mkLazy loadedContent;
 
+    lock.isValid = isValid;
     lock.lib = {inherit computeFODHash;};
 
     deps = {nixpkgs, ...}:
