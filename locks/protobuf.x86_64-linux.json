@@ -1,0 +1,19 @@
+{
+  "fetchPipMetadata": {
+    "sources": {
+      "protobuf": {
+        "is_direct": false,
+        "sha256": "f3ecdef226b9af856075f28227ff2c90ce3a594d092c39bee5513573f25e2714",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/71/a5/d61e4263e62e6db1990c120d682870e5c50a30fb6b26119a214c7a014847/protobuf-5.27.2.tar.gz",
+        "version": "5.27.2"
+      }
+    },
+    "targets": {
+      "default": {
+        "protobuf": []
+      }
+    }
+  },
+  "invalidationHash": "dd60437e1f651c5b31c964e4a28bcd7a182e407112a11f3385d0bfd3109b7234"
+}

@@ -1,0 +1,19 @@
+{
+  "fetchPipMetadata": {
+    "sources": {
+      "slack-sdk": {
+        "is_direct": false,
+        "sha256": "740d2f9c49cbfcbd46fca56b4be9d527934c225312aac18fd2c0fca0ef6bc935",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/a5/e3/4a2491cbf793bb8da8a51120207df8c097faeda42bf720f7acf7c40e4ca8/slack_sdk-3.31.0.tar.gz",
+        "version": "3.31.0"
+      }
+    },
+    "targets": {
+      "default": {
+        "slack-sdk": []
+      }
+    }
+  },
+  "invalidationHash": "ed519aff30ab5c5f43aa76fff4f42e3e7cde0f2bdea242ff916023478fa3d00c"
+}

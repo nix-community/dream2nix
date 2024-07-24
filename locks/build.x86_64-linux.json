@@ -1,0 +1,38 @@
+{
+  "fetchPipMetadata": {
+    "sources": {
+      "build": {
+        "is_direct": false,
+        "sha256": "526263f4870c26f26c433545579475377b2b7588b6f1eac76a001e873ae3e19d",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/ce/9e/2d725d2f7729c6e79ca62aeb926492abbc06e25910dd30139d60a68bcb19/build-1.2.1.tar.gz",
+        "version": "1.2.1"
+      },
+      "packaging": {
+        "is_direct": false,
+        "sha256": "5b8f2217dbdbd2f7f384c41c628544e6d52f2d0f53c6d0c3ea61aa5d1d7ff124",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/08/aa/cc0199a5f0ad350994d660967a8efb233fe0416e4639146c089643407ce6/packaging-24.1-py3-none-any.whl",
+        "version": "24.1"
+      },
+      "pyproject-hooks": {
+        "is_direct": false,
+        "sha256": "7ceeefe9aec63a1064c18d939bdc3adf2d8aa1988a510afec15151578b232aa2",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/ae/f3/431b9d5fe7d14af7a32340792ef43b8a714e7726f1d7b69cc4e8e7a3f1d7/pyproject_hooks-1.1.0-py3-none-any.whl",
+        "version": "1.1.0"
+      }
+    },
+    "targets": {
+      "default": {
+        "build": [
+          "packaging",
+          "pyproject-hooks"
+        ],
+        "packaging": [],
+        "pyproject-hooks": []
+      }
+    }
+  },
+  "invalidationHash": "9575441cbc0a32837aa7e8166f4f8d5c4986d41548f1eb85851d537bb422a7ec"
+}

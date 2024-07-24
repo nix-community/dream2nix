@@ -1,0 +1,38 @@
+{
+  "fetchPipMetadata": {
+    "sources": {
+      "packaging": {
+        "is_direct": false,
+        "sha256": "5b8f2217dbdbd2f7f384c41c628544e6d52f2d0f53c6d0c3ea61aa5d1d7ff124",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/08/aa/cc0199a5f0ad350994d660967a8efb233fe0416e4639146c089643407ce6/packaging-24.1-py3-none-any.whl",
+        "version": "24.1"
+      },
+      "setuptools": {
+        "is_direct": false,
+        "sha256": "33874fdc59b3188304b2e7c80d9029097ea31627180896fb549c578ceb8a0855",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/51/a0/ee460cc54e68afcf33190d198299c9579a5eafeadef0016ae8563237ccb6/setuptools-71.1.0-py3-none-any.whl",
+        "version": "71.1.0"
+      },
+      "setuptools-scm": {
+        "is_direct": false,
+        "sha256": "42dea1b65771cba93b7a515d65a65d8246e560768a66b9106a592c8e7f26c8a7",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/4f/a4/00a9ac1b555294710d4a68d2ce8dfdf39d72aa4d769a7395d05218d88a42/setuptools_scm-8.1.0.tar.gz",
+        "version": "8.1.0"
+      }
+    },
+    "targets": {
+      "default": {
+        "packaging": [],
+        "setuptools": [],
+        "setuptools-scm": [
+          "packaging",
+          "setuptools"
+        ]
+      }
+    }
+  },
+  "invalidationHash": "e8a855f89e5ceb6048cacdc2bed12d65d5e65d6fe3a78e97ba752d08783b0129"
+}

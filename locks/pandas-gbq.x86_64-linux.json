@@ -1,0 +1,369 @@
+{
+  "fetchPipMetadata": {
+    "sources": {
+      "cachetools": {
+        "is_direct": false,
+        "sha256": "3ae3b49a3d5e28a77a0be2b37dbcb89005058959cb2323858c2657c4a8cab474",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/04/e6/a1551acbaa06f3e48b311329828a34bc9c51a8cfaecdeb4d03c329a1ef85/cachetools-5.4.0-py3-none-any.whl",
+        "version": "5.4.0"
+      },
+      "certifi": {
+        "is_direct": false,
+        "sha256": "c198e21b1289c2ab85ee4e67bb4b4ef3ead0892059901a8d5b622f24a1101e90",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/1c/d5/c84e1a17bf61d4df64ca866a1c9a913874b4e9bdc131ec689a0ad013fb36/certifi-2024.7.4-py3-none-any.whl",
+        "version": "2024.7.4"
+      },
+      "charset-normalizer": {
+        "is_direct": false,
+        "sha256": "90d558489962fd4918143277a773316e56c72da56ec7aa3dc3dbbe20fdfed15b",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/ee/fb/14d30eb4956408ee3ae09ad34299131fb383c47df355ddb428a7331cfa1e/charset_normalizer-3.3.2-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl",
+        "version": "3.3.2"
+      },
+      "db-dtypes": {
+        "is_direct": false,
+        "sha256": "6320bddd31d096447ef749224d64aab00972ed20e4392d86f7d8b81ad79f7ff0",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/4e/5c/72b74daf6655db6f6afc2b3bc44359c7953004ef4630325a3ae0efc50872/db_dtypes-1.2.0-py2.py3-none-any.whl",
+        "version": "1.2.0"
+      },
+      "google-api-core": {
+        "is_direct": false,
+        "sha256": "f12a9b8309b5e21d92483bbd47ce2c445861ec7d269ef6784ecc0ea8c1fa6125",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/44/99/daa3541e8ecd7d8b7907b714ba92126097a976b5b3dbabdb5febdcf08554/google_api_core-2.19.1-py3-none-any.whl",
+        "version": "2.19.1"
+      },
+      "google-auth": {
+        "is_direct": false,
+        "sha256": "53326ea2ebec768070a94bee4e1b9194c9646ea0c2bd72422785bd0f9abfad7b",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/e7/00/85c22f7f73fa2e88dfbf0e1f63c565386ba40e0264b59c8a4362ae27c9fc/google_auth-2.32.0-py2.py3-none-any.whl",
+        "version": "2.32.0"
+      },
+      "google-auth-oauthlib": {
+        "is_direct": false,
+        "sha256": "2d58a27262d55aa1b87678c3ba7142a080098cbc2024f903c62355deb235d91f",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/1a/8e/22a28dfbd218033e4eeaf3a0533b2b54852b6530da0c0fe934f0cc494b29/google_auth_oauthlib-1.2.1-py2.py3-none-any.whl",
+        "version": "1.2.1"
+      },
+      "google-cloud-bigquery": {
+        "is_direct": false,
+        "sha256": "7f0c371bc74d2a7fb74dacbc00ac0f90c8c2bec2289b51dd6685a275873b1ce9",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/81/98/2f931388614ea894640f84c1874d72d84d890c093e334a3990e363ff689e/google_cloud_bigquery-3.25.0-py2.py3-none-any.whl",
+        "version": "3.25.0"
+      },
+      "google-cloud-core": {
+        "is_direct": false,
+        "sha256": "a9e6a4422b9ac5c29f79a0ede9485473338e2ce78d91f2370c01e730eab22e61",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/5e/0f/2e2061e3fbcb9d535d5da3f58cc8de4947df1786fe6a1355960feb05a681/google_cloud_core-2.4.1-py2.py3-none-any.whl",
+        "version": "2.4.1"
+      },
+      "google-crc32c": {
+        "is_direct": false,
+        "sha256": "89284716bc6a5a415d4eaa11b1726d2d60a0cd12aadf5439828353662ede9dd7",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/d3/a5/4bb58448fffd36ede39684044df93a396c13d1ea3516f585767f9f960352/google-crc32c-1.5.0.tar.gz",
+        "version": "1.5.0"
+      },
+      "google-resumable-media": {
+        "is_direct": false,
+        "sha256": "103ebc4ba331ab1bfdac0250f8033627a2cd7cde09e7ccff9181e31ba4315b2c",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/52/0e/9705df684aa14e9097d739a812c6d32ae1f71aabfd96c47489655cbb6828/google_resumable_media-2.7.1-py2.py3-none-any.whl",
+        "version": "2.7.1"
+      },
+      "googleapis-common-protos": {
+        "is_direct": false,
+        "sha256": "27a2499c7e8aff199665b22741997e485eccc8645aa9176c7c988e6fae507945",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/02/48/87422ff1bddcae677fb6f58c97f5cfc613304a5e8ce2c3662760199c0a84/googleapis_common_protos-1.63.2-py2.py3-none-any.whl",
+        "version": "1.63.2"
+      },
+      "grpcio": {
+        "is_direct": false,
+        "sha256": "9e6a8f3d6c41e6b642870afe6cafbaf7b61c57317f9ec66d0efdaf19db992b90",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/d3/2d/b8fcbe1d504a2b86ffd7f20591a62553b96d38f879aa9045961ae47b8eb6/grpcio-1.65.1-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl",
+        "version": "1.65.1"
+      },
+      "grpcio-status": {
+        "is_direct": false,
+        "sha256": "0ec2070f7dbcc2fe78a7b34233a2a00f8ced727d2f1dec1af422d628cf86b92c",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/02/fc/2348889495bc465540d18213dcd214e31b117f3a8665b7bb3fa028d61eab/grpcio_status-1.65.1-py3-none-any.whl",
+        "version": "1.65.1"
+      },
+      "idna": {
+        "is_direct": false,
+        "sha256": "82fee1fc78add43492d3a1898bfa6d8a904cc97d8427f683ed8e798d07761aa0",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/e5/3e/741d8c82801c347547f8a2a06aa57dbb1992be9e948df2ea0eda2c8b79e8/idna-3.7-py3-none-any.whl",
+        "version": "3.7"
+      },
+      "numpy": {
+        "is_direct": false,
+        "sha256": "6790654cb13eab303d8402354fabd47472b24635700f631f041bd0b65e37298a",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/2c/f3/61eeef119beb37decb58e7cb29940f19a1464b8608f2cab8a8616aba75fd/numpy-2.0.1-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl",
+        "version": "2.0.1"
+      },
+      "oauthlib": {
+        "is_direct": false,
+        "sha256": "8139f29aac13e25d502680e9e19963e83f16838d48a0d71c287fe40e7067fbca",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/7e/80/cab10959dc1faead58dc8384a781dfbf93cb4d33d50988f7a69f1b7c9bbe/oauthlib-3.2.2-py3-none-any.whl",
+        "version": "3.2.2"
+      },
+      "packaging": {
+        "is_direct": false,
+        "sha256": "5b8f2217dbdbd2f7f384c41c628544e6d52f2d0f53c6d0c3ea61aa5d1d7ff124",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/08/aa/cc0199a5f0ad350994d660967a8efb233fe0416e4639146c089643407ce6/packaging-24.1-py3-none-any.whl",
+        "version": "24.1"
+      },
+      "pandas": {
+        "is_direct": false,
+        "sha256": "eee3a87076c0756de40b05c5e9a6069c035ba43e8dd71c379e68cab2c20f16ad",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/40/10/79e52ef01dfeb1c1ca47a109a01a248754ebe990e159a844ece12914de83/pandas-2.2.2-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl",
+        "version": "2.2.2"
+      },
+      "pandas-gbq": {
+        "is_direct": false,
+        "sha256": "6a4942b574643af1372360c807616a98b3f9ed9ca328794daa66d4f28af879be",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/cf/fa/706699bb58ff279f7bf0682e0b3e14f7aa18990e647478ce3aa81b26e481/pandas-gbq-0.23.1.tar.gz",
+        "version": "0.23.1"
+      },
+      "proto-plus": {
+        "is_direct": false,
+        "sha256": "402576830425e5f6ce4c2a6702400ac79897dab0b4343821aa5188b0fab81a12",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/7c/6f/db31f0711c0402aa477257205ce7d29e86a75cb52cd19f7afb585f75cda0/proto_plus-1.24.0-py3-none-any.whl",
+        "version": "1.24.0"
+      },
+      "protobuf": {
+        "is_direct": false,
+        "sha256": "b848dbe1d57ed7c191dfc4ea64b8b004a3f9ece4bf4d0d80a367b76df20bf36e",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/27/e4/8dc4546be46873f8950cb44cdfe19b79d66d26e53c4ee5e3440406257fcd/protobuf-5.27.2-cp38-abi3-manylinux2014_x86_64.whl",
+        "version": "5.27.2"
+      },
+      "pyarrow": {
+        "is_direct": false,
+        "sha256": "b0c6ac301093b42d34410b187bba560b17c0330f64907bfa4f7f7f2444b0cf9b",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/f1/c4/9625418a1413005e486c006e56675334929fad864347c5ae7c1b2e7fe639/pyarrow-17.0.0-cp312-cp312-manylinux_2_28_x86_64.whl",
+        "version": "17.0.0"
+      },
+      "pyasn1": {
+        "is_direct": false,
+        "sha256": "cca4bb0f2df5504f02f6f8a775b6e416ff9b0b3b16f7ee80b5a3153d9b804473",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/23/7e/5f50d07d5e70a2addbccd90ac2950f81d1edd0783630651d9268d7f1db49/pyasn1-0.6.0-py2.py3-none-any.whl",
+        "version": "0.6.0"
+      },
+      "pyasn1-modules": {
+        "is_direct": false,
+        "sha256": "be04f15b66c206eed667e0bb5ab27e2b1855ea54a842e5037738099e8ca4ae0b",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/13/68/8906226b15ef38e71dc926c321d2fe99de8048e9098b5dfd38343011c886/pyasn1_modules-0.4.0-py3-none-any.whl",
+        "version": "0.4.0"
+      },
+      "pydata-google-auth": {
+        "is_direct": false,
+        "sha256": "a9dce59af4a170ea60c4b2ebbc83ee1f74d34255a4f97b2469ae9a4a0dc98e99",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/28/6b/3320c9ddbfc572108917e8432a07e8bd1e40054d94b5ad40c755afdc1160/pydata_google_auth-1.8.2-py2.py3-none-any.whl",
+        "version": "1.8.2"
+      },
+      "python-dateutil": {
+        "is_direct": false,
+        "sha256": "a8b2bc7bffae282281c8140a97d3aa9c14da0b136dfe83f850eea9a5f7470427",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/ec/57/56b9bcc3c9c6a792fcbaf139543cee77261f3651ca9da0c93f5c1221264b/python_dateutil-2.9.0.post0-py2.py3-none-any.whl",
+        "version": "2.9.0.post0"
+      },
+      "pytz": {
+        "is_direct": false,
+        "sha256": "328171f4e3623139da4983451950b28e95ac706e13f3f2630a879749e7a8b319",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/9c/3d/a121f284241f08268b21359bd425f7d4825cffc5ac5cd0e1b3d82ffd2b10/pytz-2024.1-py2.py3-none-any.whl",
+        "version": "2024.1"
+      },
+      "requests": {
+        "is_direct": false,
+        "sha256": "70761cfe03c773ceb22aa2f671b4757976145175cdfca038c02654d061d6dcc6",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/f9/9b/335f9764261e915ed497fcdeb11df5dfd6f7bf257d4a6a2a686d80da4d54/requests-2.32.3-py3-none-any.whl",
+        "version": "2.32.3"
+      },
+      "requests-oauthlib": {
+        "is_direct": false,
+        "sha256": "7dd8a5c40426b779b0868c404bdef9768deccf22749cde15852df527e6269b36",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/3b/5d/63d4ae3b9daea098d5d6f5da83984853c1bbacd5dc826764b249fe119d24/requests_oauthlib-2.0.0-py2.py3-none-any.whl",
+        "version": "2.0.0"
+      },
+      "rsa": {
+        "is_direct": false,
+        "sha256": "90260d9058e514786967344d0ef75fa8727eed8a7d2e43ce9f4bcf1b536174f7",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/49/97/fa78e3d2f65c02c8e1268b9aba606569fe97f6c8f7c2d74394553347c145/rsa-4.9-py3-none-any.whl",
+        "version": "4.9"
+      },
+      "setuptools": {
+        "is_direct": false,
+        "sha256": "33874fdc59b3188304b2e7c80d9029097ea31627180896fb549c578ceb8a0855",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/51/a0/ee460cc54e68afcf33190d198299c9579a5eafeadef0016ae8563237ccb6/setuptools-71.1.0-py3-none-any.whl",
+        "version": "71.1.0"
+      },
+      "six": {
+        "is_direct": false,
+        "sha256": "8abb2f1d86890a2dfb989f9a77cfcfd3e47c2a354b01111771326f8aa26e0254",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/d9/5a/e7c31adbe875f2abbb91bd84cf2dc52d792b5a01506781dbcf25c91daf11/six-1.16.0-py2.py3-none-any.whl",
+        "version": "1.16.0"
+      },
+      "tzdata": {
+        "is_direct": false,
+        "sha256": "9068bc196136463f5245e51efda838afa15aaeca9903f49050dfa2679db4d252",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/65/58/f9c9e6be752e9fcb8b6a0ee9fb87e6e7a1f6bcab2cdc73f02bb7ba91ada0/tzdata-2024.1-py2.py3-none-any.whl",
+        "version": "2024.1"
+      },
+      "urllib3": {
+        "is_direct": false,
+        "sha256": "a448b2f64d686155468037e1ace9f2d2199776e17f0a46610480d311f73e3472",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/ca/1c/89ffc63a9605b583d5df2be791a27bc1a42b7c32bab68d3c8f2f73a98cd4/urllib3-2.2.2-py3-none-any.whl",
+        "version": "2.2.2"
+      }
+    },
+    "targets": {
+      "default": {
+        "cachetools": [],
+        "certifi": [],
+        "charset-normalizer": [],
+        "db-dtypes": [
+          "numpy",
+          "packaging",
+          "pandas",
+          "pyarrow"
+        ],
+        "google-api-core": [
+          "google-auth",
+          "googleapis-common-protos",
+          "grpcio",
+          "grpcio-status",
+          "proto-plus",
+          "protobuf",
+          "requests"
+        ],
+        "google-auth": [
+          "cachetools",
+          "pyasn1-modules",
+          "rsa"
+        ],
+        "google-auth-oauthlib": [
+          "google-auth",
+          "requests-oauthlib"
+        ],
+        "google-cloud-bigquery": [
+          "google-api-core",
+          "google-auth",
+          "google-cloud-core",
+          "google-resumable-media",
+          "packaging",
+          "python-dateutil",
+          "requests"
+        ],
+        "google-cloud-core": [
+          "google-api-core",
+          "google-auth"
+        ],
+        "google-crc32c": [],
+        "google-resumable-media": [
+          "google-crc32c"
+        ],
+        "googleapis-common-protos": [
+          "protobuf"
+        ],
+        "grpcio": [],
+        "grpcio-status": [
+          "googleapis-common-protos",
+          "grpcio",
+          "protobuf"
+        ],
+        "idna": [],
+        "numpy": [],
+        "oauthlib": [],
+        "packaging": [],
+        "pandas": [
+          "numpy",
+          "python-dateutil",
+          "pytz",
+          "tzdata"
+        ],
+        "pandas-gbq": [
+          "db-dtypes",
+          "google-api-core",
+          "google-auth",
+          "google-auth-oauthlib",
+          "google-cloud-bigquery",
+          "numpy",
+          "packaging",
+          "pandas",
+          "pyarrow",
+          "pydata-google-auth",
+          "setuptools"
+        ],
+        "proto-plus": [
+          "protobuf"
+        ],
+        "protobuf": [],
+        "pyarrow": [
+          "numpy"
+        ],
+        "pyasn1": [],
+        "pyasn1-modules": [
+          "pyasn1"
+        ],
+        "pydata-google-auth": [
+          "google-auth",
+          "google-auth-oauthlib",
+          "setuptools"
+        ],
+        "python-dateutil": [
+          "six"
+        ],
+        "pytz": [],
+        "requests": [
+          "certifi",
+          "charset-normalizer",
+          "idna",
+          "urllib3"
+        ],
+        "requests-oauthlib": [
+          "oauthlib",
+          "requests"
+        ],
+        "rsa": [
+          "pyasn1"
+        ],
+        "setuptools": [],
+        "six": [],
+        "tzdata": [],
+        "urllib3": []
+      }
+    }
+  },
+  "invalidationHash": "fa820d40fe3df5117d40873bcbd065b0829f2f602a5d9522d0af23e8903423b4"
+}

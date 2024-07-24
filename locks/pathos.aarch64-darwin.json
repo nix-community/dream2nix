@@ -1,0 +1,58 @@
+{
+  "fetchPipMetadata": {
+    "sources": {
+      "dill": {
+        "is_direct": false,
+        "sha256": "c36ca9ffb54365bdd2f8eb3eff7d2a21237f8452b57ace88b1ac615b7e815bd7",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/c9/7a/cef76fd8438a42f96db64ddaa85280485a9c395e7df3db8158cfec1eee34/dill-0.3.8-py3-none-any.whl",
+        "version": "0.3.8"
+      },
+      "multiprocess": {
+        "is_direct": false,
+        "sha256": "fc0544c531920dde3b00c29863377f87e1632601092ea2daca74e4beb40faa2e",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/0a/7d/a988f258104dcd2ccf1ed40fdc97e26c4ac351eeaf81d76e266c52d84e2f/multiprocess-0.70.16-py312-none-any.whl",
+        "version": "0.70.16"
+      },
+      "pathos": {
+        "is_direct": false,
+        "sha256": "4f2a42bc1e10ccf0fe71961e7145fc1437018b6b21bd93b2446abc3983e49a7a",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/be/99/7fcb91495e40735958a576b9bde930cc402d594e9ad5277bdc9b6326e1c8/pathos-0.3.2.tar.gz",
+        "version": "0.3.2"
+      },
+      "pox": {
+        "is_direct": false,
+        "sha256": "651b8ae8a7b341b7bfd267f67f63106daeb9805f1ac11f323d5280d2da93fdb6",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/e1/d7/9e73c32f73da71e8224b4cb861b5db50ebdebcdff14d3e3fb47a63c578b2/pox-0.3.4-py3-none-any.whl",
+        "version": "0.3.4"
+      },
+      "ppft": {
+        "is_direct": false,
+        "sha256": "de2dd4b1b080923dd9627fbdea52649fd741c752fce4f3cf37e26f785df23d9b",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/ff/fa/5160c7d2fb1d4f2b83cba7a40f0eb4b015b78f6973b7ab6b2e73c233cfdc/ppft-1.7.6.8-py3-none-any.whl",
+        "version": "1.7.6.8"
+      }
+    },
+    "targets": {
+      "default": {
+        "dill": [],
+        "multiprocess": [
+          "dill"
+        ],
+        "pathos": [
+          "dill",
+          "multiprocess",
+          "pox",
+          "ppft"
+        ],
+        "pox": [],
+        "ppft": []
+      }
+    }
+  },
+  "invalidationHash": "74f61c7aa1fafe088f92a7ce7f3e58a9b8f65c95110ece0f324a92e1f85ae092"
+}

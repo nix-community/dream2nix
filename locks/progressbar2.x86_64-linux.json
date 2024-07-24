@@ -1,0 +1,39 @@
+{
+  "fetchPipMetadata": {
+    "sources": {
+      "progressbar2": {
+        "is_direct": false,
+        "sha256": "3fda2e0c60693600a6585a784c9d3bc4e1dac57e99e133f8c0f5c8cf3df374a2",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/41/7b/42c1cec1218b8b9289d6c84bc9d874df1f06db642ad3350d01a4116de834/progressbar2-4.4.2.tar.gz",
+        "version": "4.4.2"
+      },
+      "python-utils": {
+        "is_direct": false,
+        "sha256": "ad0ccdbd6f856d015cace07f74828b9840b5c4072d9e868a7f6a14fd195555a8",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/26/45/98431ba6d17b99468bd3f4c53fdeefff402167f006a06773905296f6d489/python_utils-3.8.2-py2.py3-none-any.whl",
+        "version": "3.8.2"
+      },
+      "typing-extensions": {
+        "is_direct": false,
+        "sha256": "04e5ca0351e0f3f85c6853954072df659d0d13fac324d0072316b67d7794700d",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/26/9f/ad63fc0248c5379346306f8668cda6e2e2e9c95e01216d2b8ffd9ff037d0/typing_extensions-4.12.2-py3-none-any.whl",
+        "version": "4.12.2"
+      }
+    },
+    "targets": {
+      "default": {
+        "progressbar2": [
+          "python-utils"
+        ],
+        "python-utils": [
+          "typing-extensions"
+        ],
+        "typing-extensions": []
+      }
+    }
+  },
+  "invalidationHash": "5ba23c2d4f644160dafade9b43f4edfe8d9ef68279fabbd45b3d3ae529896754"
+}

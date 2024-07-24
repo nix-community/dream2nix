@@ -1,0 +1,19 @@
+{
+  "fetchPipMetadata": {
+    "sources": {
+      "pygments": {
+        "is_direct": false,
+        "sha256": "786ff802f32e91311bff3889f6e9a86e81505fe99f2735bb6d60ae0c5004f199",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/8e/62/8336eff65bcbc8e4cb5d05b55faf041285951b6e80f33e2bff2024788f31/pygments-2.18.0.tar.gz",
+        "version": "2.18.0"
+      }
+    },
+    "targets": {
+      "default": {
+        "pygments": []
+      }
+    }
+  },
+  "invalidationHash": "2495594ced7a5b74d0a41288987251d3c404f9c40416e3d9bab658c92265d7eb"
+}

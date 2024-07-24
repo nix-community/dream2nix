@@ -1,0 +1,38 @@
+{
+  "fetchPipMetadata": {
+    "sources": {
+      "attrs": {
+        "is_direct": false,
+        "sha256": "99b87a485a5820b23b879f04c2305b44b951b502fd64be915879d77a7e8fc6f1",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/e0/44/827b2a91a5816512fcaf3cc4ebc465ccd5d598c45cefa6703fcf4a79018f/attrs-23.2.0-py3-none-any.whl",
+        "version": "23.2.0"
+      },
+      "referencing": {
+        "is_direct": false,
+        "sha256": "25b42124a6c8b632a425174f24087783efb348a6f1e0008e63cd4466fedf703c",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/99/5b/73ca1f8e72fff6fa52119dbd185f73a907b1989428917b24cff660129b6d/referencing-0.35.1.tar.gz",
+        "version": "0.35.1"
+      },
+      "rpds-py": {
+        "is_direct": false,
+        "sha256": "6f2f78ef14077e08856e788fa482107aa602636c16c25bdf59c22ea525a785e9",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/5c/a2/4796309ee72d7005abe844ffdd88efa9174f724e298aedcb834d08bb4b9b/rpds_py-0.19.0-cp312-cp312-macosx_11_0_arm64.whl",
+        "version": "0.19.0"
+      }
+    },
+    "targets": {
+      "default": {
+        "attrs": [],
+        "referencing": [
+          "attrs",
+          "rpds-py"
+        ],
+        "rpds-py": []
+      }
+    }
+  },
+  "invalidationHash": "19736c7260285d9c629492a65d707bf3ea2891ee50206d5f8c5cc970c0befbb5"
+}

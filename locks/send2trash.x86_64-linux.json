@@ -1,0 +1,19 @@
+{
+  "fetchPipMetadata": {
+    "sources": {
+      "send2trash": {
+        "is_direct": false,
+        "sha256": "b18e7a3966d99871aefeb00cfbcfdced55ce4871194810fc71f4aa484b953abf",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/fd/3a/aec9b02217bb79b87bbc1a21bc6abc51e3d5dcf65c30487ac96c0908c722/Send2Trash-1.8.3.tar.gz",
+        "version": "1.8.3"
+      }
+    },
+    "targets": {
+      "default": {
+        "send2trash": []
+      }
+    }
+  },
+  "invalidationHash": "7c5b846e222a2b926494cb0d4041baa7b9b68e9353d95f72f50c4af32a5cd1e6"
+}

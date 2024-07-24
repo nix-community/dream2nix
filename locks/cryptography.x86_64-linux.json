@@ -1,0 +1,39 @@
+{
+  "fetchPipMetadata": {
+    "sources": {
+      "cffi": {
+        "is_direct": false,
+        "sha256": "e715596e683d2ce000574bae5d07bd522c781a822866c20495e52520564f0969",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/09/d4/8759cc3b2222c159add8ce3af0089912203a31610f4be4c36f98e320b4c6/cffi-1.16.0-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl",
+        "version": "1.16.0"
+      },
+      "cryptography": {
+        "is_direct": false,
+        "sha256": "b88075ada2d51aa9f18283532c9f60e72170041bba88d7f37e49cbb10275299e",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/69/ec/9fb9dcf4f91f0e5e76de597256c43eedefd8423aa59be95c70c4c3db426a/cryptography-43.0.0.tar.gz",
+        "version": "43.0.0"
+      },
+      "pycparser": {
+        "is_direct": false,
+        "sha256": "c3702b6d3dd8c7abc1afa565d7e63d53a1d0bd86cdc24edd75470f4de499cfcc",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/13/a3/a812df4e2dd5696d1f351d58b8fe16a405b234ad2886a0dab9183fb78109/pycparser-2.22-py3-none-any.whl",
+        "version": "2.22"
+      }
+    },
+    "targets": {
+      "default": {
+        "cffi": [
+          "pycparser"
+        ],
+        "cryptography": [
+          "cffi"
+        ],
+        "pycparser": []
+      }
+    }
+  },
+  "invalidationHash": "06f5eb2e7c9b1f5354a5b28f1eab5c89190a8d09115809d665897ea9dce16958"
+}

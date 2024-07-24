@@ -1,0 +1,19 @@
+{
+  "fetchPipMetadata": {
+    "sources": {
+      "appdirs": {
+        "is_direct": false,
+        "sha256": "7d5d0167b2b1ba821647616af46a749d1c653740dd0d2415100fe26e27afdf41",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/d7/d8/05696357e0311f5b5c316d7b95f46c669dd9c15aaeecbb48c7d0aeb88c40/appdirs-1.4.4.tar.gz",
+        "version": "1.4.4"
+      }
+    },
+    "targets": {
+      "default": {
+        "appdirs": []
+      }
+    }
+  },
+  "invalidationHash": "4f64f8fead70c9d7ba9ad83461209ef3d4ccdb421d1d43ec7c68d964117ba439"
+}

@@ -1,0 +1,19 @@
+{
+  "fetchPipMetadata": {
+    "sources": {
+      "safetensors": {
+        "is_direct": false,
+        "sha256": "2f85fc50c4e07a21e95c24e07460fe6f7e2859d0ce88092838352b798ce711c2",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/9c/21/acd1b6dd9dad9708fd388fdbe6618e461108cdbd56ff4eab6094c6e61035/safetensors-0.4.3.tar.gz",
+        "version": "0.4.3"
+      }
+    },
+    "targets": {
+      "default": {
+        "safetensors": []
+      }
+    }
+  },
+  "invalidationHash": "3da92abb75f160c8c26d6b40e26fbfb50e597d8ec8d0b2c90e4c9890844e657d"
+}

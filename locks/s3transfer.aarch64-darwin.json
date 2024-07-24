@@ -1,0 +1,67 @@
+{
+  "fetchPipMetadata": {
+    "sources": {
+      "botocore": {
+        "is_direct": false,
+        "sha256": "3fd4782362bd29c192704ebf859c5c8c5189ad05719e391eefe23088434427ae",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/83/fb/c9ccf2381051176f27cdde8008db1fba18796536efa33b7e9b341bc2d27c/botocore-1.34.146-py3-none-any.whl",
+        "version": "1.34.146"
+      },
+      "jmespath": {
+        "is_direct": false,
+        "sha256": "02e2e4cc71b5bcab88332eebf907519190dd9e6e82107fa7f83b1003a6252980",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/31/b4/b9b800c45527aadd64d5b442f9b932b00648617eb5d63d2c7a6587b7cafc/jmespath-1.0.1-py3-none-any.whl",
+        "version": "1.0.1"
+      },
+      "python-dateutil": {
+        "is_direct": false,
+        "sha256": "a8b2bc7bffae282281c8140a97d3aa9c14da0b136dfe83f850eea9a5f7470427",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/ec/57/56b9bcc3c9c6a792fcbaf139543cee77261f3651ca9da0c93f5c1221264b/python_dateutil-2.9.0.post0-py2.py3-none-any.whl",
+        "version": "2.9.0.post0"
+      },
+      "s3transfer": {
+        "is_direct": false,
+        "sha256": "0711534e9356d3cc692fdde846b4a1e4b0cb6519971860796e6bc4c7aea00ef6",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/cb/67/94c6730ee4c34505b14d94040e2f31edf144c230b6b49e971b4f25ff8fab/s3transfer-0.10.2.tar.gz",
+        "version": "0.10.2"
+      },
+      "six": {
+        "is_direct": false,
+        "sha256": "8abb2f1d86890a2dfb989f9a77cfcfd3e47c2a354b01111771326f8aa26e0254",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/d9/5a/e7c31adbe875f2abbb91bd84cf2dc52d792b5a01506781dbcf25c91daf11/six-1.16.0-py2.py3-none-any.whl",
+        "version": "1.16.0"
+      },
+      "urllib3": {
+        "is_direct": false,
+        "sha256": "a448b2f64d686155468037e1ace9f2d2199776e17f0a46610480d311f73e3472",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/ca/1c/89ffc63a9605b583d5df2be791a27bc1a42b7c32bab68d3c8f2f73a98cd4/urllib3-2.2.2-py3-none-any.whl",
+        "version": "2.2.2"
+      }
+    },
+    "targets": {
+      "default": {
+        "botocore": [
+          "jmespath",
+          "python-dateutil",
+          "urllib3"
+        ],
+        "jmespath": [],
+        "python-dateutil": [
+          "six"
+        ],
+        "s3transfer": [
+          "botocore"
+        ],
+        "six": [],
+        "urllib3": []
+      }
+    }
+  },
+  "invalidationHash": "ebcc9266f5ebc07ad4c857f2f594a2dd749362bd576bf7db00d5f0658764a604"
+}

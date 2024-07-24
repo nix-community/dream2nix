@@ -1,0 +1,150 @@
+{
+  "fetchPipMetadata": {
+    "sources": {
+      "deprecated": {
+        "is_direct": false,
+        "sha256": "6fac8b097794a90302bdbb17b9b815e732d3c4720583ff1b198499d78470466c",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/20/8d/778b7d51b981a96554f29136cd59ca7880bf58094338085bcf2a979a0e6a/Deprecated-1.2.14-py2.py3-none-any.whl",
+        "version": "1.2.14"
+      },
+      "googleapis-common-protos": {
+        "is_direct": false,
+        "sha256": "27a2499c7e8aff199665b22741997e485eccc8645aa9176c7c988e6fae507945",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/02/48/87422ff1bddcae677fb6f58c97f5cfc613304a5e8ce2c3662760199c0a84/googleapis_common_protos-1.63.2-py2.py3-none-any.whl",
+        "version": "1.63.2"
+      },
+      "grpcio": {
+        "is_direct": false,
+        "sha256": "9e6a8f3d6c41e6b642870afe6cafbaf7b61c57317f9ec66d0efdaf19db992b90",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/d3/2d/b8fcbe1d504a2b86ffd7f20591a62553b96d38f879aa9045961ae47b8eb6/grpcio-1.65.1-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl",
+        "version": "1.65.1"
+      },
+      "importlib-metadata": {
+        "is_direct": false,
+        "sha256": "30962b96c0c223483ed6cc7280e7f0199feb01a0e40cfae4d4450fc6fab1f570",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/2d/0a/679461c511447ffaf176567d5c496d1de27cbe34a87df6677d7171b2fbd4/importlib_metadata-7.1.0-py3-none-any.whl",
+        "version": "7.1.0"
+      },
+      "opentelemetry-api": {
+        "is_direct": false,
+        "sha256": "757fa1aa020a0f8fa139f8959e53dec2051cc26b832e76fa839a6d76ecefd737",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/7e/b2/4bc5e52c9a23df0ac17dbb23923e609a8269cd67000a712b4f5bcfae1490/opentelemetry_api-1.25.0-py3-none-any.whl",
+        "version": "1.25.0"
+      },
+      "opentelemetry-exporter-otlp-proto-common": {
+        "is_direct": false,
+        "sha256": "15637b7d580c2675f70246563363775b4e6de947871e01d0f4e3881d1848d693",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/05/02/74ac6619eec78c82a923324f916d3eccd2f2254cf4270b669e96b76bf717/opentelemetry_exporter_otlp_proto_common-1.25.0-py3-none-any.whl",
+        "version": "1.25.0"
+      },
+      "opentelemetry-exporter-otlp-proto-grpc": {
+        "is_direct": false,
+        "sha256": "c0b1661415acec5af87625587efa1ccab68b873745ca0ee96b69bb1042087eac",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/6f/76/94c72787f82130d1a24be64fad34eeaf7fa85cfe9d1740d096f577c5e57d/opentelemetry_exporter_otlp_proto_grpc-1.25.0.tar.gz",
+        "version": "1.25.0"
+      },
+      "opentelemetry-proto": {
+        "is_direct": false,
+        "sha256": "f07e3341c78d835d9b86665903b199893befa5e98866f63d22b00d0b7ca4972f",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/64/ae/d6b5f11ecbffafe8b6d54130fed0cc78aad3711e00074d63a7359d6dcf3b/opentelemetry_proto-1.25.0-py3-none-any.whl",
+        "version": "1.25.0"
+      },
+      "opentelemetry-sdk": {
+        "is_direct": false,
+        "sha256": "d97ff7ec4b351692e9d5a15af570c693b8715ad78b8aafbec5c7100fe966b4c9",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/ae/b2/729a959a8aa032bce246c791f977161099ab60fb0188408ccec1bf283b00/opentelemetry_sdk-1.25.0-py3-none-any.whl",
+        "version": "1.25.0"
+      },
+      "opentelemetry-semantic-conventions": {
+        "is_direct": false,
+        "sha256": "6daef4ef9fa51d51855d9f8e0ccd3a1bd59e0e545abe99ac6203804e36ab3e07",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/fd/41/28dae1ec1fe0151373f06bd06d9170ca14b52d5b3a6c2dc55f85bc219619/opentelemetry_semantic_conventions-0.46b0-py3-none-any.whl",
+        "version": "0.46b0"
+      },
+      "protobuf": {
+        "is_direct": false,
+        "sha256": "7c8daa26095f82482307bc717364e7c13f4f1c99659be82890dcfc215194554d",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/15/db/7f731524fe0e56c6b2eb57d05b55d3badd80ef7d1f1ed59db191b2fdd8ab/protobuf-4.25.3-cp37-abi3-manylinux2014_x86_64.whl",
+        "version": "4.25.3"
+      },
+      "typing-extensions": {
+        "is_direct": false,
+        "sha256": "04e5ca0351e0f3f85c6853954072df659d0d13fac324d0072316b67d7794700d",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/26/9f/ad63fc0248c5379346306f8668cda6e2e2e9c95e01216d2b8ffd9ff037d0/typing_extensions-4.12.2-py3-none-any.whl",
+        "version": "4.12.2"
+      },
+      "wrapt": {
+        "is_direct": false,
+        "sha256": "98b5e1f498a8ca1858a1cdbffb023bfd954da4e3fa2c0cb5853d40014557248b",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/62/62/30ca2405de6a20448ee557ab2cd61ab9c5900be7cbd18a2639db595f0b98/wrapt-1.16.0-cp312-cp312-manylinux_2_5_x86_64.manylinux1_x86_64.manylinux_2_17_x86_64.manylinux2014_x86_64.whl",
+        "version": "1.16.0"
+      },
+      "zipp": {
+        "is_direct": false,
+        "sha256": "f091755f667055f2d02b32c53771a7a6c8b47e1fdbc4b72a8b9072b3eef8015c",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/20/38/f5c473fe9b90c8debdd29ea68d5add0289f1936d6f923b6b9cc0b931194c/zipp-3.19.2-py3-none-any.whl",
+        "version": "3.19.2"
+      }
+    },
+    "targets": {
+      "default": {
+        "deprecated": [
+          "wrapt"
+        ],
+        "googleapis-common-protos": [
+          "protobuf"
+        ],
+        "grpcio": [],
+        "importlib-metadata": [
+          "zipp"
+        ],
+        "opentelemetry-api": [
+          "deprecated",
+          "importlib-metadata"
+        ],
+        "opentelemetry-exporter-otlp-proto-common": [
+          "opentelemetry-proto"
+        ],
+        "opentelemetry-exporter-otlp-proto-grpc": [
+          "deprecated",
+          "googleapis-common-protos",
+          "grpcio",
+          "opentelemetry-api",
+          "opentelemetry-exporter-otlp-proto-common",
+          "opentelemetry-proto",
+          "opentelemetry-sdk"
+        ],
+        "opentelemetry-proto": [
+          "protobuf"
+        ],
+        "opentelemetry-sdk": [
+          "opentelemetry-api",
+          "opentelemetry-semantic-conventions",
+          "typing-extensions"
+        ],
+        "opentelemetry-semantic-conventions": [
+          "opentelemetry-api"
+        ],
+        "protobuf": [],
+        "typing-extensions": [],
+        "wrapt": [],
+        "zipp": []
+      }
+    }
+  },
+  "invalidationHash": "86a36832a75fffe2506559cf168c403a8105b3c380b8aa7ca9a1411ef81b66c6"
+}

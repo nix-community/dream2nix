@@ -1,0 +1,29 @@
+{
+  "fetchPipMetadata": {
+    "sources": {
+      "python-slugify": {
+        "is_direct": false,
+        "sha256": "59202371d1d05b54a9e7720c5e038f928f45daaffe41dd10822f3907b937c856",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/87/c7/5e1547c44e31da50a460df93af11a535ace568ef89d7a811069ead340c4a/python-slugify-8.0.4.tar.gz",
+        "version": "8.0.4"
+      },
+      "text-unidecode": {
+        "is_direct": false,
+        "sha256": "1311f10e8b895935241623731c2ba64f4c455287888b18189350b67134a822e8",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/a6/a5/c0b6468d3824fe3fde30dbb5e1f687b291608f9473681bbf7dabbf5a87d7/text_unidecode-1.3-py2.py3-none-any.whl",
+        "version": "1.3"
+      }
+    },
+    "targets": {
+      "default": {
+        "python-slugify": [
+          "text-unidecode"
+        ],
+        "text-unidecode": []
+      }
+    }
+  },
+  "invalidationHash": "9db9cf9030da62275a075d6103c3ba2c992e9e4abbb821555e05a1519de2fe1a"
+}

@@ -1,0 +1,19 @@
+{
+  "fetchPipMetadata": {
+    "sources": {
+      "pyodbc": {
+        "is_direct": false,
+        "sha256": "397feee44561a6580be08cedbe986436859563f4bb378f48224655c8e987ea60",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/d5/5b/a93f7017d4df84c3971cf60ee935149f12e0d1e111febc67ba2e23015a79/pyodbc-5.1.0.tar.gz",
+        "version": "5.1.0"
+      }
+    },
+    "targets": {
+      "default": {
+        "pyodbc": []
+      }
+    }
+  },
+  "invalidationHash": "88a7198a5c4a65284afc1eed002a90a553b0bf956faf188baabd9018218b8798"
+}

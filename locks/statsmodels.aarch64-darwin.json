@@ -1,0 +1,109 @@
+{
+  "fetchPipMetadata": {
+    "sources": {
+      "numpy": {
+        "is_direct": false,
+        "sha256": "5daab361be6ddeb299a918a7c0864fa8618af66019138263247af405018b04e1",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/c2/da/3d8debb409bc97045b559f408d2b8cefa6a077a73df14dbf4d8780d976b1/numpy-2.0.1-cp312-cp312-macosx_14_0_arm64.whl",
+        "version": "2.0.1"
+      },
+      "packaging": {
+        "is_direct": false,
+        "sha256": "5b8f2217dbdbd2f7f384c41c628544e6d52f2d0f53c6d0c3ea61aa5d1d7ff124",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/08/aa/cc0199a5f0ad350994d660967a8efb233fe0416e4639146c089643407ce6/packaging-24.1-py3-none-any.whl",
+        "version": "24.1"
+      },
+      "pandas": {
+        "is_direct": false,
+        "sha256": "e9b79011ff7a0f4b1d6da6a61aa1aa604fb312d6647de5bad20013682d1429ce",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/db/7c/9a60add21b96140e22465d9adf09832feade45235cd22f4cb1668a25e443/pandas-2.2.2-cp312-cp312-macosx_11_0_arm64.whl",
+        "version": "2.2.2"
+      },
+      "patsy": {
+        "is_direct": false,
+        "sha256": "19056886fd8fa71863fa32f0eb090267f21fb74be00f19f5c70b2e9d76c883c6",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/43/f3/1d311a09c34f14f5973bb0bb0dc3a6e007e1eda90b5492d082689936ca51/patsy-0.5.6-py2.py3-none-any.whl",
+        "version": "0.5.6"
+      },
+      "python-dateutil": {
+        "is_direct": false,
+        "sha256": "a8b2bc7bffae282281c8140a97d3aa9c14da0b136dfe83f850eea9a5f7470427",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/ec/57/56b9bcc3c9c6a792fcbaf139543cee77261f3651ca9da0c93f5c1221264b/python_dateutil-2.9.0.post0-py2.py3-none-any.whl",
+        "version": "2.9.0.post0"
+      },
+      "pytz": {
+        "is_direct": false,
+        "sha256": "328171f4e3623139da4983451950b28e95ac706e13f3f2630a879749e7a8b319",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/9c/3d/a121f284241f08268b21359bd425f7d4825cffc5ac5cd0e1b3d82ffd2b10/pytz-2024.1-py2.py3-none-any.whl",
+        "version": "2024.1"
+      },
+      "scipy": {
+        "is_direct": false,
+        "sha256": "64b2ff514a98cf2bb734a9f90d32dc89dc6ad4a4a36a312cd0d6327170339eb0",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/09/70/5e756d3f90fe3fff64d1550db0fa6bb9eb76eedd084c568618f93441f08c/scipy-1.14.0-cp312-cp312-macosx_14_0_arm64.whl",
+        "version": "1.14.0"
+      },
+      "six": {
+        "is_direct": false,
+        "sha256": "8abb2f1d86890a2dfb989f9a77cfcfd3e47c2a354b01111771326f8aa26e0254",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/d9/5a/e7c31adbe875f2abbb91bd84cf2dc52d792b5a01506781dbcf25c91daf11/six-1.16.0-py2.py3-none-any.whl",
+        "version": "1.16.0"
+      },
+      "statsmodels": {
+        "is_direct": false,
+        "sha256": "890550147ad3a81cda24f0ba1a5c4021adc1601080bd00e191ae7cd6feecd6ad",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/25/a3/4a7a240e9bc9e146fbd9f0c410ecac328a899ca0c4467c72d9b8aa1e4015/statsmodels-0.14.2.tar.gz",
+        "version": "0.14.2"
+      },
+      "tzdata": {
+        "is_direct": false,
+        "sha256": "9068bc196136463f5245e51efda838afa15aaeca9903f49050dfa2679db4d252",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/65/58/f9c9e6be752e9fcb8b6a0ee9fb87e6e7a1f6bcab2cdc73f02bb7ba91ada0/tzdata-2024.1-py2.py3-none-any.whl",
+        "version": "2024.1"
+      }
+    },
+    "targets": {
+      "default": {
+        "numpy": [],
+        "packaging": [],
+        "pandas": [
+          "numpy",
+          "python-dateutil",
+          "pytz",
+          "tzdata"
+        ],
+        "patsy": [
+          "numpy",
+          "six"
+        ],
+        "python-dateutil": [
+          "six"
+        ],
+        "pytz": [],
+        "scipy": [
+          "numpy"
+        ],
+        "six": [],
+        "statsmodels": [
+          "numpy",
+          "packaging",
+          "pandas",
+          "patsy",
+          "scipy"
+        ],
+        "tzdata": []
+      }
+    }
+  },
+  "invalidationHash": "658685151ace479cc709e632f0e07deb145d8cb7b6a9bec17bb8c01efc8b51ae"
+}

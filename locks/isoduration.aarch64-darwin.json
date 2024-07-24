@@ -1,0 +1,58 @@
+{
+  "fetchPipMetadata": {
+    "sources": {
+      "arrow": {
+        "is_direct": false,
+        "sha256": "c728b120ebc00eb84e01882a6f5e7927a53960aa990ce7dd2b10f39005a67f80",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/f8/ed/e97229a566617f2ae958a6b13e7cc0f585470eac730a73e9e82c32a3cdd2/arrow-1.3.0-py3-none-any.whl",
+        "version": "1.3.0"
+      },
+      "isoduration": {
+        "is_direct": false,
+        "sha256": "ac2f9015137935279eac671f94f89eb00584f940f5dc49462a0c4ee692ba1bd9",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/7c/1a/3c8edc664e06e6bd06cce40c6b22da5f1429aa4224d0c590f3be21c91ead/isoduration-20.11.0.tar.gz",
+        "version": "20.11.0"
+      },
+      "python-dateutil": {
+        "is_direct": false,
+        "sha256": "a8b2bc7bffae282281c8140a97d3aa9c14da0b136dfe83f850eea9a5f7470427",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/ec/57/56b9bcc3c9c6a792fcbaf139543cee77261f3651ca9da0c93f5c1221264b/python_dateutil-2.9.0.post0-py2.py3-none-any.whl",
+        "version": "2.9.0.post0"
+      },
+      "six": {
+        "is_direct": false,
+        "sha256": "8abb2f1d86890a2dfb989f9a77cfcfd3e47c2a354b01111771326f8aa26e0254",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/d9/5a/e7c31adbe875f2abbb91bd84cf2dc52d792b5a01506781dbcf25c91daf11/six-1.16.0-py2.py3-none-any.whl",
+        "version": "1.16.0"
+      },
+      "types-python-dateutil": {
+        "is_direct": false,
+        "sha256": "6b8cb66d960771ce5ff974e9dd45e38facb81718cc1e208b10b1baccbfdbee3b",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/c7/1b/af4f4c4f3f7339a4b7eb3c0ab13416db98f8ac09de3399129ee5fdfa282b/types_python_dateutil-2.9.0.20240316-py3-none-any.whl",
+        "version": "2.9.0.20240316"
+      }
+    },
+    "targets": {
+      "default": {
+        "arrow": [
+          "python-dateutil",
+          "types-python-dateutil"
+        ],
+        "isoduration": [
+          "arrow"
+        ],
+        "python-dateutil": [
+          "six"
+        ],
+        "six": [],
+        "types-python-dateutil": []
+      }
+    }
+  },
+  "invalidationHash": "54d55bedb398b2f000749a24a6b357d410a5fadeef76a143c0493d54d19235ed"
+}

@@ -1,0 +1,38 @@
+{
+  "fetchPipMetadata": {
+    "sources": {
+      "bleach": {
+        "is_direct": false,
+        "sha256": "0a31f1837963c41d46bbf1331b8778e1308ea0791db03cc4e7357b97cf42a8fe",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/6d/10/77f32b088738f40d4f5be801daa5f327879eadd4562f36a2b5ab975ae571/bleach-6.1.0.tar.gz",
+        "version": "6.1.0"
+      },
+      "six": {
+        "is_direct": false,
+        "sha256": "8abb2f1d86890a2dfb989f9a77cfcfd3e47c2a354b01111771326f8aa26e0254",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/d9/5a/e7c31adbe875f2abbb91bd84cf2dc52d792b5a01506781dbcf25c91daf11/six-1.16.0-py2.py3-none-any.whl",
+        "version": "1.16.0"
+      },
+      "webencodings": {
+        "is_direct": false,
+        "sha256": "a0af1213f3c2226497a97e2b3aa01a7e4bee4f403f95be16fc9acd2947514a78",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/f4/24/2a3e3df732393fed8b3ebf2ec078f05546de641fe1b667ee316ec1dcf3b7/webencodings-0.5.1-py2.py3-none-any.whl",
+        "version": "0.5.1"
+      }
+    },
+    "targets": {
+      "default": {
+        "bleach": [
+          "six",
+          "webencodings"
+        ],
+        "six": [],
+        "webencodings": []
+      }
+    }
+  },
+  "invalidationHash": "d29109adc128494f096a247dac12fe8fc0f99650f24dc59ccfc053ae2dbeb830"
+}

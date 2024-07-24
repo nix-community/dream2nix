@@ -1,0 +1,97 @@
+{
+  "fetchPipMetadata": {
+    "sources": {
+      "certifi": {
+        "is_direct": false,
+        "sha256": "c198e21b1289c2ab85ee4e67bb4b4ef3ead0892059901a8d5b622f24a1101e90",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/1c/d5/c84e1a17bf61d4df64ca866a1c9a913874b4e9bdc131ec689a0ad013fb36/certifi-2024.7.4-py3-none-any.whl",
+        "version": "2024.7.4"
+      },
+      "charset-normalizer": {
+        "is_direct": false,
+        "sha256": "55086ee1064215781fff39a1af09518bc9255b50d6333f2e4c74ca09fac6a8f6",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/3a/52/9f9d17c3b54dc238de384c4cb5a2ef0e27985b42a0e5cc8e8a31d918d48d/charset_normalizer-3.3.2-cp312-cp312-macosx_11_0_arm64.whl",
+        "version": "3.3.2"
+      },
+      "events": {
+        "is_direct": false,
+        "sha256": "a7286af378ba3e46640ac9825156c93bdba7502174dd696090fdfcd4d80a1abd",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/25/ed/e47dec0626edd468c84c04d97769e7ab4ea6457b7f54dcb3f72b17fcd876/Events-0.5-py3-none-any.whl",
+        "version": "0.5"
+      },
+      "idna": {
+        "is_direct": false,
+        "sha256": "82fee1fc78add43492d3a1898bfa6d8a904cc97d8427f683ed8e798d07761aa0",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/e5/3e/741d8c82801c347547f8a2a06aa57dbb1992be9e948df2ea0eda2c8b79e8/idna-3.7-py3-none-any.whl",
+        "version": "3.7"
+      },
+      "opensearch-py": {
+        "is_direct": false,
+        "sha256": "0b7c27e8ed84c03c99558406927b6161f186a72502ca6d0325413d8e5523ba96",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/f1/1d/a5a965bf579b1bde4d216678f2a92db83509a2479a0e8449c320d1e76f8e/opensearch_py-2.6.0.tar.gz",
+        "version": "2.6.0"
+      },
+      "python-dateutil": {
+        "is_direct": false,
+        "sha256": "a8b2bc7bffae282281c8140a97d3aa9c14da0b136dfe83f850eea9a5f7470427",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/ec/57/56b9bcc3c9c6a792fcbaf139543cee77261f3651ca9da0c93f5c1221264b/python_dateutil-2.9.0.post0-py2.py3-none-any.whl",
+        "version": "2.9.0.post0"
+      },
+      "requests": {
+        "is_direct": false,
+        "sha256": "70761cfe03c773ceb22aa2f671b4757976145175cdfca038c02654d061d6dcc6",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/f9/9b/335f9764261e915ed497fcdeb11df5dfd6f7bf257d4a6a2a686d80da4d54/requests-2.32.3-py3-none-any.whl",
+        "version": "2.32.3"
+      },
+      "six": {
+        "is_direct": false,
+        "sha256": "8abb2f1d86890a2dfb989f9a77cfcfd3e47c2a354b01111771326f8aa26e0254",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/d9/5a/e7c31adbe875f2abbb91bd84cf2dc52d792b5a01506781dbcf25c91daf11/six-1.16.0-py2.py3-none-any.whl",
+        "version": "1.16.0"
+      },
+      "urllib3": {
+        "is_direct": false,
+        "sha256": "a448b2f64d686155468037e1ace9f2d2199776e17f0a46610480d311f73e3472",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/ca/1c/89ffc63a9605b583d5df2be791a27bc1a42b7c32bab68d3c8f2f73a98cd4/urllib3-2.2.2-py3-none-any.whl",
+        "version": "2.2.2"
+      }
+    },
+    "targets": {
+      "default": {
+        "certifi": [],
+        "charset-normalizer": [],
+        "events": [],
+        "idna": [],
+        "opensearch-py": [
+          "certifi",
+          "events",
+          "python-dateutil",
+          "requests",
+          "six",
+          "urllib3"
+        ],
+        "python-dateutil": [
+          "six"
+        ],
+        "requests": [
+          "certifi",
+          "charset-normalizer",
+          "idna",
+          "urllib3"
+        ],
+        "six": [],
+        "urllib3": []
+      }
+    }
+  },
+  "invalidationHash": "01d71425823b39b023974f8d2b7c5d4560d754f851dc0380a0c7ce265198af9c"
+}

@@ -1,0 +1,19 @@
+{
+  "fetchPipMetadata": {
+    "sources": {
+      "ruamel-yaml-clib": {
+        "is_direct": false,
+        "sha256": "beb2e0404003de9a4cab9753a8805a8fe9320ee6673136ed7f04255fe60bb512",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/46/ab/bab9eb1566cd16f060b54055dd39cf6a34bfa0240c53a7218c43e974295b/ruamel.yaml.clib-0.2.8.tar.gz",
+        "version": "0.2.8"
+      }
+    },
+    "targets": {
+      "default": {
+        "ruamel-yaml-clib": []
+      }
+    }
+  },
+  "invalidationHash": "980ed098d2b772b9d45aded984e926d39b5b9d9e749be5ebb13c09008a632864"
+}

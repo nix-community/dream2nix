@@ -1,0 +1,19 @@
+{
+  "fetchPipMetadata": {
+    "sources": {
+      "pysocks": {
+        "is_direct": false,
+        "sha256": "3f8804571ebe159c380ac6de37643bb4685970655d3bba243530d6558b799aa0",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/bd/11/293dd436aea955d45fc4e8a35b6ae7270f5b8e00b53cf6c024c83b657a11/PySocks-1.7.1.tar.gz",
+        "version": "1.7.1"
+      }
+    },
+    "targets": {
+      "default": {
+        "pysocks": []
+      }
+    }
+  },
+  "invalidationHash": "a999946db372abdc9302112dff384abc235564c3782b0779810cdfcb116c1dc9"
+}

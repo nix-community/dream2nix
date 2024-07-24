@@ -1,0 +1,19 @@
+{
+  "fetchPipMetadata": {
+    "sources": {
+      "pkgutil-resolve-name": {
+        "is_direct": false,
+        "sha256": "357d6c9e6a755653cfd78893817c0853af365dd51ec97f3d358a819373bbd174",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/70/f2/f2891a9dc37398696ddd945012b90ef8d0a034f0012e3f83c3f7a70b0f79/pkgutil_resolve_name-1.3.10.tar.gz",
+        "version": "1.3.10"
+      }
+    },
+    "targets": {
+      "default": {
+        "pkgutil-resolve-name": []
+      }
+    }
+  },
+  "invalidationHash": "ebaf4ff912a275c67beac7973a628fffdc394fc385e2292e8947ddce25b8c52b"
+}

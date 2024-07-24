@@ -1,0 +1,19 @@
+{
+  "fetchPipMetadata": {
+    "sources": {
+      "sniffio": {
+        "is_direct": false,
+        "sha256": "f4324edc670a0f49750a81b895f35c3adb843cca46f0530f79fc1babb23789dc",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/a2/87/a6771e1546d97e7e041b6ae58d80074f81b7d5121207425c964ddf5cfdbd/sniffio-1.3.1.tar.gz",
+        "version": "1.3.1"
+      }
+    },
+    "targets": {
+      "default": {
+        "sniffio": []
+      }
+    }
+  },
+  "invalidationHash": "fb72ee8547cb237b430a9a0681d0e947138d551f5e1da99df9efce89b5bac20d"
+}

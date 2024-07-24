@@ -1,0 +1,38 @@
+{
+  "fetchPipMetadata": {
+    "sources": {
+      "packaging": {
+        "is_direct": false,
+        "sha256": "5b8f2217dbdbd2f7f384c41c628544e6d52f2d0f53c6d0c3ea61aa5d1d7ff124",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/08/aa/cc0199a5f0ad350994d660967a8efb233fe0416e4639146c089643407ce6/packaging-24.1-py3-none-any.whl",
+        "version": "24.1"
+      },
+      "plotly": {
+        "is_direct": false,
+        "sha256": "859fdadbd86b5770ae2466e542b761b247d1c6b49daed765b95bb8c7063e7469",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/4a/42/e16addffa3eee93bde84aceee20e3eaf579d1df554633c884d50b050b466/plotly-5.22.0.tar.gz",
+        "version": "5.22.0"
+      },
+      "tenacity": {
+        "is_direct": false,
+        "sha256": "b594c2a5945830c267ce6b79a166228323ed52718f30302c1359836112346687",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/d2/3f/8ba87d9e287b9d385a02a7114ddcef61b26f86411e121c9003eb509a1773/tenacity-8.5.0-py3-none-any.whl",
+        "version": "8.5.0"
+      }
+    },
+    "targets": {
+      "default": {
+        "packaging": [],
+        "plotly": [
+          "packaging",
+          "tenacity"
+        ],
+        "tenacity": []
+      }
+    }
+  },
+  "invalidationHash": "e89a821221204e788decaeb670385e52d8881263b5c83cddaf293c60282a7c6d"
+}

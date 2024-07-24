@@ -1,0 +1,19 @@
+{
+  "fetchPipMetadata": {
+    "sources": {
+      "asn1crypto": {
+        "is_direct": false,
+        "sha256": "13ae38502be632115abf8a24cbe5f4da52e3b5231990aff31123c805306ccb9c",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/de/cf/d547feed25b5244fcb9392e288ff9fdc3280b10260362fc45d37a798a6ee/asn1crypto-1.5.1.tar.gz",
+        "version": "1.5.1"
+      }
+    },
+    "targets": {
+      "default": {
+        "asn1crypto": []
+      }
+    }
+  },
+  "invalidationHash": "ebae237f2741615ccf4f9e5611a1953f3b85d20508a5ec692ffbebee47c03aef"
+}

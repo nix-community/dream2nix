@@ -1,0 +1,19 @@
+{
+  "fetchPipMetadata": {
+    "sources": {
+      "httptools": {
+        "is_direct": false,
+        "sha256": "c6e26c30455600b95d94b1b836085138e82f177351454ee841c148f93a9bad5a",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/67/1d/d77686502fced061b3ead1c35a2d70f6b281b5f723c4eff7a2277c04e4a2/httptools-0.6.1.tar.gz",
+        "version": "0.6.1"
+      }
+    },
+    "targets": {
+      "default": {
+        "httptools": []
+      }
+    }
+  },
+  "invalidationHash": "6a9c1e55e65d9091e2d1f8973125b6abcd1cd7694d9dec78d5b6ff3db5ba94f3"
+}

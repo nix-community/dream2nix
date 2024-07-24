@@ -1,0 +1,19 @@
+{
+  "fetchPipMetadata": {
+    "sources": {
+      "threadpoolctl": {
+        "is_direct": false,
+        "sha256": "082433502dd922bf738de0d8bcc4fdcbf0979ff44c42bd40f5af8a282f6fa107",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/bd/55/b5148dcbf72f5cde221f8bfe3b6a540da7aa1842f6b491ad979a6c8b84af/threadpoolctl-3.5.0.tar.gz",
+        "version": "3.5.0"
+      }
+    },
+    "targets": {
+      "default": {
+        "threadpoolctl": []
+      }
+    }
+  },
+  "invalidationHash": "a3f552ac95a00045fba55b41c0abac51887501e04d0332e34f20aa4385f99bf9"
+}

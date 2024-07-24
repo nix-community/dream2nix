@@ -1,0 +1,19 @@
+{
+  "fetchPipMetadata": {
+    "sources": {
+      "ordered-set": {
+        "is_direct": false,
+        "sha256": "694a8e44c87657c59292ede72891eb91d34131f6531463aab3009191c77364a8",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/4c/ca/bfac8bc689799bcca4157e0e0ced07e70ce125193fc2e166d2e685b7e2fe/ordered-set-4.1.0.tar.gz",
+        "version": "4.1.0"
+      }
+    },
+    "targets": {
+      "default": {
+        "ordered-set": []
+      }
+    }
+  },
+  "invalidationHash": "d11d7110ba1f1337a26a041737ef54caf53186b1a2aaa5b2fe84c3152ad39b75"
+}

@@ -1,0 +1,50 @@
+{
+  "fetchPipMetadata": {
+    "sources": {
+      "googleapis-common-protos": {
+        "is_direct": false,
+        "sha256": "27a2499c7e8aff199665b22741997e485eccc8645aa9176c7c988e6fae507945",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/02/48/87422ff1bddcae677fb6f58c97f5cfc613304a5e8ce2c3662760199c0a84/googleapis_common_protos-1.63.2-py2.py3-none-any.whl",
+        "version": "1.63.2"
+      },
+      "grpc-google-iam-v1": {
+        "is_direct": false,
+        "sha256": "3ff4b2fd9d990965e410965253c0da6f66205d5a8291c4c31c6ebecca18a9001",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/63/41/f01bf46bac4034b4750575fe87c80c5a43a8912847307955e22f2125b60c/grpc-google-iam-v1-0.13.1.tar.gz",
+        "version": "0.13.1"
+      },
+      "grpcio": {
+        "is_direct": false,
+        "sha256": "9e6a8f3d6c41e6b642870afe6cafbaf7b61c57317f9ec66d0efdaf19db992b90",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/d3/2d/b8fcbe1d504a2b86ffd7f20591a62553b96d38f879aa9045961ae47b8eb6/grpcio-1.65.1-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl",
+        "version": "1.65.1"
+      },
+      "protobuf": {
+        "is_direct": false,
+        "sha256": "b848dbe1d57ed7c191dfc4ea64b8b004a3f9ece4bf4d0d80a367b76df20bf36e",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/27/e4/8dc4546be46873f8950cb44cdfe19b79d66d26e53c4ee5e3440406257fcd/protobuf-5.27.2-cp38-abi3-manylinux2014_x86_64.whl",
+        "version": "5.27.2"
+      }
+    },
+    "targets": {
+      "default": {
+        "googleapis-common-protos": [
+          "grpcio",
+          "protobuf"
+        ],
+        "grpc-google-iam-v1": [
+          "googleapis-common-protos",
+          "grpcio",
+          "protobuf"
+        ],
+        "grpcio": [],
+        "protobuf": []
+      }
+    }
+  },
+  "invalidationHash": "cc436b1baab3aaf2e145fc3b6aa61c2a5ae6d88b04eaed6db5f5cbd5bf7420fe"
+}

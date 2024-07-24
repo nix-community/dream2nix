@@ -1,0 +1,19 @@
+{
+  "fetchPipMetadata": {
+    "sources": {
+      "soupsieve": {
+        "is_direct": false,
+        "sha256": "5663d5a7b3bfaeee0bc4372e7fc48f9cff4940b3eec54a6451cc5299f1097690",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/ce/21/952a240de1c196c7e3fbcd4e559681f0419b1280c617db21157a0390717b/soupsieve-2.5.tar.gz",
+        "version": "2.5"
+      }
+    },
+    "targets": {
+      "default": {
+        "soupsieve": []
+      }
+    }
+  },
+  "invalidationHash": "a179013a82893e38b1262bc1a3c57c40a6fc7efb5bc47d0a12d297b910e5cc50"
+}

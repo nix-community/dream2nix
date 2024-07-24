@@ -1,0 +1,29 @@
+{
+  "fetchPipMetadata": {
+    "sources": {
+      "python-dateutil": {
+        "is_direct": false,
+        "sha256": "37dd54208da7e1cd875388217d5e00ebd4179249f90fb72437e91a35459a0ad3",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/66/c0/0c8b6ad9f17a802ee498c46e004a0eb49bc148f2fd230864601a86dcf6db/python-dateutil-2.9.0.post0.tar.gz",
+        "version": "2.9.0.post0"
+      },
+      "six": {
+        "is_direct": false,
+        "sha256": "8abb2f1d86890a2dfb989f9a77cfcfd3e47c2a354b01111771326f8aa26e0254",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/d9/5a/e7c31adbe875f2abbb91bd84cf2dc52d792b5a01506781dbcf25c91daf11/six-1.16.0-py2.py3-none-any.whl",
+        "version": "1.16.0"
+      }
+    },
+    "targets": {
+      "default": {
+        "python-dateutil": [
+          "six"
+        ],
+        "six": []
+      }
+    }
+  },
+  "invalidationHash": "64e99feb63807143ab96d196e159b34bc283f2a6f58981514504ece11c40f2cd"
+}

@@ -1,0 +1,29 @@
+{
+  "fetchPipMetadata": {
+    "sources": {
+      "deprecation": {
+        "is_direct": false,
+        "sha256": "72b3bde64e5d778694b0cf68178aed03d15e15477116add3fb773e581f9518ff",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/5a/d3/8ae2869247df154b64c1884d7346d412fed0c49df84db635aab2d1c40e62/deprecation-2.1.0.tar.gz",
+        "version": "2.1.0"
+      },
+      "packaging": {
+        "is_direct": false,
+        "sha256": "5b8f2217dbdbd2f7f384c41c628544e6d52f2d0f53c6d0c3ea61aa5d1d7ff124",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/08/aa/cc0199a5f0ad350994d660967a8efb233fe0416e4639146c089643407ce6/packaging-24.1-py3-none-any.whl",
+        "version": "24.1"
+      }
+    },
+    "targets": {
+      "default": {
+        "deprecation": [
+          "packaging"
+        ],
+        "packaging": []
+      }
+    }
+  },
+  "invalidationHash": "7e3daaf475be0937bbbf5a1af027beb269d8932db19b04f039961fae22f821af"
+}

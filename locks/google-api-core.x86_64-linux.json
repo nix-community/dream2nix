@@ -1,0 +1,146 @@
+{
+  "fetchPipMetadata": {
+    "sources": {
+      "cachetools": {
+        "is_direct": false,
+        "sha256": "3ae3b49a3d5e28a77a0be2b37dbcb89005058959cb2323858c2657c4a8cab474",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/04/e6/a1551acbaa06f3e48b311329828a34bc9c51a8cfaecdeb4d03c329a1ef85/cachetools-5.4.0-py3-none-any.whl",
+        "version": "5.4.0"
+      },
+      "certifi": {
+        "is_direct": false,
+        "sha256": "c198e21b1289c2ab85ee4e67bb4b4ef3ead0892059901a8d5b622f24a1101e90",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/1c/d5/c84e1a17bf61d4df64ca866a1c9a913874b4e9bdc131ec689a0ad013fb36/certifi-2024.7.4-py3-none-any.whl",
+        "version": "2024.7.4"
+      },
+      "charset-normalizer": {
+        "is_direct": false,
+        "sha256": "90d558489962fd4918143277a773316e56c72da56ec7aa3dc3dbbe20fdfed15b",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/ee/fb/14d30eb4956408ee3ae09ad34299131fb383c47df355ddb428a7331cfa1e/charset_normalizer-3.3.2-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl",
+        "version": "3.3.2"
+      },
+      "google-api-core": {
+        "is_direct": false,
+        "sha256": "f4695f1e3650b316a795108a76a1c416e6afb036199d1c1f1f110916df479ffd",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/c2/41/42a127bf163d9bf1f21540a3bf41c69b231b88707d8d753680b8878201a6/google-api-core-2.19.1.tar.gz",
+        "version": "2.19.1"
+      },
+      "google-auth": {
+        "is_direct": false,
+        "sha256": "53326ea2ebec768070a94bee4e1b9194c9646ea0c2bd72422785bd0f9abfad7b",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/e7/00/85c22f7f73fa2e88dfbf0e1f63c565386ba40e0264b59c8a4362ae27c9fc/google_auth-2.32.0-py2.py3-none-any.whl",
+        "version": "2.32.0"
+      },
+      "googleapis-common-protos": {
+        "is_direct": false,
+        "sha256": "27a2499c7e8aff199665b22741997e485eccc8645aa9176c7c988e6fae507945",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/02/48/87422ff1bddcae677fb6f58c97f5cfc613304a5e8ce2c3662760199c0a84/googleapis_common_protos-1.63.2-py2.py3-none-any.whl",
+        "version": "1.63.2"
+      },
+      "idna": {
+        "is_direct": false,
+        "sha256": "82fee1fc78add43492d3a1898bfa6d8a904cc97d8427f683ed8e798d07761aa0",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/e5/3e/741d8c82801c347547f8a2a06aa57dbb1992be9e948df2ea0eda2c8b79e8/idna-3.7-py3-none-any.whl",
+        "version": "3.7"
+      },
+      "proto-plus": {
+        "is_direct": false,
+        "sha256": "402576830425e5f6ce4c2a6702400ac79897dab0b4343821aa5188b0fab81a12",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/7c/6f/db31f0711c0402aa477257205ce7d29e86a75cb52cd19f7afb585f75cda0/proto_plus-1.24.0-py3-none-any.whl",
+        "version": "1.24.0"
+      },
+      "protobuf": {
+        "is_direct": false,
+        "sha256": "b848dbe1d57ed7c191dfc4ea64b8b004a3f9ece4bf4d0d80a367b76df20bf36e",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/27/e4/8dc4546be46873f8950cb44cdfe19b79d66d26e53c4ee5e3440406257fcd/protobuf-5.27.2-cp38-abi3-manylinux2014_x86_64.whl",
+        "version": "5.27.2"
+      },
+      "pyasn1": {
+        "is_direct": false,
+        "sha256": "cca4bb0f2df5504f02f6f8a775b6e416ff9b0b3b16f7ee80b5a3153d9b804473",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/23/7e/5f50d07d5e70a2addbccd90ac2950f81d1edd0783630651d9268d7f1db49/pyasn1-0.6.0-py2.py3-none-any.whl",
+        "version": "0.6.0"
+      },
+      "pyasn1-modules": {
+        "is_direct": false,
+        "sha256": "be04f15b66c206eed667e0bb5ab27e2b1855ea54a842e5037738099e8ca4ae0b",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/13/68/8906226b15ef38e71dc926c321d2fe99de8048e9098b5dfd38343011c886/pyasn1_modules-0.4.0-py3-none-any.whl",
+        "version": "0.4.0"
+      },
+      "requests": {
+        "is_direct": false,
+        "sha256": "70761cfe03c773ceb22aa2f671b4757976145175cdfca038c02654d061d6dcc6",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/f9/9b/335f9764261e915ed497fcdeb11df5dfd6f7bf257d4a6a2a686d80da4d54/requests-2.32.3-py3-none-any.whl",
+        "version": "2.32.3"
+      },
+      "rsa": {
+        "is_direct": false,
+        "sha256": "90260d9058e514786967344d0ef75fa8727eed8a7d2e43ce9f4bcf1b536174f7",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/49/97/fa78e3d2f65c02c8e1268b9aba606569fe97f6c8f7c2d74394553347c145/rsa-4.9-py3-none-any.whl",
+        "version": "4.9"
+      },
+      "urllib3": {
+        "is_direct": false,
+        "sha256": "a448b2f64d686155468037e1ace9f2d2199776e17f0a46610480d311f73e3472",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/ca/1c/89ffc63a9605b583d5df2be791a27bc1a42b7c32bab68d3c8f2f73a98cd4/urllib3-2.2.2-py3-none-any.whl",
+        "version": "2.2.2"
+      }
+    },
+    "targets": {
+      "default": {
+        "cachetools": [],
+        "certifi": [],
+        "charset-normalizer": [],
+        "google-api-core": [
+          "google-auth",
+          "googleapis-common-protos",
+          "proto-plus",
+          "protobuf",
+          "requests"
+        ],
+        "google-auth": [
+          "cachetools",
+          "pyasn1-modules",
+          "rsa"
+        ],
+        "googleapis-common-protos": [
+          "protobuf"
+        ],
+        "idna": [],
+        "proto-plus": [
+          "protobuf"
+        ],
+        "protobuf": [],
+        "pyasn1": [],
+        "pyasn1-modules": [
+          "pyasn1"
+        ],
+        "requests": [
+          "certifi",
+          "charset-normalizer",
+          "idna",
+          "urllib3"
+        ],
+        "rsa": [
+          "pyasn1"
+        ],
+        "urllib3": []
+      }
+    }
+  },
+  "invalidationHash": "e7b8b5b1b9e0264bab74e5c771c8ee2578f96ad39160a77111bb06992967cbfb"
+}

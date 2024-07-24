@@ -1,0 +1,19 @@
+{
+  "fetchPipMetadata": {
+    "sources": {
+      "traitlets": {
+        "is_direct": false,
+        "sha256": "9ed0579d3502c94b4b3732ac120375cda96f923114522847de4b3bb98b96b6b7",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/eb/79/72064e6a701c2183016abbbfedaba506d81e30e232a68c9f0d6f6fcd1574/traitlets-5.14.3.tar.gz",
+        "version": "5.14.3"
+      }
+    },
+    "targets": {
+      "default": {
+        "traitlets": []
+      }
+    }
+  },
+  "invalidationHash": "3925272536071b2eecdc3fb1b4427f84a3f7c95f1a26713c40469aa11deffd41"
+}

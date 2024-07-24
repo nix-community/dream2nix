@@ -1,0 +1,19 @@
+{
+  "fetchPipMetadata": {
+    "sources": {
+      "installer": {
+        "is_direct": false,
+        "sha256": "a26d3e3116289bb08216e0d0f7d925fcef0b0194eedfa0c944bcaaa106c4b631",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/05/18/ceeb4e3ab3aa54495775775b38ae42b10a92f42ce42dfa44da684289b8c8/installer-0.7.0.tar.gz",
+        "version": "0.7.0"
+      }
+    },
+    "targets": {
+      "default": {
+        "installer": []
+      }
+    }
+  },
+  "invalidationHash": "41f3d067a058368695cb5622c153aac37e5c59925a0418ab470ddb71e4c336a3"
+}

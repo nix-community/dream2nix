@@ -1,0 +1,19 @@
+{
+  "fetchPipMetadata": {
+    "sources": {
+      "redis": {
+        "is_direct": false,
+        "sha256": "8f611490b93c8109b50adc317b31bfd84fff31def3475b92e7e80bf39f48175b",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/00/e9/cf42d89e68dbfa23bd534177e06c745164f7b694edae0029f6eee57704b6/redis-5.0.7.tar.gz",
+        "version": "5.0.7"
+      }
+    },
+    "targets": {
+      "default": {
+        "redis": []
+      }
+    }
+  },
+  "invalidationHash": "642f24796558fe42d58b5f96dcb1b5f27b1baf86b2a7c1d28b71030655f200b2"
+}

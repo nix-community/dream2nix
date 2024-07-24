@@ -1,0 +1,19 @@
+{
+  "fetchPipMetadata": {
+    "sources": {
+      "pbr": {
+        "is_direct": false,
+        "sha256": "d1377122a5a00e2f940ee482999518efe16d745d423a670c27773dfbc3c9a7d9",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/8d/c2/ee43b3b11bf2b40e56536183fc9f22afbb04e882720332b6276ee2454c24/pbr-6.0.0.tar.gz",
+        "version": "6.0.0"
+      }
+    },
+    "targets": {
+      "default": {
+        "pbr": []
+      }
+    }
+  },
+  "invalidationHash": "bed702e449c6ee77cabbd985a73317ef92fb92e5b8c154e8c81beaa0c3f9391d"
+}

@@ -1,0 +1,19 @@
+{
+  "fetchPipMetadata": {
+    "sources": {
+      "watchdog": {
+        "is_direct": false,
+        "sha256": "eebaacf674fa25511e8867028d281e602ee6500045b57f43b08778082f7f8b44",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/1b/f9/b01e4632aed9a6ecc2b3e501feffd3af5aa0eb4e3b0283fc9525bf503c38/watchdog-4.0.1.tar.gz",
+        "version": "4.0.1"
+      }
+    },
+    "targets": {
+      "default": {
+        "watchdog": []
+      }
+    }
+  },
+  "invalidationHash": "42d51ac5b4c659fa1d512caea1599f7e809d3dbdf9c55c940017436c1b23dded"
+}

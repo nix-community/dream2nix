@@ -1,0 +1,19 @@
+{
+  "fetchPipMetadata": {
+    "sources": {
+      "json5": {
+        "is_direct": false,
+        "sha256": "548e41b9be043f9426776f05df8635a00fe06104ea51ed24b67f908856e151ae",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/91/59/51b032d53212a51f17ebbcc01bd4217faab6d6c09ed0d856a987a5f42bbc/json5-0.9.25.tar.gz",
+        "version": "0.9.25"
+      }
+    },
+    "targets": {
+      "default": {
+        "json5": []
+      }
+    }
+  },
+  "invalidationHash": "9d696f5dddbfe2f1dc4dbe50e052b0e755750db795ad015db980abffebd6663a"
+}

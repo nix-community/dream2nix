@@ -1,0 +1,113 @@
+Collecting pip==23.1
+  Using cached pip-23.1-py3-none-any.whl.metadata (4.1 kB)
+Collecting wheel==0.43.0
+  Using cached wheel-0.43.0-py3-none-any.whl.metadata (2.2 kB)
+Using cached pip-23.1-py3-none-any.whl (2.1 MB)
+Using cached wheel-0.43.0-py3-none-any.whl (65 kB)
+Installing collected packages: wheel, pip
+  Attempting uninstall: pip
+    Found existing installation: pip 24.0
+    Uninstalling pip-24.0:
+      Successfully uninstalled pip-24.0
+Successfully installed pip-23.1 wheel-0.43.0
+
+[notice] A new release of pip is available: 23.1 -> 24.1.2
+[notice] To update, run: python -m pip install --upgrade pip
+Collecting scipy==1.14.0
+  Using cached scipy-1.14.0.tar.gz (58.6 MB)
+  Installing build dependencies: started
+  Installing build dependencies: finished with status 'done'
+  Getting requirements to build wheel: started
+  Getting requirements to build wheel: finished with status 'done'
+  Installing backend dependencies: started
+  Installing backend dependencies: finished with status 'done'
+  Preparing metadata (pyproject.toml): started
+  Preparing metadata (pyproject.toml): finished with status 'error'
+  error: subprocess-exited-with-error
+  
+  × Preparing metadata (pyproject.toml) did not run successfully.
+  │ exit code: 1
+  ╰─> [51 lines of output]
+      + meson setup /tmp/tmp.4JHCcMgDNe/pip-install-q879ame6/scipy_043369318a8a40e6b09254e1a7e8ca2f /tmp/tmp.4JHCcMgDNe/pip-install-q879ame6/scipy_043369318a8a40e6b09254e1a7e8ca2f/.mesonpy-ash7ug6g -Dbuildtype=release -Db_ndebug=if-release -Db_vscrt=md --cross-file=/nix/store/k29i1knpmzk83p1v7ic1qh02x94cszkz-cross-file-numpy.conf --native-file=/tmp/tmp.4JHCcMgDNe/pip-install-q879ame6/scipy_043369318a8a40e6b09254e1a7e8ca2f/.mesonpy-ash7ug6g/meson-python-native-file.ini
+      The Meson build system
+      Version: 1.5.0
+      Source dir: /tmp/tmp.4JHCcMgDNe/pip-install-q879ame6/scipy_043369318a8a40e6b09254e1a7e8ca2f
+      Build dir: /tmp/tmp.4JHCcMgDNe/pip-install-q879ame6/scipy_043369318a8a40e6b09254e1a7e8ca2f/.mesonpy-ash7ug6g
+      Build type: cross build
+      Project name: scipy
+      Project version: 1.14.0
+      C compiler for the host machine: cc (gcc 13.3.0 "gcc (GCC) 13.3.0")
+      C linker for the host machine: cc ld.bfd 2.42
+      C++ compiler for the host machine: c++ (gcc 13.3.0 "g++ (GCC) 13.3.0")
+      C++ linker for the host machine: c++ ld.bfd 2.42
+      Cython compiler for the host machine: cython (cython 3.0.10)
+      C compiler for the build machine: cc (gcc 13.3.0 "gcc (GCC) 13.3.0")
+      C linker for the build machine: cc ld.bfd 2.42
+      C++ compiler for the build machine: c++ (gcc 13.3.0 "g++ (GCC) 13.3.0")
+      C++ linker for the build machine: c++ ld.bfd 2.42
+      Cython compiler for the build machine: cython (cython 3.0.10)
+      Build machine cpu family: x86_64
+      Build machine cpu: x86_64
+      Host machine cpu family: x86_64
+      Host machine cpu: x86_64
+      Target machine cpu family: x86_64
+      Target machine cpu: x86_64
+      Program python3 found: YES (/tmp/tmp.4JHCcMgDNe/tmpfng60axa/.venv/bin/python)
+      Found pkg-config: NO
+      Run-time dependency python found: YES 3.12
+      Program cython found: YES (/tmp/tmp.4JHCcMgDNe/pip-build-env-nekvo64b/overlay/bin/cython)
+      Compiler for C supports arguments -Wno-unused-but-set-variable: YES
+      Compiler for C supports arguments -Wno-unused-function: YES
+      Compiler for C supports arguments -Wno-conversion: YES
+      Compiler for C supports arguments -Wno-misleading-indentation: YES
+      Library m found: YES
+      Fortran compiler for the host machine: gfortran (gcc 13.3.0 "GNU Fortran (GCC) 13.3.0")
+      Fortran linker for the host machine: gfortran ld.bfd 2.42
+      Compiler for Fortran supports arguments -Wno-conversion: YES
+      Checking if "-Wl,--version-script" : links: YES
+      Program tools/generate_f2pymod.py found: YES (/tmp/tmp.4JHCcMgDNe/tmpfng60axa/.venv/bin/python /tmp/tmp.4JHCcMgDNe/pip-install-q879ame6/scipy_043369318a8a40e6b09254e1a7e8ca2f/tools/generate_f2pymod.py)
+      Program scipy/_build_utils/tempita.py found: YES (/tmp/tmp.4JHCcMgDNe/tmpfng60axa/.venv/bin/python /tmp/tmp.4JHCcMgDNe/pip-install-q879ame6/scipy_043369318a8a40e6b09254e1a7e8ca2f/scipy/_build_utils/tempita.py)
+      Program pythran found: YES 0.16.1 0.16.1 (/tmp/tmp.4JHCcMgDNe/pip-build-env-nekvo64b/overlay/bin/pythran)
+      Found CMake: NO
+      Run-time dependency xsimd found: NO (tried pkgconfig and cmake)
+      Run-time dependency threads found: YES
+      Library npymath found: YES
+      pybind11-config found: YES (/tmp/tmp.4JHCcMgDNe/pip-build-env-nekvo64b/overlay/bin/pybind11-config) 2.12.0
+      Run-time dependency pybind11 found: YES 2.12.0
+      Program f2py found: YES (/tmp/tmp.4JHCcMgDNe/pip-build-env-nekvo64b/overlay/bin/f2py)
+      
+      ../scipy/meson.build:156:15: ERROR: Command `/tmp/tmp.4JHCcMgDNe/pip-build-env-nekvo64b/overlay/bin/f2py -v` failed with status 1.
+      
+      A full log can be found at /tmp/tmp.4JHCcMgDNe/pip-install-q879ame6/scipy_043369318a8a40e6b09254e1a7e8ca2f/.mesonpy-ash7ug6g/meson-logs/meson-log.txt
+      [end of output]
+  
+  note: This error originates from a subprocess, and is likely not a problem with pip.
+error: metadata-generation-failed
+
+× Encountered error while generating package metadata.
+╰─> See above for output.
+
+note: This is an issue with the package mentioned above, not pip.
+hint: See above for details.
+WARNING: There was an error checking the latest version of pip.
+Traceback (most recent call last):
+  File "/nix/store/h71zwamfrx3sah2bv18scmm16a3zk6w7-python3.12-fetch-pip-metadata/bin/.fetch_pip_metadata-wrapped", line 9, in <module>
+    sys.exit(fetch_pip_metadata())
+             ^^^^^^^^^^^^^^^^^^^^
+  File "/nix/store/h71zwamfrx3sah2bv18scmm16a3zk6w7-python3.12-fetch-pip-metadata/lib/python3.12/site-packages/fetch_pip_metadata/__init__.py", line 78, in fetch_pip_metadata
+    subprocess.run(
+  File "/nix/store/z7xxy35k7620hs6fn6la5fg2lgklv72l-python3-3.12.4/lib/python3.12/subprocess.py", line 571, in run
+    raise CalledProcessError(retcode, process.args,
+subprocess.CalledProcessError: Command '['/tmp/tmp.4JHCcMgDNe/tmpfng60axa/.venv/bin/pip', 'install', '--dry-run', '--ignore-installed', '--no-binary', 'scipy', '--progress-bar', 'off', '--report', '/tmp/tmp.4JHCcMgDNe/tmpfng60axa/report.json', 'scipy==1.14.0']' returned non-zero exit status 1.
+Traceback (most recent call last):
+  File "/nix/store/gi3impqiwph4yiz4ywn6gnlli1ff35b6-refresh/bin/refresh", line 40, in <module>
+    lock_data = run_refresh_scripts(refresh_scripts)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/nix/store/gi3impqiwph4yiz4ywn6gnlli1ff35b6-refresh/bin/refresh", line 36, in run_refresh_scripts
+    refresh_scripts[name] = run_refresh_script(value["script"])
+                            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/nix/store/gi3impqiwph4yiz4ywn6gnlli1ff35b6-refresh/bin/refresh", line 22, in run_refresh_script
+    subprocess.run(
+  File "/nix/store/z7xxy35k7620hs6fn6la5fg2lgklv72l-python3-3.12.4/lib/python3.12/subprocess.py", line 571, in run
+    raise CalledProcessError(retcode, process.args,
+subprocess.CalledProcessError: Command '['/nix/store/dp8wxifv8j7svpba3v9sl221fakr6v5m-script.sh']' returned non-zero exit status 1.

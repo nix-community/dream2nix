@@ -1,0 +1,29 @@
+{
+  "fetchPipMetadata": {
+    "sources": {
+      "python-utils": {
+        "is_direct": false,
+        "sha256": "c5d161e4ca58ce3f8c540f035e018850b261a41e7cb98f6ccf8e1deb7174a1f1",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/a7/0c/587d2274217c13e9d1ba091560e9161ae94dd04053b390d70ef612b0af81/python-utils-3.8.2.tar.gz",
+        "version": "3.8.2"
+      },
+      "typing-extensions": {
+        "is_direct": false,
+        "sha256": "04e5ca0351e0f3f85c6853954072df659d0d13fac324d0072316b67d7794700d",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/26/9f/ad63fc0248c5379346306f8668cda6e2e2e9c95e01216d2b8ffd9ff037d0/typing_extensions-4.12.2-py3-none-any.whl",
+        "version": "4.12.2"
+      }
+    },
+    "targets": {
+      "default": {
+        "python-utils": [
+          "typing-extensions"
+        ],
+        "typing-extensions": []
+      }
+    }
+  },
+  "invalidationHash": "c00c386b4ff5e76072daa81bea81f86c5923f67940e8774c331b0eeb9c267207"
+}

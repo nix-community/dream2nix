@@ -1,0 +1,19 @@
+{
+  "fetchPipMetadata": {
+    "sources": {
+      "graphql-core": {
+        "is_direct": false,
+        "sha256": "06d2aad0ac723e35b1cb47885d3e5c45e956a53bc1b209a9fc5369007fe46676",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/ee/a6/94df9045ca1bac404c7b394094cd06713f63f49c7a4d54d99b773ae81737/graphql-core-3.2.3.tar.gz",
+        "version": "3.2.3"
+      }
+    },
+    "targets": {
+      "default": {
+        "graphql-core": []
+      }
+    }
+  },
+  "invalidationHash": "8d872926da67a2e5aba5a130f0906f576572090b4037bfd9e380850082de9604"
+}

@@ -1,0 +1,19 @@
+{
+  "fetchPipMetadata": {
+    "sources": {
+      "fsspec": {
+        "is_direct": false,
+        "sha256": "fad7d7e209dd4c1208e3bbfda706620e0da5142bebbd9c384afb95b07e798e49",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/90/b6/eba5024a9889fcfff396db543a34bef0ab9d002278f163129f9f01005960/fsspec-2024.6.1.tar.gz",
+        "version": "2024.6.1"
+      }
+    },
+    "targets": {
+      "default": {
+        "fsspec": []
+      }
+    }
+  },
+  "invalidationHash": "df15d2adae2c59f025da7962f7cf26460a184a9d90942bc371fbd0e7fc039cb7"
+}

@@ -1,0 +1,19 @@
+{
+  "fetchPipMetadata": {
+    "sources": {
+      "uri-template": {
+        "is_direct": false,
+        "sha256": "0e00f8eb65e18c7de20d595a14336e9f337ead580c70934141624b6d1ffdacc7",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/31/c7/0336f2bd0bcbada6ccef7aaa25e443c118a704f828a0620c6fa0207c1b64/uri-template-1.3.0.tar.gz",
+        "version": "1.3.0"
+      }
+    },
+    "targets": {
+      "default": {
+        "uri-template": []
+      }
+    }
+  },
+  "invalidationHash": "541cde68fabbd3a3183fd08cb39783688864c22ec8abdbaed1aa998febe1ac1d"
+}

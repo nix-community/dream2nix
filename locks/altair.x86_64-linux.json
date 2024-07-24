@@ -1,0 +1,165 @@
+{
+  "fetchPipMetadata": {
+    "sources": {
+      "altair": {
+        "is_direct": false,
+        "sha256": "5a268b1a0983b23d8f9129f819f956174aa7aea2719ed55a52eba9979b9f6675",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/bd/3c/a0934e25e5eed622b35594261edff75bfa342882d651daa33961fdb4fbf0/altair-5.3.0.tar.gz",
+        "version": "5.3.0"
+      },
+      "attrs": {
+        "is_direct": false,
+        "sha256": "99b87a485a5820b23b879f04c2305b44b951b502fd64be915879d77a7e8fc6f1",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/e0/44/827b2a91a5816512fcaf3cc4ebc465ccd5d598c45cefa6703fcf4a79018f/attrs-23.2.0-py3-none-any.whl",
+        "version": "23.2.0"
+      },
+      "jinja2": {
+        "is_direct": false,
+        "sha256": "bc5dd2abb727a5319567b7a813e6a2e7318c39f4f487cfe6c89c6f9c7d25197d",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/31/80/3a54838c3fb461f6fec263ebf3a3a41771bd05190238de3486aae8540c36/jinja2-3.1.4-py3-none-any.whl",
+        "version": "3.1.4"
+      },
+      "jsonschema": {
+        "is_direct": false,
+        "sha256": "fbadb6f8b144a8f8cf9f0b89ba94501d143e50411a1278633f56a7acf7fd5566",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/69/4a/4f9dbeb84e8850557c02365a0eee0649abe5eb1d84af92a25731c6c0f922/jsonschema-4.23.0-py3-none-any.whl",
+        "version": "4.23.0"
+      },
+      "jsonschema-specifications": {
+        "is_direct": false,
+        "sha256": "87e4fdf3a94858b8a2ba2778d9ba57d8a9cafca7c7489c46ba0d30a8bc6a9c3c",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/ee/07/44bd408781594c4d0a027666ef27fab1e441b109dc3b76b4f836f8fd04fe/jsonschema_specifications-2023.12.1-py3-none-any.whl",
+        "version": "2023.12.1"
+      },
+      "markupsafe": {
+        "is_direct": false,
+        "sha256": "f5dfb42c4604dddc8e4305050aa6deb084540643ed5804d7455b5df8fe16f5e5",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/0a/0d/2454f072fae3b5a137c119abf15465d1771319dfe9e4acbb31722a0fff91/MarkupSafe-2.1.5-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl",
+        "version": "2.1.5"
+      },
+      "numpy": {
+        "is_direct": false,
+        "sha256": "6790654cb13eab303d8402354fabd47472b24635700f631f041bd0b65e37298a",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/2c/f3/61eeef119beb37decb58e7cb29940f19a1464b8608f2cab8a8616aba75fd/numpy-2.0.1-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl",
+        "version": "2.0.1"
+      },
+      "packaging": {
+        "is_direct": false,
+        "sha256": "5b8f2217dbdbd2f7f384c41c628544e6d52f2d0f53c6d0c3ea61aa5d1d7ff124",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/08/aa/cc0199a5f0ad350994d660967a8efb233fe0416e4639146c089643407ce6/packaging-24.1-py3-none-any.whl",
+        "version": "24.1"
+      },
+      "pandas": {
+        "is_direct": false,
+        "sha256": "eee3a87076c0756de40b05c5e9a6069c035ba43e8dd71c379e68cab2c20f16ad",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/40/10/79e52ef01dfeb1c1ca47a109a01a248754ebe990e159a844ece12914de83/pandas-2.2.2-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl",
+        "version": "2.2.2"
+      },
+      "python-dateutil": {
+        "is_direct": false,
+        "sha256": "a8b2bc7bffae282281c8140a97d3aa9c14da0b136dfe83f850eea9a5f7470427",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/ec/57/56b9bcc3c9c6a792fcbaf139543cee77261f3651ca9da0c93f5c1221264b/python_dateutil-2.9.0.post0-py2.py3-none-any.whl",
+        "version": "2.9.0.post0"
+      },
+      "pytz": {
+        "is_direct": false,
+        "sha256": "328171f4e3623139da4983451950b28e95ac706e13f3f2630a879749e7a8b319",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/9c/3d/a121f284241f08268b21359bd425f7d4825cffc5ac5cd0e1b3d82ffd2b10/pytz-2024.1-py2.py3-none-any.whl",
+        "version": "2024.1"
+      },
+      "referencing": {
+        "is_direct": false,
+        "sha256": "eda6d3234d62814d1c64e305c1331c9a3a6132da475ab6382eaa997b21ee75de",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/b7/59/2056f61236782a2c86b33906c025d4f4a0b17be0161b63b70fd9e8775d36/referencing-0.35.1-py3-none-any.whl",
+        "version": "0.35.1"
+      },
+      "rpds-py": {
+        "is_direct": false,
+        "sha256": "3b4cf5a9497874822341c2ebe0d5850fed392034caadc0bad134ab6822c0925b",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/8d/4f/11392ec52a9a4f9d37b5d07790139d31235fec1f552338612730e62e7126/rpds_py-0.19.0-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl",
+        "version": "0.19.0"
+      },
+      "six": {
+        "is_direct": false,
+        "sha256": "8abb2f1d86890a2dfb989f9a77cfcfd3e47c2a354b01111771326f8aa26e0254",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/d9/5a/e7c31adbe875f2abbb91bd84cf2dc52d792b5a01506781dbcf25c91daf11/six-1.16.0-py2.py3-none-any.whl",
+        "version": "1.16.0"
+      },
+      "toolz": {
+        "is_direct": false,
+        "sha256": "d22731364c07d72eea0a0ad45bafb2c2937ab6fd38a3507bf55eae8744aa7d85",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/b7/8a/d82202c9f89eab30f9fc05380daae87d617e2ad11571ab23d7c13a29bb54/toolz-0.12.1-py3-none-any.whl",
+        "version": "0.12.1"
+      },
+      "tzdata": {
+        "is_direct": false,
+        "sha256": "9068bc196136463f5245e51efda838afa15aaeca9903f49050dfa2679db4d252",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/65/58/f9c9e6be752e9fcb8b6a0ee9fb87e6e7a1f6bcab2cdc73f02bb7ba91ada0/tzdata-2024.1-py2.py3-none-any.whl",
+        "version": "2024.1"
+      }
+    },
+    "targets": {
+      "default": {
+        "altair": [
+          "jinja2",
+          "jsonschema",
+          "numpy",
+          "packaging",
+          "pandas",
+          "toolz"
+        ],
+        "attrs": [],
+        "jinja2": [
+          "markupsafe"
+        ],
+        "jsonschema": [
+          "attrs",
+          "jsonschema-specifications",
+          "referencing",
+          "rpds-py"
+        ],
+        "jsonschema-specifications": [
+          "referencing"
+        ],
+        "markupsafe": [],
+        "numpy": [],
+        "packaging": [],
+        "pandas": [
+          "numpy",
+          "python-dateutil",
+          "pytz",
+          "tzdata"
+        ],
+        "python-dateutil": [
+          "six"
+        ],
+        "pytz": [],
+        "referencing": [
+          "attrs",
+          "rpds-py"
+        ],
+        "rpds-py": [],
+        "six": [],
+        "toolz": [],
+        "tzdata": []
+      }
+    }
+  },
+  "invalidationHash": "2ed49175db32d867867b5dc9e972fef073172bbc05c533eb1b41f8889acbc5bd"
+}

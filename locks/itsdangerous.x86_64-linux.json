@@ -1,0 +1,19 @@
+{
+  "fetchPipMetadata": {
+    "sources": {
+      "itsdangerous": {
+        "is_direct": false,
+        "sha256": "e0050c0b7da1eea53ffaf149c0cfbb5c6e2e2b69c4bef22c81fa6eb73e5f6173",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/9c/cb/8ac0172223afbccb63986cc25049b154ecfb5e85932587206f42317be31d/itsdangerous-2.2.0.tar.gz",
+        "version": "2.2.0"
+      }
+    },
+    "targets": {
+      "default": {
+        "itsdangerous": []
+      }
+    }
+  },
+  "invalidationHash": "677db7fe8458ceeba92e19c8dfd39eb5f99634bc886e6bc11c892d35f0950aa4"
+}

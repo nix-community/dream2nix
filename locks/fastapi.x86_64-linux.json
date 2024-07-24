@@ -1,0 +1,333 @@
+{
+  "fetchPipMetadata": {
+    "sources": {
+      "annotated-types": {
+        "is_direct": false,
+        "sha256": "1f02e8b43a8fbbc3f3e0d4f0f4bfc8131bcb4eebe8849b8e5c773f3a1c582a53",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/78/b6/6307fbef88d9b5ee7421e68d78a9f162e0da4900bc5f5793f6d3d0e34fb8/annotated_types-0.7.0-py3-none-any.whl",
+        "version": "0.7.0"
+      },
+      "anyio": {
+        "is_direct": false,
+        "sha256": "c1b2d8f46a8a812513012e1107cb0e68c17159a7a594208005a57dc776e1bdc7",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/7b/a2/10639a79341f6c019dedc95bd48a4928eed9f1d1197f4c04f546fc7ae0ff/anyio-4.4.0-py3-none-any.whl",
+        "version": "4.4.0"
+      },
+      "certifi": {
+        "is_direct": false,
+        "sha256": "c198e21b1289c2ab85ee4e67bb4b4ef3ead0892059901a8d5b622f24a1101e90",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/1c/d5/c84e1a17bf61d4df64ca866a1c9a913874b4e9bdc131ec689a0ad013fb36/certifi-2024.7.4-py3-none-any.whl",
+        "version": "2024.7.4"
+      },
+      "click": {
+        "is_direct": false,
+        "sha256": "ae74fb96c20a0277a1d615f1e4d73c8414f5a98db8b799a7931d1582f3390c28",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/00/2e/d53fa4befbf2cfa713304affc7ca780ce4fc1fd8710527771b58311a3229/click-8.1.7-py3-none-any.whl",
+        "version": "8.1.7"
+      },
+      "dnspython": {
+        "is_direct": false,
+        "sha256": "5ef3b9680161f6fa89daf8ad451b5f1a33b18ae8a1c6778cdf4b43f08c0a6e50",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/87/a1/8c5287991ddb8d3e4662f71356d9656d91ab3a36618c3dd11b280df0d255/dnspython-2.6.1-py3-none-any.whl",
+        "version": "2.6.1"
+      },
+      "email-validator": {
+        "is_direct": false,
+        "sha256": "561977c2d73ce3611850a06fa56b414621e0c8faa9d66f2611407d87465da631",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/d7/ee/bf0adb559ad3c786f12bcbc9296b3f5675f529199bef03e2df281fa1fadb/email_validator-2.2.0-py3-none-any.whl",
+        "version": "2.2.0"
+      },
+      "fastapi": {
+        "is_direct": false,
+        "sha256": "ddd1ac34cb1f76c2e2d7f8545a4bcb5463bce4834e81abf0b189e0c359ab2413",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/a0/ab/9f461ced846964e01c7a6ab25ea79ce2f07743285697b03c8e0e83d72e3e/fastapi-0.111.1.tar.gz",
+        "version": "0.111.1"
+      },
+      "fastapi-cli": {
+        "is_direct": false,
+        "sha256": "a2552f3a7ae64058cdbb530be6fa6dbfc975dc165e4fa66d224c3d396e25e809",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/a1/03/89bf615052aa5453c04d952225ded0b88aab6487b9c5f0c268939d13b860/fastapi_cli-0.0.4-py3-none-any.whl",
+        "version": "0.0.4"
+      },
+      "h11": {
+        "is_direct": false,
+        "sha256": "e3fe4ac4b851c468cc8363d500db52c2ead036020723024a109d37346efaa761",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/95/04/ff642e65ad6b90db43e668d70ffb6736436c7ce41fcc549f4e9472234127/h11-0.14.0-py3-none-any.whl",
+        "version": "0.14.0"
+      },
+      "httpcore": {
+        "is_direct": false,
+        "sha256": "421f18bac248b25d310f3cacd198d55b8e6125c107797b609ff9b7a6ba7991b5",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/78/d4/e5d7e4f2174f8a4d63c8897d79eb8fe2503f7ecc03282fee1fa2719c2704/httpcore-1.0.5-py3-none-any.whl",
+        "version": "1.0.5"
+      },
+      "httptools": {
+        "is_direct": false,
+        "sha256": "93ad80d7176aa5788902f207a4e79885f0576134695dfb0fefc15b7a4648d503",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/a2/9a/aa406864f3108e06f7320425a528ff8267124dead1fd72a3e9da2067f893/httptools-0.6.1-cp312-cp312-manylinux_2_5_x86_64.manylinux1_x86_64.manylinux_2_17_x86_64.manylinux2014_x86_64.whl",
+        "version": "0.6.1"
+      },
+      "httpx": {
+        "is_direct": false,
+        "sha256": "71d5465162c13681bff01ad59b2cc68dd838ea1f10e51574bac27103f00c91a5",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/41/7b/ddacf6dcebb42466abd03f368782142baa82e08fc0c1f8eaa05b4bae87d5/httpx-0.27.0-py3-none-any.whl",
+        "version": "0.27.0"
+      },
+      "idna": {
+        "is_direct": false,
+        "sha256": "82fee1fc78add43492d3a1898bfa6d8a904cc97d8427f683ed8e798d07761aa0",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/e5/3e/741d8c82801c347547f8a2a06aa57dbb1992be9e948df2ea0eda2c8b79e8/idna-3.7-py3-none-any.whl",
+        "version": "3.7"
+      },
+      "jinja2": {
+        "is_direct": false,
+        "sha256": "bc5dd2abb727a5319567b7a813e6a2e7318c39f4f487cfe6c89c6f9c7d25197d",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/31/80/3a54838c3fb461f6fec263ebf3a3a41771bd05190238de3486aae8540c36/jinja2-3.1.4-py3-none-any.whl",
+        "version": "3.1.4"
+      },
+      "markdown-it-py": {
+        "is_direct": false,
+        "sha256": "355216845c60bd96232cd8d8c40e8f9765cc86f46880e43a8fd22dc1a1a8cab1",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/42/d7/1ec15b46af6af88f19b8e5ffea08fa375d433c998b8a7639e76935c14f1f/markdown_it_py-3.0.0-py3-none-any.whl",
+        "version": "3.0.0"
+      },
+      "markupsafe": {
+        "is_direct": false,
+        "sha256": "f5dfb42c4604dddc8e4305050aa6deb084540643ed5804d7455b5df8fe16f5e5",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/0a/0d/2454f072fae3b5a137c119abf15465d1771319dfe9e4acbb31722a0fff91/MarkupSafe-2.1.5-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl",
+        "version": "2.1.5"
+      },
+      "mdurl": {
+        "is_direct": false,
+        "sha256": "84008a41e51615a49fc9966191ff91509e3c40b939176e643fd50a5c2196b8f8",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/b3/38/89ba8ad64ae25be8de66a6d463314cf1eb366222074cfda9ee839c56a4b4/mdurl-0.1.2-py3-none-any.whl",
+        "version": "0.1.2"
+      },
+      "pydantic": {
+        "is_direct": false,
+        "sha256": "73ee9fddd406dc318b885c7a2eab8a6472b68b8fb5ba8150949fc3db939f23c8",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/1f/fa/b7f815b8c9ad021c07f88875b601222ef5e70619391ade4a49234d12d278/pydantic-2.8.2-py3-none-any.whl",
+        "version": "2.8.2"
+      },
+      "pydantic-core": {
+        "is_direct": false,
+        "sha256": "26dc97754b57d2fd00ac2b24dfa341abffc380b823211994c4efac7f13b9e90e",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/09/b3/a5a54b47cccd1ab661ed5775235c5e06924753c2d4817737c5667bfa19a8/pydantic_core-2.20.1-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl",
+        "version": "2.20.1"
+      },
+      "pygments": {
+        "is_direct": false,
+        "sha256": "b8e6aca0523f3ab76fee51799c488e38782ac06eafcf95e7ba832985c8e7b13a",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/f7/3f/01c8b82017c199075f8f788d0d906b9ffbbc5a47dc9918a945e13d5a2bda/pygments-2.18.0-py3-none-any.whl",
+        "version": "2.18.0"
+      },
+      "python-dotenv": {
+        "is_direct": false,
+        "sha256": "f7b63ef50f1b690dddf550d03497b66d609393b40b564ed0d674909a68ebf16a",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/6a/3e/b68c118422ec867fa7ab88444e1274aa40681c606d59ac27de5a5588f082/python_dotenv-1.0.1-py3-none-any.whl",
+        "version": "1.0.1"
+      },
+      "python-multipart": {
+        "is_direct": false,
+        "sha256": "97ca7b8ea7b05f977dc3849c3ba99d51689822fab725c3703af7c866a0c2b215",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/3d/47/444768600d9e0ebc82f8e347775d24aef8f6348cf00e9fa0e81910814e6d/python_multipart-0.0.9-py3-none-any.whl",
+        "version": "0.0.9"
+      },
+      "pyyaml": {
+        "is_direct": false,
+        "sha256": "6c22bec3fbe2524cde73d7ada88f6566758a8f7227bfbf93a408a9d86bcc12a0",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/b4/33/720548182ffa8344418126017aa1d4ab4aeec9a2275f04ce3f3573d8ace8/PyYAML-6.0.1-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl",
+        "version": "6.0.1"
+      },
+      "rich": {
+        "is_direct": false,
+        "sha256": "4edbae314f59eb482f54e9e30bf00d33350aaa94f4bfcd4e9e3110e64d0d7222",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/87/67/a37f6214d0e9fe57f6ae54b2956d550ca8365857f42a1ce0392bb21d9410/rich-13.7.1-py3-none-any.whl",
+        "version": "13.7.1"
+      },
+      "shellingham": {
+        "is_direct": false,
+        "sha256": "7ecfff8f2fd72616f7481040475a65b2bf8af90a56c89140852d1120324e8686",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/e0/f9/0595336914c5619e5f28a1fb793285925a8cd4b432c9da0a987836c7f822/shellingham-1.5.4-py2.py3-none-any.whl",
+        "version": "1.5.4"
+      },
+      "sniffio": {
+        "is_direct": false,
+        "sha256": "2f6da418d1f1e0fddd844478f41680e794e6051915791a034ff65e5f100525a2",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/e9/44/75a9c9421471a6c4805dbf2356f7c181a29c1879239abab1ea2cc8f38b40/sniffio-1.3.1-py3-none-any.whl",
+        "version": "1.3.1"
+      },
+      "starlette": {
+        "is_direct": false,
+        "sha256": "6fe59f29268538e5d0d182f2791a479a0c64638e6935d1c6989e63fb2699c6ee",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/fd/18/31fa32ed6c68ba66220204ef0be798c349d0a20c1901f9d4a794e08c76d8/starlette-0.37.2-py3-none-any.whl",
+        "version": "0.37.2"
+      },
+      "typer": {
+        "is_direct": false,
+        "sha256": "070d7ca53f785acbccba8e7d28b08dcd88f79f1fbda035ade0aecec71ca5c914",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/20/b5/11cf2e34fbb11b937e006286ab5b8cfd334fde1c8fa4dd7f491226931180/typer-0.12.3-py3-none-any.whl",
+        "version": "0.12.3"
+      },
+      "typing-extensions": {
+        "is_direct": false,
+        "sha256": "04e5ca0351e0f3f85c6853954072df659d0d13fac324d0072316b67d7794700d",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/26/9f/ad63fc0248c5379346306f8668cda6e2e2e9c95e01216d2b8ffd9ff037d0/typing_extensions-4.12.2-py3-none-any.whl",
+        "version": "4.12.2"
+      },
+      "uvicorn": {
+        "is_direct": false,
+        "sha256": "94a3608da0e530cea8f69683aa4126364ac18e3826b6630d1a65f4638aade503",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/63/84/2a26b4eac1cf0c6b5b176dd4346cc4912af5e1b0efc150b865e28636ac34/uvicorn-0.30.3-py3-none-any.whl",
+        "version": "0.30.3"
+      },
+      "uvloop": {
+        "is_direct": false,
+        "sha256": "7010271303961c6f0fe37731004335401eb9075a12680738731e9c92ddd96ad6",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/fd/96/fdc318ffe82ae567592b213ec2fcd8ecedd927b5da068cf84d56b28c51a4/uvloop-0.19.0-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl",
+        "version": "0.19.0"
+      },
+      "watchfiles": {
+        "is_direct": false,
+        "sha256": "28585744c931576e535860eaf3f2c0ec7deb68e3b9c5a85ca566d69d36d8dd27",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/ae/10/97374c7c13827041c14dcda3cc1531a96b79c281ce6b1885dd62ae3419ad/watchfiles-0.22.0-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl",
+        "version": "0.22.0"
+      },
+      "websockets": {
+        "is_direct": false,
+        "sha256": "1f38a7b376117ef7aff996e737583172bdf535932c9ca021746573bce40165ed",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/f1/00/d6f01ca2b191f8b0808e4132ccd2e7691f0453cbd7d0f72330eb97453c3a/websockets-12.0-cp312-cp312-manylinux_2_5_x86_64.manylinux1_x86_64.manylinux_2_17_x86_64.manylinux2014_x86_64.whl",
+        "version": "12.0"
+      }
+    },
+    "targets": {
+      "default": {
+        "annotated-types": [],
+        "anyio": [
+          "idna",
+          "sniffio"
+        ],
+        "certifi": [],
+        "click": [],
+        "dnspython": [],
+        "email-validator": [
+          "dnspython",
+          "idna"
+        ],
+        "fastapi": [
+          "email-validator",
+          "fastapi-cli",
+          "httpx",
+          "jinja2",
+          "pydantic",
+          "python-multipart",
+          "starlette",
+          "typing-extensions",
+          "uvicorn"
+        ],
+        "fastapi-cli": [
+          "typer"
+        ],
+        "h11": [],
+        "httpcore": [
+          "certifi",
+          "h11"
+        ],
+        "httptools": [],
+        "httpx": [
+          "anyio",
+          "certifi",
+          "httpcore",
+          "idna",
+          "sniffio"
+        ],
+        "idna": [],
+        "jinja2": [
+          "markupsafe"
+        ],
+        "markdown-it-py": [
+          "mdurl"
+        ],
+        "markupsafe": [],
+        "mdurl": [],
+        "pydantic": [
+          "annotated-types",
+          "pydantic-core",
+          "typing-extensions"
+        ],
+        "pydantic-core": [
+          "typing-extensions"
+        ],
+        "pygments": [],
+        "python-dotenv": [],
+        "python-multipart": [],
+        "pyyaml": [],
+        "rich": [
+          "markdown-it-py",
+          "pygments"
+        ],
+        "shellingham": [],
+        "sniffio": [],
+        "starlette": [
+          "anyio"
+        ],
+        "typer": [
+          "click",
+          "rich",
+          "shellingham",
+          "typing-extensions"
+        ],
+        "typing-extensions": [],
+        "uvicorn": [
+          "click",
+          "h11",
+          "httptools",
+          "python-dotenv",
+          "pyyaml",
+          "uvloop",
+          "watchfiles",
+          "websockets"
+        ],
+        "uvloop": [],
+        "watchfiles": [
+          "anyio"
+        ],
+        "websockets": []
+      }
+    }
+  },
+  "invalidationHash": "460ea325a3ec01095c4747bdeda89836ad33d8171725b4af376b4b3cba00cd57"
+}

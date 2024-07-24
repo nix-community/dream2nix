@@ -1,0 +1,19 @@
+{
+  "fetchPipMetadata": {
+    "sources": {
+      "pyflakes": {
+        "is_direct": false,
+        "sha256": "1c61603ff154621fb2a9172037d84dca3500def8c8b630657d1701f026f8af3f",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/57/f9/669d8c9c86613c9d568757c7f5824bd3197d7b1c6c27553bc5618a27cce2/pyflakes-3.2.0.tar.gz",
+        "version": "3.2.0"
+      }
+    },
+    "targets": {
+      "default": {
+        "pyflakes": []
+      }
+    }
+  },
+  "invalidationHash": "405e5d565455f9d5b373e25f2a8dbf78b589145b58dbce58b5e734236090e8a4"
+}

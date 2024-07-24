@@ -1,0 +1,49 @@
+{
+  "fetchPipMetadata": {
+    "sources": {
+      "argon2-cffi": {
+        "is_direct": false,
+        "sha256": "879c3e79a2729ce768ebb7d36d4609e3a78a4ca2ec3a9f12286ca057e3d0db08",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/31/fa/57ec2c6d16ecd2ba0cf15f3c7d1c3c2e7b5fcb83555ff56d7ab10888ec8f/argon2_cffi-23.1.0.tar.gz",
+        "version": "23.1.0"
+      },
+      "argon2-cffi-bindings": {
+        "is_direct": false,
+        "sha256": "e415e3f62c8d124ee16018e491a009937f8cf7ebf5eb430ffc5de21b900dad93",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/5a/e4/bf8034d25edaa495da3c8a3405627d2e35758e44ff6eaa7948092646fdcc/argon2_cffi_bindings-21.2.0-cp38-abi3-macosx_10_9_universal2.whl",
+        "version": "21.2.0"
+      },
+      "cffi": {
+        "is_direct": false,
+        "sha256": "68e7c44931cc171c54ccb702482e9fc723192e88d25a0e133edd7aff8fcd1f6e",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/b4/f6/b28d2bfb5fca9e8f9afc9d05eae245bed9f6ba5c2897fefee7a9abeaf091/cffi-1.16.0-cp312-cp312-macosx_11_0_arm64.whl",
+        "version": "1.16.0"
+      },
+      "pycparser": {
+        "is_direct": false,
+        "sha256": "c3702b6d3dd8c7abc1afa565d7e63d53a1d0bd86cdc24edd75470f4de499cfcc",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/13/a3/a812df4e2dd5696d1f351d58b8fe16a405b234ad2886a0dab9183fb78109/pycparser-2.22-py3-none-any.whl",
+        "version": "2.22"
+      }
+    },
+    "targets": {
+      "default": {
+        "argon2-cffi": [
+          "argon2-cffi-bindings"
+        ],
+        "argon2-cffi-bindings": [
+          "cffi"
+        ],
+        "cffi": [
+          "pycparser"
+        ],
+        "pycparser": []
+      }
+    }
+  },
+  "invalidationHash": "f1ee7cfbf9ae39d3c666396252c63ccd1309ead78878f63ae7b9abb5c3e3fc8e"
+}

@@ -1,0 +1,29 @@
+{
+  "fetchPipMetadata": {
+    "sources": {
+      "ruamel-yaml": {
+        "is_direct": false,
+        "sha256": "8b27e6a217e786c6fbe5634d8f3f11bc63e0f80f6a5890f28863d9c45aac311b",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/29/81/4dfc17eb6ebb1aac314a3eb863c1325b907863a1b8b1382cdffcb6ac0ed9/ruamel.yaml-0.18.6.tar.gz",
+        "version": "0.18.6"
+      },
+      "ruamel-yaml-clib": {
+        "is_direct": false,
+        "sha256": "edaef1c1200c4b4cb914583150dcaa3bc30e592e907c01117c08b13a07255ec2",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/66/98/8de4f22bbfd9135deb3422e96d450c4bc0a57d38c25976119307d2efe0aa/ruamel.yaml.clib-0.2.8-cp312-cp312-macosx_13_0_arm64.whl",
+        "version": "0.2.8"
+      }
+    },
+    "targets": {
+      "default": {
+        "ruamel-yaml": [
+          "ruamel-yaml-clib"
+        ],
+        "ruamel-yaml-clib": []
+      }
+    }
+  },
+  "invalidationHash": "2927f94dd00bc3a252a2ec49277f7b6db1b4199142990b269c6ded0bb5cfb1f2"
+}

@@ -1,0 +1,19 @@
+{
+  "fetchPipMetadata": {
+    "sources": {
+      "future": {
+        "is_direct": false,
+        "sha256": "bd2968309307861edae1458a4f8a4f3598c03be43b97521076aebf5d94c07b05",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/a7/b2/4140c69c6a66432916b26158687e821ba631a4c9273c474343badf84d3ba/future-1.0.0.tar.gz",
+        "version": "1.0.0"
+      }
+    },
+    "targets": {
+      "default": {
+        "future": []
+      }
+    }
+  },
+  "invalidationHash": "f065089b5d8e204009e993e57e0385ef740a0033d802e4758d9b931cd5d8f8f0"
+}

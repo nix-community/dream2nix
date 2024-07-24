@@ -1,0 +1,19 @@
+{
+  "fetchPipMetadata": {
+    "sources": {
+      "pure-eval": {
+        "is_direct": false,
+        "sha256": "5f4e983f40564c576c7c8635ae88db5956bb2229d7e9237d03b3c0b0190eaf42",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/cd/05/0a34433a064256a578f1783a10da6df098ceaa4a57bbeaa96a6c0352786b/pure_eval-0.2.3.tar.gz",
+        "version": "0.2.3"
+      }
+    },
+    "targets": {
+      "default": {
+        "pure-eval": []
+      }
+    }
+  },
+  "invalidationHash": "a32efb834240c604a8b5cc613d152e8553ed107b2a8552927bebc517b82d4514"
+}

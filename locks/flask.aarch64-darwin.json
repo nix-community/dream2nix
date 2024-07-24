@@ -1,0 +1,77 @@
+{
+  "fetchPipMetadata": {
+    "sources": {
+      "blinker": {
+        "is_direct": false,
+        "sha256": "1779309f71bf239144b9399d06ae925637cf6634cf6bd131104184531bf67c01",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/bb/2a/10164ed1f31196a2f7f3799368a821765c62851ead0e630ab52b8e14b4d0/blinker-1.8.2-py3-none-any.whl",
+        "version": "1.8.2"
+      },
+      "click": {
+        "is_direct": false,
+        "sha256": "ae74fb96c20a0277a1d615f1e4d73c8414f5a98db8b799a7931d1582f3390c28",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/00/2e/d53fa4befbf2cfa713304affc7ca780ce4fc1fd8710527771b58311a3229/click-8.1.7-py3-none-any.whl",
+        "version": "8.1.7"
+      },
+      "flask": {
+        "is_direct": false,
+        "sha256": "ceb27b0af3823ea2737928a4d99d125a06175b8512c445cbd9a9ce200ef76842",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/41/e1/d104c83026f8d35dfd2c261df7d64738341067526406b40190bc063e829a/flask-3.0.3.tar.gz",
+        "version": "3.0.3"
+      },
+      "itsdangerous": {
+        "is_direct": false,
+        "sha256": "c6242fc49e35958c8b15141343aa660db5fc54d4f13a1db01a3f5891b98700ef",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/04/96/92447566d16df59b2a776c0fb82dbc4d9e07cd95062562af01e408583fc4/itsdangerous-2.2.0-py3-none-any.whl",
+        "version": "2.2.0"
+      },
+      "jinja2": {
+        "is_direct": false,
+        "sha256": "bc5dd2abb727a5319567b7a813e6a2e7318c39f4f487cfe6c89c6f9c7d25197d",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/31/80/3a54838c3fb461f6fec263ebf3a3a41771bd05190238de3486aae8540c36/jinja2-3.1.4-py3-none-any.whl",
+        "version": "3.1.4"
+      },
+      "markupsafe": {
+        "is_direct": false,
+        "sha256": "8dec4936e9c3100156f8a2dc89c4b88d5c435175ff03413b443469c7c8c5f4d1",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/53/bd/583bf3e4c8d6a321938c13f49d44024dbe5ed63e0a7ba127e454a66da974/MarkupSafe-2.1.5-cp312-cp312-macosx_10_9_universal2.whl",
+        "version": "2.1.5"
+      },
+      "werkzeug": {
+        "is_direct": false,
+        "sha256": "fc9645dc43e03e4d630d23143a04a7f947a9a3b5727cd535fdfe155a17cc48c8",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/9d/6e/e792999e816d19d7fcbfa94c730936750036d65656a76a5a688b57a656c4/werkzeug-3.0.3-py3-none-any.whl",
+        "version": "3.0.3"
+      }
+    },
+    "targets": {
+      "default": {
+        "blinker": [],
+        "click": [],
+        "flask": [
+          "blinker",
+          "click",
+          "itsdangerous",
+          "jinja2",
+          "werkzeug"
+        ],
+        "itsdangerous": [],
+        "jinja2": [
+          "markupsafe"
+        ],
+        "markupsafe": [],
+        "werkzeug": [
+          "markupsafe"
+        ]
+      }
+    }
+  },
+  "invalidationHash": "6688c9e125bcc32d3aa67c7f96dd100e67d7974f7a172d94ae3ee38a5efa560d"
+}

@@ -1,0 +1,19 @@
+{
+  "fetchPipMetadata": {
+    "sources": {
+      "snowballstemmer": {
+        "is_direct": false,
+        "sha256": "09b16deb8547d3412ad7b590689584cd0fe25ec8db3be37788be3810cbf19cb1",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/44/7b/af302bebf22c749c56c9c3e8ae13190b5b5db37a33d9068652e8f73b7089/snowballstemmer-2.2.0.tar.gz",
+        "version": "2.2.0"
+      }
+    },
+    "targets": {
+      "default": {
+        "snowballstemmer": []
+      }
+    }
+  },
+  "invalidationHash": "30140e414e9d43bc50cb7e9d829656a144365254ef73fc9d310aca9099576cc7"
+}

@@ -1,0 +1,19 @@
+{
+  "fetchPipMetadata": {
+    "sources": {
+      "filelock": {
+        "is_direct": false,
+        "sha256": "2207938cbc1844345cb01a5a95524dae30f0ce089eba5b00378295a17e3e90cb",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/08/dd/49e06f09b6645156550fb9aee9cc1e59aba7efbc972d665a1bd6ae0435d4/filelock-3.15.4.tar.gz",
+        "version": "3.15.4"
+      }
+    },
+    "targets": {
+      "default": {
+        "filelock": []
+      }
+    }
+  },
+  "invalidationHash": "179be8ab00701b27a963e7a001fd9e0b0600251c22c2bec1fc0b957acc6a28ac"
+}

@@ -1,0 +1,29 @@
+{
+  "fetchPipMetadata": {
+    "sources": {
+      "ruamel-yaml": {
+        "is_direct": false,
+        "sha256": "8b27e6a217e786c6fbe5634d8f3f11bc63e0f80f6a5890f28863d9c45aac311b",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/29/81/4dfc17eb6ebb1aac314a3eb863c1325b907863a1b8b1382cdffcb6ac0ed9/ruamel.yaml-0.18.6.tar.gz",
+        "version": "0.18.6"
+      },
+      "ruamel-yaml-clib": {
+        "is_direct": false,
+        "sha256": "d176b57452ab5b7028ac47e7b3cf644bcfdc8cacfecf7e71759f7f51a59e5c92",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/30/d3/5fe978cd01a61c12efd24d65fa68c6f28f28c8073a06cf11db3a854390ca/ruamel.yaml.clib-0.2.8-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.manylinux_2_28_x86_64.whl",
+        "version": "0.2.8"
+      }
+    },
+    "targets": {
+      "default": {
+        "ruamel-yaml": [
+          "ruamel-yaml-clib"
+        ],
+        "ruamel-yaml-clib": []
+      }
+    }
+  },
+  "invalidationHash": "2927f94dd00bc3a252a2ec49277f7b6db1b4199142990b269c6ded0bb5cfb1f2"
+}

@@ -1,0 +1,38 @@
+{
+  "fetchPipMetadata": {
+    "sources": {
+      "certifi": {
+        "is_direct": false,
+        "sha256": "c198e21b1289c2ab85ee4e67bb4b4ef3ead0892059901a8d5b622f24a1101e90",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/1c/d5/c84e1a17bf61d4df64ca866a1c9a913874b4e9bdc131ec689a0ad013fb36/certifi-2024.7.4-py3-none-any.whl",
+        "version": "2024.7.4"
+      },
+      "h11": {
+        "is_direct": false,
+        "sha256": "e3fe4ac4b851c468cc8363d500db52c2ead036020723024a109d37346efaa761",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/95/04/ff642e65ad6b90db43e668d70ffb6736436c7ce41fcc549f4e9472234127/h11-0.14.0-py3-none-any.whl",
+        "version": "0.14.0"
+      },
+      "httpcore": {
+        "is_direct": false,
+        "sha256": "34a38e2f9291467ee3b44e89dd52615370e152954ba21721378a87b2960f7a61",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/17/b0/5e8b8674f8d203335a62fdfcfa0d11ebe09e23613c3391033cbba35f7926/httpcore-1.0.5.tar.gz",
+        "version": "1.0.5"
+      }
+    },
+    "targets": {
+      "default": {
+        "certifi": [],
+        "h11": [],
+        "httpcore": [
+          "certifi",
+          "h11"
+        ]
+      }
+    }
+  },
+  "invalidationHash": "da3b4123e2f007d219a2528e2195b4939b57e3937674eaeeb1e9f0fff083bf6e"
+}

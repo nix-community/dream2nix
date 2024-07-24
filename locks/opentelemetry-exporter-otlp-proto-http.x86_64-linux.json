@@ -1,0 +1,187 @@
+{
+  "fetchPipMetadata": {
+    "sources": {
+      "certifi": {
+        "is_direct": false,
+        "sha256": "c198e21b1289c2ab85ee4e67bb4b4ef3ead0892059901a8d5b622f24a1101e90",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/1c/d5/c84e1a17bf61d4df64ca866a1c9a913874b4e9bdc131ec689a0ad013fb36/certifi-2024.7.4-py3-none-any.whl",
+        "version": "2024.7.4"
+      },
+      "charset-normalizer": {
+        "is_direct": false,
+        "sha256": "90d558489962fd4918143277a773316e56c72da56ec7aa3dc3dbbe20fdfed15b",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/ee/fb/14d30eb4956408ee3ae09ad34299131fb383c47df355ddb428a7331cfa1e/charset_normalizer-3.3.2-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl",
+        "version": "3.3.2"
+      },
+      "deprecated": {
+        "is_direct": false,
+        "sha256": "6fac8b097794a90302bdbb17b9b815e732d3c4720583ff1b198499d78470466c",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/20/8d/778b7d51b981a96554f29136cd59ca7880bf58094338085bcf2a979a0e6a/Deprecated-1.2.14-py2.py3-none-any.whl",
+        "version": "1.2.14"
+      },
+      "googleapis-common-protos": {
+        "is_direct": false,
+        "sha256": "27a2499c7e8aff199665b22741997e485eccc8645aa9176c7c988e6fae507945",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/02/48/87422ff1bddcae677fb6f58c97f5cfc613304a5e8ce2c3662760199c0a84/googleapis_common_protos-1.63.2-py2.py3-none-any.whl",
+        "version": "1.63.2"
+      },
+      "idna": {
+        "is_direct": false,
+        "sha256": "82fee1fc78add43492d3a1898bfa6d8a904cc97d8427f683ed8e798d07761aa0",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/e5/3e/741d8c82801c347547f8a2a06aa57dbb1992be9e948df2ea0eda2c8b79e8/idna-3.7-py3-none-any.whl",
+        "version": "3.7"
+      },
+      "importlib-metadata": {
+        "is_direct": false,
+        "sha256": "30962b96c0c223483ed6cc7280e7f0199feb01a0e40cfae4d4450fc6fab1f570",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/2d/0a/679461c511447ffaf176567d5c496d1de27cbe34a87df6677d7171b2fbd4/importlib_metadata-7.1.0-py3-none-any.whl",
+        "version": "7.1.0"
+      },
+      "opentelemetry-api": {
+        "is_direct": false,
+        "sha256": "757fa1aa020a0f8fa139f8959e53dec2051cc26b832e76fa839a6d76ecefd737",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/7e/b2/4bc5e52c9a23df0ac17dbb23923e609a8269cd67000a712b4f5bcfae1490/opentelemetry_api-1.25.0-py3-none-any.whl",
+        "version": "1.25.0"
+      },
+      "opentelemetry-exporter-otlp-proto-common": {
+        "is_direct": false,
+        "sha256": "15637b7d580c2675f70246563363775b4e6de947871e01d0f4e3881d1848d693",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/05/02/74ac6619eec78c82a923324f916d3eccd2f2254cf4270b669e96b76bf717/opentelemetry_exporter_otlp_proto_common-1.25.0-py3-none-any.whl",
+        "version": "1.25.0"
+      },
+      "opentelemetry-exporter-otlp-proto-http": {
+        "is_direct": false,
+        "sha256": "9f8723859e37c75183ea7afa73a3542f01d0fd274a5b97487ea24cb683d7d684",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/72/d9/1c3c518853c27d323a46813d3e99d601959ca2c6963d5217fe2110f0d579/opentelemetry_exporter_otlp_proto_http-1.25.0.tar.gz",
+        "version": "1.25.0"
+      },
+      "opentelemetry-proto": {
+        "is_direct": false,
+        "sha256": "f07e3341c78d835d9b86665903b199893befa5e98866f63d22b00d0b7ca4972f",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/64/ae/d6b5f11ecbffafe8b6d54130fed0cc78aad3711e00074d63a7359d6dcf3b/opentelemetry_proto-1.25.0-py3-none-any.whl",
+        "version": "1.25.0"
+      },
+      "opentelemetry-sdk": {
+        "is_direct": false,
+        "sha256": "d97ff7ec4b351692e9d5a15af570c693b8715ad78b8aafbec5c7100fe966b4c9",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/ae/b2/729a959a8aa032bce246c791f977161099ab60fb0188408ccec1bf283b00/opentelemetry_sdk-1.25.0-py3-none-any.whl",
+        "version": "1.25.0"
+      },
+      "opentelemetry-semantic-conventions": {
+        "is_direct": false,
+        "sha256": "6daef4ef9fa51d51855d9f8e0ccd3a1bd59e0e545abe99ac6203804e36ab3e07",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/fd/41/28dae1ec1fe0151373f06bd06d9170ca14b52d5b3a6c2dc55f85bc219619/opentelemetry_semantic_conventions-0.46b0-py3-none-any.whl",
+        "version": "0.46b0"
+      },
+      "protobuf": {
+        "is_direct": false,
+        "sha256": "7c8daa26095f82482307bc717364e7c13f4f1c99659be82890dcfc215194554d",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/15/db/7f731524fe0e56c6b2eb57d05b55d3badd80ef7d1f1ed59db191b2fdd8ab/protobuf-4.25.3-cp37-abi3-manylinux2014_x86_64.whl",
+        "version": "4.25.3"
+      },
+      "requests": {
+        "is_direct": false,
+        "sha256": "70761cfe03c773ceb22aa2f671b4757976145175cdfca038c02654d061d6dcc6",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/f9/9b/335f9764261e915ed497fcdeb11df5dfd6f7bf257d4a6a2a686d80da4d54/requests-2.32.3-py3-none-any.whl",
+        "version": "2.32.3"
+      },
+      "typing-extensions": {
+        "is_direct": false,
+        "sha256": "04e5ca0351e0f3f85c6853954072df659d0d13fac324d0072316b67d7794700d",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/26/9f/ad63fc0248c5379346306f8668cda6e2e2e9c95e01216d2b8ffd9ff037d0/typing_extensions-4.12.2-py3-none-any.whl",
+        "version": "4.12.2"
+      },
+      "urllib3": {
+        "is_direct": false,
+        "sha256": "a448b2f64d686155468037e1ace9f2d2199776e17f0a46610480d311f73e3472",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/ca/1c/89ffc63a9605b583d5df2be791a27bc1a42b7c32bab68d3c8f2f73a98cd4/urllib3-2.2.2-py3-none-any.whl",
+        "version": "2.2.2"
+      },
+      "wrapt": {
+        "is_direct": false,
+        "sha256": "98b5e1f498a8ca1858a1cdbffb023bfd954da4e3fa2c0cb5853d40014557248b",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/62/62/30ca2405de6a20448ee557ab2cd61ab9c5900be7cbd18a2639db595f0b98/wrapt-1.16.0-cp312-cp312-manylinux_2_5_x86_64.manylinux1_x86_64.manylinux_2_17_x86_64.manylinux2014_x86_64.whl",
+        "version": "1.16.0"
+      },
+      "zipp": {
+        "is_direct": false,
+        "sha256": "f091755f667055f2d02b32c53771a7a6c8b47e1fdbc4b72a8b9072b3eef8015c",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/20/38/f5c473fe9b90c8debdd29ea68d5add0289f1936d6f923b6b9cc0b931194c/zipp-3.19.2-py3-none-any.whl",
+        "version": "3.19.2"
+      }
+    },
+    "targets": {
+      "default": {
+        "certifi": [],
+        "charset-normalizer": [],
+        "deprecated": [
+          "wrapt"
+        ],
+        "googleapis-common-protos": [
+          "protobuf"
+        ],
+        "idna": [],
+        "importlib-metadata": [
+          "zipp"
+        ],
+        "opentelemetry-api": [
+          "deprecated",
+          "importlib-metadata"
+        ],
+        "opentelemetry-exporter-otlp-proto-common": [
+          "opentelemetry-proto"
+        ],
+        "opentelemetry-exporter-otlp-proto-http": [
+          "deprecated",
+          "googleapis-common-protos",
+          "opentelemetry-api",
+          "opentelemetry-exporter-otlp-proto-common",
+          "opentelemetry-proto",
+          "opentelemetry-sdk",
+          "requests"
+        ],
+        "opentelemetry-proto": [
+          "protobuf"
+        ],
+        "opentelemetry-sdk": [
+          "opentelemetry-api",
+          "opentelemetry-semantic-conventions",
+          "typing-extensions"
+        ],
+        "opentelemetry-semantic-conventions": [
+          "opentelemetry-api"
+        ],
+        "protobuf": [],
+        "requests": [
+          "certifi",
+          "charset-normalizer",
+          "idna",
+          "urllib3"
+        ],
+        "typing-extensions": [],
+        "urllib3": [],
+        "wrapt": [],
+        "zipp": []
+      }
+    }
+  },
+  "invalidationHash": "17c0f37f822778ef0dc20af08f01c80ca366dbb4be9467469663d9684292f107"
+}

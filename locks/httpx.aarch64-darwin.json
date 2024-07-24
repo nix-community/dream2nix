@@ -1,0 +1,79 @@
+{
+  "fetchPipMetadata": {
+    "sources": {
+      "anyio": {
+        "is_direct": false,
+        "sha256": "c1b2d8f46a8a812513012e1107cb0e68c17159a7a594208005a57dc776e1bdc7",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/7b/a2/10639a79341f6c019dedc95bd48a4928eed9f1d1197f4c04f546fc7ae0ff/anyio-4.4.0-py3-none-any.whl",
+        "version": "4.4.0"
+      },
+      "certifi": {
+        "is_direct": false,
+        "sha256": "c198e21b1289c2ab85ee4e67bb4b4ef3ead0892059901a8d5b622f24a1101e90",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/1c/d5/c84e1a17bf61d4df64ca866a1c9a913874b4e9bdc131ec689a0ad013fb36/certifi-2024.7.4-py3-none-any.whl",
+        "version": "2024.7.4"
+      },
+      "h11": {
+        "is_direct": false,
+        "sha256": "e3fe4ac4b851c468cc8363d500db52c2ead036020723024a109d37346efaa761",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/95/04/ff642e65ad6b90db43e668d70ffb6736436c7ce41fcc549f4e9472234127/h11-0.14.0-py3-none-any.whl",
+        "version": "0.14.0"
+      },
+      "httpcore": {
+        "is_direct": false,
+        "sha256": "421f18bac248b25d310f3cacd198d55b8e6125c107797b609ff9b7a6ba7991b5",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/78/d4/e5d7e4f2174f8a4d63c8897d79eb8fe2503f7ecc03282fee1fa2719c2704/httpcore-1.0.5-py3-none-any.whl",
+        "version": "1.0.5"
+      },
+      "httpx": {
+        "is_direct": false,
+        "sha256": "a0cb88a46f32dc874e04ee956e4c2764aba2aa228f650b06788ba6bda2962ab5",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/5c/2d/3da5bdf4408b8b2800061c339f240c1802f2e82d55e50bd39c5a881f47f0/httpx-0.27.0.tar.gz",
+        "version": "0.27.0"
+      },
+      "idna": {
+        "is_direct": false,
+        "sha256": "82fee1fc78add43492d3a1898bfa6d8a904cc97d8427f683ed8e798d07761aa0",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/e5/3e/741d8c82801c347547f8a2a06aa57dbb1992be9e948df2ea0eda2c8b79e8/idna-3.7-py3-none-any.whl",
+        "version": "3.7"
+      },
+      "sniffio": {
+        "is_direct": false,
+        "sha256": "2f6da418d1f1e0fddd844478f41680e794e6051915791a034ff65e5f100525a2",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/e9/44/75a9c9421471a6c4805dbf2356f7c181a29c1879239abab1ea2cc8f38b40/sniffio-1.3.1-py3-none-any.whl",
+        "version": "1.3.1"
+      }
+    },
+    "targets": {
+      "default": {
+        "anyio": [
+          "idna",
+          "sniffio"
+        ],
+        "certifi": [],
+        "h11": [],
+        "httpcore": [
+          "certifi",
+          "h11"
+        ],
+        "httpx": [
+          "anyio",
+          "certifi",
+          "httpcore",
+          "idna",
+          "sniffio"
+        ],
+        "idna": [],
+        "sniffio": []
+      }
+    }
+  },
+  "invalidationHash": "43e69811b95e072fcc41c4e803457514e4e08a53292912a7f043915508abc2af"
+}

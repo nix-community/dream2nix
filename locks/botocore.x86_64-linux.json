@@ -1,0 +1,57 @@
+{
+  "fetchPipMetadata": {
+    "sources": {
+      "botocore": {
+        "is_direct": false,
+        "sha256": "849cb8e54e042443aeabcd7822b5f2b76cb5cfe33fe3a71f91c7c069748a869c",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/20/c4/6a63460a2904295f19d238491434c77a8e1b5ace1c846872709cfec5e54a/botocore-1.34.146.tar.gz",
+        "version": "1.34.146"
+      },
+      "jmespath": {
+        "is_direct": false,
+        "sha256": "02e2e4cc71b5bcab88332eebf907519190dd9e6e82107fa7f83b1003a6252980",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/31/b4/b9b800c45527aadd64d5b442f9b932b00648617eb5d63d2c7a6587b7cafc/jmespath-1.0.1-py3-none-any.whl",
+        "version": "1.0.1"
+      },
+      "python-dateutil": {
+        "is_direct": false,
+        "sha256": "a8b2bc7bffae282281c8140a97d3aa9c14da0b136dfe83f850eea9a5f7470427",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/ec/57/56b9bcc3c9c6a792fcbaf139543cee77261f3651ca9da0c93f5c1221264b/python_dateutil-2.9.0.post0-py2.py3-none-any.whl",
+        "version": "2.9.0.post0"
+      },
+      "six": {
+        "is_direct": false,
+        "sha256": "8abb2f1d86890a2dfb989f9a77cfcfd3e47c2a354b01111771326f8aa26e0254",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/d9/5a/e7c31adbe875f2abbb91bd84cf2dc52d792b5a01506781dbcf25c91daf11/six-1.16.0-py2.py3-none-any.whl",
+        "version": "1.16.0"
+      },
+      "urllib3": {
+        "is_direct": false,
+        "sha256": "a448b2f64d686155468037e1ace9f2d2199776e17f0a46610480d311f73e3472",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/ca/1c/89ffc63a9605b583d5df2be791a27bc1a42b7c32bab68d3c8f2f73a98cd4/urllib3-2.2.2-py3-none-any.whl",
+        "version": "2.2.2"
+      }
+    },
+    "targets": {
+      "default": {
+        "botocore": [
+          "jmespath",
+          "python-dateutil",
+          "urllib3"
+        ],
+        "jmespath": [],
+        "python-dateutil": [
+          "six"
+        ],
+        "six": [],
+        "urllib3": []
+      }
+    }
+  },
+  "invalidationHash": "1ead56dba1d45c3b5fa4d9df543d5ad95c4eb24f4aacb11b9b39516ae0f2fd86"
+}

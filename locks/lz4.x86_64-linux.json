@@ -1,0 +1,19 @@
+{
+  "fetchPipMetadata": {
+    "sources": {
+      "lz4": {
+        "is_direct": false,
+        "sha256": "01fe674ef2889dbb9899d8a67361e0c4a2c833af5aeb37dd505727cf5d2a131e",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/a4/31/ec1259ca8ad11568abaf090a7da719616ca96b60d097ccc5799cd0ff599c/lz4-4.3.3.tar.gz",
+        "version": "4.3.3"
+      }
+    },
+    "targets": {
+      "default": {
+        "lz4": []
+      }
+    }
+  },
+  "invalidationHash": "d99717ad6fae92fff693d5a86db04724656f89325a09ebeca964421db7b1f518"
+}

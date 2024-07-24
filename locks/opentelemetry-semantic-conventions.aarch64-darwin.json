@@ -1,0 +1,68 @@
+{
+  "fetchPipMetadata": {
+    "sources": {
+      "deprecated": {
+        "is_direct": false,
+        "sha256": "6fac8b097794a90302bdbb17b9b815e732d3c4720583ff1b198499d78470466c",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/20/8d/778b7d51b981a96554f29136cd59ca7880bf58094338085bcf2a979a0e6a/Deprecated-1.2.14-py2.py3-none-any.whl",
+        "version": "1.2.14"
+      },
+      "importlib-metadata": {
+        "is_direct": false,
+        "sha256": "30962b96c0c223483ed6cc7280e7f0199feb01a0e40cfae4d4450fc6fab1f570",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/2d/0a/679461c511447ffaf176567d5c496d1de27cbe34a87df6677d7171b2fbd4/importlib_metadata-7.1.0-py3-none-any.whl",
+        "version": "7.1.0"
+      },
+      "opentelemetry-api": {
+        "is_direct": false,
+        "sha256": "757fa1aa020a0f8fa139f8959e53dec2051cc26b832e76fa839a6d76ecefd737",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/7e/b2/4bc5e52c9a23df0ac17dbb23923e609a8269cd67000a712b4f5bcfae1490/opentelemetry_api-1.25.0-py3-none-any.whl",
+        "version": "1.25.0"
+      },
+      "opentelemetry-semantic-conventions": {
+        "is_direct": false,
+        "sha256": "fbc982ecbb6a6e90869b15c1673be90bd18c8a56ff1cffc0864e38e2edffaefa",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/4e/ea/a4a5277247b3d2ed2e23a58b0d509c2eafa4ebb56038ba5b23c0f9ea6242/opentelemetry_semantic_conventions-0.46b0.tar.gz",
+        "version": "0.46b0"
+      },
+      "wrapt": {
+        "is_direct": false,
+        "sha256": "9090c9e676d5236a6948330e83cb89969f433b1943a558968f659ead07cb3b36",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/6a/d7/cfcd73e8f4858079ac59d9db1ec5a1349bc486ae8e9ba55698cc1f4a1dff/wrapt-1.16.0-cp312-cp312-macosx_11_0_arm64.whl",
+        "version": "1.16.0"
+      },
+      "zipp": {
+        "is_direct": false,
+        "sha256": "f091755f667055f2d02b32c53771a7a6c8b47e1fdbc4b72a8b9072b3eef8015c",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/20/38/f5c473fe9b90c8debdd29ea68d5add0289f1936d6f923b6b9cc0b931194c/zipp-3.19.2-py3-none-any.whl",
+        "version": "3.19.2"
+      }
+    },
+    "targets": {
+      "default": {
+        "deprecated": [
+          "wrapt"
+        ],
+        "importlib-metadata": [
+          "zipp"
+        ],
+        "opentelemetry-api": [
+          "deprecated",
+          "importlib-metadata"
+        ],
+        "opentelemetry-semantic-conventions": [
+          "opentelemetry-api"
+        ],
+        "wrapt": [],
+        "zipp": []
+      }
+    }
+  },
+  "invalidationHash": "14796947fcf14d2f5a1039c9c51b3b2b4e4ca8f2ee5d6b21e40b0f0bf7ed0968"
+}

@@ -1,0 +1,144 @@
+{
+  "fetchPipMetadata": {
+    "sources": {
+      "attrs": {
+        "is_direct": false,
+        "sha256": "99b87a485a5820b23b879f04c2305b44b951b502fd64be915879d77a7e8fc6f1",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/e0/44/827b2a91a5816512fcaf3cc4ebc465ccd5d598c45cefa6703fcf4a79018f/attrs-23.2.0-py3-none-any.whl",
+        "version": "23.2.0"
+      },
+      "certifi": {
+        "is_direct": false,
+        "sha256": "c198e21b1289c2ab85ee4e67bb4b4ef3ead0892059901a8d5b622f24a1101e90",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/1c/d5/c84e1a17bf61d4df64ca866a1c9a913874b4e9bdc131ec689a0ad013fb36/certifi-2024.7.4-py3-none-any.whl",
+        "version": "2024.7.4"
+      },
+      "h11": {
+        "is_direct": false,
+        "sha256": "e3fe4ac4b851c468cc8363d500db52c2ead036020723024a109d37346efaa761",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/95/04/ff642e65ad6b90db43e668d70ffb6736436c7ce41fcc549f4e9472234127/h11-0.14.0-py3-none-any.whl",
+        "version": "0.14.0"
+      },
+      "idna": {
+        "is_direct": false,
+        "sha256": "82fee1fc78add43492d3a1898bfa6d8a904cc97d8427f683ed8e798d07761aa0",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/e5/3e/741d8c82801c347547f8a2a06aa57dbb1992be9e948df2ea0eda2c8b79e8/idna-3.7-py3-none-any.whl",
+        "version": "3.7"
+      },
+      "outcome": {
+        "is_direct": false,
+        "sha256": "e771c5ce06d1415e356078d3bdd68523f284b4ce5419828922b6871e65eda82b",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/55/8b/5ab7257531a5d830fc8000c476e63c935488d74609b50f9384a643ec0a62/outcome-1.3.0.post0-py2.py3-none-any.whl",
+        "version": "1.3.0.post0"
+      },
+      "pysocks": {
+        "is_direct": false,
+        "sha256": "2725bd0a9925919b9b51739eea5f9e2bae91e83288108a9ad338b2e3a4435ee5",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/8d/59/b4572118e098ac8e46e399a1dd0f2d85403ce8bbaad9ec79373ed6badaf9/PySocks-1.7.1-py3-none-any.whl",
+        "version": "1.7.1"
+      },
+      "selenium": {
+        "is_direct": false,
+        "sha256": "903c8c9d61b3eea6fcc9809dc7d9377e04e2ac87709876542cc8f863e482c4ce",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/04/93/fe0473c381dddce4db9527cf442d5949460fab4a92713fb5984386054323/selenium-4.22.0.tar.gz",
+        "version": "4.22.0"
+      },
+      "sniffio": {
+        "is_direct": false,
+        "sha256": "2f6da418d1f1e0fddd844478f41680e794e6051915791a034ff65e5f100525a2",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/e9/44/75a9c9421471a6c4805dbf2356f7c181a29c1879239abab1ea2cc8f38b40/sniffio-1.3.1-py3-none-any.whl",
+        "version": "1.3.1"
+      },
+      "sortedcontainers": {
+        "is_direct": false,
+        "sha256": "a163dcaede0f1c021485e957a39245190e74249897e2ae4b2aa38595db237ee0",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/32/46/9cb0e58b2deb7f82b84065f37f3bffeb12413f947f9388e4cac22c4621ce/sortedcontainers-2.4.0-py2.py3-none-any.whl",
+        "version": "2.4.0"
+      },
+      "trio": {
+        "is_direct": false,
+        "sha256": "bb9c1b259591af941fccfbabbdc65bc7ed764bd2db76428454c894cd5e3d2032",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/77/34/461280cc615614a9e434c6e23373371a2436f71d045303cadabb1d775eba/trio-0.26.0-py3-none-any.whl",
+        "version": "0.26.0"
+      },
+      "trio-websocket": {
+        "is_direct": false,
+        "sha256": "520d046b0d030cf970b8b2b2e00c4c2245b3807853ecd44214acd33d74581638",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/48/be/a9ae5f50cad5b6f85bd2574c2c923730098530096e170c1ce7452394d7aa/trio_websocket-0.11.1-py3-none-any.whl",
+        "version": "0.11.1"
+      },
+      "typing-extensions": {
+        "is_direct": false,
+        "sha256": "04e5ca0351e0f3f85c6853954072df659d0d13fac324d0072316b67d7794700d",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/26/9f/ad63fc0248c5379346306f8668cda6e2e2e9c95e01216d2b8ffd9ff037d0/typing_extensions-4.12.2-py3-none-any.whl",
+        "version": "4.12.2"
+      },
+      "urllib3": {
+        "is_direct": false,
+        "sha256": "a448b2f64d686155468037e1ace9f2d2199776e17f0a46610480d311f73e3472",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/ca/1c/89ffc63a9605b583d5df2be791a27bc1a42b7c32bab68d3c8f2f73a98cd4/urllib3-2.2.2-py3-none-any.whl",
+        "version": "2.2.2"
+      },
+      "wsproto": {
+        "is_direct": false,
+        "sha256": "b9acddd652b585d75b20477888c56642fdade28bdfd3579aa24a4d2c037dd736",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/78/58/e860788190eba3bcce367f74d29c4675466ce8dddfba85f7827588416f01/wsproto-1.2.0-py3-none-any.whl",
+        "version": "1.2.0"
+      }
+    },
+    "targets": {
+      "default": {
+        "attrs": [],
+        "certifi": [],
+        "h11": [],
+        "idna": [],
+        "outcome": [
+          "attrs"
+        ],
+        "pysocks": [],
+        "selenium": [
+          "certifi",
+          "trio",
+          "trio-websocket",
+          "typing-extensions",
+          "urllib3"
+        ],
+        "sniffio": [],
+        "sortedcontainers": [],
+        "trio": [
+          "attrs",
+          "idna",
+          "outcome",
+          "sniffio",
+          "sortedcontainers"
+        ],
+        "trio-websocket": [
+          "trio",
+          "wsproto"
+        ],
+        "typing-extensions": [],
+        "urllib3": [
+          "pysocks"
+        ],
+        "wsproto": [
+          "h11"
+        ]
+      }
+    }
+  },
+  "invalidationHash": "5c7fcd1131979639842b284329fa5207913a8fffc1deab0bafeb3c113e1a7043"
+}

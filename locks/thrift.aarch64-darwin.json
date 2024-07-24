@@ -1,0 +1,29 @@
+{
+  "fetchPipMetadata": {
+    "sources": {
+      "six": {
+        "is_direct": false,
+        "sha256": "8abb2f1d86890a2dfb989f9a77cfcfd3e47c2a354b01111771326f8aa26e0254",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/d9/5a/e7c31adbe875f2abbb91bd84cf2dc52d792b5a01506781dbcf25c91daf11/six-1.16.0-py2.py3-none-any.whl",
+        "version": "1.16.0"
+      },
+      "thrift": {
+        "is_direct": false,
+        "sha256": "4dd662eadf6b8aebe8a41729527bd69adf6ceaa2a8681cbef64d1273b3e8feba",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/3c/2d/8946864f716ac82dcc88d290ed613cba7a80ec75df4f553ec3ff275f486e/thrift-0.20.0.tar.gz",
+        "version": "0.20.0"
+      }
+    },
+    "targets": {
+      "default": {
+        "six": [],
+        "thrift": [
+          "six"
+        ]
+      }
+    }
+  },
+  "invalidationHash": "d31297311ea2932b3512d17a4b9031d4974e7bbe5e270adad507927ee92a8755"
+}

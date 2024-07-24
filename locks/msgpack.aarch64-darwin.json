@@ -1,0 +1,19 @@
+{
+  "fetchPipMetadata": {
+    "sources": {
+      "msgpack": {
+        "is_direct": false,
+        "sha256": "95c02b0e27e706e48d0e5426d1710ca78e0f0628d6e89d5b5a5b91a5f12274f3",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/08/4c/17adf86a8fbb02c144c7569dc4919483c01a2ac270307e2d59e1ce394087/msgpack-1.0.8.tar.gz",
+        "version": "1.0.8"
+      }
+    },
+    "targets": {
+      "default": {
+        "msgpack": []
+      }
+    }
+  },
+  "invalidationHash": "3f04276be9571b4ca29ef4bc917d905e39a4e3246199f28d3ba9af89983cf780"
+}

@@ -1,0 +1,19 @@
+{
+  "fetchPipMetadata": {
+    "sources": {
+      "joblib": {
+        "is_direct": false,
+        "sha256": "2382c5816b2636fbd20a09e0f4e9dad4736765fdfb7dca582943b9c1366b3f0e",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/64/33/60135848598c076ce4b231e1b1895170f45fbcaeaa2c9d5e38b04db70c35/joblib-1.4.2.tar.gz",
+        "version": "1.4.2"
+      }
+    },
+    "targets": {
+      "default": {
+        "joblib": []
+      }
+    }
+  },
+  "invalidationHash": "a6c6477f4532892491097f53feea7dae2a102078f0745ba34214820c843193ac"
+}

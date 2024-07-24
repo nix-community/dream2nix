@@ -1,0 +1,19 @@
+{
+  "fetchPipMetadata": {
+    "sources": {
+      "websockets": {
+        "is_direct": false,
+        "sha256": "81df9cbcbb6c260de1e007e58c011bfebe2dafc8435107b0537f393dd38c8b1b",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/2e/62/7a7874b7285413c954a4cca3c11fd851f11b2fe5b4ae2d9bee4f6d9bdb10/websockets-12.0.tar.gz",
+        "version": "12.0"
+      }
+    },
+    "targets": {
+      "default": {
+        "websockets": []
+      }
+    }
+  },
+  "invalidationHash": "28998546ee4608cb088471fef9948eaff9b0def7cad21e4c8d9582d6e0d57a49"
+}

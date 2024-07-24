@@ -1,0 +1,19 @@
+{
+  "fetchPipMetadata": {
+    "sources": {
+      "rfc3986": {
+        "is_direct": false,
+        "sha256": "97aacf9dbd4bfd829baad6e6309fa6573aaf1be3f6fa735c8ab05e46cecb261c",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/85/40/1520d68bfa07ab5a6f065a186815fb6610c86fe957bc065754e47f7b0840/rfc3986-2.0.0.tar.gz",
+        "version": "2.0.0"
+      }
+    },
+    "targets": {
+      "default": {
+        "rfc3986": []
+      }
+    }
+  },
+  "invalidationHash": "9970978a3e0834aafe89dc51802ced29eb10d1440710ddcff6e27aedca337083"
+}

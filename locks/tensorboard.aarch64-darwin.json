@@ -1,0 +1,111 @@
+{
+  "fetchPipMetadata": {
+    "sources": {
+      "absl-py": {
+        "is_direct": false,
+        "sha256": "526a04eadab8b4ee719ce68f204172ead1027549089702d99b9059f129ff1308",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/a2/ad/e0d3c824784ff121c03cc031f944bc7e139a8f1870ffd2845cc2dd76f6c4/absl_py-2.1.0-py3-none-any.whl",
+        "version": "2.1.0"
+      },
+      "grpcio": {
+        "is_direct": false,
+        "sha256": "aaf3c54419a28d45bd1681372029f40e5bfb58e5265e3882eaf21e4a5f81a119",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/ab/95/15e4bbdbbb0c1e52e758786d4d020f733e9fc5fd10cf1a17379636e576de/grpcio-1.65.1-cp312-cp312-macosx_10_9_universal2.whl",
+        "version": "1.65.1"
+      },
+      "markdown": {
+        "is_direct": false,
+        "sha256": "48f276f4d8cfb8ce6527c8f79e2ee29708508bf4d40aa410fbc3b4ee832c850f",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/fc/b3/0c0c994fe49cd661084f8d5dc06562af53818cc0abefaca35bdc894577c3/Markdown-3.6-py3-none-any.whl",
+        "version": "3.6"
+      },
+      "markupsafe": {
+        "is_direct": false,
+        "sha256": "8dec4936e9c3100156f8a2dc89c4b88d5c435175ff03413b443469c7c8c5f4d1",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/53/bd/583bf3e4c8d6a321938c13f49d44024dbe5ed63e0a7ba127e454a66da974/MarkupSafe-2.1.5-cp312-cp312-macosx_10_9_universal2.whl",
+        "version": "2.1.5"
+      },
+      "numpy": {
+        "is_direct": false,
+        "sha256": "5daab361be6ddeb299a918a7c0864fa8618af66019138263247af405018b04e1",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/c2/da/3d8debb409bc97045b559f408d2b8cefa6a077a73df14dbf4d8780d976b1/numpy-2.0.1-cp312-cp312-macosx_14_0_arm64.whl",
+        "version": "2.0.1"
+      },
+      "protobuf": {
+        "is_direct": false,
+        "sha256": "f1279ab38ecbfae7e456a108c5c0681e4956d5b1090027c1de0f934dfdb4b35c",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/f3/bf/26deba06a4c910a85f78245cac7698f67cedd7efe00d04f6b3e1b3506a59/protobuf-4.25.3-cp37-abi3-macosx_10_9_universal2.whl",
+        "version": "4.25.3"
+      },
+      "setuptools": {
+        "is_direct": false,
+        "sha256": "33874fdc59b3188304b2e7c80d9029097ea31627180896fb549c578ceb8a0855",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/51/a0/ee460cc54e68afcf33190d198299c9579a5eafeadef0016ae8563237ccb6/setuptools-71.1.0-py3-none-any.whl",
+        "version": "71.1.0"
+      },
+      "six": {
+        "is_direct": false,
+        "sha256": "8abb2f1d86890a2dfb989f9a77cfcfd3e47c2a354b01111771326f8aa26e0254",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/d9/5a/e7c31adbe875f2abbb91bd84cf2dc52d792b5a01506781dbcf25c91daf11/six-1.16.0-py2.py3-none-any.whl",
+        "version": "1.16.0"
+      },
+      "tensorboard": {
+        "is_direct": false,
+        "sha256": "859a499a9b1fb68a058858964486627100b71fcb21646861c61d31846a6478fb",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/0a/32/2e8545fb0592f33e3aca5951e8b01008b76d61b440658cbdc37b4eaebf0b/tensorboard-2.17.0-py3-none-any.whl",
+        "version": "2.17.0"
+      },
+      "tensorboard-data-server": {
+        "is_direct": false,
+        "sha256": "7e0610d205889588983836ec05dc098e80f97b7e7bbff7e994ebb78f578d0ddb",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/7a/13/e503968fefabd4c6b2650af21e110aa8466fe21432cd7c43a84577a89438/tensorboard_data_server-0.7.2-py3-none-any.whl",
+        "version": "0.7.2"
+      },
+      "werkzeug": {
+        "is_direct": false,
+        "sha256": "fc9645dc43e03e4d630d23143a04a7f947a9a3b5727cd535fdfe155a17cc48c8",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/9d/6e/e792999e816d19d7fcbfa94c730936750036d65656a76a5a688b57a656c4/werkzeug-3.0.3-py3-none-any.whl",
+        "version": "3.0.3"
+      }
+    },
+    "targets": {
+      "default": {
+        "absl-py": [],
+        "grpcio": [],
+        "markdown": [],
+        "markupsafe": [],
+        "numpy": [],
+        "protobuf": [],
+        "setuptools": [],
+        "six": [],
+        "tensorboard": [
+          "absl-py",
+          "grpcio",
+          "markdown",
+          "numpy",
+          "protobuf",
+          "setuptools",
+          "six",
+          "tensorboard-data-server",
+          "werkzeug"
+        ],
+        "tensorboard-data-server": [],
+        "werkzeug": [
+          "markupsafe"
+        ]
+      }
+    }
+  },
+  "invalidationHash": "536a0a3f029cfdb56aa3b545f1ae17eff02180b71b052944326a95e4ab276e6e"
+}

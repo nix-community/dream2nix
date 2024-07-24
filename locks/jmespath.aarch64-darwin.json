@@ -1,0 +1,19 @@
+{
+  "fetchPipMetadata": {
+    "sources": {
+      "jmespath": {
+        "is_direct": false,
+        "sha256": "90261b206d6defd58fdd5e85f478bf633a2901798906be2ad389150c5c60edbe",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/00/2a/e867e8531cf3e36b41201936b7fa7ba7b5702dbef42922193f05c8976cd6/jmespath-1.0.1.tar.gz",
+        "version": "1.0.1"
+      }
+    },
+    "targets": {
+      "default": {
+        "jmespath": []
+      }
+    }
+  },
+  "invalidationHash": "90b82087c5be1f9017aa04cf2682c9bae338aaa007a9596d0c075f41c2ffc211"
+}

@@ -1,0 +1,135 @@
+{
+  "fetchPipMetadata": {
+    "sources": {
+      "absl-py": {
+        "is_direct": false,
+        "sha256": "526a04eadab8b4ee719ce68f204172ead1027549089702d99b9059f129ff1308",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/a2/ad/e0d3c824784ff121c03cc031f944bc7e139a8f1870ffd2845cc2dd76f6c4/absl_py-2.1.0-py3-none-any.whl",
+        "version": "2.1.0"
+      },
+      "h5py": {
+        "is_direct": false,
+        "sha256": "f3736fe21da2b7d8a13fe8fe415f1272d2a1ccdeff4849c1421d2fb30fd533bc",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/9d/3f/cf80ef55e0a9b18aae96c763fbd275c54d0723e0f2cc54f954f87cc5c69a/h5py-3.11.0-cp312-cp312-macosx_11_0_arm64.whl",
+        "version": "3.11.0"
+      },
+      "keras": {
+        "is_direct": false,
+        "sha256": "34cd9aeaa008914715149234c215657ca758e1b473bd2aab2e211ac967d1f8fe",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/2f/da/b55c0b33b0530a805910a80e20e3e1f4004e4b67686bf4f090651ad67498/keras-3.4.1.tar.gz",
+        "version": "3.4.1"
+      },
+      "markdown-it-py": {
+        "is_direct": false,
+        "sha256": "355216845c60bd96232cd8d8c40e8f9765cc86f46880e43a8fd22dc1a1a8cab1",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/42/d7/1ec15b46af6af88f19b8e5ffea08fa375d433c998b8a7639e76935c14f1f/markdown_it_py-3.0.0-py3-none-any.whl",
+        "version": "3.0.0"
+      },
+      "mdurl": {
+        "is_direct": false,
+        "sha256": "84008a41e51615a49fc9966191ff91509e3c40b939176e643fd50a5c2196b8f8",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/b3/38/89ba8ad64ae25be8de66a6d463314cf1eb366222074cfda9ee839c56a4b4/mdurl-0.1.2-py3-none-any.whl",
+        "version": "0.1.2"
+      },
+      "ml-dtypes": {
+        "is_direct": false,
+        "sha256": "ee9f91d4c4f9959a7e1051c141dc565f39e54435618152219769e24f5e9a4d06",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/30/9d/890e8c9cb556cec121f784fd84089e1e52939ba6eabf5dc62f6435db28d6/ml_dtypes-0.4.0-cp312-cp312-macosx_10_9_universal2.whl",
+        "version": "0.4.0"
+      },
+      "namex": {
+        "is_direct": false,
+        "sha256": "7ddb6c2bb0e753a311b7590f84f6da659dd0c05e65cb89d519d54c0a250c0487",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/73/59/7854fbfb59f8ae35483ce93493708be5942ebb6328cd85b3a609df629736/namex-0.0.8-py3-none-any.whl",
+        "version": "0.0.8"
+      },
+      "numpy": {
+        "is_direct": false,
+        "sha256": "5daab361be6ddeb299a918a7c0864fa8618af66019138263247af405018b04e1",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/c2/da/3d8debb409bc97045b559f408d2b8cefa6a077a73df14dbf4d8780d976b1/numpy-2.0.1-cp312-cp312-macosx_14_0_arm64.whl",
+        "version": "2.0.1"
+      },
+      "optree": {
+        "is_direct": false,
+        "sha256": "a67842cd1c5c83d74863872f06fe6ed64e44279c0378267a9805567fe3c38591",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/70/bc/044fad5cc10eef5d2d7bcc05ebbc23fad7c26af569bf557af2aa09809291/optree-0.12.1-cp312-cp312-macosx_11_0_arm64.whl",
+        "version": "0.12.1"
+      },
+      "packaging": {
+        "is_direct": false,
+        "sha256": "5b8f2217dbdbd2f7f384c41c628544e6d52f2d0f53c6d0c3ea61aa5d1d7ff124",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/08/aa/cc0199a5f0ad350994d660967a8efb233fe0416e4639146c089643407ce6/packaging-24.1-py3-none-any.whl",
+        "version": "24.1"
+      },
+      "pygments": {
+        "is_direct": false,
+        "sha256": "b8e6aca0523f3ab76fee51799c488e38782ac06eafcf95e7ba832985c8e7b13a",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/f7/3f/01c8b82017c199075f8f788d0d906b9ffbbc5a47dc9918a945e13d5a2bda/pygments-2.18.0-py3-none-any.whl",
+        "version": "2.18.0"
+      },
+      "rich": {
+        "is_direct": false,
+        "sha256": "4edbae314f59eb482f54e9e30bf00d33350aaa94f4bfcd4e9e3110e64d0d7222",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/87/67/a37f6214d0e9fe57f6ae54b2956d550ca8365857f42a1ce0392bb21d9410/rich-13.7.1-py3-none-any.whl",
+        "version": "13.7.1"
+      },
+      "typing-extensions": {
+        "is_direct": false,
+        "sha256": "04e5ca0351e0f3f85c6853954072df659d0d13fac324d0072316b67d7794700d",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/26/9f/ad63fc0248c5379346306f8668cda6e2e2e9c95e01216d2b8ffd9ff037d0/typing_extensions-4.12.2-py3-none-any.whl",
+        "version": "4.12.2"
+      }
+    },
+    "targets": {
+      "default": {
+        "absl-py": [],
+        "h5py": [
+          "numpy"
+        ],
+        "keras": [
+          "absl-py",
+          "h5py",
+          "ml-dtypes",
+          "namex",
+          "numpy",
+          "optree",
+          "packaging",
+          "rich"
+        ],
+        "markdown-it-py": [
+          "mdurl"
+        ],
+        "mdurl": [],
+        "ml-dtypes": [
+          "numpy"
+        ],
+        "namex": [],
+        "numpy": [],
+        "optree": [
+          "typing-extensions"
+        ],
+        "packaging": [],
+        "pygments": [],
+        "rich": [
+          "markdown-it-py",
+          "pygments"
+        ],
+        "typing-extensions": []
+      }
+    }
+  },
+  "invalidationHash": "c26fc3bfb943d31ed02d6dd32a5053e445cbd77970cb0904e64d24877c1b2f83"
+}

@@ -1,0 +1,29 @@
+{
+  "fetchPipMetadata": {
+    "sources": {
+      "asttokens": {
+        "is_direct": false,
+        "sha256": "b03869718ba9a6eb027e134bfdf69f38a236d681c83c160d510768af11254ba0",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/45/1d/f03bcb60c4a3212e15f99a56085d93093a497718adf828d050b9d675da81/asttokens-2.4.1.tar.gz",
+        "version": "2.4.1"
+      },
+      "six": {
+        "is_direct": false,
+        "sha256": "8abb2f1d86890a2dfb989f9a77cfcfd3e47c2a354b01111771326f8aa26e0254",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/d9/5a/e7c31adbe875f2abbb91bd84cf2dc52d792b5a01506781dbcf25c91daf11/six-1.16.0-py2.py3-none-any.whl",
+        "version": "1.16.0"
+      }
+    },
+    "targets": {
+      "default": {
+        "asttokens": [
+          "six"
+        ],
+        "six": []
+      }
+    }
+  },
+  "invalidationHash": "5bef53cc29d52c2c821eaee9403ba5f798573006a9acbe3e88e028ca3ee6d123"
+}

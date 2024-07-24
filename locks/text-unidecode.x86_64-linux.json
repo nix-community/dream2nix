@@ -1,0 +1,19 @@
+{
+  "fetchPipMetadata": {
+    "sources": {
+      "text-unidecode": {
+        "is_direct": false,
+        "sha256": "bad6603bb14d279193107714b288be206cac565dfa49aa5b105294dd5c4aab93",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/ab/e2/e9a00f0ccb71718418230718b3d900e71a5d16e701a3dae079a21e9cd8f8/text-unidecode-1.3.tar.gz",
+        "version": "1.3"
+      }
+    },
+    "targets": {
+      "default": {
+        "text-unidecode": []
+      }
+    }
+  },
+  "invalidationHash": "695f97fbe76df6a5df4a5e0e56aaef64527654dea8fc5c63322e2c63445e97dc"
+}

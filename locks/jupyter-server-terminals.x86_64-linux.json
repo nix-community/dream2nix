@@ -1,0 +1,48 @@
+{
+  "fetchPipMetadata": {
+    "sources": {
+      "jupyter-server-terminals": {
+        "is_direct": false,
+        "sha256": "5ae0295167220e9ace0edcfdb212afd2b01ee8d179fe6f23c899590e9b8a5269",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/fc/d5/562469734f476159e99a55426d697cbf8e7eb5efe89fb0e0b4f83a3d3459/jupyter_server_terminals-0.5.3.tar.gz",
+        "version": "0.5.3"
+      },
+      "ptyprocess": {
+        "is_direct": false,
+        "sha256": "4b41f3967fce3af57cc7e94b888626c18bf37a083e3651ca8feeb66d492fef35",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/22/a6/858897256d0deac81a172289110f31629fc4cee19b6f01283303e18c8db3/ptyprocess-0.7.0-py2.py3-none-any.whl",
+        "version": "0.7.0"
+      },
+      "terminado": {
+        "is_direct": false,
+        "sha256": "a4468e1b37bb318f8a86514f65814e1afc977cf29b3992a4500d9dd305dcceb0",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/6a/9e/2064975477fdc887e47ad42157e214526dcad8f317a948dee17e1659a62f/terminado-0.18.1-py3-none-any.whl",
+        "version": "0.18.1"
+      },
+      "tornado": {
+        "is_direct": false,
+        "sha256": "613bf4ddf5c7a95509218b149b555621497a6cc0d46ac341b30bd9ec19eac7f3",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/22/d4/54f9d12668b58336bd30defe0307e6c61589a3e687b05c366f804b7faaf0/tornado-6.4.1-cp38-abi3-manylinux_2_5_x86_64.manylinux1_x86_64.manylinux_2_17_x86_64.manylinux2014_x86_64.whl",
+        "version": "6.4.1"
+      }
+    },
+    "targets": {
+      "default": {
+        "jupyter-server-terminals": [
+          "terminado"
+        ],
+        "ptyprocess": [],
+        "terminado": [
+          "ptyprocess",
+          "tornado"
+        ],
+        "tornado": []
+      }
+    }
+  },
+  "invalidationHash": "93997643fb0b470b7c1662714c2944c903f7ec0b6c6553051a1f3e8f4dce9b30"
+}

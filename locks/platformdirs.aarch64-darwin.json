@@ -1,0 +1,19 @@
+{
+  "fetchPipMetadata": {
+    "sources": {
+      "platformdirs": {
+        "is_direct": false,
+        "sha256": "38b7b51f512eed9e84a22788b4bce1de17c0adb134d6becb09836e37d8654cd3",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/f5/52/0763d1d976d5c262df53ddda8d8d4719eedf9594d046f117c25a27261a19/platformdirs-4.2.2.tar.gz",
+        "version": "4.2.2"
+      }
+    },
+    "targets": {
+      "default": {
+        "platformdirs": []
+      }
+    }
+  },
+  "invalidationHash": "b449c0325bcb5ea0561e1617a282f79a1308d4119fff17ee5ebb77deed9e8704"
+}

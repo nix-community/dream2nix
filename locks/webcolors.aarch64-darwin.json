@@ -1,0 +1,19 @@
+{
+  "fetchPipMetadata": {
+    "sources": {
+      "webcolors": {
+        "is_direct": false,
+        "sha256": "1d160d1de46b3e81e58d0a280d0c78b467dc80f47294b91b1ad8029d2cedb55b",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/b3/bf/cfe993a8acab0976a08cfa1a0a23cf9ce212b8c52cca40fbcca6e994acea/webcolors-24.6.0.tar.gz",
+        "version": "24.6.0"
+      }
+    },
+    "targets": {
+      "default": {
+        "webcolors": []
+      }
+    }
+  },
+  "invalidationHash": "e2c87360c6ebd06a660a89324b5af513814e285c9d3e885133bbb0117535490c"
+}

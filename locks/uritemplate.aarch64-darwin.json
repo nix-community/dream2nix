@@ -1,0 +1,19 @@
+{
+  "fetchPipMetadata": {
+    "sources": {
+      "uritemplate": {
+        "is_direct": false,
+        "sha256": "4346edfc5c3b79f694bccd6d6099a322bbeb628dbf2cd86eea55a456ce5124f0",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/d2/5a/4742fdba39cd02a56226815abfa72fe0aa81c33bed16ed045647d6000eba/uritemplate-4.1.1.tar.gz",
+        "version": "4.1.1"
+      }
+    },
+    "targets": {
+      "default": {
+        "uritemplate": []
+      }
+    }
+  },
+  "invalidationHash": "e2d4135b84792a869b6876df7a9e60dcc62d3f73b46dfdacd917f3dc20fdcef4"
+}

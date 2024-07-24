@@ -1,0 +1,19 @@
+{
+  "fetchPipMetadata": {
+    "sources": {
+      "zipp": {
+        "is_direct": false,
+        "sha256": "bf1dcf6450f873a13e952a29504887c89e6de7506209e5b1bcc3460135d4de19",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/d3/20/b48f58857d98dcb78f9e30ed2cfe533025e2e9827bbd36ea0a64cc00cbc1/zipp-3.19.2.tar.gz",
+        "version": "3.19.2"
+      }
+    },
+    "targets": {
+      "default": {
+        "zipp": []
+      }
+    }
+  },
+  "invalidationHash": "4db3ba92db5d1afeade5a200a8df17dce3d1877642ab7394d594fb14cb5668b7"
+}

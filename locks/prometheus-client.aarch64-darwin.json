@@ -1,0 +1,19 @@
+{
+  "fetchPipMetadata": {
+    "sources": {
+      "prometheus-client": {
+        "is_direct": false,
+        "sha256": "287629d00b147a32dcb2be0b9df905da599b2d82f80377083ec8463309a4bb89",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/3d/39/3be07741a33356127c4fe633768ee450422c1231c6d34b951fee1458308d/prometheus_client-0.20.0.tar.gz",
+        "version": "0.20.0"
+      }
+    },
+    "targets": {
+      "default": {
+        "prometheus-client": []
+      }
+    }
+  },
+  "invalidationHash": "f6ae2386b21d76331cf6bdcc6c5bf2bd6c5096e832beb53775b62388f3483937"
+}

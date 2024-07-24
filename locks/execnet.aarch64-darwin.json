@@ -1,0 +1,19 @@
+{
+  "fetchPipMetadata": {
+    "sources": {
+      "execnet": {
+        "is_direct": false,
+        "sha256": "5189b52c6121c24feae288166ab41b32549c7e2348652736540b9e6e7d4e72e3",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/bb/ff/b4c0dc78fbe20c3e59c0c7334de0c27eb4001a2b2017999af398bf730817/execnet-2.1.1.tar.gz",
+        "version": "2.1.1"
+      }
+    },
+    "targets": {
+      "default": {
+        "execnet": []
+      }
+    }
+  },
+  "invalidationHash": "244b41cf9ad019f24481a6c82030e02e3ba255c9f2e68df3066c2046d0a46634"
+}

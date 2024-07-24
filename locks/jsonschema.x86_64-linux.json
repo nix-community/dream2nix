@@ -1,0 +1,61 @@
+{
+  "fetchPipMetadata": {
+    "sources": {
+      "attrs": {
+        "is_direct": false,
+        "sha256": "99b87a485a5820b23b879f04c2305b44b951b502fd64be915879d77a7e8fc6f1",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/e0/44/827b2a91a5816512fcaf3cc4ebc465ccd5d598c45cefa6703fcf4a79018f/attrs-23.2.0-py3-none-any.whl",
+        "version": "23.2.0"
+      },
+      "jsonschema": {
+        "is_direct": false,
+        "sha256": "d71497fef26351a33265337fa77ffeb82423f3ea21283cd9467bb03999266bc4",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/38/2e/03362ee4034a4c917f697890ccd4aec0800ccf9ded7f511971c75451deec/jsonschema-4.23.0.tar.gz",
+        "version": "4.23.0"
+      },
+      "jsonschema-specifications": {
+        "is_direct": false,
+        "sha256": "87e4fdf3a94858b8a2ba2778d9ba57d8a9cafca7c7489c46ba0d30a8bc6a9c3c",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/ee/07/44bd408781594c4d0a027666ef27fab1e441b109dc3b76b4f836f8fd04fe/jsonschema_specifications-2023.12.1-py3-none-any.whl",
+        "version": "2023.12.1"
+      },
+      "referencing": {
+        "is_direct": false,
+        "sha256": "eda6d3234d62814d1c64e305c1331c9a3a6132da475ab6382eaa997b21ee75de",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/b7/59/2056f61236782a2c86b33906c025d4f4a0b17be0161b63b70fd9e8775d36/referencing-0.35.1-py3-none-any.whl",
+        "version": "0.35.1"
+      },
+      "rpds-py": {
+        "is_direct": false,
+        "sha256": "3b4cf5a9497874822341c2ebe0d5850fed392034caadc0bad134ab6822c0925b",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/8d/4f/11392ec52a9a4f9d37b5d07790139d31235fec1f552338612730e62e7126/rpds_py-0.19.0-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl",
+        "version": "0.19.0"
+      }
+    },
+    "targets": {
+      "default": {
+        "attrs": [],
+        "jsonschema": [
+          "attrs",
+          "jsonschema-specifications",
+          "referencing",
+          "rpds-py"
+        ],
+        "jsonschema-specifications": [
+          "referencing"
+        ],
+        "referencing": [
+          "attrs",
+          "rpds-py"
+        ],
+        "rpds-py": []
+      }
+    }
+  },
+  "invalidationHash": "752d51111372aa229e27bf2ac44a5ee07956cfa88992c23015b0845a2dc5e2fe"
+}

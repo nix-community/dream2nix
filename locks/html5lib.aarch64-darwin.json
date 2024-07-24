@@ -1,0 +1,38 @@
+{
+  "fetchPipMetadata": {
+    "sources": {
+      "html5lib": {
+        "is_direct": false,
+        "sha256": "b2e5b40261e20f354d198eae92afc10d750afb487ed5e50f9c4eaf07c184146f",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/ac/b6/b55c3f49042f1df3dcd422b7f224f939892ee94f22abcf503a9b7339eaf2/html5lib-1.1.tar.gz",
+        "version": "1.1"
+      },
+      "six": {
+        "is_direct": false,
+        "sha256": "8abb2f1d86890a2dfb989f9a77cfcfd3e47c2a354b01111771326f8aa26e0254",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/d9/5a/e7c31adbe875f2abbb91bd84cf2dc52d792b5a01506781dbcf25c91daf11/six-1.16.0-py2.py3-none-any.whl",
+        "version": "1.16.0"
+      },
+      "webencodings": {
+        "is_direct": false,
+        "sha256": "a0af1213f3c2226497a97e2b3aa01a7e4bee4f403f95be16fc9acd2947514a78",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/f4/24/2a3e3df732393fed8b3ebf2ec078f05546de641fe1b667ee316ec1dcf3b7/webencodings-0.5.1-py2.py3-none-any.whl",
+        "version": "0.5.1"
+      }
+    },
+    "targets": {
+      "default": {
+        "html5lib": [
+          "six",
+          "webencodings"
+        ],
+        "six": [],
+        "webencodings": []
+      }
+    }
+  },
+  "invalidationHash": "6734d8e11495378e5aaf907cf48ffeda1c0b0cc25b041eac8fc562ca8b22b02b"
+}

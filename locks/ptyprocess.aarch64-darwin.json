@@ -1,0 +1,19 @@
+{
+  "fetchPipMetadata": {
+    "sources": {
+      "ptyprocess": {
+        "is_direct": false,
+        "sha256": "5c5d0a3b48ceee0b48485e0c26037c0acd7d29765ca3fbb5cb3831d347423220",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/20/e5/16ff212c1e452235a90aeb09066144d0c5a6a8c0834397e03f5224495c4e/ptyprocess-0.7.0.tar.gz",
+        "version": "0.7.0"
+      }
+    },
+    "targets": {
+      "default": {
+        "ptyprocess": []
+      }
+    }
+  },
+  "invalidationHash": "4573c977dda8219e1e68e37ec3373b62c67a3220e80b09ebb4c2edf4b059f51b"
+}

@@ -1,0 +1,19 @@
+{
+  "fetchPipMetadata": {
+    "sources": {
+      "charset-normalizer": {
+        "is_direct": false,
+        "sha256": "f30c3cb33b24454a82faecaf01b19c18562b1e89558fb6c56de4d9118a032fd5",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/63/09/c1bc53dab74b1816a00d8d030de5bf98f724c52c1635e07681d312f20be8/charset-normalizer-3.3.2.tar.gz",
+        "version": "3.3.2"
+      }
+    },
+    "targets": {
+      "default": {
+        "charset-normalizer": []
+      }
+    }
+  },
+  "invalidationHash": "22b58d1e40449f29529fd2beda7003484166c0f55aaf13e3b4bc45c307377ef9"
+}

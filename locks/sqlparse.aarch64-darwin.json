@@ -1,0 +1,19 @@
+{
+  "fetchPipMetadata": {
+    "sources": {
+      "sqlparse": {
+        "is_direct": false,
+        "sha256": "bb6b4df465655ef332548e24f08e205afc81b9ab86cb1c45657a7ff173a3a00e",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/73/82/dfa23ec2cbed08a801deab02fe7c904bfb00765256b155941d789a338c68/sqlparse-0.5.1.tar.gz",
+        "version": "0.5.1"
+      }
+    },
+    "targets": {
+      "default": {
+        "sqlparse": []
+      }
+    }
+  },
+  "invalidationHash": "d653fa6c638bd901d27d796fd7d558c161da4f5941e090c4ac502a4a0b57e3c9"
+}

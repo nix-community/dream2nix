@@ -1,0 +1,183 @@
+{
+  "fetchPipMetadata": {
+    "sources": {
+      "certifi": {
+        "is_direct": false,
+        "sha256": "c198e21b1289c2ab85ee4e67bb4b4ef3ead0892059901a8d5b622f24a1101e90",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/1c/d5/c84e1a17bf61d4df64ca866a1c9a913874b4e9bdc131ec689a0ad013fb36/certifi-2024.7.4-py3-none-any.whl",
+        "version": "2024.7.4"
+      },
+      "charset-normalizer": {
+        "is_direct": false,
+        "sha256": "55086ee1064215781fff39a1af09518bc9255b50d6333f2e4c74ca09fac6a8f6",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/3a/52/9f9d17c3b54dc238de384c4cb5a2ef0e27985b42a0e5cc8e8a31d918d48d/charset_normalizer-3.3.2-cp312-cp312-macosx_11_0_arm64.whl",
+        "version": "3.3.2"
+      },
+      "databricks-sql-connector": {
+        "is_direct": false,
+        "sha256": "19e82965da4c86574adfe9f788c17b4494d98eb8075ba4fd4306573d2edbf194",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/c6/0b/1246e8eb483361fb49cb4b48feb87f5bdd34a091a751b257ad54e143d4cb/databricks_sql_connector-3.3.0.tar.gz",
+        "version": "3.3.0"
+      },
+      "et-xmlfile": {
+        "is_direct": false,
+        "sha256": "a2ba85d1d6a74ef63837eed693bcb89c3f752169b0e3e7ae5b16ca5e1b3deada",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/96/c2/3dd434b0108730014f1b96fd286040dc3bcb70066346f7e01ec2ac95865f/et_xmlfile-1.1.0-py3-none-any.whl",
+        "version": "1.1.0"
+      },
+      "idna": {
+        "is_direct": false,
+        "sha256": "82fee1fc78add43492d3a1898bfa6d8a904cc97d8427f683ed8e798d07761aa0",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/e5/3e/741d8c82801c347547f8a2a06aa57dbb1992be9e948df2ea0eda2c8b79e8/idna-3.7-py3-none-any.whl",
+        "version": "3.7"
+      },
+      "lz4": {
+        "is_direct": false,
+        "sha256": "31ea4be9d0059c00b2572d700bf2c1bc82f241f2c3282034a759c9a4d6ca4dc2",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/53/4d/8e04ef75feff8848ba3c624ce81c7732bdcea5f8f994758afa88cd3d7764/lz4-4.3.3-cp312-cp312-macosx_11_0_arm64.whl",
+        "version": "4.3.3"
+      },
+      "numpy": {
+        "is_direct": false,
+        "sha256": "03a8c78d01d9781b28a6989f6fa1bb2c4f2d51201cf99d3dd875df6fbd96b23b",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/75/5b/ca6c8bd14007e5ca171c7c03102d17b4f4e0ceb53957e8c44343a9546dcc/numpy-1.26.4-cp312-cp312-macosx_11_0_arm64.whl",
+        "version": "1.26.4"
+      },
+      "oauthlib": {
+        "is_direct": false,
+        "sha256": "8139f29aac13e25d502680e9e19963e83f16838d48a0d71c287fe40e7067fbca",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/7e/80/cab10959dc1faead58dc8384a781dfbf93cb4d33d50988f7a69f1b7c9bbe/oauthlib-3.2.2-py3-none-any.whl",
+        "version": "3.2.2"
+      },
+      "openpyxl": {
+        "is_direct": false,
+        "sha256": "5282c12b107bffeef825f4617dc029afaf41d0ea60823bbb665ef3079dc79de2",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/c0/da/977ded879c29cbd04de313843e76868e6e13408a94ed6b987245dc7c8506/openpyxl-3.1.5-py2.py3-none-any.whl",
+        "version": "3.1.5"
+      },
+      "pandas": {
+        "is_direct": false,
+        "sha256": "8a706cfe7955c4ca59af8c7a0517370eafbd98593155b48f10f9811da440248b",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/0b/e0/8d97c7ecd73624f4cd5755578990b3cfbc6bbe350b8e017ede3580173a6f/pandas-2.1.4-cp312-cp312-macosx_11_0_arm64.whl",
+        "version": "2.1.4"
+      },
+      "pyarrow": {
+        "is_direct": false,
+        "sha256": "06ebccb6f8cb7357de85f60d5da50e83507954af617d7b05f48af1621d331c9a",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/9b/73/560ef6bf05f16305502b8e368c771e8f82d774898b37a3fb231f89c13342/pyarrow-16.1.0-cp312-cp312-macosx_11_0_arm64.whl",
+        "version": "16.1.0"
+      },
+      "python-dateutil": {
+        "is_direct": false,
+        "sha256": "a8b2bc7bffae282281c8140a97d3aa9c14da0b136dfe83f850eea9a5f7470427",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/ec/57/56b9bcc3c9c6a792fcbaf139543cee77261f3651ca9da0c93f5c1221264b/python_dateutil-2.9.0.post0-py2.py3-none-any.whl",
+        "version": "2.9.0.post0"
+      },
+      "pytz": {
+        "is_direct": false,
+        "sha256": "328171f4e3623139da4983451950b28e95ac706e13f3f2630a879749e7a8b319",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/9c/3d/a121f284241f08268b21359bd425f7d4825cffc5ac5cd0e1b3d82ffd2b10/pytz-2024.1-py2.py3-none-any.whl",
+        "version": "2024.1"
+      },
+      "requests": {
+        "is_direct": false,
+        "sha256": "70761cfe03c773ceb22aa2f671b4757976145175cdfca038c02654d061d6dcc6",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/f9/9b/335f9764261e915ed497fcdeb11df5dfd6f7bf257d4a6a2a686d80da4d54/requests-2.32.3-py3-none-any.whl",
+        "version": "2.32.3"
+      },
+      "six": {
+        "is_direct": false,
+        "sha256": "8abb2f1d86890a2dfb989f9a77cfcfd3e47c2a354b01111771326f8aa26e0254",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/d9/5a/e7c31adbe875f2abbb91bd84cf2dc52d792b5a01506781dbcf25c91daf11/six-1.16.0-py2.py3-none-any.whl",
+        "version": "1.16.0"
+      },
+      "thrift": {
+        "is_direct": false,
+        "sha256": "4dd662eadf6b8aebe8a41729527bd69adf6ceaa2a8681cbef64d1273b3e8feba",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/3c/2d/8946864f716ac82dcc88d290ed613cba7a80ec75df4f553ec3ff275f486e/thrift-0.20.0.tar.gz",
+        "version": "0.20.0"
+      },
+      "tzdata": {
+        "is_direct": false,
+        "sha256": "9068bc196136463f5245e51efda838afa15aaeca9903f49050dfa2679db4d252",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/65/58/f9c9e6be752e9fcb8b6a0ee9fb87e6e7a1f6bcab2cdc73f02bb7ba91ada0/tzdata-2024.1-py2.py3-none-any.whl",
+        "version": "2024.1"
+      },
+      "urllib3": {
+        "is_direct": false,
+        "sha256": "a448b2f64d686155468037e1ace9f2d2199776e17f0a46610480d311f73e3472",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/ca/1c/89ffc63a9605b583d5df2be791a27bc1a42b7c32bab68d3c8f2f73a98cd4/urllib3-2.2.2-py3-none-any.whl",
+        "version": "2.2.2"
+      }
+    },
+    "targets": {
+      "default": {
+        "certifi": [],
+        "charset-normalizer": [],
+        "databricks-sql-connector": [
+          "lz4",
+          "numpy",
+          "oauthlib",
+          "openpyxl",
+          "pandas",
+          "pyarrow",
+          "requests",
+          "thrift",
+          "urllib3"
+        ],
+        "et-xmlfile": [],
+        "idna": [],
+        "lz4": [],
+        "numpy": [],
+        "oauthlib": [],
+        "openpyxl": [
+          "et-xmlfile"
+        ],
+        "pandas": [
+          "numpy",
+          "python-dateutil",
+          "pytz",
+          "tzdata"
+        ],
+        "pyarrow": [
+          "numpy"
+        ],
+        "python-dateutil": [
+          "six"
+        ],
+        "pytz": [],
+        "requests": [
+          "certifi",
+          "charset-normalizer",
+          "idna",
+          "urllib3"
+        ],
+        "six": [],
+        "thrift": [
+          "six"
+        ],
+        "tzdata": [],
+        "urllib3": []
+      }
+    }
+  },
+  "invalidationHash": "8e8a18461c47ca518cb6111109128ac5748e784b3d3204a24ff780e8fa89f757"
+}

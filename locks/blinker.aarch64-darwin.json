@@ -1,0 +1,19 @@
+{
+  "fetchPipMetadata": {
+    "sources": {
+      "blinker": {
+        "is_direct": false,
+        "sha256": "8f77b09d3bf7c795e969e9486f39c2c5e9c39d4ee07424be2bc594ece9642d83",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/1e/57/a6a1721eff09598fb01f3c7cda070c1b6a0f12d63c83236edf79a440abcc/blinker-1.8.2.tar.gz",
+        "version": "1.8.2"
+      }
+    },
+    "targets": {
+      "default": {
+        "blinker": []
+      }
+    }
+  },
+  "invalidationHash": "ede96414aade27942aeb9d04ba0e8b3b664840bc8cf3e9eb897e0ce6eec7952b"
+}

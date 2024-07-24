@@ -1,0 +1,176 @@
+{
+  "fetchPipMetadata": {
+    "sources": {
+      "cachetools": {
+        "is_direct": false,
+        "sha256": "3ae3b49a3d5e28a77a0be2b37dbcb89005058959cb2323858c2657c4a8cab474",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/04/e6/a1551acbaa06f3e48b311329828a34bc9c51a8cfaecdeb4d03c329a1ef85/cachetools-5.4.0-py3-none-any.whl",
+        "version": "5.4.0"
+      },
+      "certifi": {
+        "is_direct": false,
+        "sha256": "c198e21b1289c2ab85ee4e67bb4b4ef3ead0892059901a8d5b622f24a1101e90",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/1c/d5/c84e1a17bf61d4df64ca866a1c9a913874b4e9bdc131ec689a0ad013fb36/certifi-2024.7.4-py3-none-any.whl",
+        "version": "2024.7.4"
+      },
+      "charset-normalizer": {
+        "is_direct": false,
+        "sha256": "55086ee1064215781fff39a1af09518bc9255b50d6333f2e4c74ca09fac6a8f6",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/3a/52/9f9d17c3b54dc238de384c4cb5a2ef0e27985b42a0e5cc8e8a31d918d48d/charset_normalizer-3.3.2-cp312-cp312-macosx_11_0_arm64.whl",
+        "version": "3.3.2"
+      },
+      "google-auth": {
+        "is_direct": false,
+        "sha256": "53326ea2ebec768070a94bee4e1b9194c9646ea0c2bd72422785bd0f9abfad7b",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/e7/00/85c22f7f73fa2e88dfbf0e1f63c565386ba40e0264b59c8a4362ae27c9fc/google_auth-2.32.0-py2.py3-none-any.whl",
+        "version": "2.32.0"
+      },
+      "idna": {
+        "is_direct": false,
+        "sha256": "82fee1fc78add43492d3a1898bfa6d8a904cc97d8427f683ed8e798d07761aa0",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/e5/3e/741d8c82801c347547f8a2a06aa57dbb1992be9e948df2ea0eda2c8b79e8/idna-3.7-py3-none-any.whl",
+        "version": "3.7"
+      },
+      "kubernetes": {
+        "is_direct": false,
+        "sha256": "41e4c77af9f28e7a6c314e3bd06a8c6229ddd787cad684e0ab9f69b498e98ebc",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/82/3c/9f29f6cab7f35df8e54f019e5719465fa97b877be2454e99f989270b4f34/kubernetes-30.1.0.tar.gz",
+        "version": "30.1.0"
+      },
+      "oauthlib": {
+        "is_direct": false,
+        "sha256": "8139f29aac13e25d502680e9e19963e83f16838d48a0d71c287fe40e7067fbca",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/7e/80/cab10959dc1faead58dc8384a781dfbf93cb4d33d50988f7a69f1b7c9bbe/oauthlib-3.2.2-py3-none-any.whl",
+        "version": "3.2.2"
+      },
+      "pyasn1": {
+        "is_direct": false,
+        "sha256": "cca4bb0f2df5504f02f6f8a775b6e416ff9b0b3b16f7ee80b5a3153d9b804473",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/23/7e/5f50d07d5e70a2addbccd90ac2950f81d1edd0783630651d9268d7f1db49/pyasn1-0.6.0-py2.py3-none-any.whl",
+        "version": "0.6.0"
+      },
+      "pyasn1-modules": {
+        "is_direct": false,
+        "sha256": "be04f15b66c206eed667e0bb5ab27e2b1855ea54a842e5037738099e8ca4ae0b",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/13/68/8906226b15ef38e71dc926c321d2fe99de8048e9098b5dfd38343011c886/pyasn1_modules-0.4.0-py3-none-any.whl",
+        "version": "0.4.0"
+      },
+      "python-dateutil": {
+        "is_direct": false,
+        "sha256": "a8b2bc7bffae282281c8140a97d3aa9c14da0b136dfe83f850eea9a5f7470427",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/ec/57/56b9bcc3c9c6a792fcbaf139543cee77261f3651ca9da0c93f5c1221264b/python_dateutil-2.9.0.post0-py2.py3-none-any.whl",
+        "version": "2.9.0.post0"
+      },
+      "pyyaml": {
+        "is_direct": false,
+        "sha256": "40df9b996c2b73138957fe23a16a4f0ba614f4c0efce1e9406a184b6d07fa3a9",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/84/02/404de95ced348b73dd84f70e15a41843d817ff8c1744516bf78358f2ffd2/PyYAML-6.0.1-cp312-cp312-macosx_11_0_arm64.whl",
+        "version": "6.0.1"
+      },
+      "requests": {
+        "is_direct": false,
+        "sha256": "70761cfe03c773ceb22aa2f671b4757976145175cdfca038c02654d061d6dcc6",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/f9/9b/335f9764261e915ed497fcdeb11df5dfd6f7bf257d4a6a2a686d80da4d54/requests-2.32.3-py3-none-any.whl",
+        "version": "2.32.3"
+      },
+      "requests-oauthlib": {
+        "is_direct": false,
+        "sha256": "7dd8a5c40426b779b0868c404bdef9768deccf22749cde15852df527e6269b36",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/3b/5d/63d4ae3b9daea098d5d6f5da83984853c1bbacd5dc826764b249fe119d24/requests_oauthlib-2.0.0-py2.py3-none-any.whl",
+        "version": "2.0.0"
+      },
+      "rsa": {
+        "is_direct": false,
+        "sha256": "90260d9058e514786967344d0ef75fa8727eed8a7d2e43ce9f4bcf1b536174f7",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/49/97/fa78e3d2f65c02c8e1268b9aba606569fe97f6c8f7c2d74394553347c145/rsa-4.9-py3-none-any.whl",
+        "version": "4.9"
+      },
+      "six": {
+        "is_direct": false,
+        "sha256": "8abb2f1d86890a2dfb989f9a77cfcfd3e47c2a354b01111771326f8aa26e0254",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/d9/5a/e7c31adbe875f2abbb91bd84cf2dc52d792b5a01506781dbcf25c91daf11/six-1.16.0-py2.py3-none-any.whl",
+        "version": "1.16.0"
+      },
+      "urllib3": {
+        "is_direct": false,
+        "sha256": "a448b2f64d686155468037e1ace9f2d2199776e17f0a46610480d311f73e3472",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/ca/1c/89ffc63a9605b583d5df2be791a27bc1a42b7c32bab68d3c8f2f73a98cd4/urllib3-2.2.2-py3-none-any.whl",
+        "version": "2.2.2"
+      },
+      "websocket-client": {
+        "is_direct": false,
+        "sha256": "17b44cc997f5c498e809b22cdf2d9c7a9e71c02c8cc2b6c56e7c2d1239bfa526",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/5a/84/44687a29792a70e111c5c477230a72c4b957d88d16141199bf9acb7537a3/websocket_client-1.8.0-py3-none-any.whl",
+        "version": "1.8.0"
+      }
+    },
+    "targets": {
+      "default": {
+        "cachetools": [],
+        "certifi": [],
+        "charset-normalizer": [],
+        "google-auth": [
+          "cachetools",
+          "pyasn1-modules",
+          "rsa"
+        ],
+        "idna": [],
+        "kubernetes": [
+          "certifi",
+          "google-auth",
+          "oauthlib",
+          "python-dateutil",
+          "pyyaml",
+          "requests",
+          "requests-oauthlib",
+          "six",
+          "urllib3",
+          "websocket-client"
+        ],
+        "oauthlib": [],
+        "pyasn1": [],
+        "pyasn1-modules": [
+          "pyasn1"
+        ],
+        "python-dateutil": [
+          "six"
+        ],
+        "pyyaml": [],
+        "requests": [
+          "certifi",
+          "charset-normalizer",
+          "idna",
+          "urllib3"
+        ],
+        "requests-oauthlib": [
+          "oauthlib",
+          "requests"
+        ],
+        "rsa": [
+          "pyasn1"
+        ],
+        "six": [],
+        "urllib3": [],
+        "websocket-client": []
+      }
+    }
+  },
+  "invalidationHash": "8c8dbd65723dcf3ecf5eca8065575f6dd1156215c99e711d2b8477b995858f14"
+}

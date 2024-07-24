@@ -1,0 +1,29 @@
+{
+  "fetchPipMetadata": {
+    "sources": {
+      "jsonpatch": {
+        "is_direct": false,
+        "sha256": "9fcd4009c41e6d12348b4a0ff2563ba56a2923a7dfee731d004e212e1ee5030c",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/42/78/18813351fe5d63acad16aec57f94ec2b70a09e53ca98145589e185423873/jsonpatch-1.33.tar.gz",
+        "version": "1.33"
+      },
+      "jsonpointer": {
+        "is_direct": false,
+        "sha256": "13e088adc14fca8b6aa8177c044e12701e6ad4b28ff10e65f2267a90109c9942",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/71/92/5e77f98553e9e75130c78900d000368476aed74276eb8ae8796f65f00918/jsonpointer-3.0.0-py2.py3-none-any.whl",
+        "version": "3.0.0"
+      }
+    },
+    "targets": {
+      "default": {
+        "jsonpatch": [
+          "jsonpointer"
+        ],
+        "jsonpointer": []
+      }
+    }
+  },
+  "invalidationHash": "dd3581522a6fc539318ea5ff0e70cb1b1e0e4dc748c8afc9d7cee88d2229bc06"
+}

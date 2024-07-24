@@ -1,0 +1,19 @@
+{
+  "fetchPipMetadata": {
+    "sources": {
+      "cycler": {
+        "is_direct": false,
+        "sha256": "88bb128f02ba341da8ef447245a9e138fae777f6a23943da4540077d3601eb1c",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/a9/95/a3dbbb5028f35eafb79008e7522a75244477d2838f38cbb722248dabc2a8/cycler-0.12.1.tar.gz",
+        "version": "0.12.1"
+      }
+    },
+    "targets": {
+      "default": {
+        "cycler": []
+      }
+    }
+  },
+  "invalidationHash": "0c2e52af0546d1c809e302ed887167216124e8875a522d9ebb6395184d0725f1"
+}

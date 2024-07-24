@@ -1,0 +1,29 @@
+{
+  "fetchPipMetadata": {
+    "sources": {
+      "matplotlib-inline": {
+        "is_direct": false,
+        "sha256": "8423b23ec666be3d16e16b60bdd8ac4e86e840ebd1dd11a30b9f117f2fa0ab90",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/99/5b/a36a337438a14116b16480db471ad061c36c3694df7c2084a0da7ba538b7/matplotlib_inline-0.1.7.tar.gz",
+        "version": "0.1.7"
+      },
+      "traitlets": {
+        "is_direct": false,
+        "sha256": "b74e89e397b1ed28cc831db7aea759ba6640cb3de13090ca145426688ff1ac4f",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/00/c0/8f5d070730d7836adc9c9b6408dec68c6ced86b304a9b26a14df072a6e8c/traitlets-5.14.3-py3-none-any.whl",
+        "version": "5.14.3"
+      }
+    },
+    "targets": {
+      "default": {
+        "matplotlib-inline": [
+          "traitlets"
+        ],
+        "traitlets": []
+      }
+    }
+  },
+  "invalidationHash": "df3f5b4d6dbf0e4e77f8e5288ebfb262b95e6288b116d64ab4fca9438e4d7ce5"
+}

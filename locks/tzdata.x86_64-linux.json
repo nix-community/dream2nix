@@ -1,0 +1,19 @@
+{
+  "fetchPipMetadata": {
+    "sources": {
+      "tzdata": {
+        "is_direct": false,
+        "sha256": "2674120f8d891909751c38abcdfd386ac0a5a1127954fbc332af6b5ceae07efd",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/74/5b/e025d02cb3b66b7b76093404392d4b44343c69101cc85f4d180dd5784717/tzdata-2024.1.tar.gz",
+        "version": "2024.1"
+      }
+    },
+    "targets": {
+      "default": {
+        "tzdata": []
+      }
+    }
+  },
+  "invalidationHash": "5123b6a1b72bd520b7acf1d23cdc8ebb97d23eff69698dc58d81c654289bda20"
+}

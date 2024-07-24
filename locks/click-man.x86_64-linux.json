@@ -1,0 +1,29 @@
+{
+  "fetchPipMetadata": {
+    "sources": {
+      "click": {
+        "is_direct": false,
+        "sha256": "ae74fb96c20a0277a1d615f1e4d73c8414f5a98db8b799a7931d1582f3390c28",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/00/2e/d53fa4befbf2cfa713304affc7ca780ce4fc1fd8710527771b58311a3229/click-8.1.7-py3-none-any.whl",
+        "version": "8.1.7"
+      },
+      "click-man": {
+        "is_direct": false,
+        "sha256": "d255c14ecee52afa915228f7dc87603ddb571c3d7d1a2eb219244e440fa88bbb",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/13/7d/6e8d9a0bfd9a388c9a8e1e5457c8729dbe1d461e770c4a4d27e56e3b2e43/click-man-0.4.1.tar.gz",
+        "version": "0.4.1"
+      }
+    },
+    "targets": {
+      "default": {
+        "click": [],
+        "click-man": [
+          "click"
+        ]
+      }
+    }
+  },
+  "invalidationHash": "4ddb75bdfd2959dd74ef7e377c99de848ac498114eb997068d8f8523c4066221"
+}

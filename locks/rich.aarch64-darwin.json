@@ -1,0 +1,48 @@
+{
+  "fetchPipMetadata": {
+    "sources": {
+      "markdown-it-py": {
+        "is_direct": false,
+        "sha256": "355216845c60bd96232cd8d8c40e8f9765cc86f46880e43a8fd22dc1a1a8cab1",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/42/d7/1ec15b46af6af88f19b8e5ffea08fa375d433c998b8a7639e76935c14f1f/markdown_it_py-3.0.0-py3-none-any.whl",
+        "version": "3.0.0"
+      },
+      "mdurl": {
+        "is_direct": false,
+        "sha256": "84008a41e51615a49fc9966191ff91509e3c40b939176e643fd50a5c2196b8f8",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/b3/38/89ba8ad64ae25be8de66a6d463314cf1eb366222074cfda9ee839c56a4b4/mdurl-0.1.2-py3-none-any.whl",
+        "version": "0.1.2"
+      },
+      "pygments": {
+        "is_direct": false,
+        "sha256": "b8e6aca0523f3ab76fee51799c488e38782ac06eafcf95e7ba832985c8e7b13a",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/f7/3f/01c8b82017c199075f8f788d0d906b9ffbbc5a47dc9918a945e13d5a2bda/pygments-2.18.0-py3-none-any.whl",
+        "version": "2.18.0"
+      },
+      "rich": {
+        "is_direct": false,
+        "sha256": "9be308cb1fe2f1f57d67ce99e95af38a1e2bc71ad9813b0e247cf7ffbcc3a432",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/b3/01/c954e134dc440ab5f96952fe52b4fdc64225530320a910473c1fe270d9aa/rich-13.7.1.tar.gz",
+        "version": "13.7.1"
+      }
+    },
+    "targets": {
+      "default": {
+        "markdown-it-py": [
+          "mdurl"
+        ],
+        "mdurl": [],
+        "pygments": [],
+        "rich": [
+          "markdown-it-py",
+          "pygments"
+        ]
+      }
+    }
+  },
+  "invalidationHash": "a3072df8b18a481eb023a8562f1b7ff52232ede25529a4b2f30e523b1b5a88a0"
+}

@@ -1,0 +1,29 @@
+{
+  "fetchPipMetadata": {
+    "sources": {
+      "h11": {
+        "is_direct": false,
+        "sha256": "e3fe4ac4b851c468cc8363d500db52c2ead036020723024a109d37346efaa761",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/95/04/ff642e65ad6b90db43e668d70ffb6736436c7ce41fcc549f4e9472234127/h11-0.14.0-py3-none-any.whl",
+        "version": "0.14.0"
+      },
+      "wsproto": {
+        "is_direct": false,
+        "sha256": "ad565f26ecb92588a3e43bc3d96164de84cd9902482b130d0ddbaa9664a85065",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/c9/4a/44d3c295350d776427904d73c189e10aeae66d7f555bb2feee16d1e4ba5a/wsproto-1.2.0.tar.gz",
+        "version": "1.2.0"
+      }
+    },
+    "targets": {
+      "default": {
+        "h11": [],
+        "wsproto": [
+          "h11"
+        ]
+      }
+    }
+  },
+  "invalidationHash": "fb502f1090e4be6ff746a1aa35852e871569d5df3ae4a7d20c6fd334a53f6711"
+}

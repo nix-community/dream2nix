@@ -1,0 +1,19 @@
+{
+  "fetchPipMetadata": {
+    "sources": {
+      "pymysql": {
+        "is_direct": false,
+        "sha256": "e127611aaf2b417403c60bf4dc570124aeb4a57f5f37b8e95ae399a42f904cd0",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/b3/8f/ce59b5e5ed4ce8512f879ff1fa5ab699d211ae2495f1adaa5fbba2a1eada/pymysql-1.1.1.tar.gz",
+        "version": "1.1.1"
+      }
+    },
+    "targets": {
+      "default": {
+        "pymysql": []
+      }
+    }
+  },
+  "invalidationHash": "b5a42d5f23cfc1305b481101e8bf433d88a3659e904b1e423aaec63d9a66efde"
+}

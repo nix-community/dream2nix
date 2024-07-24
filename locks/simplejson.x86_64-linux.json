@@ -1,0 +1,19 @@
+{
+  "fetchPipMetadata": {
+    "sources": {
+      "simplejson": {
+        "is_direct": false,
+        "sha256": "9eb442a2442ce417801c912df68e1f6ccfcd41577ae7274953ab3ad24ef7d82c",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/79/79/3ccb95bb4154952532f280f7a41979fbfb0fbbaee4d609810ecb01650afa/simplejson-3.19.2.tar.gz",
+        "version": "3.19.2"
+      }
+    },
+    "targets": {
+      "default": {
+        "simplejson": []
+      }
+    }
+  },
+  "invalidationHash": "a426cfbead319550f55210abd263755588d5731d6fb1178b0bb56b0f2136c8a0"
+}

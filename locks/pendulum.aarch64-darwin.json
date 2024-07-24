@@ -1,0 +1,59 @@
+{
+  "fetchPipMetadata": {
+    "sources": {
+      "pendulum": {
+        "is_direct": false,
+        "sha256": "5d034998dea404ec31fae27af6b22cff1708f830a1ed7353be4d1019bb9f584e",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/b8/fe/27c7438c6ac8b8f8bef3c6e571855602ee784b85d072efddfff0ceb1cd77/pendulum-3.0.0.tar.gz",
+        "version": "3.0.0"
+      },
+      "python-dateutil": {
+        "is_direct": false,
+        "sha256": "a8b2bc7bffae282281c8140a97d3aa9c14da0b136dfe83f850eea9a5f7470427",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/ec/57/56b9bcc3c9c6a792fcbaf139543cee77261f3651ca9da0c93f5c1221264b/python_dateutil-2.9.0.post0-py2.py3-none-any.whl",
+        "version": "2.9.0.post0"
+      },
+      "six": {
+        "is_direct": false,
+        "sha256": "8abb2f1d86890a2dfb989f9a77cfcfd3e47c2a354b01111771326f8aa26e0254",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/d9/5a/e7c31adbe875f2abbb91bd84cf2dc52d792b5a01506781dbcf25c91daf11/six-1.16.0-py2.py3-none-any.whl",
+        "version": "1.16.0"
+      },
+      "time-machine": {
+        "is_direct": false,
+        "sha256": "576179845483203182e4d423db1c6c27b3a8b569a3e3df9980a785adefc3ef6f",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/c6/66/47f1f0d446c16d6f65514919fe1b358179d3da3a5e1a73225510321a620e/time_machine-2.14.2-cp312-cp312-macosx_10_9_universal2.whl",
+        "version": "2.14.2"
+      },
+      "tzdata": {
+        "is_direct": false,
+        "sha256": "9068bc196136463f5245e51efda838afa15aaeca9903f49050dfa2679db4d252",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/65/58/f9c9e6be752e9fcb8b6a0ee9fb87e6e7a1f6bcab2cdc73f02bb7ba91ada0/tzdata-2024.1-py2.py3-none-any.whl",
+        "version": "2024.1"
+      }
+    },
+    "targets": {
+      "default": {
+        "pendulum": [
+          "python-dateutil",
+          "time-machine",
+          "tzdata"
+        ],
+        "python-dateutil": [
+          "six"
+        ],
+        "six": [],
+        "time-machine": [
+          "python-dateutil"
+        ],
+        "tzdata": []
+      }
+    }
+  },
+  "invalidationHash": "4903cbe8b07eb0f47f52705f3907d487b49402f835d24ee622a7b164bae394f5"
+}

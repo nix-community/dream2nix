@@ -1,0 +1,19 @@
+{
+  "fetchPipMetadata": {
+    "sources": {
+      "pluggy": {
+        "is_direct": false,
+        "sha256": "2cffa88e94fdc978c4c574f15f9e59b7f4201d439195c3715ca9e2486f1d0cf1",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/96/2d/02d4312c973c6050a18b314a5ad0b3210edb65a906f868e31c111dede4a6/pluggy-1.5.0.tar.gz",
+        "version": "1.5.0"
+      }
+    },
+    "targets": {
+      "default": {
+        "pluggy": []
+      }
+    }
+  },
+  "invalidationHash": "0378f052845c9abed919fb1d343ab3f153bc0c1a8654698b5c4fce6b13de9a5f"
+}

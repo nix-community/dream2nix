@@ -1,0 +1,19 @@
+{
+  "fetchPipMetadata": {
+    "sources": {
+      "astroid": {
+        "is_direct": false,
+        "sha256": "0e14202810b30da1b735827f78f5157be2bbd4a7a59b7707ca0bfc2fb4c0063a",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/9e/53/1067e1113ecaf58312357f2cd93063674924119d80d173adc3f6f2387aa2/astroid-3.2.4.tar.gz",
+        "version": "3.2.4"
+      }
+    },
+    "targets": {
+      "default": {
+        "astroid": []
+      }
+    }
+  },
+  "invalidationHash": "3bf37742568bbb400bc8e9f6319eb73f6e060d405935e820ab5658e3ce191c9f"
+}

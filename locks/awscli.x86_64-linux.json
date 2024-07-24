@@ -1,0 +1,124 @@
+{
+  "fetchPipMetadata": {
+    "sources": {
+      "awscli": {
+        "is_direct": false,
+        "sha256": "90cd7c63ae8ece92e3c5eff2ede32bbc28376f222e3afa6a535fb41915f7a5af",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/9b/5e/fd72d8f70121118e3e538e3b1e4fa1445eaa791bed01d740136add26e0b1/awscli-1.33.28.tar.gz",
+        "version": "1.33.28"
+      },
+      "botocore": {
+        "is_direct": false,
+        "sha256": "3fd4782362bd29c192704ebf859c5c8c5189ad05719e391eefe23088434427ae",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/83/fb/c9ccf2381051176f27cdde8008db1fba18796536efa33b7e9b341bc2d27c/botocore-1.34.146-py3-none-any.whl",
+        "version": "1.34.146"
+      },
+      "colorama": {
+        "is_direct": false,
+        "sha256": "4f1d9991f5acc0ca119f9d443620b77f9d6b33703e51011c16baf57afb285fc6",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/d1/d6/3965ed04c63042e047cb6a3e6ed1a63a35087b6a609aa3a15ed8ac56c221/colorama-0.4.6-py2.py3-none-any.whl",
+        "version": "0.4.6"
+      },
+      "docutils": {
+        "is_direct": false,
+        "sha256": "0c5b78adfbf7762415433f5515cd5c9e762339e23369dbe8000d84a4bf4ab3af",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/81/44/8a15e45ffa96e6cf82956dd8d7af9e666357e16b0d93b253903475ee947f/docutils-0.16-py2.py3-none-any.whl",
+        "version": "0.16"
+      },
+      "jmespath": {
+        "is_direct": false,
+        "sha256": "02e2e4cc71b5bcab88332eebf907519190dd9e6e82107fa7f83b1003a6252980",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/31/b4/b9b800c45527aadd64d5b442f9b932b00648617eb5d63d2c7a6587b7cafc/jmespath-1.0.1-py3-none-any.whl",
+        "version": "1.0.1"
+      },
+      "pyasn1": {
+        "is_direct": false,
+        "sha256": "cca4bb0f2df5504f02f6f8a775b6e416ff9b0b3b16f7ee80b5a3153d9b804473",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/23/7e/5f50d07d5e70a2addbccd90ac2950f81d1edd0783630651d9268d7f1db49/pyasn1-0.6.0-py2.py3-none-any.whl",
+        "version": "0.6.0"
+      },
+      "python-dateutil": {
+        "is_direct": false,
+        "sha256": "a8b2bc7bffae282281c8140a97d3aa9c14da0b136dfe83f850eea9a5f7470427",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/ec/57/56b9bcc3c9c6a792fcbaf139543cee77261f3651ca9da0c93f5c1221264b/python_dateutil-2.9.0.post0-py2.py3-none-any.whl",
+        "version": "2.9.0.post0"
+      },
+      "pyyaml": {
+        "is_direct": false,
+        "sha256": "6c22bec3fbe2524cde73d7ada88f6566758a8f7227bfbf93a408a9d86bcc12a0",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/b4/33/720548182ffa8344418126017aa1d4ab4aeec9a2275f04ce3f3573d8ace8/PyYAML-6.0.1-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl",
+        "version": "6.0.1"
+      },
+      "rsa": {
+        "is_direct": false,
+        "sha256": "78f9a9bf4e7be0c5ded4583326e7461e3a3c5aae24073648b4bdfa797d78c9d2",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/e9/93/0c0f002031f18b53af7a6166103c02b9c0667be528944137cc954ec921b3/rsa-4.7.2-py3-none-any.whl",
+        "version": "4.7.2"
+      },
+      "s3transfer": {
+        "is_direct": false,
+        "sha256": "eca1c20de70a39daee580aef4986996620f365c4e0fda6a86100231d62f1bf69",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/3c/4a/b221409913760d26cf4498b7b1741d510c82d3ad38381984a3ddc135ec66/s3transfer-0.10.2-py3-none-any.whl",
+        "version": "0.10.2"
+      },
+      "six": {
+        "is_direct": false,
+        "sha256": "8abb2f1d86890a2dfb989f9a77cfcfd3e47c2a354b01111771326f8aa26e0254",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/d9/5a/e7c31adbe875f2abbb91bd84cf2dc52d792b5a01506781dbcf25c91daf11/six-1.16.0-py2.py3-none-any.whl",
+        "version": "1.16.0"
+      },
+      "urllib3": {
+        "is_direct": false,
+        "sha256": "a448b2f64d686155468037e1ace9f2d2199776e17f0a46610480d311f73e3472",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/ca/1c/89ffc63a9605b583d5df2be791a27bc1a42b7c32bab68d3c8f2f73a98cd4/urllib3-2.2.2-py3-none-any.whl",
+        "version": "2.2.2"
+      }
+    },
+    "targets": {
+      "default": {
+        "awscli": [
+          "botocore",
+          "colorama",
+          "docutils",
+          "pyyaml",
+          "rsa",
+          "s3transfer"
+        ],
+        "botocore": [
+          "jmespath",
+          "python-dateutil",
+          "urllib3"
+        ],
+        "colorama": [],
+        "docutils": [],
+        "jmespath": [],
+        "pyasn1": [],
+        "python-dateutil": [
+          "six"
+        ],
+        "pyyaml": [],
+        "rsa": [
+          "pyasn1"
+        ],
+        "s3transfer": [
+          "botocore"
+        ],
+        "six": [],
+        "urllib3": []
+      }
+    }
+  },
+  "invalidationHash": "ace90fcccbfa6a2d8fa61df16d7c010c35d7fe7494d01dfae171c5a2e9cc3c5d"
+}

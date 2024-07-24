@@ -1,0 +1,40 @@
+{
+  "fetchPipMetadata": {
+    "sources": {
+      "google-cloud-audit-log": {
+        "is_direct": false,
+        "sha256": "86e2faba3383adc8fd04a5bd7fd4f960b3e4aedaa7ed950f2f891ce16902eb6b",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/b1/3d/48e8b2c0cc7113d1674526b609944ef77d7182f233b23c50fec7106b2e2c/google-cloud-audit-log-0.2.5.tar.gz",
+        "version": "0.2.5"
+      },
+      "googleapis-common-protos": {
+        "is_direct": false,
+        "sha256": "27a2499c7e8aff199665b22741997e485eccc8645aa9176c7c988e6fae507945",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/02/48/87422ff1bddcae677fb6f58c97f5cfc613304a5e8ce2c3662760199c0a84/googleapis_common_protos-1.63.2-py2.py3-none-any.whl",
+        "version": "1.63.2"
+      },
+      "protobuf": {
+        "is_direct": false,
+        "sha256": "7c8daa26095f82482307bc717364e7c13f4f1c99659be82890dcfc215194554d",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/15/db/7f731524fe0e56c6b2eb57d05b55d3badd80ef7d1f1ed59db191b2fdd8ab/protobuf-4.25.3-cp37-abi3-manylinux2014_x86_64.whl",
+        "version": "4.25.3"
+      }
+    },
+    "targets": {
+      "default": {
+        "google-cloud-audit-log": [
+          "googleapis-common-protos",
+          "protobuf"
+        ],
+        "googleapis-common-protos": [
+          "protobuf"
+        ],
+        "protobuf": []
+      }
+    }
+  },
+  "invalidationHash": "0d0f56384989a701cbacdddca237f5ff587aa2d899ecbb4252db13ffb76a240c"
+}

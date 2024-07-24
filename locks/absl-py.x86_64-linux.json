@@ -1,0 +1,19 @@
+{
+  "fetchPipMetadata": {
+    "sources": {
+      "absl-py": {
+        "is_direct": false,
+        "sha256": "7820790efbb316739cde8b4e19357243fc3608a152024288513dd968d7d959ff",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/7a/8f/fc001b92ecc467cc32ab38398bd0bfb45df46e7523bf33c2ad22a505f06e/absl-py-2.1.0.tar.gz",
+        "version": "2.1.0"
+      }
+    },
+    "targets": {
+      "default": {
+        "absl-py": []
+      }
+    }
+  },
+  "invalidationHash": "57f420bee12db7735ed8cd08f300485a125ab0949f75b52aac7cb1e87df2014f"
+}

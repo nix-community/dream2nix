@@ -1,0 +1,19 @@
+{
+  "fetchPipMetadata": {
+    "sources": {
+      "py": {
+        "is_direct": false,
+        "sha256": "51c75c4126074b472f746a24399ad32f6053d1b34b68d2fa41e558e6f4a98719",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/98/ff/fec109ceb715d2a6b4c4a85a61af3b40c723a961e8828319fbcb15b868dc/py-1.11.0.tar.gz",
+        "version": "1.11.0"
+      }
+    },
+    "targets": {
+      "default": {
+        "py": []
+      }
+    }
+  },
+  "invalidationHash": "89a6abd38a810f096577d88e17859350afb7d7239cfa3da6df7465edbe0c7f1a"
+}

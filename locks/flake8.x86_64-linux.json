@@ -1,0 +1,47 @@
+{
+  "fetchPipMetadata": {
+    "sources": {
+      "flake8": {
+        "is_direct": false,
+        "sha256": "48a07b626b55236e0fb4784ee69a465fbf59d79eec1f5b4785c3d3bc57d17aa5",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/4e/34/64f8a43736d9862ced7dd0ea5c3ed99815b8ff4b826a4f3bfd3a1b0639b1/flake8-7.1.0.tar.gz",
+        "version": "7.1.0"
+      },
+      "mccabe": {
+        "is_direct": false,
+        "sha256": "6c2d30ab6be0e4a46919781807b4f0d834ebdd6c6e3dca0bda5a15f863427b6e",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/27/1a/1f68f9ba0c207934b35b86a8ca3aad8395a3d6dd7921c0686e23853ff5a9/mccabe-0.7.0-py2.py3-none-any.whl",
+        "version": "0.7.0"
+      },
+      "pycodestyle": {
+        "is_direct": false,
+        "sha256": "949a39f6b86c3e1515ba1787c2022131d165a8ad271b11370a8819aa070269e4",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/55/c4/bf8ede2d1641e0a2e027c6d0c7060e00332851ea772cc5cee42a4a207707/pycodestyle-2.12.0-py2.py3-none-any.whl",
+        "version": "2.12.0"
+      },
+      "pyflakes": {
+        "is_direct": false,
+        "sha256": "84b5be138a2dfbb40689ca07e2152deb896a65c3a3e24c251c5c62489568074a",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/d4/d7/f1b7db88d8e4417c5d47adad627a93547f44bdc9028372dbd2313f34a855/pyflakes-3.2.0-py2.py3-none-any.whl",
+        "version": "3.2.0"
+      }
+    },
+    "targets": {
+      "default": {
+        "flake8": [
+          "mccabe",
+          "pycodestyle",
+          "pyflakes"
+        ],
+        "mccabe": [],
+        "pycodestyle": [],
+        "pyflakes": []
+      }
+    }
+  },
+  "invalidationHash": "d45b7f8d33cb9a3c6964d62a1e8116bd3fbaad4e3e2160886c1184248fa44b1d"
+}

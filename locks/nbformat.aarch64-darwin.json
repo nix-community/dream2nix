@@ -1,0 +1,109 @@
+{
+  "fetchPipMetadata": {
+    "sources": {
+      "attrs": {
+        "is_direct": false,
+        "sha256": "99b87a485a5820b23b879f04c2305b44b951b502fd64be915879d77a7e8fc6f1",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/e0/44/827b2a91a5816512fcaf3cc4ebc465ccd5d598c45cefa6703fcf4a79018f/attrs-23.2.0-py3-none-any.whl",
+        "version": "23.2.0"
+      },
+      "fastjsonschema": {
+        "is_direct": false,
+        "sha256": "5875f0b0fa7a0043a91e93a9b8f793bcbbba9691e7fd83dca95c28ba26d21f0a",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/6d/ca/086311cdfc017ec964b2436fe0c98c1f4efcb7e4c328956a22456e497655/fastjsonschema-2.20.0-py3-none-any.whl",
+        "version": "2.20.0"
+      },
+      "jsonschema": {
+        "is_direct": false,
+        "sha256": "fbadb6f8b144a8f8cf9f0b89ba94501d143e50411a1278633f56a7acf7fd5566",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/69/4a/4f9dbeb84e8850557c02365a0eee0649abe5eb1d84af92a25731c6c0f922/jsonschema-4.23.0-py3-none-any.whl",
+        "version": "4.23.0"
+      },
+      "jsonschema-specifications": {
+        "is_direct": false,
+        "sha256": "87e4fdf3a94858b8a2ba2778d9ba57d8a9cafca7c7489c46ba0d30a8bc6a9c3c",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/ee/07/44bd408781594c4d0a027666ef27fab1e441b109dc3b76b4f836f8fd04fe/jsonschema_specifications-2023.12.1-py3-none-any.whl",
+        "version": "2023.12.1"
+      },
+      "jupyter-core": {
+        "is_direct": false,
+        "sha256": "4f7315d2f6b4bcf2e3e7cb6e46772eba760ae459cd1f59d29eb57b0a01bd7409",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/c9/fb/108ecd1fe961941959ad0ee4e12ee7b8b1477247f30b1fdfd83ceaf017f0/jupyter_core-5.7.2-py3-none-any.whl",
+        "version": "5.7.2"
+      },
+      "nbformat": {
+        "is_direct": false,
+        "sha256": "322168b14f937a5d11362988ecac2a4952d3d8e3a2cbeb2319584631226d5b3a",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/6d/fd/91545e604bc3dad7dca9ed03284086039b294c6b3d75c0d2fa45f9e9caf3/nbformat-5.10.4.tar.gz",
+        "version": "5.10.4"
+      },
+      "platformdirs": {
+        "is_direct": false,
+        "sha256": "2d7a1657e36a80ea911db832a8a6ece5ee53d8de21edd5cc5879af6530b1bfee",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/68/13/2aa1f0e1364feb2c9ef45302f387ac0bd81484e9c9a4c5688a322fbdfd08/platformdirs-4.2.2-py3-none-any.whl",
+        "version": "4.2.2"
+      },
+      "referencing": {
+        "is_direct": false,
+        "sha256": "eda6d3234d62814d1c64e305c1331c9a3a6132da475ab6382eaa997b21ee75de",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/b7/59/2056f61236782a2c86b33906c025d4f4a0b17be0161b63b70fd9e8775d36/referencing-0.35.1-py3-none-any.whl",
+        "version": "0.35.1"
+      },
+      "rpds-py": {
+        "is_direct": false,
+        "sha256": "6f2f78ef14077e08856e788fa482107aa602636c16c25bdf59c22ea525a785e9",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/5c/a2/4796309ee72d7005abe844ffdd88efa9174f724e298aedcb834d08bb4b9b/rpds_py-0.19.0-cp312-cp312-macosx_11_0_arm64.whl",
+        "version": "0.19.0"
+      },
+      "traitlets": {
+        "is_direct": false,
+        "sha256": "b74e89e397b1ed28cc831db7aea759ba6640cb3de13090ca145426688ff1ac4f",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/00/c0/8f5d070730d7836adc9c9b6408dec68c6ced86b304a9b26a14df072a6e8c/traitlets-5.14.3-py3-none-any.whl",
+        "version": "5.14.3"
+      }
+    },
+    "targets": {
+      "default": {
+        "attrs": [],
+        "fastjsonschema": [],
+        "jsonschema": [
+          "attrs",
+          "jsonschema-specifications",
+          "referencing",
+          "rpds-py"
+        ],
+        "jsonschema-specifications": [
+          "referencing"
+        ],
+        "jupyter-core": [
+          "platformdirs",
+          "traitlets"
+        ],
+        "nbformat": [
+          "fastjsonschema",
+          "jsonschema",
+          "jupyter-core",
+          "traitlets"
+        ],
+        "platformdirs": [],
+        "referencing": [
+          "attrs",
+          "rpds-py"
+        ],
+        "rpds-py": [],
+        "traitlets": []
+      }
+    }
+  },
+  "invalidationHash": "5e6fb7bc757c5d01b5e6ba10aa3ad94c7d69ea4b2b64b6080489bd4da4b52329"
+}

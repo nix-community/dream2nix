@@ -1,0 +1,19 @@
+{
+  "fetchPipMetadata": {
+    "sources": {
+      "humanfriendly": {
+        "is_direct": false,
+        "sha256": "6b0b831ce8f15f7300721aa49829fc4e83921a9a301cc7f606be6686a2288ddc",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/cc/3f/2c29224acb2e2df4d2046e4c73ee2662023c58ff5b113c4c1adac0886c43/humanfriendly-10.0.tar.gz",
+        "version": "10.0"
+      }
+    },
+    "targets": {
+      "default": {
+        "humanfriendly": []
+      }
+    }
+  },
+  "invalidationHash": "8d9ce4a1fbb3c6a8c2771cdf123af69bcb998f1588adc8e334eb4fb166f053d8"
+}

@@ -1,0 +1,19 @@
+{
+  "fetchPipMetadata": {
+    "sources": {
+      "pyasn1": {
+        "is_direct": false,
+        "sha256": "3a35ab2c4b5ef98e17dfdec8ab074046fbda76e281c5a706ccd82328cfc8f64c",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/4a/a3/d2157f333900747f20984553aca98008b6dc843eb62f3a36030140ccec0d/pyasn1-0.6.0.tar.gz",
+        "version": "0.6.0"
+      }
+    },
+    "targets": {
+      "default": {
+        "pyasn1": []
+      }
+    }
+  },
+  "invalidationHash": "5cb00208f81cd5f6f0aa8c964504e5ddd90caf05b7c136d60a50faae380428b7"
+}

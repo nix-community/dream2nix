@@ -1,0 +1,29 @@
+{
+  "fetchPipMetadata": {
+    "sources": {
+      "proto-plus": {
+        "is_direct": false,
+        "sha256": "30b72a5ecafe4406b0d339db35b56c4059064e69227b8c3bda7462397f966445",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/3e/fc/e9a65cd52c1330d8d23af6013651a0bc50b6d76bcbdf91fae7cd19c68f29/proto-plus-1.24.0.tar.gz",
+        "version": "1.24.0"
+      },
+      "protobuf": {
+        "is_direct": false,
+        "sha256": "a109916aaac42bff84702fb5187f3edadbc7c97fc2c99c5ff81dd15dcce0d1e5",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/75/44/6ae304790fad936bb4cf09907a05d669b7600458a02b6c960fdaaeeab06e/protobuf-5.27.2-cp38-abi3-macosx_10_9_universal2.whl",
+        "version": "5.27.2"
+      }
+    },
+    "targets": {
+      "default": {
+        "proto-plus": [
+          "protobuf"
+        ],
+        "protobuf": []
+      }
+    }
+  },
+  "invalidationHash": "7db66c38cc9a75700b65de9bfeb40bfd4fc5a29766e1385292c52dfaf66bdba6"
+}

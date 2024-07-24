@@ -1,0 +1,108 @@
+{
+  "fetchPipMetadata": {
+    "sources": {
+      "cffi": {
+        "is_direct": false,
+        "sha256": "e715596e683d2ce000574bae5d07bd522c781a822866c20495e52520564f0969",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/09/d4/8759cc3b2222c159add8ce3af0089912203a31610f4be4c36f98e320b4c6/cffi-1.16.0-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl",
+        "version": "1.16.0"
+      },
+      "cryptography": {
+        "is_direct": false,
+        "sha256": "cb013933d4c127349b3948aa8aaf2f12c0353ad0eccd715ca789c8a0f671646f",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/0f/6c/b42660b3075ff543065b2c1c5a3d9bedaadcff8ebce2ee981be2babc2934/cryptography-43.0.0-cp39-abi3-manylinux_2_28_x86_64.whl",
+        "version": "43.0.0"
+      },
+      "jaraco-classes": {
+        "is_direct": false,
+        "sha256": "f662826b6bed8cace05e7ff873ce0f9283b5c924470fe664fff1c2f00f581790",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/7f/66/b15ce62552d84bbfcec9a4873ab79d993a1dd4edb922cbfccae192bd5b5f/jaraco.classes-3.4.0-py3-none-any.whl",
+        "version": "3.4.0"
+      },
+      "jaraco-context": {
+        "is_direct": false,
+        "sha256": "3e16388f7da43d384a1a7cd3452e72e14732ac9fe459678773a3608a812bf266",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/d2/40/11b7bc1898cf1dcb87ccbe09b39f5088634ac78bb25f3383ff541c2b40aa/jaraco.context-5.3.0-py3-none-any.whl",
+        "version": "5.3.0"
+      },
+      "jaraco-functools": {
+        "is_direct": false,
+        "sha256": "3b24ccb921d6b593bdceb56ce14799204f473976e2a9d4b15b04d0f2c2326664",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/c3/ac/d0bf0d37a9f95f69a5efc5685d9166ee34a664d3cd29a9c139989512fe14/jaraco.functools-4.0.1-py3-none-any.whl",
+        "version": "4.0.1"
+      },
+      "jeepney": {
+        "is_direct": false,
+        "sha256": "c0a454ad016ca575060802ee4d590dd912e35c122fa04e70306de3d076cce755",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/ae/72/2a1e2290f1ab1e06f71f3d0f1646c9e4634e70e1d37491535e19266e8dc9/jeepney-0.8.0-py3-none-any.whl",
+        "version": "0.8.0"
+      },
+      "keyring": {
+        "is_direct": false,
+        "sha256": "daaffd42dbda25ddafb1ad5fec4024e5bbcfe424597ca1ca452b299861e49f1b",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/3e/e9/54f232e659f635a000d94cfbca40b9d5d617707593c3d552ec14d3ba27f1/keyring-25.2.1.tar.gz",
+        "version": "25.2.1"
+      },
+      "more-itertools": {
+        "is_direct": false,
+        "sha256": "ea6a02e24a9161e51faad17a8782b92a0df82c12c1c8886fec7f0c3fa1a1b320",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/bb/23/2d1cdb0427aecb2b150dc2ac2d15400990c4f05585b3fbc1b5177d74d7fb/more_itertools-10.3.0-py3-none-any.whl",
+        "version": "10.3.0"
+      },
+      "pycparser": {
+        "is_direct": false,
+        "sha256": "c3702b6d3dd8c7abc1afa565d7e63d53a1d0bd86cdc24edd75470f4de499cfcc",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/13/a3/a812df4e2dd5696d1f351d58b8fe16a405b234ad2886a0dab9183fb78109/pycparser-2.22-py3-none-any.whl",
+        "version": "2.22"
+      },
+      "secretstorage": {
+        "is_direct": false,
+        "sha256": "f356e6628222568e3af06f2eba8df495efa13b3b63081dafd4f7d9a7b7bc9f99",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/54/24/b4293291fa1dd830f353d2cb163295742fa87f179fcc8a20a306a81978b7/SecretStorage-3.3.3-py3-none-any.whl",
+        "version": "3.3.3"
+      }
+    },
+    "targets": {
+      "default": {
+        "cffi": [
+          "pycparser"
+        ],
+        "cryptography": [
+          "cffi"
+        ],
+        "jaraco-classes": [
+          "more-itertools"
+        ],
+        "jaraco-context": [],
+        "jaraco-functools": [
+          "more-itertools"
+        ],
+        "jeepney": [],
+        "keyring": [
+          "jaraco-classes",
+          "jaraco-context",
+          "jaraco-functools",
+          "jeepney",
+          "secretstorage"
+        ],
+        "more-itertools": [],
+        "pycparser": [],
+        "secretstorage": [
+          "cryptography",
+          "jeepney"
+        ]
+      }
+    }
+  },
+  "invalidationHash": "cab6ef1a4a8baf771197e978a8bcd57eb6914b81ec5d1db1fbb666833f966e80"
+}

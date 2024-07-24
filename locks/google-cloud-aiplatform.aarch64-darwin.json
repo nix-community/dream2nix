@@ -1,0 +1,365 @@
+{
+  "fetchPipMetadata": {
+    "sources": {
+      "annotated-types": {
+        "is_direct": false,
+        "sha256": "1f02e8b43a8fbbc3f3e0d4f0f4bfc8131bcb4eebe8849b8e5c773f3a1c582a53",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/78/b6/6307fbef88d9b5ee7421e68d78a9f162e0da4900bc5f5793f6d3d0e34fb8/annotated_types-0.7.0-py3-none-any.whl",
+        "version": "0.7.0"
+      },
+      "cachetools": {
+        "is_direct": false,
+        "sha256": "3ae3b49a3d5e28a77a0be2b37dbcb89005058959cb2323858c2657c4a8cab474",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/04/e6/a1551acbaa06f3e48b311329828a34bc9c51a8cfaecdeb4d03c329a1ef85/cachetools-5.4.0-py3-none-any.whl",
+        "version": "5.4.0"
+      },
+      "certifi": {
+        "is_direct": false,
+        "sha256": "c198e21b1289c2ab85ee4e67bb4b4ef3ead0892059901a8d5b622f24a1101e90",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/1c/d5/c84e1a17bf61d4df64ca866a1c9a913874b4e9bdc131ec689a0ad013fb36/certifi-2024.7.4-py3-none-any.whl",
+        "version": "2024.7.4"
+      },
+      "charset-normalizer": {
+        "is_direct": false,
+        "sha256": "55086ee1064215781fff39a1af09518bc9255b50d6333f2e4c74ca09fac6a8f6",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/3a/52/9f9d17c3b54dc238de384c4cb5a2ef0e27985b42a0e5cc8e8a31d918d48d/charset_normalizer-3.3.2-cp312-cp312-macosx_11_0_arm64.whl",
+        "version": "3.3.2"
+      },
+      "docstring-parser": {
+        "is_direct": false,
+        "sha256": "bf0a1387354d3691d102edef7ec124f219ef639982d096e26e3b60aeffa90637",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/d5/7c/e9fcff7623954d86bdc17782036cbf715ecab1bec4847c008557affe1ca8/docstring_parser-0.16-py3-none-any.whl",
+        "version": "0.16"
+      },
+      "google-api-core": {
+        "is_direct": false,
+        "sha256": "f12a9b8309b5e21d92483bbd47ce2c445861ec7d269ef6784ecc0ea8c1fa6125",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/44/99/daa3541e8ecd7d8b7907b714ba92126097a976b5b3dbabdb5febdcf08554/google_api_core-2.19.1-py3-none-any.whl",
+        "version": "2.19.1"
+      },
+      "google-auth": {
+        "is_direct": false,
+        "sha256": "53326ea2ebec768070a94bee4e1b9194c9646ea0c2bd72422785bd0f9abfad7b",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/e7/00/85c22f7f73fa2e88dfbf0e1f63c565386ba40e0264b59c8a4362ae27c9fc/google_auth-2.32.0-py2.py3-none-any.whl",
+        "version": "2.32.0"
+      },
+      "google-cloud-aiplatform": {
+        "is_direct": false,
+        "sha256": "2bebb59c0ba3e3b4b568305418ca1b021977988adbee8691a5bed09b037e7e63",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/a2/60/d2b53ee4009d944148a10a734b475aa0bcdc40a6582de46b924b1d1f66d5/google-cloud-aiplatform-1.59.0.tar.gz",
+        "version": "1.59.0"
+      },
+      "google-cloud-bigquery": {
+        "is_direct": false,
+        "sha256": "7f0c371bc74d2a7fb74dacbc00ac0f90c8c2bec2289b51dd6685a275873b1ce9",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/81/98/2f931388614ea894640f84c1874d72d84d890c093e334a3990e363ff689e/google_cloud_bigquery-3.25.0-py2.py3-none-any.whl",
+        "version": "3.25.0"
+      },
+      "google-cloud-core": {
+        "is_direct": false,
+        "sha256": "a9e6a4422b9ac5c29f79a0ede9485473338e2ce78d91f2370c01e730eab22e61",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/5e/0f/2e2061e3fbcb9d535d5da3f58cc8de4947df1786fe6a1355960feb05a681/google_cloud_core-2.4.1-py2.py3-none-any.whl",
+        "version": "2.4.1"
+      },
+      "google-cloud-resource-manager": {
+        "is_direct": false,
+        "sha256": "0b6663585f7f862166c0fb4c55fdda721fce4dc2dc1d5b52d03ee4bf2653a85f",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/a3/5a/4bb02ae7791e5464007080cd11ed6d927e32611790e24f9e3b152051d1d5/google_cloud_resource_manager-1.12.4-py2.py3-none-any.whl",
+        "version": "1.12.4"
+      },
+      "google-cloud-storage": {
+        "is_direct": false,
+        "sha256": "5b393bc766b7a3bc6f5407b9e665b2450d36282614b7945e570b3480a456d1e1",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/c0/7d/9ec53c92ae8a87baf2fd0d8ccba4e72ce650eef653b3d34b8bc058ecfb64/google_cloud_storage-2.17.0-py2.py3-none-any.whl",
+        "version": "2.17.0"
+      },
+      "google-crc32c": {
+        "is_direct": false,
+        "sha256": "89284716bc6a5a415d4eaa11b1726d2d60a0cd12aadf5439828353662ede9dd7",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/d3/a5/4bb58448fffd36ede39684044df93a396c13d1ea3516f585767f9f960352/google-crc32c-1.5.0.tar.gz",
+        "version": "1.5.0"
+      },
+      "google-resumable-media": {
+        "is_direct": false,
+        "sha256": "103ebc4ba331ab1bfdac0250f8033627a2cd7cde09e7ccff9181e31ba4315b2c",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/52/0e/9705df684aa14e9097d739a812c6d32ae1f71aabfd96c47489655cbb6828/google_resumable_media-2.7.1-py2.py3-none-any.whl",
+        "version": "2.7.1"
+      },
+      "googleapis-common-protos": {
+        "is_direct": false,
+        "sha256": "27a2499c7e8aff199665b22741997e485eccc8645aa9176c7c988e6fae507945",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/02/48/87422ff1bddcae677fb6f58c97f5cfc613304a5e8ce2c3662760199c0a84/googleapis_common_protos-1.63.2-py2.py3-none-any.whl",
+        "version": "1.63.2"
+      },
+      "grpc-google-iam-v1": {
+        "is_direct": false,
+        "sha256": "c3e86151a981811f30d5e7330f271cee53e73bb87755e88cc3b6f0c7b5fe374e",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/a8/7d/da3875b7728bc700eeb28b513754ce237c04ac7cbf8559d76b0464ee01cb/grpc_google_iam_v1-0.13.1-py2.py3-none-any.whl",
+        "version": "0.13.1"
+      },
+      "grpcio": {
+        "is_direct": false,
+        "sha256": "aaf3c54419a28d45bd1681372029f40e5bfb58e5265e3882eaf21e4a5f81a119",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/ab/95/15e4bbdbbb0c1e52e758786d4d020f733e9fc5fd10cf1a17379636e576de/grpcio-1.65.1-cp312-cp312-macosx_10_9_universal2.whl",
+        "version": "1.65.1"
+      },
+      "grpcio-status": {
+        "is_direct": false,
+        "sha256": "206ddf0eb36bc99b033f03b2c8e95d319f0044defae9b41ae21408e7e0cda48f",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/33/63/56a8c67a77947d0ebc31a03c5dea8d2c933ab3ad30019b0bafa3e50a5ef6/grpcio_status-1.62.2-py3-none-any.whl",
+        "version": "1.62.2"
+      },
+      "idna": {
+        "is_direct": false,
+        "sha256": "82fee1fc78add43492d3a1898bfa6d8a904cc97d8427f683ed8e798d07761aa0",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/e5/3e/741d8c82801c347547f8a2a06aa57dbb1992be9e948df2ea0eda2c8b79e8/idna-3.7-py3-none-any.whl",
+        "version": "3.7"
+      },
+      "numpy": {
+        "is_direct": false,
+        "sha256": "5daab361be6ddeb299a918a7c0864fa8618af66019138263247af405018b04e1",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/c2/da/3d8debb409bc97045b559f408d2b8cefa6a077a73df14dbf4d8780d976b1/numpy-2.0.1-cp312-cp312-macosx_14_0_arm64.whl",
+        "version": "2.0.1"
+      },
+      "packaging": {
+        "is_direct": false,
+        "sha256": "5b8f2217dbdbd2f7f384c41c628544e6d52f2d0f53c6d0c3ea61aa5d1d7ff124",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/08/aa/cc0199a5f0ad350994d660967a8efb233fe0416e4639146c089643407ce6/packaging-24.1-py3-none-any.whl",
+        "version": "24.1"
+      },
+      "proto-plus": {
+        "is_direct": false,
+        "sha256": "402576830425e5f6ce4c2a6702400ac79897dab0b4343821aa5188b0fab81a12",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/7c/6f/db31f0711c0402aa477257205ce7d29e86a75cb52cd19f7afb585f75cda0/proto_plus-1.24.0-py3-none-any.whl",
+        "version": "1.24.0"
+      },
+      "protobuf": {
+        "is_direct": false,
+        "sha256": "f1279ab38ecbfae7e456a108c5c0681e4956d5b1090027c1de0f934dfdb4b35c",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/f3/bf/26deba06a4c910a85f78245cac7698f67cedd7efe00d04f6b3e1b3506a59/protobuf-4.25.3-cp37-abi3-macosx_10_9_universal2.whl",
+        "version": "4.25.3"
+      },
+      "pyasn1": {
+        "is_direct": false,
+        "sha256": "cca4bb0f2df5504f02f6f8a775b6e416ff9b0b3b16f7ee80b5a3153d9b804473",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/23/7e/5f50d07d5e70a2addbccd90ac2950f81d1edd0783630651d9268d7f1db49/pyasn1-0.6.0-py2.py3-none-any.whl",
+        "version": "0.6.0"
+      },
+      "pyasn1-modules": {
+        "is_direct": false,
+        "sha256": "be04f15b66c206eed667e0bb5ab27e2b1855ea54a842e5037738099e8ca4ae0b",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/13/68/8906226b15ef38e71dc926c321d2fe99de8048e9098b5dfd38343011c886/pyasn1_modules-0.4.0-py3-none-any.whl",
+        "version": "0.4.0"
+      },
+      "pydantic": {
+        "is_direct": false,
+        "sha256": "73ee9fddd406dc318b885c7a2eab8a6472b68b8fb5ba8150949fc3db939f23c8",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/1f/fa/b7f815b8c9ad021c07f88875b601222ef5e70619391ade4a49234d12d278/pydantic-2.8.2-py3-none-any.whl",
+        "version": "2.8.2"
+      },
+      "pydantic-core": {
+        "is_direct": false,
+        "sha256": "a4f55095ad087474999ee28d3398bae183a66be4823f753cd7d67dd0153427c9",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/6a/23/430f2878c9cd977a61bb39f71751d9310ec55cee36b3d5bf1752c6341fd0/pydantic_core-2.20.1-cp312-cp312-macosx_11_0_arm64.whl",
+        "version": "2.20.1"
+      },
+      "python-dateutil": {
+        "is_direct": false,
+        "sha256": "a8b2bc7bffae282281c8140a97d3aa9c14da0b136dfe83f850eea9a5f7470427",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/ec/57/56b9bcc3c9c6a792fcbaf139543cee77261f3651ca9da0c93f5c1221264b/python_dateutil-2.9.0.post0-py2.py3-none-any.whl",
+        "version": "2.9.0.post0"
+      },
+      "requests": {
+        "is_direct": false,
+        "sha256": "70761cfe03c773ceb22aa2f671b4757976145175cdfca038c02654d061d6dcc6",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/f9/9b/335f9764261e915ed497fcdeb11df5dfd6f7bf257d4a6a2a686d80da4d54/requests-2.32.3-py3-none-any.whl",
+        "version": "2.32.3"
+      },
+      "rsa": {
+        "is_direct": false,
+        "sha256": "90260d9058e514786967344d0ef75fa8727eed8a7d2e43ce9f4bcf1b536174f7",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/49/97/fa78e3d2f65c02c8e1268b9aba606569fe97f6c8f7c2d74394553347c145/rsa-4.9-py3-none-any.whl",
+        "version": "4.9"
+      },
+      "shapely": {
+        "is_direct": false,
+        "sha256": "2ff9521991ed9e201c2e923da014e766c1aa04771bc93e6fe97c27dcf0d40ace",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/5d/e7/719f384857c39aa51aa19d09d7cac84aeab1b25a7d0dab62433bf7b419e9/shapely-2.0.5-cp312-cp312-macosx_11_0_arm64.whl",
+        "version": "2.0.5"
+      },
+      "six": {
+        "is_direct": false,
+        "sha256": "8abb2f1d86890a2dfb989f9a77cfcfd3e47c2a354b01111771326f8aa26e0254",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/d9/5a/e7c31adbe875f2abbb91bd84cf2dc52d792b5a01506781dbcf25c91daf11/six-1.16.0-py2.py3-none-any.whl",
+        "version": "1.16.0"
+      },
+      "typing-extensions": {
+        "is_direct": false,
+        "sha256": "04e5ca0351e0f3f85c6853954072df659d0d13fac324d0072316b67d7794700d",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/26/9f/ad63fc0248c5379346306f8668cda6e2e2e9c95e01216d2b8ffd9ff037d0/typing_extensions-4.12.2-py3-none-any.whl",
+        "version": "4.12.2"
+      },
+      "urllib3": {
+        "is_direct": false,
+        "sha256": "a448b2f64d686155468037e1ace9f2d2199776e17f0a46610480d311f73e3472",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/ca/1c/89ffc63a9605b583d5df2be791a27bc1a42b7c32bab68d3c8f2f73a98cd4/urllib3-2.2.2-py3-none-any.whl",
+        "version": "2.2.2"
+      }
+    },
+    "targets": {
+      "default": {
+        "annotated-types": [],
+        "cachetools": [],
+        "certifi": [],
+        "charset-normalizer": [],
+        "docstring-parser": [],
+        "google-api-core": [
+          "google-auth",
+          "googleapis-common-protos",
+          "grpcio",
+          "grpcio-status",
+          "proto-plus",
+          "protobuf",
+          "requests"
+        ],
+        "google-auth": [
+          "cachetools",
+          "pyasn1-modules",
+          "rsa"
+        ],
+        "google-cloud-aiplatform": [
+          "docstring-parser",
+          "google-api-core",
+          "google-auth",
+          "google-cloud-bigquery",
+          "google-cloud-resource-manager",
+          "google-cloud-storage",
+          "packaging",
+          "proto-plus",
+          "protobuf",
+          "pydantic",
+          "shapely"
+        ],
+        "google-cloud-bigquery": [
+          "google-api-core",
+          "google-auth",
+          "google-cloud-core",
+          "google-resumable-media",
+          "packaging",
+          "python-dateutil",
+          "requests"
+        ],
+        "google-cloud-core": [
+          "google-api-core",
+          "google-auth"
+        ],
+        "google-cloud-resource-manager": [
+          "google-api-core",
+          "google-auth",
+          "grpc-google-iam-v1",
+          "proto-plus",
+          "protobuf"
+        ],
+        "google-cloud-storage": [
+          "google-api-core",
+          "google-auth",
+          "google-cloud-core",
+          "google-crc32c",
+          "google-resumable-media",
+          "requests"
+        ],
+        "google-crc32c": [],
+        "google-resumable-media": [
+          "google-crc32c"
+        ],
+        "googleapis-common-protos": [
+          "grpcio",
+          "protobuf"
+        ],
+        "grpc-google-iam-v1": [
+          "googleapis-common-protos",
+          "grpcio",
+          "protobuf"
+        ],
+        "grpcio": [],
+        "grpcio-status": [
+          "googleapis-common-protos",
+          "grpcio",
+          "protobuf"
+        ],
+        "idna": [],
+        "numpy": [],
+        "packaging": [],
+        "proto-plus": [
+          "protobuf"
+        ],
+        "protobuf": [],
+        "pyasn1": [],
+        "pyasn1-modules": [
+          "pyasn1"
+        ],
+        "pydantic": [
+          "annotated-types",
+          "pydantic-core",
+          "typing-extensions"
+        ],
+        "pydantic-core": [
+          "typing-extensions"
+        ],
+        "python-dateutil": [
+          "six"
+        ],
+        "requests": [
+          "certifi",
+          "charset-normalizer",
+          "idna",
+          "urllib3"
+        ],
+        "rsa": [
+          "pyasn1"
+        ],
+        "shapely": [
+          "numpy"
+        ],
+        "six": [],
+        "typing-extensions": [],
+        "urllib3": []
+      }
+    }
+  },
+  "invalidationHash": "1d190c954bf050601204ba3a572c96491a7b9b0a7491733f46f25baa420ded41"
+}

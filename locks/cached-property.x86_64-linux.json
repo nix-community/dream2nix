@@ -1,0 +1,19 @@
+{
+  "fetchPipMetadata": {
+    "sources": {
+      "cached-property": {
+        "is_direct": false,
+        "sha256": "9fa5755838eecbb2d234c3aa390bd80fbd3ac6b6869109bfc1b499f7bd89a130",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/61/2c/d21c1c23c2895c091fa7a91a54b6872098fea913526932d21902088a7c41/cached-property-1.5.2.tar.gz",
+        "version": "1.5.2"
+      }
+    },
+    "targets": {
+      "default": {
+        "cached-property": []
+      }
+    }
+  },
+  "invalidationHash": "0cd81488043f6d035dc030cb425feecc3696c5597c3b4e13fde7064d5960d918"
+}

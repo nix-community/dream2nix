@@ -1,0 +1,19 @@
+{
+  "fetchPipMetadata": {
+    "sources": {
+      "widgetsnbextension": {
+        "is_direct": false,
+        "sha256": "8b22a8f1910bfd188e596fe7fc05dcbd87e810c8a4ba010bdb3da86637398474",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/52/f4/b261824abd9c9b22d328c576bfa57f09142b2bca422b013abc13bd6d87ac/widgetsnbextension-4.0.11.tar.gz",
+        "version": "4.0.11"
+      }
+    },
+    "targets": {
+      "default": {
+        "widgetsnbextension": []
+      }
+    }
+  },
+  "invalidationHash": "ab94e6e502550969d39148c6082635be4b40b11f353d056c104068ba7aca95c3"
+}

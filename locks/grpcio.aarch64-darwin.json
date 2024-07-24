@@ -1,0 +1,19 @@
+{
+  "fetchPipMetadata": {
+    "sources": {
+      "grpcio": {
+        "is_direct": false,
+        "sha256": "3c492301988cd720cd145d84e17318d45af342e29ef93141228f9cd73222368b",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/d9/59/bdfe3fc167366e064392367083e705f2b63aeda2b7c004055e7ec80ef538/grpcio-1.65.1.tar.gz",
+        "version": "1.65.1"
+      }
+    },
+    "targets": {
+      "default": {
+        "grpcio": []
+      }
+    }
+  },
+  "invalidationHash": "35b0d3144742eed98e68641ff49fad94dd7944967e2c329546e69d9084f2166a"
+}

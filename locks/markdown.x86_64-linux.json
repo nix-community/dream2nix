@@ -1,0 +1,19 @@
+{
+  "fetchPipMetadata": {
+    "sources": {
+      "markdown": {
+        "is_direct": false,
+        "sha256": "ed4f41f6daecbeeb96e576ce414c41d2d876daa9a16cb35fa8ed8c2ddfad0224",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/22/02/4785861427848cc11e452cc62bb541006a1087cf04a1de83aedd5530b948/Markdown-3.6.tar.gz",
+        "version": "3.6"
+      }
+    },
+    "targets": {
+      "default": {
+        "markdown": []
+      }
+    }
+  },
+  "invalidationHash": "c4e252478fba7c1de025ab1b599b4340bd934cc91bd882df9cd4d09c28aa73c7"
+}

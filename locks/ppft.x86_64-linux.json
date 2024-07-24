@@ -1,0 +1,19 @@
+{
+  "fetchPipMetadata": {
+    "sources": {
+      "ppft": {
+        "is_direct": false,
+        "sha256": "76a429a7d7b74c4d743f6dba8351e58d62b6432ed65df9fe204790160dab996d",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/f8/c1/6aa25972c1910cf120a6c82bf2fc67edfdd1375c26f75048aae769caccc1/ppft-1.7.6.8.tar.gz",
+        "version": "1.7.6.8"
+      }
+    },
+    "targets": {
+      "default": {
+        "ppft": []
+      }
+    }
+  },
+  "invalidationHash": "6dce760e50fa64abfb6e38da225547152a8ccd40a7c91cb85b2e6777705d1737"
+}

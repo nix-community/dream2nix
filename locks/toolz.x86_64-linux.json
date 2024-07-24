@@ -1,0 +1,19 @@
+{
+  "fetchPipMetadata": {
+    "sources": {
+      "toolz": {
+        "is_direct": false,
+        "sha256": "ecca342664893f177a13dac0e6b41cbd8ac25a358e5f215316d43e2100224f4d",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/3e/bf/5e12db234df984f6df3c7f12f1428aa680ba4e101f63f4b8b3f9e8d2e617/toolz-0.12.1.tar.gz",
+        "version": "0.12.1"
+      }
+    },
+    "targets": {
+      "default": {
+        "toolz": []
+      }
+    }
+  },
+  "invalidationHash": "dff72a7f94eae3f44e251053cb0a65b4260240bbd71e850e51787a601901a6dd"
+}

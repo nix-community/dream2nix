@@ -1,0 +1,19 @@
+{
+  "fetchPipMetadata": {
+    "sources": {
+      "more-itertools": {
+        "is_direct": false,
+        "sha256": "e5d93ef411224fbcef366a6e8ddc4c5781bc6359d43412a65dd5964e46111463",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/01/33/77f586de725fc990d12dda3d4efca4a41635be0f99a987b9cc3a78364c13/more-itertools-10.3.0.tar.gz",
+        "version": "10.3.0"
+      }
+    },
+    "targets": {
+      "default": {
+        "more-itertools": []
+      }
+    }
+  },
+  "invalidationHash": "e48adb7308aed91639a38db4b3b8487555c7388a55fc05a054b4e3cd56605176"
+}

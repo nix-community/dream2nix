@@ -1,0 +1,38 @@
+{
+  "fetchPipMetadata": {
+    "sources": {
+      "mypy": {
+        "is_direct": false,
+        "sha256": "1f8f492d7db9e3593ef42d4f115f04e556130f2819ad33ab84551403e97dd4c0",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/c7/b9/81e4c6dbb1ec1e72503de3ff2c5fe4b7f224e04613b670f8b9004cd8a4dd/mypy-1.10.1.tar.gz",
+        "version": "1.10.1"
+      },
+      "mypy-extensions": {
+        "is_direct": false,
+        "sha256": "4392f6c0eb8a5668a69e23d168ffa70f0be9ccfd32b5cc2d26a34ae5b844552d",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/2a/e2/5d3f6ada4297caebe1a2add3b126fe800c96f56dbe5d1988a2cbe0b267aa/mypy_extensions-1.0.0-py3-none-any.whl",
+        "version": "1.0.0"
+      },
+      "typing-extensions": {
+        "is_direct": false,
+        "sha256": "04e5ca0351e0f3f85c6853954072df659d0d13fac324d0072316b67d7794700d",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/26/9f/ad63fc0248c5379346306f8668cda6e2e2e9c95e01216d2b8ffd9ff037d0/typing_extensions-4.12.2-py3-none-any.whl",
+        "version": "4.12.2"
+      }
+    },
+    "targets": {
+      "default": {
+        "mypy": [
+          "mypy-extensions",
+          "typing-extensions"
+        ],
+        "mypy-extensions": [],
+        "typing-extensions": []
+      }
+    }
+  },
+  "invalidationHash": "96fd2f7e79e6c5e00ad3a4ad9aa5eac738e98ae04fcf1a579f400963ff42aa1f"
+}

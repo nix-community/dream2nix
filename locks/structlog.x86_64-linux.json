@@ -1,0 +1,19 @@
+{
+  "fetchPipMetadata": {
+    "sources": {
+      "structlog": {
+        "is_direct": false,
+        "sha256": "b27bfecede327a6d2da5fbc96bd859f114ecc398a6389d664f62085ee7ae6fc4",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/78/a3/e811a94ac3853826805253c906faa99219b79951c7d58605e89c79e65768/structlog-24.4.0.tar.gz",
+        "version": "24.4.0"
+      }
+    },
+    "targets": {
+      "default": {
+        "structlog": []
+      }
+    }
+  },
+  "invalidationHash": "9b18020e90d4f405334dd2495d739a80f982fa54c7e0a0fb7dd52b26e32ffe18"
+}

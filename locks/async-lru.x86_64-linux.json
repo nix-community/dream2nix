@@ -1,0 +1,19 @@
+{
+  "fetchPipMetadata": {
+    "sources": {
+      "async-lru": {
+        "is_direct": false,
+        "sha256": "b8a59a5df60805ff63220b2a0c5b5393da5521b113cd5465a44eb037d81a5627",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/80/e2/2b4651eff771f6fd900d233e175ddc5e2be502c7eb62c0c42f975c6d36cd/async-lru-2.0.4.tar.gz",
+        "version": "2.0.4"
+      }
+    },
+    "targets": {
+      "default": {
+        "async-lru": []
+      }
+    }
+  },
+  "invalidationHash": "bebfb0ddaca45e870bf02ed408c97af54892b6944fd25b3f4e6e4e5975a59698"
+}

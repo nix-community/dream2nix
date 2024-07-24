@@ -1,0 +1,19 @@
+{
+  "fetchPipMetadata": {
+    "sources": {
+      "aiofiles": {
+        "is_direct": false,
+        "sha256": "22a075c9e5a3810f0c2e48f3008c94d68c65d763b9b03857924c99e57355166c",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/0b/03/a88171e277e8caa88a4c77808c20ebb04ba74cc4681bf1e9416c862de237/aiofiles-24.1.0.tar.gz",
+        "version": "24.1.0"
+      }
+    },
+    "targets": {
+      "default": {
+        "aiofiles": []
+      }
+    }
+  },
+  "invalidationHash": "ff266d04243a8a15b8c308fb14df3c7d7c469af0470f6374d93327504a630051"
+}

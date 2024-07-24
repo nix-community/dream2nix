@@ -1,0 +1,19 @@
+{
+  "fetchPipMetadata": {
+    "sources": {
+      "python-json-logger": {
+        "is_direct": false,
+        "sha256": "23e7ec02d34237c5aa1e29a070193a4ea87583bb4e7f8fd06d3de8264c4b2e1c",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/4f/da/95963cebfc578dabd323d7263958dfb68898617912bb09327dd30e9c8d13/python-json-logger-2.0.7.tar.gz",
+        "version": "2.0.7"
+      }
+    },
+    "targets": {
+      "default": {
+        "python-json-logger": []
+      }
+    }
+  },
+  "invalidationHash": "748bd68c54f5bf04da4c6f87d2eeeb294b687ccd673ebcf397c2ec83e78be57e"
+}

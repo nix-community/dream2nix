@@ -1,0 +1,49 @@
+{
+  "fetchPipMetadata": {
+    "sources": {
+      "numpy": {
+        "is_direct": false,
+        "sha256": "6790654cb13eab303d8402354fabd47472b24635700f631f041bd0b65e37298a",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/2c/f3/61eeef119beb37decb58e7cb29940f19a1464b8608f2cab8a8616aba75fd/numpy-2.0.1-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl",
+        "version": "2.0.1"
+      },
+      "nvidia-nccl-cu12": {
+        "is_direct": false,
+        "sha256": "f9f5e03c00269dee2cd1aa57019f9a024478a74ae6e9b32d5341c849fe6f6302",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/72/3a/1ff98da19ad6d54db45e5b2a1e3fb77bd19e54b75cdb20d89f8161384dbb/nvidia_nccl_cu12-2.22.3-py3-none-manylinux2014_x86_64.whl",
+        "version": "2.22.3"
+      },
+      "scipy": {
+        "is_direct": false,
+        "sha256": "a01cc03bcdc777c9da3cfdcc74b5a75caffb48a6c39c8450a9a05f82c4250a14",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/9b/00/ce54410e344b3a6032cd42ed53fe425cf57a66d28e337670292bbb419ebc/scipy-1.14.0-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl",
+        "version": "1.14.0"
+      },
+      "xgboost": {
+        "is_direct": false,
+        "sha256": "7144980923e76ce741c7b03a14d3bd7514db6de5c7cabe96ba95b229d274f5ca",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/c1/57/3d73029d72be166b3334121560bc72ea7d96dd2c6839a3bcad6be2cd6774/xgboost-2.1.0.tar.gz",
+        "version": "2.1.0"
+      }
+    },
+    "targets": {
+      "default": {
+        "numpy": [],
+        "nvidia-nccl-cu12": [],
+        "scipy": [
+          "numpy"
+        ],
+        "xgboost": [
+          "numpy",
+          "nvidia-nccl-cu12",
+          "scipy"
+        ]
+      }
+    }
+  },
+  "invalidationHash": "579960aa036a3a34736e78ea4c40af65e9a66adc4fe11a9edf184978ce7f8bf8"
+}

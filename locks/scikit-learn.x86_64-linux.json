@@ -1,0 +1,58 @@
+{
+  "fetchPipMetadata": {
+    "sources": {
+      "joblib": {
+        "is_direct": false,
+        "sha256": "06d478d5674cbc267e7496a410ee875abd68e4340feff4490bcb7afb88060ae6",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/91/29/df4b9b42f2be0b623cbd5e2140cafcaa2bef0759a00b7b70104dcfe2fb51/joblib-1.4.2-py3-none-any.whl",
+        "version": "1.4.2"
+      },
+      "numpy": {
+        "is_direct": false,
+        "sha256": "6790654cb13eab303d8402354fabd47472b24635700f631f041bd0b65e37298a",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/2c/f3/61eeef119beb37decb58e7cb29940f19a1464b8608f2cab8a8616aba75fd/numpy-2.0.1-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl",
+        "version": "2.0.1"
+      },
+      "scikit-learn": {
+        "is_direct": false,
+        "sha256": "0ea5d40c0e3951df445721927448755d3fe1d80833b0b7308ebff5d2a45e6414",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/92/72/2961b9874a9ddf2b0f95f329d4e67f67c3301c1d88ba5e239ff25661bb85/scikit_learn-1.5.1.tar.gz",
+        "version": "1.5.1"
+      },
+      "scipy": {
+        "is_direct": false,
+        "sha256": "a01cc03bcdc777c9da3cfdcc74b5a75caffb48a6c39c8450a9a05f82c4250a14",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/9b/00/ce54410e344b3a6032cd42ed53fe425cf57a66d28e337670292bbb419ebc/scipy-1.14.0-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl",
+        "version": "1.14.0"
+      },
+      "threadpoolctl": {
+        "is_direct": false,
+        "sha256": "56c1e26c150397e58c4926da8eeee87533b1e32bef131bd4bf6a2f45f3185467",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/4b/2c/ffbf7a134b9ab11a67b0cf0726453cedd9c5043a4fe7a35d1cefa9a1bcfb/threadpoolctl-3.5.0-py3-none-any.whl",
+        "version": "3.5.0"
+      }
+    },
+    "targets": {
+      "default": {
+        "joblib": [],
+        "numpy": [],
+        "scikit-learn": [
+          "joblib",
+          "numpy",
+          "scipy",
+          "threadpoolctl"
+        ],
+        "scipy": [
+          "numpy"
+        ],
+        "threadpoolctl": []
+      }
+    }
+  },
+  "invalidationHash": "f0e9fc3c1ba4486bc59e53d36861ffdee0197e3e059b45ec92a5cdb4653b9f2d"
+}

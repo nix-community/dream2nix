@@ -1,0 +1,115 @@
+{
+  "fetchPipMetadata": {
+    "sources": {
+      "cachetools": {
+        "is_direct": false,
+        "sha256": "3ae3b49a3d5e28a77a0be2b37dbcb89005058959cb2323858c2657c4a8cab474",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/04/e6/a1551acbaa06f3e48b311329828a34bc9c51a8cfaecdeb4d03c329a1ef85/cachetools-5.4.0-py3-none-any.whl",
+        "version": "5.4.0"
+      },
+      "chardet": {
+        "is_direct": false,
+        "sha256": "e1cf59446890a00105fe7b7912492ea04b6e6f06d4b742b2c788469e34c82970",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/38/6f/f5fbc992a329ee4e0f288c1fe0e2ad9485ed064cac731ed2fe47dcc38cbf/chardet-5.2.0-py3-none-any.whl",
+        "version": "5.2.0"
+      },
+      "colorama": {
+        "is_direct": false,
+        "sha256": "4f1d9991f5acc0ca119f9d443620b77f9d6b33703e51011c16baf57afb285fc6",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/d1/d6/3965ed04c63042e047cb6a3e6ed1a63a35087b6a609aa3a15ed8ac56c221/colorama-0.4.6-py2.py3-none-any.whl",
+        "version": "0.4.6"
+      },
+      "distlib": {
+        "is_direct": false,
+        "sha256": "034db59a0b96f8ca18035f36290806a9a6e6bd9d1ff91e45a7f172eb17e51784",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/8e/41/9307e4f5f9976bc8b7fea0b66367734e8faf3ec84bc0d412d8cfabbb66cd/distlib-0.3.8-py2.py3-none-any.whl",
+        "version": "0.3.8"
+      },
+      "filelock": {
+        "is_direct": false,
+        "sha256": "6ca1fffae96225dab4c6eaf1c4f4f28cd2568d3ec2a44e15a08520504de468e7",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/ae/f0/48285f0262fe47103a4a45972ed2f9b93e4c80b8fd609fa98da78b2a5706/filelock-3.15.4-py3-none-any.whl",
+        "version": "3.15.4"
+      },
+      "packaging": {
+        "is_direct": false,
+        "sha256": "5b8f2217dbdbd2f7f384c41c628544e6d52f2d0f53c6d0c3ea61aa5d1d7ff124",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/08/aa/cc0199a5f0ad350994d660967a8efb233fe0416e4639146c089643407ce6/packaging-24.1-py3-none-any.whl",
+        "version": "24.1"
+      },
+      "platformdirs": {
+        "is_direct": false,
+        "sha256": "2d7a1657e36a80ea911db832a8a6ece5ee53d8de21edd5cc5879af6530b1bfee",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/68/13/2aa1f0e1364feb2c9ef45302f387ac0bd81484e9c9a4c5688a322fbdfd08/platformdirs-4.2.2-py3-none-any.whl",
+        "version": "4.2.2"
+      },
+      "pluggy": {
+        "is_direct": false,
+        "sha256": "44e1ad92c8ca002de6377e165f3e0f1be63266ab4d554740532335b9d75ea669",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/88/5f/e351af9a41f866ac3f1fac4ca0613908d9a41741cfcf2228f4ad853b697d/pluggy-1.5.0-py3-none-any.whl",
+        "version": "1.5.0"
+      },
+      "pyproject-api": {
+        "is_direct": false,
+        "sha256": "2dc1654062c2b27733d8fd4cdda672b22fe8741ef1dde8e3a998a9547b071eeb",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/de/88/c1451b66664ae596bae93928ff372f4da89c2c7250132ecb76cc99256c93/pyproject_api-1.7.1-py3-none-any.whl",
+        "version": "1.7.1"
+      },
+      "tox": {
+        "is_direct": false,
+        "sha256": "43499656f9949edb681c0f907f86fbfee98677af9919d8b11ae5ad77cb800748",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/b7/7e/94a8cc264b9d2674d6ce7dccaa7cebe66d0f4262d6423ab9797b071d31d5/tox-4.16.0.tar.gz",
+        "version": "4.16.0"
+      },
+      "virtualenv": {
+        "is_direct": false,
+        "sha256": "8cc4a31139e796e9a7de2cd5cf2489de1217193116a8fd42328f1bd65f434589",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/07/4d/410156100224c5e2f0011d435e477b57aed9576fc7fe137abcf14ec16e11/virtualenv-20.26.3-py3-none-any.whl",
+        "version": "20.26.3"
+      }
+    },
+    "targets": {
+      "default": {
+        "cachetools": [],
+        "chardet": [],
+        "colorama": [],
+        "distlib": [],
+        "filelock": [],
+        "packaging": [],
+        "platformdirs": [],
+        "pluggy": [],
+        "pyproject-api": [
+          "packaging"
+        ],
+        "tox": [
+          "cachetools",
+          "chardet",
+          "colorama",
+          "filelock",
+          "packaging",
+          "platformdirs",
+          "pluggy",
+          "pyproject-api",
+          "virtualenv"
+        ],
+        "virtualenv": [
+          "distlib",
+          "filelock",
+          "platformdirs"
+        ]
+      }
+    }
+  },
+  "invalidationHash": "5f853d5415a5035d469a9c8b81909be6936ca037343140c410bad0e1c55520d7"
+}

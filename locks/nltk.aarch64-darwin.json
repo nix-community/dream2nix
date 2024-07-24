@@ -1,0 +1,56 @@
+{
+  "fetchPipMetadata": {
+    "sources": {
+      "click": {
+        "is_direct": false,
+        "sha256": "ae74fb96c20a0277a1d615f1e4d73c8414f5a98db8b799a7931d1582f3390c28",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/00/2e/d53fa4befbf2cfa713304affc7ca780ce4fc1fd8710527771b58311a3229/click-8.1.7-py3-none-any.whl",
+        "version": "8.1.7"
+      },
+      "joblib": {
+        "is_direct": false,
+        "sha256": "06d478d5674cbc267e7496a410ee875abd68e4340feff4490bcb7afb88060ae6",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/91/29/df4b9b42f2be0b623cbd5e2140cafcaa2bef0759a00b7b70104dcfe2fb51/joblib-1.4.2-py3-none-any.whl",
+        "version": "1.4.2"
+      },
+      "nltk": {
+        "is_direct": false,
+        "sha256": "1834da3d0682cba4f2cede2f9aad6b0fafb6461ba451db0efb6f9c39798d64d3",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/57/49/51af17a2b0d850578d0022408802aa452644d40281a6c6e82f7cb0235ddb/nltk-3.8.1.zip",
+        "version": "3.8.1"
+      },
+      "regex": {
+        "is_direct": false,
+        "sha256": "68811ab14087b2f6e0fc0c2bae9ad689ea3584cad6917fc57be6a48bbd012c49",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/23/d3/65db07106b4584b62b1ec0061277c54f565da92d91f0a211057faccb841b/regex-2024.5.15-cp312-cp312-macosx_11_0_arm64.whl",
+        "version": "2024.5.15"
+      },
+      "tqdm": {
+        "is_direct": false,
+        "sha256": "b75ca56b413b030bc3f00af51fd2c1a1a5eac6a0c1cca83cbb37a5c52abce644",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/18/eb/fdb7eb9e48b7b02554e1664afd3bd3f117f6b6d6c5881438a0b055554f9b/tqdm-4.66.4-py3-none-any.whl",
+        "version": "4.66.4"
+      }
+    },
+    "targets": {
+      "default": {
+        "click": [],
+        "joblib": [],
+        "nltk": [
+          "click",
+          "joblib",
+          "regex",
+          "tqdm"
+        ],
+        "regex": [],
+        "tqdm": []
+      }
+    }
+  },
+  "invalidationHash": "402cacc76510959c6253775f8061509fa365e5898d0916e2d0f9569b326bb06d"
+}

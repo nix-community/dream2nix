@@ -1,0 +1,19 @@
+{
+  "fetchPipMetadata": {
+    "sources": {
+      "identify": {
+        "is_direct": false,
+        "sha256": "cb171c685bdc31bcc4c1734698736a7d5b6c8bf2e0c15117f4d469c8640ae5cf",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/32/f4/8e8f7db397a7ce20fbdeac5f25adaf567fc362472432938d25556008e03a/identify-2.6.0.tar.gz",
+        "version": "2.6.0"
+      }
+    },
+    "targets": {
+      "default": {
+        "identify": []
+      }
+    }
+  },
+  "invalidationHash": "35e4e366a49052ba29396d5b00120e2b79078278a0f6c632873abc2349926001"
+}

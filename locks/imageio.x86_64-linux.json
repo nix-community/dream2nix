@@ -1,0 +1,38 @@
+{
+  "fetchPipMetadata": {
+    "sources": {
+      "imageio": {
+        "is_direct": false,
+        "sha256": "5c0c0ee8faa018a1c42f649b90395dd4d3bb6187c09053a0cd6f1fdd51bbff5e",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/da/bd/d79206fe42f88d9a99ee952420eebc5368bcd062e17b484a21928462d98e/imageio-2.34.2.tar.gz",
+        "version": "2.34.2"
+      },
+      "numpy": {
+        "is_direct": false,
+        "sha256": "6790654cb13eab303d8402354fabd47472b24635700f631f041bd0b65e37298a",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/2c/f3/61eeef119beb37decb58e7cb29940f19a1464b8608f2cab8a8616aba75fd/numpy-2.0.1-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl",
+        "version": "2.0.1"
+      },
+      "pillow": {
+        "is_direct": false,
+        "sha256": "86dcb5a1eb778d8b25659d5e4341269e8590ad6b4e8b44d9f4b07f8d136c414a",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/55/77/40daddf677897a923d5d33329acd52a2144d54a9644f2a5422c028c6bf2d/pillow-10.4.0-cp312-cp312-manylinux_2_28_x86_64.whl",
+        "version": "10.4.0"
+      }
+    },
+    "targets": {
+      "default": {
+        "imageio": [
+          "numpy",
+          "pillow"
+        ],
+        "numpy": [],
+        "pillow": []
+      }
+    }
+  },
+  "invalidationHash": "9d19367d43b113244324efd161cb4415db94fd3798975e2e7089e08bd400ac8b"
+}

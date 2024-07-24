@@ -1,0 +1,154 @@
+{
+  "fetchPipMetadata": {
+    "sources": {
+      "contourpy": {
+        "is_direct": false,
+        "sha256": "9ce6889abac9a42afd07a562c2d6d4b2b7134f83f18571d859b25624a331c90b",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/01/29/65d81d2546a2487d57e16b2b789bbc0279b081766a75587e60002f16a6b8/contourpy-1.2.1-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl",
+        "version": "1.2.1"
+      },
+      "cycler": {
+        "is_direct": false,
+        "sha256": "85cef7cff222d8644161529808465972e51340599459b8ac3ccbac5a854e0d30",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/e7/05/c19819d5e3d95294a6f5947fb9b9629efb316b96de511b418c53d245aae6/cycler-0.12.1-py3-none-any.whl",
+        "version": "0.12.1"
+      },
+      "fonttools": {
+        "is_direct": false,
+        "sha256": "10f5e6c3510b79ea27bb1ebfcc67048cde9ec67afa87c7dd7efa5c700491ac7f",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/db/2b/5779cfd48625e013c2dfcf0c246474d5b1f5d061a5f1e476037bf9fff3a3/fonttools-4.53.1-cp312-cp312-manylinux_2_5_x86_64.manylinux1_x86_64.manylinux_2_17_x86_64.manylinux2014_x86_64.whl",
+        "version": "4.53.1"
+      },
+      "kiwisolver": {
+        "is_direct": false,
+        "sha256": "2270953c0d8cdab5d422bee7d2007f043473f9d2999631c86a223c9db56cbd16",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/e3/d5/bc0f22ac108743062ab703f8d6d71c9c7b077b8839fa358700bfb81770b8/kiwisolver-1.4.5-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl",
+        "version": "1.4.5"
+      },
+      "matplotlib": {
+        "is_direct": false,
+        "sha256": "d12cb1837cffaac087ad6b44399d5e22b78c729de3cdae4629e252067b705e2b",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/0d/cb/78283ec2ded91fb74a2ae9ae93f91a897fa578fa78c8c271a7c147f6b8d6/matplotlib-3.9.1-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl",
+        "version": "3.9.1"
+      },
+      "numpy": {
+        "is_direct": false,
+        "sha256": "6790654cb13eab303d8402354fabd47472b24635700f631f041bd0b65e37298a",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/2c/f3/61eeef119beb37decb58e7cb29940f19a1464b8608f2cab8a8616aba75fd/numpy-2.0.1-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl",
+        "version": "2.0.1"
+      },
+      "packaging": {
+        "is_direct": false,
+        "sha256": "5b8f2217dbdbd2f7f384c41c628544e6d52f2d0f53c6d0c3ea61aa5d1d7ff124",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/08/aa/cc0199a5f0ad350994d660967a8efb233fe0416e4639146c089643407ce6/packaging-24.1-py3-none-any.whl",
+        "version": "24.1"
+      },
+      "pandas": {
+        "is_direct": false,
+        "sha256": "eee3a87076c0756de40b05c5e9a6069c035ba43e8dd71c379e68cab2c20f16ad",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/40/10/79e52ef01dfeb1c1ca47a109a01a248754ebe990e159a844ece12914de83/pandas-2.2.2-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl",
+        "version": "2.2.2"
+      },
+      "pillow": {
+        "is_direct": false,
+        "sha256": "86dcb5a1eb778d8b25659d5e4341269e8590ad6b4e8b44d9f4b07f8d136c414a",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/55/77/40daddf677897a923d5d33329acd52a2144d54a9644f2a5422c028c6bf2d/pillow-10.4.0-cp312-cp312-manylinux_2_28_x86_64.whl",
+        "version": "10.4.0"
+      },
+      "pyparsing": {
+        "is_direct": false,
+        "sha256": "f9db75911801ed778fe61bb643079ff86601aca99fcae6345aa67292038fb742",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/9d/ea/6d76df31432a0e6fdf81681a895f009a4bb47b3c39036db3e1b528191d52/pyparsing-3.1.2-py3-none-any.whl",
+        "version": "3.1.2"
+      },
+      "python-dateutil": {
+        "is_direct": false,
+        "sha256": "a8b2bc7bffae282281c8140a97d3aa9c14da0b136dfe83f850eea9a5f7470427",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/ec/57/56b9bcc3c9c6a792fcbaf139543cee77261f3651ca9da0c93f5c1221264b/python_dateutil-2.9.0.post0-py2.py3-none-any.whl",
+        "version": "2.9.0.post0"
+      },
+      "pytz": {
+        "is_direct": false,
+        "sha256": "328171f4e3623139da4983451950b28e95ac706e13f3f2630a879749e7a8b319",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/9c/3d/a121f284241f08268b21359bd425f7d4825cffc5ac5cd0e1b3d82ffd2b10/pytz-2024.1-py2.py3-none-any.whl",
+        "version": "2024.1"
+      },
+      "seaborn": {
+        "is_direct": false,
+        "sha256": "93e60a40988f4d65e9f4885df477e2fdaff6b73a9ded434c1ab356dd57eefff7",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/86/59/a451d7420a77ab0b98f7affa3a1d78a313d2f7281a57afb1a34bae8ab412/seaborn-0.13.2.tar.gz",
+        "version": "0.13.2"
+      },
+      "six": {
+        "is_direct": false,
+        "sha256": "8abb2f1d86890a2dfb989f9a77cfcfd3e47c2a354b01111771326f8aa26e0254",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/d9/5a/e7c31adbe875f2abbb91bd84cf2dc52d792b5a01506781dbcf25c91daf11/six-1.16.0-py2.py3-none-any.whl",
+        "version": "1.16.0"
+      },
+      "tzdata": {
+        "is_direct": false,
+        "sha256": "9068bc196136463f5245e51efda838afa15aaeca9903f49050dfa2679db4d252",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/65/58/f9c9e6be752e9fcb8b6a0ee9fb87e6e7a1f6bcab2cdc73f02bb7ba91ada0/tzdata-2024.1-py2.py3-none-any.whl",
+        "version": "2024.1"
+      }
+    },
+    "targets": {
+      "default": {
+        "contourpy": [
+          "numpy"
+        ],
+        "cycler": [],
+        "fonttools": [],
+        "kiwisolver": [],
+        "matplotlib": [
+          "contourpy",
+          "cycler",
+          "fonttools",
+          "kiwisolver",
+          "numpy",
+          "packaging",
+          "pillow",
+          "pyparsing",
+          "python-dateutil"
+        ],
+        "numpy": [],
+        "packaging": [],
+        "pandas": [
+          "numpy",
+          "python-dateutil",
+          "pytz",
+          "tzdata"
+        ],
+        "pillow": [],
+        "pyparsing": [],
+        "python-dateutil": [
+          "six"
+        ],
+        "pytz": [],
+        "seaborn": [
+          "matplotlib",
+          "numpy",
+          "pandas"
+        ],
+        "six": [],
+        "tzdata": []
+      }
+    }
+  },
+  "invalidationHash": "45e9a44bb83b53bf86ca23edb7a454a5d65a9a3d5bc1e9b4e47869a22a3bad7c"
+}

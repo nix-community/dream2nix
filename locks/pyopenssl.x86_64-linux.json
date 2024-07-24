@@ -1,0 +1,49 @@
+{
+  "fetchPipMetadata": {
+    "sources": {
+      "cffi": {
+        "is_direct": false,
+        "sha256": "e715596e683d2ce000574bae5d07bd522c781a822866c20495e52520564f0969",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/09/d4/8759cc3b2222c159add8ce3af0089912203a31610f4be4c36f98e320b4c6/cffi-1.16.0-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl",
+        "version": "1.16.0"
+      },
+      "cryptography": {
+        "is_direct": false,
+        "sha256": "cb013933d4c127349b3948aa8aaf2f12c0353ad0eccd715ca789c8a0f671646f",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/0f/6c/b42660b3075ff543065b2c1c5a3d9bedaadcff8ebce2ee981be2babc2934/cryptography-43.0.0-cp39-abi3-manylinux_2_28_x86_64.whl",
+        "version": "43.0.0"
+      },
+      "pycparser": {
+        "is_direct": false,
+        "sha256": "c3702b6d3dd8c7abc1afa565d7e63d53a1d0bd86cdc24edd75470f4de499cfcc",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/13/a3/a812df4e2dd5696d1f351d58b8fe16a405b234ad2886a0dab9183fb78109/pycparser-2.22-py3-none-any.whl",
+        "version": "2.22"
+      },
+      "pyopenssl": {
+        "is_direct": false,
+        "sha256": "4247f0dbe3748d560dcbb2ff3ea01af0f9a1a001ef5f7c4c647956ed8cbf0e95",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/5d/70/ff56a63248562e77c0c8ee4aefc3224258f1856977e0c1472672b62dadb8/pyopenssl-24.2.1.tar.gz",
+        "version": "24.2.1"
+      }
+    },
+    "targets": {
+      "default": {
+        "cffi": [
+          "pycparser"
+        ],
+        "cryptography": [
+          "cffi"
+        ],
+        "pycparser": [],
+        "pyopenssl": [
+          "cryptography"
+        ]
+      }
+    }
+  },
+  "invalidationHash": "f6f306804fc528789609142190ec5b6d70c5cbc4957448acbe3fdc810d4bbe09"
+}

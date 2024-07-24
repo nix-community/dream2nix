@@ -1,0 +1,48 @@
+{
+  "fetchPipMetadata": {
+    "sources": {
+      "cinemagoer": {
+        "is_direct": false,
+        "sha256": "5ce1d77ae6546701618f11e5b1556a19d18edecad1b6d7d96973ec34941b18f2",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/06/de/3aa6eb738b5c5e39f1909bc080a392842841f9af866edb960de2f22af53c/cinemagoer-2023.5.1.tar.gz",
+        "version": "2023.5.1"
+      },
+      "lxml": {
+        "is_direct": false,
+        "sha256": "7429e7faa1a60cad26ae4227f4dd0459efde239e494c7312624ce228e04f6391",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/26/36/6e00905cb4de2d014f4a62df58f0e82d262b5461245d951a6e7442b0222a/lxml-5.2.2-cp312-cp312-macosx_10_9_universal2.whl",
+        "version": "5.2.2"
+      },
+      "sqlalchemy": {
+        "is_direct": false,
+        "sha256": "6f77c4f042ad493cb8595e2f503c7a4fe44cd7bd59c7582fd6d78d7e7b8ec52c",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/27/97/21efc51a670e2772156890e241120aac7dae6c92d1bf56e811fb3bec3373/SQLAlchemy-2.0.31-cp312-cp312-macosx_11_0_arm64.whl",
+        "version": "2.0.31"
+      },
+      "typing-extensions": {
+        "is_direct": false,
+        "sha256": "04e5ca0351e0f3f85c6853954072df659d0d13fac324d0072316b67d7794700d",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/26/9f/ad63fc0248c5379346306f8668cda6e2e2e9c95e01216d2b8ffd9ff037d0/typing_extensions-4.12.2-py3-none-any.whl",
+        "version": "4.12.2"
+      }
+    },
+    "targets": {
+      "default": {
+        "cinemagoer": [
+          "lxml",
+          "sqlalchemy"
+        ],
+        "lxml": [],
+        "sqlalchemy": [
+          "typing-extensions"
+        ],
+        "typing-extensions": []
+      }
+    }
+  },
+  "invalidationHash": "591ff70378eaf625c9d111d441965dfec33d46d1ad0056f104bfe61deaf48b31"
+}

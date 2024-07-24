@@ -1,0 +1,29 @@
+{
+  "fetchPipMetadata": {
+    "sources": {
+      "google-pasta": {
+        "is_direct": false,
+        "sha256": "c9f2c8dfc8f96d0d5808299920721be30c9eec37f2389f28904f454565c8a16e",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/35/4a/0bd53b36ff0323d10d5f24ebd67af2de10a1117f5cf4d7add90df92756f1/google-pasta-0.2.0.tar.gz",
+        "version": "0.2.0"
+      },
+      "six": {
+        "is_direct": false,
+        "sha256": "8abb2f1d86890a2dfb989f9a77cfcfd3e47c2a354b01111771326f8aa26e0254",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/d9/5a/e7c31adbe875f2abbb91bd84cf2dc52d792b5a01506781dbcf25c91daf11/six-1.16.0-py2.py3-none-any.whl",
+        "version": "1.16.0"
+      }
+    },
+    "targets": {
+      "default": {
+        "google-pasta": [
+          "six"
+        ],
+        "six": []
+      }
+    }
+  },
+  "invalidationHash": "0fcd3efed1b36ee92a05098737895dbab78078d9680a13bfb54b78621cd39c9b"
+}

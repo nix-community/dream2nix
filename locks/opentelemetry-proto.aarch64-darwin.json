@@ -1,0 +1,29 @@
+{
+  "fetchPipMetadata": {
+    "sources": {
+      "opentelemetry-proto": {
+        "is_direct": false,
+        "sha256": "35b6ef9dc4a9f7853ecc5006738ad40443701e52c26099e197895cbda8b815a3",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/c9/3c/28c9ce40eb8ab287471af81659089ca98ef4f7ce289669e23b19c29f24a8/opentelemetry_proto-1.25.0.tar.gz",
+        "version": "1.25.0"
+      },
+      "protobuf": {
+        "is_direct": false,
+        "sha256": "f1279ab38ecbfae7e456a108c5c0681e4956d5b1090027c1de0f934dfdb4b35c",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/f3/bf/26deba06a4c910a85f78245cac7698f67cedd7efe00d04f6b3e1b3506a59/protobuf-4.25.3-cp37-abi3-macosx_10_9_universal2.whl",
+        "version": "4.25.3"
+      }
+    },
+    "targets": {
+      "default": {
+        "opentelemetry-proto": [
+          "protobuf"
+        ],
+        "protobuf": []
+      }
+    }
+  },
+  "invalidationHash": "575826374c14370be636bb819ae79ffa3969463037bb41732d129c0836089c0d"
+}

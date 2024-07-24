@@ -1,0 +1,19 @@
+{
+  "fetchPipMetadata": {
+    "sources": {
+      "jeepney": {
+        "is_direct": false,
+        "sha256": "5efe48d255973902f6badc3ce55e2aa6c5c3b3bc642059ef3a91247bcfcc5806",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/d6/f4/154cf374c2daf2020e05c3c6a03c91348d59b23c5366e968feb198306fdf/jeepney-0.8.0.tar.gz",
+        "version": "0.8.0"
+      }
+    },
+    "targets": {
+      "default": {
+        "jeepney": []
+      }
+    }
+  },
+  "invalidationHash": "9f16dba4ceb278f04d04081cd3a4dae06681a37a2883a9c6aaeaec108d9a93fe"
+}

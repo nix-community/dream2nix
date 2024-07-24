@@ -1,0 +1,212 @@
+{
+  "fetchPipMetadata": {
+    "sources": {
+      "asn1crypto": {
+        "is_direct": false,
+        "sha256": "db4e40728b728508912cbb3d44f19ce188f218e9eba635821bb4b68564f8fd67",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/c9/7f/09065fd9e27da0eda08b4d6897f1c13535066174cc023af248fc2a8d5e5a/asn1crypto-1.5.1-py2.py3-none-any.whl",
+        "version": "1.5.1"
+      },
+      "certifi": {
+        "is_direct": false,
+        "sha256": "c198e21b1289c2ab85ee4e67bb4b4ef3ead0892059901a8d5b622f24a1101e90",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/1c/d5/c84e1a17bf61d4df64ca866a1c9a913874b4e9bdc131ec689a0ad013fb36/certifi-2024.7.4-py3-none-any.whl",
+        "version": "2024.7.4"
+      },
+      "cffi": {
+        "is_direct": false,
+        "sha256": "68e7c44931cc171c54ccb702482e9fc723192e88d25a0e133edd7aff8fcd1f6e",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/b4/f6/b28d2bfb5fca9e8f9afc9d05eae245bed9f6ba5c2897fefee7a9abeaf091/cffi-1.16.0-cp312-cp312-macosx_11_0_arm64.whl",
+        "version": "1.16.0"
+      },
+      "charset-normalizer": {
+        "is_direct": false,
+        "sha256": "55086ee1064215781fff39a1af09518bc9255b50d6333f2e4c74ca09fac6a8f6",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/3a/52/9f9d17c3b54dc238de384c4cb5a2ef0e27985b42a0e5cc8e8a31d918d48d/charset_normalizer-3.3.2-cp312-cp312-macosx_11_0_arm64.whl",
+        "version": "3.3.2"
+      },
+      "cryptography": {
+        "is_direct": false,
+        "sha256": "dea567d1b0e8bc5764b9443858b673b734100c2871dc93163f58c46a97a83d28",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/60/12/f064af29190cdb1d38fe07f3db6126091639e1dece7ec77c4ff037d49193/cryptography-42.0.8-cp39-abi3-macosx_10_12_universal2.whl",
+        "version": "42.0.8"
+      },
+      "filelock": {
+        "is_direct": false,
+        "sha256": "6ca1fffae96225dab4c6eaf1c4f4f28cd2568d3ec2a44e15a08520504de468e7",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/ae/f0/48285f0262fe47103a4a45972ed2f9b93e4c80b8fd609fa98da78b2a5706/filelock-3.15.4-py3-none-any.whl",
+        "version": "3.15.4"
+      },
+      "idna": {
+        "is_direct": false,
+        "sha256": "82fee1fc78add43492d3a1898bfa6d8a904cc97d8427f683ed8e798d07761aa0",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/e5/3e/741d8c82801c347547f8a2a06aa57dbb1992be9e948df2ea0eda2c8b79e8/idna-3.7-py3-none-any.whl",
+        "version": "3.7"
+      },
+      "packaging": {
+        "is_direct": false,
+        "sha256": "5b8f2217dbdbd2f7f384c41c628544e6d52f2d0f53c6d0c3ea61aa5d1d7ff124",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/08/aa/cc0199a5f0ad350994d660967a8efb233fe0416e4639146c089643407ce6/packaging-24.1-py3-none-any.whl",
+        "version": "24.1"
+      },
+      "platformdirs": {
+        "is_direct": false,
+        "sha256": "2d7a1657e36a80ea911db832a8a6ece5ee53d8de21edd5cc5879af6530b1bfee",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/68/13/2aa1f0e1364feb2c9ef45302f387ac0bd81484e9c9a4c5688a322fbdfd08/platformdirs-4.2.2-py3-none-any.whl",
+        "version": "4.2.2"
+      },
+      "pycparser": {
+        "is_direct": false,
+        "sha256": "c3702b6d3dd8c7abc1afa565d7e63d53a1d0bd86cdc24edd75470f4de499cfcc",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/13/a3/a812df4e2dd5696d1f351d58b8fe16a405b234ad2886a0dab9183fb78109/pycparser-2.22-py3-none-any.whl",
+        "version": "2.22"
+      },
+      "pyjwt": {
+        "is_direct": false,
+        "sha256": "59127c392cc44c2da5bb3192169a91f429924e17aff6534d70fdc02ab3e04320",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/2b/4f/e04a8067c7c96c364cef7ef73906504e2f40d690811c021e1a1901473a19/PyJWT-2.8.0-py3-none-any.whl",
+        "version": "2.8.0"
+      },
+      "pyopenssl": {
+        "is_direct": false,
+        "sha256": "967d5719b12b243588573f39b0c677637145c7a1ffedcd495a487e58177fbb8d",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/d9/dd/e0aa7ebef5168c75b772eda64978c597a9129b46be17779054652a7999e4/pyOpenSSL-24.2.1-py3-none-any.whl",
+        "version": "24.2.1"
+      },
+      "pytz": {
+        "is_direct": false,
+        "sha256": "328171f4e3623139da4983451950b28e95ac706e13f3f2630a879749e7a8b319",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/9c/3d/a121f284241f08268b21359bd425f7d4825cffc5ac5cd0e1b3d82ffd2b10/pytz-2024.1-py2.py3-none-any.whl",
+        "version": "2024.1"
+      },
+      "requests": {
+        "is_direct": false,
+        "sha256": "70761cfe03c773ceb22aa2f671b4757976145175cdfca038c02654d061d6dcc6",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/f9/9b/335f9764261e915ed497fcdeb11df5dfd6f7bf257d4a6a2a686d80da4d54/requests-2.32.3-py3-none-any.whl",
+        "version": "2.32.3"
+      },
+      "snowflake-connector-python": {
+        "is_direct": false,
+        "sha256": "e8f5c376b2368082819126f566551e451d51c95cc2febac45377026d44a401b0",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/97/eb/1ba196714ce2e369e51d7aa9cac3f20759398b020fc9d52fa71e1fb75fb2/snowflake_connector_python-3.11.0-cp312-cp312-macosx_11_0_arm64.whl",
+        "version": "3.11.0"
+      },
+      "snowflake-sqlalchemy": {
+        "is_direct": false,
+        "sha256": "792cde928c0d1d30714b88b0404de81ed297a7745cbcc253dcda973f65759382",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/23/73/4e185fcd05f26b07eb3783f5fee4763db08b34023a143a4abdb4119a9951/snowflake_sqlalchemy-1.6.1.tar.gz",
+        "version": "1.6.1"
+      },
+      "sortedcontainers": {
+        "is_direct": false,
+        "sha256": "a163dcaede0f1c021485e957a39245190e74249897e2ae4b2aa38595db237ee0",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/32/46/9cb0e58b2deb7f82b84065f37f3bffeb12413f947f9388e4cac22c4621ce/sortedcontainers-2.4.0-py2.py3-none-any.whl",
+        "version": "2.4.0"
+      },
+      "sqlalchemy": {
+        "is_direct": false,
+        "sha256": "6f77c4f042ad493cb8595e2f503c7a4fe44cd7bd59c7582fd6d78d7e7b8ec52c",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/27/97/21efc51a670e2772156890e241120aac7dae6c92d1bf56e811fb3bec3373/SQLAlchemy-2.0.31-cp312-cp312-macosx_11_0_arm64.whl",
+        "version": "2.0.31"
+      },
+      "tomlkit": {
+        "is_direct": false,
+        "sha256": "7075d3042d03b80f603482d69bf0c8f345c2b30e41699fd8883227f89972b264",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/fd/7c/b753bf603852cab0a660da6e81f4ea5d2ca0f0b2b4870766d7aa9bceb7a2/tomlkit-0.13.0-py3-none-any.whl",
+        "version": "0.13.0"
+      },
+      "typing-extensions": {
+        "is_direct": false,
+        "sha256": "04e5ca0351e0f3f85c6853954072df659d0d13fac324d0072316b67d7794700d",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/26/9f/ad63fc0248c5379346306f8668cda6e2e2e9c95e01216d2b8ffd9ff037d0/typing_extensions-4.12.2-py3-none-any.whl",
+        "version": "4.12.2"
+      },
+      "urllib3": {
+        "is_direct": false,
+        "sha256": "a448b2f64d686155468037e1ace9f2d2199776e17f0a46610480d311f73e3472",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/ca/1c/89ffc63a9605b583d5df2be791a27bc1a42b7c32bab68d3c8f2f73a98cd4/urllib3-2.2.2-py3-none-any.whl",
+        "version": "2.2.2"
+      }
+    },
+    "targets": {
+      "default": {
+        "asn1crypto": [],
+        "certifi": [],
+        "cffi": [
+          "pycparser"
+        ],
+        "charset-normalizer": [],
+        "cryptography": [
+          "cffi"
+        ],
+        "filelock": [],
+        "idna": [],
+        "packaging": [],
+        "platformdirs": [],
+        "pycparser": [],
+        "pyjwt": [],
+        "pyopenssl": [
+          "cryptography"
+        ],
+        "pytz": [],
+        "requests": [
+          "certifi",
+          "charset-normalizer",
+          "idna",
+          "urllib3"
+        ],
+        "snowflake-connector-python": [
+          "asn1crypto",
+          "certifi",
+          "cffi",
+          "charset-normalizer",
+          "cryptography",
+          "filelock",
+          "idna",
+          "packaging",
+          "platformdirs",
+          "pyjwt",
+          "pyopenssl",
+          "pytz",
+          "requests",
+          "sortedcontainers",
+          "tomlkit",
+          "typing-extensions"
+        ],
+        "snowflake-sqlalchemy": [
+          "snowflake-connector-python",
+          "sqlalchemy"
+        ],
+        "sortedcontainers": [],
+        "sqlalchemy": [
+          "typing-extensions"
+        ],
+        "tomlkit": [],
+        "typing-extensions": [],
+        "urllib3": []
+      }
+    }
+  },
+  "invalidationHash": "ac9861a252a2d310b60d3c17c0349616f006dea10058c97846ece932e06a1c49"
+}

@@ -1,0 +1,29 @@
+{
+  "fetchPipMetadata": {
+    "sources": {
+      "cffi": {
+        "is_direct": false,
+        "sha256": "bcb3ef43e58665bbda2fb198698fcae6776483e0c4a631aa5647806c25e02cc0",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/68/ce/95b0bae7968c65473e1298efb042e10cafc7bafc14d9e4f154008241c91d/cffi-1.16.0.tar.gz",
+        "version": "1.16.0"
+      },
+      "pycparser": {
+        "is_direct": false,
+        "sha256": "c3702b6d3dd8c7abc1afa565d7e63d53a1d0bd86cdc24edd75470f4de499cfcc",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/13/a3/a812df4e2dd5696d1f351d58b8fe16a405b234ad2886a0dab9183fb78109/pycparser-2.22-py3-none-any.whl",
+        "version": "2.22"
+      }
+    },
+    "targets": {
+      "default": {
+        "cffi": [
+          "pycparser"
+        ],
+        "pycparser": []
+      }
+    }
+  },
+  "invalidationHash": "410610ea55eb5f0500c013d5aed4aa9bbe4b7d008eac8957f1ae45b17321550f"
+}

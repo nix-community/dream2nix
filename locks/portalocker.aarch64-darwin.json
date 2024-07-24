@@ -1,0 +1,19 @@
+{
+  "fetchPipMetadata": {
+    "sources": {
+      "portalocker": {
+        "is_direct": false,
+        "sha256": "ef1bf844e878ab08aee7e40184156e1151f228f103aa5c6bd0724cc330960f8f",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/ed/d3/c6c64067759e87af98cc668c1cc75171347d0f1577fab7ca3749134e3cd4/portalocker-2.10.1.tar.gz",
+        "version": "2.10.1"
+      }
+    },
+    "targets": {
+      "default": {
+        "portalocker": []
+      }
+    }
+  },
+  "invalidationHash": "b8f36c4a5f0330ede120ef9167cfa0e4f90256fd015d5f2ce2a2f3b6b4213299"
+}

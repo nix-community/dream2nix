@@ -1,0 +1,19 @@
+{
+  "fetchPipMetadata": {
+    "sources": {
+      "babel": {
+        "is_direct": false,
+        "sha256": "8daf0e265d05768bc6c7a314cf1321e9a123afc328cc635c18622a2f30a04413",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/15/d2/9671b93d623300f0aef82cde40e25357f11330bdde91743891b22a555bed/babel-2.15.0.tar.gz",
+        "version": "2.15.0"
+      }
+    },
+    "targets": {
+      "default": {
+        "babel": []
+      }
+    }
+  },
+  "invalidationHash": "3fd985ea8e14568d5d54fc8ce95fc33d7fa578a99795649774d46c54ae3a228e"
+}

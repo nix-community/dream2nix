@@ -1,0 +1,19 @@
+{
+  "fetchPipMetadata": {
+    "sources": {
+      "smmap": {
+        "is_direct": false,
+        "sha256": "dceeb6c0028fdb6734471eb07c0cd2aae706ccaecab45965ee83f11c8d3b1f62",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/88/04/b5bf6d21dc4041000ccba7eb17dd3055feb237e7ffc2c20d3fae3af62baa/smmap-5.0.1.tar.gz",
+        "version": "5.0.1"
+      }
+    },
+    "targets": {
+      "default": {
+        "smmap": []
+      }
+    }
+  },
+  "invalidationHash": "07d170af965b9875652d6ca0519febe2174e928224001d48c7edf36fc59b34f2"
+}

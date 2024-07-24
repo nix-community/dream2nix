@@ -1,0 +1,98 @@
+Collecting pip==23.1
+  Using cached pip-23.1-py3-none-any.whl.metadata (4.1 kB)
+Collecting wheel==0.43.0
+  Using cached wheel-0.43.0-py3-none-any.whl.metadata (2.2 kB)
+Using cached pip-23.1-py3-none-any.whl (2.1 MB)
+Using cached wheel-0.43.0-py3-none-any.whl (65 kB)
+Installing collected packages: wheel, pip
+  Attempting uninstall: pip
+    Found existing installation: pip 24.0
+    Uninstalling pip-24.0:
+      Successfully uninstalled pip-24.0
+Successfully installed pip-23.1 wheel-0.43.0
+
+[notice] A new release of pip is available: 23.1 -> 24.1.2
+[notice] To update, run: python -m pip install --upgrade pip
+Collecting pandas==2.2.2
+  Using cached pandas-2.2.2.tar.gz (4.4 MB)
+  Installing build dependencies: started
+  Installing build dependencies: finished with status 'done'
+  Getting requirements to build wheel: started
+  Getting requirements to build wheel: finished with status 'error'
+  error: subprocess-exited-with-error
+  
+  × Getting requirements to build wheel did not run successfully.
+  │ exit code: 1
+  ╰─> [40 lines of output]
+      + meson setup /tmp/tmp.PEFdSNDcWA/pip-install-vws28t9i/pandas_0cd80098a7eb4209a4ba71bb4eba7cb7 /tmp/tmp.PEFdSNDcWA/pip-install-vws28t9i/pandas_0cd80098a7eb4209a4ba71bb4eba7cb7/.mesonpy-7t3d6nr7/build -Dbuildtype=release -Db_ndebug=if-release -Db_vscrt=md --vsenv --cross-file=/nix/store/k29i1knpmzk83p1v7ic1qh02x94cszkz-cross-file-numpy.conf --native-file=/tmp/tmp.PEFdSNDcWA/pip-install-vws28t9i/pandas_0cd80098a7eb4209a4ba71bb4eba7cb7/.mesonpy-7t3d6nr7/build/meson-python-native-file.ini
+      The Meson build system
+      Version: 1.2.1
+      Source dir: /tmp/tmp.PEFdSNDcWA/pip-install-vws28t9i/pandas_0cd80098a7eb4209a4ba71bb4eba7cb7
+      Build dir: /tmp/tmp.PEFdSNDcWA/pip-install-vws28t9i/pandas_0cd80098a7eb4209a4ba71bb4eba7cb7/.mesonpy-7t3d6nr7/build
+      Build type: cross build
+      Project name: pandas
+      Project version: 2.2.2
+      C compiler for the host machine: cc (gcc 13.3.0 "gcc (GCC) 13.3.0")
+      C linker for the host machine: cc ld.bfd 2.42
+      C++ compiler for the host machine: c++ (gcc 13.3.0 "g++ (GCC) 13.3.0")
+      C++ linker for the host machine: c++ ld.bfd 2.42
+      Cython compiler for the host machine: cython (cython 3.0.5)
+      C compiler for the build machine: cc (gcc 13.3.0 "gcc (GCC) 13.3.0")
+      C linker for the build machine: cc ld.bfd 2.42
+      C++ compiler for the build machine: c++ (gcc 13.3.0 "g++ (GCC) 13.3.0")
+      C++ linker for the build machine: c++ ld.bfd 2.42
+      Cython compiler for the build machine: cython (cython 3.0.5)
+      Build machine cpu family: x86_64
+      Build machine cpu: x86_64
+      Host machine cpu family: x86_64
+      Host machine cpu: x86_64
+      Target machine cpu family: x86_64
+      Target machine cpu: x86_64
+      Program python3 found: YES (/tmp/tmp.PEFdSNDcWA/tmpg9p7fsfz/.venv/bin/python)
+      
+      ../../pandas/meson.build:1:15: ERROR: Command `/tmp/tmp.PEFdSNDcWA/tmpg9p7fsfz/.venv/bin/python -c '
+      import os
+      import numpy as np
+      try:
+          # Check if include directory is inside the pandas dir
+          # e.g. a venv created inside the pandas dir
+          # If so, convert it to a relative path
+          incdir = os.path.relpath(np.get_include())
+      except Exception:
+          incdir = np.get_include()
+      print(incdir)
+           '` failed with status 1.
+      
+      A full log can be found at /tmp/tmp.PEFdSNDcWA/pip-install-vws28t9i/pandas_0cd80098a7eb4209a4ba71bb4eba7cb7/.mesonpy-7t3d6nr7/build/meson-logs/meson-log.txt
+      [end of output]
+  
+  note: This error originates from a subprocess, and is likely not a problem with pip.
+error: subprocess-exited-with-error
+
+× Getting requirements to build wheel did not run successfully.
+│ exit code: 1
+╰─> See above for output.
+
+note: This error originates from a subprocess, and is likely not a problem with pip.
+WARNING: There was an error checking the latest version of pip.
+Traceback (most recent call last):
+  File "/nix/store/h71zwamfrx3sah2bv18scmm16a3zk6w7-python3.12-fetch-pip-metadata/bin/.fetch_pip_metadata-wrapped", line 9, in <module>
+    sys.exit(fetch_pip_metadata())
+             ^^^^^^^^^^^^^^^^^^^^
+  File "/nix/store/h71zwamfrx3sah2bv18scmm16a3zk6w7-python3.12-fetch-pip-metadata/lib/python3.12/site-packages/fetch_pip_metadata/__init__.py", line 78, in fetch_pip_metadata
+    subprocess.run(
+  File "/nix/store/z7xxy35k7620hs6fn6la5fg2lgklv72l-python3-3.12.4/lib/python3.12/subprocess.py", line 571, in run
+    raise CalledProcessError(retcode, process.args,
+subprocess.CalledProcessError: Command '['/tmp/tmp.PEFdSNDcWA/tmpg9p7fsfz/.venv/bin/pip', 'install', '--dry-run', '--ignore-installed', '--no-binary', 'pandas', '--progress-bar', 'off', '--report', '/tmp/tmp.PEFdSNDcWA/tmpg9p7fsfz/report.json', 'pandas==2.2.2']' returned non-zero exit status 1.
+Traceback (most recent call last):
+  File "/nix/store/k792l8zaaarc2s6gskicy3q6whyxw8zl-refresh/bin/refresh", line 40, in <module>
+    lock_data = run_refresh_scripts(refresh_scripts)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/nix/store/k792l8zaaarc2s6gskicy3q6whyxw8zl-refresh/bin/refresh", line 36, in run_refresh_scripts
+    refresh_scripts[name] = run_refresh_script(value["script"])
+                            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/nix/store/k792l8zaaarc2s6gskicy3q6whyxw8zl-refresh/bin/refresh", line 22, in run_refresh_script
+    subprocess.run(
+  File "/nix/store/z7xxy35k7620hs6fn6la5fg2lgklv72l-python3-3.12.4/lib/python3.12/subprocess.py", line 571, in run
+    raise CalledProcessError(retcode, process.args,
+subprocess.CalledProcessError: Command '['/nix/store/2k8w4g5m42qk6g0v2b1gfglr0abk2w4y-script.sh']' returned non-zero exit status 1.

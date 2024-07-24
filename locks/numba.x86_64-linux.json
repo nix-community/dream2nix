@@ -1,0 +1,38 @@
+{
+  "fetchPipMetadata": {
+    "sources": {
+      "llvmlite": {
+        "is_direct": false,
+        "sha256": "df6509e1507ca0760787a199d19439cc887bfd82226f5af746d6977bd9f66844",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/00/5f/323c4d56e8401c50185fd0e875fcf06b71bf825a863699be1eb10aa2a9cb/llvmlite-0.43.0-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl",
+        "version": "0.43.0"
+      },
+      "numba": {
+        "is_direct": false,
+        "sha256": "5df6158e5584eece5fc83294b949fd30b9f1125df7708862205217e068aabf16",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/3c/93/2849300a9184775ba274aba6f82f303343669b0592b7bb0849ea713dabb0/numba-0.60.0.tar.gz",
+        "version": "0.60.0"
+      },
+      "numpy": {
+        "is_direct": false,
+        "sha256": "6790654cb13eab303d8402354fabd47472b24635700f631f041bd0b65e37298a",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/2c/f3/61eeef119beb37decb58e7cb29940f19a1464b8608f2cab8a8616aba75fd/numpy-2.0.1-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl",
+        "version": "2.0.1"
+      }
+    },
+    "targets": {
+      "default": {
+        "llvmlite": [],
+        "numba": [
+          "llvmlite",
+          "numpy"
+        ],
+        "numpy": []
+      }
+    }
+  },
+  "invalidationHash": "ec105575261cd8b9d126dd38bdf7eee94532e1a1b08309b9edd6c7b701e09552"
+}

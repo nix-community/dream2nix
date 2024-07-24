@@ -1,0 +1,19 @@
+{
+  "fetchPipMetadata": {
+    "sources": {
+      "inflection": {
+        "is_direct": false,
+        "sha256": "1a29730d366e996aaacffb2f1f1cb9593dc38e2ddd30c91250c6dde09ea9b417",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/e1/7e/691d061b7329bc8d54edbf0ec22fbfb2afe61facb681f9aaa9bff7a27d04/inflection-0.5.1.tar.gz",
+        "version": "0.5.1"
+      }
+    },
+    "targets": {
+      "default": {
+        "inflection": []
+      }
+    }
+  },
+  "invalidationHash": "253d7a56d6438b2595d2c6bf72a5e782df915fc5ec7139a9e8087e16bb9f2230"
+}

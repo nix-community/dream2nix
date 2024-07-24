@@ -1,0 +1,19 @@
+{
+  "fetchPipMetadata": {
+    "sources": {
+      "mistune": {
+        "is_direct": false,
+        "sha256": "fc7f93ded930c92394ef2cb6f04a8aabab4117a91449e72dcc8dfa646a508be8",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/ef/c8/f0173fe3bf85fd891aee2e7bcd8207dfe26c2c683d727c5a6cc3aec7b628/mistune-3.0.2.tar.gz",
+        "version": "3.0.2"
+      }
+    },
+    "targets": {
+      "default": {
+        "mistune": []
+      }
+    }
+  },
+  "invalidationHash": "a92eab3bfe0b3b2216d714d5bb31ba03813a12fa310aa5fa3c985716feffacd4"
+}

@@ -1,0 +1,38 @@
+{
+  "fetchPipMetadata": {
+    "sources": {
+      "dulwich": {
+        "is_direct": false,
+        "sha256": "e36d85967cfbf25da1c7bc3d6921adc5baa976969d926aaf1582bd5fd7e94758",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/cf/ac/cf6420b90832c4ffbc88b92962dd0167c58632c2b8d508d5baf4ecb0c61d/dulwich-0.22.1.tar.gz",
+        "version": "0.22.1"
+      },
+      "setuptools": {
+        "is_direct": false,
+        "sha256": "33874fdc59b3188304b2e7c80d9029097ea31627180896fb549c578ceb8a0855",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/51/a0/ee460cc54e68afcf33190d198299c9579a5eafeadef0016ae8563237ccb6/setuptools-71.1.0-py3-none-any.whl",
+        "version": "71.1.0"
+      },
+      "urllib3": {
+        "is_direct": false,
+        "sha256": "a448b2f64d686155468037e1ace9f2d2199776e17f0a46610480d311f73e3472",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/ca/1c/89ffc63a9605b583d5df2be791a27bc1a42b7c32bab68d3c8f2f73a98cd4/urllib3-2.2.2-py3-none-any.whl",
+        "version": "2.2.2"
+      }
+    },
+    "targets": {
+      "default": {
+        "dulwich": [
+          "setuptools",
+          "urllib3"
+        ],
+        "setuptools": [],
+        "urllib3": []
+      }
+    }
+  },
+  "invalidationHash": "5893becccfd1bf3dc7fc3150bfd19f6ff057e701621720cd80ad5a954415feef"
+}

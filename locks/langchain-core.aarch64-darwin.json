@@ -1,0 +1,171 @@
+{
+  "fetchPipMetadata": {
+    "sources": {
+      "annotated-types": {
+        "is_direct": false,
+        "sha256": "1f02e8b43a8fbbc3f3e0d4f0f4bfc8131bcb4eebe8849b8e5c773f3a1c582a53",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/78/b6/6307fbef88d9b5ee7421e68d78a9f162e0da4900bc5f5793f6d3d0e34fb8/annotated_types-0.7.0-py3-none-any.whl",
+        "version": "0.7.0"
+      },
+      "certifi": {
+        "is_direct": false,
+        "sha256": "c198e21b1289c2ab85ee4e67bb4b4ef3ead0892059901a8d5b622f24a1101e90",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/1c/d5/c84e1a17bf61d4df64ca866a1c9a913874b4e9bdc131ec689a0ad013fb36/certifi-2024.7.4-py3-none-any.whl",
+        "version": "2024.7.4"
+      },
+      "charset-normalizer": {
+        "is_direct": false,
+        "sha256": "55086ee1064215781fff39a1af09518bc9255b50d6333f2e4c74ca09fac6a8f6",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/3a/52/9f9d17c3b54dc238de384c4cb5a2ef0e27985b42a0e5cc8e8a31d918d48d/charset_normalizer-3.3.2-cp312-cp312-macosx_11_0_arm64.whl",
+        "version": "3.3.2"
+      },
+      "idna": {
+        "is_direct": false,
+        "sha256": "82fee1fc78add43492d3a1898bfa6d8a904cc97d8427f683ed8e798d07761aa0",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/e5/3e/741d8c82801c347547f8a2a06aa57dbb1992be9e948df2ea0eda2c8b79e8/idna-3.7-py3-none-any.whl",
+        "version": "3.7"
+      },
+      "jsonpatch": {
+        "is_direct": false,
+        "sha256": "0ae28c0cd062bbd8b8ecc26d7d164fbbea9652a1a3693f3b956c1eae5145dade",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/73/07/02e16ed01e04a374e644b575638ec7987ae846d25ad97bcc9945a3ee4b0e/jsonpatch-1.33-py2.py3-none-any.whl",
+        "version": "1.33"
+      },
+      "jsonpointer": {
+        "is_direct": false,
+        "sha256": "13e088adc14fca8b6aa8177c044e12701e6ad4b28ff10e65f2267a90109c9942",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/71/92/5e77f98553e9e75130c78900d000368476aed74276eb8ae8796f65f00918/jsonpointer-3.0.0-py2.py3-none-any.whl",
+        "version": "3.0.0"
+      },
+      "langchain-core": {
+        "is_direct": false,
+        "sha256": "3d1e28179a5d496b900ebef45e1471eaae9fb63fc570f89ded78b026fd08ba84",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/15/d7/3b81a0cb080879ece5ec9b7c7f63b011312131f2dd020b297349e281deba/langchain_core-0.2.21.tar.gz",
+        "version": "0.2.21"
+      },
+      "langsmith": {
+        "is_direct": false,
+        "sha256": "811210b9d5f108f36431bd7b997eb9476a9ecf5a2abd7ddbb606c1cdcf0f43ce",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/97/06/f7a49f0414796ba181a31ef0a26a9f9a3af193327cbf21a668e72d769076/langsmith-0.1.93-py3-none-any.whl",
+        "version": "0.1.93"
+      },
+      "orjson": {
+        "is_direct": false,
+        "sha256": "ea2977b21f8d5d9b758bb3f344a75e55ca78e3ff85595d248eee813ae23ecdfb",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/0d/27/a3927c3d6d69c7af8eb0ee6f92cd9d0a1cc33a1616eceec9f20f3bbbad36/orjson-3.10.6-cp312-cp312-macosx_10_15_x86_64.macosx_11_0_arm64.macosx_10_15_universal2.whl",
+        "version": "3.10.6"
+      },
+      "packaging": {
+        "is_direct": false,
+        "sha256": "5b8f2217dbdbd2f7f384c41c628544e6d52f2d0f53c6d0c3ea61aa5d1d7ff124",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/08/aa/cc0199a5f0ad350994d660967a8efb233fe0416e4639146c089643407ce6/packaging-24.1-py3-none-any.whl",
+        "version": "24.1"
+      },
+      "pydantic": {
+        "is_direct": false,
+        "sha256": "73ee9fddd406dc318b885c7a2eab8a6472b68b8fb5ba8150949fc3db939f23c8",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/1f/fa/b7f815b8c9ad021c07f88875b601222ef5e70619391ade4a49234d12d278/pydantic-2.8.2-py3-none-any.whl",
+        "version": "2.8.2"
+      },
+      "pydantic-core": {
+        "is_direct": false,
+        "sha256": "a4f55095ad087474999ee28d3398bae183a66be4823f753cd7d67dd0153427c9",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/6a/23/430f2878c9cd977a61bb39f71751d9310ec55cee36b3d5bf1752c6341fd0/pydantic_core-2.20.1-cp312-cp312-macosx_11_0_arm64.whl",
+        "version": "2.20.1"
+      },
+      "pyyaml": {
+        "is_direct": false,
+        "sha256": "40df9b996c2b73138957fe23a16a4f0ba614f4c0efce1e9406a184b6d07fa3a9",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/84/02/404de95ced348b73dd84f70e15a41843d817ff8c1744516bf78358f2ffd2/PyYAML-6.0.1-cp312-cp312-macosx_11_0_arm64.whl",
+        "version": "6.0.1"
+      },
+      "requests": {
+        "is_direct": false,
+        "sha256": "70761cfe03c773ceb22aa2f671b4757976145175cdfca038c02654d061d6dcc6",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/f9/9b/335f9764261e915ed497fcdeb11df5dfd6f7bf257d4a6a2a686d80da4d54/requests-2.32.3-py3-none-any.whl",
+        "version": "2.32.3"
+      },
+      "tenacity": {
+        "is_direct": false,
+        "sha256": "b594c2a5945830c267ce6b79a166228323ed52718f30302c1359836112346687",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/d2/3f/8ba87d9e287b9d385a02a7114ddcef61b26f86411e121c9003eb509a1773/tenacity-8.5.0-py3-none-any.whl",
+        "version": "8.5.0"
+      },
+      "typing-extensions": {
+        "is_direct": false,
+        "sha256": "04e5ca0351e0f3f85c6853954072df659d0d13fac324d0072316b67d7794700d",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/26/9f/ad63fc0248c5379346306f8668cda6e2e2e9c95e01216d2b8ffd9ff037d0/typing_extensions-4.12.2-py3-none-any.whl",
+        "version": "4.12.2"
+      },
+      "urllib3": {
+        "is_direct": false,
+        "sha256": "a448b2f64d686155468037e1ace9f2d2199776e17f0a46610480d311f73e3472",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/ca/1c/89ffc63a9605b583d5df2be791a27bc1a42b7c32bab68d3c8f2f73a98cd4/urllib3-2.2.2-py3-none-any.whl",
+        "version": "2.2.2"
+      }
+    },
+    "targets": {
+      "default": {
+        "annotated-types": [],
+        "certifi": [],
+        "charset-normalizer": [],
+        "idna": [],
+        "jsonpatch": [
+          "jsonpointer"
+        ],
+        "jsonpointer": [],
+        "langchain-core": [
+          "jsonpatch",
+          "langsmith",
+          "packaging",
+          "pydantic",
+          "pyyaml",
+          "tenacity"
+        ],
+        "langsmith": [
+          "orjson",
+          "pydantic",
+          "requests"
+        ],
+        "orjson": [],
+        "packaging": [],
+        "pydantic": [
+          "annotated-types",
+          "pydantic-core",
+          "typing-extensions"
+        ],
+        "pydantic-core": [
+          "typing-extensions"
+        ],
+        "pyyaml": [],
+        "requests": [
+          "certifi",
+          "charset-normalizer",
+          "idna",
+          "urllib3"
+        ],
+        "tenacity": [],
+        "typing-extensions": [],
+        "urllib3": []
+      }
+    }
+  },
+  "invalidationHash": "c7f79c08aa3e3508627c54d94380e2463a19bf4b31188caca60dc7fab5260d08"
+}

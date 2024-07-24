@@ -1,0 +1,19 @@
+{
+  "fetchPipMetadata": {
+    "sources": {
+      "colorama": {
+        "is_direct": false,
+        "sha256": "08695f5cb7ed6e0531a20572697297273c47b8cae5a63ffc6d6ed5c201be6e44",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/d8/53/6f443c9a4a8358a93a6792e2acffb9d9d5cb0a5cfd8802644b7b1c9a02e4/colorama-0.4.6.tar.gz",
+        "version": "0.4.6"
+      }
+    },
+    "targets": {
+      "default": {
+        "colorama": []
+      }
+    }
+  },
+  "invalidationHash": "4ed6b2374e836f45e0b983ad5da07b7f2ab6c7e4e0c2415f2fb62fdda224f7f0"
+}

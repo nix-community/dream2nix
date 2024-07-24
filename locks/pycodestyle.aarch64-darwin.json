@@ -1,0 +1,19 @@
+{
+  "fetchPipMetadata": {
+    "sources": {
+      "pycodestyle": {
+        "is_direct": false,
+        "sha256": "442f950141b4f43df752dd303511ffded3a04c2b6fb7f65980574f0c31e6e79c",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/10/56/52d8283e1a1c85695291040192776931782831e21117c84311cbdd63f70c/pycodestyle-2.12.0.tar.gz",
+        "version": "2.12.0"
+      }
+    },
+    "targets": {
+      "default": {
+        "pycodestyle": []
+      }
+    }
+  },
+  "invalidationHash": "4e974208aae1176dc872d6b4ab909c6cd895ed0b46380dfeeae58285c8a4c224"
+}

@@ -1,0 +1,86 @@
+{
+  "fetchPipMetadata": {
+    "sources": {
+      "jupyter-client": {
+        "is_direct": false,
+        "sha256": "2bda14d55ee5ba58552a8c53ae43d215ad9868853489213f37da060ced54d8df",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/ff/61/3cd51dea7878691919adc34ff6ad180f13bfe25fb8c7662a9ee6dc64e643/jupyter_client-8.6.2.tar.gz",
+        "version": "8.6.2"
+      },
+      "jupyter-core": {
+        "is_direct": false,
+        "sha256": "4f7315d2f6b4bcf2e3e7cb6e46772eba760ae459cd1f59d29eb57b0a01bd7409",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/c9/fb/108ecd1fe961941959ad0ee4e12ee7b8b1477247f30b1fdfd83ceaf017f0/jupyter_core-5.7.2-py3-none-any.whl",
+        "version": "5.7.2"
+      },
+      "platformdirs": {
+        "is_direct": false,
+        "sha256": "2d7a1657e36a80ea911db832a8a6ece5ee53d8de21edd5cc5879af6530b1bfee",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/68/13/2aa1f0e1364feb2c9ef45302f387ac0bd81484e9c9a4c5688a322fbdfd08/platformdirs-4.2.2-py3-none-any.whl",
+        "version": "4.2.2"
+      },
+      "python-dateutil": {
+        "is_direct": false,
+        "sha256": "a8b2bc7bffae282281c8140a97d3aa9c14da0b136dfe83f850eea9a5f7470427",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/ec/57/56b9bcc3c9c6a792fcbaf139543cee77261f3651ca9da0c93f5c1221264b/python_dateutil-2.9.0.post0-py2.py3-none-any.whl",
+        "version": "2.9.0.post0"
+      },
+      "pyzmq": {
+        "is_direct": false,
+        "sha256": "068ca17214038ae986d68f4a7021f97e187ed278ab6dccb79f837d765a54d753",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/55/b7/022484adb5d034cce7088ddb1f33413f0459afab33ef79dda7786800181f/pyzmq-26.0.3-cp312-cp312-macosx_10_15_universal2.whl",
+        "version": "26.0.3"
+      },
+      "six": {
+        "is_direct": false,
+        "sha256": "8abb2f1d86890a2dfb989f9a77cfcfd3e47c2a354b01111771326f8aa26e0254",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/d9/5a/e7c31adbe875f2abbb91bd84cf2dc52d792b5a01506781dbcf25c91daf11/six-1.16.0-py2.py3-none-any.whl",
+        "version": "1.16.0"
+      },
+      "tornado": {
+        "is_direct": false,
+        "sha256": "163b0aafc8e23d8cdc3c9dfb24c5368af84a81e3364745ccb4427669bf84aec8",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/00/d9/c33be3c1a7564f7d42d87a8d186371a75fd142097076767a5c27da941fef/tornado-6.4.1-cp38-abi3-macosx_10_9_universal2.whl",
+        "version": "6.4.1"
+      },
+      "traitlets": {
+        "is_direct": false,
+        "sha256": "b74e89e397b1ed28cc831db7aea759ba6640cb3de13090ca145426688ff1ac4f",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/00/c0/8f5d070730d7836adc9c9b6408dec68c6ced86b304a9b26a14df072a6e8c/traitlets-5.14.3-py3-none-any.whl",
+        "version": "5.14.3"
+      }
+    },
+    "targets": {
+      "default": {
+        "jupyter-client": [
+          "jupyter-core",
+          "python-dateutil",
+          "pyzmq",
+          "tornado",
+          "traitlets"
+        ],
+        "jupyter-core": [
+          "platformdirs",
+          "traitlets"
+        ],
+        "platformdirs": [],
+        "python-dateutil": [
+          "six"
+        ],
+        "pyzmq": [],
+        "six": [],
+        "tornado": [],
+        "traitlets": []
+      }
+    }
+  },
+  "invalidationHash": "3d45ebc581d4cd936c715a0ee6c01718a300200d7fa88f49bb25027cb303ded8"
+}

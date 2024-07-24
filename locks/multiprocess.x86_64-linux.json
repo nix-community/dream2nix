@@ -1,0 +1,29 @@
+{
+  "fetchPipMetadata": {
+    "sources": {
+      "dill": {
+        "is_direct": false,
+        "sha256": "c36ca9ffb54365bdd2f8eb3eff7d2a21237f8452b57ace88b1ac615b7e815bd7",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/c9/7a/cef76fd8438a42f96db64ddaa85280485a9c395e7df3db8158cfec1eee34/dill-0.3.8-py3-none-any.whl",
+        "version": "0.3.8"
+      },
+      "multiprocess": {
+        "is_direct": false,
+        "sha256": "161af703d4652a0e1410be6abccecde4a7ddffd19341be0a7011b94aeb171ac1",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/b5/ae/04f39c5d0d0def03247c2893d6f2b83c136bf3320a2154d7b8858f2ba72d/multiprocess-0.70.16.tar.gz",
+        "version": "0.70.16"
+      }
+    },
+    "targets": {
+      "default": {
+        "dill": [],
+        "multiprocess": [
+          "dill"
+        ]
+      }
+    }
+  },
+  "invalidationHash": "288a41046990111514dcb76fc139ba2de3157fc9b2693df031d4c159ae9c8309"
+}

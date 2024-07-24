@@ -1,0 +1,214 @@
+{
+  "fetchPipMetadata": {
+    "sources": {
+      "arrow": {
+        "is_direct": false,
+        "sha256": "c728b120ebc00eb84e01882a6f5e7927a53960aa990ce7dd2b10f39005a67f80",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/f8/ed/e97229a566617f2ae958a6b13e7cc0f585470eac730a73e9e82c32a3cdd2/arrow-1.3.0-py3-none-any.whl",
+        "version": "1.3.0"
+      },
+      "attrs": {
+        "is_direct": false,
+        "sha256": "99b87a485a5820b23b879f04c2305b44b951b502fd64be915879d77a7e8fc6f1",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/e0/44/827b2a91a5816512fcaf3cc4ebc465ccd5d598c45cefa6703fcf4a79018f/attrs-23.2.0-py3-none-any.whl",
+        "version": "23.2.0"
+      },
+      "fqdn": {
+        "is_direct": false,
+        "sha256": "3a179af3761e4df6eb2e026ff9e1a3033d3587bf980a0b1b2e1e5d08d7358014",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/cf/58/8acf1b3e91c58313ce5cb67df61001fc9dcd21be4fadb76c1a2d540e09ed/fqdn-1.5.1-py3-none-any.whl",
+        "version": "1.5.1"
+      },
+      "idna": {
+        "is_direct": false,
+        "sha256": "82fee1fc78add43492d3a1898bfa6d8a904cc97d8427f683ed8e798d07761aa0",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/e5/3e/741d8c82801c347547f8a2a06aa57dbb1992be9e948df2ea0eda2c8b79e8/idna-3.7-py3-none-any.whl",
+        "version": "3.7"
+      },
+      "isoduration": {
+        "is_direct": false,
+        "sha256": "b2904c2a4228c3d44f409c8ae8e2370eb21a26f7ac2ec5446df141dde3452042",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/7b/55/e5326141505c5d5e34c5e0935d2908a74e4561eca44108fbfb9c13d2911a/isoduration-20.11.0-py3-none-any.whl",
+        "version": "20.11.0"
+      },
+      "jsonpointer": {
+        "is_direct": false,
+        "sha256": "13e088adc14fca8b6aa8177c044e12701e6ad4b28ff10e65f2267a90109c9942",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/71/92/5e77f98553e9e75130c78900d000368476aed74276eb8ae8796f65f00918/jsonpointer-3.0.0-py2.py3-none-any.whl",
+        "version": "3.0.0"
+      },
+      "jsonschema": {
+        "is_direct": false,
+        "sha256": "fbadb6f8b144a8f8cf9f0b89ba94501d143e50411a1278633f56a7acf7fd5566",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/69/4a/4f9dbeb84e8850557c02365a0eee0649abe5eb1d84af92a25731c6c0f922/jsonschema-4.23.0-py3-none-any.whl",
+        "version": "4.23.0"
+      },
+      "jsonschema-specifications": {
+        "is_direct": false,
+        "sha256": "87e4fdf3a94858b8a2ba2778d9ba57d8a9cafca7c7489c46ba0d30a8bc6a9c3c",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/ee/07/44bd408781594c4d0a027666ef27fab1e441b109dc3b76b4f836f8fd04fe/jsonschema_specifications-2023.12.1-py3-none-any.whl",
+        "version": "2023.12.1"
+      },
+      "jupyter-events": {
+        "is_direct": false,
+        "sha256": "670b8229d3cc882ec782144ed22e0d29e1c2d639263f92ca8383e66682845e22",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/8d/53/7537a1aa558229bb0b1b178d814c9d68a9c697d3aecb808a1cb2646acf1f/jupyter_events-0.10.0.tar.gz",
+        "version": "0.10.0"
+      },
+      "python-dateutil": {
+        "is_direct": false,
+        "sha256": "a8b2bc7bffae282281c8140a97d3aa9c14da0b136dfe83f850eea9a5f7470427",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/ec/57/56b9bcc3c9c6a792fcbaf139543cee77261f3651ca9da0c93f5c1221264b/python_dateutil-2.9.0.post0-py2.py3-none-any.whl",
+        "version": "2.9.0.post0"
+      },
+      "python-json-logger": {
+        "is_direct": false,
+        "sha256": "f380b826a991ebbe3de4d897aeec42760035ac760345e57b812938dc8b35e2bd",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/35/a6/145655273568ee78a581e734cf35beb9e33a370b29c5d3c8fee3744de29f/python_json_logger-2.0.7-py3-none-any.whl",
+        "version": "2.0.7"
+      },
+      "pyyaml": {
+        "is_direct": false,
+        "sha256": "40df9b996c2b73138957fe23a16a4f0ba614f4c0efce1e9406a184b6d07fa3a9",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/84/02/404de95ced348b73dd84f70e15a41843d817ff8c1744516bf78358f2ffd2/PyYAML-6.0.1-cp312-cp312-macosx_11_0_arm64.whl",
+        "version": "6.0.1"
+      },
+      "referencing": {
+        "is_direct": false,
+        "sha256": "eda6d3234d62814d1c64e305c1331c9a3a6132da475ab6382eaa997b21ee75de",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/b7/59/2056f61236782a2c86b33906c025d4f4a0b17be0161b63b70fd9e8775d36/referencing-0.35.1-py3-none-any.whl",
+        "version": "0.35.1"
+      },
+      "rfc3339-validator": {
+        "is_direct": false,
+        "sha256": "24f6ec1eda14ef823da9e36ec7113124b39c04d50a4d3d3a3c2859577e7791fa",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/7b/44/4e421b96b67b2daff264473f7465db72fbdf36a07e05494f50300cc7b0c6/rfc3339_validator-0.1.4-py2.py3-none-any.whl",
+        "version": "0.1.4"
+      },
+      "rfc3986-validator": {
+        "is_direct": false,
+        "sha256": "2f235c432ef459970b4306369336b9d5dbdda31b510ca1e327636e01f528bfa9",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/9e/51/17023c0f8f1869d8806b979a2bffa3f861f26a3f1a66b094288323fba52f/rfc3986_validator-0.1.1-py2.py3-none-any.whl",
+        "version": "0.1.1"
+      },
+      "rpds-py": {
+        "is_direct": false,
+        "sha256": "6f2f78ef14077e08856e788fa482107aa602636c16c25bdf59c22ea525a785e9",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/5c/a2/4796309ee72d7005abe844ffdd88efa9174f724e298aedcb834d08bb4b9b/rpds_py-0.19.0-cp312-cp312-macosx_11_0_arm64.whl",
+        "version": "0.19.0"
+      },
+      "six": {
+        "is_direct": false,
+        "sha256": "8abb2f1d86890a2dfb989f9a77cfcfd3e47c2a354b01111771326f8aa26e0254",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/d9/5a/e7c31adbe875f2abbb91bd84cf2dc52d792b5a01506781dbcf25c91daf11/six-1.16.0-py2.py3-none-any.whl",
+        "version": "1.16.0"
+      },
+      "traitlets": {
+        "is_direct": false,
+        "sha256": "b74e89e397b1ed28cc831db7aea759ba6640cb3de13090ca145426688ff1ac4f",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/00/c0/8f5d070730d7836adc9c9b6408dec68c6ced86b304a9b26a14df072a6e8c/traitlets-5.14.3-py3-none-any.whl",
+        "version": "5.14.3"
+      },
+      "types-python-dateutil": {
+        "is_direct": false,
+        "sha256": "6b8cb66d960771ce5ff974e9dd45e38facb81718cc1e208b10b1baccbfdbee3b",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/c7/1b/af4f4c4f3f7339a4b7eb3c0ab13416db98f8ac09de3399129ee5fdfa282b/types_python_dateutil-2.9.0.20240316-py3-none-any.whl",
+        "version": "2.9.0.20240316"
+      },
+      "uri-template": {
+        "is_direct": false,
+        "sha256": "a44a133ea12d44a0c0f06d7d42a52d71282e77e2f937d8abd5655b8d56fc1363",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/e7/00/3fca040d7cf8a32776d3d81a00c8ee7457e00f80c649f1e4a863c8321ae9/uri_template-1.3.0-py3-none-any.whl",
+        "version": "1.3.0"
+      },
+      "webcolors": {
+        "is_direct": false,
+        "sha256": "8cf5bc7e28defd1d48b9e83d5fc30741328305a8195c29a8e668fa45586568a1",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/3b/45/0c30e10a2ac52606476394e4ba11cf3b12ba5823e7fbb9167f80eee6000a/webcolors-24.6.0-py3-none-any.whl",
+        "version": "24.6.0"
+      }
+    },
+    "targets": {
+      "default": {
+        "arrow": [
+          "python-dateutil",
+          "types-python-dateutil"
+        ],
+        "attrs": [],
+        "fqdn": [],
+        "idna": [],
+        "isoduration": [
+          "arrow"
+        ],
+        "jsonpointer": [],
+        "jsonschema": [
+          "attrs",
+          "fqdn",
+          "idna",
+          "isoduration",
+          "jsonpointer",
+          "jsonschema-specifications",
+          "referencing",
+          "rfc3339-validator",
+          "rfc3986-validator",
+          "rpds-py",
+          "uri-template",
+          "webcolors"
+        ],
+        "jsonschema-specifications": [
+          "referencing"
+        ],
+        "jupyter-events": [
+          "jsonschema",
+          "python-json-logger",
+          "pyyaml",
+          "referencing",
+          "rfc3339-validator",
+          "rfc3986-validator",
+          "traitlets"
+        ],
+        "python-dateutil": [
+          "six"
+        ],
+        "python-json-logger": [],
+        "pyyaml": [],
+        "referencing": [
+          "attrs",
+          "rpds-py"
+        ],
+        "rfc3339-validator": [
+          "six"
+        ],
+        "rfc3986-validator": [],
+        "rpds-py": [],
+        "six": [],
+        "traitlets": [],
+        "types-python-dateutil": [],
+        "uri-template": [],
+        "webcolors": []
+      }
+    }
+  },
+  "invalidationHash": "5be4187be6b1579a831ce38cfcb9f27ec99e821eaf025ba0c8cce9988aba9996"
+}

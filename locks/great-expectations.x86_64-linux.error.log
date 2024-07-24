@@ -1,0 +1,88 @@
+Collecting pip==23.1
+  Using cached pip-23.1-py3-none-any.whl.metadata (4.1 kB)
+Collecting wheel==0.43.0
+  Using cached wheel-0.43.0-py3-none-any.whl.metadata (2.2 kB)
+Using cached pip-23.1-py3-none-any.whl (2.1 MB)
+Using cached wheel-0.43.0-py3-none-any.whl (65 kB)
+Installing collected packages: wheel, pip
+  Attempting uninstall: pip
+    Found existing installation: pip 24.0
+    Uninstalling pip-24.0:
+      Successfully uninstalled pip-24.0
+Successfully installed pip-23.1 wheel-0.43.0
+
+[notice] A new release of pip is available: 23.1 -> 24.1.2
+[notice] To update, run: python -m pip install --upgrade pip
+Collecting great-expectations==0.18.19
+  Using cached great_expectations-0.18.19.tar.gz (32.3 MB)
+  Installing build dependencies: started
+  Installing build dependencies: finished with status 'done'
+  Getting requirements to build wheel: started
+  Getting requirements to build wheel: finished with status 'error'
+  error: subprocess-exited-with-error
+  
+  × Getting requirements to build wheel did not run successfully.
+  │ exit code: 1
+  ╰─> [30 lines of output]
+      <string>:4: DeprecationWarning: pkg_resources is deprecated as an API. See https://setuptools.pypa.io/en/latest/pkg_resources.html
+      Traceback (most recent call last):
+        File "/tmp/tmp.mAi1wPpyzj/tmpfw8i5jnh/.venv/lib/python3.12/site-packages/pip/_vendor/pyproject_hooks/_in_process/_in_process.py", line 353, in <module>
+          main()
+        File "/tmp/tmp.mAi1wPpyzj/tmpfw8i5jnh/.venv/lib/python3.12/site-packages/pip/_vendor/pyproject_hooks/_in_process/_in_process.py", line 335, in main
+          json_out['return_val'] = hook(**hook_input['kwargs'])
+                                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        File "/tmp/tmp.mAi1wPpyzj/tmpfw8i5jnh/.venv/lib/python3.12/site-packages/pip/_vendor/pyproject_hooks/_in_process/_in_process.py", line 118, in get_requires_for_build_wheel
+          return hook(config_settings)
+                 ^^^^^^^^^^^^^^^^^^^^^
+        File "/tmp/tmp.mAi1wPpyzj/pip-build-env-5149z5_0/overlay/lib/python3.12/site-packages/setuptools/build_meta.py", line 327, in get_requires_for_build_wheel
+          return self._get_build_requires(config_settings, requirements=[])
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        File "/tmp/tmp.mAi1wPpyzj/pip-build-env-5149z5_0/overlay/lib/python3.12/site-packages/setuptools/build_meta.py", line 297, in _get_build_requires
+          self.run_setup()
+        File "/tmp/tmp.mAi1wPpyzj/pip-build-env-5149z5_0/overlay/lib/python3.12/site-packages/setuptools/build_meta.py", line 497, in run_setup
+          super().run_setup(setup_script=setup_script)
+        File "/tmp/tmp.mAi1wPpyzj/pip-build-env-5149z5_0/overlay/lib/python3.12/site-packages/setuptools/build_meta.py", line 313, in run_setup
+          exec(code, locals())
+        File "<string>", line 97, in <module>
+        File "/tmp/tmp.mAi1wPpyzj/pip-install-bsjcry2w/great-expectations_3f63cbb23dc345d6bbcfc0ca884fc740/versioneer.py", line 1522, in get_version
+          return get_versions()["version"]
+                 ^^^^^^^^^^^^^^
+        File "/tmp/tmp.mAi1wPpyzj/pip-install-bsjcry2w/great-expectations_3f63cbb23dc345d6bbcfc0ca884fc740/versioneer.py", line 1449, in get_versions
+          cfg = get_config_from_root(root)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^
+        File "/tmp/tmp.mAi1wPpyzj/pip-install-bsjcry2w/great-expectations_3f63cbb23dc345d6bbcfc0ca884fc740/versioneer.py", line 344, in get_config_from_root
+          parser = configparser.SafeConfigParser()
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+      AttributeError: module 'configparser' has no attribute 'SafeConfigParser'. Did you mean: 'RawConfigParser'?
+      [end of output]
+  
+  note: This error originates from a subprocess, and is likely not a problem with pip.
+error: subprocess-exited-with-error
+
+× Getting requirements to build wheel did not run successfully.
+│ exit code: 1
+╰─> See above for output.
+
+note: This error originates from a subprocess, and is likely not a problem with pip.
+WARNING: There was an error checking the latest version of pip.
+Traceback (most recent call last):
+  File "/nix/store/h71zwamfrx3sah2bv18scmm16a3zk6w7-python3.12-fetch-pip-metadata/bin/.fetch_pip_metadata-wrapped", line 9, in <module>
+    sys.exit(fetch_pip_metadata())
+             ^^^^^^^^^^^^^^^^^^^^
+  File "/nix/store/h71zwamfrx3sah2bv18scmm16a3zk6w7-python3.12-fetch-pip-metadata/lib/python3.12/site-packages/fetch_pip_metadata/__init__.py", line 78, in fetch_pip_metadata
+    subprocess.run(
+  File "/nix/store/z7xxy35k7620hs6fn6la5fg2lgklv72l-python3-3.12.4/lib/python3.12/subprocess.py", line 571, in run
+    raise CalledProcessError(retcode, process.args,
+subprocess.CalledProcessError: Command '['/tmp/tmp.mAi1wPpyzj/tmpfw8i5jnh/.venv/bin/pip', 'install', '--dry-run', '--ignore-installed', '--no-binary', 'great-expectations', '--progress-bar', 'off', '--report', '/tmp/tmp.mAi1wPpyzj/tmpfw8i5jnh/report.json', 'great-expectations==0.18.19']' returned non-zero exit status 1.
+Traceback (most recent call last):
+  File "/nix/store/0cbszggq55rkw24sg96ia5d0ak60q995-refresh/bin/refresh", line 40, in <module>
+    lock_data = run_refresh_scripts(refresh_scripts)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/nix/store/0cbszggq55rkw24sg96ia5d0ak60q995-refresh/bin/refresh", line 36, in run_refresh_scripts
+    refresh_scripts[name] = run_refresh_script(value["script"])
+                            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/nix/store/0cbszggq55rkw24sg96ia5d0ak60q995-refresh/bin/refresh", line 22, in run_refresh_script
+    subprocess.run(
+  File "/nix/store/z7xxy35k7620hs6fn6la5fg2lgklv72l-python3-3.12.4/lib/python3.12/subprocess.py", line 571, in run
+    raise CalledProcessError(retcode, process.args,
+subprocess.CalledProcessError: Command '['/nix/store/9pwjpndg544410b364399zi4arnvkin4-script.sh']' returned non-zero exit status 1.

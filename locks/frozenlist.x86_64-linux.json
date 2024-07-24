@@ -1,0 +1,19 @@
+{
+  "fetchPipMetadata": {
+    "sources": {
+      "frozenlist": {
+        "is_direct": false,
+        "sha256": "c037a86e8513059a2613aaba4d817bb90b9d9b6b69aace3ce9c877e8c8ed402b",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/cf/3d/2102257e7acad73efc4a0c306ad3953f68c504c16982bbdfee3ad75d8085/frozenlist-1.4.1.tar.gz",
+        "version": "1.4.1"
+      }
+    },
+    "targets": {
+      "default": {
+        "frozenlist": []
+      }
+    }
+  },
+  "invalidationHash": "deb1ec256980ef33af42f25443b38d34c293cb80436610aff89eac1a9349ec26"
+}

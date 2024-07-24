@@ -1,0 +1,40 @@
+{
+  "fetchPipMetadata": {
+    "sources": {
+      "ml-dtypes": {
+        "is_direct": false,
+        "sha256": "ee9f91d4c4f9959a7e1051c141dc565f39e54435618152219769e24f5e9a4d06",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/30/9d/890e8c9cb556cec121f784fd84089e1e52939ba6eabf5dc62f6435db28d6/ml_dtypes-0.4.0-cp312-cp312-macosx_10_9_universal2.whl",
+        "version": "0.4.0"
+      },
+      "numpy": {
+        "is_direct": false,
+        "sha256": "5daab361be6ddeb299a918a7c0864fa8618af66019138263247af405018b04e1",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/c2/da/3d8debb409bc97045b559f408d2b8cefa6a077a73df14dbf4d8780d976b1/numpy-2.0.1-cp312-cp312-macosx_14_0_arm64.whl",
+        "version": "2.0.1"
+      },
+      "tensorstore": {
+        "is_direct": false,
+        "sha256": "6abde084d6932b4e733df109c1e819a9f7f5ed8e68372a78821c0f3e76a20469",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/47/8b/e38852acdc76853f35ca455b41eb059ee4a417120bd9dc7785e160296b13/tensorstore-0.1.63.tar.gz",
+        "version": "0.1.63"
+      }
+    },
+    "targets": {
+      "default": {
+        "ml-dtypes": [
+          "numpy"
+        ],
+        "numpy": [],
+        "tensorstore": [
+          "ml-dtypes",
+          "numpy"
+        ]
+      }
+    }
+  },
+  "invalidationHash": "8a50b5ab84dd4af70e6f524538a91db115919f5948124f47ba8def19bb7d9f25"
+}

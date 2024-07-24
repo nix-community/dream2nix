@@ -1,0 +1,38 @@
+{
+  "fetchPipMetadata": {
+    "sources": {
+      "llvmlite": {
+        "is_direct": false,
+        "sha256": "35d80d61d0cda2d767f72de99450766250560399edc309da16937b93d3b676e7",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/a2/9c/24139d3712d2d352e300c39c0e00d167472c08b3bd350c3c33d72c88ff8d/llvmlite-0.43.0-cp312-cp312-macosx_11_0_arm64.whl",
+        "version": "0.43.0"
+      },
+      "numba": {
+        "is_direct": false,
+        "sha256": "5df6158e5584eece5fc83294b949fd30b9f1125df7708862205217e068aabf16",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/3c/93/2849300a9184775ba274aba6f82f303343669b0592b7bb0849ea713dabb0/numba-0.60.0.tar.gz",
+        "version": "0.60.0"
+      },
+      "numpy": {
+        "is_direct": false,
+        "sha256": "5daab361be6ddeb299a918a7c0864fa8618af66019138263247af405018b04e1",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/c2/da/3d8debb409bc97045b559f408d2b8cefa6a077a73df14dbf4d8780d976b1/numpy-2.0.1-cp312-cp312-macosx_14_0_arm64.whl",
+        "version": "2.0.1"
+      }
+    },
+    "targets": {
+      "default": {
+        "llvmlite": [],
+        "numba": [
+          "llvmlite",
+          "numpy"
+        ],
+        "numpy": []
+      }
+    }
+  },
+  "invalidationHash": "ec105575261cd8b9d126dd38bdf7eee94532e1a1b08309b9edd6c7b701e09552"
+}

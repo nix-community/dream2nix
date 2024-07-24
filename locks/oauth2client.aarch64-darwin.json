@@ -1,0 +1,79 @@
+{
+  "fetchPipMetadata": {
+    "sources": {
+      "httplib2": {
+        "is_direct": false,
+        "sha256": "14ae0a53c1ba8f3d37e9e27cf37eabb0fb9980f435ba405d546948b009dd64dc",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/a8/6c/d2fbdaaa5959339d53ba38e94c123e4e84b8fbc4b84beb0e70d7c1608486/httplib2-0.22.0-py3-none-any.whl",
+        "version": "0.22.0"
+      },
+      "oauth2client": {
+        "is_direct": false,
+        "sha256": "d486741e451287f69568a4d26d70d9acd73a2bbfa275746c535b4209891cccc6",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/a6/7b/17244b1083e8e604bf154cf9b716aecd6388acd656dd01893d0d244c94d9/oauth2client-4.1.3.tar.gz",
+        "version": "4.1.3"
+      },
+      "pyasn1": {
+        "is_direct": false,
+        "sha256": "cca4bb0f2df5504f02f6f8a775b6e416ff9b0b3b16f7ee80b5a3153d9b804473",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/23/7e/5f50d07d5e70a2addbccd90ac2950f81d1edd0783630651d9268d7f1db49/pyasn1-0.6.0-py2.py3-none-any.whl",
+        "version": "0.6.0"
+      },
+      "pyasn1-modules": {
+        "is_direct": false,
+        "sha256": "be04f15b66c206eed667e0bb5ab27e2b1855ea54a842e5037738099e8ca4ae0b",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/13/68/8906226b15ef38e71dc926c321d2fe99de8048e9098b5dfd38343011c886/pyasn1_modules-0.4.0-py3-none-any.whl",
+        "version": "0.4.0"
+      },
+      "pyparsing": {
+        "is_direct": false,
+        "sha256": "f9db75911801ed778fe61bb643079ff86601aca99fcae6345aa67292038fb742",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/9d/ea/6d76df31432a0e6fdf81681a895f009a4bb47b3c39036db3e1b528191d52/pyparsing-3.1.2-py3-none-any.whl",
+        "version": "3.1.2"
+      },
+      "rsa": {
+        "is_direct": false,
+        "sha256": "90260d9058e514786967344d0ef75fa8727eed8a7d2e43ce9f4bcf1b536174f7",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/49/97/fa78e3d2f65c02c8e1268b9aba606569fe97f6c8f7c2d74394553347c145/rsa-4.9-py3-none-any.whl",
+        "version": "4.9"
+      },
+      "six": {
+        "is_direct": false,
+        "sha256": "8abb2f1d86890a2dfb989f9a77cfcfd3e47c2a354b01111771326f8aa26e0254",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/d9/5a/e7c31adbe875f2abbb91bd84cf2dc52d792b5a01506781dbcf25c91daf11/six-1.16.0-py2.py3-none-any.whl",
+        "version": "1.16.0"
+      }
+    },
+    "targets": {
+      "default": {
+        "httplib2": [
+          "pyparsing"
+        ],
+        "oauth2client": [
+          "httplib2",
+          "pyasn1",
+          "pyasn1-modules",
+          "rsa",
+          "six"
+        ],
+        "pyasn1": [],
+        "pyasn1-modules": [
+          "pyasn1"
+        ],
+        "pyparsing": [],
+        "rsa": [
+          "pyasn1"
+        ],
+        "six": []
+      }
+    }
+  },
+  "invalidationHash": "a31aa12b92110e0cb8fccf7a10f42e6f1790a426342783e7be1648cbba005a24"
+}

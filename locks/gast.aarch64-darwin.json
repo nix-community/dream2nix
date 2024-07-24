@@ -1,0 +1,19 @@
+{
+  "fetchPipMetadata": {
+    "sources": {
+      "gast": {
+        "is_direct": false,
+        "sha256": "88fc5300d32c7ac6ca7b515310862f71e6fdf2c029bbec7c66c0f5dd47b6b1fb",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/3c/14/c566f5ca00c115db7725263408ff952b8ae6d6a4e792ef9c84e77d9af7a1/gast-0.6.0.tar.gz",
+        "version": "0.6.0"
+      }
+    },
+    "targets": {
+      "default": {
+        "gast": []
+      }
+    }
+  },
+  "invalidationHash": "5079bfa0a59df3cb2768c1864e25001401f5706089b5bafa50c06a35dd6b5bc2"
+}

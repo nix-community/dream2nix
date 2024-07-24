@@ -1,0 +1,19 @@
+{
+  "fetchPipMetadata": {
+    "sources": {
+      "pyzmq": {
+        "is_direct": false,
+        "sha256": "dba7d9f2e047dfa2bca3b01f4f84aa5246725203d6284e3790f2ca15fba6b40a",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/c4/9a/0e2ab500fd5a5a41e7d003e4a49faa7a0333db13e54498a3cf749b9eedd0/pyzmq-26.0.3.tar.gz",
+        "version": "26.0.3"
+      }
+    },
+    "targets": {
+      "default": {
+        "pyzmq": []
+      }
+    }
+  },
+  "invalidationHash": "06e259405a966eb5387b7cc84f326d2b6a062482fd3e957b6675fc270feb7f0a"
+}

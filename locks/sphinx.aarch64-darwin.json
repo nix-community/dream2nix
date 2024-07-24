@@ -1,0 +1,202 @@
+{
+  "fetchPipMetadata": {
+    "sources": {
+      "alabaster": {
+        "is_direct": false,
+        "sha256": "b46733c07dce03ae4e150330b975c75737fa60f0a7c591b6c8bf4928a28e2c92",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/32/34/d4e1c02d3bee589efb5dfa17f88ea08bdb3e3eac12bc475462aec52ed223/alabaster-0.7.16-py3-none-any.whl",
+        "version": "0.7.16"
+      },
+      "babel": {
+        "is_direct": false,
+        "sha256": "08706bdad8d0a3413266ab61bd6c34d0c28d6e1e7badf40a2cebe67644e2e1fb",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/27/45/377f7e32a5c93d94cd56542349b34efab5ca3f9e2fd5a68c5e93169aa32d/Babel-2.15.0-py3-none-any.whl",
+        "version": "2.15.0"
+      },
+      "certifi": {
+        "is_direct": false,
+        "sha256": "c198e21b1289c2ab85ee4e67bb4b4ef3ead0892059901a8d5b622f24a1101e90",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/1c/d5/c84e1a17bf61d4df64ca866a1c9a913874b4e9bdc131ec689a0ad013fb36/certifi-2024.7.4-py3-none-any.whl",
+        "version": "2024.7.4"
+      },
+      "charset-normalizer": {
+        "is_direct": false,
+        "sha256": "55086ee1064215781fff39a1af09518bc9255b50d6333f2e4c74ca09fac6a8f6",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/3a/52/9f9d17c3b54dc238de384c4cb5a2ef0e27985b42a0e5cc8e8a31d918d48d/charset_normalizer-3.3.2-cp312-cp312-macosx_11_0_arm64.whl",
+        "version": "3.3.2"
+      },
+      "docutils": {
+        "is_direct": false,
+        "sha256": "dafca5b9e384f0e419294eb4d2ff9fa826435bf15f15b7bd45723e8ad76811b2",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/8f/d7/9322c609343d929e75e7e5e6255e614fcc67572cfd083959cdef3b7aad79/docutils-0.21.2-py3-none-any.whl",
+        "version": "0.21.2"
+      },
+      "idna": {
+        "is_direct": false,
+        "sha256": "82fee1fc78add43492d3a1898bfa6d8a904cc97d8427f683ed8e798d07761aa0",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/e5/3e/741d8c82801c347547f8a2a06aa57dbb1992be9e948df2ea0eda2c8b79e8/idna-3.7-py3-none-any.whl",
+        "version": "3.7"
+      },
+      "imagesize": {
+        "is_direct": false,
+        "sha256": "0d8d18d08f840c19d0ee7ca1fd82490fdc3729b7ac93f49870406ddde8ef8d8b",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/ff/62/85c4c919272577931d407be5ba5d71c20f0b616d31a0befe0ae45bb79abd/imagesize-1.4.1-py2.py3-none-any.whl",
+        "version": "1.4.1"
+      },
+      "jinja2": {
+        "is_direct": false,
+        "sha256": "bc5dd2abb727a5319567b7a813e6a2e7318c39f4f487cfe6c89c6f9c7d25197d",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/31/80/3a54838c3fb461f6fec263ebf3a3a41771bd05190238de3486aae8540c36/jinja2-3.1.4-py3-none-any.whl",
+        "version": "3.1.4"
+      },
+      "markupsafe": {
+        "is_direct": false,
+        "sha256": "8dec4936e9c3100156f8a2dc89c4b88d5c435175ff03413b443469c7c8c5f4d1",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/53/bd/583bf3e4c8d6a321938c13f49d44024dbe5ed63e0a7ba127e454a66da974/MarkupSafe-2.1.5-cp312-cp312-macosx_10_9_universal2.whl",
+        "version": "2.1.5"
+      },
+      "packaging": {
+        "is_direct": false,
+        "sha256": "5b8f2217dbdbd2f7f384c41c628544e6d52f2d0f53c6d0c3ea61aa5d1d7ff124",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/08/aa/cc0199a5f0ad350994d660967a8efb233fe0416e4639146c089643407ce6/packaging-24.1-py3-none-any.whl",
+        "version": "24.1"
+      },
+      "pygments": {
+        "is_direct": false,
+        "sha256": "b8e6aca0523f3ab76fee51799c488e38782ac06eafcf95e7ba832985c8e7b13a",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/f7/3f/01c8b82017c199075f8f788d0d906b9ffbbc5a47dc9918a945e13d5a2bda/pygments-2.18.0-py3-none-any.whl",
+        "version": "2.18.0"
+      },
+      "requests": {
+        "is_direct": false,
+        "sha256": "70761cfe03c773ceb22aa2f671b4757976145175cdfca038c02654d061d6dcc6",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/f9/9b/335f9764261e915ed497fcdeb11df5dfd6f7bf257d4a6a2a686d80da4d54/requests-2.32.3-py3-none-any.whl",
+        "version": "2.32.3"
+      },
+      "snowballstemmer": {
+        "is_direct": false,
+        "sha256": "c8e1716e83cc398ae16824e5572ae04e0d9fc2c6b985fb0f900f5f0c96ecba1a",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/ed/dc/c02e01294f7265e63a7315fe086dd1df7dacb9f840a804da846b96d01b96/snowballstemmer-2.2.0-py2.py3-none-any.whl",
+        "version": "2.2.0"
+      },
+      "sphinx": {
+        "is_direct": false,
+        "sha256": "a4abe5385bf856df094c1e6cadf24a2351b12057be3670b99a12c05a01d209f5",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/35/89/99d9fab99f04a94dc0344494c0f574b6e730994c4f3ce023b03575363472/sphinx-7.4.5.tar.gz",
+        "version": "7.4.5"
+      },
+      "sphinxcontrib-applehelp": {
+        "is_direct": false,
+        "sha256": "cb61eb0ec1b61f349e5cc36b2028e9e7ca765be05e49641c97241274753067b4",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/56/89/fea3fbf6785b388e6cb8a1beaf62f96e80b37311bdeed6e133388a732426/sphinxcontrib_applehelp-1.0.8-py3-none-any.whl",
+        "version": "1.0.8"
+      },
+      "sphinxcontrib-devhelp": {
+        "is_direct": false,
+        "sha256": "6485d09629944511c893fa11355bda18b742b83a2b181f9a009f7e500595c90f",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/a0/52/1049d918d1d1c72857d285c3f0c64c1cbe0be394ce1c93a3d2aa4f39fe3b/sphinxcontrib_devhelp-1.0.6-py3-none-any.whl",
+        "version": "1.0.6"
+      },
+      "sphinxcontrib-htmlhelp": {
+        "is_direct": false,
+        "sha256": "1b9af5a2671a61410a868fce050cab7ca393c218e6205cbc7f590136f207395c",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/a4/b4/6ebbdc57b5b216b400b355f34ef669e9b6b5c31a6ede8cf5ac36f9e8fc0c/sphinxcontrib_htmlhelp-2.0.6-py3-none-any.whl",
+        "version": "2.0.6"
+      },
+      "sphinxcontrib-jsmath": {
+        "is_direct": false,
+        "sha256": "2ec2eaebfb78f3f2078e73666b1415417a116cc848b72e5172e596c871103178",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/c2/42/4c8646762ee83602e3fb3fbe774c2fac12f317deb0b5dbeeedd2d3ba4b77/sphinxcontrib_jsmath-1.0.1-py2.py3-none-any.whl",
+        "version": "1.0.1"
+      },
+      "sphinxcontrib-qthelp": {
+        "is_direct": false,
+        "sha256": "323d6acc4189af76dfe94edd2a27d458902319b60fcca2aeef3b2180c106a75f",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/cf/91/cec9416d27ebe9b8aa83f014a1ac8402c729aed791da67704e10bb2c8f33/sphinxcontrib_qthelp-1.0.8-py3-none-any.whl",
+        "version": "1.0.8"
+      },
+      "sphinxcontrib-serializinghtml": {
+        "is_direct": false,
+        "sha256": "326369b8df80a7d2d8d7f99aa5ac577f51ea51556ed974e7716cfd4fca3f6cb7",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/38/24/228bb903ea87b9e08ab33470e6102402a644127108c7117ac9c00d849f82/sphinxcontrib_serializinghtml-1.1.10-py3-none-any.whl",
+        "version": "1.1.10"
+      },
+      "urllib3": {
+        "is_direct": false,
+        "sha256": "a448b2f64d686155468037e1ace9f2d2199776e17f0a46610480d311f73e3472",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/ca/1c/89ffc63a9605b583d5df2be791a27bc1a42b7c32bab68d3c8f2f73a98cd4/urllib3-2.2.2-py3-none-any.whl",
+        "version": "2.2.2"
+      }
+    },
+    "targets": {
+      "default": {
+        "alabaster": [],
+        "babel": [],
+        "certifi": [],
+        "charset-normalizer": [],
+        "docutils": [],
+        "idna": [],
+        "imagesize": [],
+        "jinja2": [
+          "markupsafe"
+        ],
+        "markupsafe": [],
+        "packaging": [],
+        "pygments": [],
+        "requests": [
+          "certifi",
+          "charset-normalizer",
+          "idna",
+          "urllib3"
+        ],
+        "snowballstemmer": [],
+        "sphinx": [
+          "alabaster",
+          "babel",
+          "docutils",
+          "imagesize",
+          "jinja2",
+          "packaging",
+          "pygments",
+          "requests",
+          "snowballstemmer",
+          "sphinxcontrib-applehelp",
+          "sphinxcontrib-devhelp",
+          "sphinxcontrib-htmlhelp",
+          "sphinxcontrib-jsmath",
+          "sphinxcontrib-qthelp",
+          "sphinxcontrib-serializinghtml"
+        ],
+        "sphinxcontrib-applehelp": [],
+        "sphinxcontrib-devhelp": [],
+        "sphinxcontrib-htmlhelp": [],
+        "sphinxcontrib-jsmath": [],
+        "sphinxcontrib-qthelp": [],
+        "sphinxcontrib-serializinghtml": [],
+        "urllib3": []
+      }
+    }
+  },
+  "invalidationHash": "edbde27599b0c5be5f5f4a02178f49a78bc288a2afc03d533fe4df4da0e21b04"
+}

@@ -1,0 +1,38 @@
+{
+  "fetchPipMetadata": {
+    "sources": {
+      "imageio": {
+        "is_direct": false,
+        "sha256": "5c0c0ee8faa018a1c42f649b90395dd4d3bb6187c09053a0cd6f1fdd51bbff5e",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/da/bd/d79206fe42f88d9a99ee952420eebc5368bcd062e17b484a21928462d98e/imageio-2.34.2.tar.gz",
+        "version": "2.34.2"
+      },
+      "numpy": {
+        "is_direct": false,
+        "sha256": "5daab361be6ddeb299a918a7c0864fa8618af66019138263247af405018b04e1",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/c2/da/3d8debb409bc97045b559f408d2b8cefa6a077a73df14dbf4d8780d976b1/numpy-2.0.1-cp312-cp312-macosx_14_0_arm64.whl",
+        "version": "2.0.1"
+      },
+      "pillow": {
+        "is_direct": false,
+        "sha256": "866b6942a92f56300012f5fbac71f2d610312ee65e22f1aa2609e491284e5597",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/e7/cf/5c558a0f247e0bf9cec92bff9b46ae6474dd736f6d906315e60e4075f737/pillow-10.4.0-cp312-cp312-macosx_11_0_arm64.whl",
+        "version": "10.4.0"
+      }
+    },
+    "targets": {
+      "default": {
+        "imageio": [
+          "numpy",
+          "pillow"
+        ],
+        "numpy": [],
+        "pillow": []
+      }
+    }
+  },
+  "invalidationHash": "9d19367d43b113244324efd161cb4415db94fd3798975e2e7089e08bd400ac8b"
+}

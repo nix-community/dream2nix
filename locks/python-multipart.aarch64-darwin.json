@@ -1,0 +1,19 @@
+{
+  "fetchPipMetadata": {
+    "sources": {
+      "python-multipart": {
+        "is_direct": false,
+        "sha256": "03f54688c663f1b7977105f021043b0793151e4cb1c1a9d4a11fc13d622c4026",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/5c/0f/9c55ac6c84c0336e22a26fa84ca6c51d58d7ac3a2d78b0dfa8748826c883/python_multipart-0.0.9.tar.gz",
+        "version": "0.0.9"
+      }
+    },
+    "targets": {
+      "default": {
+        "python-multipart": []
+      }
+    }
+  },
+  "invalidationHash": "a4f9f2710d25915306de8a9e8ea1cdbc1f7fa954cb8e0fcc58fc31905581b94e"
+}

@@ -1,0 +1,19 @@
+{
+  "fetchPipMetadata": {
+    "sources": {
+      "decorator": {
+        "is_direct": false,
+        "sha256": "637996211036b6385ef91435e4fae22989472f9d571faba8927ba8253acbc330",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/66/0c/8d907af351aa16b42caae42f9d6aa37b900c67308052d10fdce809f8d952/decorator-5.1.1.tar.gz",
+        "version": "5.1.1"
+      }
+    },
+    "targets": {
+      "default": {
+        "decorator": []
+      }
+    }
+  },
+  "invalidationHash": "4410218faf80aab1a18e5f9958765effcb4187abe0b586c73449e0242ab2f582"
+}

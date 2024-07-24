@@ -1,0 +1,29 @@
+{
+  "fetchPipMetadata": {
+    "sources": {
+      "google-crc32c": {
+        "is_direct": false,
+        "sha256": "89284716bc6a5a415d4eaa11b1726d2d60a0cd12aadf5439828353662ede9dd7",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/d3/a5/4bb58448fffd36ede39684044df93a396c13d1ea3516f585767f9f960352/google-crc32c-1.5.0.tar.gz",
+        "version": "1.5.0"
+      },
+      "google-resumable-media": {
+        "is_direct": false,
+        "sha256": "eae451a7b2e2cdbaaa0fd2eb00cc8a1ee5e95e16b55597359cbc3d27d7d90e33",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/d6/3d/d51e8c691d24e08cbf5b1924a4f950c492d44f7e3ccbacf362f1de04ce2b/google-resumable-media-2.7.1.tar.gz",
+        "version": "2.7.1"
+      }
+    },
+    "targets": {
+      "default": {
+        "google-crc32c": [],
+        "google-resumable-media": [
+          "google-crc32c"
+        ]
+      }
+    }
+  },
+  "invalidationHash": "d51270ee421f8e64c3d1ea98a87d8466b848c216066b815603cd5bc2761c31c5"
+}

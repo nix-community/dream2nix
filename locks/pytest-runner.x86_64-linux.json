@@ -1,0 +1,19 @@
+{
+  "fetchPipMetadata": {
+    "sources": {
+      "pytest-runner": {
+        "is_direct": false,
+        "sha256": "70d4739585a7008f37bf4933c013fdb327b8878a5a69fcbb3316c88882f0f49b",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/d7/7d/60976d532519c3a0b41e06a59ad60949e2be1af937cf02738fec91bfd808/pytest-runner-6.0.1.tar.gz",
+        "version": "6.0.1"
+      }
+    },
+    "targets": {
+      "default": {
+        "pytest-runner": []
+      }
+    }
+  },
+  "invalidationHash": "7a9d9586dd935d6ad956e93bbb4a6f3a98932c343c06c58160de87d1310f8946"
+}

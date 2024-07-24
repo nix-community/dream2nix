@@ -1,0 +1,38 @@
+{
+  "fetchPipMetadata": {
+    "sources": {
+      "certifi": {
+        "is_direct": false,
+        "sha256": "c198e21b1289c2ab85ee4e67bb4b4ef3ead0892059901a8d5b622f24a1101e90",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/1c/d5/c84e1a17bf61d4df64ca866a1c9a913874b4e9bdc131ec689a0ad013fb36/certifi-2024.7.4-py3-none-any.whl",
+        "version": "2024.7.4"
+      },
+      "sentry-sdk": {
+        "is_direct": false,
+        "sha256": "545fcc6e36c335faa6d6cda84669b6e17025f31efbf3b2211ec14efe008b75d1",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/34/d8/ec3e43d4ce31e4f4cb6adb7210950362d71ce87a96c89934c4ac94f7110f/sentry_sdk-2.10.0.tar.gz",
+        "version": "2.10.0"
+      },
+      "urllib3": {
+        "is_direct": false,
+        "sha256": "a448b2f64d686155468037e1ace9f2d2199776e17f0a46610480d311f73e3472",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/ca/1c/89ffc63a9605b583d5df2be791a27bc1a42b7c32bab68d3c8f2f73a98cd4/urllib3-2.2.2-py3-none-any.whl",
+        "version": "2.2.2"
+      }
+    },
+    "targets": {
+      "default": {
+        "certifi": [],
+        "sentry-sdk": [
+          "certifi",
+          "urllib3"
+        ],
+        "urllib3": []
+      }
+    }
+  },
+  "invalidationHash": "4edc83d237168469e276d53025c1816fe18f548f9f7632d697f2ca6bc9721025"
+}

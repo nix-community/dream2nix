@@ -1,0 +1,19 @@
+{
+  "fetchPipMetadata": {
+    "sources": {
+      "types-python-dateutil": {
+        "is_direct": false,
+        "sha256": "5d2f2e240b86905e40944dd787db6da9263f0deabef1076ddaed797351ec0202",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/61/c5/c3a4d72ffa8efc2e78f7897b1c69ec760553246b67d3ce8c4431fac5d4e3/types-python-dateutil-2.9.0.20240316.tar.gz",
+        "version": "2.9.0.20240316"
+      }
+    },
+    "targets": {
+      "default": {
+        "types-python-dateutil": []
+      }
+    }
+  },
+  "invalidationHash": "1a19eb4bc7d932387916d2584620a581e690f0800c9ac02d4470c0268efa5637"
+}

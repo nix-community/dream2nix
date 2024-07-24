@@ -1,0 +1,19 @@
+{
+  "fetchPipMetadata": {
+    "sources": {
+      "isort": {
+        "is_direct": false,
+        "sha256": "48fdfcb9face5d58a4f6dde2e72a1fb8dcaf8ab26f95ab49fab84c2ddefb0109",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/87/f9/c1eb8635a24e87ade2efce21e3ce8cd6b8630bb685ddc9cdaca1349b2eb5/isort-5.13.2.tar.gz",
+        "version": "5.13.2"
+      }
+    },
+    "targets": {
+      "default": {
+        "isort": []
+      }
+    }
+  },
+  "invalidationHash": "23a1617bb3977be77ae5219f2112718ec1b1ad08e6b4ece97af66b15b8a9efc2"
+}

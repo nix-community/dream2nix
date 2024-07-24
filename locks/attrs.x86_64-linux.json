@@ -1,0 +1,19 @@
+{
+  "fetchPipMetadata": {
+    "sources": {
+      "attrs": {
+        "is_direct": false,
+        "sha256": "935dc3b529c262f6cf76e50877d35a4bd3c1de194fd41f47a2b7ae8f19971f30",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/e3/fc/f800d51204003fa8ae392c4e8278f256206e7a919b708eef054f5f4b650d/attrs-23.2.0.tar.gz",
+        "version": "23.2.0"
+      }
+    },
+    "targets": {
+      "default": {
+        "attrs": []
+      }
+    }
+  },
+  "invalidationHash": "58fb11d9564ad1ef55f55b93db12e545322fc9cea8454101ec3ff0016e9a0fb9"
+}

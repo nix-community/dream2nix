@@ -1,0 +1,19 @@
+{
+  "fetchPipMetadata": {
+    "sources": {
+      "networkx": {
+        "is_direct": false,
+        "sha256": "0c127d8b2f4865f59ae9cb8aafcd60b5c70f3241ebd66f7defad7c4ab90126c9",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/04/e6/b164f94c869d6b2c605b5128b7b0cfe912795a87fc90e78533920001f3ec/networkx-3.3.tar.gz",
+        "version": "3.3"
+      }
+    },
+    "targets": {
+      "default": {
+        "networkx": []
+      }
+    }
+  },
+  "invalidationHash": "1097013c6a49fcd754fef4fafcb39446c3e3386f09ce4eda0035fa2fce82cdfd"
+}

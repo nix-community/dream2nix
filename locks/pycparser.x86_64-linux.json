@@ -1,0 +1,19 @@
+{
+  "fetchPipMetadata": {
+    "sources": {
+      "pycparser": {
+        "is_direct": false,
+        "sha256": "491c8be9c040f5390f5bf44a5b07752bd07f56edf992381b05c701439eec10f6",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/1d/b2/31537cf4b1ca988837256c910a668b553fceb8f069bedc4b1c826024b52c/pycparser-2.22.tar.gz",
+        "version": "2.22"
+      }
+    },
+    "targets": {
+      "default": {
+        "pycparser": []
+      }
+    }
+  },
+  "invalidationHash": "dde00f805634df5a12f79dc053c24bc89023ed767066aef09443d4e20b1bcf16"
+}

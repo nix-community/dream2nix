@@ -1,0 +1,19 @@
+{
+  "fetchPipMetadata": {
+    "sources": {
+      "tensorflow-estimator": {
+        "is_direct": false,
+        "sha256": "aedf21eec7fb2dc91150fc91a1ce12bc44dbb72278a08b58e79ff87c9e28f153",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/b6/c8/2f823c8958d5342eafc6dd3e922f0cc4fcf8c2e0460284cc462dae3b60a0/tensorflow_estimator-2.15.0-py2.py3-none-any.whl",
+        "version": "2.15.0"
+      }
+    },
+    "targets": {
+      "default": {
+        "tensorflow-estimator": []
+      }
+    }
+  },
+  "invalidationHash": "9c0959b8e0408786349c8847bc807c7948384cb0b770393743961dc91959a1a9"
+}

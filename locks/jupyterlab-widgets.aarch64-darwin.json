@@ -1,0 +1,19 @@
+{
+  "fetchPipMetadata": {
+    "sources": {
+      "jupyterlab-widgets": {
+        "is_direct": false,
+        "sha256": "dd5ac679593c969af29c9bed054c24f26842baa51352114736756bc035deee27",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/2b/c9/413a845bfd3c7997b97c552a12fd54acccae891f53a13226bf42bdfd48b3/jupyterlab_widgets-3.0.11.tar.gz",
+        "version": "3.0.11"
+      }
+    },
+    "targets": {
+      "default": {
+        "jupyterlab-widgets": []
+      }
+    }
+  },
+  "invalidationHash": "4189f648da308edc75783596ed19be7bc1d8a42788cb60b4d07c7fc6bc3f6747"
+}

@@ -1,0 +1,19 @@
+{
+  "fetchPipMetadata": {
+    "sources": {
+      "makefun": {
+        "is_direct": false,
+        "sha256": "9f9b9904e7c397759374a88f4c57781fbab2a458dec78df4b3ee6272cd9fb010",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/a9/97/cf52b3ae6c9ab4e8f7786f483abdc7da0f02785ea78f835a0b2e75f868a7/makefun-1.15.4.tar.gz",
+        "version": "1.15.4"
+      }
+    },
+    "targets": {
+      "default": {
+        "makefun": []
+      }
+    }
+  },
+  "invalidationHash": "81801ab91eb72d92ad9571de562593dae909ad84984abd389db1fecfdcf6c657"
+}

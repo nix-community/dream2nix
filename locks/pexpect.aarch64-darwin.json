@@ -1,0 +1,29 @@
+{
+  "fetchPipMetadata": {
+    "sources": {
+      "pexpect": {
+        "is_direct": false,
+        "sha256": "ee7d41123f3c9911050ea2c2dac107568dc43b2d3b0c7557a33212c398ead30f",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/42/92/cc564bf6381ff43ce1f4d06852fc19a2f11d180f23dc32d9588bee2f149d/pexpect-4.9.0.tar.gz",
+        "version": "4.9.0"
+      },
+      "ptyprocess": {
+        "is_direct": false,
+        "sha256": "4b41f3967fce3af57cc7e94b888626c18bf37a083e3651ca8feeb66d492fef35",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/22/a6/858897256d0deac81a172289110f31629fc4cee19b6f01283303e18c8db3/ptyprocess-0.7.0-py2.py3-none-any.whl",
+        "version": "0.7.0"
+      }
+    },
+    "targets": {
+      "default": {
+        "pexpect": [
+          "ptyprocess"
+        ],
+        "ptyprocess": []
+      }
+    }
+  },
+  "invalidationHash": "7c3cb1ce81e10198e1b22d241d387d94e9be896c1b6fd142fb1e0038aaa664e8"
+}

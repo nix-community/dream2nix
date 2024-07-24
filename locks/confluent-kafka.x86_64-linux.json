@@ -1,0 +1,19 @@
+{
+  "fetchPipMetadata": {
+    "sources": {
+      "confluent-kafka": {
+        "is_direct": false,
+        "sha256": "551cabaade717bb56ec13eb860ce439bedbcf1c97f4a4aa26957572ed1bfa74f",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/94/51/2e8f4048edbcde0346047dcd5228985ddcd0ef4d518f878321c07cc1b39c/confluent-kafka-2.5.0.tar.gz",
+        "version": "2.5.0"
+      }
+    },
+    "targets": {
+      "default": {
+        "confluent-kafka": []
+      }
+    }
+  },
+  "invalidationHash": "22b235c4229975f69134bcb0faffc376944e9f1c12f3dc6422d96a527922608c"
+}

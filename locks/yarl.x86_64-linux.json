@@ -1,0 +1,38 @@
+{
+  "fetchPipMetadata": {
+    "sources": {
+      "idna": {
+        "is_direct": false,
+        "sha256": "82fee1fc78add43492d3a1898bfa6d8a904cc97d8427f683ed8e798d07761aa0",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/e5/3e/741d8c82801c347547f8a2a06aa57dbb1992be9e948df2ea0eda2c8b79e8/idna-3.7-py3-none-any.whl",
+        "version": "3.7"
+      },
+      "multidict": {
+        "is_direct": false,
+        "sha256": "d84a5c3a5f7ce6db1f999fb9438f686bc2e09d38143f2d93d8406ed2dd6b9226",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/24/1f/af976383b0b772dd351210af5b60ff9927e3abb2f4a103e93da19a957da0/multidict-6.0.5-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl",
+        "version": "6.0.5"
+      },
+      "yarl": {
+        "is_direct": false,
+        "sha256": "566db86717cf8080b99b58b083b773a908ae40f06681e87e589a976faf8246bf",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/e0/ad/bedcdccbcbf91363fd425a948994f3340924145c2bc8ccb296f4a1e52c28/yarl-1.9.4.tar.gz",
+        "version": "1.9.4"
+      }
+    },
+    "targets": {
+      "default": {
+        "idna": [],
+        "multidict": [],
+        "yarl": [
+          "idna",
+          "multidict"
+        ]
+      }
+    }
+  },
+  "invalidationHash": "98a84337aaf6677423c774213d1c300a5484b34ad7befbdc13620ecc88e9a897"
+}

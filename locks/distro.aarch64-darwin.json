@@ -1,0 +1,19 @@
+{
+  "fetchPipMetadata": {
+    "sources": {
+      "distro": {
+        "is_direct": false,
+        "sha256": "2fa77c6fd8940f116ee1d6b94a2f90b13b5ea8d019b98bc8bafdcabcdd9bdbed",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/fc/f8/98eea607f65de6527f8a2e8885fc8015d3e6f5775df186e443e0964a11c3/distro-1.9.0.tar.gz",
+        "version": "1.9.0"
+      }
+    },
+    "targets": {
+      "default": {
+        "distro": []
+      }
+    }
+  },
+  "invalidationHash": "3a1ac621b7c4a32923f979a0c7b9eefa4f5424b9dbaf33c289e6ed1d415538d4"
+}

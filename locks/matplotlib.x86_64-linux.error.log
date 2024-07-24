@@ -1,0 +1,233 @@
+Collecting pip==23.1
+  Using cached pip-23.1-py3-none-any.whl.metadata (4.1 kB)
+Collecting wheel==0.43.0
+  Using cached wheel-0.43.0-py3-none-any.whl.metadata (2.2 kB)
+Using cached pip-23.1-py3-none-any.whl (2.1 MB)
+Using cached wheel-0.43.0-py3-none-any.whl (65 kB)
+Installing collected packages: wheel, pip
+  Attempting uninstall: pip
+    Found existing installation: pip 24.0
+    Uninstalling pip-24.0:
+      Successfully uninstalled pip-24.0
+Successfully installed pip-23.1 wheel-0.43.0
+
+[notice] A new release of pip is available: 23.1 -> 24.1.2
+[notice] To update, run: python -m pip install --upgrade pip
+Collecting matplotlib==3.9.1
+  Using cached matplotlib-3.9.1.tar.gz (36.1 MB)
+  Installing build dependencies: started
+  Installing build dependencies: finished with status 'done'
+  Getting requirements to build wheel: started
+  Getting requirements to build wheel: finished with status 'done'
+  Installing backend dependencies: started
+  Installing backend dependencies: finished with status 'done'
+  Preparing metadata (pyproject.toml): started
+  Preparing metadata (pyproject.toml): finished with status 'error'
+  error: subprocess-exited-with-error
+  
+  × Preparing metadata (pyproject.toml) did not run successfully.
+  │ exit code: 1
+  ╰─> [171 lines of output]
+      + meson setup /tmp/tmp.FXd2P2wto4/pip-install-_6bh6pi_/matplotlib_2fa96d049b704f3e8d63f0ac32a99875 /tmp/tmp.FXd2P2wto4/pip-install-_6bh6pi_/matplotlib_2fa96d049b704f3e8d63f0ac32a99875/.mesonpy-wob66k3l -Dbuildtype=release -Db_ndebug=if-release -Db_vscrt=md --cross-file=/nix/store/k29i1knpmzk83p1v7ic1qh02x94cszkz-cross-file-numpy.conf --native-file=/tmp/tmp.FXd2P2wto4/pip-install-_6bh6pi_/matplotlib_2fa96d049b704f3e8d63f0ac32a99875/.mesonpy-wob66k3l/meson-python-native-file.ini
+      The Meson build system
+      Version: 1.5.0
+      Source dir: /tmp/tmp.FXd2P2wto4/pip-install-_6bh6pi_/matplotlib_2fa96d049b704f3e8d63f0ac32a99875
+      Build dir: /tmp/tmp.FXd2P2wto4/pip-install-_6bh6pi_/matplotlib_2fa96d049b704f3e8d63f0ac32a99875/.mesonpy-wob66k3l
+      Build type: cross build
+      Program python3 found: YES (/nix/store/z7xxy35k7620hs6fn6la5fg2lgklv72l-python3-3.12.4/bin/python3)
+      Project name: matplotlib
+      Project version: 3.9.1
+      C compiler for the host machine: cc (gcc 13.3.0 "gcc (GCC) 13.3.0")
+      C linker for the host machine: cc ld.bfd 2.42
+      C++ compiler for the host machine: c++ (gcc 13.3.0 "g++ (GCC) 13.3.0")
+      C++ linker for the host machine: c++ ld.bfd 2.42
+      C compiler for the build machine: cc (gcc 13.3.0 "gcc (GCC) 13.3.0")
+      C linker for the build machine: cc ld.bfd 2.42
+      C++ compiler for the build machine: c++ (gcc 13.3.0 "g++ (GCC) 13.3.0")
+      C++ linker for the build machine: c++ ld.bfd 2.42
+      Build machine cpu family: x86_64
+      Build machine cpu: x86_64
+      Host machine cpu family: x86_64
+      Host machine cpu: x86_64
+      Target machine cpu family: x86_64
+      Target machine cpu: x86_64
+      Program python3 found: YES (/tmp/tmp.FXd2P2wto4/tmpi7yh9v9f/.venv/bin/python)
+      Found pkg-config: NO
+      Run-time dependency python found: YES 3.12
+      pybind11-config found: YES (/tmp/tmp.FXd2P2wto4/pip-build-env-pelrhy38/overlay/bin/pybind11-config) 2.13.1
+      Run-time dependency pybind11 found: YES 2.13.1
+      Downloading freetype-2.6.1 source from https://download.savannah.gnu.org/releases/freetype/freetype-old/freetype-2.6.1.tar.gz
+      
+      Executing subproject freetype-2.6.1
+      
+      freetype-2.6.1| Project name: freetype2
+      freetype-2.6.1| Project version: 2.6.1
+      freetype-2.6.1| C compiler for the host machine: cc (gcc 13.3.0 "gcc (GCC) 13.3.0")
+      freetype-2.6.1| C linker for the host machine: cc ld.bfd 2.42
+      freetype-2.6.1| C compiler for the build machine: cc (gcc 13.3.0 "gcc (GCC) 13.3.0")
+      freetype-2.6.1| C linker for the build machine: cc ld.bfd 2.42
+      freetype-2.6.1| Has header "unistd.h" : YES
+      freetype-2.6.1| Has header "fcntl.h" : YES
+      freetype-2.6.1| Has header "stdint.h" : YES
+      freetype-2.6.1| Configuring ftconfig.h using configuration
+      freetype-2.6.1| Configuring ftoption.h using configuration
+      freetype-2.6.1| Build targets in project: 3
+      freetype-2.6.1| Subproject freetype-2.6.1 finished.
+      
+      Downloading qhull source from https://github.com/qhull/qhull/archive/v8.0.2/qhull-8.0.2.tar.gz
+      Downloading file of unknown size.
+      
+      Executing subproject qhull
+      
+      qhull| Project name: qhull
+      qhull| Project version: 8.0.2
+      qhull| C compiler for the host machine: cc (gcc 13.3.0 "gcc (GCC) 13.3.0")
+      qhull| C linker for the host machine: cc ld.bfd 2.42
+      qhull| C compiler for the build machine: cc (gcc 13.3.0 "gcc (GCC) 13.3.0")
+      qhull| C linker for the build machine: cc ld.bfd 2.42
+      qhull| Build targets in project: 4
+      qhull| Subproject qhull finished.
+      
+      Run-time dependency dl found: YES
+      Configuring _version.py using configuration
+      Program /tmp/tmp.FXd2P2wto4/pip-install-_6bh6pi_/matplotlib_2fa96d049b704f3e8d63f0ac32a99875/tools/generate_matplotlibrc.py found: YES (/tmp/tmp.FXd2P2wto4/pip-install-_6bh6pi_/matplotlib_2fa96d049b704f3e8d63f0ac32a99875/tools/generate_matplotlibrc.py)
+      Build targets in project: 14
+      
+      matplotlib 3.9.1
+      
+        Subprojects
+          freetype-2.6.1: YES
+          qhull         : YES
+      
+        User defined options
+          Cross files   : /nix/store/k29i1knpmzk83p1v7ic1qh02x94cszkz-cross-file-numpy.conf
+          Native files  : /tmp/tmp.FXd2P2wto4/pip-install-_6bh6pi_/matplotlib_2fa96d049b704f3e8d63f0ac32a99875/.mesonpy-wob66k3l/meson-python-native-file.ini
+          buildtype     : release
+          b_ndebug      : if-release
+          b_vscrt       : md
+      
+      WARNING: Cross file does not specify strip binary, result will not be stripped.
+      Found ninja-1.12.1 at /nix/store/v65nk6ayyy8qc4k95sbmbfy724gg6h7r-ninja-1.12.1/bin/ninja
+      WARNING: Cross file does not specify strip binary, result will not be stripped.
+      WARNING: Cross file does not specify strip binary, result will not be stripped.
+      + /nix/store/v65nk6ayyy8qc4k95sbmbfy724gg6h7r-ninja-1.12.1/bin/ninja
+      [1/101] Compiling C object subprojects/freetype-2.6.1/libfreetype.a.p/src_base_ftbdf.c.o
+      [2/101] Compiling C object subprojects/freetype-2.6.1/libfreetype.a.p/src_base_ftcid.c.o
+      [3/101] Compiling C object subprojects/freetype-2.6.1/libfreetype.a.p/src_base_ftfntfmt.c.o
+      [4/101] Compiling C object subprojects/freetype-2.6.1/libfreetype.a.p/src_base_ftbbox.c.o
+      [5/101] Compiling C object subprojects/freetype-2.6.1/libfreetype.a.p/src_base_ftbitmap.c.o
+      [6/101] Compiling C object subprojects/freetype-2.6.1/libfreetype.a.p/src_base_ftfstype.c.o
+      [7/101] Compiling C object subprojects/freetype-2.6.1/libfreetype.a.p/src_base_ftgxval.c.o
+      [8/101] Compiling C object subprojects/freetype-2.6.1/libfreetype.a.p/src_base_ftgasp.c.o
+      [9/101] Compiling C object subprojects/freetype-2.6.1/libfreetype.a.p/src_base_ftglyph.c.o
+      [10/101] Compiling C object subprojects/freetype-2.6.1/libfreetype.a.p/src_base_ftlcdfil.c.o
+      [11/101] Compiling C object subprojects/freetype-2.6.1/libfreetype.a.p/src_base_ftinit.c.o
+      [12/101] Compiling C object subprojects/freetype-2.6.1/libfreetype.a.p/src_base_ftmm.c.o
+      [13/101] Compiling C++ object extern/ttconv/libttconv.a.p/ttutil.cpp.o
+      [14/101] Compiling C++ object extern/agg24-svn/libagg.a.p/src_agg_trans_affine.cpp.o
+      [15/101] Compiling C object subprojects/freetype-2.6.1/libfreetype.a.p/src_base_ftotval.c.o
+      [16/101] Compiling C++ object extern/agg24-svn/libagg.a.p/src_agg_vcgen_dash.cpp.o
+      [17/101] Compiling C object subprojects/freetype-2.6.1/libfreetype.a.p/src_base_ftpatent.c.o
+      [18/101] Compiling C++ object extern/agg24-svn/libagg.a.p/src_agg_bezier_arc.cpp.o
+      [19/101] Compiling C++ object extern/agg24-svn/libagg.a.p/src_agg_image_filters.cpp.o
+      [20/101] Compiling C object subprojects/freetype-2.6.1/libfreetype.a.p/src_base_ftsystem.c.o
+      [21/101] Compiling C object subprojects/freetype-2.6.1/libfreetype.a.p/src_base_ftpfr.c.o
+      [22/101] Compiling C++ object extern/agg24-svn/libagg.a.p/src_agg_vcgen_stroke.cpp.o
+      [23/101] Compiling C++ object extern/agg24-svn/libagg.a.p/src_agg_vpgen_segmentator.cpp.o
+      [24/101] Compiling C object subprojects/freetype-2.6.1/libfreetype.a.p/src_base_ftsynth.c.o
+      [25/101] Compiling C++ object extern/agg24-svn/libagg.a.p/src_agg_curves.cpp.o
+      [26/101] Compiling C object subprojects/freetype-2.6.1/libfreetype.a.p/src_base_fttype1.c.o
+      [27/101] Compiling C object subprojects/freetype-2.6.1/libfreetype.a.p/src_base_ftwinfnt.c.o
+      [28/101] Compiling C++ object extern/agg24-svn/libagg.a.p/src_agg_vcgen_contour.cpp.o
+      [29/101] Compiling C object subprojects/freetype-2.6.1/libfreetype.a.p/src_bzip2_ftbzip2.c.o
+      [30/101] Compiling C object subprojects/freetype-2.6.1/libfreetype.a.p/src_autofit_autofit.c.o
+      [31/101] Compiling C object subprojects/freetype-2.6.1/libfreetype.a.p/src_lzw_ftlzw.c.o
+      [32/101] Compiling C object subprojects/freetype-2.6.1/libfreetype.a.p/src_base_ftstroke.c.o
+      [33/101] Compiling C object subprojects/freetype-2.6.1/libfreetype.a.p/src_cid_type1cid.c.o
+      [34/101] Compiling C object subprojects/freetype-2.6.1/libfreetype.a.p/src_base_ftbase.c.o
+      [35/101] Compiling C object subprojects/freetype-2.6.1/libfreetype.a.p/src_pcf_pcf.c.o
+      [36/101] Compiling C object subprojects/freetype-2.6.1/libfreetype.a.p/src_smooth_smooth.c.o
+      [37/101] Compiling C object subprojects/freetype-2.6.1/libfreetype.a.p/src_gzip_ftgzip.c.o
+      [38/101] Compiling C object subprojects/freetype-2.6.1/libfreetype.a.p/src_cache_ftcache.c.o
+      [39/101] Compiling C object subprojects/freetype-2.6.1/libfreetype.a.p/src_bdf_bdf.c.o
+      [40/101] Compiling C object subprojects/freetype-2.6.1/libfreetype.a.p/src_raster_raster.c.o
+      [41/101] Compiling C object subprojects/freetype-2.6.1/libfreetype.a.p/src_pshinter_pshinter.c.o
+      [42/101] Compiling C object subprojects/freetype-2.6.1/libfreetype.a.p/src_base_ftdebug.c.o
+      [43/101] Compiling C object subprojects/freetype-2.6.1/libfreetype.a.p/src_psnames_psnames.c.o
+      [44/101] Compiling C object subprojects/freetype-2.6.1/libfreetype.a.p/src_psaux_psaux.c.o
+      [45/101] Compiling C object subprojects/freetype-2.6.1/libfreetype.a.p/src_pfr_pfr.c.o
+      [46/101] Compiling C object subprojects/qhull-8.0.2/libqhull_r.a.p/src_libqhull_r_mem_r.c.o
+      [47/101] Compiling C object subprojects/freetype-2.6.1/libfreetype.a.p/src_type42_type42.c.o
+      [48/101] Compiling C object subprojects/freetype-2.6.1/libfreetype.a.p/src_winfonts_winfnt.c.o
+      [49/101] Compiling C object subprojects/qhull-8.0.2/libqhull_r.a.p/src_libqhull_r_geom_r.c.o
+      [50/101] Compiling C object subprojects/freetype-2.6.1/libfreetype.a.p/src_type1_type1.c.o
+      [51/101] Compiling C object subprojects/qhull-8.0.2/libqhull_r.a.p/src_libqhull_r_poly_r.c.o
+      [52/101] Compiling C object subprojects/qhull-8.0.2/libqhull_r.a.p/src_libqhull_r_random_r.c.o
+      [53/101] Compiling C object subprojects/qhull-8.0.2/libqhull_r.a.p/src_libqhull_r_usermem_r.c.o
+      [54/101] Compiling C object subprojects/qhull-8.0.2/libqhull_r.a.p/src_libqhull_r_qset_r.c.o
+      [55/101] Compiling C++ object extern/ttconv/libttconv.a.p/pprdrv_tt2.cpp.o
+      [56/101] Linking static target extern/agg24-svn/libagg.a
+      FAILED: extern/agg24-svn/libagg.a
+      rm -f extern/agg24-svn/libagg.a && ar csrDT extern/agg24-svn/libagg.a extern/agg24-svn/libagg.a.p/src_agg_bezier_arc.cpp.o extern/agg24-svn/libagg.a.p/src_agg_curves.cpp.o extern/agg24-svn/libagg.a.p/src_agg_image_filters.cpp.o extern/agg24-svn/libagg.a.p/src_agg_trans_affine.cpp.o extern/agg24-svn/libagg.a.p/src_agg_vcgen_contour.cpp.o extern/agg24-svn/libagg.a.p/src_agg_vcgen_dash.cpp.o extern/agg24-svn/libagg.a.p/src_agg_vcgen_stroke.cpp.o extern/agg24-svn/libagg.a.p/src_agg_vpgen_segmentator.cpp.o
+      /bin/sh: line 1: rm: command not found
+      [57/101] Compiling C object subprojects/qhull-8.0.2/libqhull_r.a.p/src_libqhull_r_userprintf_rbox_r.c.o
+      [58/101] Compiling C object subprojects/qhull-8.0.2/libqhull_r.a.p/src_libqhull_r_userprintf_r.c.o
+      [59/101] Compiling C object subprojects/qhull-8.0.2/libqhull_r.a.p/src_libqhull_r_global_r.c.o
+      [60/101] Compiling C object subprojects/qhull-8.0.2/libqhull_r.a.p/src_libqhull_r_libqhull_r.c.o
+      [61/101] Compiling C object subprojects/qhull-8.0.2/libqhull_r.a.p/src_libqhull_r_geom2_r.c.o
+      [62/101] Compiling C object subprojects/qhull-8.0.2/libqhull_r.a.p/src_libqhull_r_rboxlib_r.c.o
+      [63/101] Compiling C++ object extern/ttconv/libttconv.a.p/pprdrv_tt.cpp.o
+      [64/101] Compiling C object subprojects/freetype-2.6.1/libfreetype.a.p/src_sfnt_sfnt.c.o
+      [65/101] Compiling C object subprojects/qhull-8.0.2/libqhull_r.a.p/src_libqhull_r_user_r.c.o
+      [66/101] Compiling C object subprojects/freetype-2.6.1/libfreetype.a.p/src_cff_cff.c.o
+      [67/101] Compiling C object subprojects/qhull-8.0.2/libqhull_r.a.p/src_libqhull_r_stat_r.c.o
+      [68/101] Compiling C object subprojects/qhull-8.0.2/libqhull_r.a.p/src_libqhull_r_io_r.c.o
+      [69/101] Compiling C object subprojects/qhull-8.0.2/libqhull_r.a.p/src_libqhull_r_poly2_r.c.o
+      [70/101] Compiling C object subprojects/freetype-2.6.1/libfreetype.a.p/src_truetype_truetype.c.o
+      In file included from ../subprojects/freetype-2.6.1/src/truetype/truetype.c:25:
+      ../subprojects/freetype-2.6.1/src/truetype/ttgload.c: In function ‘load_truetype_glyph’:
+      ../subprojects/freetype-2.6.1/src/truetype/ttgload.c:1455:22: warning: storing the address of local variable ‘inc_stream’ in ‘loader_405(D)->stream’ [-Wdangling-pointer=]
+       1455 |       loader->stream = &inc_stream;
+            |       ~~~~~~~~~~~~~~~^~~~~~~~~~~~~
+      ../subprojects/freetype-2.6.1/src/truetype/ttgload.c:1392:21: note: ‘inc_stream’ declared here
+       1392 |     FT_StreamRec    inc_stream;
+            |                     ^~~~~~~~~~
+      ../subprojects/freetype-2.6.1/src/truetype/ttgload.c:1379:35: note: ‘loader’ declared here
+       1379 |   load_truetype_glyph( TT_Loader  loader,
+            |                        ~~~~~~~~~~~^~~~~~
+      [71/101] Compiling C object subprojects/qhull-8.0.2/libqhull_r.a.p/src_libqhull_r_merge_r.c.o
+      [72/101] Compiling C++ object src/_backend_agg.cpython-312-x86_64-linux-gnu.so.p/py_converters.cpp.o
+      [73/101] Compiling C++ object src/_backend_agg.cpython-312-x86_64-linux-gnu.so.p/_backend_agg.cpp.o
+      ninja: build stopped: subcommand failed.
+      [end of output]
+  
+  note: This error originates from a subprocess, and is likely not a problem with pip.
+error: metadata-generation-failed
+
+× Encountered error while generating package metadata.
+╰─> See above for output.
+
+note: This is an issue with the package mentioned above, not pip.
+hint: See above for details.
+WARNING: There was an error checking the latest version of pip.
+Traceback (most recent call last):
+  File "/nix/store/h71zwamfrx3sah2bv18scmm16a3zk6w7-python3.12-fetch-pip-metadata/bin/.fetch_pip_metadata-wrapped", line 9, in <module>
+    sys.exit(fetch_pip_metadata())
+             ^^^^^^^^^^^^^^^^^^^^
+  File "/nix/store/h71zwamfrx3sah2bv18scmm16a3zk6w7-python3.12-fetch-pip-metadata/lib/python3.12/site-packages/fetch_pip_metadata/__init__.py", line 78, in fetch_pip_metadata
+    subprocess.run(
+  File "/nix/store/z7xxy35k7620hs6fn6la5fg2lgklv72l-python3-3.12.4/lib/python3.12/subprocess.py", line 571, in run
+    raise CalledProcessError(retcode, process.args,
+subprocess.CalledProcessError: Command '['/tmp/tmp.FXd2P2wto4/tmpi7yh9v9f/.venv/bin/pip', 'install', '--dry-run', '--ignore-installed', '--no-binary', 'matplotlib', '--progress-bar', 'off', '--report', '/tmp/tmp.FXd2P2wto4/tmpi7yh9v9f/report.json', 'matplotlib==3.9.1']' returned non-zero exit status 1.
+Traceback (most recent call last):
+  File "/nix/store/szyqn62frrsjmqv3g6rbln08j6w3wk7h-refresh/bin/refresh", line 40, in <module>
+    lock_data = run_refresh_scripts(refresh_scripts)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/nix/store/szyqn62frrsjmqv3g6rbln08j6w3wk7h-refresh/bin/refresh", line 36, in run_refresh_scripts
+    refresh_scripts[name] = run_refresh_script(value["script"])
+                            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/nix/store/szyqn62frrsjmqv3g6rbln08j6w3wk7h-refresh/bin/refresh", line 22, in run_refresh_script
+    subprocess.run(
+  File "/nix/store/z7xxy35k7620hs6fn6la5fg2lgklv72l-python3-3.12.4/lib/python3.12/subprocess.py", line 571, in run
+    raise CalledProcessError(retcode, process.args,
+subprocess.CalledProcessError: Command '['/nix/store/vrz14m0gbl8xk5da5x2g1fjc1gsjs0ak-script.sh']' returned non-zero exit status 1.

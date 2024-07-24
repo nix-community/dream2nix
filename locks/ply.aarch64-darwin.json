@@ -1,0 +1,19 @@
+{
+  "fetchPipMetadata": {
+    "sources": {
+      "ply": {
+        "is_direct": false,
+        "sha256": "00c7c1aaa88358b9c765b6d3000c6eec0ba42abca5351b095321aef446081da3",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/e5/69/882ee5c9d017149285cab114ebeab373308ef0f874fcdac9beb90e0ac4da/ply-3.11.tar.gz",
+        "version": "3.11"
+      }
+    },
+    "targets": {
+      "default": {
+        "ply": []
+      }
+    }
+  },
+  "invalidationHash": "70a29424a48e60d002b38f40f5b89e810ebdbdc7404f2bbc6db58becb6b09641"
+}

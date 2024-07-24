@@ -1,0 +1,29 @@
+{
+  "fetchPipMetadata": {
+    "sources": {
+      "attrs": {
+        "is_direct": false,
+        "sha256": "99b87a485a5820b23b879f04c2305b44b951b502fd64be915879d77a7e8fc6f1",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/e0/44/827b2a91a5816512fcaf3cc4ebc465ccd5d598c45cefa6703fcf4a79018f/attrs-23.2.0-py3-none-any.whl",
+        "version": "23.2.0"
+      },
+      "cattrs": {
+        "is_direct": false,
+        "sha256": "a934090d95abaa9e911dac357e3a8699e0b4b14f8529bcc7d2b1ad9d51672b9f",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/1e/57/c6ccd22658c4bcb3beb3f1c262e1f170cf136e913b122763d0ddd328d284/cattrs-23.2.3.tar.gz",
+        "version": "23.2.3"
+      }
+    },
+    "targets": {
+      "default": {
+        "attrs": [],
+        "cattrs": [
+          "attrs"
+        ]
+      }
+    }
+  },
+  "invalidationHash": "d37364eb06942083222954399c033e09b617398ae4913b66b1d3ea30773858b5"
+}

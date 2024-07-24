@@ -1,0 +1,19 @@
+{
+  "fetchPipMetadata": {
+    "sources": {
+      "oauthlib": {
+        "is_direct": false,
+        "sha256": "9859c40929662bec5d64f34d01c99e093149682a3f38915dc0655d5a633dd918",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/6d/fa/fbf4001037904031639e6bfbfc02badfc7e12f137a8afa254df6c4c8a670/oauthlib-3.2.2.tar.gz",
+        "version": "3.2.2"
+      }
+    },
+    "targets": {
+      "default": {
+        "oauthlib": []
+      }
+    }
+  },
+  "invalidationHash": "c708e03a7caf95a04d5094cf89c7d38cf0aead3a204ad0802ec0c0337c349a15"
+}

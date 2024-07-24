@@ -1,0 +1,29 @@
+{
+  "fetchPipMetadata": {
+    "sources": {
+      "comm": {
+        "is_direct": false,
+        "sha256": "3fd7a84065306e07bea1773df6eb8282de51ba82f77c72f9c85716ab11fe980e",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/e9/a8/fb783cb0abe2b5fded9f55e5703015cdf1c9c85b3669087c538dd15a6a86/comm-0.2.2.tar.gz",
+        "version": "0.2.2"
+      },
+      "traitlets": {
+        "is_direct": false,
+        "sha256": "b74e89e397b1ed28cc831db7aea759ba6640cb3de13090ca145426688ff1ac4f",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/00/c0/8f5d070730d7836adc9c9b6408dec68c6ced86b304a9b26a14df072a6e8c/traitlets-5.14.3-py3-none-any.whl",
+        "version": "5.14.3"
+      }
+    },
+    "targets": {
+      "default": {
+        "comm": [
+          "traitlets"
+        ],
+        "traitlets": []
+      }
+    }
+  },
+  "invalidationHash": "9d0d31686eb59f9977eda681854c7cf893ee239461ac1d16dc2ec0104b1af21b"
+}

@@ -1,0 +1,19 @@
+{
+  "fetchPipMetadata": {
+    "sources": {
+      "pkginfo": {
+        "is_direct": false,
+        "sha256": "2e0dca1cf4c8e39644eed32408ea9966ee15e0d324c62ba899a393b3c6b467aa",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/4f/a1/f00755330cb34bc19b1ba744b9880c51a9b1ed8526039354736d5f4dfb0d/pkginfo-1.11.1.tar.gz",
+        "version": "1.11.1"
+      }
+    },
+    "targets": {
+      "default": {
+        "pkginfo": []
+      }
+    }
+  },
+  "invalidationHash": "0806d1eb9b8720a7b178a9e4dffef43ba70470e7769ae5c1aa15c0ea30f68739"
+}

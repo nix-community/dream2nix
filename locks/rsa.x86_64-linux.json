@@ -1,0 +1,29 @@
+{
+  "fetchPipMetadata": {
+    "sources": {
+      "pyasn1": {
+        "is_direct": false,
+        "sha256": "cca4bb0f2df5504f02f6f8a775b6e416ff9b0b3b16f7ee80b5a3153d9b804473",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/23/7e/5f50d07d5e70a2addbccd90ac2950f81d1edd0783630651d9268d7f1db49/pyasn1-0.6.0-py2.py3-none-any.whl",
+        "version": "0.6.0"
+      },
+      "rsa": {
+        "is_direct": false,
+        "sha256": "e38464a49c6c85d7f1351b0126661487a7e0a14a50f1675ec50eb34d4f20ef21",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/aa/65/7d973b89c4d2351d7fb232c2e452547ddfa243e93131e7cfa766da627b52/rsa-4.9.tar.gz",
+        "version": "4.9"
+      }
+    },
+    "targets": {
+      "default": {
+        "pyasn1": [],
+        "rsa": [
+          "pyasn1"
+        ]
+      }
+    }
+  },
+  "invalidationHash": "3dc589a7c7aadfd817cdafaeb94f23765ee20c90f3ee38a12134352ffa3986e3"
+}

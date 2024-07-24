@@ -1,0 +1,202 @@
+{
+  "fetchPipMetadata": {
+    "sources": {
+      "asn1crypto": {
+        "is_direct": false,
+        "sha256": "db4e40728b728508912cbb3d44f19ce188f218e9eba635821bb4b68564f8fd67",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/c9/7f/09065fd9e27da0eda08b4d6897f1c13535066174cc023af248fc2a8d5e5a/asn1crypto-1.5.1-py2.py3-none-any.whl",
+        "version": "1.5.1"
+      },
+      "beautifulsoup4": {
+        "is_direct": false,
+        "sha256": "b80878c9f40111313e55da8ba20bdba06d8fa3969fc68304167741bbf9e082ed",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/b1/fe/e8c672695b37eecc5cbf43e1d0638d88d66ba3a44c4d321c796f4e59167f/beautifulsoup4-4.12.3-py3-none-any.whl",
+        "version": "4.12.3"
+      },
+      "boto3": {
+        "is_direct": false,
+        "sha256": "7ec568fb19bce82a70be51f08fddac1ef927ca3fb0896cbb34303a012ba228d8",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/86/e2/62f3763092e06e9341521854982f0fc05ecaef4016d7c88b73ebd4693727/boto3-1.34.146-py3-none-any.whl",
+        "version": "1.34.146"
+      },
+      "botocore": {
+        "is_direct": false,
+        "sha256": "3fd4782362bd29c192704ebf859c5c8c5189ad05719e391eefe23088434427ae",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/83/fb/c9ccf2381051176f27cdde8008db1fba18796536efa33b7e9b341bc2d27c/botocore-1.34.146-py3-none-any.whl",
+        "version": "1.34.146"
+      },
+      "certifi": {
+        "is_direct": false,
+        "sha256": "c198e21b1289c2ab85ee4e67bb4b4ef3ead0892059901a8d5b622f24a1101e90",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/1c/d5/c84e1a17bf61d4df64ca866a1c9a913874b4e9bdc131ec689a0ad013fb36/certifi-2024.7.4-py3-none-any.whl",
+        "version": "2024.7.4"
+      },
+      "charset-normalizer": {
+        "is_direct": false,
+        "sha256": "55086ee1064215781fff39a1af09518bc9255b50d6333f2e4c74ca09fac6a8f6",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/3a/52/9f9d17c3b54dc238de384c4cb5a2ef0e27985b42a0e5cc8e8a31d918d48d/charset_normalizer-3.3.2-cp312-cp312-macosx_11_0_arm64.whl",
+        "version": "3.3.2"
+      },
+      "idna": {
+        "is_direct": false,
+        "sha256": "82fee1fc78add43492d3a1898bfa6d8a904cc97d8427f683ed8e798d07761aa0",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/e5/3e/741d8c82801c347547f8a2a06aa57dbb1992be9e948df2ea0eda2c8b79e8/idna-3.7-py3-none-any.whl",
+        "version": "3.7"
+      },
+      "jmespath": {
+        "is_direct": false,
+        "sha256": "02e2e4cc71b5bcab88332eebf907519190dd9e6e82107fa7f83b1003a6252980",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/31/b4/b9b800c45527aadd64d5b442f9b932b00648617eb5d63d2c7a6587b7cafc/jmespath-1.0.1-py3-none-any.whl",
+        "version": "1.0.1"
+      },
+      "lxml": {
+        "is_direct": false,
+        "sha256": "7429e7faa1a60cad26ae4227f4dd0459efde239e494c7312624ce228e04f6391",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/26/36/6e00905cb4de2d014f4a62df58f0e82d262b5461245d951a6e7442b0222a/lxml-5.2.2-cp312-cp312-macosx_10_9_universal2.whl",
+        "version": "5.2.2"
+      },
+      "packaging": {
+        "is_direct": false,
+        "sha256": "5b8f2217dbdbd2f7f384c41c628544e6d52f2d0f53c6d0c3ea61aa5d1d7ff124",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/08/aa/cc0199a5f0ad350994d660967a8efb233fe0416e4639146c089643407ce6/packaging-24.1-py3-none-any.whl",
+        "version": "24.1"
+      },
+      "python-dateutil": {
+        "is_direct": false,
+        "sha256": "a8b2bc7bffae282281c8140a97d3aa9c14da0b136dfe83f850eea9a5f7470427",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/ec/57/56b9bcc3c9c6a792fcbaf139543cee77261f3651ca9da0c93f5c1221264b/python_dateutil-2.9.0.post0-py2.py3-none-any.whl",
+        "version": "2.9.0.post0"
+      },
+      "pytz": {
+        "is_direct": false,
+        "sha256": "328171f4e3623139da4983451950b28e95ac706e13f3f2630a879749e7a8b319",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/9c/3d/a121f284241f08268b21359bd425f7d4825cffc5ac5cd0e1b3d82ffd2b10/pytz-2024.1-py2.py3-none-any.whl",
+        "version": "2024.1"
+      },
+      "redshift-connector": {
+        "is_direct": false,
+        "sha256": "2bd9caf506f17078c241867cafaeaad3c92ad51d98a42570d2a778c8cc41241e",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/e7/a0/ccd6f16fa0817ba29d70753911c47431ab78383343dbaea644214f088c05/redshift_connector-2.1.2-py3-none-any.whl",
+        "version": "2.1.2"
+      },
+      "requests": {
+        "is_direct": false,
+        "sha256": "70761cfe03c773ceb22aa2f671b4757976145175cdfca038c02654d061d6dcc6",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/f9/9b/335f9764261e915ed497fcdeb11df5dfd6f7bf257d4a6a2a686d80da4d54/requests-2.32.3-py3-none-any.whl",
+        "version": "2.32.3"
+      },
+      "s3transfer": {
+        "is_direct": false,
+        "sha256": "eca1c20de70a39daee580aef4986996620f365c4e0fda6a86100231d62f1bf69",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/3c/4a/b221409913760d26cf4498b7b1741d510c82d3ad38381984a3ddc135ec66/s3transfer-0.10.2-py3-none-any.whl",
+        "version": "0.10.2"
+      },
+      "scramp": {
+        "is_direct": false,
+        "sha256": "50e37c464fc67f37994e35bee4151e3d8f9320e9c204fca83a5d313c121bbbe7",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/d9/9f/8b2f2749ccfbe4fcef08650896ac47ed919ff25b7ac57b7a1ae7da16c8c3/scramp-1.4.5-py3-none-any.whl",
+        "version": "1.4.5"
+      },
+      "setuptools": {
+        "is_direct": false,
+        "sha256": "33874fdc59b3188304b2e7c80d9029097ea31627180896fb549c578ceb8a0855",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/51/a0/ee460cc54e68afcf33190d198299c9579a5eafeadef0016ae8563237ccb6/setuptools-71.1.0-py3-none-any.whl",
+        "version": "71.1.0"
+      },
+      "six": {
+        "is_direct": false,
+        "sha256": "8abb2f1d86890a2dfb989f9a77cfcfd3e47c2a354b01111771326f8aa26e0254",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/d9/5a/e7c31adbe875f2abbb91bd84cf2dc52d792b5a01506781dbcf25c91daf11/six-1.16.0-py2.py3-none-any.whl",
+        "version": "1.16.0"
+      },
+      "soupsieve": {
+        "is_direct": false,
+        "sha256": "eaa337ff55a1579b6549dc679565eac1e3d000563bcb1c8ab0d0fefbc0c2cdc7",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/4c/f3/038b302fdfbe3be7da016777069f26ceefe11a681055ea1f7817546508e3/soupsieve-2.5-py3-none-any.whl",
+        "version": "2.5"
+      },
+      "urllib3": {
+        "is_direct": false,
+        "sha256": "a448b2f64d686155468037e1ace9f2d2199776e17f0a46610480d311f73e3472",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/ca/1c/89ffc63a9605b583d5df2be791a27bc1a42b7c32bab68d3c8f2f73a98cd4/urllib3-2.2.2-py3-none-any.whl",
+        "version": "2.2.2"
+      }
+    },
+    "targets": {
+      "default": {
+        "asn1crypto": [],
+        "beautifulsoup4": [
+          "soupsieve"
+        ],
+        "boto3": [
+          "botocore",
+          "jmespath",
+          "s3transfer"
+        ],
+        "botocore": [
+          "jmespath",
+          "python-dateutil",
+          "urllib3"
+        ],
+        "certifi": [],
+        "charset-normalizer": [],
+        "idna": [],
+        "jmespath": [],
+        "lxml": [],
+        "packaging": [],
+        "python-dateutil": [
+          "six"
+        ],
+        "pytz": [],
+        "redshift-connector": [
+          "beautifulsoup4",
+          "boto3",
+          "botocore",
+          "lxml",
+          "packaging",
+          "pytz",
+          "requests",
+          "scramp",
+          "setuptools"
+        ],
+        "requests": [
+          "certifi",
+          "charset-normalizer",
+          "idna",
+          "urllib3"
+        ],
+        "s3transfer": [
+          "botocore"
+        ],
+        "scramp": [
+          "asn1crypto"
+        ],
+        "setuptools": [],
+        "six": [],
+        "soupsieve": [],
+        "urllib3": []
+      }
+    }
+  },
+  "invalidationHash": "2fe138a0150a9917ae9ae5573c3ccfd197d3b38891ee694493e737a0edb4561f"
+}

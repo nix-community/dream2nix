@@ -1,0 +1,19 @@
+{
+  "fetchPipMetadata": {
+    "sources": {
+      "xlsxwriter": {
+        "is_direct": false,
+        "sha256": "9977d0c661a72866a61f9f7a809e25ebbb0fb7036baa3b9fe74afcfca6b3cb8c",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/a6/c3/b36fa44a0610a0f65d2e65ba6a262cbe2554b819f1449731971f7c16ea3c/XlsxWriter-3.2.0.tar.gz",
+        "version": "3.2.0"
+      }
+    },
+    "targets": {
+      "default": {
+        "xlsxwriter": []
+      }
+    }
+  },
+  "invalidationHash": "5c64f646ba9519b709d285c0c365e748efc00583eb05e4070c2ddf46bf5faac8"
+}

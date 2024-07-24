@@ -1,0 +1,29 @@
+{
+  "fetchPipMetadata": {
+    "sources": {
+      "googleapis-common-protos": {
+        "is_direct": false,
+        "sha256": "27c5abdffc4911f28101e635de1533fb4cfd2c37fbaa9174587c799fac90aa87",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/0b/1a/41723ae380fa9c561cbe7b61c4eef9091d5fe95486465ccfc84845877331/googleapis-common-protos-1.63.2.tar.gz",
+        "version": "1.63.2"
+      },
+      "protobuf": {
+        "is_direct": false,
+        "sha256": "a109916aaac42bff84702fb5187f3edadbc7c97fc2c99c5ff81dd15dcce0d1e5",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/75/44/6ae304790fad936bb4cf09907a05d669b7600458a02b6c960fdaaeeab06e/protobuf-5.27.2-cp38-abi3-macosx_10_9_universal2.whl",
+        "version": "5.27.2"
+      }
+    },
+    "targets": {
+      "default": {
+        "googleapis-common-protos": [
+          "protobuf"
+        ],
+        "protobuf": []
+      }
+    }
+  },
+  "invalidationHash": "c564547ec6cc3cbfffb7570bbd694589564ebe0a4291d1572bd1301fa65cdf60"
+}

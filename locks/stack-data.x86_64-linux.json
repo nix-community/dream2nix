@@ -1,0 +1,57 @@
+{
+  "fetchPipMetadata": {
+    "sources": {
+      "asttokens": {
+        "is_direct": false,
+        "sha256": "051ed49c3dcae8913ea7cd08e46a606dba30b79993209636c4875bc1d637bc24",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/45/86/4736ac618d82a20d87d2f92ae19441ebc7ac9e7a581d7e58bbe79233b24a/asttokens-2.4.1-py2.py3-none-any.whl",
+        "version": "2.4.1"
+      },
+      "executing": {
+        "is_direct": false,
+        "sha256": "eac49ca94516ccc753f9fb5ce82603156e590b27525a8bc32cce8ae302eb61bc",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/80/03/6ea8b1b2a5ab40a7a60dc464d3daa7aa546e0a74d74a9f8ff551ea7905db/executing-2.0.1-py2.py3-none-any.whl",
+        "version": "2.0.1"
+      },
+      "pure-eval": {
+        "is_direct": false,
+        "sha256": "1db8e35b67b3d218d818ae653e27f06c3aa420901fa7b081ca98cbedc874e0d0",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/8e/37/efad0257dc6e593a18957422533ff0f87ede7c9c6ea010a2177d738fb82f/pure_eval-0.2.3-py3-none-any.whl",
+        "version": "0.2.3"
+      },
+      "six": {
+        "is_direct": false,
+        "sha256": "8abb2f1d86890a2dfb989f9a77cfcfd3e47c2a354b01111771326f8aa26e0254",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/d9/5a/e7c31adbe875f2abbb91bd84cf2dc52d792b5a01506781dbcf25c91daf11/six-1.16.0-py2.py3-none-any.whl",
+        "version": "1.16.0"
+      },
+      "stack-data": {
+        "is_direct": false,
+        "sha256": "836a778de4fec4dcd1dcd89ed8abff8a221f58308462e1c4aa2a3cf30148f0b9",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/28/e3/55dcc2cfbc3ca9c29519eb6884dd1415ecb53b0e934862d3559ddcb7e20b/stack_data-0.6.3.tar.gz",
+        "version": "0.6.3"
+      }
+    },
+    "targets": {
+      "default": {
+        "asttokens": [
+          "six"
+        ],
+        "executing": [],
+        "pure-eval": [],
+        "six": [],
+        "stack-data": [
+          "asttokens",
+          "executing",
+          "pure-eval"
+        ]
+      }
+    }
+  },
+  "invalidationHash": "e1cb92b5f11375516fa2db3f6fc98d9a36a0ec75a1ef8555cc9cca8757e7a9aa"
+}

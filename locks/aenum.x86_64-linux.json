@@ -1,0 +1,19 @@
+{
+  "fetchPipMetadata": {
+    "sources": {
+      "aenum": {
+        "is_direct": false,
+        "sha256": "8cbd76cd18c4f870ff39b24284d3ea028fbe8731a58df3aa581e434c575b9559",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/d0/f8/33e75863394f42e429bb553e05fda7c59763f0fd6848de847a25b3fbccf6/aenum-3.1.15.tar.gz",
+        "version": "3.1.15"
+      }
+    },
+    "targets": {
+      "default": {
+        "aenum": []
+      }
+    }
+  },
+  "invalidationHash": "9363650032249e4623d49bad10c6afbe42561ed181bbef0e11bde6fa68f2ebfe"
+}

@@ -1,0 +1,29 @@
+{
+  "fetchPipMetadata": {
+    "sources": {
+      "gitdb": {
+        "is_direct": false,
+        "sha256": "bf5421126136d6d0af55bc1e7c1af1c397a34f5b7bd79e776cd3e89785c2b04b",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/19/0d/bbb5b5ee188dec84647a4664f3e11b06ade2bde568dbd489d9d64adef8ed/gitdb-4.0.11.tar.gz",
+        "version": "4.0.11"
+      },
+      "smmap": {
+        "is_direct": false,
+        "sha256": "e6d8668fa5f93e706934a62d7b4db19c8d9eb8cf2adbb75ef1b675aa332b69da",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/a7/a5/10f97f73544edcdef54409f1d839f6049a0d79df68adbc1ceb24d1aaca42/smmap-5.0.1-py3-none-any.whl",
+        "version": "5.0.1"
+      }
+    },
+    "targets": {
+      "default": {
+        "gitdb": [
+          "smmap"
+        ],
+        "smmap": []
+      }
+    }
+  },
+  "invalidationHash": "5660613572de602d8c6925e87970f59bbdc76d2fe681e048823c011cc547c262"
+}

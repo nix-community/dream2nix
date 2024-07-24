@@ -1,0 +1,19 @@
+{
+  "fetchPipMetadata": {
+    "sources": {
+      "tensorflow-io-gcs-filesystem": {
+        "is_direct": false,
+        "sha256": "fe8dcc6d222258a080ac3dfcaaaa347325ce36a7a046277f6b3e19abc1efb3c5",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/43/9b/be27588352d7bd971696874db92d370f578715c17c0ccb27e4b13e16751e/tensorflow_io_gcs_filesystem-0.37.1-cp312-cp312-macosx_12_0_arm64.whl",
+        "version": "0.37.1"
+      }
+    },
+    "targets": {
+      "default": {
+        "tensorflow-io-gcs-filesystem": []
+      }
+    }
+  },
+  "invalidationHash": "021f6646cbd889f9f320967e26908921cf08fbd515608ee435f56b49b1a59ca0"
+}

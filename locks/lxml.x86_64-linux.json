@@ -1,0 +1,19 @@
+{
+  "fetchPipMetadata": {
+    "sources": {
+      "lxml": {
+        "is_direct": false,
+        "sha256": "bb2dc4898180bea79863d5487e5f9c7c34297414bad54bcd0f0852aee9cfdb87",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/63/f7/ffbb6d2eb67b80a45b8a0834baa5557a14a5ffce0979439e7cd7f0c4055b/lxml-5.2.2.tar.gz",
+        "version": "5.2.2"
+      }
+    },
+    "targets": {
+      "default": {
+        "lxml": []
+      }
+    }
+  },
+  "invalidationHash": "4f4175d468f6ac062cb50081518a351409fa5da04542c8e3bb592e12247bf140"
+}

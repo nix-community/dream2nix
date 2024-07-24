@@ -1,0 +1,39 @@
+{
+  "fetchPipMetadata": {
+    "sources": {
+      "faker": {
+        "is_direct": false,
+        "sha256": "0f60978314973de02c00474c2ae899785a42b2cf4f41b7987e93c132a2b8a4a9",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/e9/95/f6d8c93a2b0307489ea41e64c2c764f6a93a9e6f78550cbc0d133c672eb1/Faker-26.0.0.tar.gz",
+        "version": "26.0.0"
+      },
+      "python-dateutil": {
+        "is_direct": false,
+        "sha256": "a8b2bc7bffae282281c8140a97d3aa9c14da0b136dfe83f850eea9a5f7470427",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/ec/57/56b9bcc3c9c6a792fcbaf139543cee77261f3651ca9da0c93f5c1221264b/python_dateutil-2.9.0.post0-py2.py3-none-any.whl",
+        "version": "2.9.0.post0"
+      },
+      "six": {
+        "is_direct": false,
+        "sha256": "8abb2f1d86890a2dfb989f9a77cfcfd3e47c2a354b01111771326f8aa26e0254",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/d9/5a/e7c31adbe875f2abbb91bd84cf2dc52d792b5a01506781dbcf25c91daf11/six-1.16.0-py2.py3-none-any.whl",
+        "version": "1.16.0"
+      }
+    },
+    "targets": {
+      "default": {
+        "faker": [
+          "python-dateutil"
+        ],
+        "python-dateutil": [
+          "six"
+        ],
+        "six": []
+      }
+    }
+  },
+  "invalidationHash": "2cfd81c7612d1fb5a1fe816f56fdaae418e9fb08ad55644e9db8a75a1974bc9c"
+}

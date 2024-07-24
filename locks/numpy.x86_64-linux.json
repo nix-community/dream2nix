@@ -1,0 +1,19 @@
+{
+  "fetchPipMetadata": {
+    "sources": {
+      "numpy": {
+        "is_direct": false,
+        "sha256": "485b87235796410c3519a699cfe1faab097e509e90ebb05dcd098db2ae87e7b3",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/1c/8a/0db635b225d2aa2984e405dc14bd2b0c324a0c312ea1bc9d283f2b83b038/numpy-2.0.1.tar.gz",
+        "version": "2.0.1"
+      }
+    },
+    "targets": {
+      "default": {
+        "numpy": []
+      }
+    }
+  },
+  "invalidationHash": "6be330d6b1bd89a25c9a5dbf7a771714f0c382d731ea0506addd0d2a062bed4f"
+}

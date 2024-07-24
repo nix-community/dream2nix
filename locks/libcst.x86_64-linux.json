@@ -1,0 +1,29 @@
+{
+  "fetchPipMetadata": {
+    "sources": {
+      "libcst": {
+        "is_direct": false,
+        "sha256": "449e0b16604f054fa7f27c3ffe86ea7ef6c409836fe68fe4e752a1894175db00",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/e4/bd/ff41d7a8efc4f60a61d903c3f9823565006f44f2b8b11c99701f552b0851/libcst-1.4.0.tar.gz",
+        "version": "1.4.0"
+      },
+      "pyyaml": {
+        "is_direct": false,
+        "sha256": "6c22bec3fbe2524cde73d7ada88f6566758a8f7227bfbf93a408a9d86bcc12a0",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/b4/33/720548182ffa8344418126017aa1d4ab4aeec9a2275f04ce3f3573d8ace8/PyYAML-6.0.1-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl",
+        "version": "6.0.1"
+      }
+    },
+    "targets": {
+      "default": {
+        "libcst": [
+          "pyyaml"
+        ],
+        "pyyaml": []
+      }
+    }
+  },
+  "invalidationHash": "4254f08092964e1988fa416537db6581255fcb5dfb054ecfdc87fde0353ecd0a"
+}

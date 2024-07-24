@@ -1,0 +1,29 @@
+{
+  "fetchPipMetadata": {
+    "sources": {
+      "deprecated": {
+        "is_direct": false,
+        "sha256": "e5323eb936458dccc2582dc6f9c322c852a775a27065ff2b0c4970b9d53d01b3",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/92/14/1e41f504a246fc224d2ac264c227975427a85caf37c3979979edb9b1b232/Deprecated-1.2.14.tar.gz",
+        "version": "1.2.14"
+      },
+      "wrapt": {
+        "is_direct": false,
+        "sha256": "98b5e1f498a8ca1858a1cdbffb023bfd954da4e3fa2c0cb5853d40014557248b",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/62/62/30ca2405de6a20448ee557ab2cd61ab9c5900be7cbd18a2639db595f0b98/wrapt-1.16.0-cp312-cp312-manylinux_2_5_x86_64.manylinux1_x86_64.manylinux_2_17_x86_64.manylinux2014_x86_64.whl",
+        "version": "1.16.0"
+      }
+    },
+    "targets": {
+      "default": {
+        "deprecated": [
+          "wrapt"
+        ],
+        "wrapt": []
+      }
+    }
+  },
+  "invalidationHash": "bd2cf803f73def961a02a73c469f1df33ebfc361ce8f002129dc973ef2f37e5d"
+}

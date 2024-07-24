@@ -1,0 +1,50 @@
+{
+  "fetchPipMetadata": {
+    "sources": {
+      "googleapis-common-protos": {
+        "is_direct": false,
+        "sha256": "27a2499c7e8aff199665b22741997e485eccc8645aa9176c7c988e6fae507945",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/02/48/87422ff1bddcae677fb6f58c97f5cfc613304a5e8ce2c3662760199c0a84/googleapis_common_protos-1.63.2-py2.py3-none-any.whl",
+        "version": "1.63.2"
+      },
+      "grpc-google-iam-v1": {
+        "is_direct": false,
+        "sha256": "3ff4b2fd9d990965e410965253c0da6f66205d5a8291c4c31c6ebecca18a9001",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/63/41/f01bf46bac4034b4750575fe87c80c5a43a8912847307955e22f2125b60c/grpc-google-iam-v1-0.13.1.tar.gz",
+        "version": "0.13.1"
+      },
+      "grpcio": {
+        "is_direct": false,
+        "sha256": "aaf3c54419a28d45bd1681372029f40e5bfb58e5265e3882eaf21e4a5f81a119",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/ab/95/15e4bbdbbb0c1e52e758786d4d020f733e9fc5fd10cf1a17379636e576de/grpcio-1.65.1-cp312-cp312-macosx_10_9_universal2.whl",
+        "version": "1.65.1"
+      },
+      "protobuf": {
+        "is_direct": false,
+        "sha256": "a109916aaac42bff84702fb5187f3edadbc7c97fc2c99c5ff81dd15dcce0d1e5",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/75/44/6ae304790fad936bb4cf09907a05d669b7600458a02b6c960fdaaeeab06e/protobuf-5.27.2-cp38-abi3-macosx_10_9_universal2.whl",
+        "version": "5.27.2"
+      }
+    },
+    "targets": {
+      "default": {
+        "googleapis-common-protos": [
+          "grpcio",
+          "protobuf"
+        ],
+        "grpc-google-iam-v1": [
+          "googleapis-common-protos",
+          "grpcio",
+          "protobuf"
+        ],
+        "grpcio": [],
+        "protobuf": []
+      }
+    }
+  },
+  "invalidationHash": "cc436b1baab3aaf2e145fc3b6aa61c2a5ae6d88b04eaed6db5f5cbd5bf7420fe"
+}

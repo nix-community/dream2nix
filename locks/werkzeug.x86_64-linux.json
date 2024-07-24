@@ -1,0 +1,29 @@
+{
+  "fetchPipMetadata": {
+    "sources": {
+      "markupsafe": {
+        "is_direct": false,
+        "sha256": "f5dfb42c4604dddc8e4305050aa6deb084540643ed5804d7455b5df8fe16f5e5",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/0a/0d/2454f072fae3b5a137c119abf15465d1771319dfe9e4acbb31722a0fff91/MarkupSafe-2.1.5-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl",
+        "version": "2.1.5"
+      },
+      "werkzeug": {
+        "is_direct": false,
+        "sha256": "097e5bfda9f0aba8da6b8545146def481d06aa7d3266e7448e2cccf67dd8bd18",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/02/51/2e0fc149e7a810d300422ab543f87f2bcf64d985eb6f1228c4efd6e4f8d4/werkzeug-3.0.3.tar.gz",
+        "version": "3.0.3"
+      }
+    },
+    "targets": {
+      "default": {
+        "markupsafe": [],
+        "werkzeug": [
+          "markupsafe"
+        ]
+      }
+    }
+  },
+  "invalidationHash": "5116a5dad8a56f1e5f5d2e52a44c060ec77dd3e92986d042b9ed0836ce3e5888"
+}

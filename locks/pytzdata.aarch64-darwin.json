@@ -1,0 +1,19 @@
+{
+  "fetchPipMetadata": {
+    "sources": {
+      "pytzdata": {
+        "is_direct": false,
+        "sha256": "3efa13b335a00a8de1d345ae41ec78dd11c9f8807f522d39850f2dd828681540",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/67/62/4c25435a7c2f9c7aef6800862d6c227fc4cd81e9f0beebc5549a49c8ed53/pytzdata-2020.1.tar.gz",
+        "version": "2020.1"
+      }
+    },
+    "targets": {
+      "default": {
+        "pytzdata": []
+      }
+    }
+  },
+  "invalidationHash": "06059f9b0f0baffedd1f37cbdd3e0666b1cb44965cab797db0a5f9aab996bd3c"
+}

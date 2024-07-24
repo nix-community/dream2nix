@@ -1,0 +1,29 @@
+{
+  "fetchPipMetadata": {
+    "sources": {
+      "querystring-parser": {
+        "is_direct": false,
+        "sha256": "644fce1cffe0530453b43a83a38094dbe422ccba8c9b2f2a1c00280e14ca8a62",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/4a/fa/f54f5662e0eababf0c49e92fd94bf178888562c0e7b677c8941bbbcd1bd6/querystring_parser-1.2.4.tar.gz",
+        "version": "1.2.4"
+      },
+      "six": {
+        "is_direct": false,
+        "sha256": "8abb2f1d86890a2dfb989f9a77cfcfd3e47c2a354b01111771326f8aa26e0254",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/d9/5a/e7c31adbe875f2abbb91bd84cf2dc52d792b5a01506781dbcf25c91daf11/six-1.16.0-py2.py3-none-any.whl",
+        "version": "1.16.0"
+      }
+    },
+    "targets": {
+      "default": {
+        "querystring-parser": [
+          "six"
+        ],
+        "six": []
+      }
+    }
+  },
+  "invalidationHash": "02b60034d72b1b0c159b639ee335b1f7bf208f6bec8de522c919164eb81928b7"
+}

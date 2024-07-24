@@ -1,0 +1,19 @@
+{
+  "fetchPipMetadata": {
+    "sources": {
+      "pyproject-hooks": {
+        "is_direct": false,
+        "sha256": "4b37730834edbd6bd37f26ece6b44802fb1c1ee2ece0e54ddff8bfc06db86965",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/c7/07/6f63dda440d4abb191b91dc383b472dae3dd9f37e4c1e4a5c3db150531c6/pyproject_hooks-1.1.0.tar.gz",
+        "version": "1.1.0"
+      }
+    },
+    "targets": {
+      "default": {
+        "pyproject-hooks": []
+      }
+    }
+  },
+  "invalidationHash": "6987658ea751bd7a94b6f70e1f6620c9573c6e5cc73f3722c6a89f8680a37e6b"
+}

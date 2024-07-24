@@ -1,0 +1,19 @@
+{
+  "fetchPipMetadata": {
+    "sources": {
+      "kafka-python": {
+        "is_direct": false,
+        "sha256": "04dfe7fea2b63726cd6f3e79a2d86e709d608d74406638c5da33a01d45a9d7e3",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/07/4c/2595fb5733c3ac01aef3dacce17ff07f7f3336d9f96548bcf723b9073e5c/kafka-python-2.0.2.tar.gz",
+        "version": "2.0.2"
+      }
+    },
+    "targets": {
+      "default": {
+        "kafka-python": []
+      }
+    }
+  },
+  "invalidationHash": "2068e02bf61b094cd3034a8fbf5a9ae2dd4b15524fd6d2d861dd6aa1543edadc"
+}

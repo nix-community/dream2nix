@@ -1,0 +1,149 @@
+{
+  "fetchPipMetadata": {
+    "sources": {
+      "annotated-types": {
+        "is_direct": false,
+        "sha256": "1f02e8b43a8fbbc3f3e0d4f0f4bfc8131bcb4eebe8849b8e5c773f3a1c582a53",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/78/b6/6307fbef88d9b5ee7421e68d78a9f162e0da4900bc5f5793f6d3d0e34fb8/annotated_types-0.7.0-py3-none-any.whl",
+        "version": "0.7.0"
+      },
+      "anyio": {
+        "is_direct": false,
+        "sha256": "c1b2d8f46a8a812513012e1107cb0e68c17159a7a594208005a57dc776e1bdc7",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/7b/a2/10639a79341f6c019dedc95bd48a4928eed9f1d1197f4c04f546fc7ae0ff/anyio-4.4.0-py3-none-any.whl",
+        "version": "4.4.0"
+      },
+      "certifi": {
+        "is_direct": false,
+        "sha256": "c198e21b1289c2ab85ee4e67bb4b4ef3ead0892059901a8d5b622f24a1101e90",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/1c/d5/c84e1a17bf61d4df64ca866a1c9a913874b4e9bdc131ec689a0ad013fb36/certifi-2024.7.4-py3-none-any.whl",
+        "version": "2024.7.4"
+      },
+      "distro": {
+        "is_direct": false,
+        "sha256": "7bffd925d65168f85027d8da9af6bddab658135b840670a223589bc0c8ef02b2",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/12/b3/231ffd4ab1fc9d679809f356cebee130ac7daa00d6d6f3206dd4fd137e9e/distro-1.9.0-py3-none-any.whl",
+        "version": "1.9.0"
+      },
+      "h11": {
+        "is_direct": false,
+        "sha256": "e3fe4ac4b851c468cc8363d500db52c2ead036020723024a109d37346efaa761",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/95/04/ff642e65ad6b90db43e668d70ffb6736436c7ce41fcc549f4e9472234127/h11-0.14.0-py3-none-any.whl",
+        "version": "0.14.0"
+      },
+      "httpcore": {
+        "is_direct": false,
+        "sha256": "421f18bac248b25d310f3cacd198d55b8e6125c107797b609ff9b7a6ba7991b5",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/78/d4/e5d7e4f2174f8a4d63c8897d79eb8fe2503f7ecc03282fee1fa2719c2704/httpcore-1.0.5-py3-none-any.whl",
+        "version": "1.0.5"
+      },
+      "httpx": {
+        "is_direct": false,
+        "sha256": "71d5465162c13681bff01ad59b2cc68dd838ea1f10e51574bac27103f00c91a5",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/41/7b/ddacf6dcebb42466abd03f368782142baa82e08fc0c1f8eaa05b4bae87d5/httpx-0.27.0-py3-none-any.whl",
+        "version": "0.27.0"
+      },
+      "idna": {
+        "is_direct": false,
+        "sha256": "82fee1fc78add43492d3a1898bfa6d8a904cc97d8427f683ed8e798d07761aa0",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/e5/3e/741d8c82801c347547f8a2a06aa57dbb1992be9e948df2ea0eda2c8b79e8/idna-3.7-py3-none-any.whl",
+        "version": "3.7"
+      },
+      "openai": {
+        "is_direct": false,
+        "sha256": "dc8197fc40ab9d431777b6620d962cc49f4544ffc3011f03ce0a805e6eb54adb",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/81/2d/5689233e015aed341b3945d4d1dbc01bef3a895e0ec7a26420f28dfd6927/openai-1.37.0.tar.gz",
+        "version": "1.37.0"
+      },
+      "pydantic": {
+        "is_direct": false,
+        "sha256": "73ee9fddd406dc318b885c7a2eab8a6472b68b8fb5ba8150949fc3db939f23c8",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/1f/fa/b7f815b8c9ad021c07f88875b601222ef5e70619391ade4a49234d12d278/pydantic-2.8.2-py3-none-any.whl",
+        "version": "2.8.2"
+      },
+      "pydantic-core": {
+        "is_direct": false,
+        "sha256": "26dc97754b57d2fd00ac2b24dfa341abffc380b823211994c4efac7f13b9e90e",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/09/b3/a5a54b47cccd1ab661ed5775235c5e06924753c2d4817737c5667bfa19a8/pydantic_core-2.20.1-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl",
+        "version": "2.20.1"
+      },
+      "sniffio": {
+        "is_direct": false,
+        "sha256": "2f6da418d1f1e0fddd844478f41680e794e6051915791a034ff65e5f100525a2",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/e9/44/75a9c9421471a6c4805dbf2356f7c181a29c1879239abab1ea2cc8f38b40/sniffio-1.3.1-py3-none-any.whl",
+        "version": "1.3.1"
+      },
+      "tqdm": {
+        "is_direct": false,
+        "sha256": "b75ca56b413b030bc3f00af51fd2c1a1a5eac6a0c1cca83cbb37a5c52abce644",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/18/eb/fdb7eb9e48b7b02554e1664afd3bd3f117f6b6d6c5881438a0b055554f9b/tqdm-4.66.4-py3-none-any.whl",
+        "version": "4.66.4"
+      },
+      "typing-extensions": {
+        "is_direct": false,
+        "sha256": "04e5ca0351e0f3f85c6853954072df659d0d13fac324d0072316b67d7794700d",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/26/9f/ad63fc0248c5379346306f8668cda6e2e2e9c95e01216d2b8ffd9ff037d0/typing_extensions-4.12.2-py3-none-any.whl",
+        "version": "4.12.2"
+      }
+    },
+    "targets": {
+      "default": {
+        "annotated-types": [],
+        "anyio": [
+          "idna",
+          "sniffio"
+        ],
+        "certifi": [],
+        "distro": [],
+        "h11": [],
+        "httpcore": [
+          "certifi",
+          "h11"
+        ],
+        "httpx": [
+          "anyio",
+          "certifi",
+          "httpcore",
+          "idna",
+          "sniffio"
+        ],
+        "idna": [],
+        "openai": [
+          "anyio",
+          "distro",
+          "httpx",
+          "pydantic",
+          "sniffio",
+          "tqdm",
+          "typing-extensions"
+        ],
+        "pydantic": [
+          "annotated-types",
+          "pydantic-core",
+          "typing-extensions"
+        ],
+        "pydantic-core": [
+          "typing-extensions"
+        ],
+        "sniffio": [],
+        "tqdm": [],
+        "typing-extensions": []
+      }
+    }
+  },
+  "invalidationHash": "a8bcdfe3450269be1dadb58a60a65a21992b49849861998182def6c576244b40"
+}

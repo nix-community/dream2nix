@@ -1,0 +1,19 @@
+{
+  "fetchPipMetadata": {
+    "sources": {
+      "coverage": {
+        "is_direct": false,
+        "sha256": "289cc803fa1dc901f84701ac10c9ee873619320f2f9aff38794db4a4a0268d51",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/64/c8/a94ce9e17756aed521085ae716d627623374d34f92c1daf7162272ecb030/coverage-7.6.0.tar.gz",
+        "version": "7.6.0"
+      }
+    },
+    "targets": {
+      "default": {
+        "coverage": []
+      }
+    }
+  },
+  "invalidationHash": "90cf37f3f6ffc4b09958c1a0cbfe3c0037990d5c3e2ffa6105425b653a3cdb16"
+}

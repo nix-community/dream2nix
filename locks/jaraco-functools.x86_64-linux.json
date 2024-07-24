@@ -1,0 +1,29 @@
+{
+  "fetchPipMetadata": {
+    "sources": {
+      "jaraco-functools": {
+        "is_direct": false,
+        "sha256": "d33fa765374c0611b52f8b3a795f8900869aa88c84769d4d1746cd68fb28c3e8",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/bc/66/746091bed45b3683d1026cb13b8b7719e11ccc9857b18d29177a18838dc9/jaraco_functools-4.0.1.tar.gz",
+        "version": "4.0.1"
+      },
+      "more-itertools": {
+        "is_direct": false,
+        "sha256": "ea6a02e24a9161e51faad17a8782b92a0df82c12c1c8886fec7f0c3fa1a1b320",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/bb/23/2d1cdb0427aecb2b150dc2ac2d15400990c4f05585b3fbc1b5177d74d7fb/more_itertools-10.3.0-py3-none-any.whl",
+        "version": "10.3.0"
+      }
+    },
+    "targets": {
+      "default": {
+        "jaraco-functools": [
+          "more-itertools"
+        ],
+        "more-itertools": []
+      }
+    }
+  },
+  "invalidationHash": "85115e318014d22d8efe5e678571fb933e55f29e6b01a4bcd8832054829d90c2"
+}

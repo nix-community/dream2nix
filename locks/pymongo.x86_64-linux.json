@@ -1,0 +1,29 @@
+{
+  "fetchPipMetadata": {
+    "sources": {
+      "dnspython": {
+        "is_direct": false,
+        "sha256": "5ef3b9680161f6fa89daf8ad451b5f1a33b18ae8a1c6778cdf4b43f08c0a6e50",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/87/a1/8c5287991ddb8d3e4662f71356d9656d91ab3a36618c3dd11b280df0d255/dnspython-2.6.1-py3-none-any.whl",
+        "version": "2.6.1"
+      },
+      "pymongo": {
+        "is_direct": false,
+        "sha256": "454f2295875744dc70f1881e4b2eb99cdad008a33574bc8aaf120530f66c0cde",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/05/2c/ad0896cb94668c3cad1eb702ab60ae17036b051f54cfe547f11a0322f1d3/pymongo-4.8.0.tar.gz",
+        "version": "4.8.0"
+      }
+    },
+    "targets": {
+      "default": {
+        "dnspython": [],
+        "pymongo": [
+          "dnspython"
+        ]
+      }
+    }
+  },
+  "invalidationHash": "9297bcf27b3a91e007597d33c47484d1d49456f947fdad697dbe832a0265a7f0"
+}

@@ -1,0 +1,19 @@
+{
+  "fetchPipMetadata": {
+    "sources": {
+      "mysql-connector-python": {
+        "is_direct": false,
+        "sha256": "9199d6ecc81576602990178f0c2fb71737c53a598c8a2f51e1097a53fcfaee40",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/17/0c/c0fa64f15fde771a477fd7d3977f8587c5a17db32ea6f4e59a87098c8196/mysql_connector_python-9.0.0-cp312-cp312-macosx_13_0_arm64.whl",
+        "version": "9.0.0"
+      }
+    },
+    "targets": {
+      "default": {
+        "mysql-connector-python": []
+      }
+    }
+  },
+  "invalidationHash": "1acfd2111fead77b5d365602e97d183795bf2e4b4e40188cd442d82c80b27032"
+}

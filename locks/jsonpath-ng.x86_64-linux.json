@@ -1,0 +1,29 @@
+{
+  "fetchPipMetadata": {
+    "sources": {
+      "jsonpath-ng": {
+        "is_direct": false,
+        "sha256": "086c37ba4917304850bd837aeab806670224d3f038fe2833ff593a672ef0a5fa",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/2a/58/a31c70d23cbab69129e72be2d70c7d525ee1bd7825e6312e7c09517a01a0/jsonpath-ng-1.6.1.tar.gz",
+        "version": "1.6.1"
+      },
+      "ply": {
+        "is_direct": false,
+        "sha256": "096f9b8350b65ebd2fd1346b12452efe5b9607f7482813ffca50c22722a807ce",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/a3/58/35da89ee790598a0700ea49b2a66594140f44dec458c07e8e3d4979137fc/ply-3.11-py2.py3-none-any.whl",
+        "version": "3.11"
+      }
+    },
+    "targets": {
+      "default": {
+        "jsonpath-ng": [
+          "ply"
+        ],
+        "ply": []
+      }
+    }
+  },
+  "invalidationHash": "795ad52dad11e47308b69cae7ea461eba2940b0690b9965d5f8b28002c48d0c8"
+}

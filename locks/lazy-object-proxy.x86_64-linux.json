@@ -1,0 +1,19 @@
+{
+  "fetchPipMetadata": {
+    "sources": {
+      "lazy-object-proxy": {
+        "is_direct": false,
+        "sha256": "78247b6d45f43a52ef35c25b5581459e85117225408a4128a3daf8bf9648ac69",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/2c/f0/f02e2d150d581a294efded4020094a371bbab42423fe78625ac18854d89b/lazy-object-proxy-1.10.0.tar.gz",
+        "version": "1.10.0"
+      }
+    },
+    "targets": {
+      "default": {
+        "lazy-object-proxy": []
+      }
+    }
+  },
+  "invalidationHash": "28f0d6f8359912703a67658d53fa9bc3ea5060904ec03f5109e1eaedd98066a6"
+}

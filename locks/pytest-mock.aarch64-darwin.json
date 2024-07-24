@@ -1,0 +1,57 @@
+{
+  "fetchPipMetadata": {
+    "sources": {
+      "iniconfig": {
+        "is_direct": false,
+        "sha256": "b6a85871a79d2e3b22d2d1b94ac2824226a63c6b741c88f7ae975f18b6778374",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/ef/a6/62565a6e1cf69e10f5727360368e451d4b7f58beeac6173dc9db836a5b46/iniconfig-2.0.0-py3-none-any.whl",
+        "version": "2.0.0"
+      },
+      "packaging": {
+        "is_direct": false,
+        "sha256": "5b8f2217dbdbd2f7f384c41c628544e6d52f2d0f53c6d0c3ea61aa5d1d7ff124",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/08/aa/cc0199a5f0ad350994d660967a8efb233fe0416e4639146c089643407ce6/packaging-24.1-py3-none-any.whl",
+        "version": "24.1"
+      },
+      "pluggy": {
+        "is_direct": false,
+        "sha256": "44e1ad92c8ca002de6377e165f3e0f1be63266ab4d554740532335b9d75ea669",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/88/5f/e351af9a41f866ac3f1fac4ca0613908d9a41741cfcf2228f4ad853b697d/pluggy-1.5.0-py3-none-any.whl",
+        "version": "1.5.0"
+      },
+      "pytest": {
+        "is_direct": false,
+        "sha256": "e9600ccf4f563976e2c99fa02c7624ab938296551f280835ee6516df8bc4ae8c",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/b9/77/ccea391104f576a6e54a54334fc26d29c28aa0ec85714c781fbd2c34ac86/pytest-8.3.1-py3-none-any.whl",
+        "version": "8.3.1"
+      },
+      "pytest-mock": {
+        "is_direct": false,
+        "sha256": "2719255a1efeceadbc056d6bf3df3d1c5015530fb40cf347c0f9afac88410bd0",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/c6/90/a955c3ab35ccd41ad4de556596fa86685bf4fc5ffcc62d22d856cfd4e29a/pytest-mock-3.14.0.tar.gz",
+        "version": "3.14.0"
+      }
+    },
+    "targets": {
+      "default": {
+        "iniconfig": [],
+        "packaging": [],
+        "pluggy": [],
+        "pytest": [
+          "iniconfig",
+          "packaging",
+          "pluggy"
+        ],
+        "pytest-mock": [
+          "pytest"
+        ]
+      }
+    }
+  },
+  "invalidationHash": "e73706cdecd54168f3be6384b884bba971e329ba955fb6ecfe96b4720593a88c"
+}

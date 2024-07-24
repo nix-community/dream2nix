@@ -1,0 +1,19 @@
+{
+  "fetchPipMetadata": {
+    "sources": {
+      "bcrypt": {
+        "is_direct": false,
+        "sha256": "cf69eaf5185fd58f268f805b505ce31f9b9fc2d64b376642164e9244540c1221",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/e4/7e/d95e7d96d4828e965891af92e43b52a4cd3395dc1c1ef4ee62748d0471d0/bcrypt-4.2.0.tar.gz",
+        "version": "4.2.0"
+      }
+    },
+    "targets": {
+      "default": {
+        "bcrypt": []
+      }
+    }
+  },
+  "invalidationHash": "f20ee3f0e19ea417c735317e578840d2313c8850dd38febdbc7669447d95fab0"
+}

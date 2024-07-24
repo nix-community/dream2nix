@@ -1,0 +1,19 @@
+{
+  "fetchPipMetadata": {
+    "sources": {
+      "python-dotenv": {
+        "is_direct": false,
+        "sha256": "e324ee90a023d808f1959c46bcbc04446a10ced277783dc6ee09987c37ec10ca",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/bc/57/e84d88dfe0aec03b7a2d4327012c1627ab5f03652216c63d49846d7a6c58/python-dotenv-1.0.1.tar.gz",
+        "version": "1.0.1"
+      }
+    },
+    "targets": {
+      "default": {
+        "python-dotenv": []
+      }
+    }
+  },
+  "invalidationHash": "56912939a35d19d21cecebc1f61066fb087d604f0d0e35f53c676b3e4845e739"
+}

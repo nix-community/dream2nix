@@ -1,0 +1,19 @@
+{
+  "fetchPipMetadata": {
+    "sources": {
+      "antlr4-python3-runtime": {
+        "is_direct": false,
+        "sha256": "3cd282f5ea7cfb841537fe01f143350fdb1c0b1ce7981443a2fa8513fddb6d1a",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/b6/00/7f1cab9b44518ca225a03f4493ac9294aab5935a7a28486ba91a20ea29cf/antlr4-python3-runtime-4.13.1.tar.gz",
+        "version": "4.13.1"
+      }
+    },
+    "targets": {
+      "default": {
+        "antlr4-python3-runtime": []
+      }
+    }
+  },
+  "invalidationHash": "483ef5f187e190f2e9a5a03c747ef6481908f861cbb8fad0a20a896b69a99c6e"
+}

@@ -1,0 +1,93 @@
+{
+  "fetchPipMetadata": {
+    "sources": {
+      "cfgv": {
+        "is_direct": false,
+        "sha256": "b7265b1f29fd3316bfcd2b330d63d024f2bfd8bcb8b0272f8e19a504856c48f9",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/c5/55/51844dd50c4fc7a33b653bfaba4c2456f06955289ca770a5dbd5fd267374/cfgv-3.4.0-py2.py3-none-any.whl",
+        "version": "3.4.0"
+      },
+      "distlib": {
+        "is_direct": false,
+        "sha256": "034db59a0b96f8ca18035f36290806a9a6e6bd9d1ff91e45a7f172eb17e51784",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/8e/41/9307e4f5f9976bc8b7fea0b66367734e8faf3ec84bc0d412d8cfabbb66cd/distlib-0.3.8-py2.py3-none-any.whl",
+        "version": "0.3.8"
+      },
+      "filelock": {
+        "is_direct": false,
+        "sha256": "6ca1fffae96225dab4c6eaf1c4f4f28cd2568d3ec2a44e15a08520504de468e7",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/ae/f0/48285f0262fe47103a4a45972ed2f9b93e4c80b8fd609fa98da78b2a5706/filelock-3.15.4-py3-none-any.whl",
+        "version": "3.15.4"
+      },
+      "identify": {
+        "is_direct": false,
+        "sha256": "e79ae4406387a9d300332b5fd366d8994f1525e8414984e1a59e058b2eda2dd0",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/24/6c/a4f39abe7f19600b74528d0c717b52fff0b300bb0161081510d39c53cb00/identify-2.6.0-py2.py3-none-any.whl",
+        "version": "2.6.0"
+      },
+      "nodeenv": {
+        "is_direct": false,
+        "sha256": "ba11c9782d29c27c70ffbdda2d7415098754709be8a7056d79a737cd901155c9",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/d2/1d/1b658dbd2b9fa9c4c9f32accbfc0205d532c8c6194dc0f2a4c0428e7128a/nodeenv-1.9.1-py2.py3-none-any.whl",
+        "version": "1.9.1"
+      },
+      "platformdirs": {
+        "is_direct": false,
+        "sha256": "2d7a1657e36a80ea911db832a8a6ece5ee53d8de21edd5cc5879af6530b1bfee",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/68/13/2aa1f0e1364feb2c9ef45302f387ac0bd81484e9c9a4c5688a322fbdfd08/platformdirs-4.2.2-py3-none-any.whl",
+        "version": "4.2.2"
+      },
+      "pre-commit": {
+        "is_direct": false,
+        "sha256": "8ca3ad567bc78a4972a3f1a477e94a79d4597e8140a6e0b651c5e33899c3654a",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/aa/46/cc214ef6514270328910083d0119d0a80a6d2c4ec8c6608c0219db0b74cf/pre_commit-3.7.1.tar.gz",
+        "version": "3.7.1"
+      },
+      "pyyaml": {
+        "is_direct": false,
+        "sha256": "6c22bec3fbe2524cde73d7ada88f6566758a8f7227bfbf93a408a9d86bcc12a0",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/b4/33/720548182ffa8344418126017aa1d4ab4aeec9a2275f04ce3f3573d8ace8/PyYAML-6.0.1-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl",
+        "version": "6.0.1"
+      },
+      "virtualenv": {
+        "is_direct": false,
+        "sha256": "8cc4a31139e796e9a7de2cd5cf2489de1217193116a8fd42328f1bd65f434589",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/07/4d/410156100224c5e2f0011d435e477b57aed9576fc7fe137abcf14ec16e11/virtualenv-20.26.3-py3-none-any.whl",
+        "version": "20.26.3"
+      }
+    },
+    "targets": {
+      "default": {
+        "cfgv": [],
+        "distlib": [],
+        "filelock": [],
+        "identify": [],
+        "nodeenv": [],
+        "platformdirs": [],
+        "pre-commit": [
+          "cfgv",
+          "identify",
+          "nodeenv",
+          "pyyaml",
+          "virtualenv"
+        ],
+        "pyyaml": [],
+        "virtualenv": [
+          "distlib",
+          "filelock",
+          "platformdirs"
+        ]
+      }
+    }
+  },
+  "invalidationHash": "2e1696c6bd28407efb52946116930f5088fbf94f00a76e2cfbc485b4a7f40c20"
+}

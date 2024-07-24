@@ -1,0 +1,29 @@
+{
+  "fetchPipMetadata": {
+    "sources": {
+      "click": {
+        "is_direct": false,
+        "sha256": "ae74fb96c20a0277a1d615f1e4d73c8414f5a98db8b799a7931d1582f3390c28",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/00/2e/d53fa4befbf2cfa713304affc7ca780ce4fc1fd8710527771b58311a3229/click-8.1.7-py3-none-any.whl",
+        "version": "8.1.7"
+      },
+      "click-plugins": {
+        "is_direct": false,
+        "sha256": "46ab999744a9d831159c3411bb0c79346d94a444df9a3a3742e9ed63645f264b",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/5f/1d/45434f64ed749540af821fd7e42b8e4d23ac04b1eda7c26613288d6cd8a8/click-plugins-1.1.1.tar.gz",
+        "version": "1.1.1"
+      }
+    },
+    "targets": {
+      "default": {
+        "click": [],
+        "click-plugins": [
+          "click"
+        ]
+      }
+    }
+  },
+  "invalidationHash": "7f09735059e675381d68e50447bf72824f1f93670022d9769c690ba244f58cef"
+}

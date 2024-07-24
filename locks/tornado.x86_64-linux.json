@@ -1,0 +1,19 @@
+{
+  "fetchPipMetadata": {
+    "sources": {
+      "tornado": {
+        "is_direct": false,
+        "sha256": "92d3ab53183d8c50f8204a51e6f91d18a15d5ef261e84d452800d4ff6fc504e9",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/ee/66/398ac7167f1c7835406888a386f6d0d26ee5dbf197d8a571300be57662d3/tornado-6.4.1.tar.gz",
+        "version": "6.4.1"
+      }
+    },
+    "targets": {
+      "default": {
+        "tornado": []
+      }
+    }
+  },
+  "invalidationHash": "c6e7093b5a0123354c9b3f646e0b28b5dfffc242476a916fa345fdf4189a315a"
+}

@@ -1,0 +1,19 @@
+{
+  "fetchPipMetadata": {
+    "sources": {
+      "monotonic": {
+        "is_direct": false,
+        "sha256": "3a55207bcfed53ddd5c5bae174524062935efed17792e9de2ad0205ce9ad63f7",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/ea/ca/8e91948b782ddfbd194f323e7e7d9ba12e5877addf04fb2bf8fca38e86ac/monotonic-1.6.tar.gz",
+        "version": "1.6"
+      }
+    },
+    "targets": {
+      "default": {
+        "monotonic": []
+      }
+    }
+  },
+  "invalidationHash": "a3381c0c343eaa3c0fb5ff2b00577088aacf1b0cbd8232e68cb61292fde31d36"
+}

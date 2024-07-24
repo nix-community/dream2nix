@@ -1,0 +1,29 @@
+{
+  "fetchPipMetadata": {
+    "sources": {
+      "jedi": {
+        "is_direct": false,
+        "sha256": "cf0496f3651bc65d7174ac1b7d043eff454892c708a87d1b683e57b569927ffd",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/d6/99/99b493cec4bf43176b678de30f81ed003fd6a647a301b9c927280c600f0a/jedi-0.19.1.tar.gz",
+        "version": "0.19.1"
+      },
+      "parso": {
+        "is_direct": false,
+        "sha256": "a418670a20291dacd2dddc80c377c5c3791378ee1e8d12bffc35420643d43f18",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/c6/ac/dac4a63f978e4dcb3c6d3a78c4d8e0192a113d288502a1216950c41b1027/parso-0.8.4-py2.py3-none-any.whl",
+        "version": "0.8.4"
+      }
+    },
+    "targets": {
+      "default": {
+        "jedi": [
+          "parso"
+        ],
+        "parso": []
+      }
+    }
+  },
+  "invalidationHash": "1f21975b81b730d989ec3fc3a4d26519852128dbcb52b5b1b58535cb13429dbe"
+}

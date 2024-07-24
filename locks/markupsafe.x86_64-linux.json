@@ -1,0 +1,19 @@
+{
+  "fetchPipMetadata": {
+    "sources": {
+      "markupsafe": {
+        "is_direct": false,
+        "sha256": "d283d37a890ba4c1ae73ffadf8046435c76e7bc2247bbb63c00bd1a709c6544b",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/87/5b/aae44c6655f3801e81aa3eef09dbbf012431987ba564d7231722f68df02d/MarkupSafe-2.1.5.tar.gz",
+        "version": "2.1.5"
+      }
+    },
+    "targets": {
+      "default": {
+        "markupsafe": []
+      }
+    }
+  },
+  "invalidationHash": "9842c637327d7ec6f9d1c44e15c7e50fb5491f15d1c1142346e693b55b1bcc85"
+}

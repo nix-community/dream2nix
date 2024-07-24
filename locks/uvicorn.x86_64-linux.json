@@ -1,0 +1,38 @@
+{
+  "fetchPipMetadata": {
+    "sources": {
+      "click": {
+        "is_direct": false,
+        "sha256": "ae74fb96c20a0277a1d615f1e4d73c8414f5a98db8b799a7931d1582f3390c28",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/00/2e/d53fa4befbf2cfa713304affc7ca780ce4fc1fd8710527771b58311a3229/click-8.1.7-py3-none-any.whl",
+        "version": "8.1.7"
+      },
+      "h11": {
+        "is_direct": false,
+        "sha256": "e3fe4ac4b851c468cc8363d500db52c2ead036020723024a109d37346efaa761",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/95/04/ff642e65ad6b90db43e668d70ffb6736436c7ce41fcc549f4e9472234127/h11-0.14.0-py3-none-any.whl",
+        "version": "0.14.0"
+      },
+      "uvicorn": {
+        "is_direct": false,
+        "sha256": "0d114d0831ff1adbf231d358cbf42f17333413042552a624ea6a9b4c33dcfd81",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/77/40/b650be95700dc83d14c5f2b9eac9deb23cbca757a12ee20e473b5ef1ac48/uvicorn-0.30.3.tar.gz",
+        "version": "0.30.3"
+      }
+    },
+    "targets": {
+      "default": {
+        "click": [],
+        "h11": [],
+        "uvicorn": [
+          "click",
+          "h11"
+        ]
+      }
+    }
+  },
+  "invalidationHash": "11416f793e0ed164fb4f9f4d0f37f731f2faa181664598bbb3c8aaf81310aac3"
+}

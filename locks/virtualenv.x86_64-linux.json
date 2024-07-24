@@ -1,0 +1,47 @@
+{
+  "fetchPipMetadata": {
+    "sources": {
+      "distlib": {
+        "is_direct": false,
+        "sha256": "034db59a0b96f8ca18035f36290806a9a6e6bd9d1ff91e45a7f172eb17e51784",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/8e/41/9307e4f5f9976bc8b7fea0b66367734e8faf3ec84bc0d412d8cfabbb66cd/distlib-0.3.8-py2.py3-none-any.whl",
+        "version": "0.3.8"
+      },
+      "filelock": {
+        "is_direct": false,
+        "sha256": "6ca1fffae96225dab4c6eaf1c4f4f28cd2568d3ec2a44e15a08520504de468e7",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/ae/f0/48285f0262fe47103a4a45972ed2f9b93e4c80b8fd609fa98da78b2a5706/filelock-3.15.4-py3-none-any.whl",
+        "version": "3.15.4"
+      },
+      "platformdirs": {
+        "is_direct": false,
+        "sha256": "2d7a1657e36a80ea911db832a8a6ece5ee53d8de21edd5cc5879af6530b1bfee",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/68/13/2aa1f0e1364feb2c9ef45302f387ac0bd81484e9c9a4c5688a322fbdfd08/platformdirs-4.2.2-py3-none-any.whl",
+        "version": "4.2.2"
+      },
+      "virtualenv": {
+        "is_direct": false,
+        "sha256": "4c43a2a236279d9ea36a0d76f98d84bd6ca94ac4e0f4a3b9d46d05e10fea542a",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/68/60/db9f95e6ad456f1872486769c55628c7901fb4de5a72c2f7bdd912abf0c1/virtualenv-20.26.3.tar.gz",
+        "version": "20.26.3"
+      }
+    },
+    "targets": {
+      "default": {
+        "distlib": [],
+        "filelock": [],
+        "platformdirs": [],
+        "virtualenv": [
+          "distlib",
+          "filelock",
+          "platformdirs"
+        ]
+      }
+    }
+  },
+  "invalidationHash": "0f0ae4605c607bb413989aba6fd73e5bf535f444ae2ade15900abe9e846bcec4"
+}

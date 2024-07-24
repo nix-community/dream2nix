@@ -1,0 +1,19 @@
+{
+  "fetchPipMetadata": {
+    "sources": {
+      "pillow": {
+        "is_direct": false,
+        "sha256": "166c1cd4d24309b30d61f79f4a9114b7b2313d7450912277855ff5dfd7cd4a06",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/cd/74/ad3d526f3bf7b6d3f408b73fde271ec69dfac8b81341a318ce825f2b3812/pillow-10.4.0.tar.gz",
+        "version": "10.4.0"
+      }
+    },
+    "targets": {
+      "default": {
+        "pillow": []
+      }
+    }
+  },
+  "invalidationHash": "77c81dd42f8a5bf6068eb518fc05ef71dc9cfe38809906a62b4bfe4568e8df04"
+}

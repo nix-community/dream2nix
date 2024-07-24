@@ -1,0 +1,29 @@
+{
+  "fetchPipMetadata": {
+    "sources": {
+      "numpy": {
+        "is_direct": false,
+        "sha256": "6790654cb13eab303d8402354fabd47472b24635700f631f041bd0b65e37298a",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/2c/f3/61eeef119beb37decb58e7cb29940f19a1464b8608f2cab8a8616aba75fd/numpy-2.0.1-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl",
+        "version": "2.0.1"
+      },
+      "pyarrow": {
+        "is_direct": false,
+        "sha256": "4beca9521ed2c0921c1023e68d097d0299b62c362639ea315572a58f3f50fd28",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/27/4e/ea6d43f324169f8aec0e57569443a38bab4b398d09769ca64f7b4d467de3/pyarrow-17.0.0.tar.gz",
+        "version": "17.0.0"
+      }
+    },
+    "targets": {
+      "default": {
+        "numpy": [],
+        "pyarrow": [
+          "numpy"
+        ]
+      }
+    }
+  },
+  "invalidationHash": "35a501bcbad530b6be080a6c596997b5eb4cc082883dd5672dc7caabb0254685"
+}

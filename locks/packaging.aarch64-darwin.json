@@ -1,0 +1,19 @@
+{
+  "fetchPipMetadata": {
+    "sources": {
+      "packaging": {
+        "is_direct": false,
+        "sha256": "026ed72c8ed3fcce5bf8950572258698927fd1dbda10a5e981cdf0ac37f4f002",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/51/65/50db4dda066951078f0a96cf12f4b9ada6e4b811516bf0262c0f4f7064d4/packaging-24.1.tar.gz",
+        "version": "24.1"
+      }
+    },
+    "targets": {
+      "default": {
+        "packaging": []
+      }
+    }
+  },
+  "invalidationHash": "28ba8ef272a775dcc88c415a3cc1595476c1de70ce93c8b89a0d4f5490c85083"
+}

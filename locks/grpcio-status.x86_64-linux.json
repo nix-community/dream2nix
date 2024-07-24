@@ -1,0 +1,49 @@
+{
+  "fetchPipMetadata": {
+    "sources": {
+      "googleapis-common-protos": {
+        "is_direct": false,
+        "sha256": "27a2499c7e8aff199665b22741997e485eccc8645aa9176c7c988e6fae507945",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/02/48/87422ff1bddcae677fb6f58c97f5cfc613304a5e8ce2c3662760199c0a84/googleapis_common_protos-1.63.2-py2.py3-none-any.whl",
+        "version": "1.63.2"
+      },
+      "grpcio": {
+        "is_direct": false,
+        "sha256": "9e6a8f3d6c41e6b642870afe6cafbaf7b61c57317f9ec66d0efdaf19db992b90",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/d3/2d/b8fcbe1d504a2b86ffd7f20591a62553b96d38f879aa9045961ae47b8eb6/grpcio-1.65.1-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl",
+        "version": "1.65.1"
+      },
+      "grpcio-status": {
+        "is_direct": false,
+        "sha256": "740d68d4a1824e59063f394df05171886262d5367b82256d54aac8aa7c5c79bf",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/65/00/950a437b11fe0a59fe6c41dcd2ec926dcabb280c0903e925478c6c1d92d5/grpcio_status-1.65.1.tar.gz",
+        "version": "1.65.1"
+      },
+      "protobuf": {
+        "is_direct": false,
+        "sha256": "b848dbe1d57ed7c191dfc4ea64b8b004a3f9ece4bf4d0d80a367b76df20bf36e",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/27/e4/8dc4546be46873f8950cb44cdfe19b79d66d26e53c4ee5e3440406257fcd/protobuf-5.27.2-cp38-abi3-manylinux2014_x86_64.whl",
+        "version": "5.27.2"
+      }
+    },
+    "targets": {
+      "default": {
+        "googleapis-common-protos": [
+          "protobuf"
+        ],
+        "grpcio": [],
+        "grpcio-status": [
+          "googleapis-common-protos",
+          "grpcio",
+          "protobuf"
+        ],
+        "protobuf": []
+      }
+    }
+  },
+  "invalidationHash": "8e131c6e008770f83ad403bb1709100491f94b64179da15da6450bc31ccc6092"
+}

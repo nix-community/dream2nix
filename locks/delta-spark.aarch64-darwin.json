@@ -1,0 +1,58 @@
+{
+  "fetchPipMetadata": {
+    "sources": {
+      "delta-spark": {
+        "is_direct": false,
+        "sha256": "c4ff3fa7218e58a702cb71eb64384b0005c4d6f0bbdd0fe0b38a53564d946e09",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/3c/8e/bb778f5049aa371bf80a7a781b237eb10ef104f8736fe00d25fcfee80c2b/delta_spark-3.2.0-py3-none-any.whl",
+        "version": "3.2.0"
+      },
+      "importlib-metadata": {
+        "is_direct": false,
+        "sha256": "15584cf2b1bf449d98ff8a6ff1abef57bf20f3ac6454f431736cd3e660921b2f",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/dc/ef/38766b2edb096260d9b1b6ad35adaa0bce3b0567abb452b21eb074af88c4/importlib_metadata-8.0.0-py3-none-any.whl",
+        "version": "8.0.0"
+      },
+      "py4j": {
+        "is_direct": false,
+        "sha256": "85defdfd2b2376eb3abf5ca6474b51ab7e0de341c75a02f46dc9b5976f5a5c1b",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/10/30/a58b32568f1623aaad7db22aa9eafc4c6c194b429ff35bdc55ca2726da47/py4j-0.10.9.7-py2.py3-none-any.whl",
+        "version": "0.10.9.7"
+      },
+      "pyspark": {
+        "is_direct": false,
+        "sha256": "dd6569e547365eadc4f887bf57f153e4d582a68c4b490de475d55b9981664910",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/73/e5/c9eb78cc982dafb7b5834bc5c368fe596216c8b9f7c4b4ffa104c4d2ab8f/pyspark-3.5.1.tar.gz",
+        "version": "3.5.1"
+      },
+      "zipp": {
+        "is_direct": false,
+        "sha256": "f091755f667055f2d02b32c53771a7a6c8b47e1fdbc4b72a8b9072b3eef8015c",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/20/38/f5c473fe9b90c8debdd29ea68d5add0289f1936d6f923b6b9cc0b931194c/zipp-3.19.2-py3-none-any.whl",
+        "version": "3.19.2"
+      }
+    },
+    "targets": {
+      "default": {
+        "delta-spark": [
+          "importlib-metadata",
+          "pyspark"
+        ],
+        "importlib-metadata": [
+          "zipp"
+        ],
+        "py4j": [],
+        "pyspark": [
+          "py4j"
+        ],
+        "zipp": []
+      }
+    }
+  },
+  "invalidationHash": "1eb1dd867753053a76f1377613aef955faba16fa86522bd9f9d3dd309ce8ad35"
+}

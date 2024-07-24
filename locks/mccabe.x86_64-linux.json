@@ -1,0 +1,19 @@
+{
+  "fetchPipMetadata": {
+    "sources": {
+      "mccabe": {
+        "is_direct": false,
+        "sha256": "348e0240c33b60bbdf4e523192ef919f28cb2c3d7d5c7794f74009290f236325",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/e7/ff/0ffefdcac38932a54d2b5eed4e0ba8a408f215002cd178ad1df0f2806ff8/mccabe-0.7.0.tar.gz",
+        "version": "0.7.0"
+      }
+    },
+    "targets": {
+      "default": {
+        "mccabe": []
+      }
+    }
+  },
+  "invalidationHash": "71f4a078f15060b3c46f5f72b5ce15cd8b5dc573c937d2acbc96d0a77cb80bf7"
+}

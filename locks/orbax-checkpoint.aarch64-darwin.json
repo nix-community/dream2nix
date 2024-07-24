@@ -1,0 +1,191 @@
+{
+  "fetchPipMetadata": {
+    "sources": {
+      "absl-py": {
+        "is_direct": false,
+        "sha256": "526a04eadab8b4ee719ce68f204172ead1027549089702d99b9059f129ff1308",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/a2/ad/e0d3c824784ff121c03cc031f944bc7e139a8f1870ffd2845cc2dd76f6c4/absl_py-2.1.0-py3-none-any.whl",
+        "version": "2.1.0"
+      },
+      "etils": {
+        "is_direct": false,
+        "sha256": "ecd79de1fbfea9b0d6924756cfa922b05ed3360c45cf2170767da4bee0001d20",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/a0/f4/305f3ea85aecd23422c606c179fb6d00bd7d255b10d55b4c797a3a680144/etils-1.9.2-py3-none-any.whl",
+        "version": "1.9.2"
+      },
+      "fsspec": {
+        "is_direct": false,
+        "sha256": "3cb443f8bcd2efb31295a5b9fdb02aee81d8452c80d28f97a6d0959e6cee101e",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/5e/44/73bea497ac69bafde2ee4269292fa3b41f1198f4bb7bbaaabde30ad29d4a/fsspec-2024.6.1-py3-none-any.whl",
+        "version": "2024.6.1"
+      },
+      "importlib-resources": {
+        "is_direct": false,
+        "sha256": "50d10f043df931902d4194ea07ec57960f66a80449ff867bfe782b4c486ba78c",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/75/06/4df55e1b7b112d183f65db9503bff189e97179b256e1ea450a3c365241e0/importlib_resources-6.4.0-py3-none-any.whl",
+        "version": "6.4.0"
+      },
+      "jax": {
+        "is_direct": false,
+        "sha256": "289b30ae03b52f7f4baf6ef082a9f4e3e29c1080e22d13512c5ecf02d5f1a55b",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/fd/f2/9dbb75de3058acfd1600cf0839bcce7ea391148c9d2b4fa5f5666e66f09e/jax-0.4.30-py3-none-any.whl",
+        "version": "0.4.30"
+      },
+      "jaxlib": {
+        "is_direct": false,
+        "sha256": "57090d33477fd0f0c99dc686274882ea75c44c7d712ae42dd2460b10f896131d",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/c6/e3/97f8edff6f64245a500415be021869522b235e8b38cd930d358b91243583/jaxlib-0.4.30-cp312-cp312-macosx_11_0_arm64.whl",
+        "version": "0.4.30"
+      },
+      "ml-dtypes": {
+        "is_direct": false,
+        "sha256": "ee9f91d4c4f9959a7e1051c141dc565f39e54435618152219769e24f5e9a4d06",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/30/9d/890e8c9cb556cec121f784fd84089e1e52939ba6eabf5dc62f6435db28d6/ml_dtypes-0.4.0-cp312-cp312-macosx_10_9_universal2.whl",
+        "version": "0.4.0"
+      },
+      "msgpack": {
+        "is_direct": false,
+        "sha256": "d56fd9f1f1cdc8227d7b7918f55091349741904d9520c65f0139a9755952c9e8",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/99/3e/49d430df1e9abf06bb91e9824422cd6ceead2114662417286da3ddcdd295/msgpack-1.0.8-cp312-cp312-macosx_11_0_arm64.whl",
+        "version": "1.0.8"
+      },
+      "nest-asyncio": {
+        "is_direct": false,
+        "sha256": "87af6efd6b5e897c81050477ef65c62e2b2f35d51703cae01aff2905b1852e1c",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/a0/c4/c2971a3ba4c6103a3d10c4b0f24f461ddc027f0f09763220cf35ca1401b3/nest_asyncio-1.6.0-py3-none-any.whl",
+        "version": "1.6.0"
+      },
+      "numpy": {
+        "is_direct": false,
+        "sha256": "5daab361be6ddeb299a918a7c0864fa8618af66019138263247af405018b04e1",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/c2/da/3d8debb409bc97045b559f408d2b8cefa6a077a73df14dbf4d8780d976b1/numpy-2.0.1-cp312-cp312-macosx_14_0_arm64.whl",
+        "version": "2.0.1"
+      },
+      "opt-einsum": {
+        "is_direct": false,
+        "sha256": "2455e59e3947d3c275477df7f5205b30635e266fe6dc300e3d9f9646bfcea147",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/bc/19/404708a7e54ad2798907210462fd950c3442ea51acc8790f3da48d2bee8b/opt_einsum-3.3.0-py3-none-any.whl",
+        "version": "3.3.0"
+      },
+      "orbax-checkpoint": {
+        "is_direct": false,
+        "sha256": "ac2d11f7983f02c66a0be137771f42fee01b66741e70bfc79b3bd60f3c379b86",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/d7/c4/16267a433ce5049639a96bcb69127950045a7ce76625366938014c1a74c0/orbax_checkpoint-0.5.21.tar.gz",
+        "version": "0.5.21"
+      },
+      "protobuf": {
+        "is_direct": false,
+        "sha256": "a109916aaac42bff84702fb5187f3edadbc7c97fc2c99c5ff81dd15dcce0d1e5",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/75/44/6ae304790fad936bb4cf09907a05d669b7600458a02b6c960fdaaeeab06e/protobuf-5.27.2-cp38-abi3-macosx_10_9_universal2.whl",
+        "version": "5.27.2"
+      },
+      "pyyaml": {
+        "is_direct": false,
+        "sha256": "40df9b996c2b73138957fe23a16a4f0ba614f4c0efce1e9406a184b6d07fa3a9",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/84/02/404de95ced348b73dd84f70e15a41843d817ff8c1744516bf78358f2ffd2/PyYAML-6.0.1-cp312-cp312-macosx_11_0_arm64.whl",
+        "version": "6.0.1"
+      },
+      "scipy": {
+        "is_direct": false,
+        "sha256": "64b2ff514a98cf2bb734a9f90d32dc89dc6ad4a4a36a312cd0d6327170339eb0",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/09/70/5e756d3f90fe3fff64d1550db0fa6bb9eb76eedd084c568618f93441f08c/scipy-1.14.0-cp312-cp312-macosx_14_0_arm64.whl",
+        "version": "1.14.0"
+      },
+      "tensorstore": {
+        "is_direct": false,
+        "sha256": "355f2252e9d21122734b431394f4b18489ed42f20c21a923bbb8f2a2fe05ca3c",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/1b/a7/3ad6443915d148e111d31de756452e19f8e1292c493d5cadcb4c57e1c7c7/tensorstore-0.1.63-cp312-cp312-macosx_11_0_arm64.whl",
+        "version": "0.1.63"
+      },
+      "typing-extensions": {
+        "is_direct": false,
+        "sha256": "04e5ca0351e0f3f85c6853954072df659d0d13fac324d0072316b67d7794700d",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/26/9f/ad63fc0248c5379346306f8668cda6e2e2e9c95e01216d2b8ffd9ff037d0/typing_extensions-4.12.2-py3-none-any.whl",
+        "version": "4.12.2"
+      },
+      "zipp": {
+        "is_direct": false,
+        "sha256": "f091755f667055f2d02b32c53771a7a6c8b47e1fdbc4b72a8b9072b3eef8015c",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/20/38/f5c473fe9b90c8debdd29ea68d5add0289f1936d6f923b6b9cc0b931194c/zipp-3.19.2-py3-none-any.whl",
+        "version": "3.19.2"
+      }
+    },
+    "targets": {
+      "default": {
+        "absl-py": [],
+        "etils": [
+          "fsspec",
+          "importlib-resources",
+          "typing-extensions",
+          "zipp"
+        ],
+        "fsspec": [],
+        "importlib-resources": [],
+        "jax": [
+          "jaxlib",
+          "ml-dtypes",
+          "numpy",
+          "opt-einsum",
+          "scipy"
+        ],
+        "jaxlib": [
+          "ml-dtypes",
+          "numpy",
+          "scipy"
+        ],
+        "ml-dtypes": [
+          "numpy"
+        ],
+        "msgpack": [],
+        "nest-asyncio": [],
+        "numpy": [],
+        "opt-einsum": [
+          "numpy"
+        ],
+        "orbax-checkpoint": [
+          "absl-py",
+          "etils",
+          "jax",
+          "jaxlib",
+          "msgpack",
+          "nest-asyncio",
+          "numpy",
+          "protobuf",
+          "pyyaml",
+          "tensorstore",
+          "typing-extensions"
+        ],
+        "protobuf": [],
+        "pyyaml": [],
+        "scipy": [
+          "numpy"
+        ],
+        "tensorstore": [
+          "ml-dtypes",
+          "numpy"
+        ],
+        "typing-extensions": [],
+        "zipp": []
+      }
+    }
+  },
+  "invalidationHash": "480e5090db2cb63a871deec7f21794302dca04c89375342a32518c0760f3e846"
+}

@@ -1,0 +1,66 @@
+{
+  "fetchPipMetadata": {
+    "sources": {
+      "coverage": {
+        "is_direct": false,
+        "sha256": "0086cd4fc71b7d485ac93ca4239c8f75732c2ae3ba83f6be1c9be59d9e2c6382",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/f2/aa/0419103c357bfd95a65d7b2e2249f9f1d79194241c5e87819cd81d36b96c/coverage-7.6.0-cp312-cp312-manylinux_2_5_x86_64.manylinux1_x86_64.manylinux_2_17_x86_64.manylinux2014_x86_64.whl",
+        "version": "7.6.0"
+      },
+      "iniconfig": {
+        "is_direct": false,
+        "sha256": "b6a85871a79d2e3b22d2d1b94ac2824226a63c6b741c88f7ae975f18b6778374",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/ef/a6/62565a6e1cf69e10f5727360368e451d4b7f58beeac6173dc9db836a5b46/iniconfig-2.0.0-py3-none-any.whl",
+        "version": "2.0.0"
+      },
+      "packaging": {
+        "is_direct": false,
+        "sha256": "5b8f2217dbdbd2f7f384c41c628544e6d52f2d0f53c6d0c3ea61aa5d1d7ff124",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/08/aa/cc0199a5f0ad350994d660967a8efb233fe0416e4639146c089643407ce6/packaging-24.1-py3-none-any.whl",
+        "version": "24.1"
+      },
+      "pluggy": {
+        "is_direct": false,
+        "sha256": "44e1ad92c8ca002de6377e165f3e0f1be63266ab4d554740532335b9d75ea669",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/88/5f/e351af9a41f866ac3f1fac4ca0613908d9a41741cfcf2228f4ad853b697d/pluggy-1.5.0-py3-none-any.whl",
+        "version": "1.5.0"
+      },
+      "pytest": {
+        "is_direct": false,
+        "sha256": "e9600ccf4f563976e2c99fa02c7624ab938296551f280835ee6516df8bc4ae8c",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/b9/77/ccea391104f576a6e54a54334fc26d29c28aa0ec85714c781fbd2c34ac86/pytest-8.3.1-py3-none-any.whl",
+        "version": "8.3.1"
+      },
+      "pytest-cov": {
+        "is_direct": false,
+        "sha256": "5837b58e9f6ebd335b0f8060eecce69b662415b16dc503883a02f45dfeb14857",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/74/67/00efc8d11b630c56f15f4ad9c7f9223f1e5ec275aaae3fa9118c6a223ad2/pytest-cov-5.0.0.tar.gz",
+        "version": "5.0.0"
+      }
+    },
+    "targets": {
+      "default": {
+        "coverage": [],
+        "iniconfig": [],
+        "packaging": [],
+        "pluggy": [],
+        "pytest": [
+          "iniconfig",
+          "packaging",
+          "pluggy"
+        ],
+        "pytest-cov": [
+          "coverage",
+          "pytest"
+        ]
+      }
+    }
+  },
+  "invalidationHash": "0c800dd403afb692f2d336c46dade9311c0aeffdca8ef5db1672a92aec88b794"
+}

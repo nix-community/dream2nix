@@ -1,0 +1,19 @@
+{
+  "fetchPipMetadata": {
+    "sources": {
+      "colorlog": {
+        "is_direct": false,
+        "sha256": "3e3e079a41feb5a1b64f978b5ea4f46040a94f11f0e8bbb8261e3dbbeca64d44",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/db/38/2992ff192eaa7dd5a793f8b6570d6bbe887c4fbbf7e72702eb0a693a01c8/colorlog-6.8.2.tar.gz",
+        "version": "6.8.2"
+      }
+    },
+    "targets": {
+      "default": {
+        "colorlog": []
+      }
+    }
+  },
+  "invalidationHash": "cb2b5f31e9610f4468374be561ac18adc4429400cc1eece123daaa06a3e4b4f8"
+}

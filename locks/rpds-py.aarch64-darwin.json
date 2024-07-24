@@ -1,0 +1,19 @@
+{
+  "fetchPipMetadata": {
+    "sources": {
+      "rpds-py": {
+        "is_direct": false,
+        "sha256": "4fdc9afadbeb393b4bbbad75481e0ea78e4469f2e1d713a90811700830b553a9",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/36/a2/83c3e2024cefb9a83d832e8835f9db0737a7a2b04ddfdd241c650b703db0/rpds_py-0.19.0.tar.gz",
+        "version": "0.19.0"
+      }
+    },
+    "targets": {
+      "default": {
+        "rpds-py": []
+      }
+    }
+  },
+  "invalidationHash": "b556d78e6959431f88d53aa3f3462d698492d181ac86962a050680903caf2f8e"
+}

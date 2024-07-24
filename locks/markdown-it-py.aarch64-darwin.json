@@ -1,0 +1,29 @@
+{
+  "fetchPipMetadata": {
+    "sources": {
+      "markdown-it-py": {
+        "is_direct": false,
+        "sha256": "e3f60a94fa066dc52ec76661e37c851cb232d92f9886b15cb560aaada2df8feb",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/38/71/3b932df36c1a044d397a1f92d1cf91ee0a503d91e470cbd670aa66b07ed0/markdown-it-py-3.0.0.tar.gz",
+        "version": "3.0.0"
+      },
+      "mdurl": {
+        "is_direct": false,
+        "sha256": "84008a41e51615a49fc9966191ff91509e3c40b939176e643fd50a5c2196b8f8",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/b3/38/89ba8ad64ae25be8de66a6d463314cf1eb366222074cfda9ee839c56a4b4/mdurl-0.1.2-py3-none-any.whl",
+        "version": "0.1.2"
+      }
+    },
+    "targets": {
+      "default": {
+        "markdown-it-py": [
+          "mdurl"
+        ],
+        "mdurl": []
+      }
+    }
+  },
+  "invalidationHash": "0063c56781fadc9ddaec31f2873772e6c93febd4f3077f9a1215d6599e683b3a"
+}

@@ -1,0 +1,19 @@
+{
+  "fetchPipMetadata": {
+    "sources": {
+      "tomli": {
+        "is_direct": false,
+        "sha256": "de526c12914f0c550d15924c62d72abc48d6fe7364aa87328337a31007fe8a4f",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/c0/3f/d7af728f075fb08564c5949a9c95e44352e23dee646869fa104a3b2060a3/tomli-2.0.1.tar.gz",
+        "version": "2.0.1"
+      }
+    },
+    "targets": {
+      "default": {
+        "tomli": []
+      }
+    }
+  },
+  "invalidationHash": "1f2be60851a4a16411b4ea0201963a5a72451c550a3ace837fbf1c3012d0e37e"
+}

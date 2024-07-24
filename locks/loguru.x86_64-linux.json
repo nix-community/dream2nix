@@ -1,0 +1,19 @@
+{
+  "fetchPipMetadata": {
+    "sources": {
+      "loguru": {
+        "is_direct": false,
+        "sha256": "e671a53522515f34fd406340ee968cb9ecafbc4b36c679da03c18fd8d0bd51ac",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/9e/30/d87a423766b24db416a46e9335b9602b054a72b96a88a241f2b09b560fa8/loguru-0.7.2.tar.gz",
+        "version": "0.7.2"
+      }
+    },
+    "targets": {
+      "default": {
+        "loguru": []
+      }
+    }
+  },
+  "invalidationHash": "f32a07271c0a169b8db8fbcae2406fb2749e8328f57afef957d09fcbe0f8ef10"
+}

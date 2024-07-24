@@ -1,0 +1,19 @@
+{
+  "fetchPipMetadata": {
+    "sources": {
+      "backoff": {
+        "is_direct": false,
+        "sha256": "03f829f5bb1923180821643f8753b0502c3b682293992485b0eef2807afa5cba",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/47/d7/5bbeb12c44d7c4f2fb5b56abce497eb5ed9f34d85701de869acedd602619/backoff-2.2.1.tar.gz",
+        "version": "2.2.1"
+      }
+    },
+    "targets": {
+      "default": {
+        "backoff": []
+      }
+    }
+  },
+  "invalidationHash": "fe12516f2c9200679d97bb6da9de2e0bf8889d07cd3430205e62ebcdbe6d5076"
+}

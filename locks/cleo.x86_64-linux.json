@@ -1,0 +1,38 @@
+{
+  "fetchPipMetadata": {
+    "sources": {
+      "cleo": {
+        "is_direct": false,
+        "sha256": "0b2c880b5d13660a7ea651001fb4acb527696c01f15c9ee650f377aa543fd523",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/3c/30/f7960ed7041b158301c46774f87620352d50a9028d111b4211187af13783/cleo-2.1.0.tar.gz",
+        "version": "2.1.0"
+      },
+      "crashtest": {
+        "is_direct": false,
+        "sha256": "8d23eac5fa660409f57472e3851dab7ac18aba459a8d19cbbba86d3d5aecd2a5",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/b0/5c/3ba7d12e7a79566f97b8f954400926d7b6eb33bcdccc1315a857f200f1f1/crashtest-0.4.1-py3-none-any.whl",
+        "version": "0.4.1"
+      },
+      "rapidfuzz": {
+        "is_direct": false,
+        "sha256": "db0bf0663b4b6da1507869722420ea9356b6195aa907228d6201303e69837af9",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/0f/b0/ba391db47a5ae3139c97b68f97248c79c794293818be26899dbaee9d16c8/rapidfuzz-3.9.4-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl",
+        "version": "3.9.4"
+      }
+    },
+    "targets": {
+      "default": {
+        "cleo": [
+          "crashtest",
+          "rapidfuzz"
+        ],
+        "crashtest": [],
+        "rapidfuzz": []
+      }
+    }
+  },
+  "invalidationHash": "f7613361977166e8593c7a2ec31a910bb6aa18bc852a7c5ef5eb710f3d2f7ed4"
+}

@@ -1,0 +1,19 @@
+{
+  "fetchPipMetadata": {
+    "sources": {
+      "orjson": {
+        "is_direct": false,
+        "sha256": "e54b63d0a7c6c54a5f5f726bc93a2078111ef060fec4ecbf34c5db800ca3b3a7",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/70/24/8be1c9f6d21e3c510c441d6cbb6f3a75f2538b42a45f0c17ffb2182882f1/orjson-3.10.6.tar.gz",
+        "version": "3.10.6"
+      }
+    },
+    "targets": {
+      "default": {
+        "orjson": []
+      }
+    }
+  },
+  "invalidationHash": "6be2b7092afcc56c3f3a072d47bc3e1f82397174c8da144afd046c6e60f70db0"
+}

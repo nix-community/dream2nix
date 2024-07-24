@@ -1,0 +1,79 @@
+{
+  "fetchPipMetadata": {
+    "sources": {
+      "boto3": {
+        "is_direct": false,
+        "sha256": "2f3e88b10b8fcc5f6100a9d74cd28230edc9d4fa226d99dd40a3ab38ac213673",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/42/e5/738f7bf96f4f5597c8393e11be2c28bef5f876b5635c1ea9d86888e59657/boto3-1.34.144.tar.gz",
+        "version": "1.34.144"
+      },
+      "botocore": {
+        "is_direct": false,
+        "sha256": "2e72e262de02adcb0264ac2bac159a28f55dbba8d9e52aa0308773a42950dff5",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/35/48/86b595223cd3159aa3e211a3552ece7bfbcf0d75689465f3c95754f43d26/botocore-1.34.145-py3-none-any.whl",
+        "version": "1.34.145"
+      },
+      "jmespath": {
+        "is_direct": false,
+        "sha256": "02e2e4cc71b5bcab88332eebf907519190dd9e6e82107fa7f83b1003a6252980",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/31/b4/b9b800c45527aadd64d5b442f9b932b00648617eb5d63d2c7a6587b7cafc/jmespath-1.0.1-py3-none-any.whl",
+        "version": "1.0.1"
+      },
+      "python-dateutil": {
+        "is_direct": false,
+        "sha256": "a8b2bc7bffae282281c8140a97d3aa9c14da0b136dfe83f850eea9a5f7470427",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/ec/57/56b9bcc3c9c6a792fcbaf139543cee77261f3651ca9da0c93f5c1221264b/python_dateutil-2.9.0.post0-py2.py3-none-any.whl",
+        "version": "2.9.0.post0"
+      },
+      "s3transfer": {
+        "is_direct": false,
+        "sha256": "eca1c20de70a39daee580aef4986996620f365c4e0fda6a86100231d62f1bf69",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/3c/4a/b221409913760d26cf4498b7b1741d510c82d3ad38381984a3ddc135ec66/s3transfer-0.10.2-py3-none-any.whl",
+        "version": "0.10.2"
+      },
+      "six": {
+        "is_direct": false,
+        "sha256": "8abb2f1d86890a2dfb989f9a77cfcfd3e47c2a354b01111771326f8aa26e0254",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/d9/5a/e7c31adbe875f2abbb91bd84cf2dc52d792b5a01506781dbcf25c91daf11/six-1.16.0-py2.py3-none-any.whl",
+        "version": "1.16.0"
+      },
+      "urllib3": {
+        "is_direct": false,
+        "sha256": "a448b2f64d686155468037e1ace9f2d2199776e17f0a46610480d311f73e3472",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/ca/1c/89ffc63a9605b583d5df2be791a27bc1a42b7c32bab68d3c8f2f73a98cd4/urllib3-2.2.2-py3-none-any.whl",
+        "version": "2.2.2"
+      }
+    },
+    "targets": {
+      "default": {
+        "boto3": [
+          "botocore",
+          "jmespath",
+          "s3transfer"
+        ],
+        "botocore": [
+          "jmespath",
+          "python-dateutil",
+          "urllib3"
+        ],
+        "jmespath": [],
+        "python-dateutil": [
+          "six"
+        ],
+        "s3transfer": [
+          "botocore"
+        ],
+        "six": [],
+        "urllib3": []
+      }
+    }
+  },
+  "invalidationHash": "b440a26dbbfeeec070281a47e9c007374c329fca42aa45ba99aad87cae7cebfd"
+}

@@ -1,0 +1,38 @@
+{
+  "fetchPipMetadata": {
+    "sources": {
+      "numpy": {
+        "is_direct": false,
+        "sha256": "5daab361be6ddeb299a918a7c0864fa8618af66019138263247af405018b04e1",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/c2/da/3d8debb409bc97045b559f408d2b8cefa6a077a73df14dbf4d8780d976b1/numpy-2.0.1-cp312-cp312-macosx_14_0_arm64.whl",
+        "version": "2.0.1"
+      },
+      "patsy": {
+        "is_direct": false,
+        "sha256": "95c6d47a7222535f84bff7f63d7303f2e297747a598db89cf5c67f0c0c7d2cdb",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/c6/18/12e76e52d589c4a812a2f1fb2406b486c226b7ac263ac8ef4b5f4bb04058/patsy-0.5.6.tar.gz",
+        "version": "0.5.6"
+      },
+      "six": {
+        "is_direct": false,
+        "sha256": "8abb2f1d86890a2dfb989f9a77cfcfd3e47c2a354b01111771326f8aa26e0254",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/d9/5a/e7c31adbe875f2abbb91bd84cf2dc52d792b5a01506781dbcf25c91daf11/six-1.16.0-py2.py3-none-any.whl",
+        "version": "1.16.0"
+      }
+    },
+    "targets": {
+      "default": {
+        "numpy": [],
+        "patsy": [
+          "numpy",
+          "six"
+        ],
+        "six": []
+      }
+    }
+  },
+  "invalidationHash": "3e993c32d562227643c5b75ca1abdf67fb0ce4858258054771416f62f6051731"
+}

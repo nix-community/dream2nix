@@ -1,0 +1,47 @@
+{
+  "fetchPipMetadata": {
+    "sources": {
+      "grpcio": {
+        "is_direct": false,
+        "sha256": "aaf3c54419a28d45bd1681372029f40e5bfb58e5265e3882eaf21e4a5f81a119",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/ab/95/15e4bbdbbb0c1e52e758786d4d020f733e9fc5fd10cf1a17379636e576de/grpcio-1.65.1-cp312-cp312-macosx_10_9_universal2.whl",
+        "version": "1.65.1"
+      },
+      "grpcio-tools": {
+        "is_direct": false,
+        "sha256": "24cffe8bc90fb8237f0bcf240bd6c70304255fe27b69db32601499a043f871be",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/57/d6/5135ee86be0501178a3f18c691cf25c1c9c33c6dd6395d286dfc0af9d54e/grpcio_tools-1.65.1.tar.gz",
+        "version": "1.65.1"
+      },
+      "protobuf": {
+        "is_direct": false,
+        "sha256": "a109916aaac42bff84702fb5187f3edadbc7c97fc2c99c5ff81dd15dcce0d1e5",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/75/44/6ae304790fad936bb4cf09907a05d669b7600458a02b6c960fdaaeeab06e/protobuf-5.27.2-cp38-abi3-macosx_10_9_universal2.whl",
+        "version": "5.27.2"
+      },
+      "setuptools": {
+        "is_direct": false,
+        "sha256": "33874fdc59b3188304b2e7c80d9029097ea31627180896fb549c578ceb8a0855",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/51/a0/ee460cc54e68afcf33190d198299c9579a5eafeadef0016ae8563237ccb6/setuptools-71.1.0-py3-none-any.whl",
+        "version": "71.1.0"
+      }
+    },
+    "targets": {
+      "default": {
+        "grpcio": [],
+        "grpcio-tools": [
+          "grpcio",
+          "protobuf",
+          "setuptools"
+        ],
+        "protobuf": [],
+        "setuptools": []
+      }
+    }
+  },
+  "invalidationHash": "f99f287d52bf19904a13feb39cd5c9c53534a6ef2b44da90a888baf1f9d41f76"
+}

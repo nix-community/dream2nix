@@ -1,0 +1,19 @@
+{
+  "fetchPipMetadata": {
+    "sources": {
+      "asgiref": {
+        "is_direct": false,
+        "sha256": "c343bd80a0bec947a9860adb4c432ffa7db769836c64238fc34bdc3fec84d590",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/29/38/b3395cc9ad1b56d2ddac9970bc8f4141312dbaec28bc7c218b0dfafd0f42/asgiref-3.8.1.tar.gz",
+        "version": "3.8.1"
+      }
+    },
+    "targets": {
+      "default": {
+        "asgiref": []
+      }
+    }
+  },
+  "invalidationHash": "2c586df9ebb3b36836fe281e176bf7724803bf9fe088e9471f947e7f89bfd547"
+}

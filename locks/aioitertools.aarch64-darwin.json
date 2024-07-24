@@ -1,0 +1,19 @@
+{
+  "fetchPipMetadata": {
+    "sources": {
+      "aioitertools": {
+        "is_direct": false,
+        "sha256": "42c68b8dd3a69c2bf7f2233bf7df4bb58b557bca5252ac02ed5187bbc67d6831",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/4a/e6/888e1d726f0846c84e14a0f2f57873819eff9278b394d632aed979c98fbd/aioitertools-0.11.0.tar.gz",
+        "version": "0.11.0"
+      }
+    },
+    "targets": {
+      "default": {
+        "aioitertools": []
+      }
+    }
+  },
+  "invalidationHash": "64b99a8ef0e1518c8c10025503c47f414ca094cde90a497ea3b164a0949c0299"
+}

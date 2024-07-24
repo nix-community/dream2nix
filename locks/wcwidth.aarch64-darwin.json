@@ -1,0 +1,19 @@
+{
+  "fetchPipMetadata": {
+    "sources": {
+      "wcwidth": {
+        "is_direct": false,
+        "sha256": "72ea0c06399eb286d978fdedb6923a9eb47e1c486ce63e9b4e64fc18303972b5",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/6c/63/53559446a878410fc5a5974feb13d31d78d752eb18aeba59c7fef1af7598/wcwidth-0.2.13.tar.gz",
+        "version": "0.2.13"
+      }
+    },
+    "targets": {
+      "default": {
+        "wcwidth": []
+      }
+    }
+  },
+  "invalidationHash": "a98953cc93355f424cb1159f531db8457fd311a19bef026578f07c705cbf5a04"
+}

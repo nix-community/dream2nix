@@ -1,0 +1,19 @@
+{
+  "fetchPipMetadata": {
+    "sources": {
+      "pycryptodomex": {
+        "is_direct": false,
+        "sha256": "7a710b79baddd65b806402e14766c721aee8fb83381769c27920f26476276c1e",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/31/a4/b03a16637574312c1b54c55aedeed8a4cb7d101d44058d46a0e5706c63e1/pycryptodomex-3.20.0.tar.gz",
+        "version": "3.20.0"
+      }
+    },
+    "targets": {
+      "default": {
+        "pycryptodomex": []
+      }
+    }
+  },
+  "invalidationHash": "a563f54fc725cb48f93abcd5440af1d15d614891c6aa72830f205a4b4196e2a2"
+}

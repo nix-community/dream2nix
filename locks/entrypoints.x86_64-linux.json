@@ -1,0 +1,19 @@
+{
+  "fetchPipMetadata": {
+    "sources": {
+      "entrypoints": {
+        "is_direct": false,
+        "sha256": "b706eddaa9218a19ebcd67b56818f05bb27589b1ca9e8d797b74affad4ccacd4",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/ea/8d/a7121ffe5f402dc015277d2d31eb82d2187334503a011c18f2e78ecbb9b2/entrypoints-0.4.tar.gz",
+        "version": "0.4"
+      }
+    },
+    "targets": {
+      "default": {
+        "entrypoints": []
+      }
+    }
+  },
+  "invalidationHash": "45dc9a5e80b82af3ad9603eaad525a1b85c5bb6601e035cd26674d90d9672974"
+}

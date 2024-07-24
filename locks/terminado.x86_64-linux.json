@@ -1,0 +1,38 @@
+{
+  "fetchPipMetadata": {
+    "sources": {
+      "ptyprocess": {
+        "is_direct": false,
+        "sha256": "4b41f3967fce3af57cc7e94b888626c18bf37a083e3651ca8feeb66d492fef35",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/22/a6/858897256d0deac81a172289110f31629fc4cee19b6f01283303e18c8db3/ptyprocess-0.7.0-py2.py3-none-any.whl",
+        "version": "0.7.0"
+      },
+      "terminado": {
+        "is_direct": false,
+        "sha256": "de09f2c4b85de4765f7714688fff57d3e75bad1f909b589fde880460c753fd2e",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/8a/11/965c6fd8e5cc254f1fe142d547387da17a8ebfd75a3455f637c663fb38a0/terminado-0.18.1.tar.gz",
+        "version": "0.18.1"
+      },
+      "tornado": {
+        "is_direct": false,
+        "sha256": "613bf4ddf5c7a95509218b149b555621497a6cc0d46ac341b30bd9ec19eac7f3",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/22/d4/54f9d12668b58336bd30defe0307e6c61589a3e687b05c366f804b7faaf0/tornado-6.4.1-cp38-abi3-manylinux_2_5_x86_64.manylinux1_x86_64.manylinux_2_17_x86_64.manylinux2014_x86_64.whl",
+        "version": "6.4.1"
+      }
+    },
+    "targets": {
+      "default": {
+        "ptyprocess": [],
+        "terminado": [
+          "ptyprocess",
+          "tornado"
+        ],
+        "tornado": []
+      }
+    }
+  },
+  "invalidationHash": "dbe20a9971c998853998f01bc171c2fdf814b92c4bd2efb0ed975b2458860d7e"
+}

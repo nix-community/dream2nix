@@ -1,0 +1,56 @@
+{
+  "fetchPipMetadata": {
+    "sources": {
+      "hatchling": {
+        "is_direct": false,
+        "sha256": "7064631a512610b52250a4d3ff1bd81551d6d1431c4eb7b72e734df6c74f4262",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/a3/51/8a4a67a8174ce59cf49e816e38e9502900aea9b4af672d0127df8e10d3b0/hatchling-1.25.0.tar.gz",
+        "version": "1.25.0"
+      },
+      "packaging": {
+        "is_direct": false,
+        "sha256": "5b8f2217dbdbd2f7f384c41c628544e6d52f2d0f53c6d0c3ea61aa5d1d7ff124",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/08/aa/cc0199a5f0ad350994d660967a8efb233fe0416e4639146c089643407ce6/packaging-24.1-py3-none-any.whl",
+        "version": "24.1"
+      },
+      "pathspec": {
+        "is_direct": false,
+        "sha256": "a0d503e138a4c123b27490a4f7beda6a01c6f288df0e4a8b79c7eb0dc7b4cc08",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/cc/20/ff623b09d963f88bfde16306a54e12ee5ea43e9b597108672ff3a408aad6/pathspec-0.12.1-py3-none-any.whl",
+        "version": "0.12.1"
+      },
+      "pluggy": {
+        "is_direct": false,
+        "sha256": "44e1ad92c8ca002de6377e165f3e0f1be63266ab4d554740532335b9d75ea669",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/88/5f/e351af9a41f866ac3f1fac4ca0613908d9a41741cfcf2228f4ad853b697d/pluggy-1.5.0-py3-none-any.whl",
+        "version": "1.5.0"
+      },
+      "trove-classifiers": {
+        "is_direct": false,
+        "sha256": "ccc57a33717644df4daca018e7ec3ef57a835c48e96a1e71fc07eb7edac67af6",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/0f/b0/09794439a62a7dc18bffdbf145aaf50297fd994890b11da27a13e376b947/trove_classifiers-2024.7.2-py3-none-any.whl",
+        "version": "2024.7.2"
+      }
+    },
+    "targets": {
+      "default": {
+        "hatchling": [
+          "packaging",
+          "pathspec",
+          "pluggy",
+          "trove-classifiers"
+        ],
+        "packaging": [],
+        "pathspec": [],
+        "pluggy": [],
+        "trove-classifiers": []
+      }
+    }
+  },
+  "invalidationHash": "643f36224f7813b9003effba8fbc997eacb1c4a78ccb3e144e6578bf2b04ca92"
+}

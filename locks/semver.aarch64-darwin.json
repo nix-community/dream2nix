@@ -1,0 +1,19 @@
+{
+  "fetchPipMetadata": {
+    "sources": {
+      "semver": {
+        "is_direct": false,
+        "sha256": "6253adb39c70f6e51afed2fa7152bcd414c411286088fb4b9effb133885ab4cc",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/41/6c/a536cc008f38fd83b3c1b98ce19ead13b746b5588c9a0cb9dd9f6ea434bc/semver-3.0.2.tar.gz",
+        "version": "3.0.2"
+      }
+    },
+    "targets": {
+      "default": {
+        "semver": []
+      }
+    }
+  },
+  "invalidationHash": "998baf4d48b81823e3a4cbf1de40f74015823ac427eba796a92ca62c154d130f"
+}

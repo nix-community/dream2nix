@@ -1,0 +1,19 @@
+{
+  "fetchPipMetadata": {
+    "sources": {
+      "azure-common": {
+        "is_direct": false,
+        "sha256": "4ac0cd3214e36b6a1b6a442686722a5d8cc449603aa833f3f0f40bda836704a3",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/3e/71/f6f71a276e2e69264a97ad39ef850dca0a04fce67b12570730cb38d0ccac/azure-common-1.1.28.zip",
+        "version": "1.1.28"
+      }
+    },
+    "targets": {
+      "default": {
+        "azure-common": []
+      }
+    }
+  },
+  "invalidationHash": "2506877fc6b11e0c0e656c0ed5ede0dc1801e7507bc5e66d6ce1923369dd2421"
+}

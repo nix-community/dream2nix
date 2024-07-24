@@ -1,0 +1,69 @@
+{
+  "fetchPipMetadata": {
+    "sources": {
+      "bcrypt": {
+        "is_direct": false,
+        "sha256": "c52aac18ea1f4a4f65963ea4f9530c306b56ccd0c6f8c8da0c06976e34a6e841",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/96/86/8c6a84daed4dd878fbab094400c9174c43d9b838ace077a2f8ee8bc3ae12/bcrypt-4.2.0-cp39-abi3-macosx_10_12_universal2.whl",
+        "version": "4.2.0"
+      },
+      "cffi": {
+        "is_direct": false,
+        "sha256": "68e7c44931cc171c54ccb702482e9fc723192e88d25a0e133edd7aff8fcd1f6e",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/b4/f6/b28d2bfb5fca9e8f9afc9d05eae245bed9f6ba5c2897fefee7a9abeaf091/cffi-1.16.0-cp312-cp312-macosx_11_0_arm64.whl",
+        "version": "1.16.0"
+      },
+      "cryptography": {
+        "is_direct": false,
+        "sha256": "7b3f5fe74a5ca32d4d0f302ffe6680fcc5c28f8ef0dc0ae8f40c0f3a1b4fca66",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/66/d7/397515233e6a861f921bd0365b162b38e0cc513fcf4f1bdd9cc7bc5a3384/cryptography-43.0.0-cp39-abi3-macosx_10_9_universal2.whl",
+        "version": "43.0.0"
+      },
+      "paramiko": {
+        "is_direct": false,
+        "sha256": "aac08f26a31dc4dffd92821527d1682d99d52f9ef6851968114a8728f3c274d3",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/cc/af/11996c4df4f9caff87997ad2d3fd8825078c277d6a928446d2b6cf249889/paramiko-3.4.0.tar.gz",
+        "version": "3.4.0"
+      },
+      "pycparser": {
+        "is_direct": false,
+        "sha256": "c3702b6d3dd8c7abc1afa565d7e63d53a1d0bd86cdc24edd75470f4de499cfcc",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/13/a3/a812df4e2dd5696d1f351d58b8fe16a405b234ad2886a0dab9183fb78109/pycparser-2.22-py3-none-any.whl",
+        "version": "2.22"
+      },
+      "pynacl": {
+        "is_direct": false,
+        "sha256": "401002a4aaa07c9414132aaed7f6836ff98f59277a234704ff66878c2ee4a0d1",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/ce/75/0b8ede18506041c0bf23ac4d8e2971b4161cd6ce630b177d0a08eb0d8857/PyNaCl-1.5.0-cp36-abi3-macosx_10_10_universal2.whl",
+        "version": "1.5.0"
+      }
+    },
+    "targets": {
+      "default": {
+        "bcrypt": [],
+        "cffi": [
+          "pycparser"
+        ],
+        "cryptography": [
+          "cffi"
+        ],
+        "paramiko": [
+          "bcrypt",
+          "cryptography",
+          "pynacl"
+        ],
+        "pycparser": [],
+        "pynacl": [
+          "cffi"
+        ]
+      }
+    }
+  },
+  "invalidationHash": "d1f37c5b14fef2cfed3703e27f2f8b103d0feb05df20bcc48e5b9eda521c05c1"
+}

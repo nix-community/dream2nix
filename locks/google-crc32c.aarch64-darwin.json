@@ -1,0 +1,19 @@
+{
+  "fetchPipMetadata": {
+    "sources": {
+      "google-crc32c": {
+        "is_direct": false,
+        "sha256": "89284716bc6a5a415d4eaa11b1726d2d60a0cd12aadf5439828353662ede9dd7",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/d3/a5/4bb58448fffd36ede39684044df93a396c13d1ea3516f585767f9f960352/google-crc32c-1.5.0.tar.gz",
+        "version": "1.5.0"
+      }
+    },
+    "targets": {
+      "default": {
+        "google-crc32c": []
+      }
+    }
+  },
+  "invalidationHash": "146d92ec923e2c82cad324cd7e9c814b9809985aeee3937bc172f6756b5fd892"
+}

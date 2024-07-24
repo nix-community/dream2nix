@@ -1,0 +1,39 @@
+{
+  "fetchPipMetadata": {
+    "sources": {
+      "gitdb": {
+        "is_direct": false,
+        "sha256": "81a3407ddd2ee8df444cbacea00e2d038e40150acfa3001696fe0dcf1d3adfa4",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/fd/5b/8f0c4a5bb9fd491c277c21eff7ccae71b47d43c4446c9d0c6cff2fe8c2c4/gitdb-4.0.11-py3-none-any.whl",
+        "version": "4.0.11"
+      },
+      "gitpython": {
+        "is_direct": false,
+        "sha256": "35f314a9f878467f5453cc1fee295c3e18e52f1b99f10f6cf5b1682e968a9e7c",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/b6/a1/106fd9fa2dd989b6fb36e5893961f82992cf676381707253e0bf93eb1662/GitPython-3.1.43.tar.gz",
+        "version": "3.1.43"
+      },
+      "smmap": {
+        "is_direct": false,
+        "sha256": "e6d8668fa5f93e706934a62d7b4db19c8d9eb8cf2adbb75ef1b675aa332b69da",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/a7/a5/10f97f73544edcdef54409f1d839f6049a0d79df68adbc1ceb24d1aaca42/smmap-5.0.1-py3-none-any.whl",
+        "version": "5.0.1"
+      }
+    },
+    "targets": {
+      "default": {
+        "gitdb": [
+          "smmap"
+        ],
+        "gitpython": [
+          "gitdb"
+        ],
+        "smmap": []
+      }
+    }
+  },
+  "invalidationHash": "e98df47c04909c9d416a6c2d8fe0607f2dfd52a538e7012f8f5041cc62976aa5"
+}

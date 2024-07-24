@@ -1,0 +1,19 @@
+{
+  "fetchPipMetadata": {
+    "sources": {
+      "smdebug-rulesconfig": {
+        "is_direct": false,
+        "sha256": "7a19e6eb2e6bcfefbc07e4a86ef7a88f32495001a038bf28c7d8e77ab793fcd6",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/cc/7d/8ad6a2098e03c1f811d1277a2cedb81265828f144f6d323b83a2392e8bb9/smdebug_rulesconfig-1.0.1.tar.gz",
+        "version": "1.0.1"
+      }
+    },
+    "targets": {
+      "default": {
+        "smdebug-rulesconfig": []
+      }
+    }
+  },
+  "invalidationHash": "09814a55ba1879ce6cd05cca9b20697edf581195df0a2e4b0392ac4179b6641d"
+}

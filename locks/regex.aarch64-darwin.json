@@ -1,0 +1,19 @@
+{
+  "fetchPipMetadata": {
+    "sources": {
+      "regex": {
+        "is_direct": false,
+        "sha256": "d3ee02d9e5f482cc8309134a91eeaacbdd2261ba111b0fef3748eeb4913e6a2c",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/7a/db/5ddc89851e9cc003929c3b08b9b88b429459bf9acbf307b4556d51d9e49b/regex-2024.5.15.tar.gz",
+        "version": "2024.5.15"
+      }
+    },
+    "targets": {
+      "default": {
+        "regex": []
+      }
+    }
+  },
+  "invalidationHash": "c9851a1ec473a7d8209e8fd25749c14d2d2034b2874df9e546d837d3fd3bbb02"
+}

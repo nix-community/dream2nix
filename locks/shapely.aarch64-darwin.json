@@ -1,0 +1,29 @@
+{
+  "fetchPipMetadata": {
+    "sources": {
+      "numpy": {
+        "is_direct": false,
+        "sha256": "5daab361be6ddeb299a918a7c0864fa8618af66019138263247af405018b04e1",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/c2/da/3d8debb409bc97045b559f408d2b8cefa6a077a73df14dbf4d8780d976b1/numpy-2.0.1-cp312-cp312-macosx_14_0_arm64.whl",
+        "version": "2.0.1"
+      },
+      "shapely": {
+        "is_direct": false,
+        "sha256": "bff2366bc786bfa6cb353d6b47d0443c570c32776612e527ee47b6df63fcfe32",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/ad/99/c47247f4d688bbb5346df5ff1de5d9792b6d95cbbb2fd7b71f45901c1878/shapely-2.0.5.tar.gz",
+        "version": "2.0.5"
+      }
+    },
+    "targets": {
+      "default": {
+        "numpy": [],
+        "shapely": [
+          "numpy"
+        ]
+      }
+    }
+  },
+  "invalidationHash": "ae1499a3c860ba5721a8cbdc981056d014a9828cb13949f021a15878accbf0de"
+}

@@ -1,0 +1,19 @@
+{
+  "fetchPipMetadata": {
+    "sources": {
+      "backcall": {
+        "is_direct": false,
+        "sha256": "5cbdbf27be5e7cfadb448baf0aa95508f91f2bbc6c6437cd9cd06e2a4c215e1e",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/a2/40/764a663805d84deee23043e1426a9175567db89c8b3287b5c2ad9f71aa93/backcall-0.2.0.tar.gz",
+        "version": "0.2.0"
+      }
+    },
+    "targets": {
+      "default": {
+        "backcall": []
+      }
+    }
+  },
+  "invalidationHash": "d40f6cd0335f3575176afa392267aab0d4a28fabf1610be695df160442b4ab28"
+}

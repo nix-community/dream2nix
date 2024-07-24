@@ -1,0 +1,399 @@
+{
+  "fetchPipMetadata": {
+    "sources": {
+      "attrs": {
+        "is_direct": false,
+        "sha256": "99b87a485a5820b23b879f04c2305b44b951b502fd64be915879d77a7e8fc6f1",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/e0/44/827b2a91a5816512fcaf3cc4ebc465ccd5d598c45cefa6703fcf4a79018f/attrs-23.2.0-py3-none-any.whl",
+        "version": "23.2.0"
+      },
+      "boto3": {
+        "is_direct": false,
+        "sha256": "7ec568fb19bce82a70be51f08fddac1ef927ca3fb0896cbb34303a012ba228d8",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/86/e2/62f3763092e06e9341521854982f0fc05ecaef4016d7c88b73ebd4693727/boto3-1.34.146-py3-none-any.whl",
+        "version": "1.34.146"
+      },
+      "botocore": {
+        "is_direct": false,
+        "sha256": "3fd4782362bd29c192704ebf859c5c8c5189ad05719e391eefe23088434427ae",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/83/fb/c9ccf2381051176f27cdde8008db1fba18796536efa33b7e9b341bc2d27c/botocore-1.34.146-py3-none-any.whl",
+        "version": "1.34.146"
+      },
+      "certifi": {
+        "is_direct": false,
+        "sha256": "c198e21b1289c2ab85ee4e67bb4b4ef3ead0892059901a8d5b622f24a1101e90",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/1c/d5/c84e1a17bf61d4df64ca866a1c9a913874b4e9bdc131ec689a0ad013fb36/certifi-2024.7.4-py3-none-any.whl",
+        "version": "2024.7.4"
+      },
+      "charset-normalizer": {
+        "is_direct": false,
+        "sha256": "55086ee1064215781fff39a1af09518bc9255b50d6333f2e4c74ca09fac6a8f6",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/3a/52/9f9d17c3b54dc238de384c4cb5a2ef0e27985b42a0e5cc8e8a31d918d48d/charset_normalizer-3.3.2-cp312-cp312-macosx_11_0_arm64.whl",
+        "version": "3.3.2"
+      },
+      "cloudpickle": {
+        "is_direct": false,
+        "sha256": "61f594d1f4c295fa5cd9014ceb3a1fc4a70b0de1164b94fbc2d854ccba056f9f",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/15/80/44286939ca215e88fa827b2aeb6fa3fd2b4a7af322485c7170d6f9fd96e0/cloudpickle-2.2.1-py3-none-any.whl",
+        "version": "2.2.1"
+      },
+      "dill": {
+        "is_direct": false,
+        "sha256": "c36ca9ffb54365bdd2f8eb3eff7d2a21237f8452b57ace88b1ac615b7e815bd7",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/c9/7a/cef76fd8438a42f96db64ddaa85280485a9c395e7df3db8158cfec1eee34/dill-0.3.8-py3-none-any.whl",
+        "version": "0.3.8"
+      },
+      "docker": {
+        "is_direct": false,
+        "sha256": "c96b93b7f0a746f9e77d325bcfb87422a3d8bd4f03136ae8a85b37f1898d5fc0",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/e3/26/57c6fb270950d476074c087527a558ccb6f4436657314bfb6cdf484114c4/docker-7.1.0-py3-none-any.whl",
+        "version": "7.1.0"
+      },
+      "google-pasta": {
+        "is_direct": false,
+        "sha256": "b32482794a366b5366a32c92a9a9201b107821889935a02b3e51f6b432ea84ed",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/a3/de/c648ef6835192e6e2cc03f40b19eeda4382c49b5bafb43d88b931c4c74ac/google_pasta-0.2.0-py3-none-any.whl",
+        "version": "0.2.0"
+      },
+      "idna": {
+        "is_direct": false,
+        "sha256": "82fee1fc78add43492d3a1898bfa6d8a904cc97d8427f683ed8e798d07761aa0",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/e5/3e/741d8c82801c347547f8a2a06aa57dbb1992be9e948df2ea0eda2c8b79e8/idna-3.7-py3-none-any.whl",
+        "version": "3.7"
+      },
+      "importlib-metadata": {
+        "is_direct": false,
+        "sha256": "f0afba6205ad8f8947c7d338b5342d5db2afbfd82f9cbef7879a9539cc12eb9b",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/59/9b/ecce94952ab5ea74c31dcf9ccf78ccd484eebebef06019bf8cb579ab4519/importlib_metadata-6.11.0-py3-none-any.whl",
+        "version": "6.11.0"
+      },
+      "jmespath": {
+        "is_direct": false,
+        "sha256": "02e2e4cc71b5bcab88332eebf907519190dd9e6e82107fa7f83b1003a6252980",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/31/b4/b9b800c45527aadd64d5b442f9b932b00648617eb5d63d2c7a6587b7cafc/jmespath-1.0.1-py3-none-any.whl",
+        "version": "1.0.1"
+      },
+      "jsonschema": {
+        "is_direct": false,
+        "sha256": "fbadb6f8b144a8f8cf9f0b89ba94501d143e50411a1278633f56a7acf7fd5566",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/69/4a/4f9dbeb84e8850557c02365a0eee0649abe5eb1d84af92a25731c6c0f922/jsonschema-4.23.0-py3-none-any.whl",
+        "version": "4.23.0"
+      },
+      "jsonschema-specifications": {
+        "is_direct": false,
+        "sha256": "87e4fdf3a94858b8a2ba2778d9ba57d8a9cafca7c7489c46ba0d30a8bc6a9c3c",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/ee/07/44bd408781594c4d0a027666ef27fab1e441b109dc3b76b4f836f8fd04fe/jsonschema_specifications-2023.12.1-py3-none-any.whl",
+        "version": "2023.12.1"
+      },
+      "multiprocess": {
+        "is_direct": false,
+        "sha256": "fc0544c531920dde3b00c29863377f87e1632601092ea2daca74e4beb40faa2e",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/0a/7d/a988f258104dcd2ccf1ed40fdc97e26c4ac351eeaf81d76e266c52d84e2f/multiprocess-0.70.16-py312-none-any.whl",
+        "version": "0.70.16"
+      },
+      "numpy": {
+        "is_direct": false,
+        "sha256": "03a8c78d01d9781b28a6989f6fa1bb2c4f2d51201cf99d3dd875df6fbd96b23b",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/75/5b/ca6c8bd14007e5ca171c7c03102d17b4f4e0ceb53957e8c44343a9546dcc/numpy-1.26.4-cp312-cp312-macosx_11_0_arm64.whl",
+        "version": "1.26.4"
+      },
+      "packaging": {
+        "is_direct": false,
+        "sha256": "5b8f2217dbdbd2f7f384c41c628544e6d52f2d0f53c6d0c3ea61aa5d1d7ff124",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/08/aa/cc0199a5f0ad350994d660967a8efb233fe0416e4639146c089643407ce6/packaging-24.1-py3-none-any.whl",
+        "version": "24.1"
+      },
+      "pandas": {
+        "is_direct": false,
+        "sha256": "e9b79011ff7a0f4b1d6da6a61aa1aa604fb312d6647de5bad20013682d1429ce",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/db/7c/9a60add21b96140e22465d9adf09832feade45235cd22f4cb1668a25e443/pandas-2.2.2-cp312-cp312-macosx_11_0_arm64.whl",
+        "version": "2.2.2"
+      },
+      "pathos": {
+        "is_direct": false,
+        "sha256": "d669275e6eb4b3fbcd2846d7a6d1bba315fe23add0c614445ba1408d8b38bafe",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/f4/7f/cea34872c000d17972dad998575d14656d7c6bcf1a08a8d66d73c1ef2cca/pathos-0.3.2-py3-none-any.whl",
+        "version": "0.3.2"
+      },
+      "platformdirs": {
+        "is_direct": false,
+        "sha256": "2d7a1657e36a80ea911db832a8a6ece5ee53d8de21edd5cc5879af6530b1bfee",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/68/13/2aa1f0e1364feb2c9ef45302f387ac0bd81484e9c9a4c5688a322fbdfd08/platformdirs-4.2.2-py3-none-any.whl",
+        "version": "4.2.2"
+      },
+      "pox": {
+        "is_direct": false,
+        "sha256": "651b8ae8a7b341b7bfd267f67f63106daeb9805f1ac11f323d5280d2da93fdb6",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/e1/d7/9e73c32f73da71e8224b4cb861b5db50ebdebcdff14d3e3fb47a63c578b2/pox-0.3.4-py3-none-any.whl",
+        "version": "0.3.4"
+      },
+      "ppft": {
+        "is_direct": false,
+        "sha256": "de2dd4b1b080923dd9627fbdea52649fd741c752fce4f3cf37e26f785df23d9b",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/ff/fa/5160c7d2fb1d4f2b83cba7a40f0eb4b015b78f6973b7ab6b2e73c233cfdc/ppft-1.7.6.8-py3-none-any.whl",
+        "version": "1.7.6.8"
+      },
+      "protobuf": {
+        "is_direct": false,
+        "sha256": "f1279ab38ecbfae7e456a108c5c0681e4956d5b1090027c1de0f934dfdb4b35c",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/f3/bf/26deba06a4c910a85f78245cac7698f67cedd7efe00d04f6b3e1b3506a59/protobuf-4.25.3-cp37-abi3-macosx_10_9_universal2.whl",
+        "version": "4.25.3"
+      },
+      "psutil": {
+        "is_direct": false,
+        "sha256": "ffe7fc9b6b36beadc8c322f84e1caff51e8703b88eee1da46d1e3a6ae11b4fd0",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/7c/06/63872a64c312a24fb9b4af123ee7007a306617da63ff13bcc1432386ead7/psutil-6.0.0-cp38-abi3-macosx_11_0_arm64.whl",
+        "version": "6.0.0"
+      },
+      "python-dateutil": {
+        "is_direct": false,
+        "sha256": "a8b2bc7bffae282281c8140a97d3aa9c14da0b136dfe83f850eea9a5f7470427",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/ec/57/56b9bcc3c9c6a792fcbaf139543cee77261f3651ca9da0c93f5c1221264b/python_dateutil-2.9.0.post0-py2.py3-none-any.whl",
+        "version": "2.9.0.post0"
+      },
+      "pytz": {
+        "is_direct": false,
+        "sha256": "328171f4e3623139da4983451950b28e95ac706e13f3f2630a879749e7a8b319",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/9c/3d/a121f284241f08268b21359bd425f7d4825cffc5ac5cd0e1b3d82ffd2b10/pytz-2024.1-py2.py3-none-any.whl",
+        "version": "2024.1"
+      },
+      "pyyaml": {
+        "is_direct": false,
+        "sha256": "40df9b996c2b73138957fe23a16a4f0ba614f4c0efce1e9406a184b6d07fa3a9",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/84/02/404de95ced348b73dd84f70e15a41843d817ff8c1744516bf78358f2ffd2/PyYAML-6.0.1-cp312-cp312-macosx_11_0_arm64.whl",
+        "version": "6.0.1"
+      },
+      "referencing": {
+        "is_direct": false,
+        "sha256": "eda6d3234d62814d1c64e305c1331c9a3a6132da475ab6382eaa997b21ee75de",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/b7/59/2056f61236782a2c86b33906c025d4f4a0b17be0161b63b70fd9e8775d36/referencing-0.35.1-py3-none-any.whl",
+        "version": "0.35.1"
+      },
+      "requests": {
+        "is_direct": false,
+        "sha256": "70761cfe03c773ceb22aa2f671b4757976145175cdfca038c02654d061d6dcc6",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/f9/9b/335f9764261e915ed497fcdeb11df5dfd6f7bf257d4a6a2a686d80da4d54/requests-2.32.3-py3-none-any.whl",
+        "version": "2.32.3"
+      },
+      "rpds-py": {
+        "is_direct": false,
+        "sha256": "6f2f78ef14077e08856e788fa482107aa602636c16c25bdf59c22ea525a785e9",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/5c/a2/4796309ee72d7005abe844ffdd88efa9174f724e298aedcb834d08bb4b9b/rpds_py-0.19.0-cp312-cp312-macosx_11_0_arm64.whl",
+        "version": "0.19.0"
+      },
+      "s3transfer": {
+        "is_direct": false,
+        "sha256": "eca1c20de70a39daee580aef4986996620f365c4e0fda6a86100231d62f1bf69",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/3c/4a/b221409913760d26cf4498b7b1741d510c82d3ad38381984a3ddc135ec66/s3transfer-0.10.2-py3-none-any.whl",
+        "version": "0.10.2"
+      },
+      "sagemaker": {
+        "is_direct": false,
+        "sha256": "c4b6aede5bf800abc5de384ad4ccf1e0357bc047fd360b3254059c8cb38f5bb5",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/ef/2b/24d51493505aa3c460470e5b4c12ae441325a4f998e64bb498803f1ca676/sagemaker-2.226.1.tar.gz",
+        "version": "2.226.1"
+      },
+      "schema": {
+        "is_direct": false,
+        "sha256": "5d976a5b50f36e74e2157b47097b60002bd4d42e65425fcc9c9befadb4255dde",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/ad/1b/81855a88c6db2b114d5b2e9f96339190d5ee4d1b981d217fa32127bb00e0/schema-0.7.7-py2.py3-none-any.whl",
+        "version": "0.7.7"
+      },
+      "six": {
+        "is_direct": false,
+        "sha256": "8abb2f1d86890a2dfb989f9a77cfcfd3e47c2a354b01111771326f8aa26e0254",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/d9/5a/e7c31adbe875f2abbb91bd84cf2dc52d792b5a01506781dbcf25c91daf11/six-1.16.0-py2.py3-none-any.whl",
+        "version": "1.16.0"
+      },
+      "smdebug-rulesconfig": {
+        "is_direct": false,
+        "sha256": "104da3e6931ecf879dfc687ca4bbb3bee5ea2bc27f4478e9dbb3ee3655f1ae61",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/26/a1/45a13a05198bbe9527bab2c5e5daa8bd02678aa825eec14783e767bfa7d1/smdebug_rulesconfig-1.0.1-py2.py3-none-any.whl",
+        "version": "1.0.1"
+      },
+      "tblib": {
+        "is_direct": false,
+        "sha256": "80a6c77e59b55e83911e1e607c649836a69c103963c5f28a46cbeef44acf8129",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/9b/87/ce70db7cae60e67851eb94e1a2127d4abb573d3866d2efd302ceb0d4d2a5/tblib-3.0.0-py3-none-any.whl",
+        "version": "3.0.0"
+      },
+      "tqdm": {
+        "is_direct": false,
+        "sha256": "b75ca56b413b030bc3f00af51fd2c1a1a5eac6a0c1cca83cbb37a5c52abce644",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/18/eb/fdb7eb9e48b7b02554e1664afd3bd3f117f6b6d6c5881438a0b055554f9b/tqdm-4.66.4-py3-none-any.whl",
+        "version": "4.66.4"
+      },
+      "tzdata": {
+        "is_direct": false,
+        "sha256": "9068bc196136463f5245e51efda838afa15aaeca9903f49050dfa2679db4d252",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/65/58/f9c9e6be752e9fcb8b6a0ee9fb87e6e7a1f6bcab2cdc73f02bb7ba91ada0/tzdata-2024.1-py2.py3-none-any.whl",
+        "version": "2024.1"
+      },
+      "urllib3": {
+        "is_direct": false,
+        "sha256": "a448b2f64d686155468037e1ace9f2d2199776e17f0a46610480d311f73e3472",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/ca/1c/89ffc63a9605b583d5df2be791a27bc1a42b7c32bab68d3c8f2f73a98cd4/urllib3-2.2.2-py3-none-any.whl",
+        "version": "2.2.2"
+      },
+      "zipp": {
+        "is_direct": false,
+        "sha256": "f091755f667055f2d02b32c53771a7a6c8b47e1fdbc4b72a8b9072b3eef8015c",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/20/38/f5c473fe9b90c8debdd29ea68d5add0289f1936d6f923b6b9cc0b931194c/zipp-3.19.2-py3-none-any.whl",
+        "version": "3.19.2"
+      }
+    },
+    "targets": {
+      "default": {
+        "attrs": [],
+        "boto3": [
+          "botocore",
+          "jmespath",
+          "s3transfer"
+        ],
+        "botocore": [
+          "jmespath",
+          "python-dateutil",
+          "urllib3"
+        ],
+        "certifi": [],
+        "charset-normalizer": [],
+        "cloudpickle": [],
+        "dill": [],
+        "docker": [
+          "requests",
+          "urllib3"
+        ],
+        "google-pasta": [
+          "six"
+        ],
+        "idna": [],
+        "importlib-metadata": [
+          "zipp"
+        ],
+        "jmespath": [],
+        "jsonschema": [
+          "attrs",
+          "jsonschema-specifications",
+          "referencing",
+          "rpds-py"
+        ],
+        "jsonschema-specifications": [
+          "referencing"
+        ],
+        "multiprocess": [
+          "dill"
+        ],
+        "numpy": [],
+        "packaging": [],
+        "pandas": [
+          "numpy",
+          "python-dateutil",
+          "pytz",
+          "tzdata"
+        ],
+        "pathos": [
+          "dill",
+          "multiprocess",
+          "pox",
+          "ppft"
+        ],
+        "platformdirs": [],
+        "pox": [],
+        "ppft": [],
+        "protobuf": [],
+        "psutil": [],
+        "python-dateutil": [
+          "six"
+        ],
+        "pytz": [],
+        "pyyaml": [],
+        "referencing": [
+          "attrs",
+          "rpds-py"
+        ],
+        "requests": [
+          "certifi",
+          "charset-normalizer",
+          "idna",
+          "urllib3"
+        ],
+        "rpds-py": [],
+        "s3transfer": [
+          "botocore"
+        ],
+        "sagemaker": [
+          "attrs",
+          "boto3",
+          "cloudpickle",
+          "docker",
+          "google-pasta",
+          "importlib-metadata",
+          "jsonschema",
+          "numpy",
+          "packaging",
+          "pandas",
+          "pathos",
+          "platformdirs",
+          "protobuf",
+          "psutil",
+          "pyyaml",
+          "requests",
+          "schema",
+          "smdebug-rulesconfig",
+          "tblib",
+          "tqdm",
+          "urllib3"
+        ],
+        "schema": [],
+        "six": [],
+        "smdebug-rulesconfig": [],
+        "tblib": [],
+        "tqdm": [],
+        "tzdata": [],
+        "urllib3": [],
+        "zipp": []
+      }
+    }
+  },
+  "invalidationHash": "0b803370440a157976658aae563e50a4a61227c5b4a9b50f4dc3252a2cd5cf73"
+}

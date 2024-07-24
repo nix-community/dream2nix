@@ -1,0 +1,29 @@
+{
+  "fetchPipMetadata": {
+    "sources": {
+      "importlib-metadata": {
+        "is_direct": false,
+        "sha256": "188bd24e4c346d3f0a933f275c2fec67050326a856b9a359881d7c2a697e8812",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/20/ff/bd28f70283b9cca0cbf0c2a6082acbecd822d1962ae7b2a904861b9965f8/importlib_metadata-8.0.0.tar.gz",
+        "version": "8.0.0"
+      },
+      "zipp": {
+        "is_direct": false,
+        "sha256": "f091755f667055f2d02b32c53771a7a6c8b47e1fdbc4b72a8b9072b3eef8015c",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/20/38/f5c473fe9b90c8debdd29ea68d5add0289f1936d6f923b6b9cc0b931194c/zipp-3.19.2-py3-none-any.whl",
+        "version": "3.19.2"
+      }
+    },
+    "targets": {
+      "default": {
+        "importlib-metadata": [
+          "zipp"
+        ],
+        "zipp": []
+      }
+    }
+  },
+  "invalidationHash": "d7843328d3ff82127dd7958f323bcdcf3dbbf0ecd1c5c508b142fc8fbbea325e"
+}

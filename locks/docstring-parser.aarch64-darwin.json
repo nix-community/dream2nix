@@ -1,0 +1,19 @@
+{
+  "fetchPipMetadata": {
+    "sources": {
+      "docstring-parser": {
+        "is_direct": false,
+        "sha256": "538beabd0af1e2db0146b6bd3caa526c35a34d61af9fd2887f3a8a27a739aa6e",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/08/12/9c22a58c0b1e29271051222d8906257616da84135af9ed167c9e28f85cb3/docstring_parser-0.16.tar.gz",
+        "version": "0.16"
+      }
+    },
+    "targets": {
+      "default": {
+        "docstring-parser": []
+      }
+    }
+  },
+  "invalidationHash": "c94a21bb815a547bae0338401b3893e6d6a178d527c08159d645294084d3889a"
+}

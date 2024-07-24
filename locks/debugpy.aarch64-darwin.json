@@ -1,0 +1,19 @@
+{
+  "fetchPipMetadata": {
+    "sources": {
+      "debugpy": {
+        "is_direct": false,
+        "sha256": "95378ed08ed2089221896b9b3a8d021e642c24edc8fef20e5d4342ca8be65c00",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/b2/c9/9d585d711cdcae0db7788731b331dab0d1f600d0204e76b2a5c6b30d569e/debugpy-1.8.2.zip",
+        "version": "1.8.2"
+      }
+    },
+    "targets": {
+      "default": {
+        "debugpy": []
+      }
+    }
+  },
+  "invalidationHash": "e256ef130e4a8bc68d8b11397127c23b2fd97fe6c52a179fc160d334988679fe"
+}

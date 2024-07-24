@@ -1,0 +1,29 @@
+{
+  "fetchPipMetadata": {
+    "sources": {
+      "types-requests": {
+        "is_direct": false,
+        "sha256": "90c079ff05e549f6bf50e02e910210b98b8ff1ebdd18e19c873cd237737c1358",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/5e/9e/7663eb27c33568b8fc20ccdaf2a1ce53a9530c42a7cceb9f552a6ff4a1d8/types-requests-2.32.0.20240712.tar.gz",
+        "version": "2.32.0.20240712"
+      },
+      "urllib3": {
+        "is_direct": false,
+        "sha256": "a448b2f64d686155468037e1ace9f2d2199776e17f0a46610480d311f73e3472",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/ca/1c/89ffc63a9605b583d5df2be791a27bc1a42b7c32bab68d3c8f2f73a98cd4/urllib3-2.2.2-py3-none-any.whl",
+        "version": "2.2.2"
+      }
+    },
+    "targets": {
+      "default": {
+        "types-requests": [
+          "urllib3"
+        ],
+        "urllib3": []
+      }
+    }
+  },
+  "invalidationHash": "6a98e4e6482a7c770e6a44d7326c7f108503e02d429d9bfaa59ad0fb59ca5440"
+}

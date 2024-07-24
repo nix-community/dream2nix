@@ -1,0 +1,153 @@
+{
+  "fetchPipMetadata": {
+    "sources": {
+      "aiobotocore": {
+        "is_direct": false,
+        "sha256": "134f9606c2f91abde38cbc61c3241113e26ff244633e0c31abb7e09da3581c9b",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/cd/d2/d7e46bcc4c0b5b8e751092824d6ca9af5928adae0f864336e43c7f7a436a/aiobotocore-2.13.1.tar.gz",
+        "version": "2.13.1"
+      },
+      "aiohttp": {
+        "is_direct": false,
+        "sha256": "d153f652a687a8e95ad367a86a61e8d53d528b0530ef382ec5aaf533140ed00f",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/78/28/2080ed3140b7d25c406f77fe2d5776edd9c7a25228f7f905d7058a6e2d61/aiohttp-3.9.5-cp312-cp312-macosx_11_0_arm64.whl",
+        "version": "3.9.5"
+      },
+      "aioitertools": {
+        "is_direct": false,
+        "sha256": "04b95e3dab25b449def24d7df809411c10e62aab0cbe31a50ca4e68748c43394",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/45/66/d1a9fd8e6ff88f2157cb145dd054defb0fd7fe2507fe5a01347e7c690eab/aioitertools-0.11.0-py3-none-any.whl",
+        "version": "0.11.0"
+      },
+      "aiosignal": {
+        "is_direct": false,
+        "sha256": "f8376fb07dd1e86a584e4fcdec80b36b7f81aac666ebc724e2c090300dd83b17",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/76/ac/a7305707cb852b7e16ff80eaf5692309bde30e2b1100a1fcacdc8f731d97/aiosignal-1.3.1-py3-none-any.whl",
+        "version": "1.3.1"
+      },
+      "attrs": {
+        "is_direct": false,
+        "sha256": "99b87a485a5820b23b879f04c2305b44b951b502fd64be915879d77a7e8fc6f1",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/e0/44/827b2a91a5816512fcaf3cc4ebc465ccd5d598c45cefa6703fcf4a79018f/attrs-23.2.0-py3-none-any.whl",
+        "version": "23.2.0"
+      },
+      "botocore": {
+        "is_direct": false,
+        "sha256": "13b011d7b206ce00727dcee26548fa3b550db9046d5a0e90ac25a6e6c8fde6ef",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/46/1a/01785fad12a9b1dbeffebd97cd226ea5923114057c64a610dd4eb8a28c7b/botocore-1.34.131-py3-none-any.whl",
+        "version": "1.34.131"
+      },
+      "frozenlist": {
+        "is_direct": false,
+        "sha256": "c9c92be9fd329ac801cc420e08452b70e7aeab94ea4233a4804f0915c14eba9b",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/3f/ab/c543c13824a615955f57e082c8a5ee122d2d5368e80084f2834e6f4feced/frozenlist-1.4.1-cp312-cp312-macosx_11_0_arm64.whl",
+        "version": "1.4.1"
+      },
+      "idna": {
+        "is_direct": false,
+        "sha256": "82fee1fc78add43492d3a1898bfa6d8a904cc97d8427f683ed8e798d07761aa0",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/e5/3e/741d8c82801c347547f8a2a06aa57dbb1992be9e948df2ea0eda2c8b79e8/idna-3.7-py3-none-any.whl",
+        "version": "3.7"
+      },
+      "jmespath": {
+        "is_direct": false,
+        "sha256": "02e2e4cc71b5bcab88332eebf907519190dd9e6e82107fa7f83b1003a6252980",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/31/b4/b9b800c45527aadd64d5b442f9b932b00648617eb5d63d2c7a6587b7cafc/jmespath-1.0.1-py3-none-any.whl",
+        "version": "1.0.1"
+      },
+      "multidict": {
+        "is_direct": false,
+        "sha256": "2ffc42c922dbfddb4a4c3b438eb056828719f07608af27d163191cb3e3aa6cc5",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/9c/18/9565f32c19d186168731e859692dfbc0e98f66a1dcf9e14d69c02a78b75a/multidict-6.0.5-cp312-cp312-macosx_11_0_arm64.whl",
+        "version": "6.0.5"
+      },
+      "python-dateutil": {
+        "is_direct": false,
+        "sha256": "a8b2bc7bffae282281c8140a97d3aa9c14da0b136dfe83f850eea9a5f7470427",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/ec/57/56b9bcc3c9c6a792fcbaf139543cee77261f3651ca9da0c93f5c1221264b/python_dateutil-2.9.0.post0-py2.py3-none-any.whl",
+        "version": "2.9.0.post0"
+      },
+      "six": {
+        "is_direct": false,
+        "sha256": "8abb2f1d86890a2dfb989f9a77cfcfd3e47c2a354b01111771326f8aa26e0254",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/d9/5a/e7c31adbe875f2abbb91bd84cf2dc52d792b5a01506781dbcf25c91daf11/six-1.16.0-py2.py3-none-any.whl",
+        "version": "1.16.0"
+      },
+      "urllib3": {
+        "is_direct": false,
+        "sha256": "a448b2f64d686155468037e1ace9f2d2199776e17f0a46610480d311f73e3472",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/ca/1c/89ffc63a9605b583d5df2be791a27bc1a42b7c32bab68d3c8f2f73a98cd4/urllib3-2.2.2-py3-none-any.whl",
+        "version": "2.2.2"
+      },
+      "wrapt": {
+        "is_direct": false,
+        "sha256": "9090c9e676d5236a6948330e83cb89969f433b1943a558968f659ead07cb3b36",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/6a/d7/cfcd73e8f4858079ac59d9db1ec5a1349bc486ae8e9ba55698cc1f4a1dff/wrapt-1.16.0-cp312-cp312-macosx_11_0_arm64.whl",
+        "version": "1.16.0"
+      },
+      "yarl": {
+        "is_direct": false,
+        "sha256": "aaaea1e536f98754a6e5c56091baa1b6ce2f2700cc4a00b0d49eca8dea471074",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/54/99/ed3c92c38f421ba6e36caf6aa91c34118771d252dce800118fa2f44d7962/yarl-1.9.4-cp312-cp312-macosx_11_0_arm64.whl",
+        "version": "1.9.4"
+      }
+    },
+    "targets": {
+      "default": {
+        "aiobotocore": [
+          "aiohttp",
+          "aioitertools",
+          "botocore",
+          "wrapt"
+        ],
+        "aiohttp": [
+          "aiosignal",
+          "attrs",
+          "frozenlist",
+          "multidict",
+          "yarl"
+        ],
+        "aioitertools": [],
+        "aiosignal": [
+          "frozenlist"
+        ],
+        "attrs": [],
+        "botocore": [
+          "jmespath",
+          "python-dateutil",
+          "urllib3"
+        ],
+        "frozenlist": [],
+        "idna": [],
+        "jmespath": [],
+        "multidict": [],
+        "python-dateutil": [
+          "six"
+        ],
+        "six": [],
+        "urllib3": [],
+        "wrapt": [],
+        "yarl": [
+          "idna",
+          "multidict"
+        ]
+      }
+    }
+  },
+  "invalidationHash": "bf8e1cd547af9838b0e2fef276ee7f2d051f7eeffc2380a6d3199484a80ac138"
+}

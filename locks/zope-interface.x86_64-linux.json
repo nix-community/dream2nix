@@ -1,0 +1,29 @@
+{
+  "fetchPipMetadata": {
+    "sources": {
+      "setuptools": {
+        "is_direct": false,
+        "sha256": "33874fdc59b3188304b2e7c80d9029097ea31627180896fb549c578ceb8a0855",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/51/a0/ee460cc54e68afcf33190d198299c9579a5eafeadef0016ae8563237ccb6/setuptools-71.1.0-py3-none-any.whl",
+        "version": "71.1.0"
+      },
+      "zope-interface": {
+        "is_direct": false,
+        "sha256": "1c207e6f6dfd5749a26f5a5fd966602d6b824ec00d2df84a7e9a924e8933654e",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/09/06/7c1202972bc99dd1b731c3c01157855cbc8d0944894c3b234473b1f4119c/zope.interface-6.4.post2.tar.gz",
+        "version": "6.4.post2"
+      }
+    },
+    "targets": {
+      "default": {
+        "setuptools": [],
+        "zope-interface": [
+          "setuptools"
+        ]
+      }
+    }
+  },
+  "invalidationHash": "b9ce8a406b733986dc3b28988042d99c87a6af94500425f2e64c5c343c3a7867"
+}

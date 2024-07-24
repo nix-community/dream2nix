@@ -1,0 +1,19 @@
+{
+  "fetchPipMetadata": {
+    "sources": {
+      "h11": {
+        "is_direct": false,
+        "sha256": "8f19fbbe99e72420ff35c00b27a34cb9937e902a8b810e2c88300c6f0a3b699d",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/f5/38/3af3d3633a34a3316095b39c8e8fb4853a28a536e55d347bd8d8e9a14b03/h11-0.14.0.tar.gz",
+        "version": "0.14.0"
+      }
+    },
+    "targets": {
+      "default": {
+        "h11": []
+      }
+    }
+  },
+  "invalidationHash": "2c78b4894b19aa665f7dd5957143faab4d6adecd7e663d3febe030f867935370"
+}

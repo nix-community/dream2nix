@@ -1,0 +1,38 @@
+{
+  "fetchPipMetadata": {
+    "sources": {
+      "astunparse": {
+        "is_direct": false,
+        "sha256": "5ad93a8456f0d084c3456d059fd9a92cce667963232cbf763eac3bc5b7940872",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/f3/af/4182184d3c338792894f34a62672919db7ca008c89abee9b564dd34d8029/astunparse-1.6.3.tar.gz",
+        "version": "1.6.3"
+      },
+      "six": {
+        "is_direct": false,
+        "sha256": "8abb2f1d86890a2dfb989f9a77cfcfd3e47c2a354b01111771326f8aa26e0254",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/d9/5a/e7c31adbe875f2abbb91bd84cf2dc52d792b5a01506781dbcf25c91daf11/six-1.16.0-py2.py3-none-any.whl",
+        "version": "1.16.0"
+      },
+      "wheel": {
+        "is_direct": false,
+        "sha256": "55c570405f142630c6b9f72fe09d9b67cf1477fcf543ae5b8dcb1f5b7377da81",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/7d/cd/d7460c9a869b16c3dd4e1e403cce337df165368c71d6af229a74699622ce/wheel-0.43.0-py3-none-any.whl",
+        "version": "0.43.0"
+      }
+    },
+    "targets": {
+      "default": {
+        "astunparse": [
+          "six",
+          "wheel"
+        ],
+        "six": [],
+        "wheel": []
+      }
+    }
+  },
+  "invalidationHash": "b3bdc6504a99acbd98aabbe0b84c81a190e48411cc400c4adc961e77c6679616"
+}

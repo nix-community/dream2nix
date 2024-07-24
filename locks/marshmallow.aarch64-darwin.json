@@ -1,0 +1,29 @@
+{
+  "fetchPipMetadata": {
+    "sources": {
+      "marshmallow": {
+        "is_direct": false,
+        "sha256": "4f57c5e050a54d66361e826f94fba213eb10b67b2fdb02c3e0343ce207ba1662",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/d6/31/0881962e77efa2d524ca80566ba1fb7cab000edaa9f4152b97a39b8d9a2d/marshmallow-3.21.3.tar.gz",
+        "version": "3.21.3"
+      },
+      "packaging": {
+        "is_direct": false,
+        "sha256": "5b8f2217dbdbd2f7f384c41c628544e6d52f2d0f53c6d0c3ea61aa5d1d7ff124",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/08/aa/cc0199a5f0ad350994d660967a8efb233fe0416e4639146c089643407ce6/packaging-24.1-py3-none-any.whl",
+        "version": "24.1"
+      }
+    },
+    "targets": {
+      "default": {
+        "marshmallow": [
+          "packaging"
+        ],
+        "packaging": []
+      }
+    }
+  },
+  "invalidationHash": "c631fc460bb970a5ac11242b1194b390638f415283527977fe5a013f3235555f"
+}

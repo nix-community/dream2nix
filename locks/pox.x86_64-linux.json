@@ -1,0 +1,19 @@
+{
+  "fetchPipMetadata": {
+    "sources": {
+      "pox": {
+        "is_direct": false,
+        "sha256": "16e6eca84f1bec3828210b06b052adf04cf2ab20c22fd6fbef5f78320c9a6fed",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/87/8c/6e1e0e919b64d1a3fe11f461a34e5d0c570c00051cde44828514917f9651/pox-0.3.4.tar.gz",
+        "version": "0.3.4"
+      }
+    },
+    "targets": {
+      "default": {
+        "pox": []
+      }
+    }
+  },
+  "invalidationHash": "bc7be396144515fe41f8390ee2323f0ed97597854017a6493336d7ada5c96885"
+}

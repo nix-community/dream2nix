@@ -1,0 +1,524 @@
+Collecting pip==23.1
+  Using cached pip-23.1-py3-none-any.whl.metadata (4.1 kB)
+Collecting wheel==0.43.0
+  Using cached wheel-0.43.0-py3-none-any.whl.metadata (2.2 kB)
+Using cached pip-23.1-py3-none-any.whl (2.1 MB)
+Using cached wheel-0.43.0-py3-none-any.whl (65 kB)
+Installing collected packages: wheel, pip
+  Attempting uninstall: pip
+    Found existing installation: pip 24.0
+    Uninstalling pip-24.0:
+      Successfully uninstalled pip-24.0
+Successfully installed pip-23.1 wheel-0.43.0
+
+[notice] A new release of pip is available: 23.1 -> 24.1.2
+[notice] To update, run: python -m pip install --upgrade pip
+Collecting scikit-learn==1.5.1
+  Using cached scikit_learn-1.5.1.tar.gz (7.0 MB)
+  Installing build dependencies: started
+  Installing build dependencies: finished with status 'done'
+  Getting requirements to build wheel: started
+  Getting requirements to build wheel: finished with status 'done'
+  Installing backend dependencies: started
+  Installing backend dependencies: finished with status 'done'
+  Preparing metadata (pyproject.toml): started
+  Preparing metadata (pyproject.toml): still running...
+  Preparing metadata (pyproject.toml): finished with status 'error'
+  error: subprocess-exited-with-error
+  
+  × Preparing metadata (pyproject.toml) did not run successfully.
+  │ exit code: 1
+  ╰─> [461 lines of output]
+      + meson setup /tmp/tmp.OKF0yJU1S9/pip-install-61omdrh4/scikit-learn_42cb142099a04b08b3bfb03702921696 /tmp/tmp.OKF0yJU1S9/pip-install-61omdrh4/scikit-learn_42cb142099a04b08b3bfb03702921696/.mesonpy-_zspfoqs -Dbuildtype=release -Db_ndebug=if-release -Db_vscrt=md --cross-file=/nix/store/k29i1knpmzk83p1v7ic1qh02x94cszkz-cross-file-numpy.conf --native-file=/tmp/tmp.OKF0yJU1S9/pip-install-61omdrh4/scikit-learn_42cb142099a04b08b3bfb03702921696/.mesonpy-_zspfoqs/meson-python-native-file.ini
+      The Meson build system
+      Version: 1.5.0
+      Source dir: /tmp/tmp.OKF0yJU1S9/pip-install-61omdrh4/scikit-learn_42cb142099a04b08b3bfb03702921696
+      Build dir: /tmp/tmp.OKF0yJU1S9/pip-install-61omdrh4/scikit-learn_42cb142099a04b08b3bfb03702921696/.mesonpy-_zspfoqs
+      Build type: cross build
+      Project name: scikit-learn
+      Project version: 1.5.1
+      C compiler for the host machine: cc (gcc 13.3.0 "gcc (GCC) 13.3.0")
+      C linker for the host machine: cc ld.bfd 2.42
+      C++ compiler for the host machine: c++ (gcc 13.3.0 "g++ (GCC) 13.3.0")
+      C++ linker for the host machine: c++ ld.bfd 2.42
+      Cython compiler for the host machine: cython (cython 3.0.10)
+      C compiler for the build machine: cc (gcc 13.3.0 "gcc (GCC) 13.3.0")
+      C linker for the build machine: cc ld.bfd 2.42
+      C++ compiler for the build machine: c++ (gcc 13.3.0 "g++ (GCC) 13.3.0")
+      C++ linker for the build machine: c++ ld.bfd 2.42
+      Cython compiler for the build machine: cython (cython 3.0.10)
+      Build machine cpu family: x86_64
+      Build machine cpu: x86_64
+      Host machine cpu family: x86_64
+      Host machine cpu: x86_64
+      Target machine cpu family: x86_64
+      Target machine cpu: x86_64
+      Compiler for C supports arguments -Wno-unused-but-set-variable: YES
+      Compiler for C supports arguments -Wno-unused-function: YES
+      Compiler for C supports arguments -Wno-conversion: YES
+      Compiler for C supports arguments -Wno-misleading-indentation: YES
+      Library m found: YES
+      Program python3 found: YES (/tmp/tmp.OKF0yJU1S9/tmpsdu4ada8/.venv/bin/python)
+      Run-time dependency OpenMP for c found: YES 4.5
+      Found pkg-config: NO
+      Run-time dependency python found: YES 3.12
+      Build targets in project: 111
+      
+      scikit-learn 1.5.1
+      
+        User defined options
+          Cross files : /nix/store/k29i1knpmzk83p1v7ic1qh02x94cszkz-cross-file-numpy.conf
+          Native files: /tmp/tmp.OKF0yJU1S9/pip-install-61omdrh4/scikit-learn_42cb142099a04b08b3bfb03702921696/.mesonpy-_zspfoqs/meson-python-native-file.ini
+          buildtype   : release
+          b_ndebug    : if-release
+          b_vscrt     : md
+      
+      WARNING: Cross file does not specify strip binary, result will not be stripped.
+      Found ninja-1.12.1 at /nix/store/v65nk6ayyy8qc4k95sbmbfy724gg6h7r-ninja-1.12.1/bin/ninja
+      WARNING: Cross file does not specify strip binary, result will not be stripped.
+      WARNING: Cross file does not specify strip binary, result will not be stripped.
+      + /nix/store/v65nk6ayyy8qc4k95sbmbfy724gg6h7r-ninja-1.12.1/bin/ninja
+      [1/249] Generating sklearn/utils/_seq_dataset_pxd with a custom command
+      [2/249] Generating sklearn/metrics/_dist_metrics_pxd with a custom command
+      [3/249] Generating sklearn/metrics/_pairwise_distances_reduction/_datasets_pair_pxd with a custom command
+      [4/249] Generating sklearn/metrics/_pairwise_distances_reduction/_base_pxd with a custom command
+      [5/249] Generating sklearn/utils/_weight_vector_pxd with a custom command
+      [6/249] Copying file sklearn/_loss/_loss.pxd
+      [7/249] Copying file sklearn/utils/_heap.pxd
+      [8/249] Copying file sklearn/utils/_openmp_helpers.pxd
+      [9/249] Copying file sklearn/metrics/__init__.py
+      [10/249] Copying file sklearn/__init__.py
+      [11/249] Copying file sklearn/utils/__init__.py
+      [12/249] Copying file sklearn/utils/_cython_blas.pxd
+      [13/249] Copying file sklearn/metrics/_pairwise_distances_reduction/__init__.py
+      [14/249] Copying file sklearn/utils/_sorting.pxd
+      [15/249] Copying file sklearn/metrics/_pairwise_distances_reduction/_classmode.pxd
+      [16/249] Copying file sklearn/utils/_typedefs.pxd
+      [17/249] Copying file sklearn/utils/_vector_sentinel.pxd
+      [18/249] Generating sklearn/metrics/_pairwise_distances_reduction/_argkmin_pxd with a custom command
+      [19/249] Generating sklearn/metrics/_pairwise_distances_reduction/_middle_term_computer_pxd with a custom command
+      [20/249] Generating sklearn/metrics/_pairwise_distances_reduction/_radius_neighbors_pxd with a custom command
+      [21/249] Copying file sklearn/utils/_random.pxd
+      [22/249] Generating sklearn/_loss/_loss_pyx with a custom command
+      [23/249] Generating sklearn/neighbors/_binary_tree_pxi with a custom command
+      [24/249] Copying file sklearn/linear_model/__init__.py
+      [25/249] Copying file sklearn/linear_model/_sgd_fast.pxd
+      [26/249] Copying file sklearn/neighbors/_partition_nodes.pxd
+      [27/249] Generating sklearn/utils/_weight_vector_pyx with a custom command
+      [28/249] Copying file sklearn/neighbors/__init__.py
+      [29/249] Generating sklearn/utils/_seq_dataset_pyx with a custom command
+      [30/249] Generating sklearn/metrics/_dist_metrics_pyx with a custom command
+      [31/249] Generating sklearn/metrics/_pairwise_distances_reduction/_base_pyx with a custom command
+      [32/249] Generating sklearn/metrics/_pairwise_distances_reduction/_datasets_pair_pyx with a custom command
+      [33/249] Generating sklearn/metrics/_pairwise_distances_reduction/_radius_neighbors_pyx with a custom command
+      [34/249] Generating sklearn/metrics/_pairwise_distances_reduction/_middle_term_computer_pyx with a custom command
+      [35/249] Generating sklearn/metrics/_pairwise_distances_reduction/_argkmin_pyx with a custom command
+      [36/249] Generating sklearn/metrics/_pairwise_distances_reduction/_radius_neighbors_classmode_pyx with a custom command
+      [37/249] Generating sklearn/linear_model/_sgd_fast_pyx with a custom command
+      [38/249] Generating sklearn/metrics/_pairwise_distances_reduction/_argkmin_classmode_pyx with a custom command
+      [39/249] Generating sklearn/neighbors/_ball_tree_pyx with a custom command
+      [40/249] Generating sklearn/linear_model/_sag_fast_pyx with a custom command
+      [41/249] Generating sklearn/neighbors/_kd_tree_pyx with a custom command
+      [42/249] Compiling Cython source /tmp/tmp.OKF0yJU1S9/pip-install-61omdrh4/scikit-learn_42cb142099a04b08b3bfb03702921696/sklearn/__check_build/_check_build.pyx
+      [43/249] Compiling Cython source /tmp/tmp.OKF0yJU1S9/pip-install-61omdrh4/scikit-learn_42cb142099a04b08b3bfb03702921696/sklearn/utils/_openmp_helpers.pyx
+      [44/249] Compiling Cython source /tmp/tmp.OKF0yJU1S9/pip-install-61omdrh4/scikit-learn_42cb142099a04b08b3bfb03702921696/sklearn/metrics/cluster/_expected_mutual_info_fast.pyx
+      [45/249] Compiling Cython source /tmp/tmp.OKF0yJU1S9/pip-install-61omdrh4/scikit-learn_42cb142099a04b08b3bfb03702921696/sklearn/decomposition/_cdnmf_fast.pyx
+      [46/249] Compiling Cython source /tmp/tmp.OKF0yJU1S9/pip-install-61omdrh4/scikit-learn_42cb142099a04b08b3bfb03702921696/sklearn/ensemble/_hist_gradient_boosting/_gradient_boosting.pyx
+      [47/249] Compiling Cython source /tmp/tmp.OKF0yJU1S9/pip-install-61omdrh4/scikit-learn_42cb142099a04b08b3bfb03702921696/sklearn/ensemble/_hist_gradient_boosting/_binning.pyx
+      [48/249] Compiling Cython source /tmp/tmp.OKF0yJU1S9/pip-install-61omdrh4/scikit-learn_42cb142099a04b08b3bfb03702921696/sklearn/ensemble/_hist_gradient_boosting/histogram.pyx
+      [49/249] Compiling Cython source /tmp/tmp.OKF0yJU1S9/pip-install-61omdrh4/scikit-learn_42cb142099a04b08b3bfb03702921696/sklearn/utils/murmurhash.pyx
+      [50/249] Compiling Cython source /tmp/tmp.OKF0yJU1S9/pip-install-61omdrh4/scikit-learn_42cb142099a04b08b3bfb03702921696/sklearn/_isotonic.pyx
+      [51/249] Compiling Cython source /tmp/tmp.OKF0yJU1S9/pip-install-61omdrh4/scikit-learn_42cb142099a04b08b3bfb03702921696/sklearn/utils/_fast_dict.pyx
+      [52/249] Compiling Cython source /tmp/tmp.OKF0yJU1S9/pip-install-61omdrh4/scikit-learn_42cb142099a04b08b3bfb03702921696/sklearn/utils/arrayfuncs.pyx
+      [53/249] Compiling Cython source /tmp/tmp.OKF0yJU1S9/pip-install-61omdrh4/scikit-learn_42cb142099a04b08b3bfb03702921696/sklearn/cluster/_hdbscan/_reachability.pyx
+      [54/249] Compiling Cython source /tmp/tmp.OKF0yJU1S9/pip-install-61omdrh4/scikit-learn_42cb142099a04b08b3bfb03702921696/sklearn/utils/_heap.pyx
+      [55/249] Compiling Cython source /tmp/tmp.OKF0yJU1S9/pip-install-61omdrh4/scikit-learn_42cb142099a04b08b3bfb03702921696/sklearn/ensemble/_hist_gradient_boosting/splitting.pyx
+      [56/249] Compiling Cython source /tmp/tmp.OKF0yJU1S9/pip-install-61omdrh4/scikit-learn_42cb142099a04b08b3bfb03702921696/sklearn/utils/_random.pyx
+      [57/249] Compiling Cython source /tmp/tmp.OKF0yJU1S9/pip-install-61omdrh4/scikit-learn_42cb142099a04b08b3bfb03702921696/sklearn/utils/_sorting.pyx
+      [58/249] Compiling Cython source /tmp/tmp.OKF0yJU1S9/pip-install-61omdrh4/scikit-learn_42cb142099a04b08b3bfb03702921696/sklearn/cluster/_hdbscan/_tree.pyx
+      [59/249] Compiling Cython source /tmp/tmp.OKF0yJU1S9/pip-install-61omdrh4/scikit-learn_42cb142099a04b08b3bfb03702921696/sklearn/utils/_cython_blas.pyx
+      [60/249] Compiling Cython source /tmp/tmp.OKF0yJU1S9/pip-install-61omdrh4/scikit-learn_42cb142099a04b08b3bfb03702921696/sklearn/utils/_vector_sentinel.pyx
+      [61/249] Compiling Cython source /tmp/tmp.OKF0yJU1S9/pip-install-61omdrh4/scikit-learn_42cb142099a04b08b3bfb03702921696/sklearn/utils/_typedefs.pyx
+      [62/249] Compiling Cython source /tmp/tmp.OKF0yJU1S9/pip-install-61omdrh4/scikit-learn_42cb142099a04b08b3bfb03702921696/sklearn/utils/sparsefuncs_fast.pyx
+      [63/249] Compiling Cython source /tmp/tmp.OKF0yJU1S9/pip-install-61omdrh4/scikit-learn_42cb142099a04b08b3bfb03702921696/sklearn/datasets/_svmlight_format_fast.pyx
+      [64/249] Compiling Cython source /tmp/tmp.OKF0yJU1S9/pip-install-61omdrh4/scikit-learn_42cb142099a04b08b3bfb03702921696/sklearn/utils/_isfinite.pyx
+      [65/249] Compiling Cython source sklearn/utils/_weight_vector.pyx
+      [66/249] Compiling Cython source sklearn/utils/_seq_dataset.pyx
+      [67/249] Compiling Cython source /tmp/tmp.OKF0yJU1S9/pip-install-61omdrh4/scikit-learn_42cb142099a04b08b3bfb03702921696/sklearn/metrics/_pairwise_fast.pyx
+      [68/249] Compiling Cython source sklearn/metrics/_pairwise_distances_reduction/_base.pyx
+      [69/249] Compiling Cython source /tmp/tmp.OKF0yJU1S9/pip-install-61omdrh4/scikit-learn_42cb142099a04b08b3bfb03702921696/sklearn/cluster/_dbscan_inner.pyx
+      [70/249] Compiling Cython source sklearn/metrics/_pairwise_distances_reduction/_datasets_pair.pyx
+      [71/249] Compiling Cython source sklearn/metrics/_pairwise_distances_reduction/_argkmin.pyx
+      [72/249] Compiling Cython source sklearn/metrics/_pairwise_distances_reduction/_argkmin_classmode.pyx
+      [73/249] Compiling Cython source sklearn/metrics/_pairwise_distances_reduction/_middle_term_computer.pyx
+      [74/249] Compiling Cython source sklearn/metrics/_pairwise_distances_reduction/_radius_neighbors_classmode.pyx
+      [75/249] Compiling Cython source /tmp/tmp.OKF0yJU1S9/pip-install-61omdrh4/scikit-learn_42cb142099a04b08b3bfb03702921696/sklearn/cluster/_hierarchical_fast.pyx
+      [76/249] Compiling Cython source /tmp/tmp.OKF0yJU1S9/pip-install-61omdrh4/scikit-learn_42cb142099a04b08b3bfb03702921696/sklearn/ensemble/_hist_gradient_boosting/common.pyx
+      [77/249] Compiling Cython source /tmp/tmp.OKF0yJU1S9/pip-install-61omdrh4/scikit-learn_42cb142099a04b08b3bfb03702921696/sklearn/decomposition/_online_lda_fast.pyx
+      [78/249] Compiling Cython source /tmp/tmp.OKF0yJU1S9/pip-install-61omdrh4/scikit-learn_42cb142099a04b08b3bfb03702921696/sklearn/cluster/_k_means_minibatch.pyx
+      [79/249] Compiling Cython source sklearn/metrics/_pairwise_distances_reduction/_radius_neighbors.pyx
+      [80/249] Compiling Cython source /tmp/tmp.OKF0yJU1S9/pip-install-61omdrh4/scikit-learn_42cb142099a04b08b3bfb03702921696/sklearn/cluster/_k_means_lloyd.pyx
+      [81/249] Compiling Cython source sklearn/metrics/_dist_metrics.pyx
+      warning: sklearn/metrics/_dist_metrics.pyx:846:44: Assigning to 'float64_t *' from 'const float64_t *' discards const qualifier
+      warning: sklearn/metrics/_dist_metrics.pyx:909:40: Assigning to 'float64_t *' from 'const float64_t *' discards const qualifier
+      warning: sklearn/metrics/_dist_metrics.pyx:3426:44: Assigning to 'float32_t *' from 'const float32_t *' discards const qualifier
+      warning: sklearn/metrics/_dist_metrics.pyx:3489:40: Assigning to 'float32_t *' from 'const float32_t *' discards const qualifier
+      [82/249] Compiling Cython source /tmp/tmp.OKF0yJU1S9/pip-install-61omdrh4/scikit-learn_42cb142099a04b08b3bfb03702921696/sklearn/cluster/_hdbscan/_linkage.pyx
+      [83/249] Compiling Cython source /tmp/tmp.OKF0yJU1S9/pip-install-61omdrh4/scikit-learn_42cb142099a04b08b3bfb03702921696/sklearn/cluster/_k_means_elkan.pyx
+      [84/249] Compiling Cython source /tmp/tmp.OKF0yJU1S9/pip-install-61omdrh4/scikit-learn_42cb142099a04b08b3bfb03702921696/sklearn/ensemble/_hist_gradient_boosting/_predictor.pyx
+      [85/249] Compiling Cython source /tmp/tmp.OKF0yJU1S9/pip-install-61omdrh4/scikit-learn_42cb142099a04b08b3bfb03702921696/sklearn/ensemble/_hist_gradient_boosting/_bitset.pyx
+      [86/249] Compiling Cython source /tmp/tmp.OKF0yJU1S9/pip-install-61omdrh4/scikit-learn_42cb142099a04b08b3bfb03702921696/sklearn/feature_extraction/_hashing_fast.pyx
+      [87/249] Compiling Cython source /tmp/tmp.OKF0yJU1S9/pip-install-61omdrh4/scikit-learn_42cb142099a04b08b3bfb03702921696/sklearn/neighbors/_partition_nodes.pyx
+      [88/249] Compiling Cython source /tmp/tmp.OKF0yJU1S9/pip-install-61omdrh4/scikit-learn_42cb142099a04b08b3bfb03702921696/sklearn/cluster/_k_means_common.pyx
+      [89/249] Compiling Cython source /tmp/tmp.OKF0yJU1S9/pip-install-61omdrh4/scikit-learn_42cb142099a04b08b3bfb03702921696/sklearn/ensemble/_gradient_boosting.pyx
+      [90/249] Compiling C++ object sklearn/svm/libliblinear-skl.a.p/src_liblinear_tron.cpp.o
+      [91/249] Compiling Cython source /tmp/tmp.OKF0yJU1S9/pip-install-61omdrh4/scikit-learn_42cb142099a04b08b3bfb03702921696/sklearn/manifold/_utils.pyx
+      [92/249] Compiling Cython source /tmp/tmp.OKF0yJU1S9/pip-install-61omdrh4/scikit-learn_42cb142099a04b08b3bfb03702921696/sklearn/svm/_newrand.pyx
+      [93/249] Compiling Cython source /tmp/tmp.OKF0yJU1S9/pip-install-61omdrh4/scikit-learn_42cb142099a04b08b3bfb03702921696/sklearn/manifold/_barnes_hut_tsne.pyx
+      [94/249] Compiling Cython source sklearn/linear_model/_sag_fast.pyx
+      [95/249] Compiling Cython source /tmp/tmp.OKF0yJU1S9/pip-install-61omdrh4/scikit-learn_42cb142099a04b08b3bfb03702921696/sklearn/linear_model/_cd_fast.pyx
+      [96/249] Compiling Cython source sklearn/linear_model/_sgd_fast.pyx
+      [97/249] Compiling Cython source /tmp/tmp.OKF0yJU1S9/pip-install-61omdrh4/scikit-learn_42cb142099a04b08b3bfb03702921696/sklearn/svm/_liblinear.pyx
+      [98/249] Compiling Cython source /tmp/tmp.OKF0yJU1S9/pip-install-61omdrh4/scikit-learn_42cb142099a04b08b3bfb03702921696/sklearn/svm/_libsvm_sparse.pyx
+      [99/249] Compiling Cython source /tmp/tmp.OKF0yJU1S9/pip-install-61omdrh4/scikit-learn_42cb142099a04b08b3bfb03702921696/sklearn/preprocessing/_csr_polynomial_expansion.pyx
+      [100/249] Compiling Cython source /tmp/tmp.OKF0yJU1S9/pip-install-61omdrh4/scikit-learn_42cb142099a04b08b3bfb03702921696/sklearn/svm/_libsvm.pyx
+      [101/249] Compiling C object sklearn/__check_build/_check_build.cpython-312-x86_64-linux-gnu.so.p/meson-generated_sklearn___check_build__check_build.pyx.c.o
+      [102/249] Compiling C++ object sklearn/utils/murmurhash.cpython-312-x86_64-linux-gnu.so.p/src_MurmurHash3.cpp.o
+      [103/249] Compiling Cython source /tmp/tmp.OKF0yJU1S9/pip-install-61omdrh4/scikit-learn_42cb142099a04b08b3bfb03702921696/sklearn/preprocessing/_target_encoder_fast.pyx
+      [104/249] Compiling C++ object sklearn/svm/libliblinear-skl.a.p/src_liblinear_linear.cpp.o
+      [105/249] Compiling Cython source /tmp/tmp.OKF0yJU1S9/pip-install-61omdrh4/scikit-learn_42cb142099a04b08b3bfb03702921696/sklearn/neighbors/_quad_tree.pyx
+      [106/249] Compiling Cython source sklearn/neighbors/_ball_tree.pyx
+      warning: sklearn/neighbors/_binary_tree.pxi:1092:13: Assigning to 'intp_t *' from 'const intp_t *' discards const qualifier
+      warning: sklearn/neighbors/_binary_tree.pxi:1958:13: Assigning to 'intp_t *' from 'const intp_t *' discards const qualifier
+      warning: sklearn/neighbors/_binary_tree.pxi:2053:13: Assigning to 'intp_t *' from 'const intp_t *' discards const qualifier
+      warning: sklearn/neighbors/_binary_tree.pxi:2222:13: Assigning to 'intp_t *' from 'const intp_t *' discards const qualifier
+      warning: sklearn/neighbors/_binary_tree.pxi:2345:13: Assigning to 'intp_t *' from 'const intp_t *' discards const qualifier
+      warning: sklearn/neighbors/_binary_tree.pxi:2402:13: Assigning to 'intp_t *' from 'const intp_t *' discards const qualifier
+      warning: sklearn/neighbors/_binary_tree.pxi:2403:13: Assigning to 'intp_t *' from 'const intp_t *' discards const qualifier
+      warning: sklearn/neighbors/_binary_tree.pxi:2728:13: Assigning to 'intp_t *' from 'const intp_t *' discards const qualifier
+      warning: sklearn/neighbors/_binary_tree.pxi:3594:13: Assigning to 'intp_t *' from 'const intp_t *' discards const qualifier
+      warning: sklearn/neighbors/_binary_tree.pxi:3689:13: Assigning to 'intp_t *' from 'const intp_t *' discards const qualifier
+      warning: sklearn/neighbors/_binary_tree.pxi:3858:13: Assigning to 'intp_t *' from 'const intp_t *' discards const qualifier
+      warning: sklearn/neighbors/_binary_tree.pxi:3981:13: Assigning to 'intp_t *' from 'const intp_t *' discards const qualifier
+      warning: sklearn/neighbors/_binary_tree.pxi:4038:13: Assigning to 'intp_t *' from 'const intp_t *' discards const qualifier
+      warning: sklearn/neighbors/_binary_tree.pxi:4039:13: Assigning to 'intp_t *' from 'const intp_t *' discards const qualifier
+      warning: sklearn/neighbors/_ball_tree.pyx:105:9: Assigning to 'intp_t *' from 'const intp_t *' discards const qualifier
+      warning: sklearn/neighbors/_ball_tree.pyx:107:9: Assigning to 'float64_t *' from 'const float64_t *' discards const qualifier
+      warning: sklearn/neighbors/_ball_tree.pyx:308:9: Assigning to 'intp_t *' from 'const intp_t *' discards const qualifier
+      warning: sklearn/neighbors/_ball_tree.pyx:310:9: Assigning to 'float32_t *' from 'const float32_t *' discards const qualifier
+      [107/249] Compiling Cython source sklearn/neighbors/_kd_tree.pyx
+      warning: sklearn/neighbors/_binary_tree.pxi:1092:13: Assigning to 'intp_t *' from 'const intp_t *' discards const qualifier
+      warning: sklearn/neighbors/_binary_tree.pxi:1958:13: Assigning to 'intp_t *' from 'const intp_t *' discards const qualifier
+      warning: sklearn/neighbors/_binary_tree.pxi:2053:13: Assigning to 'intp_t *' from 'const intp_t *' discards const qualifier
+      warning: sklearn/neighbors/_binary_tree.pxi:2222:13: Assigning to 'intp_t *' from 'const intp_t *' discards const qualifier
+      warning: sklearn/neighbors/_binary_tree.pxi:2345:13: Assigning to 'intp_t *' from 'const intp_t *' discards const qualifier
+      warning: sklearn/neighbors/_binary_tree.pxi:2402:13: Assigning to 'intp_t *' from 'const intp_t *' discards const qualifier
+      warning: sklearn/neighbors/_binary_tree.pxi:2403:13: Assigning to 'intp_t *' from 'const intp_t *' discards const qualifier
+      warning: sklearn/neighbors/_binary_tree.pxi:2728:13: Assigning to 'intp_t *' from 'const intp_t *' discards const qualifier
+      warning: sklearn/neighbors/_binary_tree.pxi:3594:13: Assigning to 'intp_t *' from 'const intp_t *' discards const qualifier
+      warning: sklearn/neighbors/_binary_tree.pxi:3689:13: Assigning to 'intp_t *' from 'const intp_t *' discards const qualifier
+      warning: sklearn/neighbors/_binary_tree.pxi:3858:13: Assigning to 'intp_t *' from 'const intp_t *' discards const qualifier
+      warning: sklearn/neighbors/_binary_tree.pxi:3981:13: Assigning to 'intp_t *' from 'const intp_t *' discards const qualifier
+      warning: sklearn/neighbors/_binary_tree.pxi:4038:13: Assigning to 'intp_t *' from 'const intp_t *' discards const qualifier
+      warning: sklearn/neighbors/_binary_tree.pxi:4039:13: Assigning to 'intp_t *' from 'const intp_t *' discards const qualifier
+      warning: sklearn/neighbors/_kd_tree.pyx:74:9: Assigning to 'float64_t *' from 'const float64_t *' discards const qualifier
+      warning: sklearn/neighbors/_kd_tree.pyx:75:9: Assigning to 'float64_t *' from 'const float64_t *' discards const qualifier
+      warning: sklearn/neighbors/_kd_tree.pyx:342:9: Assigning to 'float32_t *' from 'const float32_t *' discards const qualifier
+      warning: sklearn/neighbors/_kd_tree.pyx:343:9: Assigning to 'float32_t *' from 'const float32_t *' discards const qualifier
+      [108/249] Compiling C object sklearn/utils/_heap.cpython-312-x86_64-linux-gnu.so.p/meson-generated_sklearn_utils__heap.pyx.c.o
+      [109/249] Compiling Cython source /tmp/tmp.OKF0yJU1S9/pip-install-61omdrh4/scikit-learn_42cb142099a04b08b3bfb03702921696/sklearn/tree/_utils.pyx
+      [110/249] Compiling Cython source /tmp/tmp.OKF0yJU1S9/pip-install-61omdrh4/scikit-learn_42cb142099a04b08b3bfb03702921696/sklearn/tree/_splitter.pyx
+      [111/249] Compiling Cython source /tmp/tmp.OKF0yJU1S9/pip-install-61omdrh4/scikit-learn_42cb142099a04b08b3bfb03702921696/sklearn/tree/_criterion.pyx
+      [112/249] Compiling C object sklearn/utils/_sorting.cpython-312-x86_64-linux-gnu.so.p/meson-generated_sklearn_utils__sorting.pyx.c.o
+      [113/249] Compiling Cython source /tmp/tmp.OKF0yJU1S9/pip-install-61omdrh4/scikit-learn_42cb142099a04b08b3bfb03702921696/sklearn/tree/_tree.pyx
+      [114/249] Compiling C object sklearn/utils/_openmp_helpers.cpython-312-x86_64-linux-gnu.so.p/meson-generated_sklearn_utils__openmp_helpers.pyx.c.o
+      [115/249] Compiling Cython source sklearn/_loss/_loss.pyx
+      [116/249] Compiling C++ object sklearn/svm/liblibsvm-skl.a.p/src_libsvm_libsvm_template.cpp.o
+      [117/249] Compiling C++ object sklearn/utils/_vector_sentinel.cpython-312-x86_64-linux-gnu.so.p/meson-generated_sklearn_utils__vector_sentinel.pyx.cpp.o
+      [118/249] Compiling C object sklearn/utils/murmurhash.cpython-312-x86_64-linux-gnu.so.p/meson-generated_sklearn_utils_murmurhash.pyx.c.o
+      [119/249] Compiling C object sklearn/utils/_weight_vector.cpython-312-x86_64-linux-gnu.so.p/meson-generated_sklearn_utils__weight_vector.pyx.c.o
+      [120/249] Compiling C object sklearn/_isotonic.cpython-312-x86_64-linux-gnu.so.p/meson-generated_sklearn__isotonic.pyx.c.o
+      [121/249] Compiling C++ object sklearn/utils/_fast_dict.cpython-312-x86_64-linux-gnu.so.p/meson-generated_sklearn_utils__fast_dict.pyx.cpp.o
+      [122/249] Compiling C object sklearn/utils/_typedefs.cpython-312-x86_64-linux-gnu.so.p/meson-generated_sklearn_utils__typedefs.pyx.c.o
+      [123/249] Compiling C object sklearn/utils/_isfinite.cpython-312-x86_64-linux-gnu.so.p/meson-generated_sklearn_utils__isfinite.pyx.c.o
+      [124/249] Compiling C object sklearn/utils/_seq_dataset.cpython-312-x86_64-linux-gnu.so.p/meson-generated_sklearn_utils__seq_dataset.pyx.c.o
+      [125/249] Compiling C object sklearn/metrics/_pairwise_fast.cpython-312-x86_64-linux-gnu.so.p/meson-generated_sklearn_metrics__pairwise_fast.pyx.c.o
+      [126/249] Compiling C++ object sklearn/metrics/_pairwise_distances_reduction/_base.cpython-312-x86_64-linux-gnu.so.p/meson-generated_sklearn_metrics__pairwise_distances_reduction__base.pyx.cpp.o
+      [127/249] Compiling C object sklearn/utils/arrayfuncs.cpython-312-x86_64-linux-gnu.so.p/meson-generated_sklearn_utils_arrayfuncs.pyx.c.o
+      [128/249] Compiling C object sklearn/utils/_random.cpython-312-x86_64-linux-gnu.so.p/meson-generated_sklearn_utils__random.pyx.c.o
+      [129/249] Compiling C++ object sklearn/metrics/_pairwise_distances_reduction/_datasets_pair.cpython-312-x86_64-linux-gnu.so.p/meson-generated_sklearn_metrics__pairwise_distances_reduction__datasets_pair.pyx.cpp.o
+      [130/249] Compiling C++ object sklearn/cluster/_dbscan_inner.cpython-312-x86_64-linux-gnu.so.p/meson-generated_sklearn_cluster__dbscan_inner.pyx.cpp.o
+      [131/249] Compiling C++ object sklearn/metrics/_pairwise_distances_reduction/_argkmin.cpython-312-x86_64-linux-gnu.so.p/meson-generated_sklearn_metrics__pairwise_distances_reduction__argkmin.pyx.cpp.o
+      [132/249] Compiling C++ object sklearn/metrics/_pairwise_distances_reduction/_middle_term_computer.cpython-312-x86_64-linux-gnu.so.p/meson-generated_sklearn_metrics__pairwise_distances_reduction__middle_term_computer.pyx.cpp.o
+      [133/249] Compiling C++ object sklearn/metrics/_pairwise_distances_reduction/_argkmin_classmode.cpython-312-x86_64-linux-gnu.so.p/meson-generated_sklearn_metrics__pairwise_distances_reduction__argkmin_classmode.pyx.cpp.o
+      [134/249] Compiling C object sklearn/metrics/cluster/_expected_mutual_info_fast.cpython-312-x86_64-linux-gnu.so.p/meson-generated_sklearn_metrics_cluster__expected_mutual_info_fast.pyx.c.o
+      [135/249] Compiling C object sklearn/utils/_cython_blas.cpython-312-x86_64-linux-gnu.so.p/meson-generated_sklearn_utils__cython_blas.pyx.c.o
+      [136/249] Compiling C++ object sklearn/metrics/_pairwise_distances_reduction/_radius_neighbors_classmode.cpython-312-x86_64-linux-gnu.so.p/meson-generated_sklearn_metrics__pairwise_distances_reduction__radius_neighbors_classmode.pyx.cpp.o
+      [137/249] Compiling C++ object sklearn/cluster/_hierarchical_fast.cpython-312-x86_64-linux-gnu.so.p/meson-generated_sklearn_cluster__hierarchical_fast.pyx.cpp.o
+      [138/249] Compiling C++ object sklearn/metrics/_pairwise_distances_reduction/_radius_neighbors.cpython-312-x86_64-linux-gnu.so.p/meson-generated_sklearn_metrics__pairwise_distances_reduction__radius_neighbors.pyx.cpp.o
+      [139/249] Compiling C object sklearn/cluster/_hdbscan/_linkage.cpython-312-x86_64-linux-gnu.so.p/meson-generated_sklearn_cluster__hdbscan__linkage.pyx.c.o
+      [140/249] Compiling C object sklearn/metrics/_dist_metrics.cpython-312-x86_64-linux-gnu.so.p/meson-generated_sklearn_metrics__dist_metrics.pyx.c.o
+      sklearn/metrics/_dist_metrics.cpython-312-x86_64-linux-gnu.so.p/sklearn/metrics/_dist_metrics.pyx.c: In function ‘__pyx_pf_7sklearn_7metrics_13_dist_metrics_16DistanceMetric64_22_pairwise_sparse_dense’:
+      sklearn/metrics/_dist_metrics.cpython-312-x86_64-linux-gnu.so.p/sklearn/metrics/_dist_metrics.pyx.c:29538:29: warning: assignment discards ‘const’ qualifier from pointer target type [-Wdiscarded-qualifiers]
+      29538 |             __pyx_v_x2_data = ((&(*((__pyx_t_7sklearn_5utils_9_typedefs_float64_t const  *) ( /* dim=1 */ ((char *) (((__pyx_t_7sklearn_5utils_9_typedefs_float64_t const  *) ( /* dim=0 */ (__pyx_v_Y_data.data + __pyx_t_18 * __pyx_v_Y_data.strides[0]) )) + __pyx_t_19)) )))) + (__pyx_v_i2 * __pyx_v_n_features));
+            |                             ^
+      sklearn/metrics/_dist_metrics.cpython-312-x86_64-linux-gnu.so.p/sklearn/metrics/_dist_metrics.pyx.c: In function ‘__pyx_pf_7sklearn_7metrics_13_dist_metrics_16DistanceMetric64_24_pairwise_dense_sparse’:
+      sklearn/metrics/_dist_metrics.cpython-312-x86_64-linux-gnu.so.p/sklearn/metrics/_dist_metrics.pyx.c:30323:27: warning: assignment discards ‘const’ qualifier from pointer target type [-Wdiscarded-qualifiers]
+      30323 |           __pyx_v_x1_data = ((&(*((__pyx_t_7sklearn_5utils_9_typedefs_float64_t const  *) ( /* dim=1 */ ((char *) (((__pyx_t_7sklearn_5utils_9_typedefs_float64_t const  *) ( /* dim=0 */ (__pyx_v_X_data.data + __pyx_t_15 * __pyx_v_X_data.strides[0]) )) + __pyx_t_16)) )))) + (__pyx_v_i1 * __pyx_v_n_features));
+            |                           ^
+      sklearn/metrics/_dist_metrics.cpython-312-x86_64-linux-gnu.so.p/sklearn/metrics/_dist_metrics.pyx.c: In function ‘__pyx_pf_7sklearn_7metrics_13_dist_metrics_16DistanceMetric32_22_pairwise_sparse_dense’:
+      sklearn/metrics/_dist_metrics.cpython-312-x86_64-linux-gnu.so.p/sklearn/metrics/_dist_metrics.pyx.c:49160:29: warning: assignment discards ‘const’ qualifier from pointer target type [-Wdiscarded-qualifiers]
+      49160 |             __pyx_v_x2_data = ((&(*((__pyx_t_7sklearn_5utils_9_typedefs_float32_t const  *) ( /* dim=1 */ ((char *) (((__pyx_t_7sklearn_5utils_9_typedefs_float32_t const  *) ( /* dim=0 */ (__pyx_v_Y_data.data + __pyx_t_18 * __pyx_v_Y_data.strides[0]) )) + __pyx_t_19)) )))) + (__pyx_v_i2 * __pyx_v_n_features));
+            |                             ^
+      sklearn/metrics/_dist_metrics.cpython-312-x86_64-linux-gnu.so.p/sklearn/metrics/_dist_metrics.pyx.c: In function ‘__pyx_pf_7sklearn_7metrics_13_dist_metrics_16DistanceMetric32_24_pairwise_dense_sparse’:
+      sklearn/metrics/_dist_metrics.cpython-312-x86_64-linux-gnu.so.p/sklearn/metrics/_dist_metrics.pyx.c:49945:27: warning: assignment discards ‘const’ qualifier from pointer target type [-Wdiscarded-qualifiers]
+      49945 |           __pyx_v_x1_data = ((&(*((__pyx_t_7sklearn_5utils_9_typedefs_float32_t const  *) ( /* dim=1 */ ((char *) (((__pyx_t_7sklearn_5utils_9_typedefs_float32_t const  *) ( /* dim=0 */ (__pyx_v_X_data.data + __pyx_t_15 * __pyx_v_X_data.strides[0]) )) + __pyx_t_16)) )))) + (__pyx_v_i1 * __pyx_v_n_features));
+            |                           ^
+      [141/249] Compiling C object sklearn/cluster/_k_means_minibatch.cpython-312-x86_64-linux-gnu.so.p/meson-generated_sklearn_cluster__k_means_minibatch.pyx.c.o
+      [142/249] Compiling C object sklearn/cluster/_k_means_lloyd.cpython-312-x86_64-linux-gnu.so.p/meson-generated_sklearn_cluster__k_means_lloyd.pyx.c.o
+      [143/249] Compiling C object sklearn/ensemble/_hist_gradient_boosting/_gradient_boosting.cpython-312-x86_64-linux-gnu.so.p/meson-generated_sklearn_ensemble__hist_gradient_boosting__gradient_boosting.pyx.c.o
+      [144/249] Compiling C object sklearn/ensemble/_gradient_boosting.cpython-312-x86_64-linux-gnu.so.p/meson-generated_sklearn_ensemble__gradient_boosting.pyx.c.o
+      [145/249] Compiling C object sklearn/decomposition/_cdnmf_fast.cpython-312-x86_64-linux-gnu.so.p/meson-generated_sklearn_decomposition__cdnmf_fast.pyx.c.o
+      [146/249] Compiling C object sklearn/ensemble/_hist_gradient_boosting/common.cpython-312-x86_64-linux-gnu.so.p/meson-generated_sklearn_ensemble__hist_gradient_boosting_common.pyx.c.o
+      [147/249] Compiling C object sklearn/decomposition/_online_lda_fast.cpython-312-x86_64-linux-gnu.so.p/meson-generated_sklearn_decomposition__online_lda_fast.pyx.c.o
+      [148/249] Compiling C++ object sklearn/feature_extraction/_hashing_fast.cpython-312-x86_64-linux-gnu.so.p/meson-generated_sklearn_feature_extraction__hashing_fast.pyx.cpp.o
+      [149/249] Compiling C object sklearn/cluster/_hdbscan/_reachability.cpython-312-x86_64-linux-gnu.so.p/meson-generated_sklearn_cluster__hdbscan__reachability.pyx.c.o
+      [150/249] Compiling C object sklearn/utils/sparsefuncs_fast.cpython-312-x86_64-linux-gnu.so.p/meson-generated_sklearn_utils_sparsefuncs_fast.pyx.c.o
+      [151/249] Compiling C object sklearn/ensemble/_hist_gradient_boosting/_binning.cpython-312-x86_64-linux-gnu.so.p/meson-generated_sklearn_ensemble__hist_gradient_boosting__binning.pyx.c.o
+      [152/249] Compiling C object sklearn/cluster/_k_means_common.cpython-312-x86_64-linux-gnu.so.p/meson-generated_sklearn_cluster__k_means_common.pyx.c.o
+      [153/249] Compiling C object sklearn/ensemble/_hist_gradient_boosting/histogram.cpython-312-x86_64-linux-gnu.so.p/meson-generated_sklearn_ensemble__hist_gradient_boosting_histogram.pyx.c.o
+      [154/249] Compiling C object sklearn/ensemble/_hist_gradient_boosting/_predictor.cpython-312-x86_64-linux-gnu.so.p/meson-generated_sklearn_ensemble__hist_gradient_boosting__predictor.pyx.c.o
+      [155/249] Compiling C object sklearn/cluster/_k_means_elkan.cpython-312-x86_64-linux-gnu.so.p/meson-generated_sklearn_cluster__k_means_elkan.pyx.c.o
+      [156/249] Linking static target sklearn/svm/liblibsvm-skl.a
+      FAILED: sklearn/svm/liblibsvm-skl.a
+      rm -f sklearn/svm/liblibsvm-skl.a && ar csrDT sklearn/svm/liblibsvm-skl.a sklearn/svm/liblibsvm-skl.a.p/src_libsvm_libsvm_template.cpp.o
+      /bin/sh: line 1: rm: command not found
+      [157/249] Compiling C object sklearn/ensemble/_hist_gradient_boosting/_bitset.cpython-312-x86_64-linux-gnu.so.p/meson-generated_sklearn_ensemble__hist_gradient_boosting__bitset.pyx.c.o
+      [158/249] Compiling C++ object sklearn/neighbors/_partition_nodes.cpython-312-x86_64-linux-gnu.so.p/meson-generated_sklearn_neighbors__partition_nodes.pyx.cpp.o
+      [159/249] Compiling C object sklearn/cluster/_hdbscan/_tree.cpython-312-x86_64-linux-gnu.so.p/meson-generated_sklearn_cluster__hdbscan__tree.pyx.c.o
+      [160/249] Compiling C++ object sklearn/svm/_newrand.cpython-312-x86_64-linux-gnu.so.p/meson-generated_sklearn_svm__newrand.pyx.cpp.o
+      [161/249] Compiling C object sklearn/ensemble/_hist_gradient_boosting/splitting.cpython-312-x86_64-linux-gnu.so.p/meson-generated_sklearn_ensemble__hist_gradient_boosting_splitting.pyx.c.o
+      sklearn/ensemble/_hist_gradient_boosting/splitting.cpython-312-x86_64-linux-gnu.so.p/sklearn/ensemble/_hist_gradient_boosting/splitting.pyx.c: In function ‘__pyx_f_7sklearn_8ensemble_23_hist_gradient_boosting_9splitting_8Splitter__find_best_bin_to_split_category’:
+      sklearn/ensemble/_hist_gradient_boosting/splitting.cpython-312-x86_64-linux-gnu.so.p/sklearn/ensemble/_hist_gradient_boosting/splitting.pyx.c:24537:51: warning: ‘__pyx_v_best_cat_infos_thresh’ may be used uninitialized [-Wmaybe-uninitialized]
+      24537 |       __pyx_t_17 = (__pyx_v_best_cat_infos_thresh - 1);
+            |                    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~
+      sklearn/ensemble/_hist_gradient_boosting/splitting.cpython-312-x86_64-linux-gnu.so.p/sklearn/ensemble/_hist_gradient_boosting/splitting.pyx.c:23517:16: note: ‘__pyx_v_best_cat_infos_thresh’ was declared here
+      23517 |   unsigned int __pyx_v_best_cat_infos_thresh;
+            |                ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+      [162/249] Compiling C object sklearn/manifold/_utils.cpython-312-x86_64-linux-gnu.so.p/meson-generated_sklearn_manifold__utils.pyx.c.o
+      [163/249] Compiling C object sklearn/manifold/_barnes_hut_tsne.cpython-312-x86_64-linux-gnu.so.p/meson-generated_sklearn_manifold__barnes_hut_tsne.pyx.c.o
+      [164/249] Compiling C object sklearn/neighbors/_quad_tree.cpython-312-x86_64-linux-gnu.so.p/meson-generated_sklearn_neighbors__quad_tree.pyx.c.o
+      [165/249] Compiling C object sklearn/linear_model/_sgd_fast.cpython-312-x86_64-linux-gnu.so.p/meson-generated_sklearn_linear_model__sgd_fast.pyx.c.o
+      [166/249] Compiling C object sklearn/linear_model/_sag_fast.cpython-312-x86_64-linux-gnu.so.p/meson-generated_sklearn_linear_model__sag_fast.pyx.c.o
+      [167/249] Compiling C object sklearn/datasets/_svmlight_format_fast.cpython-312-x86_64-linux-gnu.so.p/meson-generated_sklearn_datasets__svmlight_format_fast.pyx.c.o
+      [168/249] Compiling C object sklearn/preprocessing/_csr_polynomial_expansion.cpython-312-x86_64-linux-gnu.so.p/meson-generated_sklearn_preprocessing__csr_polynomial_expansion.pyx.c.o
+      [169/249] Compiling C object sklearn/linear_model/_cd_fast.cpython-312-x86_64-linux-gnu.so.p/meson-generated_sklearn_linear_model__cd_fast.pyx.c.o
+      [170/249] Compiling C++ object sklearn/preprocessing/_target_encoder_fast.cpython-312-x86_64-linux-gnu.so.p/meson-generated_sklearn_preprocessing__target_encoder_fast.pyx.cpp.o
+      [171/249] Compiling C object sklearn/neighbors/_kd_tree.cpython-312-x86_64-linux-gnu.so.p/meson-generated_sklearn_neighbors__kd_tree.pyx.c.o
+      sklearn/neighbors/_kd_tree.cpython-312-x86_64-linux-gnu.so.p/sklearn/neighbors/_kd_tree.pyx.c: In function ‘__pyx_f_7sklearn_9neighbors_8_kd_tree_12BinaryTree64__recursive_build’:
+      sklearn/neighbors/_kd_tree.cpython-312-x86_64-linux-gnu.so.p/sklearn/neighbors/_kd_tree.pyx.c:32634:21: warning: assignment discards ‘const’ qualifier from pointer target type [-Wdiscarded-qualifiers]
+      32634 |   __pyx_v_idx_array = (&(*((__pyx_t_7sklearn_5utils_9_typedefs_intp_t const  *) ( /* dim=0 */ ((char *) (((__pyx_t_7sklearn_5utils_9_typedefs_intp_t const  *) __pyx_v_self->idx_array.data) + __pyx_t_1)) ))));
+            |                     ^
+      sklearn/neighbors/_kd_tree.cpython-312-x86_64-linux-gnu.so.p/sklearn/neighbors/_kd_tree.pyx.c: In function ‘__pyx_f_7sklearn_9neighbors_8_kd_tree_12BinaryTree64__query_radius_single’:
+      sklearn/neighbors/_kd_tree.cpython-312-x86_64-linux-gnu.so.p/sklearn/neighbors/_kd_tree.pyx.c:40044:21: warning: assignment discards ‘const’ qualifier from pointer target type [-Wdiscarded-qualifiers]
+      40044 |   __pyx_v_idx_array = (&(*((__pyx_t_7sklearn_5utils_9_typedefs_intp_t const  *) ( /* dim=0 */ ((char *) (((__pyx_t_7sklearn_5utils_9_typedefs_intp_t const  *) __pyx_v_self->idx_array.data) + __pyx_t_2)) ))));
+            |                     ^
+      sklearn/neighbors/_kd_tree.cpython-312-x86_64-linux-gnu.so.p/sklearn/neighbors/_kd_tree.pyx.c: In function ‘__pyx_f_7sklearn_9neighbors_8_kd_tree_12BinaryTree64__kde_single_breadthfirst’:
+      sklearn/neighbors/_kd_tree.cpython-312-x86_64-linux-gnu.so.p/sklearn/neighbors/_kd_tree.pyx.c:40596:21: warning: assignment discards ‘const’ qualifier from pointer target type [-Wdiscarded-qualifiers]
+      40596 |   __pyx_v_idx_array = (&(*((__pyx_t_7sklearn_5utils_9_typedefs_intp_t const  *) ( /* dim=0 */ ((char *) (((__pyx_t_7sklearn_5utils_9_typedefs_intp_t const  *) __pyx_v_self->idx_array.data) + __pyx_t_2)) ))));
+            |                     ^
+      sklearn/neighbors/_kd_tree.cpython-312-x86_64-linux-gnu.so.p/sklearn/neighbors/_kd_tree.pyx.c: In function ‘__pyx_f_7sklearn_9neighbors_8_kd_tree_12BinaryTree64__kde_single_depthfirst’:
+      sklearn/neighbors/_kd_tree.cpython-312-x86_64-linux-gnu.so.p/sklearn/neighbors/_kd_tree.pyx.c:41501:21: warning: assignment discards ‘const’ qualifier from pointer target type [-Wdiscarded-qualifiers]
+      41501 |   __pyx_v_idx_array = (&(*((__pyx_t_7sklearn_5utils_9_typedefs_intp_t const  *) ( /* dim=0 */ ((char *) (((__pyx_t_7sklearn_5utils_9_typedefs_intp_t const  *) __pyx_v_self->idx_array.data) + __pyx_t_2)) ))));
+            |                     ^
+      sklearn/neighbors/_kd_tree.cpython-312-x86_64-linux-gnu.so.p/sklearn/neighbors/_kd_tree.pyx.c: In function ‘__pyx_f_7sklearn_9neighbors_8_kd_tree_12BinaryTree64__two_point_single’:
+      sklearn/neighbors/_kd_tree.cpython-312-x86_64-linux-gnu.so.p/sklearn/neighbors/_kd_tree.pyx.c:42112:21: warning: assignment discards ‘const’ qualifier from pointer target type [-Wdiscarded-qualifiers]
+      42112 |   __pyx_v_idx_array = (&(*((__pyx_t_7sklearn_5utils_9_typedefs_intp_t const  *) ( /* dim=0 */ ((char *) (((__pyx_t_7sklearn_5utils_9_typedefs_intp_t const  *) __pyx_v_self->idx_array.data) + __pyx_t_2)) ))));
+            |                     ^
+      sklearn/neighbors/_kd_tree.cpython-312-x86_64-linux-gnu.so.p/sklearn/neighbors/_kd_tree.pyx.c: In function ‘__pyx_f_7sklearn_9neighbors_8_kd_tree_12BinaryTree64__two_point_dual’:
+      sklearn/neighbors/_kd_tree.cpython-312-x86_64-linux-gnu.so.p/sklearn/neighbors/_kd_tree.pyx.c:42515:22: warning: assignment discards ‘const’ qualifier from pointer target type [-Wdiscarded-qualifiers]
+      42515 |   __pyx_v_idx_array1 = (&(*((__pyx_t_7sklearn_5utils_9_typedefs_intp_t const  *) ( /* dim=0 */ ((char *) (((__pyx_t_7sklearn_5utils_9_typedefs_intp_t const  *) __pyx_v_self->idx_array.data) + __pyx_t_1)) ))));
+            |                      ^
+      sklearn/neighbors/_kd_tree.cpython-312-x86_64-linux-gnu.so.p/sklearn/neighbors/_kd_tree.pyx.c:42525:22: warning: assignment discards ‘const’ qualifier from pointer target type [-Wdiscarded-qualifiers]
+      42525 |   __pyx_v_idx_array2 = (&(*((__pyx_t_7sklearn_5utils_9_typedefs_intp_t const  *) ( /* dim=0 */ ((char *) (((__pyx_t_7sklearn_5utils_9_typedefs_intp_t const  *) __pyx_v_other->idx_array.data) + __pyx_t_1)) ))));
+            |                      ^
+      sklearn/neighbors/_kd_tree.cpython-312-x86_64-linux-gnu.so.p/sklearn/neighbors/_kd_tree.pyx.c: In function ‘__pyx_f_7sklearn_9neighbors_8_kd_tree_12BinaryTree32__recursive_build’:
+      sklearn/neighbors/_kd_tree.cpython-312-x86_64-linux-gnu.so.p/sklearn/neighbors/_kd_tree.pyx.c:46437:21: warning: assignment discards ‘const’ qualifier from pointer target type [-Wdiscarded-qualifiers]
+      46437 |   __pyx_v_idx_array = (&(*((__pyx_t_7sklearn_5utils_9_typedefs_intp_t const  *) ( /* dim=0 */ ((char *) (((__pyx_t_7sklearn_5utils_9_typedefs_intp_t const  *) __pyx_v_self->idx_array.data) + __pyx_t_1)) ))));
+            |                     ^
+      sklearn/neighbors/_kd_tree.cpython-312-x86_64-linux-gnu.so.p/sklearn/neighbors/_kd_tree.pyx.c: In function ‘__pyx_f_7sklearn_9neighbors_8_kd_tree_12BinaryTree32__query_radius_single’:
+      sklearn/neighbors/_kd_tree.cpython-312-x86_64-linux-gnu.so.p/sklearn/neighbors/_kd_tree.pyx.c:53856:21: warning: assignment discards ‘const’ qualifier from pointer target type [-Wdiscarded-qualifiers]
+      53856 |   __pyx_v_idx_array = (&(*((__pyx_t_7sklearn_5utils_9_typedefs_intp_t const  *) ( /* dim=0 */ ((char *) (((__pyx_t_7sklearn_5utils_9_typedefs_intp_t const  *) __pyx_v_self->idx_array.data) + __pyx_t_2)) ))));
+            |                     ^
+      sklearn/neighbors/_kd_tree.cpython-312-x86_64-linux-gnu.so.p/sklearn/neighbors/_kd_tree.pyx.c: In function ‘__pyx_f_7sklearn_9neighbors_8_kd_tree_12BinaryTree32__kde_single_breadthfirst’:
+      sklearn/neighbors/_kd_tree.cpython-312-x86_64-linux-gnu.so.p/sklearn/neighbors/_kd_tree.pyx.c:54408:21: warning: assignment discards ‘const’ qualifier from pointer target type [-Wdiscarded-qualifiers]
+      54408 |   __pyx_v_idx_array = (&(*((__pyx_t_7sklearn_5utils_9_typedefs_intp_t const  *) ( /* dim=0 */ ((char *) (((__pyx_t_7sklearn_5utils_9_typedefs_intp_t const  *) __pyx_v_self->idx_array.data) + __pyx_t_2)) ))));
+            |                     ^
+      sklearn/neighbors/_kd_tree.cpython-312-x86_64-linux-gnu.so.p/sklearn/neighbors/_kd_tree.pyx.c: In function ‘__pyx_f_7sklearn_9neighbors_8_kd_tree_12BinaryTree32__kde_single_depthfirst’:
+      sklearn/neighbors/_kd_tree.cpython-312-x86_64-linux-gnu.so.p/sklearn/neighbors/_kd_tree.pyx.c:55313:21: warning: assignment discards ‘const’ qualifier from pointer target type [-Wdiscarded-qualifiers]
+      55313 |   __pyx_v_idx_array = (&(*((__pyx_t_7sklearn_5utils_9_typedefs_intp_t const  *) ( /* dim=0 */ ((char *) (((__pyx_t_7sklearn_5utils_9_typedefs_intp_t const  *) __pyx_v_self->idx_array.data) + __pyx_t_2)) ))));
+            |                     ^
+      sklearn/neighbors/_kd_tree.cpython-312-x86_64-linux-gnu.so.p/sklearn/neighbors/_kd_tree.pyx.c: In function ‘__pyx_f_7sklearn_9neighbors_8_kd_tree_12BinaryTree32__two_point_single’:
+      sklearn/neighbors/_kd_tree.cpython-312-x86_64-linux-gnu.so.p/sklearn/neighbors/_kd_tree.pyx.c:55924:21: warning: assignment discards ‘const’ qualifier from pointer target type [-Wdiscarded-qualifiers]
+      55924 |   __pyx_v_idx_array = (&(*((__pyx_t_7sklearn_5utils_9_typedefs_intp_t const  *) ( /* dim=0 */ ((char *) (((__pyx_t_7sklearn_5utils_9_typedefs_intp_t const  *) __pyx_v_self->idx_array.data) + __pyx_t_2)) ))));
+            |                     ^
+      sklearn/neighbors/_kd_tree.cpython-312-x86_64-linux-gnu.so.p/sklearn/neighbors/_kd_tree.pyx.c: In function ‘__pyx_f_7sklearn_9neighbors_8_kd_tree_12BinaryTree32__two_point_dual’:
+      sklearn/neighbors/_kd_tree.cpython-312-x86_64-linux-gnu.so.p/sklearn/neighbors/_kd_tree.pyx.c:56327:22: warning: assignment discards ‘const’ qualifier from pointer target type [-Wdiscarded-qualifiers]
+      56327 |   __pyx_v_idx_array1 = (&(*((__pyx_t_7sklearn_5utils_9_typedefs_intp_t const  *) ( /* dim=0 */ ((char *) (((__pyx_t_7sklearn_5utils_9_typedefs_intp_t const  *) __pyx_v_self->idx_array.data) + __pyx_t_1)) ))));
+            |                      ^
+      sklearn/neighbors/_kd_tree.cpython-312-x86_64-linux-gnu.so.p/sklearn/neighbors/_kd_tree.pyx.c:56337:22: warning: assignment discards ‘const’ qualifier from pointer target type [-Wdiscarded-qualifiers]
+      56337 |   __pyx_v_idx_array2 = (&(*((__pyx_t_7sklearn_5utils_9_typedefs_intp_t const  *) ( /* dim=0 */ ((char *) (((__pyx_t_7sklearn_5utils_9_typedefs_intp_t const  *) __pyx_v_other->idx_array.data) + __pyx_t_1)) ))));
+            |                      ^
+      sklearn/neighbors/_kd_tree.cpython-312-x86_64-linux-gnu.so.p/sklearn/neighbors/_kd_tree.pyx.c: In function ‘__pyx_f_7sklearn_9neighbors_8_kd_tree_init_node64’:
+      sklearn/neighbors/_kd_tree.cpython-312-x86_64-linux-gnu.so.p/sklearn/neighbors/_kd_tree.pyx.c:58210:24: warning: assignment discards ‘const’ qualifier from pointer target type [-Wdiscarded-qualifiers]
+      58210 |   __pyx_v_lower_bounds = (&(*((__pyx_t_7sklearn_5utils_9_typedefs_float64_t const  *) ( /* dim=2 */ ((char *) (((__pyx_t_7sklearn_5utils_9_typedefs_float64_t const  *) ( /* dim=1 */ (( /* dim=0 */ (__pyx_v_tree->node_bounds.data + __pyx_t_1 * __pyx_v_tree->node_bounds.strides[0]) ) + __pyx_t_2 * __pyx_v_tree->node_bounds.strides[1]) )) + __pyx_t_3)) ))));
+            |                        ^
+      sklearn/neighbors/_kd_tree.cpython-312-x86_64-linux-gnu.so.p/sklearn/neighbors/_kd_tree.pyx.c:58222:24: warning: assignment discards ‘const’ qualifier from pointer target type [-Wdiscarded-qualifiers]
+      58222 |   __pyx_v_upper_bounds = (&(*((__pyx_t_7sklearn_5utils_9_typedefs_float64_t const  *) ( /* dim=2 */ ((char *) (((__pyx_t_7sklearn_5utils_9_typedefs_float64_t const  *) ( /* dim=1 */ (( /* dim=0 */ (__pyx_v_tree->node_bounds.data + __pyx_t_3 * __pyx_v_tree->node_bounds.strides[0]) ) + __pyx_t_2 * __pyx_v_tree->node_bounds.strides[1]) )) + __pyx_t_1)) ))));
+            |                        ^
+      sklearn/neighbors/_kd_tree.cpython-312-x86_64-linux-gnu.so.p/sklearn/neighbors/_kd_tree.pyx.c: In function ‘__pyx_f_7sklearn_9neighbors_8_kd_tree_init_node32’:
+      sklearn/neighbors/_kd_tree.cpython-312-x86_64-linux-gnu.so.p/sklearn/neighbors/_kd_tree.pyx.c:60019:24: warning: assignment discards ‘const’ qualifier from pointer target type [-Wdiscarded-qualifiers]
+      60019 |   __pyx_v_lower_bounds = (&(*((__pyx_t_7sklearn_5utils_9_typedefs_float32_t const  *) ( /* dim=2 */ ((char *) (((__pyx_t_7sklearn_5utils_9_typedefs_float32_t const  *) ( /* dim=1 */ (( /* dim=0 */ (__pyx_v_tree->node_bounds.data + __pyx_t_1 * __pyx_v_tree->node_bounds.strides[0]) ) + __pyx_t_2 * __pyx_v_tree->node_bounds.strides[1]) )) + __pyx_t_3)) ))));
+            |                        ^
+      sklearn/neighbors/_kd_tree.cpython-312-x86_64-linux-gnu.so.p/sklearn/neighbors/_kd_tree.pyx.c:60031:24: warning: assignment discards ‘const’ qualifier from pointer target type [-Wdiscarded-qualifiers]
+      60031 |   __pyx_v_upper_bounds = (&(*((__pyx_t_7sklearn_5utils_9_typedefs_float32_t const  *) ( /* dim=2 */ ((char *) (((__pyx_t_7sklearn_5utils_9_typedefs_float32_t const  *) ( /* dim=1 */ (( /* dim=0 */ (__pyx_v_tree->node_bounds.data + __pyx_t_3 * __pyx_v_tree->node_bounds.strides[0]) ) + __pyx_t_2 * __pyx_v_tree->node_bounds.strides[1]) )) + __pyx_t_1)) ))));
+            |                        ^
+      In function ‘__pyx_fuse_1__pyx_f_7sklearn_9neighbors_8_kd_tree__total_node_weight’,
+          inlined from ‘__pyx_f_7sklearn_9neighbors_8_kd_tree_12BinaryTree64__kde_single_depthfirst’ at sklearn/neighbors/_kd_tree.cpython-312-x86_64-linux-gnu.so.p/sklearn/neighbors/_kd_tree.pyx.c:41824:19:
+      sklearn/neighbors/_kd_tree.cpython-312-x86_64-linux-gnu.so.p/sklearn/neighbors/_kd_tree.pyx.c:58021:52: warning: ‘__pyx_v_sample_weight’ may be used uninitialized [-Wmaybe-uninitialized]
+      58021 |     __pyx_v_N = (__pyx_v_N + (__pyx_v_sample_weight[(__pyx_v_idx_array[__pyx_v_i])]));
+            |                                                    ^
+      sklearn/neighbors/_kd_tree.cpython-312-x86_64-linux-gnu.so.p/sklearn/neighbors/_kd_tree.pyx.c: In function ‘__pyx_f_7sklearn_9neighbors_8_kd_tree_12BinaryTree64__kde_single_depthfirst’:
+      sklearn/neighbors/_kd_tree.cpython-312-x86_64-linux-gnu.so.p/sklearn/neighbors/_kd_tree.pyx.c:41402:55: note: ‘__pyx_v_sample_weight’ was declared here
+      41402 |   __pyx_t_7sklearn_5utils_9_typedefs_float64_t const *__pyx_v_sample_weight;
+            |                                                       ^~~~~~~~~~~~~~~~~~~~~
+      In function ‘__pyx_fuse_0__pyx_f_7sklearn_9neighbors_8_kd_tree__total_node_weight’,
+          inlined from ‘__pyx_f_7sklearn_9neighbors_8_kd_tree_12BinaryTree32__kde_single_depthfirst’ at sklearn/neighbors/_kd_tree.cpython-312-x86_64-linux-gnu.so.p/sklearn/neighbors/_kd_tree.pyx.c:55636:19:
+      sklearn/neighbors/_kd_tree.cpython-312-x86_64-linux-gnu.so.p/sklearn/neighbors/_kd_tree.pyx.c:57962:52: warning: ‘__pyx_v_sample_weight’ may be used uninitialized [-Wmaybe-uninitialized]
+      57962 |     __pyx_v_N = (__pyx_v_N + (__pyx_v_sample_weight[(__pyx_v_idx_array[__pyx_v_i])]));
+            |                                                    ^
+      sklearn/neighbors/_kd_tree.cpython-312-x86_64-linux-gnu.so.p/sklearn/neighbors/_kd_tree.pyx.c: In function ‘__pyx_f_7sklearn_9neighbors_8_kd_tree_12BinaryTree32__kde_single_depthfirst’:
+      sklearn/neighbors/_kd_tree.cpython-312-x86_64-linux-gnu.so.p/sklearn/neighbors/_kd_tree.pyx.c:55214:55: note: ‘__pyx_v_sample_weight’ was declared here
+      55214 |   __pyx_t_7sklearn_5utils_9_typedefs_float32_t const *__pyx_v_sample_weight;
+            |                                                       ^~~~~~~~~~~~~~~~~~~~~
+      [172/249] Compiling C object sklearn/neighbors/_ball_tree.cpython-312-x86_64-linux-gnu.so.p/meson-generated_sklearn_neighbors__ball_tree.pyx.c.o
+      sklearn/neighbors/_ball_tree.cpython-312-x86_64-linux-gnu.so.p/sklearn/neighbors/_ball_tree.pyx.c: In function ‘__pyx_f_7sklearn_9neighbors_10_ball_tree_12BinaryTree64__recursive_build’:
+      sklearn/neighbors/_ball_tree.cpython-312-x86_64-linux-gnu.so.p/sklearn/neighbors/_ball_tree.pyx.c:32766:21: warning: assignment discards ‘const’ qualifier from pointer target type [-Wdiscarded-qualifiers]
+      32766 |   __pyx_v_idx_array = (&(*((__pyx_t_7sklearn_5utils_9_typedefs_intp_t const  *) ( /* dim=0 */ ((char *) (((__pyx_t_7sklearn_5utils_9_typedefs_intp_t const  *) __pyx_v_self->idx_array.data) + __pyx_t_1)) ))));
+            |                     ^
+      sklearn/neighbors/_ball_tree.cpython-312-x86_64-linux-gnu.so.p/sklearn/neighbors/_ball_tree.pyx.c: In function ‘__pyx_f_7sklearn_9neighbors_10_ball_tree_12BinaryTree64__query_radius_single’:
+      sklearn/neighbors/_ball_tree.cpython-312-x86_64-linux-gnu.so.p/sklearn/neighbors/_ball_tree.pyx.c:40176:21: warning: assignment discards ‘const’ qualifier from pointer target type [-Wdiscarded-qualifiers]
+      40176 |   __pyx_v_idx_array = (&(*((__pyx_t_7sklearn_5utils_9_typedefs_intp_t const  *) ( /* dim=0 */ ((char *) (((__pyx_t_7sklearn_5utils_9_typedefs_intp_t const  *) __pyx_v_self->idx_array.data) + __pyx_t_2)) ))));
+            |                     ^
+      sklearn/neighbors/_ball_tree.cpython-312-x86_64-linux-gnu.so.p/sklearn/neighbors/_ball_tree.pyx.c: In function ‘__pyx_f_7sklearn_9neighbors_10_ball_tree_12BinaryTree64__kde_single_breadthfirst’:
+      sklearn/neighbors/_ball_tree.cpython-312-x86_64-linux-gnu.so.p/sklearn/neighbors/_ball_tree.pyx.c:40728:21: warning: assignment discards ‘const’ qualifier from pointer target type [-Wdiscarded-qualifiers]
+      40728 |   __pyx_v_idx_array = (&(*((__pyx_t_7sklearn_5utils_9_typedefs_intp_t const  *) ( /* dim=0 */ ((char *) (((__pyx_t_7sklearn_5utils_9_typedefs_intp_t const  *) __pyx_v_self->idx_array.data) + __pyx_t_2)) ))));
+            |                     ^
+      sklearn/neighbors/_ball_tree.cpython-312-x86_64-linux-gnu.so.p/sklearn/neighbors/_ball_tree.pyx.c: In function ‘__pyx_f_7sklearn_9neighbors_10_ball_tree_12BinaryTree64__kde_single_depthfirst’:
+      sklearn/neighbors/_ball_tree.cpython-312-x86_64-linux-gnu.so.p/sklearn/neighbors/_ball_tree.pyx.c:41633:21: warning: assignment discards ‘const’ qualifier from pointer target type [-Wdiscarded-qualifiers]
+      41633 |   __pyx_v_idx_array = (&(*((__pyx_t_7sklearn_5utils_9_typedefs_intp_t const  *) ( /* dim=0 */ ((char *) (((__pyx_t_7sklearn_5utils_9_typedefs_intp_t const  *) __pyx_v_self->idx_array.data) + __pyx_t_2)) ))));
+            |                     ^
+      sklearn/neighbors/_ball_tree.cpython-312-x86_64-linux-gnu.so.p/sklearn/neighbors/_ball_tree.pyx.c: In function ‘__pyx_f_7sklearn_9neighbors_10_ball_tree_12BinaryTree64__two_point_single’:
+      sklearn/neighbors/_ball_tree.cpython-312-x86_64-linux-gnu.so.p/sklearn/neighbors/_ball_tree.pyx.c:42244:21: warning: assignment discards ‘const’ qualifier from pointer target type [-Wdiscarded-qualifiers]
+      42244 |   __pyx_v_idx_array = (&(*((__pyx_t_7sklearn_5utils_9_typedefs_intp_t const  *) ( /* dim=0 */ ((char *) (((__pyx_t_7sklearn_5utils_9_typedefs_intp_t const  *) __pyx_v_self->idx_array.data) + __pyx_t_2)) ))));
+            |                     ^
+      sklearn/neighbors/_ball_tree.cpython-312-x86_64-linux-gnu.so.p/sklearn/neighbors/_ball_tree.pyx.c: In function ‘__pyx_f_7sklearn_9neighbors_10_ball_tree_12BinaryTree64__two_point_dual’:
+      sklearn/neighbors/_ball_tree.cpython-312-x86_64-linux-gnu.so.p/sklearn/neighbors/_ball_tree.pyx.c:42647:22: warning: assignment discards ‘const’ qualifier from pointer target type [-Wdiscarded-qualifiers]
+      42647 |   __pyx_v_idx_array1 = (&(*((__pyx_t_7sklearn_5utils_9_typedefs_intp_t const  *) ( /* dim=0 */ ((char *) (((__pyx_t_7sklearn_5utils_9_typedefs_intp_t const  *) __pyx_v_self->idx_array.data) + __pyx_t_1)) ))));
+            |                      ^
+      sklearn/neighbors/_ball_tree.cpython-312-x86_64-linux-gnu.so.p/sklearn/neighbors/_ball_tree.pyx.c:42657:22: warning: assignment discards ‘const’ qualifier from pointer target type [-Wdiscarded-qualifiers]
+      42657 |   __pyx_v_idx_array2 = (&(*((__pyx_t_7sklearn_5utils_9_typedefs_intp_t const  *) ( /* dim=0 */ ((char *) (((__pyx_t_7sklearn_5utils_9_typedefs_intp_t const  *) __pyx_v_other->idx_array.data) + __pyx_t_1)) ))));
+            |                      ^
+      sklearn/neighbors/_ball_tree.cpython-312-x86_64-linux-gnu.so.p/sklearn/neighbors/_ball_tree.pyx.c: In function ‘__pyx_f_7sklearn_9neighbors_10_ball_tree_12BinaryTree32__recursive_build’:
+      sklearn/neighbors/_ball_tree.cpython-312-x86_64-linux-gnu.so.p/sklearn/neighbors/_ball_tree.pyx.c:46569:21: warning: assignment discards ‘const’ qualifier from pointer target type [-Wdiscarded-qualifiers]
+      46569 |   __pyx_v_idx_array = (&(*((__pyx_t_7sklearn_5utils_9_typedefs_intp_t const  *) ( /* dim=0 */ ((char *) (((__pyx_t_7sklearn_5utils_9_typedefs_intp_t const  *) __pyx_v_self->idx_array.data) + __pyx_t_1)) ))));
+            |                     ^
+      sklearn/neighbors/_ball_tree.cpython-312-x86_64-linux-gnu.so.p/sklearn/neighbors/_ball_tree.pyx.c: In function ‘__pyx_f_7sklearn_9neighbors_10_ball_tree_12BinaryTree32__query_radius_single’:
+      sklearn/neighbors/_ball_tree.cpython-312-x86_64-linux-gnu.so.p/sklearn/neighbors/_ball_tree.pyx.c:53988:21: warning: assignment discards ‘const’ qualifier from pointer target type [-Wdiscarded-qualifiers]
+      53988 |   __pyx_v_idx_array = (&(*((__pyx_t_7sklearn_5utils_9_typedefs_intp_t const  *) ( /* dim=0 */ ((char *) (((__pyx_t_7sklearn_5utils_9_typedefs_intp_t const  *) __pyx_v_self->idx_array.data) + __pyx_t_2)) ))));
+            |                     ^
+      sklearn/neighbors/_ball_tree.cpython-312-x86_64-linux-gnu.so.p/sklearn/neighbors/_ball_tree.pyx.c: In function ‘__pyx_f_7sklearn_9neighbors_10_ball_tree_12BinaryTree32__kde_single_breadthfirst’:
+      sklearn/neighbors/_ball_tree.cpython-312-x86_64-linux-gnu.so.p/sklearn/neighbors/_ball_tree.pyx.c:54540:21: warning: assignment discards ‘const’ qualifier from pointer target type [-Wdiscarded-qualifiers]
+      54540 |   __pyx_v_idx_array = (&(*((__pyx_t_7sklearn_5utils_9_typedefs_intp_t const  *) ( /* dim=0 */ ((char *) (((__pyx_t_7sklearn_5utils_9_typedefs_intp_t const  *) __pyx_v_self->idx_array.data) + __pyx_t_2)) ))));
+            |                     ^
+      sklearn/neighbors/_ball_tree.cpython-312-x86_64-linux-gnu.so.p/sklearn/neighbors/_ball_tree.pyx.c: In function ‘__pyx_f_7sklearn_9neighbors_10_ball_tree_12BinaryTree32__kde_single_depthfirst’:
+      sklearn/neighbors/_ball_tree.cpython-312-x86_64-linux-gnu.so.p/sklearn/neighbors/_ball_tree.pyx.c:55445:21: warning: assignment discards ‘const’ qualifier from pointer target type [-Wdiscarded-qualifiers]
+      55445 |   __pyx_v_idx_array = (&(*((__pyx_t_7sklearn_5utils_9_typedefs_intp_t const  *) ( /* dim=0 */ ((char *) (((__pyx_t_7sklearn_5utils_9_typedefs_intp_t const  *) __pyx_v_self->idx_array.data) + __pyx_t_2)) ))));
+            |                     ^
+      sklearn/neighbors/_ball_tree.cpython-312-x86_64-linux-gnu.so.p/sklearn/neighbors/_ball_tree.pyx.c: In function ‘__pyx_f_7sklearn_9neighbors_10_ball_tree_12BinaryTree32__two_point_single’:
+      sklearn/neighbors/_ball_tree.cpython-312-x86_64-linux-gnu.so.p/sklearn/neighbors/_ball_tree.pyx.c:56056:21: warning: assignment discards ‘const’ qualifier from pointer target type [-Wdiscarded-qualifiers]
+      56056 |   __pyx_v_idx_array = (&(*((__pyx_t_7sklearn_5utils_9_typedefs_intp_t const  *) ( /* dim=0 */ ((char *) (((__pyx_t_7sklearn_5utils_9_typedefs_intp_t const  *) __pyx_v_self->idx_array.data) + __pyx_t_2)) ))));
+            |                     ^
+      sklearn/neighbors/_ball_tree.cpython-312-x86_64-linux-gnu.so.p/sklearn/neighbors/_ball_tree.pyx.c: In function ‘__pyx_f_7sklearn_9neighbors_10_ball_tree_12BinaryTree32__two_point_dual’:
+      sklearn/neighbors/_ball_tree.cpython-312-x86_64-linux-gnu.so.p/sklearn/neighbors/_ball_tree.pyx.c:56459:22: warning: assignment discards ‘const’ qualifier from pointer target type [-Wdiscarded-qualifiers]
+      56459 |   __pyx_v_idx_array1 = (&(*((__pyx_t_7sklearn_5utils_9_typedefs_intp_t const  *) ( /* dim=0 */ ((char *) (((__pyx_t_7sklearn_5utils_9_typedefs_intp_t const  *) __pyx_v_self->idx_array.data) + __pyx_t_1)) ))));
+            |                      ^
+      sklearn/neighbors/_ball_tree.cpython-312-x86_64-linux-gnu.so.p/sklearn/neighbors/_ball_tree.pyx.c:56469:22: warning: assignment discards ‘const’ qualifier from pointer target type [-Wdiscarded-qualifiers]
+      56469 |   __pyx_v_idx_array2 = (&(*((__pyx_t_7sklearn_5utils_9_typedefs_intp_t const  *) ( /* dim=0 */ ((char *) (((__pyx_t_7sklearn_5utils_9_typedefs_intp_t const  *) __pyx_v_other->idx_array.data) + __pyx_t_1)) ))));
+            |                      ^
+      sklearn/neighbors/_ball_tree.cpython-312-x86_64-linux-gnu.so.p/sklearn/neighbors/_ball_tree.pyx.c: In function ‘__pyx_f_7sklearn_9neighbors_10_ball_tree_init_node64’:
+      sklearn/neighbors/_ball_tree.cpython-312-x86_64-linux-gnu.so.p/sklearn/neighbors/_ball_tree.pyx.c:58345:21: warning: assignment discards ‘const’ qualifier from pointer target type [-Wdiscarded-qualifiers]
+      58345 |   __pyx_v_idx_array = (&(*((__pyx_t_7sklearn_5utils_9_typedefs_intp_t const  *) ( /* dim=0 */ ((char *) (((__pyx_t_7sklearn_5utils_9_typedefs_intp_t const  *) __pyx_v_tree->idx_array.data) + __pyx_t_1)) ))));
+            |                     ^
+      sklearn/neighbors/_ball_tree.cpython-312-x86_64-linux-gnu.so.p/sklearn/neighbors/_ball_tree.pyx.c:58368:20: warning: assignment discards ‘const’ qualifier from pointer target type [-Wdiscarded-qualifiers]
+      58368 |   __pyx_v_centroid = (&(*((__pyx_t_7sklearn_5utils_9_typedefs_float64_t const  *) ( /* dim=2 */ ((char *) (((__pyx_t_7sklearn_5utils_9_typedefs_float64_t const  *) ( /* dim=1 */ (( /* dim=0 */ (__pyx_v_tree->node_bounds.data + __pyx_t_2 * __pyx_v_tree->node_bounds.strides[0]) ) + __pyx_t_3 * __pyx_v_tree->node_bounds.strides[1]) )) + __pyx_t_1)) ))));
+            |                    ^
+      sklearn/neighbors/_ball_tree.cpython-312-x86_64-linux-gnu.so.p/sklearn/neighbors/_ball_tree.pyx.c: In function ‘__pyx_f_7sklearn_9neighbors_10_ball_tree_init_node32’:
+      sklearn/neighbors/_ball_tree.cpython-312-x86_64-linux-gnu.so.p/sklearn/neighbors/_ball_tree.pyx.c:59720:21: warning: assignment discards ‘const’ qualifier from pointer target type [-Wdiscarded-qualifiers]
+      59720 |   __pyx_v_idx_array = (&(*((__pyx_t_7sklearn_5utils_9_typedefs_intp_t const  *) ( /* dim=0 */ ((char *) (((__pyx_t_7sklearn_5utils_9_typedefs_intp_t const  *) __pyx_v_tree->idx_array.data) + __pyx_t_1)) ))));
+            |                     ^
+      sklearn/neighbors/_ball_tree.cpython-312-x86_64-linux-gnu.so.p/sklearn/neighbors/_ball_tree.pyx.c:59743:20: warning: assignment discards ‘const’ qualifier from pointer target type [-Wdiscarded-qualifiers]
+      59743 |   __pyx_v_centroid = (&(*((__pyx_t_7sklearn_5utils_9_typedefs_float32_t const  *) ( /* dim=2 */ ((char *) (((__pyx_t_7sklearn_5utils_9_typedefs_float32_t const  *) ( /* dim=1 */ (( /* dim=0 */ (__pyx_v_tree->node_bounds.data + __pyx_t_2 * __pyx_v_tree->node_bounds.strides[0]) ) + __pyx_t_3 * __pyx_v_tree->node_bounds.strides[1]) )) + __pyx_t_1)) ))));
+            |                    ^
+      In function ‘__pyx_fuse_0__pyx_f_7sklearn_9neighbors_10_ball_tree__total_node_weight’,
+          inlined from ‘__pyx_f_7sklearn_9neighbors_10_ball_tree_12BinaryTree32__kde_single_depthfirst’ at sklearn/neighbors/_ball_tree.cpython-312-x86_64-linux-gnu.so.p/sklearn/neighbors/_ball_tree.pyx.c:55768:19:
+      sklearn/neighbors/_ball_tree.cpython-312-x86_64-linux-gnu.so.p/sklearn/neighbors/_ball_tree.pyx.c:58094:52: warning: ‘__pyx_v_sample_weight’ may be used uninitialized [-Wmaybe-uninitialized]
+      58094 |     __pyx_v_N = (__pyx_v_N + (__pyx_v_sample_weight[(__pyx_v_idx_array[__pyx_v_i])]));
+            |                                                    ^
+      sklearn/neighbors/_ball_tree.cpython-312-x86_64-linux-gnu.so.p/sklearn/neighbors/_ball_tree.pyx.c: In function ‘__pyx_f_7sklearn_9neighbors_10_ball_tree_12BinaryTree32__kde_single_depthfirst’:
+      sklearn/neighbors/_ball_tree.cpython-312-x86_64-linux-gnu.so.p/sklearn/neighbors/_ball_tree.pyx.c:55346:55: note: ‘__pyx_v_sample_weight’ was declared here
+      55346 |   __pyx_t_7sklearn_5utils_9_typedefs_float32_t const *__pyx_v_sample_weight;
+            |                                                       ^~~~~~~~~~~~~~~~~~~~~
+      In function ‘__pyx_fuse_1__pyx_f_7sklearn_9neighbors_10_ball_tree__total_node_weight’,
+          inlined from ‘__pyx_f_7sklearn_9neighbors_10_ball_tree_12BinaryTree64__kde_single_depthfirst’ at sklearn/neighbors/_ball_tree.cpython-312-x86_64-linux-gnu.so.p/sklearn/neighbors/_ball_tree.pyx.c:41956:19:
+      sklearn/neighbors/_ball_tree.cpython-312-x86_64-linux-gnu.so.p/sklearn/neighbors/_ball_tree.pyx.c:58153:52: warning: ‘__pyx_v_sample_weight’ may be used uninitialized [-Wmaybe-uninitialized]
+      58153 |     __pyx_v_N = (__pyx_v_N + (__pyx_v_sample_weight[(__pyx_v_idx_array[__pyx_v_i])]));
+            |                                                    ^
+      sklearn/neighbors/_ball_tree.cpython-312-x86_64-linux-gnu.so.p/sklearn/neighbors/_ball_tree.pyx.c: In function ‘__pyx_f_7sklearn_9neighbors_10_ball_tree_12BinaryTree64__kde_single_depthfirst’:
+      sklearn/neighbors/_ball_tree.cpython-312-x86_64-linux-gnu.so.p/sklearn/neighbors/_ball_tree.pyx.c:41534:55: note: ‘__pyx_v_sample_weight’ was declared here
+      41534 |   __pyx_t_7sklearn_5utils_9_typedefs_float64_t const *__pyx_v_sample_weight;
+            |                                                       ^~~~~~~~~~~~~~~~~~~~~
+      [173/249] Compiling C object sklearn/_loss/_loss.cpython-312-x86_64-linux-gnu.so.p/meson-generated_sklearn__loss__loss.pyx.c.o
+      ninja: build stopped: subcommand failed.
+      [end of output]
+  
+  note: This error originates from a subprocess, and is likely not a problem with pip.
+error: metadata-generation-failed
+
+× Encountered error while generating package metadata.
+╰─> See above for output.
+
+note: This is an issue with the package mentioned above, not pip.
+hint: See above for details.
+WARNING: There was an error checking the latest version of pip.
+Traceback (most recent call last):
+  File "/nix/store/h71zwamfrx3sah2bv18scmm16a3zk6w7-python3.12-fetch-pip-metadata/bin/.fetch_pip_metadata-wrapped", line 9, in <module>
+    sys.exit(fetch_pip_metadata())
+             ^^^^^^^^^^^^^^^^^^^^
+  File "/nix/store/h71zwamfrx3sah2bv18scmm16a3zk6w7-python3.12-fetch-pip-metadata/lib/python3.12/site-packages/fetch_pip_metadata/__init__.py", line 78, in fetch_pip_metadata
+    subprocess.run(
+  File "/nix/store/z7xxy35k7620hs6fn6la5fg2lgklv72l-python3-3.12.4/lib/python3.12/subprocess.py", line 571, in run
+    raise CalledProcessError(retcode, process.args,
+subprocess.CalledProcessError: Command '['/tmp/tmp.OKF0yJU1S9/tmpsdu4ada8/.venv/bin/pip', 'install', '--dry-run', '--ignore-installed', '--no-binary', 'scikit-learn', '--progress-bar', 'off', '--report', '/tmp/tmp.OKF0yJU1S9/tmpsdu4ada8/report.json', 'scikit-learn==1.5.1']' returned non-zero exit status 1.
+Traceback (most recent call last):
+  File "/nix/store/m2qd79b6zb1rqj2g8kcljlxkmifkp3hq-refresh/bin/refresh", line 40, in <module>
+    lock_data = run_refresh_scripts(refresh_scripts)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/nix/store/m2qd79b6zb1rqj2g8kcljlxkmifkp3hq-refresh/bin/refresh", line 36, in run_refresh_scripts
+    refresh_scripts[name] = run_refresh_script(value["script"])
+                            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/nix/store/m2qd79b6zb1rqj2g8kcljlxkmifkp3hq-refresh/bin/refresh", line 22, in run_refresh_script
+    subprocess.run(
+  File "/nix/store/z7xxy35k7620hs6fn6la5fg2lgklv72l-python3-3.12.4/lib/python3.12/subprocess.py", line 571, in run
+    raise CalledProcessError(retcode, process.args,
+subprocess.CalledProcessError: Command '['/nix/store/b4klk6hl78sl2vqnh4clx0dn9a08fl8v-script.sh']' returned non-zero exit status 1.

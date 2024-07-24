@@ -1,0 +1,377 @@
+{
+  "fetchPipMetadata": {
+    "sources": {
+      "build": {
+        "is_direct": false,
+        "sha256": "75e10f767a433d9a86e50d83f418e83efc18ede923ee5ff7df93b6cb0306c5d4",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/e2/03/f3c8ba0a6b6e30d7d18c40faab90807c9bb5e9a1e3b2fe2008af624a9c97/build-1.2.1-py3-none-any.whl",
+        "version": "1.2.1"
+      },
+      "cachecontrol": {
+        "is_direct": false,
+        "sha256": "f5bf3f0620c38db2e5122c0726bdebb0d16869de966ea6a2befe92470b740ea0",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/a3/a9/7d331fec593a4b2953338df33e954aac6ff79eb5a073bca2783766bc7722/cachecontrol-0.14.0-py3-none-any.whl",
+        "version": "0.14.0"
+      },
+      "certifi": {
+        "is_direct": false,
+        "sha256": "c198e21b1289c2ab85ee4e67bb4b4ef3ead0892059901a8d5b622f24a1101e90",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/1c/d5/c84e1a17bf61d4df64ca866a1c9a913874b4e9bdc131ec689a0ad013fb36/certifi-2024.7.4-py3-none-any.whl",
+        "version": "2024.7.4"
+      },
+      "cffi": {
+        "is_direct": false,
+        "sha256": "e715596e683d2ce000574bae5d07bd522c781a822866c20495e52520564f0969",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/09/d4/8759cc3b2222c159add8ce3af0089912203a31610f4be4c36f98e320b4c6/cffi-1.16.0-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl",
+        "version": "1.16.0"
+      },
+      "charset-normalizer": {
+        "is_direct": false,
+        "sha256": "90d558489962fd4918143277a773316e56c72da56ec7aa3dc3dbbe20fdfed15b",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/ee/fb/14d30eb4956408ee3ae09ad34299131fb383c47df355ddb428a7331cfa1e/charset_normalizer-3.3.2-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl",
+        "version": "3.3.2"
+      },
+      "cleo": {
+        "is_direct": false,
+        "sha256": "4a31bd4dd45695a64ee3c4758f583f134267c2bc518d8ae9a29cf237d009b07e",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/2d/f5/6bbead8b880620e5a99e0e4bb9e22e67cca16ff48d54105302a3e7821096/cleo-2.1.0-py3-none-any.whl",
+        "version": "2.1.0"
+      },
+      "crashtest": {
+        "is_direct": false,
+        "sha256": "8d23eac5fa660409f57472e3851dab7ac18aba459a8d19cbbba86d3d5aecd2a5",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/b0/5c/3ba7d12e7a79566f97b8f954400926d7b6eb33bcdccc1315a857f200f1f1/crashtest-0.4.1-py3-none-any.whl",
+        "version": "0.4.1"
+      },
+      "cryptography": {
+        "is_direct": false,
+        "sha256": "cb013933d4c127349b3948aa8aaf2f12c0353ad0eccd715ca789c8a0f671646f",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/0f/6c/b42660b3075ff543065b2c1c5a3d9bedaadcff8ebce2ee981be2babc2934/cryptography-43.0.0-cp39-abi3-manylinux_2_28_x86_64.whl",
+        "version": "43.0.0"
+      },
+      "distlib": {
+        "is_direct": false,
+        "sha256": "034db59a0b96f8ca18035f36290806a9a6e6bd9d1ff91e45a7f172eb17e51784",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/8e/41/9307e4f5f9976bc8b7fea0b66367734e8faf3ec84bc0d412d8cfabbb66cd/distlib-0.3.8-py2.py3-none-any.whl",
+        "version": "0.3.8"
+      },
+      "dulwich": {
+        "is_direct": false,
+        "sha256": "6c589468e5c0cd84e97eb7ec209ab005a2cb69399e8c5861c3edfe38989ac3a8",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/e0/a1/fcfabd5bba9b0cfb99bbbe9c3f2c6634e17dfb3e2c0c3b6e84352c6a8fd9/dulwich-0.21.7-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl",
+        "version": "0.21.7"
+      },
+      "fastjsonschema": {
+        "is_direct": false,
+        "sha256": "5875f0b0fa7a0043a91e93a9b8f793bcbbba9691e7fd83dca95c28ba26d21f0a",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/6d/ca/086311cdfc017ec964b2436fe0c98c1f4efcb7e4c328956a22456e497655/fastjsonschema-2.20.0-py3-none-any.whl",
+        "version": "2.20.0"
+      },
+      "filelock": {
+        "is_direct": false,
+        "sha256": "6ca1fffae96225dab4c6eaf1c4f4f28cd2568d3ec2a44e15a08520504de468e7",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/ae/f0/48285f0262fe47103a4a45972ed2f9b93e4c80b8fd609fa98da78b2a5706/filelock-3.15.4-py3-none-any.whl",
+        "version": "3.15.4"
+      },
+      "idna": {
+        "is_direct": false,
+        "sha256": "82fee1fc78add43492d3a1898bfa6d8a904cc97d8427f683ed8e798d07761aa0",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/e5/3e/741d8c82801c347547f8a2a06aa57dbb1992be9e948df2ea0eda2c8b79e8/idna-3.7-py3-none-any.whl",
+        "version": "3.7"
+      },
+      "installer": {
+        "is_direct": false,
+        "sha256": "05d1933f0a5ba7d8d6296bb6d5018e7c94fa473ceb10cf198a92ccea19c27b53",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/e5/ca/1172b6638d52f2d6caa2dd262ec4c811ba59eee96d54a7701930726bce18/installer-0.7.0-py3-none-any.whl",
+        "version": "0.7.0"
+      },
+      "jaraco-classes": {
+        "is_direct": false,
+        "sha256": "f662826b6bed8cace05e7ff873ce0f9283b5c924470fe664fff1c2f00f581790",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/7f/66/b15ce62552d84bbfcec9a4873ab79d993a1dd4edb922cbfccae192bd5b5f/jaraco.classes-3.4.0-py3-none-any.whl",
+        "version": "3.4.0"
+      },
+      "jeepney": {
+        "is_direct": false,
+        "sha256": "c0a454ad016ca575060802ee4d590dd912e35c122fa04e70306de3d076cce755",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/ae/72/2a1e2290f1ab1e06f71f3d0f1646c9e4634e70e1d37491535e19266e8dc9/jeepney-0.8.0-py3-none-any.whl",
+        "version": "0.8.0"
+      },
+      "keyring": {
+        "is_direct": false,
+        "sha256": "df38a4d7419a6a60fea5cef1e45a948a3e8430dd12ad88b0f423c5c143906218",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/7c/23/d557507915181687e4a613e1c8a01583fd6d7cb7590e1f039e357fe3b304/keyring-24.3.1-py3-none-any.whl",
+        "version": "24.3.1"
+      },
+      "more-itertools": {
+        "is_direct": false,
+        "sha256": "ea6a02e24a9161e51faad17a8782b92a0df82c12c1c8886fec7f0c3fa1a1b320",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/bb/23/2d1cdb0427aecb2b150dc2ac2d15400990c4f05585b3fbc1b5177d74d7fb/more_itertools-10.3.0-py3-none-any.whl",
+        "version": "10.3.0"
+      },
+      "msgpack": {
+        "is_direct": false,
+        "sha256": "8db8e423192303ed77cff4dce3a4b88dbfaf43979d280181558af5e2c3c71afc",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/04/2a/c833a8503be9030083f0469e7a3c74d3622a3b4eae676c3934d3ccc01036/msgpack-1.0.8-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl",
+        "version": "1.0.8"
+      },
+      "packaging": {
+        "is_direct": false,
+        "sha256": "5b8f2217dbdbd2f7f384c41c628544e6d52f2d0f53c6d0c3ea61aa5d1d7ff124",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/08/aa/cc0199a5f0ad350994d660967a8efb233fe0416e4639146c089643407ce6/packaging-24.1-py3-none-any.whl",
+        "version": "24.1"
+      },
+      "pexpect": {
+        "is_direct": false,
+        "sha256": "7236d1e080e4936be2dc3e326cec0af72acf9212a7e1d060210e70a47e253523",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/9e/c3/059298687310d527a58bb01f3b1965787ee3b40dce76752eda8b44e9a2c5/pexpect-4.9.0-py2.py3-none-any.whl",
+        "version": "4.9.0"
+      },
+      "pkginfo": {
+        "is_direct": false,
+        "sha256": "bfa76a714fdfc18a045fcd684dbfc3816b603d9d075febef17cb6582bea29573",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/c0/38/d617739840a2f576e400f03fea0a75703f93cc274002635b4b998bbb9de4/pkginfo-1.11.1-py3-none-any.whl",
+        "version": "1.11.1"
+      },
+      "platformdirs": {
+        "is_direct": false,
+        "sha256": "2d7a1657e36a80ea911db832a8a6ece5ee53d8de21edd5cc5879af6530b1bfee",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/68/13/2aa1f0e1364feb2c9ef45302f387ac0bd81484e9c9a4c5688a322fbdfd08/platformdirs-4.2.2-py3-none-any.whl",
+        "version": "4.2.2"
+      },
+      "poetry": {
+        "is_direct": false,
+        "sha256": "67f4eb68288eab41e841cc71a00d26cf6bdda9533022d0189a145a34d0a35f48",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/07/c7/41108195c39ac1010054ef6b3b445894cee79e8ec73f086b73da94a01901/poetry-1.8.3.tar.gz",
+        "version": "1.8.3"
+      },
+      "poetry-core": {
+        "is_direct": false,
+        "sha256": "4e0c9c6ad8cf89956f03b308736d84ea6ddb44089d16f2adc94050108ec1f5a1",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/a1/8d/85fcf9bcbfefcc53a1402450f28e5acf39dcfde3aabb996a1d98481ac829/poetry_core-1.9.0-py3-none-any.whl",
+        "version": "1.9.0"
+      },
+      "poetry-plugin-export": {
+        "is_direct": false,
+        "sha256": "adbe232cfa0cc04991ea3680c865cf748bff27593b9abcb1f35fb50ed7ba2c22",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/de/55/1dd7c8c955d71f58a9202c37bf8e037d697dc9f11a9a2ade65663251ee44/poetry_plugin_export-1.8.0-py3-none-any.whl",
+        "version": "1.8.0"
+      },
+      "ptyprocess": {
+        "is_direct": false,
+        "sha256": "4b41f3967fce3af57cc7e94b888626c18bf37a083e3651ca8feeb66d492fef35",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/22/a6/858897256d0deac81a172289110f31629fc4cee19b6f01283303e18c8db3/ptyprocess-0.7.0-py2.py3-none-any.whl",
+        "version": "0.7.0"
+      },
+      "pycparser": {
+        "is_direct": false,
+        "sha256": "c3702b6d3dd8c7abc1afa565d7e63d53a1d0bd86cdc24edd75470f4de499cfcc",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/13/a3/a812df4e2dd5696d1f351d58b8fe16a405b234ad2886a0dab9183fb78109/pycparser-2.22-py3-none-any.whl",
+        "version": "2.22"
+      },
+      "pyproject-hooks": {
+        "is_direct": false,
+        "sha256": "7ceeefe9aec63a1064c18d939bdc3adf2d8aa1988a510afec15151578b232aa2",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/ae/f3/431b9d5fe7d14af7a32340792ef43b8a714e7726f1d7b69cc4e8e7a3f1d7/pyproject_hooks-1.1.0-py3-none-any.whl",
+        "version": "1.1.0"
+      },
+      "rapidfuzz": {
+        "is_direct": false,
+        "sha256": "db0bf0663b4b6da1507869722420ea9356b6195aa907228d6201303e69837af9",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/0f/b0/ba391db47a5ae3139c97b68f97248c79c794293818be26899dbaee9d16c8/rapidfuzz-3.9.4-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl",
+        "version": "3.9.4"
+      },
+      "requests": {
+        "is_direct": false,
+        "sha256": "70761cfe03c773ceb22aa2f671b4757976145175cdfca038c02654d061d6dcc6",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/f9/9b/335f9764261e915ed497fcdeb11df5dfd6f7bf257d4a6a2a686d80da4d54/requests-2.32.3-py3-none-any.whl",
+        "version": "2.32.3"
+      },
+      "requests-toolbelt": {
+        "is_direct": false,
+        "sha256": "cccfdd665f0a24fcf4726e690f65639d272bb0637b9b92dfd91a5568ccf6bd06",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/3f/51/d4db610ef29373b879047326cbf6fa98b6c1969d6f6dc423279de2b1be2c/requests_toolbelt-1.0.0-py2.py3-none-any.whl",
+        "version": "1.0.0"
+      },
+      "secretstorage": {
+        "is_direct": false,
+        "sha256": "f356e6628222568e3af06f2eba8df495efa13b3b63081dafd4f7d9a7b7bc9f99",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/54/24/b4293291fa1dd830f353d2cb163295742fa87f179fcc8a20a306a81978b7/SecretStorage-3.3.3-py3-none-any.whl",
+        "version": "3.3.3"
+      },
+      "shellingham": {
+        "is_direct": false,
+        "sha256": "7ecfff8f2fd72616f7481040475a65b2bf8af90a56c89140852d1120324e8686",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/e0/f9/0595336914c5619e5f28a1fb793285925a8cd4b432c9da0a987836c7f822/shellingham-1.5.4-py2.py3-none-any.whl",
+        "version": "1.5.4"
+      },
+      "tomlkit": {
+        "is_direct": false,
+        "sha256": "7075d3042d03b80f603482d69bf0c8f345c2b30e41699fd8883227f89972b264",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/fd/7c/b753bf603852cab0a660da6e81f4ea5d2ca0f0b2b4870766d7aa9bceb7a2/tomlkit-0.13.0-py3-none-any.whl",
+        "version": "0.13.0"
+      },
+      "trove-classifiers": {
+        "is_direct": false,
+        "sha256": "ccc57a33717644df4daca018e7ec3ef57a835c48e96a1e71fc07eb7edac67af6",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/0f/b0/09794439a62a7dc18bffdbf145aaf50297fd994890b11da27a13e376b947/trove_classifiers-2024.7.2-py3-none-any.whl",
+        "version": "2024.7.2"
+      },
+      "urllib3": {
+        "is_direct": false,
+        "sha256": "a448b2f64d686155468037e1ace9f2d2199776e17f0a46610480d311f73e3472",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/ca/1c/89ffc63a9605b583d5df2be791a27bc1a42b7c32bab68d3c8f2f73a98cd4/urllib3-2.2.2-py3-none-any.whl",
+        "version": "2.2.2"
+      },
+      "virtualenv": {
+        "is_direct": false,
+        "sha256": "8cc4a31139e796e9a7de2cd5cf2489de1217193116a8fd42328f1bd65f434589",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/07/4d/410156100224c5e2f0011d435e477b57aed9576fc7fe137abcf14ec16e11/virtualenv-20.26.3-py3-none-any.whl",
+        "version": "20.26.3"
+      }
+    },
+    "targets": {
+      "default": {
+        "build": [
+          "packaging",
+          "pyproject-hooks"
+        ],
+        "cachecontrol": [
+          "filelock",
+          "msgpack",
+          "requests"
+        ],
+        "certifi": [],
+        "cffi": [
+          "pycparser"
+        ],
+        "charset-normalizer": [],
+        "cleo": [
+          "crashtest",
+          "rapidfuzz"
+        ],
+        "crashtest": [],
+        "cryptography": [
+          "cffi"
+        ],
+        "distlib": [],
+        "dulwich": [
+          "urllib3"
+        ],
+        "fastjsonschema": [],
+        "filelock": [],
+        "idna": [],
+        "installer": [],
+        "jaraco-classes": [
+          "more-itertools"
+        ],
+        "jeepney": [],
+        "keyring": [
+          "jaraco-classes",
+          "jeepney",
+          "secretstorage"
+        ],
+        "more-itertools": [],
+        "msgpack": [],
+        "packaging": [],
+        "pexpect": [
+          "ptyprocess"
+        ],
+        "pkginfo": [],
+        "platformdirs": [],
+        "poetry": [
+          "build",
+          "cachecontrol",
+          "cleo",
+          "crashtest",
+          "dulwich",
+          "fastjsonschema",
+          "installer",
+          "keyring",
+          "packaging",
+          "pexpect",
+          "pkginfo",
+          "platformdirs",
+          "poetry-core",
+          "poetry-plugin-export",
+          "pyproject-hooks",
+          "requests",
+          "requests-toolbelt",
+          "shellingham",
+          "tomlkit",
+          "trove-classifiers",
+          "virtualenv"
+        ],
+        "poetry-core": [],
+        "poetry-plugin-export": [
+          "poetry-core"
+        ],
+        "ptyprocess": [],
+        "pycparser": [],
+        "pyproject-hooks": [],
+        "rapidfuzz": [],
+        "requests": [
+          "certifi",
+          "charset-normalizer",
+          "idna",
+          "urllib3"
+        ],
+        "requests-toolbelt": [
+          "requests"
+        ],
+        "secretstorage": [
+          "cryptography",
+          "jeepney"
+        ],
+        "shellingham": [],
+        "tomlkit": [],
+        "trove-classifiers": [],
+        "urllib3": [],
+        "virtualenv": [
+          "distlib",
+          "filelock",
+          "platformdirs"
+        ]
+      }
+    }
+  },
+  "invalidationHash": "be28428280f59770380075ad80f87e05ee7edcc2a137d2be15aec2dd8993edf5"
+}

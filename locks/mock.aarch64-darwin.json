@@ -1,0 +1,19 @@
+{
+  "fetchPipMetadata": {
+    "sources": {
+      "mock": {
+        "is_direct": false,
+        "sha256": "5e96aad5ccda4718e0a229ed94b2024df75cc2d55575ba5762d31f5767b8767d",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/66/ab/41d09a46985ead5839d8be987acda54b5bb93f713b3969cc0be4f81c455b/mock-5.1.0.tar.gz",
+        "version": "5.1.0"
+      }
+    },
+    "targets": {
+      "default": {
+        "mock": []
+      }
+    }
+  },
+  "invalidationHash": "9784637cbafbd6aa9cf6df92b678e9a0e97e3cfd6ca8fedf800b48cac6a9b27c"
+}

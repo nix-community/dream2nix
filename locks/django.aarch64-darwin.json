@@ -1,0 +1,38 @@
+{
+  "fetchPipMetadata": {
+    "sources": {
+      "asgiref": {
+        "is_direct": false,
+        "sha256": "3e1e3ecc849832fe52ccf2cb6686b7a55f82bb1d6aee72a58826471390335e47",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/39/e3/893e8757be2612e6c266d9bb58ad2e3651524b5b40cf56761e985a28b13e/asgiref-3.8.1-py3-none-any.whl",
+        "version": "3.8.1"
+      },
+      "django": {
+        "is_direct": false,
+        "sha256": "bd4505cae0b9bd642313e8fb71810893df5dc2ffcacaa67a33af2d5cd61888f2",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/6d/cc/5384bf3daa6c857ccb731388bd59d15932157953c1ea05ebccc7591af492/Django-5.0.7.tar.gz",
+        "version": "5.0.7"
+      },
+      "sqlparse": {
+        "is_direct": false,
+        "sha256": "773dcbf9a5ab44a090f3441e2180efe2560220203dc2f8c0b0fa141e18b505e4",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/5d/a5/b2860373aa8de1e626b2bdfdd6df4355f0565b47e51f7d0c54fe70faf8fe/sqlparse-0.5.1-py3-none-any.whl",
+        "version": "0.5.1"
+      }
+    },
+    "targets": {
+      "default": {
+        "asgiref": [],
+        "django": [
+          "asgiref",
+          "sqlparse"
+        ],
+        "sqlparse": []
+      }
+    }
+  },
+  "invalidationHash": "e896209e6a3cb26baf24d2d4f31ce4c89f8f0eee7de51aafc0b28ac338fba069"
+}

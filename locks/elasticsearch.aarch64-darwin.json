@@ -1,0 +1,48 @@
+{
+  "fetchPipMetadata": {
+    "sources": {
+      "certifi": {
+        "is_direct": false,
+        "sha256": "c198e21b1289c2ab85ee4e67bb4b4ef3ead0892059901a8d5b622f24a1101e90",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/1c/d5/c84e1a17bf61d4df64ca866a1c9a913874b4e9bdc131ec689a0ad013fb36/certifi-2024.7.4-py3-none-any.whl",
+        "version": "2024.7.4"
+      },
+      "elastic-transport": {
+        "is_direct": false,
+        "sha256": "5d4bb6b8e9d74a9c16de274e91a5caf65a3a8d12876f1e99152975e15b2746fe",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/6a/82/fa906dc9d4dd4bdc3c8fb54e1e6bebe7e13f11a1d3613d7a9ad6475fdef9/elastic_transport-8.13.1-py3-none-any.whl",
+        "version": "8.13.1"
+      },
+      "elasticsearch": {
+        "is_direct": false,
+        "sha256": "aa2490029dd96f4015b333c1827aa21fd6c0a4d223b00dfb0fe933b8d09a511b",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/36/63/8dc82cbf1bfbca2a2af8eeaa4a7eccc2cf7a87bf217130f6bc66d33b4d8f/elasticsearch-8.14.0.tar.gz",
+        "version": "8.14.0"
+      },
+      "urllib3": {
+        "is_direct": false,
+        "sha256": "a448b2f64d686155468037e1ace9f2d2199776e17f0a46610480d311f73e3472",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/ca/1c/89ffc63a9605b583d5df2be791a27bc1a42b7c32bab68d3c8f2f73a98cd4/urllib3-2.2.2-py3-none-any.whl",
+        "version": "2.2.2"
+      }
+    },
+    "targets": {
+      "default": {
+        "certifi": [],
+        "elastic-transport": [
+          "certifi",
+          "urllib3"
+        ],
+        "elasticsearch": [
+          "elastic-transport"
+        ],
+        "urllib3": []
+      }
+    }
+  },
+  "invalidationHash": "48b0c6dc3c2992d9c1c45db74718cf95f9475d25d58195b802f968bf5a6c0bc3"
+}

@@ -1,0 +1,19 @@
+{
+  "fetchPipMetadata": {
+    "sources": {
+      "docutils": {
+        "is_direct": false,
+        "sha256": "3a6b18732edf182daa3cd12775bbb338cf5691468f91eeeb109deff6ebfa986f",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/ae/ed/aefcc8cd0ba62a0560c3c18c33925362d46c6075480bfa4df87b28e169a9/docutils-0.21.2.tar.gz",
+        "version": "0.21.2"
+      }
+    },
+    "targets": {
+      "default": {
+        "docutils": []
+      }
+    }
+  },
+  "invalidationHash": "02bcb51b6c0611dd3de1160f419bc11e1e10db5591de453bccbe1436ad0f7168"
+}

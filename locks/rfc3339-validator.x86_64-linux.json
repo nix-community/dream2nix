@@ -1,0 +1,29 @@
+{
+  "fetchPipMetadata": {
+    "sources": {
+      "rfc3339-validator": {
+        "is_direct": false,
+        "sha256": "138a2abdf93304ad60530167e51d2dfb9549521a836871b88d7f4695d0022f6b",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/28/ea/a9387748e2d111c3c2b275ba970b735e04e15cdb1eb30693b6b5708c4dbd/rfc3339_validator-0.1.4.tar.gz",
+        "version": "0.1.4"
+      },
+      "six": {
+        "is_direct": false,
+        "sha256": "8abb2f1d86890a2dfb989f9a77cfcfd3e47c2a354b01111771326f8aa26e0254",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/d9/5a/e7c31adbe875f2abbb91bd84cf2dc52d792b5a01506781dbcf25c91daf11/six-1.16.0-py2.py3-none-any.whl",
+        "version": "1.16.0"
+      }
+    },
+    "targets": {
+      "default": {
+        "rfc3339-validator": [
+          "six"
+        ],
+        "six": []
+      }
+    }
+  },
+  "invalidationHash": "460703dccbce40e99649088a0e112f489274443a87d7146e324e2693759ed9db"
+}

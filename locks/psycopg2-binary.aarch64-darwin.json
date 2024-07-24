@@ -1,0 +1,19 @@
+{
+  "fetchPipMetadata": {
+    "sources": {
+      "psycopg2-binary": {
+        "is_direct": false,
+        "sha256": "b0605eaed3eb239e87df0d5e3c6489daae3f7388d455d0c0b4df899519c6a38d",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/18/ca/da384fd47233e300e3e485c90e7aab5d7def896d1281239f75901faf87d4/psycopg2_binary-2.9.9-cp312-cp312-macosx_11_0_arm64.whl",
+        "version": "2.9.9"
+      }
+    },
+    "targets": {
+      "default": {
+        "psycopg2-binary": []
+      }
+    }
+  },
+  "invalidationHash": "65d93cd0298feb4400b2a5bb1e097df3336d41e684498cc396faa9eabb949bc9"
+}

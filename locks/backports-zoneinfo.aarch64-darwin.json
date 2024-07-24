@@ -1,0 +1,19 @@
+{
+  "fetchPipMetadata": {
+    "sources": {
+      "backports-zoneinfo": {
+        "is_direct": false,
+        "sha256": "fadbfe37f74051d024037f223b8e001611eac868b5c5b06144ef4d8b799862f2",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/ad/85/475e514c3140937cf435954f78dedea1861aeab7662d11de232bdaa90655/backports.zoneinfo-0.2.1.tar.gz",
+        "version": "0.2.1"
+      }
+    },
+    "targets": {
+      "default": {
+        "backports-zoneinfo": []
+      }
+    }
+  },
+  "invalidationHash": "d4bc4a776498a4386291e8a621632c0e8a0aca0c61a248a4b29d5fd5c3606eeb"
+}

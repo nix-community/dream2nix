@@ -1,0 +1,19 @@
+{
+  "fetchPipMetadata": {
+    "sources": {
+      "fqdn": {
+        "is_direct": false,
+        "sha256": "105ed3677e767fb5ca086a0c1f4bb66ebc3c100be518f0e0d755d9eae164d89f",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/30/3e/a80a8c077fd798951169626cde3e239adeba7dab75deb3555716415bd9b0/fqdn-1.5.1.tar.gz",
+        "version": "1.5.1"
+      }
+    },
+    "targets": {
+      "default": {
+        "fqdn": []
+      }
+    }
+  },
+  "invalidationHash": "769e4a42e0417273269648624c574a63c5ef6b9350c0634ec1111ef7fc78bd73"
+}

@@ -1,0 +1,29 @@
+{
+  "fetchPipMetadata": {
+    "sources": {
+      "isodate": {
+        "is_direct": false,
+        "sha256": "48c5881de7e8b0a0d648cb024c8062dc84e7b840ed81e864c7614fd3c127bde9",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/db/7a/c0a56c7d56c7fa723988f122fa1f1ccf8c5c4ccc48efad0d214b49e5b1af/isodate-0.6.1.tar.gz",
+        "version": "0.6.1"
+      },
+      "six": {
+        "is_direct": false,
+        "sha256": "8abb2f1d86890a2dfb989f9a77cfcfd3e47c2a354b01111771326f8aa26e0254",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/d9/5a/e7c31adbe875f2abbb91bd84cf2dc52d792b5a01506781dbcf25c91daf11/six-1.16.0-py2.py3-none-any.whl",
+        "version": "1.16.0"
+      }
+    },
+    "targets": {
+      "default": {
+        "isodate": [
+          "six"
+        ],
+        "six": []
+      }
+    }
+  },
+  "invalidationHash": "c4762eb9b6c24f6ba60b0346dfc41c6b57d25bb8754676dd47dba742c3d33b65"
+}

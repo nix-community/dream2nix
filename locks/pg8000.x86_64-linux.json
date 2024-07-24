@@ -1,0 +1,58 @@
+{
+  "fetchPipMetadata": {
+    "sources": {
+      "asn1crypto": {
+        "is_direct": false,
+        "sha256": "db4e40728b728508912cbb3d44f19ce188f218e9eba635821bb4b68564f8fd67",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/c9/7f/09065fd9e27da0eda08b4d6897f1c13535066174cc023af248fc2a8d5e5a/asn1crypto-1.5.1-py2.py3-none-any.whl",
+        "version": "1.5.1"
+      },
+      "pg8000": {
+        "is_direct": false,
+        "sha256": "1ea46cf09d8eca07fe7eaadefd7951e37bee7fabe675df164f1a572ffb300876",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/0f/d7/0554640cbe3e193184796bedb6de23f797c03958425176faf0e694c06eb0/pg8000-1.31.2.tar.gz",
+        "version": "1.31.2"
+      },
+      "python-dateutil": {
+        "is_direct": false,
+        "sha256": "a8b2bc7bffae282281c8140a97d3aa9c14da0b136dfe83f850eea9a5f7470427",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/ec/57/56b9bcc3c9c6a792fcbaf139543cee77261f3651ca9da0c93f5c1221264b/python_dateutil-2.9.0.post0-py2.py3-none-any.whl",
+        "version": "2.9.0.post0"
+      },
+      "scramp": {
+        "is_direct": false,
+        "sha256": "50e37c464fc67f37994e35bee4151e3d8f9320e9c204fca83a5d313c121bbbe7",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/d9/9f/8b2f2749ccfbe4fcef08650896ac47ed919ff25b7ac57b7a1ae7da16c8c3/scramp-1.4.5-py3-none-any.whl",
+        "version": "1.4.5"
+      },
+      "six": {
+        "is_direct": false,
+        "sha256": "8abb2f1d86890a2dfb989f9a77cfcfd3e47c2a354b01111771326f8aa26e0254",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/d9/5a/e7c31adbe875f2abbb91bd84cf2dc52d792b5a01506781dbcf25c91daf11/six-1.16.0-py2.py3-none-any.whl",
+        "version": "1.16.0"
+      }
+    },
+    "targets": {
+      "default": {
+        "asn1crypto": [],
+        "pg8000": [
+          "python-dateutil",
+          "scramp"
+        ],
+        "python-dateutil": [
+          "six"
+        ],
+        "scramp": [
+          "asn1crypto"
+        ],
+        "six": []
+      }
+    }
+  },
+  "invalidationHash": "126b58292c2612a9bf9a5edb04eb49dd46e7897a75282f75bed0f1b2a5c32f97"
+}

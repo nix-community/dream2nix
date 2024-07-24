@@ -1,0 +1,19 @@
+{
+  "fetchPipMetadata": {
+    "sources": {
+      "llvmlite": {
+        "is_direct": false,
+        "sha256": "ae2b5b5c3ef67354824fb75517c8db5fbe93bc02cd9671f3c62271626bc041d5",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/9f/3d/f513755f285db51ab363a53e898b85562e950f79a2e6767a364530c2f645/llvmlite-0.43.0.tar.gz",
+        "version": "0.43.0"
+      }
+    },
+    "targets": {
+      "default": {
+        "llvmlite": []
+      }
+    }
+  },
+  "invalidationHash": "42fc6ed2a4479c010fd7a093cc851fc4145e23d894f63285d9c89623d00a6d3f"
+}

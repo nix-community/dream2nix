@@ -1,0 +1,19 @@
+{
+  "fetchPipMetadata": {
+    "sources": {
+      "typedload": {
+        "is_direct": false,
+        "sha256": "21d315f52b85e53a1a43408349768774bf584cad9b160b2f8dd7d6cd7530f661",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/ee/3c/17afb145492c247fb821ddae0a20f42636fa59907e2dc480e21ac8b44918/typedload-2.34.tar.gz",
+        "version": "2.34"
+      }
+    },
+    "targets": {
+      "default": {
+        "typedload": []
+      }
+    }
+  },
+  "invalidationHash": "d3351c0082816b917e9e644109a3cb2500d4559747c76453c055d356cb00e625"
+}

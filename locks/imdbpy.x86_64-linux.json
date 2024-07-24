@@ -1,0 +1,67 @@
+{
+  "fetchPipMetadata": {
+    "sources": {
+      "cinemagoer": {
+        "is_direct": false,
+        "sha256": "0c6bc00fbc56cbdd58bc3dbf00cf858770fc127929408460fb28ffe2ca99f83a",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/a7/cc/959c7d74b7d6124852fc4741c154c8f50848f47360955f780636102ec711/cinemagoer-2023.5.1-py3-none-any.whl",
+        "version": "2023.5.1"
+      },
+      "greenlet": {
+        "is_direct": false,
+        "sha256": "fcd2469d6a2cf298f198f0487e0a5b1a47a42ca0fa4dfd1b6862c999f018ebbf",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/bd/37/56b0da468a85e7704f3b2bc045015301bdf4be2184a44868c71f6dca6fe2/greenlet-3.0.3-cp312-cp312-manylinux_2_24_x86_64.manylinux_2_28_x86_64.whl",
+        "version": "3.0.3"
+      },
+      "imdbpy": {
+        "is_direct": false,
+        "sha256": "80a5edf8a87113ff22a44d00fd76d422c42cfeecd4ea820be33753b8f24bf4e6",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/30/57/d72563c77f63efe08da5645ab92d5f1dd382f6d3460e0b0c4c4ee7847f1c/IMDbPY-2022.7.9.tar.gz",
+        "version": "2022.7.9"
+      },
+      "lxml": {
+        "is_direct": false,
+        "sha256": "d26a618ae1766279f2660aca0081b2220aca6bd1aa06b2cf73f07383faf48927",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/9a/87/cff3c63ebe067ec9a7cc1948c379b8a16e7990c29bd5baf77c0a1dbd03c0/lxml-5.2.2-cp312-cp312-manylinux_2_28_x86_64.whl",
+        "version": "5.2.2"
+      },
+      "sqlalchemy": {
+        "is_direct": false,
+        "sha256": "74afabeeff415e35525bf7a4ecdab015f00e06456166a2eba7590e49f8db940e",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/60/f8/7794f3055d50e96cee04c19c7faeedacb323c7762f334660ba03bed95485/SQLAlchemy-2.0.31-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl",
+        "version": "2.0.31"
+      },
+      "typing-extensions": {
+        "is_direct": false,
+        "sha256": "04e5ca0351e0f3f85c6853954072df659d0d13fac324d0072316b67d7794700d",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/26/9f/ad63fc0248c5379346306f8668cda6e2e2e9c95e01216d2b8ffd9ff037d0/typing_extensions-4.12.2-py3-none-any.whl",
+        "version": "4.12.2"
+      }
+    },
+    "targets": {
+      "default": {
+        "cinemagoer": [
+          "lxml",
+          "sqlalchemy"
+        ],
+        "greenlet": [],
+        "imdbpy": [
+          "cinemagoer"
+        ],
+        "lxml": [],
+        "sqlalchemy": [
+          "greenlet",
+          "typing-extensions"
+        ],
+        "typing-extensions": []
+      }
+    }
+  },
+  "invalidationHash": "db3d6ee9d13a5e5cbf83c5e4282f7442c3516e911906cb9b11ae126353d70d04"
+}

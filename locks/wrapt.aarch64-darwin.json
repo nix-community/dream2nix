@@ -1,0 +1,19 @@
+{
+  "fetchPipMetadata": {
+    "sources": {
+      "wrapt": {
+        "is_direct": false,
+        "sha256": "5f370f952971e7d17c7d1ead40e49f32345a7f7a5373571ef44d800d06b1899d",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/95/4c/063a912e20bcef7124e0df97282a8af3ff3e4b603ce84c481d6d7346be0a/wrapt-1.16.0.tar.gz",
+        "version": "1.16.0"
+      }
+    },
+    "targets": {
+      "default": {
+        "wrapt": []
+      }
+    }
+  },
+  "invalidationHash": "8c65b12694398a9305dc6c67b4cd16d2c517647765406534befcc4322c7fb7f7"
+}

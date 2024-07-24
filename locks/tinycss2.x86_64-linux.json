@@ -1,0 +1,29 @@
+{
+  "fetchPipMetadata": {
+    "sources": {
+      "tinycss2": {
+        "is_direct": false,
+        "sha256": "152f9acabd296a8375fbca5b84c961ff95971fcfc32e79550c8df8e29118c54d",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/44/6f/38d2335a2b70b9982d112bb177e3dbe169746423e33f718bf5e9c7b3ddd3/tinycss2-1.3.0.tar.gz",
+        "version": "1.3.0"
+      },
+      "webencodings": {
+        "is_direct": false,
+        "sha256": "a0af1213f3c2226497a97e2b3aa01a7e4bee4f403f95be16fc9acd2947514a78",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/f4/24/2a3e3df732393fed8b3ebf2ec078f05546de641fe1b667ee316ec1dcf3b7/webencodings-0.5.1-py2.py3-none-any.whl",
+        "version": "0.5.1"
+      }
+    },
+    "targets": {
+      "default": {
+        "tinycss2": [
+          "webencodings"
+        ],
+        "webencodings": []
+      }
+    }
+  },
+  "invalidationHash": "c832e0d5c14ff57d0cd6feb4d7da955d576b9e27afa2c4117f670c2cf939ddee"
+}

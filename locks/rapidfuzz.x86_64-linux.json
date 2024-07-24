@@ -1,0 +1,19 @@
+{
+  "fetchPipMetadata": {
+    "sources": {
+      "rapidfuzz": {
+        "is_direct": false,
+        "sha256": "366bf8947b84e37f2f4cf31aaf5f37c39f620d8c0eddb8b633e6ba0129ca4a0a",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/a2/ce/7e127c2216bfcca8b3bc3cfd0075caf106f130a5068164f07a56d07cc091/rapidfuzz-3.9.4.tar.gz",
+        "version": "3.9.4"
+      }
+    },
+    "targets": {
+      "default": {
+        "rapidfuzz": []
+      }
+    }
+  },
+  "invalidationHash": "d7542f02b89f30f55ba2ed97f970f8d508c18874bfbaf8c228145731c005c6e2"
+}

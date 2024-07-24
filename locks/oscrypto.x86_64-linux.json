@@ -1,0 +1,29 @@
+{
+  "fetchPipMetadata": {
+    "sources": {
+      "asn1crypto": {
+        "is_direct": false,
+        "sha256": "db4e40728b728508912cbb3d44f19ce188f218e9eba635821bb4b68564f8fd67",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/c9/7f/09065fd9e27da0eda08b4d6897f1c13535066174cc023af248fc2a8d5e5a/asn1crypto-1.5.1-py2.py3-none-any.whl",
+        "version": "1.5.1"
+      },
+      "oscrypto": {
+        "is_direct": false,
+        "sha256": "6f5fef59cb5b3708321db7cca56aed8ad7e662853351e7991fcf60ec606d47a4",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/06/81/a7654e654a4b30eda06ef9ad8c1b45d1534bfd10b5c045d0c0f6b16fecd2/oscrypto-1.3.0.tar.gz",
+        "version": "1.3.0"
+      }
+    },
+    "targets": {
+      "default": {
+        "asn1crypto": [],
+        "oscrypto": [
+          "asn1crypto"
+        ]
+      }
+    }
+  },
+  "invalidationHash": "3e922512567f6f3f44a71d03a33b6b5c94c154e1b2beec95f98c3df9522fc101"
+}

@@ -1,0 +1,19 @@
+{
+  "fetchPipMetadata": {
+    "sources": {
+      "sentencepiece": {
+        "is_direct": false,
+        "sha256": "a52c19171daaf2e697dc6cbe67684e0fa341b1248966f6aebb541de654d15843",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/c9/d2/b9c7ca067c26d8ff085d252c89b5f69609ca93fb85a00ede95f4857865d4/sentencepiece-0.2.0.tar.gz",
+        "version": "0.2.0"
+      }
+    },
+    "targets": {
+      "default": {
+        "sentencepiece": []
+      }
+    }
+  },
+  "invalidationHash": "38439dd63e0c3fa1eaf667aa60dc13fc465b546d885ce28fb934097cdd793d5e"
+}

@@ -1,0 +1,19 @@
+{
+  "fetchPipMetadata": {
+    "sources": {
+      "tenacity": {
+        "is_direct": false,
+        "sha256": "8bc6c0c8a09b31e6cad13c47afbed1a567518250a9a171418582ed8d9c20ca78",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/a3/4d/6a19536c50b849338fcbe9290d562b52cbdcf30d8963d3588a68a4107df1/tenacity-8.5.0.tar.gz",
+        "version": "8.5.0"
+      }
+    },
+    "targets": {
+      "default": {
+        "tenacity": []
+      }
+    }
+  },
+  "invalidationHash": "1048f5573a0ccd10b01a7b229f6bdf926b029825ff2bfde174ece18e87038401"
+}

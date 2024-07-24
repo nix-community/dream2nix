@@ -1,0 +1,19 @@
+{
+  "fetchPipMetadata": {
+    "sources": {
+      "cython": {
+        "is_direct": false,
+        "sha256": "dcc96739331fb854dcf503f94607576cfe8488066c61ca50dfd55836f132de99",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/d5/f7/2fdd9205a2eedee7d9b0abbf15944a1151eb943001dbdc5233b1d1cfc34e/Cython-3.0.10.tar.gz",
+        "version": "3.0.10"
+      }
+    },
+    "targets": {
+      "default": {
+        "cython": []
+      }
+    }
+  },
+  "invalidationHash": "77a618a2dc09145d0b29cb2c0af935ece8dd61f1ebfddcdbfd14f785a3d40d62"
+}

@@ -1,0 +1,19 @@
+{
+  "fetchPipMetadata": {
+    "sources": {
+      "flatbuffers": {
+        "is_direct": false,
+        "sha256": "de2ec5b203f21441716617f38443e0a8ebf3d25bf0d9c0bb0ce68fa00ad546a4",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/a9/74/2df95ef84b214d2bee0886d572775a6f38793f5ca6d7630c3239c91104ac/flatbuffers-24.3.25.tar.gz",
+        "version": "24.3.25"
+      }
+    },
+    "targets": {
+      "default": {
+        "flatbuffers": []
+      }
+    }
+  },
+  "invalidationHash": "5f842e65e7be17cc6054d1456c8c761dd94a8a714cdd4cbf340d44a064a448ec"
+}

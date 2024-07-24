@@ -1,0 +1,19 @@
+{
+  "fetchPipMetadata": {
+    "sources": {
+      "dill": {
+        "is_direct": false,
+        "sha256": "3ebe3c479ad625c4553aca177444d89b486b1d84982eeacded644afc0cf797ca",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/17/4d/ac7ffa80c69ea1df30a8aa11b3578692a5118e7cd1aa157e3ef73b092d15/dill-0.3.8.tar.gz",
+        "version": "0.3.8"
+      }
+    },
+    "targets": {
+      "default": {
+        "dill": []
+      }
+    }
+  },
+  "invalidationHash": "94f82b5d6b528aabb5060166dd67e59d12480f41cbf21fdc28aec64138c1d507"
+}

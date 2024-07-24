@@ -1,0 +1,29 @@
+{
+  "fetchPipMetadata": {
+    "sources": {
+      "jaraco-classes": {
+        "is_direct": false,
+        "sha256": "47a024b51d0239c0dd8c8540c6c7f484be3b8fcf0b2d85c13825780d3b3f3acd",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/06/c0/ed4a27bc5571b99e3cff68f8a9fa5b56ff7df1c2251cc715a652ddd26402/jaraco.classes-3.4.0.tar.gz",
+        "version": "3.4.0"
+      },
+      "more-itertools": {
+        "is_direct": false,
+        "sha256": "ea6a02e24a9161e51faad17a8782b92a0df82c12c1c8886fec7f0c3fa1a1b320",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/bb/23/2d1cdb0427aecb2b150dc2ac2d15400990c4f05585b3fbc1b5177d74d7fb/more_itertools-10.3.0-py3-none-any.whl",
+        "version": "10.3.0"
+      }
+    },
+    "targets": {
+      "default": {
+        "jaraco-classes": [
+          "more-itertools"
+        ],
+        "more-itertools": []
+      }
+    }
+  },
+  "invalidationHash": "54fec092f7cb7bc84de04a822995dae91c352ed6c560e5fb0dc5d1d8623ecb85"
+}

@@ -1,0 +1,19 @@
+{
+  "fetchPipMetadata": {
+    "sources": {
+      "jupyterlab-pygments": {
+        "is_direct": false,
+        "sha256": "841a89020971da1d8693f1a99997aefc5dc424bb1b251fd6322462a1b8842780",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/b1/dd/ead9d8ea85bf202d90cc513b533f9c363121c7792674f78e0d8a854b63b4/jupyterlab_pygments-0.3.0-py3-none-any.whl",
+        "version": "0.3.0"
+      }
+    },
+    "targets": {
+      "default": {
+        "jupyterlab-pygments": []
+      }
+    }
+  },
+  "invalidationHash": "c87e5951d2a39ad37fba207841d3f70768b0599f99710249185e5b62104c7128"
+}

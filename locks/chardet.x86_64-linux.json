@@ -1,0 +1,19 @@
+{
+  "fetchPipMetadata": {
+    "sources": {
+      "chardet": {
+        "is_direct": false,
+        "sha256": "1b3b6ff479a8c414bc3fa2c0852995695c4a026dcd6d0633b2dd092ca39c1cf7",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/f3/0d/f7b6ab21ec75897ed80c17d79b15951a719226b9fababf1e40ea74d69079/chardet-5.2.0.tar.gz",
+        "version": "5.2.0"
+      }
+    },
+    "targets": {
+      "default": {
+        "chardet": []
+      }
+    }
+  },
+  "invalidationHash": "22fba96dfda0a871ea1d67ec1a4cb6c71a007a6c064ee2c37675bad2091adfff"
+}

@@ -1,0 +1,74 @@
+{
+  "fetchPipMetadata": {
+    "sources": {
+      "astroid": {
+        "is_direct": false,
+        "sha256": "413658a61eeca6202a59231abb473f932038fbcbf1666587f66d482083413a25",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/80/96/b32bbbb46170a1c8b8b1f28c794202e25cfe743565e9d3469b8eb1e0cc05/astroid-3.2.4-py3-none-any.whl",
+        "version": "3.2.4"
+      },
+      "dill": {
+        "is_direct": false,
+        "sha256": "c36ca9ffb54365bdd2f8eb3eff7d2a21237f8452b57ace88b1ac615b7e815bd7",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/c9/7a/cef76fd8438a42f96db64ddaa85280485a9c395e7df3db8158cfec1eee34/dill-0.3.8-py3-none-any.whl",
+        "version": "0.3.8"
+      },
+      "isort": {
+        "is_direct": false,
+        "sha256": "8ca5e72a8d85860d5a3fa69b8745237f2939afe12dbf656afbcb47fe72d947a6",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/d1/b3/8def84f539e7d2289a02f0524b944b15d7c75dab7628bedf1c4f0992029c/isort-5.13.2-py3-none-any.whl",
+        "version": "5.13.2"
+      },
+      "mccabe": {
+        "is_direct": false,
+        "sha256": "6c2d30ab6be0e4a46919781807b4f0d834ebdd6c6e3dca0bda5a15f863427b6e",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/27/1a/1f68f9ba0c207934b35b86a8ca3aad8395a3d6dd7921c0686e23853ff5a9/mccabe-0.7.0-py2.py3-none-any.whl",
+        "version": "0.7.0"
+      },
+      "platformdirs": {
+        "is_direct": false,
+        "sha256": "2d7a1657e36a80ea911db832a8a6ece5ee53d8de21edd5cc5879af6530b1bfee",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/68/13/2aa1f0e1364feb2c9ef45302f387ac0bd81484e9c9a4c5688a322fbdfd08/platformdirs-4.2.2-py3-none-any.whl",
+        "version": "4.2.2"
+      },
+      "pylint": {
+        "is_direct": false,
+        "sha256": "a5d01678349454806cff6d886fb072294f56a58c4761278c97fb557d708e1eb3",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/30/10/abee071c1d52b2bca48be40fe9f64ca878a77e0beef6504597e8c9c1ed84/pylint-3.2.6.tar.gz",
+        "version": "3.2.6"
+      },
+      "tomlkit": {
+        "is_direct": false,
+        "sha256": "7075d3042d03b80f603482d69bf0c8f345c2b30e41699fd8883227f89972b264",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/fd/7c/b753bf603852cab0a660da6e81f4ea5d2ca0f0b2b4870766d7aa9bceb7a2/tomlkit-0.13.0-py3-none-any.whl",
+        "version": "0.13.0"
+      }
+    },
+    "targets": {
+      "default": {
+        "astroid": [],
+        "dill": [],
+        "isort": [],
+        "mccabe": [],
+        "platformdirs": [],
+        "pylint": [
+          "astroid",
+          "dill",
+          "isort",
+          "mccabe",
+          "platformdirs",
+          "tomlkit"
+        ],
+        "tomlkit": []
+      }
+    }
+  },
+  "invalidationHash": "ff459d5d42bc8d0dd4a6f8ed5285b0c78dcdd7ae12715857ac94b320d570c6c3"
+}

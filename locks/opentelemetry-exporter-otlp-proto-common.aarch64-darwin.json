@@ -1,0 +1,39 @@
+{
+  "fetchPipMetadata": {
+    "sources": {
+      "opentelemetry-exporter-otlp-proto-common": {
+        "is_direct": false,
+        "sha256": "c93f4e30da4eee02bacd1e004eb82ce4da143a2f8e15b987a9f603e0a85407d3",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/37/a7/85ffaaacd712e4634fa1c56cbf79a02cf90b8a178fe1eee2cabfb0b7f44d/opentelemetry_exporter_otlp_proto_common-1.25.0.tar.gz",
+        "version": "1.25.0"
+      },
+      "opentelemetry-proto": {
+        "is_direct": false,
+        "sha256": "f07e3341c78d835d9b86665903b199893befa5e98866f63d22b00d0b7ca4972f",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/64/ae/d6b5f11ecbffafe8b6d54130fed0cc78aad3711e00074d63a7359d6dcf3b/opentelemetry_proto-1.25.0-py3-none-any.whl",
+        "version": "1.25.0"
+      },
+      "protobuf": {
+        "is_direct": false,
+        "sha256": "f1279ab38ecbfae7e456a108c5c0681e4956d5b1090027c1de0f934dfdb4b35c",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/f3/bf/26deba06a4c910a85f78245cac7698f67cedd7efe00d04f6b3e1b3506a59/protobuf-4.25.3-cp37-abi3-macosx_10_9_universal2.whl",
+        "version": "4.25.3"
+      }
+    },
+    "targets": {
+      "default": {
+        "opentelemetry-exporter-otlp-proto-common": [
+          "opentelemetry-proto"
+        ],
+        "opentelemetry-proto": [
+          "protobuf"
+        ],
+        "protobuf": []
+      }
+    }
+  },
+  "invalidationHash": "ab959ef6636040242d401c76b01a1d07aa26c575435df6894a0239a1f7f6b560"
+}

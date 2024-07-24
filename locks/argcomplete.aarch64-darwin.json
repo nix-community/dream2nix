@@ -1,0 +1,19 @@
+{
+  "fetchPipMetadata": {
+    "sources": {
+      "argcomplete": {
+        "is_direct": false,
+        "sha256": "c2abcdfe1be8ace47ba777d4fce319eb13bf8ad9dace8d085dcad6eded88057f",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/db/ca/45176b8362eb06b68f946c2bf1184b92fc98d739a3f8c790999a257db91f/argcomplete-3.4.0.tar.gz",
+        "version": "3.4.0"
+      }
+    },
+    "targets": {
+      "default": {
+        "argcomplete": []
+      }
+    }
+  },
+  "invalidationHash": "db7726521c77c3abf7731fe20ca83d8fe2714f92536d5a24383a9dd7f87a59b4"
+}

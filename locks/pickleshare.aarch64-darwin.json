@@ -1,0 +1,19 @@
+{
+  "fetchPipMetadata": {
+    "sources": {
+      "pickleshare": {
+        "is_direct": false,
+        "sha256": "87683d47965c1da65cdacaf31c8441d12b8044cdec9aca500cd78fc2c683afca",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/d8/b6/df3c1c9b616e9c0edbc4fbab6ddd09df9535849c64ba51fcb6531c32d4d8/pickleshare-0.7.5.tar.gz",
+        "version": "0.7.5"
+      }
+    },
+    "targets": {
+      "default": {
+        "pickleshare": []
+      }
+    }
+  },
+  "invalidationHash": "5aab357b21c1dcbe627c1524095dd50d5683fe9ef222bd1632d7a235a0b7b0df"
+}

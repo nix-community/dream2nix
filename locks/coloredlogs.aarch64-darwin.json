@@ -1,0 +1,29 @@
+{
+  "fetchPipMetadata": {
+    "sources": {
+      "coloredlogs": {
+        "is_direct": false,
+        "sha256": "7c991aa71a4577af2f82600d8f8f3a89f936baeaf9b50a9c197da014e5bf16b0",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/cc/c7/eed8f27100517e8c0e6b923d5f0845d0cb99763da6fdee00478f91db7325/coloredlogs-15.0.1.tar.gz",
+        "version": "15.0.1"
+      },
+      "humanfriendly": {
+        "is_direct": false,
+        "sha256": "1697e1a8a8f550fd43c2865cd84542fc175a61dcb779b6fee18cf6b6ccba1477",
+        "type": "url",
+        "url": "https://files.pythonhosted.org/packages/f0/0f/310fb31e39e2d734ccaa2c0fb981ee41f7bd5056ce9bc29b2248bd569169/humanfriendly-10.0-py2.py3-none-any.whl",
+        "version": "10.0"
+      }
+    },
+    "targets": {
+      "default": {
+        "coloredlogs": [
+          "humanfriendly"
+        ],
+        "humanfriendly": []
+      }
+    }
+  },
+  "invalidationHash": "3b278c65d8cd9e1a95894995dd142352f1dd7c66ee9ebb5a0135c78f36808a87"
+}
