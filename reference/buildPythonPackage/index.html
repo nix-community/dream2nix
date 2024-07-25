@@ -1000,6 +1000,24 @@
 </li>
           
             <li class="md-nav__item">
+    <a href="#buildpythonpackagepythonrelaxdeps" class="md-nav__link">
+      <span class="md-ellipsis">
+        buildPythonPackage.<wbr>pythonRelaxDeps
+      </span>
+    </a>
+    
+</li>
+          
+            <li class="md-nav__item">
+    <a href="#buildpythonpackagepythonremovedeps" class="md-nav__link">
+      <span class="md-ellipsis">
+        buildPythonPackage.<wbr>pythonRemoveDeps
+      </span>
+    </a>
+    
+</li>
+          
+            <li class="md-nav__item">
     <a href="#buildpythonpackageremovebinbytecode" class="md-nav__link">
       <span class="md-ellipsis">
         buildPythonPackage.<wbr>removeBinBytecode
@@ -3497,6 +3515,24 @@
 </li>
           
             <li class="md-nav__item">
+    <a href="#buildpythonpackagepythonrelaxdeps" class="md-nav__link">
+      <span class="md-ellipsis">
+        buildPythonPackage.<wbr>pythonRelaxDeps
+      </span>
+    </a>
+    
+</li>
+          
+            <li class="md-nav__item">
+    <a href="#buildpythonpackagepythonremovedeps" class="md-nav__link">
+      <span class="md-ellipsis">
+        buildPythonPackage.<wbr>pythonRemoveDeps
+      </span>
+    </a>
+    
+</li>
+          
+            <li class="md-nav__item">
     <a href="#buildpythonpackageremovebinbytecode" class="md-nav__link">
       <span class="md-ellipsis">
         buildPythonPackage.<wbr>removeBinBytecode
@@ -5148,6 +5184,41 @@ support the pyproject format.</p>
 
 <h4 id="buildpythonpackagepythonimportscheck">buildPythonPackage.pythonImportsCheck<a class="headerlink" href="#buildpythonpackagepythonimportscheck" title="Permanent link">&para;</a></h4>
 <p>Check whether importing the listed modules works</p>
+<table>
+    <tr>
+        <td>type</td>
+        <td>list of string </td>
+    </tr>
+    <tr>
+        <td>source</td>
+        <td><a href="https://github.com/nix-community/dream2nix/blob/master/modules/dream2nix/buildPythonPackage/interface.nix">dream2nix/modules/dream2nix/buildPythonPackage/interface.nix</a></td>
+    </tr><tr>
+        <td>default</td>
+        <td><div class="highlight"><pre><span></span><span class="p">[</span> <span class="p">]</span>
+</pre></div>
+</td>
+    </tr></table>
+
+<h4 id="buildpythonpackagepythonrelaxdeps">buildPythonPackage.pythonRelaxDeps<a class="headerlink" href="#buildpythonpackagepythonrelaxdeps" title="Permanent link">&para;</a></h4>
+<p>List of dependency names on which to remove version constraints.
+Or the boolean value true to remove all of them</p>
+<table>
+    <tr>
+        <td>type</td>
+        <td>(list of string) or boolean </td>
+    </tr>
+    <tr>
+        <td>source</td>
+        <td><a href="https://github.com/nix-community/dream2nix/blob/master/modules/dream2nix/buildPythonPackage/interface.nix">dream2nix/modules/dream2nix/buildPythonPackage/interface.nix</a></td>
+    </tr><tr>
+        <td>default</td>
+        <td><div class="highlight"><pre><span></span><span class="p">[</span> <span class="p">]</span>
+</pre></div>
+</td>
+    </tr></table>
+
+<h4 id="buildpythonpackagepythonremovedeps">buildPythonPackage.pythonRemoveDeps<a class="headerlink" href="#buildpythonpackagepythonremovedeps" title="Permanent link">&para;</a></h4>
+<p>List of dependency names which to remove.</p>
 <table>
     <tr>
         <td>type</td>
