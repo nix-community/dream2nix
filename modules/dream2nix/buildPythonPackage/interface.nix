@@ -186,5 +186,21 @@ in {
         Check whether importing the listed modules works
       '';
     };
+
+    pythonRelaxDeps = l.mkOption {
+      type = t.oneOf [(t.listOf t.str) t.bool];
+      default = [];
+      description = ''
+        List of dependency names on which to remove version constraints.
+        Or the boolean value true to remove all of them
+      '';
+    };
+    pythonRemoveDeps = l.mkOption {
+      type = t.listOf t.str;
+      default = [];
+      description = ''
+        List of dependency names which to remove.
+      '';
+    };
   };
 }
