@@ -31,10 +31,10 @@
       },
       "apache-airflow": {
         "is_direct": false,
-        "sha256": "6fd6501b1622ab58f4a3c1fc5bed4c216bd36915243bb9445b54415c3e625200",
+        "sha256": "4a36cb5dbd9925448ef171b72f2db0656121383e16306eded723331963d169db",
         "type": "url",
-        "url": "https://files.pythonhosted.org/packages/02/2b/982217eab772d5e969c04614f6b77c158aee9699201a616cc00c1645326e/apache_airflow-2.9.2-py3-none-any.whl",
-        "version": "2.9.2"
+        "url": "https://files.pythonhosted.org/packages/f2/52/bac9f8a7cf28d7f9d57712ac26dc47936f9b3d55ab547d9c083ed255a27d/apache_airflow-2.9.3-py3-none-any.whl",
+        "version": "2.9.3"
       },
       "apache-airflow-providers-common-io": {
         "is_direct": false,
@@ -45,17 +45,17 @@
       },
       "apache-airflow-providers-common-sql": {
         "is_direct": false,
-        "sha256": "529d3a7496384bd5fab53ac0ed82d2ebcaabcd977217bf4b2abe0a2d4a415317",
+        "sha256": "49d9c9389489be4085499b3706ccbe2853584ade5bda91082c7d9242b80048e8",
         "type": "url",
-        "url": "https://files.pythonhosted.org/packages/4b/ea/ce9d2e91224a16d15bacac43ce08db7e75a4652b1b9cb0da32d47bba6fb1/apache_airflow_providers_common_sql-1.14.1-py3-none-any.whl",
-        "version": "1.14.1"
+        "url": "https://files.pythonhosted.org/packages/98/ad/b5a5ad66d4ad069b3bd07b386a1866f387593d7e1889f12a2485d9ce7396/apache_airflow_providers_common_sql-1.14.2-py3-none-any.whl",
+        "version": "1.14.2"
       },
       "apache-airflow-providers-fab": {
         "is_direct": false,
-        "sha256": "d931bfd79e5667043ec9818b546c3dca1df8251baa9288a94d0b6468e38606f9",
+        "sha256": "6782709e96d83213a4c996062a5b5a93809a4cc90db1cf038f93033bca053b8f",
         "type": "url",
-        "url": "https://files.pythonhosted.org/packages/73/4a/c5f759ec8017fb86003b08fe90bea0af8ce522416ac6d077fded3dce4fc9/apache_airflow_providers_fab-1.2.0-py3-none-any.whl",
-        "version": "1.2.0"
+        "url": "https://files.pythonhosted.org/packages/0a/e3/2e590c5aa819e6ea97cf723ec42aafd5fdff10d2cc32c23d3dbf501e6272/apache_airflow_providers_fab-1.2.1-py3-none-any.whl",
+        "version": "1.2.1"
       },
       "apache-airflow-providers-ftp": {
         "is_direct": false,
@@ -220,17 +220,17 @@
       },
       "croniter": {
         "is_direct": false,
-        "sha256": "fdbb44920944045cc323db54599b321325141d82d14fa7453bc0699826bbe9ed",
+        "sha256": "b3bd11f270dc54ccd1f2397b813436015a86d30ffc5a7a9438eec1ed916f2101",
         "type": "url",
-        "url": "https://files.pythonhosted.org/packages/34/ce/1c532b78d43c2eaadc8e900d9686999ff99dd459bc51fcdf855305e57ed9/croniter-2.0.5-py2.py3-none-any.whl",
-        "version": "2.0.5"
+        "url": "https://files.pythonhosted.org/packages/93/6a/f2f68e0f9cf702b6d055ab53cab0d8c100f04e86228ca500a8ca9de94b58/croniter-3.0.3-py2.py3-none-any.whl",
+        "version": "3.0.3"
       },
       "cryptography": {
         "is_direct": false,
-        "sha256": "dea567d1b0e8bc5764b9443858b673b734100c2871dc93163f58c46a97a83d28",
+        "sha256": "7b3f5fe74a5ca32d4d0f302ffe6680fcc5c28f8ef0dc0ae8f40c0f3a1b4fca66",
         "type": "url",
-        "url": "https://files.pythonhosted.org/packages/60/12/f064af29190cdb1d38fe07f3db6126091639e1dece7ec77c4ff037d49193/cryptography-42.0.8-cp39-abi3-macosx_10_12_universal2.whl",
-        "version": "42.0.8"
+        "url": "https://files.pythonhosted.org/packages/66/d7/397515233e6a861f921bd0365b162b38e0cc513fcf4f1bdd9cc7bc5a3384/cryptography-43.0.0-cp39-abi3-macosx_10_9_universal2.whl",
+        "version": "43.0.0"
       },
       "deprecated": {
         "is_direct": false,
@@ -269,10 +269,10 @@
       },
       "exceptiongroup": {
         "is_direct": false,
-        "sha256": "5258b9ed329c5bbdd31a309f53cbfb0b155341807f6ff7606a1e801a891b29ad",
+        "sha256": "3111b9d131c238bec2f8f516e123e14ba243563fb135d3fe885990585aa7795b",
         "type": "url",
-        "url": "https://files.pythonhosted.org/packages/01/90/79fe92dd413a9cab314ef5c591b5aa9b9ba787ae4cadab75055b0ae00b33/exceptiongroup-1.2.1-py3-none-any.whl",
-        "version": "1.2.1"
+        "url": "https://files.pythonhosted.org/packages/02/cc/b7e31358aac6ed1ef2bb790a9746ac2c69bcb3c8588b41616914eb106eaf/exceptiongroup-1.2.2-py3-none-any.whl",
+        "version": "1.2.2"
       },
       "flask": {
         "is_direct": false,
@@ -311,10 +311,10 @@
       },
       "flask-limiter": {
         "is_direct": false,
-        "sha256": "4318382f17ecb09848bc6d0f7bc4bb1bf89bcf162200bf47b7b969126693bfda",
+        "sha256": "0ab44f586d8cc349412791711b6cbafe8f86e7b60ad9e8f24f2686009f00900e",
         "type": "url",
-        "url": "https://files.pythonhosted.org/packages/09/d3/f10e91728a0d33cce23e46eb05948dc38e959018cddf15103af0e08eeec6/Flask_Limiter-3.7.0-py3-none-any.whl",
-        "version": "3.7.0"
+        "url": "https://files.pythonhosted.org/packages/b4/c5/d5a91940f87a645997b1acf0e7ddd97738d01bd819dcb3cbda2552160195/Flask_Limiter-3.8.0-py3-none-any.whl",
+        "version": "3.8.0"
       },
       "flask-login": {
         "is_direct": false,
@@ -374,10 +374,10 @@
       },
       "grpcio": {
         "is_direct": false,
-        "sha256": "3b64ae304c175671efdaa7ec9ae2cc36996b681eb63ca39c464958396697daff",
+        "sha256": "8333ca46053c35484c9f2f7e8d8ec98c1383a8675a449163cea31a2076d93de8",
         "type": "url",
-        "url": "https://files.pythonhosted.org/packages/62/46/2f080ed826b7641220ba1584960f90dd5354d71eb455a1e3e40c0614cd6b/grpcio-1.64.1-cp310-cp310-macosx_12_0_universal2.whl",
-        "version": "1.64.1"
+        "url": "https://files.pythonhosted.org/packages/6f/ae/fd33f805d88bf5d9321d63d8d06b8e9c3d9d24753a6f7c1e611a5114870a/grpcio-1.65.1-cp310-cp310-macosx_12_0_universal2.whl",
+        "version": "1.65.1"
       },
       "gunicorn": {
         "is_direct": false,
@@ -416,10 +416,10 @@
       },
       "importlib-metadata": {
         "is_direct": false,
-        "sha256": "30962b96c0c223483ed6cc7280e7f0199feb01a0e40cfae4d4450fc6fab1f570",
+        "sha256": "15584cf2b1bf449d98ff8a6ff1abef57bf20f3ac6454f431736cd3e660921b2f",
         "type": "url",
-        "url": "https://files.pythonhosted.org/packages/2d/0a/679461c511447ffaf176567d5c496d1de27cbe34a87df6677d7171b2fbd4/importlib_metadata-7.1.0-py3-none-any.whl",
-        "version": "7.1.0"
+        "url": "https://files.pythonhosted.org/packages/dc/ef/38766b2edb096260d9b1b6ad35adaa0bce3b0567abb452b21eb074af88c4/importlib_metadata-8.0.0-py3-none-any.whl",
+        "version": "8.0.0"
       },
       "importlib-resources": {
         "is_direct": false,
@@ -458,10 +458,10 @@
       },
       "jsonschema": {
         "is_direct": false,
-        "sha256": "ff4cfd6b1367a40e7bc6411caec72effadd3db0bbe5017de188f2d6108335802",
+        "sha256": "fbadb6f8b144a8f8cf9f0b89ba94501d143e50411a1278633f56a7acf7fd5566",
         "type": "url",
-        "url": "https://files.pythonhosted.org/packages/c8/2f/324fab4be6fe37fb7b521546e8a557e6cf08c1c1b3d0b4839a00f589d9ef/jsonschema-4.22.0-py3-none-any.whl",
-        "version": "4.22.0"
+        "url": "https://files.pythonhosted.org/packages/69/4a/4f9dbeb84e8850557c02365a0eee0649abe5eb1d84af92a25731c6c0f922/jsonschema-4.23.0-py3-none-any.whl",
+        "version": "4.23.0"
       },
       "jsonschema-specifications": {
         "is_direct": false,
@@ -577,59 +577,59 @@
       },
       "opentelemetry-api": {
         "is_direct": false,
-        "sha256": "757fa1aa020a0f8fa139f8959e53dec2051cc26b832e76fa839a6d76ecefd737",
+        "sha256": "7d7ea33adf2ceda2dd680b18b1677e4152000b37ca76e679da71ff103b943064",
         "type": "url",
-        "url": "https://files.pythonhosted.org/packages/7e/b2/4bc5e52c9a23df0ac17dbb23923e609a8269cd67000a712b4f5bcfae1490/opentelemetry_api-1.25.0-py3-none-any.whl",
-        "version": "1.25.0"
+        "url": "https://files.pythonhosted.org/packages/e3/a7/6322d1d7a1fb926e8b99208c27730f21217da2f1e0e11dab48a78a0427a4/opentelemetry_api-1.26.0-py3-none-any.whl",
+        "version": "1.26.0"
       },
       "opentelemetry-exporter-otlp": {
         "is_direct": false,
-        "sha256": "d67a831757014a3bc3174e4cd629ae1493b7ba8d189e8a007003cacb9f1a6b60",
+        "sha256": "f839989f54bda85ee33c5dae033c44dcec9ccbb0dafc6a43d585df44da1d2036",
         "type": "url",
-        "url": "https://files.pythonhosted.org/packages/75/fd/7d95c7320926a43b88e9d4350338d3dae3b5ac16dd344825194f01918f56/opentelemetry_exporter_otlp-1.25.0-py3-none-any.whl",
-        "version": "1.25.0"
+        "url": "https://files.pythonhosted.org/packages/87/71/b9221af6af61213c522401b5f46a5eaa41d8dd7daeb0740dc5604f5c3980/opentelemetry_exporter_otlp-1.26.0-py3-none-any.whl",
+        "version": "1.26.0"
       },
       "opentelemetry-exporter-otlp-proto-common": {
         "is_direct": false,
-        "sha256": "15637b7d580c2675f70246563363775b4e6de947871e01d0f4e3881d1848d693",
+        "sha256": "ee4d8f8891a1b9c372abf8d109409e5b81947cf66423fd998e56880057afbc71",
         "type": "url",
-        "url": "https://files.pythonhosted.org/packages/05/02/74ac6619eec78c82a923324f916d3eccd2f2254cf4270b669e96b76bf717/opentelemetry_exporter_otlp_proto_common-1.25.0-py3-none-any.whl",
-        "version": "1.25.0"
+        "url": "https://files.pythonhosted.org/packages/25/2f/0f7e0a73fd901c9abc6ea680d7f19a803dac830c450f21e1123d3a3ec488/opentelemetry_exporter_otlp_proto_common-1.26.0-py3-none-any.whl",
+        "version": "1.26.0"
       },
       "opentelemetry-exporter-otlp-proto-grpc": {
         "is_direct": false,
-        "sha256": "3131028f0c0a155a64c430ca600fd658e8e37043cb13209f0109db5c1a3e4eb4",
+        "sha256": "e2be5eff72ebcb010675b818e8d7c2e7d61ec451755b8de67a140bc49b9b0280",
         "type": "url",
-        "url": "https://files.pythonhosted.org/packages/b0/f3/e24294e7b3f6d2b9aafc97b9b82e214dfe9ffa152dfecbd897e7ffbf6844/opentelemetry_exporter_otlp_proto_grpc-1.25.0-py3-none-any.whl",
-        "version": "1.25.0"
+        "url": "https://files.pythonhosted.org/packages/4d/0c/e4473692fec8076008c7926dfcef7223fc6d2785f04ad9d8402347a4eba9/opentelemetry_exporter_otlp_proto_grpc-1.26.0-py3-none-any.whl",
+        "version": "1.26.0"
       },
       "opentelemetry-exporter-otlp-proto-http": {
         "is_direct": false,
-        "sha256": "2eca686ee11b27acd28198b3ea5e5863a53d1266b91cda47c839d95d5e0541a6",
+        "sha256": "ee72a87c48ec977421b02f16c52ea8d884122470e0be573905237b540f4ee562",
         "type": "url",
-        "url": "https://files.pythonhosted.org/packages/1d/b9/a47734f7c5a45619d8c64c227f119092b4679b2c49d37116fda7c0fc4573/opentelemetry_exporter_otlp_proto_http-1.25.0-py3-none-any.whl",
-        "version": "1.25.0"
+        "url": "https://files.pythonhosted.org/packages/cf/d3/0b7217b61903249035d219fbe93a8558287f86aead340c7b2dc1226b8ad4/opentelemetry_exporter_otlp_proto_http-1.26.0-py3-none-any.whl",
+        "version": "1.26.0"
       },
       "opentelemetry-proto": {
         "is_direct": false,
-        "sha256": "f07e3341c78d835d9b86665903b199893befa5e98866f63d22b00d0b7ca4972f",
+        "sha256": "6c4d7b4d4d9c88543bcf8c28ae3f8f0448a753dc291c18c5390444c90b76a725",
         "type": "url",
-        "url": "https://files.pythonhosted.org/packages/64/ae/d6b5f11ecbffafe8b6d54130fed0cc78aad3711e00074d63a7359d6dcf3b/opentelemetry_proto-1.25.0-py3-none-any.whl",
-        "version": "1.25.0"
+        "url": "https://files.pythonhosted.org/packages/15/f4/66a3892eea913cded9bac0fdd3fb1a412fa2da8eb50014ec87a52648444a/opentelemetry_proto-1.26.0-py3-none-any.whl",
+        "version": "1.26.0"
       },
       "opentelemetry-sdk": {
         "is_direct": false,
-        "sha256": "d97ff7ec4b351692e9d5a15af570c693b8715ad78b8aafbec5c7100fe966b4c9",
+        "sha256": "feb5056a84a88670c041ea0ded9921fca559efec03905dddeb3885525e0af897",
         "type": "url",
-        "url": "https://files.pythonhosted.org/packages/ae/b2/729a959a8aa032bce246c791f977161099ab60fb0188408ccec1bf283b00/opentelemetry_sdk-1.25.0-py3-none-any.whl",
-        "version": "1.25.0"
+        "url": "https://files.pythonhosted.org/packages/92/f1/a9b550d0f9c049653dd2eab45cecf8fe4baa9795ed143d87834056ffabaf/opentelemetry_sdk-1.26.0-py3-none-any.whl",
+        "version": "1.26.0"
       },
       "opentelemetry-semantic-conventions": {
         "is_direct": false,
-        "sha256": "6daef4ef9fa51d51855d9f8e0ccd3a1bd59e0e545abe99ac6203804e36ab3e07",
+        "sha256": "4ff9d595b85a59c1c1413f02bba320ce7ea6bf9e2ead2b0913c4395c7bbc1063",
         "type": "url",
-        "url": "https://files.pythonhosted.org/packages/fd/41/28dae1ec1fe0151373f06bd06d9170ca14b52d5b3a6c2dc55f85bc219619/opentelemetry_semantic_conventions-0.46b0-py3-none-any.whl",
-        "version": "0.46b0"
+        "url": "https://files.pythonhosted.org/packages/00/c2/ca5cef8e4cd8eec5a95deed95ec3f6005e499fd9d17ca08731ced03a6921/opentelemetry_semantic_conventions-0.47b0-py3-none-any.whl",
+        "version": "0.47b0"
       },
       "ordered-set": {
         "is_direct": false,
@@ -675,10 +675,10 @@
       },
       "protobuf": {
         "is_direct": false,
-        "sha256": "f1279ab38ecbfae7e456a108c5c0681e4956d5b1090027c1de0f934dfdb4b35c",
+        "sha256": "eecd41bfc0e4b1bd3fa7909ed93dd14dd5567b98c941d6c1ad08fdcab3d6884b",
         "type": "url",
-        "url": "https://files.pythonhosted.org/packages/f3/bf/26deba06a4c910a85f78245cac7698f67cedd7efe00d04f6b3e1b3506a59/protobuf-4.25.3-cp37-abi3-macosx_10_9_universal2.whl",
-        "version": "4.25.3"
+        "url": "https://files.pythonhosted.org/packages/34/ca/bf85ffe3dd16f1f2aaa6c006da8118800209af3da160ae4d4f47500eabd9/protobuf-4.25.4-cp37-abi3-macosx_10_9_universal2.whl",
+        "version": "4.25.4"
       },
       "psutil": {
         "is_direct": false,
@@ -794,10 +794,10 @@
       },
       "rpds-py": {
         "is_direct": false,
-        "sha256": "732672fbc449bab754e0b15356c077cc31566df874964d4801ab14f71951ea80",
+        "sha256": "ca0dda0c5715efe2ab35bb83f813f681ebcd2840d8b1b92bfc6fe3ab382fae4a",
         "type": "url",
-        "url": "https://files.pythonhosted.org/packages/b9/9a/f1cce2481968d0ff1301d6da02bb977d7c7dc2ad9d218281ead38cc7f1ae/rpds_py-0.18.1-cp310-cp310-macosx_11_0_arm64.whl",
-        "version": "0.18.1"
+        "url": "https://files.pythonhosted.org/packages/33/6d/c19565106f3a15acf2db76d0a1b445be38c4f58f00cf52c04d698a5f8a6a/rpds_py-0.19.1-cp310-cp310-macosx_11_0_arm64.whl",
+        "version": "0.19.1"
       },
       "setproctitle": {
         "is_direct": false,
@@ -808,10 +808,10 @@
       },
       "setuptools": {
         "is_direct": false,
-        "sha256": "b8b8060bb426838fbe942479c90296ce976249451118ef566a5a0b7d8b78fb05",
+        "sha256": "33874fdc59b3188304b2e7c80d9029097ea31627180896fb549c578ceb8a0855",
         "type": "url",
-        "url": "https://files.pythonhosted.org/packages/42/54/2a8ecfcc9a714a6fbf86559a4b0f50b126a4ac4269ea8134f2c75c3e73de/setuptools-70.2.0-py3-none-any.whl",
-        "version": "70.2.0"
+        "url": "https://files.pythonhosted.org/packages/51/a0/ee460cc54e68afcf33190d198299c9579a5eafeadef0016ae8563237ccb6/setuptools-71.1.0-py3-none-any.whl",
+        "version": "71.1.0"
       },
       "setuptools-scm": {
         "is_direct": false,
@@ -857,10 +857,10 @@
       },
       "sqlparse": {
         "is_direct": false,
-        "sha256": "c204494cd97479d0e39f28c93d46c0b2d5959c7b9ab904762ea6c7af211c8663",
+        "sha256": "773dcbf9a5ab44a090f3441e2180efe2560220203dc2f8c0b0fa141e18b505e4",
         "type": "url",
-        "url": "https://files.pythonhosted.org/packages/43/5d/a0fdd88fd486b39ae1fd1a75ff75b4e29a0df96c0304d462fd407b82efe0/sqlparse-0.5.0-py3-none-any.whl",
-        "version": "0.5.0"
+        "url": "https://files.pythonhosted.org/packages/5d/a5/b2860373aa8de1e626b2bdfdd6df4355f0565b47e51f7d0c54fe70faf8fe/sqlparse-0.5.1-py3-none-any.whl",
+        "version": "0.5.1"
       },
       "tabulate": {
         "is_direct": false,
@@ -1348,6 +1348,7 @@
           "typing-extensions"
         ],
         "opentelemetry-semantic-conventions": [
+          "deprecated",
           "opentelemetry-api"
         ],
         "ordered-set": [],
@@ -1459,5 +1460,5 @@
       }
     }
   },
-  "invalidationHash": "365b03044d203e46b18de0b6c7f7b92c19e1113ee37086454705ce13bed32735"
+  "invalidationHash": "66732dc69ff4898c5dbc4d3f03b04226140b6f41b00932f096504c71efc9ad23"
 }

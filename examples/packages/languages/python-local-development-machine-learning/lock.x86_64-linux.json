@@ -52,10 +52,10 @@
       },
       "numpy": {
         "is_direct": false,
-        "sha256": "6d7696c615765091cc5093f76fd1fa069870304beaccfd58b5dcc69e55ef49c1",
+        "sha256": "4127d4303b9ac9f94ca0441138acead39928938660ca58329fe156f84b9f3015",
         "type": "url",
-        "url": "https://files.pythonhosted.org/packages/d6/a8/6a2419c40c7b6f7cb4ef52c532c88e55490c4fa92885964757d507adddce/numpy-2.0.0-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl",
-        "version": "2.0.0"
+        "url": "https://files.pythonhosted.org/packages/ac/9c/703d6775b99ae37c3d4fc32984953572fb20e23e61c0f4154f05e5758a30/numpy-2.0.1-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl",
+        "version": "2.0.1"
       },
       "nvidia-cublas-cu12": {
         "is_direct": false,
@@ -87,10 +87,10 @@
       },
       "nvidia-cudnn-cu12": {
         "is_direct": false,
-        "sha256": "5ccb288774fdfb07a7e7025ffec286971c06d8d7b4fb162525334616d7629ff9",
+        "sha256": "165764f44ef8c61fcdfdfdbe769d687e06374059fbb388b6c89ecb0e28793a6f",
         "type": "url",
-        "url": "https://files.pythonhosted.org/packages/ff/74/a2e2be7fb83aaedec84f391f082cf765dfb635e7caa9b49065f73e4835d8/nvidia_cudnn_cu12-8.9.2.26-py3-none-manylinux1_x86_64.whl",
-        "version": "8.9.2.26"
+        "url": "https://files.pythonhosted.org/packages/9f/fd/713452cd72343f682b1c7b9321e23829f00b842ceaedcda96e742ea0b0b3/nvidia_cudnn_cu12-9.1.0.70-py3-none-manylinux2014_x86_64.whl",
+        "version": "9.1.0.70"
       },
       "nvidia-cufft-cu12": {
         "is_direct": false,
@@ -164,10 +164,10 @@
       },
       "sympy": {
         "is_direct": false,
-        "sha256": "6b0b32a4673fb91bd3cac3b55406c8e01d53ae22780be467301cc452f6680c92",
+        "sha256": "db36cdc64bf61b9b24578b6f7bab1ecdd2452cf008f34faa33776680c26d66f8",
         "type": "url",
-        "url": "https://files.pythonhosted.org/packages/62/74/7e6c65ee89ff43942bffffdbb238634f16967bf327aee3c76efcf6e49587/sympy-1.13.0-py3-none-any.whl",
-        "version": "1.13.0"
+        "url": "https://files.pythonhosted.org/packages/b2/fe/81695a1aa331a842b582453b605175f419fe8540355886031328089d840a/sympy-1.13.1-py3-none-any.whl",
+        "version": "1.13.1"
       },
       "threadpoolctl": {
         "is_direct": false,
@@ -178,17 +178,17 @@
       },
       "torch": {
         "is_direct": false,
-        "sha256": "605a25b23944be5ab7c3467e843580e1d888b8066e5aaf17ff7bf9cc30001cc3",
+        "sha256": "4ed94583e244af51d6a8d28701ca5a9e02d1219e782f5a01dd401f90af17d8ac",
         "type": "url",
-        "url": "https://files.pythonhosted.org/packages/cb/e2/1bd899d3eb60c6495cf5d0d2885edacac08bde7a1407eadeb2ab36eca3c7/torch-2.3.1-cp310-cp310-manylinux1_x86_64.whl",
-        "version": "2.3.1"
+        "url": "https://files.pythonhosted.org/packages/9a/bd/4161ae28fb1c388a8ee30ca3aa72cf11ac3016ce62bc9e82c71ce193c410/torch-2.4.0-cp310-cp310-manylinux1_x86_64.whl",
+        "version": "2.4.0"
       },
       "triton": {
         "is_direct": false,
-        "sha256": "3c84595cbe5e546b1b290d2a58b1494df5a2ef066dd890655e5b8a8a92205c33",
+        "sha256": "e1efef76935b2febc365bfadf74bcb65a6f959a9872e5bddf44cc9e0adce1e1a",
         "type": "url",
-        "url": "https://files.pythonhosted.org/packages/d7/69/8a9fde07d2d27a90e16488cdfe9878e985a247b2496a4b5b1a2126042528/triton-2.3.1-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl",
-        "version": "2.3.1"
+        "url": "https://files.pythonhosted.org/packages/45/27/14cc3101409b9b4b9241d2ba7deaa93535a217a211c86c4cc7151fb12181/triton-3.0.0-1-cp310-cp310-manylinux2014_x86_64.manylinux_2_17_x86_64.whl",
+        "version": "3.0.0"
       },
       "typing-extensions": {
         "is_direct": false,
@@ -271,5 +271,5 @@
       }
     }
   },
-  "invalidationHash": "70927cbb56478f8e952deb1a0a08687c2f8016bffb1e0330c8f9a452a9cbbb2b"
+  "invalidationHash": "8585f762e896108d8b33cf156be179ecd1e01204ea46df52d12b37fb35729cfa"
 }
