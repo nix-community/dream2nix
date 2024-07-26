@@ -10,10 +10,10 @@
       },
       "bcrypt": {
         "is_direct": false,
-        "sha256": "5f7cd3399fbc4ec290378b541b0cf3d4398e4737a65d0f938c7c0f9d5e686611",
+        "sha256": "3d3a6d28cb2305b43feac298774b997e372e56c7c7afd90a12b3dc49b189151c",
         "type": "url",
-        "url": "https://files.pythonhosted.org/packages/97/00/21e34b365b895e6faf9cc5d4e7b97dd419e08f8a7df119792ec206b4a3fa/bcrypt-4.1.3-cp39-abi3-manylinux_2_28_x86_64.whl",
-        "version": "4.1.3"
+        "url": "https://files.pythonhosted.org/packages/3e/d0/31938bb697600a04864246acde4918c4190a938f891fd11883eaaf41327a/bcrypt-4.2.0-cp39-abi3-manylinux_2_28_x86_64.whl",
+        "version": "4.2.0"
       },
       "cffi": {
         "is_direct": false,
@@ -24,10 +24,10 @@
       },
       "cryptography": {
         "is_direct": false,
-        "sha256": "9c0c1716c8447ee7dbf08d6db2e5c41c688544c61074b54fc4564196f55c25a7",
+        "sha256": "cb013933d4c127349b3948aa8aaf2f12c0353ad0eccd715ca789c8a0f671646f",
         "type": "url",
-        "url": "https://files.pythonhosted.org/packages/fa/e2/b7e6e8c261536c489d9cf908769880d94bd5d9a187e166b0dc838d2e6a56/cryptography-42.0.8-cp39-abi3-manylinux_2_28_x86_64.whl",
-        "version": "42.0.8"
+        "url": "https://files.pythonhosted.org/packages/0f/6c/b42660b3075ff543065b2c1c5a3d9bedaadcff8ebce2ee981be2babc2934/cryptography-43.0.0-cp39-abi3-manylinux_2_28_x86_64.whl",
+        "version": "43.0.0"
       },
       "jinja2": {
         "is_direct": false,
@@ -73,10 +73,10 @@
       },
       "setuptools": {
         "is_direct": false,
-        "sha256": "fe384da74336c398e0d956d1cae0669bc02eed936cdb1d49b57de1990dc11ffc",
+        "sha256": "33874fdc59b3188304b2e7c80d9029097ea31627180896fb549c578ceb8a0855",
         "type": "url",
-        "url": "https://files.pythonhosted.org/packages/ef/15/88e46eb9387e905704b69849618e699dc2f54407d8953cc4ec4b8b46528d/setuptools-70.3.0-py3-none-any.whl",
-        "version": "70.3.0"
+        "url": "https://files.pythonhosted.org/packages/51/a0/ee460cc54e68afcf33190d198299c9579a5eafeadef0016ae8563237ccb6/setuptools-71.1.0-py3-none-any.whl",
+        "version": "71.1.0"
       }
     },
     "targets": {
@@ -113,5 +113,5 @@
       }
     }
   },
-  "invalidationHash": "fc8132866a8e243bbadc1eac5012604f88c2549ba38935a84381ca72e3cff950"
+  "invalidationHash": "1e9703e6c4f4a9cc8948f2fee2274e2e56b54007fa3f2633b688a61ae2829d77"
 }
