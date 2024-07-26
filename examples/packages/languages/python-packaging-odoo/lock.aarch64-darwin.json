@@ -52,10 +52,10 @@
       },
       "cryptography": {
         "is_direct": false,
-        "sha256": "dea567d1b0e8bc5764b9443858b673b734100c2871dc93163f58c46a97a83d28",
+        "sha256": "7b3f5fe74a5ca32d4d0f302ffe6680fcc5c28f8ef0dc0ae8f40c0f3a1b4fca66",
         "type": "url",
-        "url": "https://files.pythonhosted.org/packages/60/12/f064af29190cdb1d38fe07f3db6126091639e1dece7ec77c4ff037d49193/cryptography-42.0.8-cp39-abi3-macosx_10_12_universal2.whl",
-        "version": "42.0.8"
+        "url": "https://files.pythonhosted.org/packages/66/d7/397515233e6a861f921bd0365b162b38e0cc513fcf4f1bdd9cc7bc5a3384/cryptography-43.0.0-cp39-abi3-macosx_10_9_universal2.whl",
+        "version": "43.0.0"
       },
       "decorator": {
         "is_direct": false,
@@ -206,17 +206,17 @@
       },
       "pydot": {
         "is_direct": false,
-        "sha256": "408a47913ea7bd5d2d34b274144880c1310c4aee901f353cf21fe2e526a4ea28",
+        "sha256": "43f1e878dc1ff7c1c2e3470a6999d4e9e97771c5c862440c2f0af0ba844c231f",
         "type": "url",
-        "url": "https://files.pythonhosted.org/packages/7f/90/c9b51f3cdff89cd8f93382060330f43d1af098a6624cff439e700791e922/pydot-2.0.0-py3-none-any.whl",
-        "version": "2.0.0"
+        "url": "https://files.pythonhosted.org/packages/9a/fd/df3932340498a8f38c6107c95b0eb1d9ac406c5ea1307c8f43408977378e/pydot-3.0.1-py3-none-any.whl",
+        "version": "3.0.1"
       },
       "pyopenssl": {
         "is_direct": false,
-        "sha256": "17ed5be5936449c5418d1cd269a1a9e9081bc54c17aed272b45856a3d3dc86ad",
+        "sha256": "967d5719b12b243588573f39b0c677637145c7a1ffedcd495a487e58177fbb8d",
         "type": "url",
-        "url": "https://files.pythonhosted.org/packages/54/a7/2104f674a5a6845b04c8ff01659becc6b8978ca410b82b94287e0b1e018b/pyOpenSSL-24.1.0-py3-none-any.whl",
-        "version": "24.1.0"
+        "url": "https://files.pythonhosted.org/packages/d9/dd/e0aa7ebef5168c75b772eda64978c597a9129b46be17779054652a7999e4/pyOpenSSL-24.2.1-py3-none-any.whl",
+        "version": "24.2.1"
       },
       "pyparsing": {
         "is_direct": false,
@@ -311,10 +311,10 @@
       },
       "setuptools": {
         "is_direct": false,
-        "sha256": "b8b8060bb426838fbe942479c90296ce976249451118ef566a5a0b7d8b78fb05",
+        "sha256": "33874fdc59b3188304b2e7c80d9029097ea31627180896fb549c578ceb8a0855",
         "type": "url",
-        "url": "https://files.pythonhosted.org/packages/42/54/2a8ecfcc9a714a6fbf86559a4b0f50b126a4ac4269ea8134f2c75c3e73de/setuptools-70.2.0-py3-none-any.whl",
-        "version": "70.2.0"
+        "url": "https://files.pythonhosted.org/packages/51/a0/ee460cc54e68afcf33190d198299c9579a5eafeadef0016ae8563237ccb6/setuptools-71.1.0-py3-none-any.whl",
+        "version": "71.1.0"
       },
       "six": {
         "is_direct": false,

@@ -52,10 +52,10 @@
       },
       "numpy": {
         "is_direct": false,
-        "sha256": "0a43f0974d501842866cc83471bdb0116ba0dffdbaac33ec05e6afed5b615238",
+        "sha256": "1b902ce0e0a5bb7704556a217c4f63a7974f8f43e090aff03fcf262e0b135e02",
         "type": "url",
-        "url": "https://files.pythonhosted.org/packages/3b/61/e1e77694c4ed929c8edebde7d2ac30dbf3ed452c1988b633569d3d7ff271/numpy-2.0.0-cp310-cp310-macosx_14_0_arm64.whl",
-        "version": "2.0.0"
+        "url": "https://files.pythonhosted.org/packages/5f/f7/d9db3db9ff23af6ed1d948441a4805cfcb24119a3edbe1d5d8bcc89b2496/numpy-2.0.1-cp310-cp310-macosx_14_0_arm64.whl",
+        "version": "2.0.1"
       },
       "pillow": {
         "is_direct": false,
@@ -80,10 +80,10 @@
       },
       "sympy": {
         "is_direct": false,
-        "sha256": "9b2cbc7f1a640289430e13d2a56f02f867a1da0190f2f99d8968c2f74da0e515",
+        "sha256": "db36cdc64bf61b9b24578b6f7bab1ecdd2452cf008f34faa33776680c26d66f8",
         "type": "url",
-        "url": "https://files.pythonhosted.org/packages/61/53/e18c8c97d0b2724d85c9830477e3ebea3acf1dcdc6deb344d5d9c93a9946/sympy-1.12.1-py3-none-any.whl",
-        "version": "1.12.1"
+        "url": "https://files.pythonhosted.org/packages/b2/fe/81695a1aa331a842b582453b605175f419fe8540355886031328089d840a/sympy-1.13.1-py3-none-any.whl",
+        "version": "1.13.1"
       },
       "threadpoolctl": {
         "is_direct": false,
@@ -94,10 +94,10 @@
       },
       "torch": {
         "is_direct": false,
-        "sha256": "7c09a94362778428484bcf995f6004b04952106aee0ef45ff0b4bab484f5498d",
+        "sha256": "685418ab93730efbee71528821ff54005596970dd497bf03c89204fb7e3f71de",
         "type": "url",
-        "url": "https://files.pythonhosted.org/packages/2c/52/7ab0a00b54aa1651e79a9ebc721d45fba86d8c8ab65c4ec6e0a49f09527a/torch-2.3.1-cp310-none-macosx_11_0_arm64.whl",
-        "version": "2.3.1"
+        "url": "https://files.pythonhosted.org/packages/ff/70/feb6338f48615b5a5fe8ff218c15ae9897fa7c1c996dddf9867e8306a8cf/torch-2.4.0-cp310-none-macosx_11_0_arm64.whl",
+        "version": "2.4.0"
       },
       "typing-extensions": {
         "is_direct": false,
