@@ -204,7 +204,7 @@ in {
   buildPythonPackage = {
     pyproject = true;  # (6)
     pythonImportsCheck = [ # (7)
-      "mytool"
+      "my_tool"
     ];
   };
 
