@@ -38,9 +38,9 @@ in {
 
   paths.lockFile = "lock.${config.deps.stdenv.system}.json";
   pip = {
-    # Setting editables.$pkg to an absolute path will link this path as an editable
-    # install to .dream2nix/editables in devShells. The root package is always installed
-    # as editable.
+    # Setting editables.$pkg to a relative or absolute path, as a string, will
+    # link this path as an editable install to .dream2nix/editables in
+    # devShells. The root package is always installed as editable.
     # editables.charset-normalizer = "/home/my-user/src/charset-normalizer";
 
     requirementsList =

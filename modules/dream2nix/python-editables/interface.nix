@@ -8,15 +8,21 @@ in {
   options = {
     editables = lib.mkOption {
       description = ''
-        An attribute set mapping package names to absolute paths of source directories
-        which should be installed in editable mode in [editablesShellHook](#pipeditablesshellhook).
+        An attribute set mapping package names to a path, absolute or relative,
+        of source directories which should be installed in editable mode in
+        [editablesShellHook](#pipeditablesshellhook).
         i.e.
 
         ```
           pip.editables.charset-normalizer = "/home/user/src/charset-normalizer".
         ```
 
-        The top-level package is added automatically.
+        The top-level package is included automatically.
+
+        This must be a string, as otherwise content would be copied to the nix store
+        and loaded from there, voiding the benefits of editable installs.
+        For the same reason, it is advised to use source filtering if you
+        use a path inside the current repo to avoid unecessary rebuilds.
       '';
       type = t.attrsOf t.str;
     };

@@ -41,18 +41,11 @@ def make_editable(
     python_environment,
     bin_dir,
     site_dir,
-    editables_dir,
-    site_packages,
     name,
     path,
-    root_dir,
 ):
     normalized_name = name.replace("-", "_")
-    editable_dir = editables_dir / name
     full_path = path if path.is_absolute() else root_dir / path
-    if editable_dir.exists():
-        relative_editable_dir = editable_dir.relative_to(root_dir)
-        return
     if not full_path.exists():
         print(
             f"Error: The python dependency {name} of {root_name} is configured to be installed in editable mode, but the provided source location {full_path} does not exist.\n"
@@ -60,31 +53,30 @@ def make_editable(
             file=sys.stderr,
         )
         exit(1)
-    # link_editable_source(editable_dir, site_dir, normalized_name, full_path)
-    make_pth(site_dir, full_path, normalized_name)
-    editable_dist_info = make_dist_info(
-        site_dir, full_path, site_packages, normalized_name
-    )
-    make_entrypoints(python_environment, bin_dir, editable_dist_info)
-
-
-def make_pth(site_dir, editable_dir, normalized_name):
     # Check if source uses a "src"-layout or a flat-layout and
     # write the .pth file
-    if (editable_dir / "src").exists():
-        pth = editable_dir / "src"
+    if (full_path / "src").exists():
+        editable_dir = full_path / "src"
     else:
         # TODO this approach is risky as it puts everything inside
         # upstreams repo on $PYTHONPATH. Maybe we should try to
         # get packages from toplevel.txt first and if found,
         # create a dir with only them linked?
-        pth = editable_dir
+        editable_dir = full_path
+
+    make_pth(site_dir, editable_dir, normalized_name)
+    editable_dist_info = make_dist_info(site_dir, full_path)
+    make_entrypoints(python_environment, bin_dir, editable_dist_info)
+    return editable_dir
+
+
+def make_pth(site_dir, editable_dir, normalized_name):
     with open((site_dir / normalized_name).with_suffix(".pth"), "w") as f:
-        f.write(f"{pth}\n")
+        f.write(f"{editable_dir}\n")
 
 
 # create a packages .dist-info by calling its build backend
-def make_dist_info(site_dir, editable_dir, site_packages, normalized_name):
+def make_dist_info(site_dir, editable_dir):
     os.chdir(editable_dir)
     pyproject_file = editable_dir / "pyproject.toml"
     if pyproject_file.exists():
@@ -182,7 +174,7 @@ def export_environment_vars(python_environment, bin_dir, site_dir, site_packages
     )
 
 
-def pretty_print_editables(editables, root_dir, root_name):
+def pretty_print_editables(editables, root_name):
     if os.environ.get("D2N_QUIET"):
         return
     C = Colors
@@ -213,12 +205,11 @@ if __name__ == "__main__":
     python_environment = Path(args["pyEnv"])
     root_name = args["rootName"]
     site_packages = args["sitePackages"]
-    editables = args["editables"]
+    editables = {k: Path(v) for k, v in args["editables"].items()}
 
     # directories to use
     root_dir = Path(run([find_root]))
     dream2nix_python_dir = root_dir / ".dream2nix" / "python"
-    editables_dir = dream2nix_python_dir / "editables"
     bin_dir = dream2nix_python_dir / "bin"
     site_dir = dream2nix_python_dir / "site"
 
@@ -228,25 +219,22 @@ if __name__ == "__main__":
             shutil.rmtree(dream2nix_python_dir)
     else:
         export_environment_vars(python_environment, bin_dir, site_dir, site_packages)
-        pretty_print_editables(editables, root_dir, root_name)
+        pretty_print_editables(editables, root_dir)
         exit(0)
 
     bin_dir.mkdir(parents=True, exist_ok=True)
-    editables_dir.mkdir(parents=True, exist_ok=True)
     site_dir.mkdir(parents=True, exist_ok=True)
 
+    editable_dirs = []
     for name, path in editables.items():
-        make_editable(
+        editable_dir = make_editable(
             python_environment,
             bin_dir,
             site_dir,
-            editables_dir,
-            site_packages,
             name,
-            Path(path),
-            root_dir,
+            path,
         )
-
+        editable_dirs.append(str(editable_dir.absolute()))
     with open(site_dir / "sitecustomize.py", "w") as f:
         f.write(
             f"""import sys
@@ -264,7 +252,7 @@ site.addsitedir("{site_dir}")
 # in our pyEnv, those would shadow the editables. So we move
 # the editables to the front of sys.path.
 for index, path in enumerate(sys.path):
-  if path.startswith("{editables_dir}"):
+  if path in {editable_dirs}:
     sys.path.insert(0, sys.path.pop(index))
         """
         )
@@ -273,4 +261,4 @@ for index, path in enumerate(sys.path):
         json.dump(args, f, indent=2)
 
     export_environment_vars(python_environment, bin_dir, site_dir, site_packages)
-    pretty_print_editables(editables, root_dir, root_name)
+    pretty_print_editables(editables, root_dir)

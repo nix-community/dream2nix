@@ -6,7 +6,7 @@ title: Build a python project with pip
 
     We recommend reading our [Getting Started](./getting-started.md) guide first if you have not done so yet!
 
-this guide we are going to take a look at two annotated examples using the [pip module](../reference/pip/index.md):
+In this guide we are going to take a look at two annotated examples using the [pip module](../reference/pip/index.md):
 
 - The first one builds [Pillow](https://python-pillow.org/) from upstream sources fetched from PyPi.
 - The second one builds a fictional python project living in the same repository as the nix sources
@@ -317,8 +317,10 @@ see where they are imported from:
 
 ```shell-session
 $ nix develop
-Some python dependencies of my-tool are installed in editable mode
-To disable editable mode for a package, remove the corresponding entry from the 'editables' field in the dream2nix configuration file.
+evaluating derivation 'git+file://[path_to_your_repo]#devShells.x86_64-linux.default'
+Some python dependencies of /Users/phaer/src/dream2nix/examples/packages/languages/python-local-development are installed in editable mode
+  my-tool
+    installed at: .
 $ ipython
 [...]
 In [1]: import my_tool
