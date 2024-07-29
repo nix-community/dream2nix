@@ -78,5 +78,5 @@ The following conditional override disables tests for versions of the `pillow` p
 ## List of Options
 
 Different dream2nix modules offer different options to override.
-Refer to the [documentation](https://dream2nix.dev) of the specific language module to see the options.
+Refer to the [documentation](https://nix-community.github.io/dream2nix) of the specific language module to see the options.
 Alternatively enter `{module-name}.overrides` into the documentation search.
