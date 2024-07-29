@@ -46,13 +46,22 @@
         ];
       };
     });
-    devShells = eachSystem (system: {
-      default = nixpkgs.legacyPackages.${system}.mkShell {
+    devShells = eachSystem (system: let
+      pkgs = nixpkgs.legacyPackages.${system};
+      my_tool = self.packages.${system}.default;
+      python = my_tool.config.deps.python;
+    in {
+      default = pkgs.mkShell {
         # inherit from the dream2nix generated dev shell
-        inputsFrom = [self.packages.${system}.default.devShell];
-        # add extra packages
+        inputsFrom = [my_tool.devShell];
         packages = [
-          nixpkgs.legacyPackages.${system}.hello
+          python.pkgs.python-lsp-server
+          python.pkgs.python-lsp-ruff
+          python.pkgs.pylsp-mypy
+          python.pkgs.ipython
+
+          pkgs.ruff
+          pkgs.black
         ];
       };
     });
