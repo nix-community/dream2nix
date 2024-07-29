@@ -32,18 +32,16 @@ in {
   buildPythonPackage = {
     pyproject = true;
     pythonImportsCheck = [
-      "mytool"
+      "my_tool"
     ];
   };
 
   paths.lockFile = "lock.${config.deps.stdenv.system}.json";
   pip = {
-    # Setting editables.$pkg.null will link the current project root as an editable
-    # for the root package (my-tool here), or otherwise copy the contents of mkDerivation.src
-    # to .dream2nix/editables to make them writeable.
-    # Alternatively you can point it to an existing checkout via an absolute path, i.e.:
-    #   editables.charset-normalizer = "/home/my-user/src/charset-normalizer";
-    editables.charset-normalizer = ".editables/charset_normalizer";
+    # Setting editables.$pkg to an absolute path will link this path as an editable
+    # install to .dream2nix/editables in devShells. The root package is always installed
+    # as editable.
+    # editables.charset-normalizer = "/home/my-user/src/charset-normalizer";
 
     requirementsList =
       pyproject.build-system.requires

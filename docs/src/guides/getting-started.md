@@ -18,7 +18,7 @@ We start by creating a new git repository with the following two files:
 - `hello.nix` declares a dream2nix module that imports [mkDerivation](../reference/mkDerivation/index.md) and
   uses that to build GNU hello.
 
-Check out the code below and its annotations to learn more!
+Check out the code below and don't miss the annotations, hidden behind those little plusses, to learn more!
 
 !!! note
 
@@ -93,14 +93,6 @@ Check out the code below and its annotations to learn more!
   version = "2.12.1";
 
   # (4)
-  # deps = {nixpkgs, ...}: {
-  #   inherit
-  #    (nixpkgs)
-  #    stdenv
-  #    ;
-  # };
-
-  # (5)
   mkDerivation = {
     src = builtins.fetchTarball {
       url = "https://ftp.gnu.org/gnu/hello/hello-${config.version}.tar.gz";
@@ -114,9 +106,7 @@ Check out the code below and its annotations to learn more!
    Inputs include `dream2nix`, a reference to package itself in `config`, and the nixpkgs library in `lib`.
 2. Import the [`mkDerivation`](../reference/mkDerivation/index.md) module.
 3. Define `name` and `version` of the package. Unlike most other options, those are not namespaced and defined in dream2nix `core` module.
-4. Define a function that returns **dep**endencie**s** as *module options* from the given *package sets*.
-   `hello` here needs a compiler already in the defaults of `mkDerivation`, we don't need `deps` here but include it for demonstration purposes.
-5. Define *module options* to further customize your build. In this case we just set `mkDerivation.src` to fetch a source tarball as well.
+4. Define *module options* to further customize your build. In this case we just set `mkDerivation.src` to fetch a source tarball as well.
    But you could use other arguments from `pkgs.mkDerivation`, such as `buildInputs` or `buildPhase` here as well.
 
 ## Build it

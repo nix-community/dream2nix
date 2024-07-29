@@ -10,7 +10,12 @@ in {
     flattenDependencies = l.mkOption {
       type = t.bool;
       description = ''
-        Use all dependencies as top-level dependencies
+        Use all dependencies as top-level dependencies, even transitive ones.
+
+        Without this, we would walk the dependency tree from the root package upwards,
+        adding only the necessary packages to each dependency. With this, it's flat.
+
+        Useful if we are mostly interested in a working environment.
       '';
       default = false;
     };

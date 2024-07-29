@@ -1,2 +1,3 @@
 nav:
  - getting-started.md
+ - "Python & pip": pip.md
