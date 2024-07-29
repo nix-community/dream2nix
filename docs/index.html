@@ -288,6 +288,27 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../guides/pip/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Python & pip
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -1893,7 +1914,7 @@ but during development you need to update this symlink yourself
 and remove it after use. </p>
 <p>i.e. from inside the shell in <code>./docs</code>:</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a># update
-<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>ln -sfT $(nix build --print-out-paths --no-link ..#optionsReference) ./src/reference
+<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>ln -sfT $(nix build --print-out-paths --no-link .#optionsReference) ./src/reference
 <a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a># remove
 <a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a>rm ./src/reference
 </code></pre></div>

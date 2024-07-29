@@ -41,6 +41,11 @@
          <changefreq>daily</changefreq>
     </url>
     <url>
+         <loc>https://dream2nix.dev/guides/pip/</loc>
+         <lastmod>1980-01-01</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
          <loc>https://dream2nix.dev/reference/WIP-groups/</loc>
          <lastmod>1980-01-01</lastmod>
          <changefreq>daily</changefreq>

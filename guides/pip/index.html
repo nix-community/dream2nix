@@ -8,13 +8,13 @@
       
       
       
-        <link rel="canonical" href="https://dream2nix.dev/guides/getting-started/">
+        <link rel="canonical" href="https://dream2nix.dev/guides/pip/">
       
       
-        <link rel="prev" href="../..">
+        <link rel="prev" href="../getting-started/">
       
       
-        <link rel="next" href="../pip/">
+        <link rel="next" href="../../modules/">
       
       
       <link rel="icon" href="../../favicon.png">
@@ -22,7 +22,7 @@
     
     
       
-        <title>Getting started - Dream2Nix</title>
+        <title>Build a python project with pip - Dream2Nix</title>
       
     
     
@@ -66,7 +66,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#start-a-project" class="md-skip">
+        <a href="#start-with-a-flake" class="md-skip">
           Skip to content
         </a>
       
@@ -101,7 +101,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Getting started
+              Build a python project with pip
             
           </span>
         </div>
@@ -273,6 +273,27 @@
                 
   
   
+  
+  
+    <li class="md-nav__item">
+      <a href="../getting-started/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Getting started
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
     
   
   
@@ -287,7 +308,7 @@
           
   
   <span class="md-ellipsis">
-    Getting started
+    Python & pip
   </span>
   
 
@@ -298,7 +319,7 @@
         
   
   <span class="md-ellipsis">
-    Getting started
+    Python & pip
   </span>
   
 
@@ -318,28 +339,55 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-    <a href="#start-a-project" class="md-nav__link">
+    <a href="#start-with-a-flake" class="md-nav__link">
       <span class="md-ellipsis">
-        Start a project
+        Start with a flake
       </span>
     </a>
     
-      <nav class="md-nav" aria-label="Start a project">
+</li>
+      
+        <li class="md-nav__item">
+    <a href="#example-pillow" class="md-nav__link">
+      <span class="md-ellipsis">
+        Example: Pillow
+      </span>
+    </a>
+    
+      <nav class="md-nav" aria-label="Example: Pillow">
         <ul class="md-nav__list">
           
             <li class="md-nav__item">
-    <a href="#flakenix" class="md-nav__link">
+    <a href="#code" class="md-nav__link">
       <span class="md-ellipsis">
-        flake.<wbr>nix
+        Code
       </span>
     </a>
     
 </li>
           
             <li class="md-nav__item">
-    <a href="#hellonix" class="md-nav__link">
+    <a href="#initialise-the-repostory" class="md-nav__link">
       <span class="md-ellipsis">
-        hello.<wbr>nix
+        Initialise the repostory
+      </span>
+    </a>
+    
+</li>
+          
+            <li class="md-nav__item">
+    <a href="#create-a-lock-file" class="md-nav__link">
+      <span class="md-ellipsis">
+        Create a lock file
+      </span>
+    </a>
+    
+</li>
+          
+            <li class="md-nav__item">
+    <a href="#build-it" class="md-nav__link">
+      <span class="md-ellipsis">
+        Build it
       </span>
     </a>
     
@@ -351,27 +399,42 @@
 </li>
       
         <li class="md-nav__item">
-    <a href="#build-it" class="md-nav__link">
+    <a href="#example-my-tool" class="md-nav__link">
+      <span class="md-ellipsis">
+        Example: my-tool
+      </span>
+    </a>
+    
+      <nav class="md-nav" aria-label="Example: my-tool">
+        <ul class="md-nav__list">
+          
+            <li class="md-nav__item">
+    <a href="#code_1" class="md-nav__link">
+      <span class="md-ellipsis">
+        Code
+      </span>
+    </a>
+    
+</li>
+          
+            <li class="md-nav__item">
+    <a href="#build-it_1" class="md-nav__link">
       <span class="md-ellipsis">
         Build it
       </span>
     </a>
     
 </li>
-      
-        <li class="md-nav__item">
-    <a href="#lock-it" class="md-nav__link">
-      <span class="md-ellipsis">
-        Lock it
-      </span>
-    </a>
+          
+        </ul>
+      </nav>
     
 </li>
       
         <li class="md-nav__item">
-    <a href="#going-further" class="md-nav__link">
+    <a href="#development-shells" class="md-nav__link">
       <span class="md-ellipsis">
-        Going further
+        Development Shells
       </span>
     </a>
     
@@ -381,27 +444,6 @@
   
 </nav>
       
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../pip/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    Python & pip
-  </span>
-  
-
-      </a>
     </li>
   
 
@@ -1915,28 +1957,55 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-    <a href="#start-a-project" class="md-nav__link">
+    <a href="#start-with-a-flake" class="md-nav__link">
       <span class="md-ellipsis">
-        Start a project
+        Start with a flake
       </span>
     </a>
     
-      <nav class="md-nav" aria-label="Start a project">
+</li>
+      
+        <li class="md-nav__item">
+    <a href="#example-pillow" class="md-nav__link">
+      <span class="md-ellipsis">
+        Example: Pillow
+      </span>
+    </a>
+    
+      <nav class="md-nav" aria-label="Example: Pillow">
         <ul class="md-nav__list">
           
             <li class="md-nav__item">
-    <a href="#flakenix" class="md-nav__link">
+    <a href="#code" class="md-nav__link">
       <span class="md-ellipsis">
-        flake.<wbr>nix
+        Code
       </span>
     </a>
     
 </li>
           
             <li class="md-nav__item">
-    <a href="#hellonix" class="md-nav__link">
+    <a href="#initialise-the-repostory" class="md-nav__link">
       <span class="md-ellipsis">
-        hello.<wbr>nix
+        Initialise the repostory
+      </span>
+    </a>
+    
+</li>
+          
+            <li class="md-nav__item">
+    <a href="#create-a-lock-file" class="md-nav__link">
+      <span class="md-ellipsis">
+        Create a lock file
+      </span>
+    </a>
+    
+</li>
+          
+            <li class="md-nav__item">
+    <a href="#build-it" class="md-nav__link">
+      <span class="md-ellipsis">
+        Build it
       </span>
     </a>
     
@@ -1948,27 +2017,42 @@
 </li>
       
         <li class="md-nav__item">
-    <a href="#build-it" class="md-nav__link">
+    <a href="#example-my-tool" class="md-nav__link">
+      <span class="md-ellipsis">
+        Example: my-tool
+      </span>
+    </a>
+    
+      <nav class="md-nav" aria-label="Example: my-tool">
+        <ul class="md-nav__list">
+          
+            <li class="md-nav__item">
+    <a href="#code_1" class="md-nav__link">
+      <span class="md-ellipsis">
+        Code
+      </span>
+    </a>
+    
+</li>
+          
+            <li class="md-nav__item">
+    <a href="#build-it_1" class="md-nav__link">
       <span class="md-ellipsis">
         Build it
       </span>
     </a>
     
 </li>
-      
-        <li class="md-nav__item">
-    <a href="#lock-it" class="md-nav__link">
-      <span class="md-ellipsis">
-        Lock it
-      </span>
-    </a>
+          
+        </ul>
+      </nav>
     
 </li>
       
         <li class="md-nav__item">
-    <a href="#going-further" class="md-nav__link">
+    <a href="#development-shells" class="md-nav__link">
       <span class="md-ellipsis">
-        Going further
+        Development Shells
       </span>
     </a>
     
@@ -1992,156 +2076,310 @@
   
 
 
-  <h1>Getting started</h1>
-
 <div class="admonition info">
 <p class="admonition-title">Info</p>
-<p>We assume that you already got a flakes-enabled <a href="https://nixos.org/">nix</a> installed and at least a basic understanding of nix and flakes here.</p>
-<p>If that's not the case, check out the official documentation site at <a href="https://nix.dev/">nix.dev</a> first!</p>
+<p>We recommend reading our <a href="../getting-started/">Getting Started</a> guide first if you have not done so yet!</p>
 </div>
-<p>In this tutorial, we are going to package <a href="https://gnu.org/s/hello">GNU hello</a>, a traditional example for build systems, in order to get started
-with dream2nix and its <a href="../../modules/">module system </a>.</p>
-<h2 id="start-a-project">Start a project<a class="headerlink" href="#start-a-project" title="Permanent link">&para;</a></h2>
-<p>We start by creating a new git repository with the following two files:</p>
+<p>this guide we are going to take a look at two annotated examples using the <a href="../../reference/pip/">pip module</a>:</p>
 <ul>
-<li>
-<p><code>flake.nix</code> declares our inputs, dream2nix and nixpkgs, as well as a single package <code>hello</code> as an output.
-  The package is declared by calling <code>dream2nix.lib.evalModules</code> with the definitions in <code>hello.nix</code>, nixpkgs
-  and a helper module to let dream2nix know about your directory layout.</p>
-</li>
-<li>
-<p><code>hello.nix</code> declares a dream2nix module that imports <a href="../../reference/mkDerivation/">mkDerivation</a> and
-  uses that to build GNU hello.</p>
-</li>
+<li>The first one builds <a href="https://python-pillow.org/">Pillow</a> from upstream sources fetched from PyPi.</li>
+<li>The second one builds a fictional python project living in the same repository as the nix sources
+  and a development environment around it.</li>
 </ul>
-<p>Check out the code below and don't miss the annotations, hidden behind those little plusses, to learn more!</p>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>And do not hesitate to message us on <a href="https://matrix.to/#/#dream2nix:nixos.org">matrix: #dream2nix:nixos.org</a> if you found
-a mistake or if things are unclear!</p>
-</div>
-<h3 id="flakenix"><code>flake.nix</code><a class="headerlink" href="#flakenix" title="Permanent link">&para;</a></h3>
+<h2 id="start-with-a-flake">Start with a flake<a class="headerlink" href="#start-with-a-flake" title="Permanent link">&para;</a></h2>
+<p>We start both examples by creating a new git repository and adding almost the same <code>flake.nix</code> template we already used in <a href="../getting-started/#start-a-project">Getting Started</a>. The only difference
+are the packages name, <code>default</code> instead of <code>hello</code>:</p>
 <div class="highlight"><span class="filename">flake.nix</span><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="p">{</span>
-<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>  <span class="ss">description</span> <span class="o">=</span> <span class="s2">&quot;A flake for my dream2nix packages&quot;</span><span class="p">;</span>
-<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>
-<a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>  <span class="ss">inputs</span> <span class="o">=</span> <span class="p">{</span> <span class="c1"># (1)</span>
-<a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>    dream2nix<span class="o">.</span><span class="ss">url</span> <span class="o">=</span> <span class="s2">&quot;github:nix-community/dream2nix&quot;</span><span class="p">;</span>
-<a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>    nixpkgs<span class="o">.</span><span class="ss">follows</span> <span class="o">=</span> <span class="s2">&quot;dream2nix/nixpkgs&quot;</span><span class="p">;</span>
-<a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a>  <span class="p">};</span>
-<a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a>
-<a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a>  <span class="ss">outputs</span> <span class="o">=</span> <span class="p">{</span>
-<a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a>    self<span class="p">,</span>
-<a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a>    dream2nix<span class="p">,</span>
-<a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a>    nixpkgs<span class="p">,</span>
-<a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a>  <span class="p">}:</span>
-<a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a>  <span class="k">let</span>
-<a id="__codelineno-0-15" name="__codelineno-0-15" href="#__codelineno-0-15"></a>    <span class="ss">eachSystem</span> <span class="o">=</span> nixpkgs<span class="o">.</span>lib<span class="o">.</span>genAttrs <span class="p">[</span> <span class="c1"># (2)</span>
-<a id="__codelineno-0-16" name="__codelineno-0-16" href="#__codelineno-0-16"></a>      <span class="s2">&quot;aarch64-darwin&quot;</span>
-<a id="__codelineno-0-17" name="__codelineno-0-17" href="#__codelineno-0-17"></a>      <span class="s2">&quot;aarch64-linux&quot;</span>
-<a id="__codelineno-0-18" name="__codelineno-0-18" href="#__codelineno-0-18"></a>      <span class="s2">&quot;x86_64-darwin&quot;</span>
-<a id="__codelineno-0-19" name="__codelineno-0-19" href="#__codelineno-0-19"></a>      <span class="s2">&quot;x86_64-linux&quot;</span>
-<a id="__codelineno-0-20" name="__codelineno-0-20" href="#__codelineno-0-20"></a>    <span class="p">];</span>
-<a id="__codelineno-0-21" name="__codelineno-0-21" href="#__codelineno-0-21"></a>  <span class="k">in</span> <span class="p">{</span>
-<a id="__codelineno-0-22" name="__codelineno-0-22" href="#__codelineno-0-22"></a>    <span class="ss">packages</span> <span class="o">=</span> eachSystem <span class="p">(</span>system<span class="p">:</span> <span class="p">{</span>
-<a id="__codelineno-0-23" name="__codelineno-0-23" href="#__codelineno-0-23"></a>      <span class="ss">hello</span> <span class="o">=</span> dream2nix<span class="o">.</span>lib<span class="o">.</span>evalModules <span class="p">{</span> <span class="c1"># (3)</span>
-<a id="__codelineno-0-24" name="__codelineno-0-24" href="#__codelineno-0-24"></a>        packageSets<span class="o">.</span><span class="ss">nixpkgs</span> <span class="o">=</span> nixpkgs<span class="o">.</span>legacyPackages<span class="o">.</span><span class="si">${</span>system<span class="si">}</span><span class="p">;</span> <span class="c1"># (4)</span>
-<a id="__codelineno-0-25" name="__codelineno-0-25" href="#__codelineno-0-25"></a>        <span class="ss">modules</span> <span class="o">=</span> <span class="p">[</span>
-<a id="__codelineno-0-26" name="__codelineno-0-26" href="#__codelineno-0-26"></a>          <span class="l">./hello.nix</span> <span class="c1"># (5)</span>
-<a id="__codelineno-0-27" name="__codelineno-0-27" href="#__codelineno-0-27"></a>          <span class="p">{</span> <span class="c1"># (6)</span>
-<a id="__codelineno-0-28" name="__codelineno-0-28" href="#__codelineno-0-28"></a>            paths<span class="o">.</span><span class="ss">projectRoot</span> <span class="o">=</span> <span class="l">./.</span><span class="p">;</span>
-<a id="__codelineno-0-29" name="__codelineno-0-29" href="#__codelineno-0-29"></a>            paths<span class="o">.</span><span class="ss">projectRootFile</span> <span class="o">=</span> <span class="s2">&quot;flake.nix&quot;</span><span class="p">;</span>
-<a id="__codelineno-0-30" name="__codelineno-0-30" href="#__codelineno-0-30"></a>            paths<span class="o">.</span><span class="ss">package</span> <span class="o">=</span> <span class="l">./.</span><span class="p">;</span>
-<a id="__codelineno-0-31" name="__codelineno-0-31" href="#__codelineno-0-31"></a>          <span class="p">}</span>
-<a id="__codelineno-0-32" name="__codelineno-0-32" href="#__codelineno-0-32"></a>        <span class="p">];</span>
-<a id="__codelineno-0-33" name="__codelineno-0-33" href="#__codelineno-0-33"></a>      <span class="p">};</span>
-<a id="__codelineno-0-34" name="__codelineno-0-34" href="#__codelineno-0-34"></a>      <span class="ss">default</span> <span class="o">=</span> self<span class="o">.</span>packages<span class="o">.</span><span class="si">${</span>system<span class="si">}</span><span class="o">.</span>hello<span class="p">;</span>  <span class="c1"># (7)</span>
-<a id="__codelineno-0-35" name="__codelineno-0-35" href="#__codelineno-0-35"></a>    <span class="p">});</span>
-<a id="__codelineno-0-36" name="__codelineno-0-36" href="#__codelineno-0-36"></a>  <span class="p">};</span>
-<a id="__codelineno-0-37" name="__codelineno-0-37" href="#__codelineno-0-37"></a><span class="p">}</span>
+<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>  <span class="ss">inputs</span> <span class="o">=</span> <span class="p">{</span>
+<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>    dream2nix<span class="o">.</span><span class="ss">url</span> <span class="o">=</span> <span class="s2">&quot;github:nix-community/dream2nix&quot;</span><span class="p">;</span>
+<a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>    nixpkgs<span class="o">.</span><span class="ss">follows</span> <span class="o">=</span> <span class="s2">&quot;dream2nix/nixpkgs&quot;</span><span class="p">;</span>
+<a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>  <span class="p">};</span>
+<a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>
+<a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a>  <span class="ss">outputs</span> <span class="o">=</span> <span class="p">{</span>
+<a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a>    self<span class="p">,</span>
+<a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a>    dream2nix<span class="p">,</span>
+<a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a>    nixpkgs<span class="p">,</span>
+<a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a>  <span class="p">}:</span>
+<a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a>  <span class="k">let</span>
+<a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a>      <span class="ss">eachSystem</span> <span class="o">=</span> nixpkgs<span class="o">.</span>lib<span class="o">.</span>genAttrs <span class="p">[</span>
+<a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a>      <span class="s2">&quot;aarch64-darwin&quot;</span>
+<a id="__codelineno-0-15" name="__codelineno-0-15" href="#__codelineno-0-15"></a>      <span class="s2">&quot;aarch64-linux&quot;</span>
+<a id="__codelineno-0-16" name="__codelineno-0-16" href="#__codelineno-0-16"></a>      <span class="s2">&quot;x86_64-darwin&quot;</span>
+<a id="__codelineno-0-17" name="__codelineno-0-17" href="#__codelineno-0-17"></a>      <span class="s2">&quot;x86_64-linux&quot;</span>
+<a id="__codelineno-0-18" name="__codelineno-0-18" href="#__codelineno-0-18"></a>    <span class="p">];</span>
+<a id="__codelineno-0-19" name="__codelineno-0-19" href="#__codelineno-0-19"></a>  <span class="k">in</span> <span class="p">{</span>
+<a id="__codelineno-0-20" name="__codelineno-0-20" href="#__codelineno-0-20"></a>  <span class="ss">packages</span> <span class="o">=</span> eachSystem <span class="p">(</span>system<span class="p">:</span> <span class="p">{</span>
+<a id="__codelineno-0-21" name="__codelineno-0-21" href="#__codelineno-0-21"></a>    <span class="ss">default</span> <span class="o">=</span> dream2nix<span class="o">.</span>lib<span class="o">.</span>evalModules <span class="p">{</span> <span class="c1"># (1)</span>
+<a id="__codelineno-0-22" name="__codelineno-0-22" href="#__codelineno-0-22"></a>      packageSets<span class="o">.</span><span class="ss">nixpkgs</span> <span class="o">=</span> nixpkgs<span class="o">.</span>legacyPackages<span class="o">.</span><span class="si">${</span>system<span class="si">}</span><span class="p">;</span>
+<a id="__codelineno-0-23" name="__codelineno-0-23" href="#__codelineno-0-23"></a>      <span class="ss">modules</span> <span class="o">=</span> <span class="p">[</span>
+<a id="__codelineno-0-24" name="__codelineno-0-24" href="#__codelineno-0-24"></a>        <span class="l">./default.nix</span> <span class="c1"># (2)</span>
+<a id="__codelineno-0-25" name="__codelineno-0-25" href="#__codelineno-0-25"></a>        <span class="p">{</span>
+<a id="__codelineno-0-26" name="__codelineno-0-26" href="#__codelineno-0-26"></a>          paths<span class="o">.</span><span class="ss">projectRoot</span> <span class="o">=</span> <span class="l">./.</span><span class="p">;</span>
+<a id="__codelineno-0-27" name="__codelineno-0-27" href="#__codelineno-0-27"></a>          paths<span class="o">.</span><span class="ss">projectRootFile</span> <span class="o">=</span> <span class="s2">&quot;flake.nix&quot;</span><span class="p">;</span>
+<a id="__codelineno-0-28" name="__codelineno-0-28" href="#__codelineno-0-28"></a>          paths<span class="o">.</span><span class="ss">package</span> <span class="o">=</span> <span class="l">./.</span><span class="p">;</span>
+<a id="__codelineno-0-29" name="__codelineno-0-29" href="#__codelineno-0-29"></a>        <span class="p">}</span>
+<a id="__codelineno-0-30" name="__codelineno-0-30" href="#__codelineno-0-30"></a>      <span class="p">];</span>
+<a id="__codelineno-0-31" name="__codelineno-0-31" href="#__codelineno-0-31"></a>    <span class="p">};</span>
+<a id="__codelineno-0-32" name="__codelineno-0-32" href="#__codelineno-0-32"></a>  <span class="p">});</span>
+<a id="__codelineno-0-33" name="__codelineno-0-33" href="#__codelineno-0-33"></a><span class="p">}</span>
 </code></pre></div>
 <ol>
-<li>Import dream2nix and tell nix to use whatever version of nixpkgs dream2nix declares. You can use other versions, but this it what we run our automated tests with.</li>
-<li>Define a helper function that allows us to reduce boilerplate and still support all of of the listed systems for our package.</li>
-<li>Create our package, called <code>hello</code> here, by <em>evaluating</em> the given dream2nix <a href="../../modules/">modules</a>.</li>
-<li>Pass the given instance of nixpkgs to build our package with as a <em>module argument</em>.</li>
-<li>Include our package definition from <code>hello.nix</code>. See below for its contents!</li>
-<li>Define relative paths to aid dream2nix to find lock files and so on during <em>evaluation time</em>. These settings should work for repos containing multiple python projects as simpler ones.</li>
-<li>We declare <code>hello</code> to be the default package. This allows us to just call i.e. <code>nix build .#</code> instead of <code>nix build .#hello</code>.</li>
+<li>We call our package attribute <code>default</code> here...</li>
+<li>...and the nix file <code>default.nix</code> here.</li>
 </ol>
-<h3 id="hellonix"><code>hello.nix</code><a class="headerlink" href="#hellonix" title="Permanent link">&para;</a></h3>
-<div class="highlight"><span class="filename">hello.nix</span><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="p">{</span> <span class="c1"># (1)</span>
-<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>  dream2nix<span class="p">,</span>
-<a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>  config<span class="p">,</span>
-<a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a>  lib<span class="p">,</span>
+<h2 id="example-pillow">Example: Pillow<a class="headerlink" href="#example-pillow" title="Permanent link">&para;</a></h2>
+<p>Things get a bit more interesting in <code>default.nix</code> where we define a package module which fetches Pillow from pypi and builds it with minimal features - just JPEG support. Click the plus to expand any code annotation below for details.
+The code we are going to end up with is also available in <a href="https://github.com/nix-community/dream2nix/tree/main/examples/packages/languages/python-packaging-pillow">./examples/packages/languages/python-packaging-pillow</a>.</p>
+<h3 id="code">Code<a class="headerlink" href="#code" title="Permanent link">&para;</a></h3>
+<div class="highlight"><span class="filename">default.nix</span><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="p">{</span>
+<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>  config<span class="p">,</span>
+<a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>  lib<span class="p">,</span>
+<a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a>  dream2nix<span class="p">,</span>
 <a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a>  <span class="o">...</span>
 <a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a><span class="p">}:</span> <span class="p">{</span>
 <a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a>  <span class="ss">imports</span> <span class="o">=</span> <span class="p">[</span>
-<a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a>    dream2nix<span class="o">.</span>modules<span class="o">.</span>dream2nix<span class="o">.</span>mkDerivation <span class="c1"># (2)</span>
+<a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a>    dream2nix<span class="o">.</span>modules<span class="o">.</span>dream2nix<span class="o">.</span>pip <span class="c1"># (1)</span>
 <a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a>  <span class="p">];</span>
 <a id="__codelineno-1-10" name="__codelineno-1-10" href="#__codelineno-1-10"></a>
-<a id="__codelineno-1-11" name="__codelineno-1-11" href="#__codelineno-1-11"></a>  <span class="c1"># (3)</span>
-<a id="__codelineno-1-12" name="__codelineno-1-12" href="#__codelineno-1-12"></a>  <span class="ss">name</span> <span class="o">=</span> <span class="s2">&quot;hello&quot;</span><span class="p">;</span>
-<a id="__codelineno-1-13" name="__codelineno-1-13" href="#__codelineno-1-13"></a>  <span class="ss">version</span> <span class="o">=</span> <span class="s2">&quot;2.12.1&quot;</span><span class="p">;</span>
-<a id="__codelineno-1-14" name="__codelineno-1-14" href="#__codelineno-1-14"></a>
-<a id="__codelineno-1-15" name="__codelineno-1-15" href="#__codelineno-1-15"></a>  <span class="c1"># (4)</span>
-<a id="__codelineno-1-16" name="__codelineno-1-16" href="#__codelineno-1-16"></a>  <span class="ss">mkDerivation</span> <span class="o">=</span> <span class="p">{</span>
-<a id="__codelineno-1-17" name="__codelineno-1-17" href="#__codelineno-1-17"></a>    <span class="ss">src</span> <span class="o">=</span> <span class="nb">builtins</span><span class="o">.</span>fetchTarball <span class="p">{</span>
-<a id="__codelineno-1-18" name="__codelineno-1-18" href="#__codelineno-1-18"></a>      <span class="ss">url</span> <span class="o">=</span> <span class="s2">&quot;https://ftp.gnu.org/gnu/hello/hello-</span><span class="si">${</span>config<span class="o">.</span>version<span class="si">}</span><span class="s2">.tar.gz&quot;</span><span class="p">;</span>
-<a id="__codelineno-1-19" name="__codelineno-1-19" href="#__codelineno-1-19"></a>      <span class="ss">sha256</span> <span class="o">=</span> <span class="s2">&quot;sha256-jZkUKv2SV28wsM18tCqNxoCZmLxdYH2Idh9RLibH2yA=&quot;</span><span class="p">;</span>
-<a id="__codelineno-1-20" name="__codelineno-1-20" href="#__codelineno-1-20"></a>    <span class="p">};</span>
-<a id="__codelineno-1-21" name="__codelineno-1-21" href="#__codelineno-1-21"></a>  <span class="p">};</span>
-<a id="__codelineno-1-22" name="__codelineno-1-22" href="#__codelineno-1-22"></a><span class="p">}</span>
+<a id="__codelineno-1-11" name="__codelineno-1-11" href="#__codelineno-1-11"></a>  <span class="ss">deps</span> <span class="o">=</span> <span class="p">{</span>nixpkgs<span class="p">,</span> <span class="o">...</span><span class="p">}:</span> <span class="p">{</span>
+<a id="__codelineno-1-12" name="__codelineno-1-12" href="#__codelineno-1-12"></a>    <span class="ss">python</span> <span class="o">=</span> nixpkgs<span class="o">.</span>python3<span class="p">;</span> <span class="c1"># (2)</span>
+<a id="__codelineno-1-13" name="__codelineno-1-13" href="#__codelineno-1-13"></a>    <span class="k">inherit</span> <span class="c1"># (3)</span>
+<a id="__codelineno-1-14" name="__codelineno-1-14" href="#__codelineno-1-14"></a>      <span class="p">(</span>nixpkgs<span class="p">)</span>
+<a id="__codelineno-1-15" name="__codelineno-1-15" href="#__codelineno-1-15"></a>      pkg-config
+<a id="__codelineno-1-16" name="__codelineno-1-16" href="#__codelineno-1-16"></a>      zlib
+<a id="__codelineno-1-17" name="__codelineno-1-17" href="#__codelineno-1-17"></a>      libjpeg
+<a id="__codelineno-1-18" name="__codelineno-1-18" href="#__codelineno-1-18"></a>      <span class="p">;</span>
+<a id="__codelineno-1-19" name="__codelineno-1-19" href="#__codelineno-1-19"></a>  <span class="p">};</span>
+<a id="__codelineno-1-20" name="__codelineno-1-20" href="#__codelineno-1-20"></a>
+<a id="__codelineno-1-21" name="__codelineno-1-21" href="#__codelineno-1-21"></a>  <span class="ss">name</span> <span class="o">=</span> <span class="s2">&quot;pillow&quot;</span><span class="p">;</span> <span class="c1"># (4)</span>
+<a id="__codelineno-1-22" name="__codelineno-1-22" href="#__codelineno-1-22"></a>  <span class="ss">version</span> <span class="o">=</span> <span class="s2">&quot;10.4.0&quot;</span><span class="p">;</span>
+<a id="__codelineno-1-23" name="__codelineno-1-23" href="#__codelineno-1-23"></a>
+<a id="__codelineno-1-24" name="__codelineno-1-24" href="#__codelineno-1-24"></a>  <span class="ss">mkDerivation</span> <span class="o">=</span> <span class="p">{</span> <span class="c1"># (5)</span>
+<a id="__codelineno-1-25" name="__codelineno-1-25" href="#__codelineno-1-25"></a>    <span class="ss">nativeBuildInputs</span> <span class="o">=</span> <span class="p">[</span>
+<a id="__codelineno-1-26" name="__codelineno-1-26" href="#__codelineno-1-26"></a>      config<span class="o">.</span>deps<span class="o">.</span>pkg-config
+<a id="__codelineno-1-27" name="__codelineno-1-27" href="#__codelineno-1-27"></a>    <span class="p">];</span>
+<a id="__codelineno-1-28" name="__codelineno-1-28" href="#__codelineno-1-28"></a>    <span class="ss">propagatedBuildInputs</span> <span class="o">=</span> <span class="p">[</span>
+<a id="__codelineno-1-29" name="__codelineno-1-29" href="#__codelineno-1-29"></a>      config<span class="o">.</span>deps<span class="o">.</span>zlib
+<a id="__codelineno-1-30" name="__codelineno-1-30" href="#__codelineno-1-30"></a>      config<span class="o">.</span>deps<span class="o">.</span>libjpeg
+<a id="__codelineno-1-31" name="__codelineno-1-31" href="#__codelineno-1-31"></a>    <span class="p">];</span>
+<a id="__codelineno-1-32" name="__codelineno-1-32" href="#__codelineno-1-32"></a>  <span class="p">};</span>
+<a id="__codelineno-1-33" name="__codelineno-1-33" href="#__codelineno-1-33"></a>
+<a id="__codelineno-1-34" name="__codelineno-1-34" href="#__codelineno-1-34"></a>  <span class="ss">buildPythonPackage</span> <span class="o">=</span> <span class="p">{</span> <span class="c1"># (6)</span>
+<a id="__codelineno-1-35" name="__codelineno-1-35" href="#__codelineno-1-35"></a>    <span class="ss">pythonImportsCheck</span> <span class="o">=</span> <span class="p">[</span>
+<a id="__codelineno-1-36" name="__codelineno-1-36" href="#__codelineno-1-36"></a>      <span class="s2">&quot;PIL&quot;</span>
+<a id="__codelineno-1-37" name="__codelineno-1-37" href="#__codelineno-1-37"></a>    <span class="p">];</span>
+<a id="__codelineno-1-38" name="__codelineno-1-38" href="#__codelineno-1-38"></a>  <span class="p">};</span>
+<a id="__codelineno-1-39" name="__codelineno-1-39" href="#__codelineno-1-39"></a>
+<a id="__codelineno-1-40" name="__codelineno-1-40" href="#__codelineno-1-40"></a>  <span class="ss">pip</span> <span class="o">=</span> <span class="p">{</span>
+<a id="__codelineno-1-41" name="__codelineno-1-41" href="#__codelineno-1-41"></a>    <span class="ss">requirementsList</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;</span><span class="si">${</span>config<span class="o">.</span>name<span class="si">}</span><span class="s2">==</span><span class="si">${</span>config<span class="o">.</span>version<span class="si">}</span><span class="s2">&quot;</span><span class="p">];</span> <span class="c1"># (7)</span>
+<a id="__codelineno-1-42" name="__codelineno-1-42" href="#__codelineno-1-42"></a>    <span class="ss">pipFlags</span> <span class="o">=</span> <span class="p">[</span> <span class="c1"># (8)</span>
+<a id="__codelineno-1-43" name="__codelineno-1-43" href="#__codelineno-1-43"></a>      <span class="s2">&quot;--no-binary&quot;</span>
+<a id="__codelineno-1-44" name="__codelineno-1-44" href="#__codelineno-1-44"></a>      <span class="s2">&quot;:all:&quot;</span>
+<a id="__codelineno-1-45" name="__codelineno-1-45" href="#__codelineno-1-45"></a>    <span class="p">];</span>
+<a id="__codelineno-1-46" name="__codelineno-1-46" href="#__codelineno-1-46"></a>  <span class="p">};</span>
+<a id="__codelineno-1-47" name="__codelineno-1-47" href="#__codelineno-1-47"></a><span class="p">}</span>
 </code></pre></div>
 <ol>
-<li>Define a function, taking our <em>module arguments</em> and returning a <em>module</em>.
-   Inputs include <code>dream2nix</code>, a reference to package itself in <code>config</code>, and the nixpkgs library in <code>lib</code>.</li>
-<li>Import the <a href="../../reference/mkDerivation/"><code>mkDerivation</code></a> module.</li>
-<li>Define <code>name</code> and <code>version</code> of the package. Unlike most other options, those are not namespaced and defined in dream2nix <code>core</code> module.</li>
-<li>Define <em>module options</em> to further customize your build. In this case we just set <code>mkDerivation.src</code> to fetch a source tarball as well.
-   But you could use other arguments from <code>pkgs.mkDerivation</code>, such as <code>buildInputs</code> or <code>buildPhase</code> here as well.</li>
+<li>Import the dream2nix <a href="../../reference/pip/">pip module</a> into our module.</li>
+<li>Declare external dependencies, like the python interpreter to use and libraries from nixpkgs. We use whatever the latest <code>python3</code> in nixpkgs is as our python.</li>
+<li>Declare which build tools we need to pull from nixpkgs for use in <code>mkDerivation</code> below.</li>
+<li>Declare name and version of our package. Those will also be used for <code>pip.requirementsList</code> below.</li>
+<li>Set dependencies, <code>pkg-config</code> is only required
+during build-time, while the libraries should be propagated. We use <code>config.deps</code> instead of a conventional <code>pkg</code> here to be able to "override" inputs via the <a href="../../modules/">module system</a>.</li>
+<li>Tell the <a href="../../reference/buildPythonPackage/">buildPythonPackage module</a> to verify that it can import the given python module from our package after a build.</li>
+<li>Tell the <a href="../../reference/pip/">pip module</a> which dependencies to lock using the same syntax as 
+a <code>requirements.txt</code> file. Here: <code>pillow==10.4.0</code>.</li>
+<li><code>pip</code> uses binary wheel files if available by default. We will not do so in order to ensure a build from source.</li>
 </ol>
-<h2 id="build-it">Build it<a class="headerlink" href="#build-it" title="Permanent link">&para;</a></h2>
-<div class="admonition warning">
-<p class="admonition-title">Warning</p>
-<p>Be aware that nix will only "see" your files once
-they have been added to git's index, i.e. via <code>git add</code>!</p>
-<p>This is because nix copies flakes to <code>/nix/store</code> before evaluating
-them, but only those which are tracked by git. This can lead to confusion
-if nix errors hint at missing files while you are able to seem them
-in your shell.</p>
-</div>
-<p>With all that code added, building it should work like any other nix build:</p>
+<h3 id="initialise-the-repostory">Initialise the repostory<a class="headerlink" href="#initialise-the-repostory" title="Permanent link">&para;</a></h3>
+<p>If you use <code>git</code>, you need to add <code>flake.nix</code> and <code>default.nix</code> to your git index so that they get copied to the <code>/nix/store</code> and the commands below see them:</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="gp">$ </span>git<span class="w"> </span>init
-<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="gp">$ </span>git<span class="w"> </span>add<span class="w"> </span>flake.nix<span class="w"> </span>hello.nix
-<a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="gp">$ </span>nix<span class="w"> </span>build<span class="w"> </span>.#<span class="w">  </span><span class="c1"># (1) </span>
-<a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="gp">$ </span>./result/bin/hello
-<a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a><span class="go">Hello, World!</span>
+<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="gp">$ </span>git<span class="w"> </span>add<span class="w"> </span>flake.nix<span class="w"> </span>default.nix
 </code></pre></div>
-<ol>
-<li><code>.#</code> is a shorter form of <code>.#packages.x86_64-linux.default</code> (on <code>x86_64-linux</code> systems).</li>
-</ol>
-<h2 id="lock-it">Lock it<a class="headerlink" href="#lock-it" title="Permanent link">&para;</a></h2>
-<p>Some of our our modules such as <a href="../../reference/pip/">pip</a> require a custom lock file
-added to your repository in order to pin your dependencies and store metadata which we can't
-acquire during <em>evaluation time</em>.</p>
-<p>We don't need one in the <code>hello</code> example above. If you add a dream2nix module that does,
-you will receive an error during building, with the error message telling you the command
-you need to run. Generally:</p>
+<h3 id="create-a-lock-file">Create a lock file<a class="headerlink" href="#create-a-lock-file" title="Permanent link">&para;</a></h3>
+<p>The next step is to create a lock file by running the packages <code>lock</code> attribute. This does a <code>pip install --dry-run</code> under the hood and pins the exact packages pip would install.</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="gp">$ </span>nix<span class="w"> </span>run<span class="w"> </span>.#default.lock
 <a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="gp">$ </span>git<span class="w"> </span>add<span class="w"> </span>lock.json
 </code></pre></div>
-<h2 id="going-further">Going further<a class="headerlink" href="#going-further" title="Permanent link">&para;</a></h2>
-<p>Check out our guides, the reference documentation and <a href="https://github.com/nix-community/dream2nix/tree/main/examples/packages/languages">examples</a>
-to learn more about the various modules and options to learn more about language-specific helpers to package and distribute your software with dream2nix.</p>
-<p>Once you have imported a module, this module will make ecosystem-dependent functions, such as <a href="../../reference/mkDerivation/"><code>mkDerivation</code></a> or <a href="../../reference/buildPythonPackage/"><code>buildPythonPackage</code></a>, available to your package modules.</p>
-<p>And don't forget to join our communities at <a href="https://matrix.to/#/#dream2nix:nixos.org">matrix: #dream2nix:nixos.org</a> and <a href="https://github.com/nix-community/dream2nix">github: nix-community/dream2nix</a> to ask questions and learn from each other. Feedback we receive
-there helps us to improve code &amp; documentation as we go.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Due to limitations in <code>pip</code>s cross-platform support, the resulting
+lock-files are platform-specific!
+We therefore recommend setting <code>paths.lockFile</code> to <code>lock.${system}.json</code>
+for all projects where you use the pip module.</p>
+<p>Check out the <a href="../../reference/WIP-python-pdm/">pdm module</a> if you need a solution that
+allows locking for multiple platforms at once!</p>
+</div>
+<h3 id="build-it">Build it<a class="headerlink" href="#build-it" title="Permanent link">&para;</a></h3>
+<p>After that's done, we can finally build it:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="gp">$ </span>nix<span class="w"> </span>build<span class="w"> </span>.#default
+</code></pre></div>
+<p>Congratulations, you just built your first python package with dream2nix! The resulting package can be used with any other nix python package as long as it uses the same version of python.</p>
+<h2 id="example-my-tool">Example: my-tool<a class="headerlink" href="#example-my-tool" title="Permanent link">&para;</a></h2>
+<p>In our second example, we package are going to package a simple, fictional python package called <code>my_tool</code>. Its code and nix expressions
+are stored in the same repository. For reference, they are  available in full in <a href="https://github.com/nix-community/dream2nix/tree/main/examples/packages/languages/python-local-development">./examples/packages/languages/python-local-development</a>.</p>
+<h3 id="code_1">Code<a class="headerlink" href="#code_1" title="Permanent link">&para;</a></h3>
+<div class="highlight"><span class="filename">default.nix</span><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="p">{</span>
+<a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a>  config<span class="p">,</span>
+<a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a>  lib<span class="p">,</span>
+<a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a>  dream2nix<span class="p">,</span>
+<a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a>  <span class="o">...</span>
+<a id="__codelineno-5-6" name="__codelineno-5-6" href="#__codelineno-5-6"></a><span class="p">}:</span> <span class="k">let</span>
+<a id="__codelineno-5-7" name="__codelineno-5-7" href="#__codelineno-5-7"></a>  <span class="ss">pyproject</span> <span class="o">=</span> lib<span class="o">.</span>importTOML <span class="p">(</span>config<span class="o">.</span>mkDerivation<span class="o">.</span>src <span class="o">+</span> <span class="l">/pyproject.toml</span><span class="p">);</span> <span class="c1"># (1)</span>
+<a id="__codelineno-5-8" name="__codelineno-5-8" href="#__codelineno-5-8"></a><span class="k">in</span> <span class="p">{</span>
+<a id="__codelineno-5-9" name="__codelineno-5-9" href="#__codelineno-5-9"></a>  <span class="ss">imports</span> <span class="o">=</span> <span class="p">[</span>
+<a id="__codelineno-5-10" name="__codelineno-5-10" href="#__codelineno-5-10"></a>    dream2nix<span class="o">.</span>modules<span class="o">.</span>dream2nix<span class="o">.</span>pip <span class="c1"># (2)</span>
+<a id="__codelineno-5-11" name="__codelineno-5-11" href="#__codelineno-5-11"></a>  <span class="p">];</span>
+<a id="__codelineno-5-12" name="__codelineno-5-12" href="#__codelineno-5-12"></a>
+<a id="__codelineno-5-13" name="__codelineno-5-13" href="#__codelineno-5-13"></a>  <span class="ss">deps</span> <span class="o">=</span> <span class="p">{</span>nixpkgs<span class="p">,</span> <span class="o">...</span><span class="p">}:</span> <span class="p">{</span>
+<a id="__codelineno-5-14" name="__codelineno-5-14" href="#__codelineno-5-14"></a>    <span class="ss">python</span> <span class="o">=</span> nixpkgs<span class="o">.</span>python3<span class="p">;</span> <span class="c1"># (3)</span>
+<a id="__codelineno-5-15" name="__codelineno-5-15" href="#__codelineno-5-15"></a>  <span class="p">};</span>
+<a id="__codelineno-5-16" name="__codelineno-5-16" href="#__codelineno-5-16"></a>
+<a id="__codelineno-5-17" name="__codelineno-5-17" href="#__codelineno-5-17"></a>  <span class="k">inherit</span> <span class="p">(</span>pyproject<span class="o">.</span>project<span class="p">)</span> name version<span class="p">;</span> <span class="c1"># (4)</span>
+<a id="__codelineno-5-18" name="__codelineno-5-18" href="#__codelineno-5-18"></a>
+<a id="__codelineno-5-19" name="__codelineno-5-19" href="#__codelineno-5-19"></a>  <span class="ss">mkDerivation</span> <span class="o">=</span> <span class="p">{</span>
+<a id="__codelineno-5-20" name="__codelineno-5-20" href="#__codelineno-5-20"></a>    <span class="ss">src</span> <span class="o">=</span> lib<span class="o">.</span>cleanSourceWith <span class="p">{</span> <span class="c1"># (5)</span>
+<a id="__codelineno-5-21" name="__codelineno-5-21" href="#__codelineno-5-21"></a>      <span class="ss">src</span> <span class="o">=</span> lib<span class="o">.</span>cleanSource <span class="l">./.</span><span class="p">;</span>
+<a id="__codelineno-5-22" name="__codelineno-5-22" href="#__codelineno-5-22"></a>      <span class="ss">filter</span> <span class="o">=</span> name<span class="p">:</span> type<span class="p">:</span>
+<a id="__codelineno-5-23" name="__codelineno-5-23" href="#__codelineno-5-23"></a>        <span class="o">!</span><span class="p">(</span><span class="nb">builtins</span><span class="o">.</span>any <span class="p">(</span>x<span class="p">:</span> x<span class="p">)</span> <span class="p">[</span>
+<a id="__codelineno-5-24" name="__codelineno-5-24" href="#__codelineno-5-24"></a>          <span class="p">(</span>lib<span class="o">.</span>hasSuffix <span class="s2">&quot;.nix&quot;</span> name<span class="p">)</span>
+<a id="__codelineno-5-25" name="__codelineno-5-25" href="#__codelineno-5-25"></a>          <span class="p">(</span>lib<span class="o">.</span>hasPrefix <span class="s2">&quot;.&quot;</span> <span class="p">(</span><span class="nb">builtins</span><span class="o">.</span><span class="nb">baseNameOf</span> name<span class="p">))</span>
+<a id="__codelineno-5-26" name="__codelineno-5-26" href="#__codelineno-5-26"></a>          <span class="p">(</span>lib<span class="o">.</span>hasSuffix <span class="s2">&quot;flake.lock&quot;</span> name<span class="p">)</span>
+<a id="__codelineno-5-27" name="__codelineno-5-27" href="#__codelineno-5-27"></a>        <span class="p">]);</span>
+<a id="__codelineno-5-28" name="__codelineno-5-28" href="#__codelineno-5-28"></a>    <span class="p">};</span>
+<a id="__codelineno-5-29" name="__codelineno-5-29" href="#__codelineno-5-29"></a>  <span class="p">};</span>
+<a id="__codelineno-5-30" name="__codelineno-5-30" href="#__codelineno-5-30"></a>
+<a id="__codelineno-5-31" name="__codelineno-5-31" href="#__codelineno-5-31"></a>  <span class="ss">buildPythonPackage</span> <span class="o">=</span> <span class="p">{</span>
+<a id="__codelineno-5-32" name="__codelineno-5-32" href="#__codelineno-5-32"></a>    <span class="ss">pyproject</span> <span class="o">=</span> <span class="no">true</span><span class="p">;</span>  <span class="c1"># (6)</span>
+<a id="__codelineno-5-33" name="__codelineno-5-33" href="#__codelineno-5-33"></a>    <span class="ss">pythonImportsCheck</span> <span class="o">=</span> <span class="p">[</span> <span class="c1"># (7)</span>
+<a id="__codelineno-5-34" name="__codelineno-5-34" href="#__codelineno-5-34"></a>      <span class="s2">&quot;my_tool&quot;</span>
+<a id="__codelineno-5-35" name="__codelineno-5-35" href="#__codelineno-5-35"></a>    <span class="p">];</span>
+<a id="__codelineno-5-36" name="__codelineno-5-36" href="#__codelineno-5-36"></a>  <span class="p">};</span>
+<a id="__codelineno-5-37" name="__codelineno-5-37" href="#__codelineno-5-37"></a>
+<a id="__codelineno-5-38" name="__codelineno-5-38" href="#__codelineno-5-38"></a>  <span class="ss">pip</span> <span class="o">=</span> <span class="p">{</span>
+<a id="__codelineno-5-39" name="__codelineno-5-39" href="#__codelineno-5-39"></a>    <span class="c1"># (8)</span>
+<a id="__codelineno-5-40" name="__codelineno-5-40" href="#__codelineno-5-40"></a>    <span class="ss">requirementsList</span> <span class="o">=</span>
+<a id="__codelineno-5-41" name="__codelineno-5-41" href="#__codelineno-5-41"></a>      pyproject<span class="o">.</span>build-system<span class="o">.</span>requires <span class="ow">or</span> <span class="p">[]</span>
+<a id="__codelineno-5-42" name="__codelineno-5-42" href="#__codelineno-5-42"></a>      <span class="o">++</span> pyproject<span class="o">.</span>project<span class="o">.</span>dependencies <span class="ow">or</span> <span class="p">[];</span>
+<a id="__codelineno-5-43" name="__codelineno-5-43" href="#__codelineno-5-43"></a>
+<a id="__codelineno-5-44" name="__codelineno-5-44" href="#__codelineno-5-44"></a>    <span class="ss">flattenDependencies</span> <span class="o">=</span> <span class="no">true</span><span class="p">;</span> <span class="c1"># (9)</span>
+<a id="__codelineno-5-45" name="__codelineno-5-45" href="#__codelineno-5-45"></a>
+<a id="__codelineno-5-46" name="__codelineno-5-46" href="#__codelineno-5-46"></a>    overrides<span class="o">.</span><span class="ss">click</span> <span class="o">=</span> <span class="p">{</span> <span class="c1"># (10)</span>
+<a id="__codelineno-5-47" name="__codelineno-5-47" href="#__codelineno-5-47"></a>      buildPythonPackage<span class="o">.</span><span class="ss">pyproject</span> <span class="o">=</span> <span class="no">true</span><span class="p">;</span>
+<a id="__codelineno-5-48" name="__codelineno-5-48" href="#__codelineno-5-48"></a>      mkDerivation<span class="o">.</span><span class="ss">nativeBuildInputs</span> <span class="o">=</span> <span class="p">[</span>config<span class="o">.</span>deps<span class="o">.</span>python<span class="o">.</span>pkgs<span class="o">.</span>flit-core<span class="p">];</span>
+<a id="__codelineno-5-49" name="__codelineno-5-49" href="#__codelineno-5-49"></a>    <span class="p">};</span>
+<a id="__codelineno-5-50" name="__codelineno-5-50" href="#__codelineno-5-50"></a>  <span class="p">};</span>
+<a id="__codelineno-5-51" name="__codelineno-5-51" href="#__codelineno-5-51"></a><span class="p">}</span>
+</code></pre></div>
+<ol>
+<li>Load <code>pyproject.toml</code> from our source directory, which is the filtered
+source defined in <code>mkDerivation.src</code> below.</li>
+<li>Import the dream2nix <a href="../../reference/pip/">pip module</a> into our module</li>
+<li>Define external, non-python dependencies. We use whatever the latest <code>python3</code> in nixpkgs is as our python.</li>
+<li>Get our projects <code>name</code> and <code>version</code> straight from <code>pyproject.toml</code>. You could of course also hard-code them here if e.g. your project still uses <code>setup.py</code>.</li>
+<li>Define the source for our project. Here we take the current directory, but filter out <code>*.nix</code> files, hidden files and <code>flake.lock</code> before copying to <code>/nix/store</code> in order to avoid unecessary rebuilds.</li>
+<li>Tell the dream2nix <a href="../../reference/buildPythonPackage/">buildPythonPackage module</a>, imported by the pip module to use pyproject-specific hooks here.
+Don't set it if your project doesn't include a <code>pyproject.toml</code> or your are using a wheel.</li>
+<li>Tell the <a href="../../reference/buildPythonPackage/">buildPythonPackage module</a> to verify that it can import the given python module from our package after a build.</li>
+<li>Declare a list of requirements for <code>pip</code> to lock by concatenating
+both the build-systems and normal dependencies in <code>pyproject.toml</code>.</li>
+<li>By default, the <a href="../../reference/pip/">pip module</a> assumes that it finds the top-level package inside the lock file. This isn't the case
+here as the top-level package comes from the local repository. So we
+instruct the module to just install all requirements into a flat environment.</li>
+<li>Declare overrides for package attributes that can't be detected heuristically by dream2nix yet. Here: use pyproject-hooks for click and
+add <code>poetry-core</code> to its build-time dependencies.</li>
+</ol>
+<h3 id="build-it_1">Build it<a class="headerlink" href="#build-it_1" title="Permanent link">&para;</a></h3>
+<p>Just as in the same example, we need to lock our python dependencies and add the lock file before we build our package:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="gp">$ </span>git<span class="w"> </span>init
+<a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a><span class="gp">$ </span>git<span class="w"> </span>add<span class="w"> </span>flake.nix<span class="w"> </span>default.nix
+<a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a><span class="gp">$ </span>nix<span class="w"> </span>run<span class="w"> </span>.#default.lock
+<a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a><span class="go">[...]</span>
+<a id="__codelineno-6-5" name="__codelineno-6-5" href="#__codelineno-6-5"></a><span class="go">lock file written to [...]/lock.x86_64-linux.json</span>
+<a id="__codelineno-6-6" name="__codelineno-6-6" href="#__codelineno-6-6"></a><span class="go">Add this file to git if flakes is used.</span>
+<a id="__codelineno-6-7" name="__codelineno-6-7" href="#__codelineno-6-7"></a><span class="gp">$ </span>git<span class="w"> </span>add<span class="w"> </span>lock.json
+<a id="__codelineno-6-8" name="__codelineno-6-8" href="#__codelineno-6-8"></a><span class="gp">$ </span>nix<span class="w"> </span>build<span class="w"> </span>.#
+<a id="__codelineno-6-9" name="__codelineno-6-9" href="#__codelineno-6-9"></a><span class="gp">$ </span>./result/bin/my_tool
+<a id="__codelineno-6-10" name="__codelineno-6-10" href="#__codelineno-6-10"></a><span class="go">Hello world!</span>
+</code></pre></div>
+<h1 id="development-shells">Development Shells<a class="headerlink" href="#development-shells" title="Permanent link">&para;</a></h1>
+<p>Now that we got <code>my_tool</code> built, let's try out a <em>devShell</em> for it. A shell environment, containing an <a href="#editable-installs">editable install</a> of our
+package , all its dependencies and scripts as well as other tools that are useful during development, but shouldn't end up in shipped packages.</p>
+<div class="admonition notice">
+<p class="admonition-title">Notice</p>
+<p>If you use a <em>flat layout</em>, i.e. your python module is in the top-level of your repo you
+might discover that you can just import it if you start a python process there.
+This works because python searches the current directory for modules, but it will miss its
+dependencies and scripts declared in <code>pyproject.toml</code> won't be on the path.</p>
+</div>
+<p>To get started, add the following definition to your <code>flake.nix</code> (it's the same as in the <a href="https://github.com/nix-community/dream2nix/blob/main/examples/packages/languages/python-local-development/flake.nix">example</a>, so we omit some sections marked with <code>[...]</code>). Click on the pluses to expand annotations in the code below:</p>
+<div class="highlight"><span class="filename">flake.nix</span><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="p">{</span>
+<a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a>  <span class="c1"># [...]</span>
+<a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a>  <span class="ss">outputs</span> <span class="o">=</span> <span class="p">{</span>
+<a id="__codelineno-7-4" name="__codelineno-7-4" href="#__codelineno-7-4"></a>    self<span class="p">,</span>
+<a id="__codelineno-7-5" name="__codelineno-7-5" href="#__codelineno-7-5"></a>    dream2nix<span class="p">,</span>
+<a id="__codelineno-7-6" name="__codelineno-7-6" href="#__codelineno-7-6"></a>    nixpkgs<span class="p">,</span>
+<a id="__codelineno-7-7" name="__codelineno-7-7" href="#__codelineno-7-7"></a>  <span class="p">}:</span> <span class="p">{</span>
+<a id="__codelineno-7-8" name="__codelineno-7-8" href="#__codelineno-7-8"></a>  <span class="c1"># [...]</span>
+<a id="__codelineno-7-9" name="__codelineno-7-9" href="#__codelineno-7-9"></a>  <span class="ss">devShells</span> <span class="o">=</span> eachSystem <span class="p">(</span>system<span class="p">:</span>
+<a id="__codelineno-7-10" name="__codelineno-7-10" href="#__codelineno-7-10"></a>    <span class="k">let</span>
+<a id="__codelineno-7-11" name="__codelineno-7-11" href="#__codelineno-7-11"></a>      <span class="ss">pkgs</span> <span class="o">=</span> nixpkgs<span class="o">.</span>legacyPackages<span class="o">.</span><span class="si">${</span>system<span class="si">}</span><span class="p">;</span> <span class="c1"># (1)</span>
+<a id="__codelineno-7-12" name="__codelineno-7-12" href="#__codelineno-7-12"></a>      <span class="ss">my_tool</span> <span class="o">=</span> self<span class="o">.</span>packages<span class="o">.</span><span class="si">${</span>system<span class="si">}</span><span class="o">.</span>default<span class="p">;</span> <span class="c1"># (2)</span>
+<a id="__codelineno-7-13" name="__codelineno-7-13" href="#__codelineno-7-13"></a>      <span class="ss">python</span> <span class="o">=</span> my_tool<span class="o">.</span>config<span class="o">.</span>deps<span class="o">.</span>python<span class="p">;</span> <span class="c1"># (3)</span>
+<a id="__codelineno-7-14" name="__codelineno-7-14" href="#__codelineno-7-14"></a>    <span class="k">in</span> <span class="p">{</span>
+<a id="__codelineno-7-15" name="__codelineno-7-15" href="#__codelineno-7-15"></a>      <span class="ss">default</span> <span class="o">=</span> pkgs<span class="o">.</span>mkShell <span class="p">{</span> <span class="c1"># (4)</span>
+<a id="__codelineno-7-16" name="__codelineno-7-16" href="#__codelineno-7-16"></a>        <span class="ss">inputsFrom</span> <span class="o">=</span> <span class="p">[</span>my_tool<span class="o">.</span>devShell<span class="p">];</span> <span class="c1"># (5)</span>
+<a id="__codelineno-7-17" name="__codelineno-7-17" href="#__codelineno-7-17"></a>        <span class="ss">packages</span> <span class="o">=</span> <span class="p">[</span>
+<a id="__codelineno-7-18" name="__codelineno-7-18" href="#__codelineno-7-18"></a>          python<span class="o">.</span>pkgs<span class="o">.</span>python-lsp-server <span class="c1"># (6)</span>
+<a id="__codelineno-7-19" name="__codelineno-7-19" href="#__codelineno-7-19"></a>          python<span class="o">.</span>pkgs<span class="o">.</span>python-lsp-ruff
+<a id="__codelineno-7-20" name="__codelineno-7-20" href="#__codelineno-7-20"></a>          python<span class="o">.</span>pkgs<span class="o">.</span>pylsp-mypy
+<a id="__codelineno-7-21" name="__codelineno-7-21" href="#__codelineno-7-21"></a>          python<span class="o">.</span>pkgs<span class="o">.</span>ipython
+<a id="__codelineno-7-22" name="__codelineno-7-22" href="#__codelineno-7-22"></a>
+<a id="__codelineno-7-23" name="__codelineno-7-23" href="#__codelineno-7-23"></a>          pkgs<span class="o">.</span>ruff <span class="c1"># (7)</span>
+<a id="__codelineno-7-24" name="__codelineno-7-24" href="#__codelineno-7-24"></a>          pkgs<span class="o">.</span>black
+<a id="__codelineno-7-25" name="__codelineno-7-25" href="#__codelineno-7-25"></a>        <span class="p">];</span>
+<a id="__codelineno-7-26" name="__codelineno-7-26" href="#__codelineno-7-26"></a>      <span class="p">};</span>
+<a id="__codelineno-7-27" name="__codelineno-7-27" href="#__codelineno-7-27"></a>    <span class="p">});</span>
+<a id="__codelineno-7-28" name="__codelineno-7-28" href="#__codelineno-7-28"></a>  <span class="p">};</span>
+<a id="__codelineno-7-29" name="__codelineno-7-29" href="#__codelineno-7-29"></a><span class="p">}</span>
+</code></pre></div>
+<ol>
+<li>Get an instance of <code>nixpkgs</code> to use for <code>mkShell</code>, <code>ruff</code>, etc below.</li>
+<li>Get our default package, <code>my_tool</code> from this flakes outputs...</li>
+<li>...and a reference to the python interpreter it uses. </li>
+<li>Call <code>pkgs.mkShell</code> in order to be able to add custom <code>packages</code> or a <code>shellHook</code> to it. You could just use <code>my_tool.devShell</code> here if you are happy with the defaults.</li>
+<li>Get inputs from <code>mytool.devShell</code>, this includes your package &amp; its dependencies and a <code>shellHook</code> to set up editable installs.</li>
+<li>Use <code>python.pkgs</code> to get additional python tools into the shell while ensuring that the correct python interpreter is used.</li>
+<li>Use <code>pkgs</code> to get tools which aren't implemented in python, such as <code>ruff</code> and <code>black</code>.</li>
+</ol>
+<p>With that done, let's start a development shell, an ipython interpreter in it, import <code>my_tool</code> and <code>requests</code>, its dependency and
+see where they are imported from:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="gp">$ </span>nix<span class="w"> </span>develop
+<a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a><span class="go">Some python dependencies of my-tool are installed in editable mode</span>
+<a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a><span class="go">To disable editable mode for a package, remove the corresponding entry from the &#39;editables&#39; field in the dream2nix configuration file.</span>
+<a id="__codelineno-8-4" name="__codelineno-8-4" href="#__codelineno-8-4"></a><span class="gp">$ </span>ipython
+<a id="__codelineno-8-5" name="__codelineno-8-5" href="#__codelineno-8-5"></a><span class="go">[...]</span>
+<a id="__codelineno-8-6" name="__codelineno-8-6" href="#__codelineno-8-6"></a><span class="go">In [1]: import my_tool</span>
+<a id="__codelineno-8-7" name="__codelineno-8-7" href="#__codelineno-8-7"></a><span class="go">In [2]: my_tool.__file__</span>
+<a id="__codelineno-8-8" name="__codelineno-8-8" href="#__codelineno-8-8"></a><span class="go">Out[2]: &#39;[path_to_your_repo]/src/my_tool/__init__.py&#39;</span>
+<a id="__codelineno-8-9" name="__codelineno-8-9" href="#__codelineno-8-9"></a><span class="go">In [3]: import requests</span>
+<a id="__codelineno-8-10" name="__codelineno-8-10" href="#__codelineno-8-10"></a><span class="go">In [4]: requests.__file__</span>
+<a id="__codelineno-8-11" name="__codelineno-8-11" href="#__codelineno-8-11"></a><span class="go">Out[4]: &#39;/nix/store/[nix hash]-python3-3.11.9-env/lib/python3.11/site-packages/requests/__init__.py&#39;</span>
+</code></pre></div>
+<ul>
+<li><code>my_tool</code> is imported from your repository, as it's an editable install, akin to <code>pip install -e .</code></li>
+<li><code>requests</code> is loaded from a python environment, generated by our expression above. Changes to it will only be visible after the shell is restarted.</li>
+</ul>
+<p>All the other tools declared in our <code>devShell</code> above, i.e. <code>ruff</code> and <code>black</code> should be in <code>PATH</code> and/or <code>PYTHONPATH</code> as well.</p>
 
 
 
 
 
 
+
+  
+  
 
 
 

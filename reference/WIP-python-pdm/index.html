@@ -288,6 +288,27 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../guides/pip/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Python & pip
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -19597,6 +19618,12 @@ Nothing will stop users from adding <code>nixpkgs</code> itself as a dependency,
     </tr></table>
 
 <h4 id="pdmeditables">pdm.editables<a class="headerlink" href="#pdmeditables" title="Permanent link">&para;</a></h4>
+<p>An attribute set mapping package names to absolute paths of source directories
+which should be installed in editable mode in <a href="#pipeditablesshellhook">editablesShellHook</a>.
+i.e.</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>  pip.editables.charset-normalizer = &quot;/home/user/src/charset-normalizer&quot;.
+</code></pre></div>
+<p>The top-level package is added automatically.</p>
 <table>
     <tr>
         <td>type</td>
@@ -19619,6 +19646,7 @@ Nothing will stop users from adding <code>nixpkgs</code> itself as a dependency,
     </tr></table>
 
 <h4 id="pdmeditablesshellhook">pdm.editablesShellHook<a class="headerlink" href="#pdmeditablesshellhook" title="Permanent link">&para;</a></h4>
+<p>A shellHook to be included into your devShells to install <a href="#pipeditables">editables</a></p>
 <table>
     <tr>
         <td>type</td>
