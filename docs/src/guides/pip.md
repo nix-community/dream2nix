@@ -6,7 +6,7 @@ title: Build a python project with pip
 
     We recommend reading our [Getting Started](./getting-started.md) guide first if you have not done so yet!
 
-this guide we are going to take a look at two annotated examples using the [pip module](../reference/pip/index.md):
+In this guide we are going to take a look at two annotated examples using the [pip module](../reference/pip/index.md):
 
 - The first one builds [Pillow](https://python-pillow.org/) from upstream sources fetched from PyPi.
 - The second one builds a fictional python project living in the same repository as the nix sources
