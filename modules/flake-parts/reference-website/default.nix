@@ -108,8 +108,10 @@
         cp -rL --no-preserve=mode  ${dream2nixRoot}/docs/* .
         ln -sfT ${optionsReference} ./src/reference
         mkdocs build
+        echo -n "dream2nix.dev" > $out/CNAME
       '';
   in {
+    packages.website = website;
     packages.mkdocs-awesome-pages-plugin = pkgs.callPackage ./mkdocs-awesome-pages-plugin.nix {
       inherit
         (pkgs.python3.pkgs)
@@ -126,7 +128,6 @@
         ;
     };
     packages.optionsReference = optionsReference;
-    packages.website = website;
     devShells.website = let
       pythonWithDeps = pkgs.python3.withPackages (
         ps: [
