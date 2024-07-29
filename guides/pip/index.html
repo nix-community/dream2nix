@@ -2080,7 +2080,7 @@
 <p class="admonition-title">Info</p>
 <p>We recommend reading our <a href="../getting-started/">Getting Started</a> guide first if you have not done so yet!</p>
 </div>
-<p>this guide we are going to take a look at two annotated examples using the <a href="../../reference/pip/">pip module</a>:</p>
+<p>In this guide we are going to take a look at two annotated examples using the <a href="../../reference/pip/">pip module</a>:</p>
 <ul>
 <li>The first one builds <a href="https://python-pillow.org/">Pillow</a> from upstream sources fetched from PyPi.</li>
 <li>The second one builds a fictional python project living in the same repository as the nix sources
@@ -2355,16 +2355,18 @@ dependencies and scripts declared in <code>pyproject.toml</code> won't be on the
 <p>With that done, let's start a development shell, an ipython interpreter in it, import <code>my_tool</code> and <code>requests</code>, its dependency and
 see where they are imported from:</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="gp">$ </span>nix<span class="w"> </span>develop
-<a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a><span class="go">Some python dependencies of my-tool are installed in editable mode</span>
-<a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a><span class="go">To disable editable mode for a package, remove the corresponding entry from the &#39;editables&#39; field in the dream2nix configuration file.</span>
-<a id="__codelineno-8-4" name="__codelineno-8-4" href="#__codelineno-8-4"></a><span class="gp">$ </span>ipython
-<a id="__codelineno-8-5" name="__codelineno-8-5" href="#__codelineno-8-5"></a><span class="go">[...]</span>
-<a id="__codelineno-8-6" name="__codelineno-8-6" href="#__codelineno-8-6"></a><span class="go">In [1]: import my_tool</span>
-<a id="__codelineno-8-7" name="__codelineno-8-7" href="#__codelineno-8-7"></a><span class="go">In [2]: my_tool.__file__</span>
-<a id="__codelineno-8-8" name="__codelineno-8-8" href="#__codelineno-8-8"></a><span class="go">Out[2]: &#39;[path_to_your_repo]/src/my_tool/__init__.py&#39;</span>
-<a id="__codelineno-8-9" name="__codelineno-8-9" href="#__codelineno-8-9"></a><span class="go">In [3]: import requests</span>
-<a id="__codelineno-8-10" name="__codelineno-8-10" href="#__codelineno-8-10"></a><span class="go">In [4]: requests.__file__</span>
-<a id="__codelineno-8-11" name="__codelineno-8-11" href="#__codelineno-8-11"></a><span class="go">Out[4]: &#39;/nix/store/[nix hash]-python3-3.11.9-env/lib/python3.11/site-packages/requests/__init__.py&#39;</span>
+<a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a><span class="go">evaluating derivation &#39;git+file://[path_to_your_repo]#devShells.x86_64-linux.default&#39;</span>
+<a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a><span class="go">Some python dependencies of /Users/phaer/src/dream2nix/examples/packages/languages/python-local-development are installed in editable mode</span>
+<a id="__codelineno-8-4" name="__codelineno-8-4" href="#__codelineno-8-4"></a><span class="go">  my-tool</span>
+<a id="__codelineno-8-5" name="__codelineno-8-5" href="#__codelineno-8-5"></a><span class="go">    installed at: .</span>
+<a id="__codelineno-8-6" name="__codelineno-8-6" href="#__codelineno-8-6"></a><span class="gp">$ </span>ipython
+<a id="__codelineno-8-7" name="__codelineno-8-7" href="#__codelineno-8-7"></a><span class="go">[...]</span>
+<a id="__codelineno-8-8" name="__codelineno-8-8" href="#__codelineno-8-8"></a><span class="go">In [1]: import my_tool</span>
+<a id="__codelineno-8-9" name="__codelineno-8-9" href="#__codelineno-8-9"></a><span class="go">In [2]: my_tool.__file__</span>
+<a id="__codelineno-8-10" name="__codelineno-8-10" href="#__codelineno-8-10"></a><span class="go">Out[2]: &#39;[path_to_your_repo]/src/my_tool/__init__.py&#39;</span>
+<a id="__codelineno-8-11" name="__codelineno-8-11" href="#__codelineno-8-11"></a><span class="go">In [3]: import requests</span>
+<a id="__codelineno-8-12" name="__codelineno-8-12" href="#__codelineno-8-12"></a><span class="go">In [4]: requests.__file__</span>
+<a id="__codelineno-8-13" name="__codelineno-8-13" href="#__codelineno-8-13"></a><span class="go">Out[4]: &#39;/nix/store/[nix hash]-python3-3.11.9-env/lib/python3.11/site-packages/requests/__init__.py&#39;</span>
 </code></pre></div>
 <ul>
 <li><code>my_tool</code> is imported from your repository, as it's an editable install, akin to <code>pip install -e .</code></li>
