@@ -4,33 +4,30 @@
   nodejsLockUtils ? import ../../../lib/internal/nodejsLockUtils.nix {inherit lib;},
 }: {
   # test the path strip function
-  test_nodejsLockUtils_stripPath_simple = let
-    nextPath = nodejsLockUtils.stripPath "node_modules/@org/lib/node_modules/bar";
-  in {
-    expr = nextPath;
+  test_nodejsLockUtils_parentPath_simple = {
+    expr = nodejsLockUtils.parentPath "node_modules/@org/lib/node_modules/bar";
     expected = "node_modules/@org/lib";
   };
 
-  test_nodejsLockUtils_stripPath_root = let
-    nextPath = nodejsLockUtils.stripPath "node_modules/bar";
-  in {
-    expr = nextPath;
+  test_nodejsLockUtils_parentPath_root = {
+    expr = nodejsLockUtils.parentPath "node_modules/bar";
     # The root
     expected = "";
   };
 
-  test_nodejsLockUtils_stripPath_empty = let
-    nextPath = nodejsLockUtils.stripPath "";
-  in {
-    expr = nextPath;
+  test_nodejsLockUtils_parentPath_empty = {
+    expr = nodejsLockUtils.parentPath "";
     expected = "";
   };
 
-  test_nodejsLockUtils_stripPath_complex = let
-    nextPath = nodejsLockUtils.stripPath "node_modules/@org/lib/node_modules/bar/node_modules/foo";
-  in {
-    expr = nextPath;
+  test_nodejsLockUtils_parentPath_complex = {
+    expr = nodejsLockUtils.parentPath "node_modules/@org/lib/node_modules/bar/node_modules/foo";
     expected = "node_modules/@org/lib/node_modules/bar";
+  };
+
+  test_nodejsLockUtils_parentPath_local_package = {
+    expr = nodejsLockUtils.parentPath "packages/foo";
+    expected = "";
   };
 
   # test the resolve function

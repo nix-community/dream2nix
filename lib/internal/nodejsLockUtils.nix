@@ -1,11 +1,15 @@
 {lib, ...}: let
   # path = node_modules/@org/lib/node_modules/bar
-  stripPath = path: let
-    split = lib.splitString "node_modules/" path; # = [ "@org/lib" "bar" ]
-    suffix = "node_modules/${lib.last split}"; # = "node_modules/bar"
-    nextPath = lib.removeSuffix suffix path; # = "node_modules/@org/lib/node_modules/bar";
+  parentPath = path: let
+    # noPackages = lib.removePrefix "packages/" path;
+    packages = lib.splitString "node_modules/" path; # = [ "@org/lib" "bar" ]
+    nextPath = lib.concatStringsSep "node_modules/" (lib.init packages);
   in
-    lib.removeSuffix "/" nextPath;
+    lib.removeSuffix "/" (
+      if path == nextPath
+      then ""
+      else nextPath
+    );
 
   findEntry =
     # = "attrs"
@@ -22,7 +26,8 @@
         searchPath
       else if currentPath == ""
       then throw "${search} not found in package-lock.json."
-      else findEntry packageLock (stripPath currentPath) search;
+      # if the package cannot be found as a sub-dependency, check the parent
+      else findEntry packageLock (parentPath currentPath) search;
 in {
-  inherit findEntry stripPath;
+  inherit findEntry parentPath;
 }
