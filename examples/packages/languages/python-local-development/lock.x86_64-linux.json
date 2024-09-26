@@ -3,32 +3,32 @@
     "sources": {
       "certifi": {
         "is_direct": false,
-        "sha256": "c198e21b1289c2ab85ee4e67bb4b4ef3ead0892059901a8d5b622f24a1101e90",
+        "sha256": "922820b53db7a7257ffbda3f597266d435245903d80737e34f8a45ff3e3230d8",
         "type": "url",
-        "url": "https://files.pythonhosted.org/packages/1c/d5/c84e1a17bf61d4df64ca866a1c9a913874b4e9bdc131ec689a0ad013fb36/certifi-2024.7.4-py3-none-any.whl",
-        "version": "2024.7.4"
+        "url": "https://files.pythonhosted.org/packages/12/90/3c9ff0512038035f59d279fddeb79f5f1eccd8859f06d6163c58798b9487/certifi-2024.8.30-py3-none-any.whl",
+        "version": "2024.8.30"
       },
       "charset-normalizer": {
         "is_direct": false,
-        "sha256": "753f10e867343b4511128c6ed8c82f7bec3bd026875576dfd88483c5c73b2fd8",
+        "sha256": "90d558489962fd4918143277a773316e56c72da56ec7aa3dc3dbbe20fdfed15b",
         "type": "url",
-        "url": "https://files.pythonhosted.org/packages/40/26/f35951c45070edc957ba40a5b1db3cf60a9dbb1b350c2d5bef03e01e61de/charset_normalizer-3.3.2-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl",
+        "url": "https://files.pythonhosted.org/packages/ee/fb/14d30eb4956408ee3ae09ad34299131fb383c47df355ddb428a7331cfa1e/charset_normalizer-3.3.2-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl",
         "version": "3.3.2"
       },
       "click": {
         "is_direct": true,
-        "rev": "14f735cf59618941cf2930e633eb77651b1dc7cb",
-        "sha256": "1mriyhx9gcms5bsbdlg8akjpsj3v7p0g38spabx2vm6g9h1yg4zc",
+        "rev": "4a758f5c38636ecd9d030356d85bcca3d8fbd0ca",
+        "sha256": "1w380r5r2fhih4wljx2yvipfnri83qj6yzr8zsn1r8l790bjg7yr",
         "type": "git",
         "url": "https://github.com/pallets/click.git",
         "version": "8.2.0.dev0"
       },
       "idna": {
         "is_direct": false,
-        "sha256": "82fee1fc78add43492d3a1898bfa6d8a904cc97d8427f683ed8e798d07761aa0",
+        "sha256": "946d195a0d259cbba61165e88e65941f16e9b36ea6ddb97f00452bae8b1287d3",
         "type": "url",
-        "url": "https://files.pythonhosted.org/packages/e5/3e/741d8c82801c347547f8a2a06aa57dbb1992be9e948df2ea0eda2c8b79e8/idna-3.7-py3-none-any.whl",
-        "version": "3.7"
+        "url": "https://files.pythonhosted.org/packages/76/c6/c88e154df9c4e1a2a66ccf0005a88dfb2650c1dffb6f5ce603dfbd452ce3/idna-3.10-py3-none-any.whl",
+        "version": "3.10"
       },
       "requests": {
         "is_direct": false,
@@ -39,17 +39,17 @@
       },
       "setuptools": {
         "is_direct": false,
-        "sha256": "33874fdc59b3188304b2e7c80d9029097ea31627180896fb549c578ceb8a0855",
+        "sha256": "35ab7fd3bcd95e6b7fd704e4a1539513edad446c097797f2985e0e4b960772f2",
         "type": "url",
-        "url": "https://files.pythonhosted.org/packages/51/a0/ee460cc54e68afcf33190d198299c9579a5eafeadef0016ae8563237ccb6/setuptools-71.1.0-py3-none-any.whl",
-        "version": "71.1.0"
+        "url": "https://files.pythonhosted.org/packages/ff/ae/f19306b5a221f6a436d8f2238d5b80925004093fa3edea59835b514d9057/setuptools-75.1.0-py3-none-any.whl",
+        "version": "75.1.0"
       },
       "urllib3": {
         "is_direct": false,
-        "sha256": "a448b2f64d686155468037e1ace9f2d2199776e17f0a46610480d311f73e3472",
+        "sha256": "ca899ca043dcb1bafa3e262d73aa25c465bfb49e0bd9dd5d59f1d0acba2f8fac",
         "type": "url",
-        "url": "https://files.pythonhosted.org/packages/ca/1c/89ffc63a9605b583d5df2be791a27bc1a42b7c32bab68d3c8f2f73a98cd4/urllib3-2.2.2-py3-none-any.whl",
-        "version": "2.2.2"
+        "url": "https://files.pythonhosted.org/packages/ce/d9/5f4c13cecde62396b0d3fe530a50ccea91e7dfc1ccf0e09c228841bb5ba8/urllib3-2.2.3-py3-none-any.whl",
+        "version": "2.2.3"
       }
     },
     "targets": {
@@ -69,5 +69,5 @@
       }
     }
   },
-  "invalidationHash": "de6525f89f6f95ca1634a06d407b6bb06f949b9fbcdb47d041c5e8c6395677db"
+  "invalidationHash": "88f5a6d4932ee044507c17adfefc0341c1725d356432cfc2dd66601c5abd67f7"
 }
