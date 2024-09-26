@@ -3,241 +3,193 @@
     <url>
          <loc>https://dream2nix.dev/</loc>
          <lastmod>1980-01-01</lastmod>
-         <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://dream2nix.dev/docs/</loc>
          <lastmod>1980-01-01</lastmod>
-         <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://dream2nix.dev/modules/</loc>
          <lastmod>1980-01-01</lastmod>
-         <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://dream2nix.dev/overrides/</loc>
          <lastmod>1980-01-01</lastmod>
-         <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://dream2nix.dev/development-roundups/2022-april-june/</loc>
          <lastmod>1980-01-01</lastmod>
-         <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://dream2nix.dev/development-roundups/2022-april-problems-of-nixos-module-system/</loc>
          <lastmod>1980-01-01</lastmod>
-         <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://dream2nix.dev/development-roundups/2022-july-september/</loc>
          <lastmod>1980-01-01</lastmod>
-         <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://dream2nix.dev/guides/getting-started/</loc>
          <lastmod>1980-01-01</lastmod>
-         <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://dream2nix.dev/guides/pip/</loc>
          <lastmod>1980-01-01</lastmod>
-         <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://dream2nix.dev/reference/WIP-groups/</loc>
          <lastmod>1980-01-01</lastmod>
-         <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://dream2nix.dev/reference/WIP-haskell-cabal/</loc>
          <lastmod>1980-01-01</lastmod>
-         <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://dream2nix.dev/reference/WIP-nodejs-builder-v3/</loc>
          <lastmod>1980-01-01</lastmod>
-         <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://dream2nix.dev/reference/WIP-python-pdm/</loc>
          <lastmod>1980-01-01</lastmod>
-         <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://dream2nix.dev/reference/WIP-python-pyproject/</loc>
          <lastmod>1980-01-01</lastmod>
-         <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://dream2nix.dev/reference/WIP-spago/</loc>
          <lastmod>1980-01-01</lastmod>
-         <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://dream2nix.dev/reference/buildPythonPackage/</loc>
          <lastmod>1980-01-01</lastmod>
-         <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://dream2nix.dev/reference/buildRustPackage/</loc>
          <lastmod>1980-01-01</lastmod>
-         <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://dream2nix.dev/reference/builtins-derivation/</loc>
          <lastmod>1980-01-01</lastmod>
-         <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://dream2nix.dev/reference/mkDerivation/</loc>
          <lastmod>1980-01-01</lastmod>
-         <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://dream2nix.dev/reference/multi-derivation-package/</loc>
          <lastmod>1980-01-01</lastmod>
-         <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://dream2nix.dev/reference/nodejs-devshell/</loc>
          <lastmod>1980-01-01</lastmod>
-         <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://dream2nix.dev/reference/nodejs-devshell-v3/</loc>
          <lastmod>1980-01-01</lastmod>
-         <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://dream2nix.dev/reference/nodejs-granular/</loc>
          <lastmod>1980-01-01</lastmod>
-         <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://dream2nix.dev/reference/nodejs-granular-v3/</loc>
          <lastmod>1980-01-01</lastmod>
-         <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://dream2nix.dev/reference/nodejs-node-modules/</loc>
          <lastmod>1980-01-01</lastmod>
-         <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://dream2nix.dev/reference/nodejs-node-modules-v3/</loc>
          <lastmod>1980-01-01</lastmod>
-         <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://dream2nix.dev/reference/nodejs-package-json/</loc>
          <lastmod>1980-01-01</lastmod>
-         <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://dream2nix.dev/reference/nodejs-package-json-v3/</loc>
          <lastmod>1980-01-01</lastmod>
-         <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://dream2nix.dev/reference/nodejs-package-lock/</loc>
          <lastmod>1980-01-01</lastmod>
-         <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://dream2nix.dev/reference/nodejs-package-lock-v3/</loc>
          <lastmod>1980-01-01</lastmod>
-         <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://dream2nix.dev/reference/overrides/</loc>
          <lastmod>1980-01-01</lastmod>
-         <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://dream2nix.dev/reference/package-func/</loc>
          <lastmod>1980-01-01</lastmod>
-         <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://dream2nix.dev/reference/php-composer-lock/</loc>
          <lastmod>1980-01-01</lastmod>
-         <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://dream2nix.dev/reference/php-granular/</loc>
          <lastmod>1980-01-01</lastmod>
-         <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://dream2nix.dev/reference/pip/</loc>
          <lastmod>1980-01-01</lastmod>
-         <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://dream2nix.dev/reference/rust-cargo-lock/</loc>
          <lastmod>1980-01-01</lastmod>
-         <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://dream2nix.dev/reference/rust-crane/</loc>
          <lastmod>1980-01-01</lastmod>
-         <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://dream2nix.dev/v1-api/problems/</loc>
          <lastmod>1980-01-01</lastmod>
-         <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://dream2nix.dev/v1-api/summary/</loc>
          <lastmod>1980-01-01</lastmod>
-         <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://dream2nix.dev/v1-api/users/</loc>
          <lastmod>1980-01-01</lastmod>
-         <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://dream2nix.dev/v1-api/consuming/inspect-options/</loc>
          <lastmod>1980-01-01</lastmod>
-         <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://dream2nix.dev/v1-api/consuming/override/</loc>
          <lastmod>1980-01-01</lastmod>
-         <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://dream2nix.dev/v1-api/integrating/integrate-lang2nix-impure/</loc>
          <lastmod>1980-01-01</lastmod>
-         <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://dream2nix.dev/v1-api/integrating/integrate-lang2nix-pure/</loc>
          <lastmod>1980-01-01</lastmod>
-         <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://dream2nix.dev/v1-api/packaging/monorepo/</loc>
          <lastmod>1980-01-01</lastmod>
-         <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://dream2nix.dev/v1-api/packaging/nodejs-init-project/</loc>
          <lastmod>1980-01-01</lastmod>
-         <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://dream2nix.dev/v1-api/packaging/nodejs-multiple-repos/</loc>
          <lastmod>1980-01-01</lastmod>
-         <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://dream2nix.dev/v1-api/packaging/nodejs-workspaces/</loc>
          <lastmod>1980-01-01</lastmod>
-         <changefreq>daily</changefreq>
     </url>
 </urlset>
