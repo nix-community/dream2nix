@@ -6,13 +6,13 @@
   # stripping doesn't reduce the file size much, and it takes a long time
   mkDerivation.dontStrip = true;
 
-  # use the autoAddOpenGLRunpathHook to add /run/opengl-driver/lib to the RPATH
+  # use the autoAddDriverRunpath to add /run/opengl-driver/lib to the RPATH
   #   of all ELF files
   deps = {nixpkgs, ...}: {
-    inherit (nixpkgs.cudaPackages) autoAddOpenGLRunpathHook;
+    inherit (nixpkgs) autoAddDriverRunpath;
   };
   mkDerivation.nativeBuildInputs = [
-    config.deps.autoAddOpenGLRunpathHook
+    config.deps.autoAddDriverRunpath
   ];
 
   # this file is patched manually, so ignore it in autoPatchelf
