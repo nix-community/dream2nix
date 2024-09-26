@@ -101,7 +101,7 @@
         nativeBuildInputs = [
           pkgs.python3.pkgs.mkdocs
           pkgs.python3.pkgs.mkdocs-material
-          self.packages.${system}.mkdocs-awesome-pages-plugin
+          pkgs.python3.pkgs.mkdocs-awesome-pages-plugin
           optionsReference
         ];
       } ''
@@ -112,21 +112,6 @@
       '';
   in {
     packages.website = website;
-    packages.mkdocs-awesome-pages-plugin = pkgs.callPackage ./mkdocs-awesome-pages-plugin.nix {
-      inherit
-        (pkgs.python3.pkgs)
-        buildPythonPackage
-        mkdocs
-        wcmatch
-        natsort
-        beautifulsoup4
-        mock-open
-        importlib-metadata
-        poetry-core
-        pytestCheckHook
-        pythonOlder
-        ;
-    };
     packages.optionsReference = optionsReference;
     devShells.website = let
       pythonWithDeps = pkgs.python3.withPackages (
