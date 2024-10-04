@@ -143,5 +143,13 @@ in {
         cranePkgs = nixpkgs.pkgs;
         mkRustToolchain = pkgs: pkgs.cargo;
       })
+      (l.mapAttrs (_: l.mkOverride 999) {
+        inherit
+          (nixpkgs)
+          mkShell
+          libiconv
+          fetchFromGitHub
+          ;
+      })
     ];
 }
