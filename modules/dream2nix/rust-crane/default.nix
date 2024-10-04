@@ -146,5 +146,13 @@ in {
         };
         cranePkgs = nixpkgs.pkgs;
       })
+      (l.mapAttrs (_: l.mkOverride 999) {
+        inherit
+          (nixpkgs)
+          mkShell
+          libiconv
+          fetchFromGitHub
+          ;
+      })
     ];
 }
