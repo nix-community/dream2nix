@@ -6,92 +6,31 @@
 }: let
   l = lib // builtins;
 
-  dreamLock = config.rust-cargo-lock.dreamLock;
-
-  sourceRoot = config.mkDerivation.src;
-
-  fetchDreamLockSources =
-    import ../../../lib/internal/fetchDreamLockSources.nix
-    {inherit lib;};
-  getDreamLockSource = import ../../../lib/internal/getDreamLockSource.nix {inherit lib;};
   readDreamLock = import ../../../lib/internal/readDreamLock.nix {inherit lib;};
-  hashPath = import ../../../lib/internal/hashPath.nix {
-    inherit lib;
-    inherit (config.deps) runCommandLocal nix;
-  };
-  hashFile = import ../../../lib/internal/hashFile.nix {
-    inherit lib;
-    inherit (config.deps) runCommandLocal nix;
-  };
-
-  # fetchers
-  fetchers = {
-    git = import ../../../lib/internal/fetchers/git {
-      inherit hashPath;
-      inherit (config.deps) fetchgit;
-    };
-    http = import ../../../lib/internal/fetchers/http {
-      inherit hashFile lib;
-      inherit (config.deps.stdenv) mkDerivation;
-      inherit (config.deps) fetchurl;
-    };
-    crates-io = import ../../../lib/internal/fetchers/crates-io {
-      inherit hashFile;
-      inherit (config.deps) fetchurl runCommandLocal;
-    };
-  };
 
   dreamLockLoaded =
     readDreamLock {inherit (config.rust-cargo-lock) dreamLock;};
   dreamLockInterface = dreamLockLoaded.interface;
 
-  fetchedSources' = fetchDreamLockSources {
-    inherit (dreamLockInterface) defaultPackageName defaultPackageVersion;
-    inherit (dreamLockLoaded.lock) sources;
-    inherit fetchers;
-  };
-
-  fetchedSources =
-    fetchedSources'
-    // {
-      ${defaultPackageName}.${defaultPackageVersion} = sourceRoot;
-    };
-
-  # name: version: -> store-path
-  getSource = getDreamLockSource fetchedSources;
-
   inherit
     (dreamLockInterface)
-    # Attributes
-    
     subsystemAttrs # attrset
-    defaultPackageName
-    defaultPackageVersion
     ;
 
-  toTOML = import ../../../lib/internal/toTOML.nix {inherit lib;};
-
-  utils = import ./utils.nix {
-    inherit dreamLock getSource lib toTOML sourceRoot;
-    inherit
-      (dreamLockInterface)
-      getSourceSpec
-      getRoot
-      subsystemAttrs
-      packages
-      ;
-    inherit
-      (config.deps)
-      writeText
-      ;
-  };
+  meta = let
+    meta = subsystemAttrs.meta.${pname}.${version};
+  in
+    meta
+    // {
+      license = l.map (name: l.licenses.${name}) meta.license;
+    };
 
   pname = config.name;
   version = config.version;
 
-  src = utils.getRootSource pname version;
+  src = config.rust-cargo-vendor.getRootSource pname version;
   replacePaths =
-    utils.replaceRelativePathsWithAbsolute
+    config.rust-cargo-vendor.replaceRelativePathsWithAbsolute
     subsystemAttrs.relPathReplacements.${pname}.${version};
   writeGitVendorEntries = config.rust-cargo-vendor.writeGitVendorEntries "vendored-sources";
 
@@ -100,13 +39,13 @@
     inherit pname version;
     src = lib.mkForce src;
 
-    meta = utils.getMeta pname version;
+    inherit meta;
 
     cargoBuildFlags = cargoBuildFlags;
     cargoTestFlags = cargoBuildFlags;
 
     cargoVendorDir = "../nix-vendor";
-    dream2nixVendorDir = config.rust-cargo-vendor.vendoredDependencies;
+    dream2nixVendorDir = config.rust-cargo-vendor.vendoredSources;
 
     postUnpack = ''
       ${config.rust-cargo-vendor.copyVendorDir "$dream2nixVendorDir" "./nix-vendor"}
@@ -120,7 +59,7 @@
       fi
       ${writeGitVendorEntries}
       ${replacePaths}
-      ${utils.writeCargoLock}
+      ${config.rust-cargo-lock.writeCargoLock}
     '';
   };
 in {
@@ -134,24 +73,13 @@ in {
   package-func.args = buildArgs;
 
   public = {
-    meta = utils.getMeta pname version;
+    inherit meta;
   };
 
   deps = {nixpkgs, ...}: {
     inherit
       (nixpkgs)
-      cargo
-      fetchurl
-      jq
-      moreutils
-      python3Packages
-      runCommandLocal
       rustPlatform
-      writeText
-      ;
-    inherit
-      (nixpkgs.writers)
-      writePython3
       ;
   };
 }
