@@ -60,10 +60,11 @@
   getSource = getDreamLockSource fetchedSources;
 
   vendoring = import ./vendor.nix {
-    inherit dreamLock getSource lib;
+    inherit dreamLock getSource lib sourceRoot;
     inherit
       (dreamLockInterface)
       getSourceSpec
+      getRoot
       subsystemAttrs
       ;
     inherit
@@ -84,7 +85,13 @@ in {
 
   rust-cargo-vendor = {
     vendoredSources = vendoring.vendoredDependencies;
-    inherit (vendoring) copyVendorDir writeGitVendorEntries;
+    inherit
+      (vendoring)
+      copyVendorDir
+      getRootSource
+      writeGitVendorEntries
+      replaceRelativePathsWithAbsolute
+      ;
   };
 
   deps = {nixpkgs, ...}:
@@ -96,6 +103,9 @@ in {
           moreutils
           python3Packages
           runCommandLocal
+          fetchurl
+          fetchgit
+          nix
           ;
         inherit
           (nixpkgs.writers)

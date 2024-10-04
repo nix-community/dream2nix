@@ -1,7 +1,9 @@
 {
   lib,
+  getRoot,
   getSource,
   getSourceSpec,
+  sourceRoot,
   subsystemAttrs,
   dreamLock,
   moreutils,
@@ -144,5 +146,35 @@ in rec {
   copyVendorDir = from: to: ''
     echo "dream2nix: installing cargo vendor directory from ${from} to ${to}"
     cp -rs --no-preserve=mode,ownership ${from} ${to}
+  '';
+
+  # Gets the root source for a package
+  getRootSource = pname: version: let
+    root = getRoot pname version;
+  in
+    getSource root.pname root.version;
+
+  # Generates a script that replaces relative path dependency paths with absolute
+  # ones, if the path dependency isn't in the source dream2nix provides
+  replaceRelativePathsWithAbsolute = replacements: let
+    replace =
+      l.concatStringsSep
+      " \\\n"
+      (
+        l.mapAttrsToList
+        (
+          # TODO: this is not great, because it forces us to include the entire
+          # sourceRoot here, which could possibly cause more rebuilds than necessary
+          # when source is changed (although this mostly depends on how the project
+          # repository is structured). doing this properly is pretty complex, but
+          # it should still be done later.
+          from: relPath: ''--replace "\"${from}\"" "\"${sourceRoot}/${relPath}\""''
+        )
+        replacements
+      );
+  in ''
+    echo "dream2nix: replacing relative dependency paths with absolute paths in Cargo.toml"
+    substituteInPlace ./Cargo.toml \
+      ${replace}
   '';
 }
