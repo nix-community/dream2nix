@@ -77,21 +77,14 @@
       ;
   };
 
-  crane = import ./crane.nix {
-    inherit lib;
-    inherit
-      (config.deps)
-      stdenv
-      cargo
-      craneSource
-      jq
-      zstd
-      remarshal
-      makeSetupHook
-      writeText
-      runCommand
-      darwin
-      ;
+  crane = import config.deps.craneSource {
+    pkgs = config.deps.cranePkgs.appendOverlays [
+      (
+        final: prev: {
+          cargo = config.deps.cargo;
+        }
+      )
+    ];
   };
 
   vendoring = import ./vendor.nix {
@@ -191,14 +184,14 @@ in {
   rust-crane.depsDrv = {
     inherit version;
     name = pname + depsNameSuffix;
-    package-func.func = config.deps.crane.buildDepsOnly;
+    package-func.func = crane.buildDepsOnly;
     package-func.args = l.mkMerge [
       common
       depsArgs
     ];
   };
 
-  package-func.func = config.deps.crane.buildPackage;
+  package-func.func = crane.buildPackage;
   package-func.args = l.mkMerge [common buildArgs];
 
   public = {
@@ -216,38 +209,29 @@ in {
   deps = {nixpkgs, ...}:
     l.mkMerge [
       (l.mapAttrs (_: l.mkDefault) {
-        inherit crane;
         cargo = nixpkgs.cargo;
         craneSource = config.deps.fetchFromGitHub {
           owner = "ipetkov";
           repo = "crane";
-          rev = "v0.15.0";
-          sha256 = "sha256-xpW3VFUG7yE6UE6Wl0dhqencuENSkV7qpnpe9I8VbPw=";
+          rev = "v0.19.0";
+          sha256 = "sha256-/mumx8AQ5xFuCJqxCIOFCHTVlxHkMT21idpbgbm/TIE=";
         };
+        cranePkgs = nixpkgs.pkgs;
       })
       # maybe it would be better to put these under `options.rust-crane.deps` instead of this `deps`
       # since it conflicts with a lot of stuff?
       (l.mapAttrs (_: l.mkOverride 999) {
         inherit
           (nixpkgs)
-          stdenv
           fetchurl
           jq
-          zstd
-          remarshal
           moreutils
           python3Packages
-          makeSetupHook
           runCommandLocal
-          runCommand
           writeText
           fetchFromGitHub
           libiconv
           mkShell
-          ;
-        inherit
-          (nixpkgs.pkgsBuildBuild)
-          darwin
           ;
         inherit
           (nixpkgs.writers)
