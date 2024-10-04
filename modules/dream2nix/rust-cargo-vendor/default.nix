@@ -95,22 +95,20 @@ in {
   };
 
   deps = {nixpkgs, ...}:
-    l.mkMerge [
-      (l.mapAttrs (_: l.mkOverride 998) {
-        inherit
-          (nixpkgs)
-          jq
-          moreutils
-          python3Packages
-          runCommandLocal
-          fetchurl
-          fetchgit
-          nix
-          ;
-        inherit
-          (nixpkgs.writers)
-          writePython3
-          ;
-      })
-    ];
+    l.mapAttrs (_: l.mkOverride 998) {
+      inherit
+        (nixpkgs)
+        jq
+        moreutils
+        python3Packages
+        runCommandLocal
+        fetchurl
+        fetchgit
+        nix
+        ;
+      inherit
+        (nixpkgs.writers)
+        writePython3
+        ;
+    };
 }
