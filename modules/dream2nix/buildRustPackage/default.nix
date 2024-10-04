@@ -3,7 +3,7 @@
   lib,
   dream2nix,
   ...
-} @ topArgs: let
+}: let
   l = lib // builtins;
 
   dreamLock = config.rust-cargo-lock.dreamLock;
@@ -62,11 +62,9 @@
 
   inherit
     (dreamLockInterface)
-    getDependencies # name: version: -> [ {name=; version=; } ]
     # Attributes
     
     subsystemAttrs # attrset
-    packageVersions
     defaultPackageName
     defaultPackageVersion
     ;
@@ -88,24 +86,6 @@
       ;
   };
 
-  vendoring = import ./vendor.nix {
-    inherit dreamLock getSource lib;
-    inherit
-      (dreamLockInterface)
-      getSourceSpec
-      subsystemAttrs
-      ;
-    inherit
-      (config.deps)
-      cargo
-      jq
-      moreutils
-      python3Packages
-      runCommandLocal
-      writePython3
-      ;
-  };
-
   pname = config.name;
   version = config.version;
 
@@ -113,7 +93,7 @@
   replacePaths =
     utils.replaceRelativePathsWithAbsolute
     subsystemAttrs.relPathReplacements.${pname}.${version};
-  writeGitVendorEntries = vendoring.writeGitVendorEntries "vendored-sources";
+  writeGitVendorEntries = config.rust-cargo-vendor.writeGitVendorEntries "vendored-sources";
 
   cargoBuildFlags = "--package ${pname}";
   buildArgs = {
@@ -126,10 +106,10 @@
     cargoTestFlags = cargoBuildFlags;
 
     cargoVendorDir = "../nix-vendor";
-    dream2nixVendorDir = vendoring.vendoredDependencies;
+    dream2nixVendorDir = config.rust-cargo-vendor.vendoredDependencies;
 
     postUnpack = ''
-      ${vendoring.copyVendorDir "$dream2nixVendorDir" "./nix-vendor"}
+      ${config.rust-cargo-vendor.copyVendorDir "$dream2nixVendorDir" "./nix-vendor"}
       export CARGO_HOME=$(pwd)/.cargo_home
     '';
 

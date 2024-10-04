@@ -83,31 +83,13 @@
   crane = _crane.overrideToolchain config.deps.mkRustToolchain;
   rustToolchain = config.deps.mkRustToolchain config.deps.cranePkgs;
 
-  vendoring = import ./vendor.nix {
-    inherit dreamLock getSource lib;
-    inherit
-      (dreamLockInterface)
-      getSourceSpec
-      subsystemAttrs
-      ;
-    inherit
-      (config.deps)
-      jq
-      moreutils
-      python3Packages
-      runCommandLocal
-      writePython3
-      ;
-    cargo = rustToolchain;
-  };
-
   pname = config.name;
   version = config.version;
 
   replacePaths =
     utils.replaceRelativePathsWithAbsolute
     dreamLockInterface.subsystemAttrs.relPathReplacements.${pname}.${version};
-  writeGitVendorEntries = vendoring.writeGitVendorEntries "nix-sources";
+  writeGitVendorEntries = config.rust-cargo-vendor.writeGitVendorEntries "nix-sources";
 
   # common args we use for both buildDepsOnly and buildPackage
   common = {
@@ -140,7 +122,7 @@
   depsNameSuffix = "-deps";
   depsArgs = {
     preUnpack = ''
-      ${vendoring.copyVendorDir "$dream2nixVendorDir" common.cargoVendorDir}
+      ${config.rust-cargo-vendor.copyVendorDir "$dream2nixVendorDir" common.cargoVendorDir}
     '';
     # move the vendored dependencies folder to $out for main derivation to use
     postInstall = ''
@@ -153,13 +135,13 @@
     pnameSuffix = depsNameSuffix;
     # Make sure cargo only checks the package we want
     cargoCheckCommand = "cargo check \${cargoBuildFlags:-} --profile \${cargoBuildProfile} --package ${pname}";
-    dream2nixVendorDir = vendoring.vendoredDependencies;
+    dream2nixVendorDir = config.rust-cargo-vendor.vendoredSources;
   };
 
   buildArgs = {
     # link the vendor dir we used earlier to the correct place
     preUnpack = ''
-      ${vendoring.copyVendorDir "$cargoArtifacts/nix-vendor" common.cargoVendorDir}
+      ${config.rust-cargo-vendor.copyVendorDir "$cargoArtifacts/nix-vendor" common.cargoVendorDir}
     '';
     # write our cargo lock
     # note: we don't do this in buildDepsOnly since
