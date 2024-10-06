@@ -2,7 +2,6 @@
   lib,
   dream2nix,
   config,
-  packageSets,
   ...
 }: let
   l = lib // builtins;
