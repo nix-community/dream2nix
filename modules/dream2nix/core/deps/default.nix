@@ -22,8 +22,6 @@ in {
         So deps should be specific, but not overly specific. For instance, the caller shouldn't have to know the version of a dependency in order to override it. The name should suffice. (e.g. `nix = nixVersions.nix_2_12` instead of `inherit (nixVersions) nix_2_12`.
       '';
       type = t.submoduleWith {
-        # TODO: This could be made stricter by removing the freeformType
-        # Maybe add option `strictDeps = true/false` ? ;P
         modules = [{freeformType = t.lazyAttrsOf t.raw;}];
         specialArgs = packageSets;
       };
@@ -36,4 +34,11 @@ in {
       default = {};
     };
   };
+  config._module.args.pkgs =
+    config.deps
+    // lib.optionalAttrs (packageSets ? nixpkgs) (
+      builtins.mapAttrs
+      (name: pkg: config.deps.${name} or pkg)
+      packageSets.nixpkgs
+    );
 }

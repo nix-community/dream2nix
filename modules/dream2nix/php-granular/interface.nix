@@ -2,7 +2,6 @@
   config,
   dream2nix,
   lib,
-  packageSets,
   specialArgs,
   ...
 }: let

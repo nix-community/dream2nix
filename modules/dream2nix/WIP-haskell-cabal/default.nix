@@ -2,7 +2,6 @@
   lib,
   dream2nix,
   config,
-  packageSets,
   ...
 }: let
   cfg = config.haskell-cabal;

@@ -1,7 +1,6 @@
 {
   config,
   lib,
-  packageSets,
   ...
 }: let
   l = lib // builtins;

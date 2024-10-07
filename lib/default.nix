@@ -67,8 +67,8 @@
             ];
           specialArgs =
             specialArgs
+            // {inherit packageSets;}
             // {
-              inherit packageSets;
               dream2nix.modules.dream2nix = dream2nix.modules.dream2nix;
               dream2nix.overrides = dream2nix.overrides;
               dream2nix.lib.evalModules = evalModules;
