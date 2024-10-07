@@ -2268,15 +2268,6 @@
 </li>
           
             <li class="md-nav__item">
-    <a href="#mkderivationversion" class="md-nav__link">
-      <span class="md-ellipsis">
-        mkDerivation.<wbr>version
-      </span>
-    </a>
-    
-</li>
-          
-            <li class="md-nav__item">
     <a href="#name" class="md-nav__link">
       <span class="md-ellipsis">
         name
@@ -3897,15 +3888,6 @@
 </li>
           
             <li class="md-nav__item">
-    <a href="#pipoverrideallmkderivationversion" class="md-nav__link">
-      <span class="md-ellipsis">
-        pip.<wbr>overrideAll.<wbr>mkDerivation.<wbr>version
-      </span>
-    </a>
-    
-</li>
-          
-            <li class="md-nav__item">
     <a href="#pipoverrideallname" class="md-nav__link">
       <span class="md-ellipsis">
         pip.<wbr>overrideAll.<wbr>name
@@ -5400,15 +5382,6 @@
 </li>
           
             <li class="md-nav__item">
-    <a href="#pipoverridesnamemkderivationversion" class="md-nav__link">
-      <span class="md-ellipsis">
-        pip.<wbr>overrides.<wbr>&lt;name&gt;.<wbr>mkDerivation.<wbr>version
-      </span>
-    </a>
-    
-</li>
-          
-            <li class="md-nav__item">
     <a href="#pipoverridesnamename" class="md-nav__link">
       <span class="md-ellipsis">
         pip.<wbr>overrides.<wbr>&lt;name&gt;.<wbr>name
@@ -5676,6 +5649,27 @@
   
   
     <li class="md-nav__item">
+      <a href="../buildPythonPackage-mixin/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    buildPythonPackage
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../buildRustPackage/" class="md-nav__link">
         
   
@@ -5723,6 +5717,27 @@
   
   <span class="md-ellipsis">
     mkDerivation
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../mkDerivation-mixin/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    mkDerivation-mixin
   </span>
   
 
@@ -8216,15 +8231,6 @@
 </li>
           
             <li class="md-nav__item">
-    <a href="#mkderivationversion" class="md-nav__link">
-      <span class="md-ellipsis">
-        mkDerivation.<wbr>version
-      </span>
-    </a>
-    
-</li>
-          
-            <li class="md-nav__item">
     <a href="#name" class="md-nav__link">
       <span class="md-ellipsis">
         name
@@ -9845,15 +9851,6 @@
 </li>
           
             <li class="md-nav__item">
-    <a href="#pipoverrideallmkderivationversion" class="md-nav__link">
-      <span class="md-ellipsis">
-        pip.<wbr>overrideAll.<wbr>mkDerivation.<wbr>version
-      </span>
-    </a>
-    
-</li>
-          
-            <li class="md-nav__item">
     <a href="#pipoverrideallname" class="md-nav__link">
       <span class="md-ellipsis">
         pip.<wbr>overrideAll.<wbr>name
@@ -11348,15 +11345,6 @@
 </li>
           
             <li class="md-nav__item">
-    <a href="#pipoverridesnamemkderivationversion" class="md-nav__link">
-      <span class="md-ellipsis">
-        pip.<wbr>overrides.<wbr>&lt;name&gt;.<wbr>mkDerivation.<wbr>version
-      </span>
-    </a>
-    
-</li>
-          
-            <li class="md-nav__item">
     <a href="#pipoverridesnamename" class="md-nav__link">
       <span class="md-ellipsis">
         pip.<wbr>overrides.<wbr>&lt;name&gt;.<wbr>name
@@ -11658,7 +11646,9 @@ It's included here to prevent an infinite recursion.</p>
         <td><a href="https://github.com/nix-community/dream2nix/blob/master/modules/dream2nix/buildPythonPackage/interface.nix">dream2nix/modules/dream2nix/buildPythonPackage/interface.nix</a></td>
     </tr><tr>
         <td>default</td>
-        <td><div class="highlight"><pre><span></span><span class="no">null</span>
+        <td><div class="highlight"><pre><span></span><span class="s s-Multiline">&#39;&#39;</span>
+<span class="s s-Multiline">  &quot;setuptools&quot; if `pyproject` is `null`, otherwise `null`</span>
+<span class="s s-Multiline">&#39;&#39;</span>
 </pre></div>
 </td>
     </tr></table>
@@ -14300,22 +14290,6 @@ when the requirements change.</p>
 </td>
     </tr></table>
 
-<h4 id="mkderivationversion">mkDerivation.version<a class="headerlink" href="#mkderivationversion" title="Permanent link">&para;</a></h4>
-<table>
-    <tr>
-        <td>type</td>
-        <td>null or string </td>
-    </tr>
-    <tr>
-        <td>source</td>
-        <td><a href="https://github.com/nix-community/dream2nix/blob/master/modules/dream2nix/mkDerivation/interface.nix">dream2nix/modules/dream2nix/mkDerivation/interface.nix</a></td>
-    </tr><tr>
-        <td>default</td>
-        <td><div class="highlight"><pre><span></span><span class="no">null</span>
-</pre></div>
-</td>
-    </tr></table>
-
 <h4 id="name">name<a class="headerlink" href="#name" title="Permanent link">&para;</a></h4>
 <p>The name of the package</p>
 <table>
@@ -14848,7 +14822,9 @@ It's included here to prevent an infinite recursion.</p>
         <td><a href="https://github.com/nix-community/dream2nix/blob/master/modules/dream2nix/buildPythonPackage/interface.nix">dream2nix/modules/dream2nix/buildPythonPackage/interface.nix</a></td>
     </tr><tr>
         <td>default</td>
-        <td><div class="highlight"><pre><span></span><span class="s2">&quot;setuptools&quot;</span>
+        <td><div class="highlight"><pre><span></span><span class="s s-Multiline">&#39;&#39;</span>
+<span class="s s-Multiline">  &quot;setuptools&quot; if `pyproject` is `null`, otherwise `null`</span>
+<span class="s s-Multiline">&#39;&#39;</span>
 </pre></div>
 </td>
     </tr></table>
@@ -17332,22 +17308,6 @@ Nothing will stop users from adding <code>nixpkgs</code> itself as a dependency,
 </td>
     </tr></table>
 
-<h4 id="pipoverrideallmkderivationversion">pip.overrideAll.mkDerivation.version<a class="headerlink" href="#pipoverrideallmkderivationversion" title="Permanent link">&para;</a></h4>
-<table>
-    <tr>
-        <td>type</td>
-        <td>null or string </td>
-    </tr>
-    <tr>
-        <td>source</td>
-        <td><a href="https://github.com/nix-community/dream2nix/blob/master/modules/dream2nix/mkDerivation/interface.nix">dream2nix/modules/dream2nix/mkDerivation/interface.nix</a></td>
-    </tr><tr>
-        <td>default</td>
-        <td><div class="highlight"><pre><span></span><span class="no">null</span>
-</pre></div>
-</td>
-    </tr></table>
-
 <h4 id="pipoverrideallname">pip.overrideAll.name<a class="headerlink" href="#pipoverrideallname" title="Permanent link">&para;</a></h4>
 <p>The name of the package</p>
 <table>
@@ -17582,7 +17542,9 @@ It's included here to prevent an infinite recursion.</p>
         <td><a href="https://github.com/nix-community/dream2nix/blob/master/modules/dream2nix/buildPythonPackage/interface.nix">dream2nix/modules/dream2nix/buildPythonPackage/interface.nix</a></td>
     </tr><tr>
         <td>default</td>
-        <td><div class="highlight"><pre><span></span><span class="s2">&quot;setuptools&quot;</span>
+        <td><div class="highlight"><pre><span></span><span class="s s-Multiline">&#39;&#39;</span>
+<span class="s s-Multiline">  &quot;setuptools&quot; if `pyproject` is `null`, otherwise `null`</span>
+<span class="s s-Multiline">&#39;&#39;</span>
 </pre></div>
 </td>
     </tr></table>
@@ -20051,22 +20013,6 @@ Nothing will stop users from adding <code>nixpkgs</code> itself as a dependency,
     </tr></table>
 
 <h4 id="pipoverridesnamemkderivationunpackphase">pip.overrides.&lt;name&gt;.mkDerivation.unpackPhase<a class="headerlink" href="#pipoverridesnamemkderivationunpackphase" title="Permanent link">&para;</a></h4>
-<table>
-    <tr>
-        <td>type</td>
-        <td>null or string </td>
-    </tr>
-    <tr>
-        <td>source</td>
-        <td><a href="https://github.com/nix-community/dream2nix/blob/master/modules/dream2nix/mkDerivation/interface.nix">dream2nix/modules/dream2nix/mkDerivation/interface.nix</a></td>
-    </tr><tr>
-        <td>default</td>
-        <td><div class="highlight"><pre><span></span><span class="no">null</span>
-</pre></div>
-</td>
-    </tr></table>
-
-<h4 id="pipoverridesnamemkderivationversion">pip.overrides.&lt;name&gt;.mkDerivation.version<a class="headerlink" href="#pipoverridesnamemkderivationversion" title="Permanent link">&para;</a></h4>
 <table>
     <tr>
         <td>type</td>

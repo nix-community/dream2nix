@@ -65,6 +65,10 @@
          <lastmod>1980-01-01</lastmod>
     </url>
     <url>
+         <loc>https://dream2nix.dev/reference/buildPythonPackage-mixin/</loc>
+         <lastmod>1980-01-01</lastmod>
+    </url>
+    <url>
          <loc>https://dream2nix.dev/reference/buildRustPackage/</loc>
          <lastmod>1980-01-01</lastmod>
     </url>
@@ -74,6 +78,10 @@
     </url>
     <url>
          <loc>https://dream2nix.dev/reference/mkDerivation/</loc>
+         <lastmod>1980-01-01</lastmod>
+    </url>
+    <url>
+         <loc>https://dream2nix.dev/reference/mkDerivation-mixin/</loc>
          <lastmod>1980-01-01</lastmod>
     </url>
     <url>
