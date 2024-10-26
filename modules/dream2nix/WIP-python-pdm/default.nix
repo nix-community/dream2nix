@@ -78,6 +78,7 @@ in {
       jq
       mkShell
       pdm
+      uv
       runCommand
       stdenvNoCC
       stdenv

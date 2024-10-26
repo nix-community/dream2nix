@@ -6,6 +6,7 @@
 }: let
   pdmConfig = config.deps.writeText "pdm-config.toml" ''
     check_update = false
+    use_uv = true
     [python]
     use_venv = false
   '';
@@ -18,6 +19,7 @@
       config.deps.coreutils
       config.deps.pdm
       config.deps.yq
+      config.deps.uv
     ]}"
     export TMPDIR=$(${config.deps.coreutils}/bin/mktemp -d)
     trap "${config.deps.coreutils}/bin/chmod -R +w '$TMPDIR'; ${config.deps.coreutils}/bin/rm -rf '$TMPDIR'" EXIT
