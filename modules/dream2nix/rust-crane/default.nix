@@ -77,15 +77,13 @@
       ;
   };
 
-  crane = import config.deps.craneSource {
-    pkgs = config.deps.cranePkgs.appendOverlays [
-      (
-        final: prev: {
-          cargo = config.deps.cargo;
-        }
-      )
-    ];
+  _crane = import config.deps.craneSource {
+    pkgs = config.deps.cranePkgs;
   };
+  crane =
+    if config.deps.mkRustToolchain != null
+    then _crane.overrideToolchain config.deps.mkRustToolchain
+    else _crane;
 
   vendoring = import ./vendor.nix {
     inherit dreamLock getSource lib;
@@ -209,7 +207,6 @@ in {
   deps = {nixpkgs, ...}:
     l.mkMerge [
       (l.mapAttrs (_: l.mkDefault) {
-        cargo = nixpkgs.cargo;
         craneSource = config.deps.fetchFromGitHub {
           owner = "ipetkov";
           repo = "crane";
@@ -217,6 +214,7 @@ in {
           sha256 = "sha256-/mumx8AQ5xFuCJqxCIOFCHTVlxHkMT21idpbgbm/TIE=";
         };
         cranePkgs = nixpkgs.pkgs;
+        mkRustToolchain = null;
       })
       # maybe it would be better to put these under `options.rust-crane.deps` instead of this `deps`
       # since it conflicts with a lot of stuff?
