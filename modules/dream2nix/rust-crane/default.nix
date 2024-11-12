@@ -80,10 +80,8 @@
   _crane = import config.deps.craneSource {
     pkgs = config.deps.cranePkgs;
   };
-  crane =
-    if config.deps.mkRustToolchain != null
-    then _crane.overrideToolchain config.deps.mkRustToolchain
-    else _crane;
+  crane = _crane.overrideToolchain config.deps.mkRustToolchain;
+  rustToolchain = config.deps.mkRustToolchain config.deps.cranePkgs;
 
   vendoring = import ./vendor.nix {
     inherit dreamLock getSource lib;
@@ -94,13 +92,13 @@
       ;
     inherit
       (config.deps)
-      cargo
       jq
       moreutils
       python3Packages
       runCommandLocal
       writePython3
       ;
+    cargo = rustToolchain;
   };
 
   pname = config.name;
@@ -198,7 +196,8 @@ in {
       depsDrv = cfg.depsDrv.public;
       mainDrv = config.public;
       inherit lib;
-      inherit (config.deps) libiconv mkShell cargo;
+      inherit (config.deps) libiconv mkShell;
+      cargo = rustToolchain;
     };
     dependencies = cfg.depsDrv.public;
     meta = (utils.getMeta pname version) // config.mkDerivation.meta;
@@ -214,7 +213,7 @@ in {
           sha256 = "sha256-/mumx8AQ5xFuCJqxCIOFCHTVlxHkMT21idpbgbm/TIE=";
         };
         cranePkgs = nixpkgs.pkgs;
-        mkRustToolchain = null;
+        mkRustToolchain = pkgs: pkgs.cargo;
       })
       # maybe it would be better to put these under `options.rust-crane.deps` instead of this `deps`
       # since it conflicts with a lot of stuff?

@@ -8,23 +8,13 @@
   t = l.types;
 in {
   options.deps = {
-    cargo = l.mkOption {
-      type = t.package;
-      description = "The Cargo package to use";
-    };
     craneSource = l.mkOption {
       type = t.path;
       description = "Source to use for crane functions";
     };
-    crane = {
-      buildPackage = l.mkOption {
-        type = t.functionTo t.package;
-        description = "The function to use when building packages";
-      };
-      buildDepsOnly = l.mkOption {
-        type = t.functionTo t.package;
-        description = "The function to use when building dependencies of a package";
-      };
+    mkRustToolchain = l.mkOption {
+      type = t.functionTo t.package;
+      description = "Function to call that returns a rust toolchain using the provided nixpkgs instance";
     };
   };
 
