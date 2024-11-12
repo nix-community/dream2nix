@@ -10,72 +10,18 @@
 
   dreamLock = config.rust-cargo-lock.dreamLock;
 
-  sourceRoot = config.mkDerivation.src;
-
-  fetchDreamLockSources =
-    import ../../../lib/internal/fetchDreamLockSources.nix
-    {inherit lib;};
-  getDreamLockSource = import ../../../lib/internal/getDreamLockSource.nix {inherit lib;};
   readDreamLock = import ../../../lib/internal/readDreamLock.nix {inherit lib;};
-  hashPath = import ../../../lib/internal/hashPath.nix {
-    inherit lib;
-    inherit (config.deps) runCommandLocal nix;
-  };
-  hashFile = import ../../../lib/internal/hashFile.nix {
-    inherit lib;
-    inherit (config.deps) runCommandLocal nix;
-  };
-
-  # fetchers
-  fetchers = {
-    git = import ../../../lib/internal/fetchers/git {
-      inherit hashPath;
-      inherit (config.deps) fetchgit;
-    };
-    crates-io = import ../../../lib/internal/fetchers/crates-io {
-      inherit hashFile;
-      inherit (config.deps) fetchurl runCommandLocal;
-    };
-    path = import ../../../lib/internal/fetchers/path {
-      inherit hashPath;
-    };
-  };
 
   dreamLockLoaded = readDreamLock {inherit dreamLock;};
   dreamLockInterface = dreamLockLoaded.interface;
 
-  inherit (dreamLockInterface) defaultPackageName defaultPackageVersion;
-
-  fetchedSources' = fetchDreamLockSources {
-    inherit defaultPackageName defaultPackageVersion;
-    inherit (dreamLockLoaded.lock) sources;
-    inherit fetchers;
-  };
-
-  fetchedSources =
-    fetchedSources'
+  meta = let
+    meta = dreamLockInterface.subsystemAttrs.meta.${pname}.${version};
+  in
+    meta
     // {
-      ${defaultPackageName}.${defaultPackageVersion} = sourceRoot;
+      license = l.map (name: l.licenses.${name}) meta.license;
     };
-
-  getSource = getDreamLockSource fetchedSources;
-
-  toTOML = import ../../../lib/internal/toTOML.nix {inherit lib;};
-
-  utils = import ./utils.nix {
-    inherit dreamLock getSource lib toTOML sourceRoot;
-    inherit
-      (dreamLockInterface)
-      getSourceSpec
-      getRoot
-      subsystemAttrs
-      packages
-      ;
-    inherit
-      (config.deps)
-      writeText
-      ;
-  };
 
   _crane = import config.deps.craneSource {
     pkgs = config.deps.cranePkgs;
@@ -83,35 +29,17 @@
   crane = _crane.overrideToolchain config.deps.mkRustToolchain;
   rustToolchain = config.deps.mkRustToolchain config.deps.cranePkgs;
 
-  vendoring = import ./vendor.nix {
-    inherit dreamLock getSource lib;
-    inherit
-      (dreamLockInterface)
-      getSourceSpec
-      subsystemAttrs
-      ;
-    inherit
-      (config.deps)
-      jq
-      moreutils
-      python3Packages
-      runCommandLocal
-      writePython3
-      ;
-    cargo = rustToolchain;
-  };
-
   pname = config.name;
   version = config.version;
 
   replacePaths =
-    utils.replaceRelativePathsWithAbsolute
+    config.rust-cargo-vendor.replaceRelativePathsWithAbsolute
     dreamLockInterface.subsystemAttrs.relPathReplacements.${pname}.${version};
-  writeGitVendorEntries = vendoring.writeGitVendorEntries "nix-sources";
+  writeGitVendorEntries = config.rust-cargo-vendor.writeGitVendorEntries "nix-sources";
 
   # common args we use for both buildDepsOnly and buildPackage
   common = {
-    src = lib.mkForce (utils.getRootSource pname version);
+    src = lib.mkForce (config.rust-cargo-vendor.getRootSource pname version);
     postUnpack = ''
       export CARGO_HOME=$(pwd)/.cargo_home
       export cargoVendorDir="$TMPDIR/nix-vendor"
@@ -140,7 +68,7 @@
   depsNameSuffix = "-deps";
   depsArgs = {
     preUnpack = ''
-      ${vendoring.copyVendorDir "$dream2nixVendorDir" common.cargoVendorDir}
+      ${config.rust-cargo-vendor.copyVendorDir "$dream2nixVendorDir" common.cargoVendorDir}
     '';
     # move the vendored dependencies folder to $out for main derivation to use
     postInstall = ''
@@ -148,25 +76,25 @@
     '';
     # we pass cargoLock path to buildDepsOnly
     # so that crane's mkDummySrc adds it to the dummy source
-    inherit (utils) cargoLock;
+    inherit (config.rust-cargo-lock) cargoLock;
     pname = l.mkOverride 99 pname;
     pnameSuffix = depsNameSuffix;
     # Make sure cargo only checks the package we want
     cargoCheckCommand = "cargo check \${cargoBuildFlags:-} --profile \${cargoBuildProfile} --package ${pname}";
-    dream2nixVendorDir = vendoring.vendoredDependencies;
+    dream2nixVendorDir = config.rust-cargo-vendor.vendoredSources;
   };
 
   buildArgs = {
     # link the vendor dir we used earlier to the correct place
     preUnpack = ''
-      ${vendoring.copyVendorDir "$cargoArtifacts/nix-vendor" common.cargoVendorDir}
+      ${config.rust-cargo-vendor.copyVendorDir "$cargoArtifacts/nix-vendor" common.cargoVendorDir}
     '';
     # write our cargo lock
     # note: we don't do this in buildDepsOnly since
     # that uses a cargoLock argument instead
     preConfigure = l.mkForce ''
       ${common.preConfigure}
-      ${utils.writeCargoLock}
+      ${config.rust-cargo-lock.writeCargoLock}
     '';
     cargoArtifacts = cfg.depsDrv.public;
   };
@@ -200,11 +128,15 @@ in {
       cargo = rustToolchain;
     };
     dependencies = cfg.depsDrv.public;
-    meta = (utils.getMeta pname version) // config.mkDerivation.meta;
+    meta = meta // config.mkDerivation.meta;
   };
 
   deps = {nixpkgs, ...}:
     l.mkMerge [
+      {
+        # override cargo package to be the rust toolchain so that rust-cargo-vendor uses the custom provided toolchain if any
+        cargo = l.mkOverride 1001 rustToolchain;
+      }
       (l.mapAttrs (_: l.mkDefault) {
         craneSource = config.deps.fetchFromGitHub {
           owner = "ipetkov";
@@ -215,24 +147,12 @@ in {
         cranePkgs = nixpkgs.pkgs;
         mkRustToolchain = pkgs: pkgs.cargo;
       })
-      # maybe it would be better to put these under `options.rust-crane.deps` instead of this `deps`
-      # since it conflicts with a lot of stuff?
       (l.mapAttrs (_: l.mkOverride 999) {
         inherit
           (nixpkgs)
-          fetchurl
-          jq
-          moreutils
-          python3Packages
-          runCommandLocal
-          writeText
-          fetchFromGitHub
-          libiconv
           mkShell
-          ;
-        inherit
-          (nixpkgs.writers)
-          writePython3
+          libiconv
+          fetchFromGitHub
           ;
       })
     ];

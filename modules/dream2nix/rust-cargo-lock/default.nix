@@ -20,12 +20,38 @@
     projectRelPath = "";
     tree = prepareSourceTree {source = cfg.source;};
   };
+
+  cargoLock = import ./cargoLock.nix {
+    inherit lib;
+    inherit (cfg) dreamLock;
+    inherit (config.deps) writeText;
+  };
+
+  # Backup original Cargo.lock if it exists and write our own one
+  writeCargoLock = ''
+    echo "dream2nix: replacing Cargo.lock with ${cfg.cargoLock}"
+    mv -f Cargo.lock Cargo.lock.orig || echo "dream2nix: no Cargo.lock was found beforehand"
+    cat ${cfg.cargoLock} > Cargo.lock
+  '';
 in {
   imports = [
     ./interface.nix
-    dream2nix.modules.dream2nix.mkDerivation
+    dream2nix.modules.dream2nix.core
   ];
+
   rust-cargo-lock = {
-    inherit dreamLock;
+    inherit
+      cargoLock
+      dreamLock
+      writeCargoLock
+      ;
   };
+
+  deps = {nixpkgs, ...}:
+    l.mapAttrs (_: l.mkOverride 997) {
+      inherit
+        (nixpkgs)
+        writeText
+        ;
+    };
 }
