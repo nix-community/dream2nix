@@ -801,36 +801,18 @@
 </li>
           
             <li class="md-nav__item">
-    <a href="#depscargo" class="md-nav__link">
-      <span class="md-ellipsis">
-        deps.<wbr>cargo
-      </span>
-    </a>
-    
-</li>
-          
-            <li class="md-nav__item">
-    <a href="#depscranebuilddepsonly" class="md-nav__link">
-      <span class="md-ellipsis">
-        deps.<wbr>crane.<wbr>buildDepsOnly
-      </span>
-    </a>
-    
-</li>
-          
-            <li class="md-nav__item">
-    <a href="#depscranebuildpackage" class="md-nav__link">
-      <span class="md-ellipsis">
-        deps.<wbr>crane.<wbr>buildPackage
-      </span>
-    </a>
-    
-</li>
-          
-            <li class="md-nav__item">
     <a href="#depscranesource" class="md-nav__link">
       <span class="md-ellipsis">
         deps.<wbr>craneSource
+      </span>
+    </a>
+    
+</li>
+          
+            <li class="md-nav__item">
+    <a href="#depsmkrusttoolchain" class="md-nav__link">
+      <span class="md-ellipsis">
+        deps.<wbr>mkRustToolchain
       </span>
     </a>
     
@@ -4784,36 +4766,18 @@
 </li>
           
             <li class="md-nav__item">
-    <a href="#depscargo" class="md-nav__link">
-      <span class="md-ellipsis">
-        deps.<wbr>cargo
-      </span>
-    </a>
-    
-</li>
-          
-            <li class="md-nav__item">
-    <a href="#depscranebuilddepsonly" class="md-nav__link">
-      <span class="md-ellipsis">
-        deps.<wbr>crane.<wbr>buildDepsOnly
-      </span>
-    </a>
-    
-</li>
-          
-            <li class="md-nav__item">
-    <a href="#depscranebuildpackage" class="md-nav__link">
-      <span class="md-ellipsis">
-        deps.<wbr>crane.<wbr>buildPackage
-      </span>
-    </a>
-    
-</li>
-          
-            <li class="md-nav__item">
     <a href="#depscranesource" class="md-nav__link">
       <span class="md-ellipsis">
         deps.<wbr>craneSource
+      </span>
+    </a>
+    
+</li>
+          
+            <li class="md-nav__item">
+    <a href="#depsmkrusttoolchain" class="md-nav__link">
+      <span class="md-ellipsis">
+        deps.<wbr>mkRustToolchain
       </span>
     </a>
     
@@ -7679,48 +7643,24 @@ Nothing will stop users from adding <code>nixpkgs</code> itself as a dependency,
         </td>
     </tr></table>
 
-<h4 id="depscargo">deps.cargo<a class="headerlink" href="#depscargo" title="Permanent link">&para;</a></h4>
-<p>The Cargo package to use</p>
-<table>
-    <tr>
-        <td>type</td>
-        <td>package </td>
-    </tr>
-    <tr>
-        <td>source</td>
-        <td><a href="https://github.com/nix-community/dream2nix/blob/master/modules/dream2nix/rust-crane/interface.nix">dream2nix/modules/dream2nix/rust-crane/interface.nix</a></td>
-    </tr></table>
-
-<h4 id="depscranebuilddepsonly">deps.crane.buildDepsOnly<a class="headerlink" href="#depscranebuilddepsonly" title="Permanent link">&para;</a></h4>
-<p>The function to use when building dependencies of a package</p>
-<table>
-    <tr>
-        <td>type</td>
-        <td>function that evaluates to a(n) package </td>
-    </tr>
-    <tr>
-        <td>source</td>
-        <td><a href="https://github.com/nix-community/dream2nix/blob/master/modules/dream2nix/rust-crane/interface.nix">dream2nix/modules/dream2nix/rust-crane/interface.nix</a></td>
-    </tr></table>
-
-<h4 id="depscranebuildpackage">deps.crane.buildPackage<a class="headerlink" href="#depscranebuildpackage" title="Permanent link">&para;</a></h4>
-<p>The function to use when building packages</p>
-<table>
-    <tr>
-        <td>type</td>
-        <td>function that evaluates to a(n) package </td>
-    </tr>
-    <tr>
-        <td>source</td>
-        <td><a href="https://github.com/nix-community/dream2nix/blob/master/modules/dream2nix/rust-crane/interface.nix">dream2nix/modules/dream2nix/rust-crane/interface.nix</a></td>
-    </tr></table>
-
 <h4 id="depscranesource">deps.craneSource<a class="headerlink" href="#depscranesource" title="Permanent link">&para;</a></h4>
 <p>Source to use for crane functions</p>
 <table>
     <tr>
         <td>type</td>
         <td>path </td>
+    </tr>
+    <tr>
+        <td>source</td>
+        <td><a href="https://github.com/nix-community/dream2nix/blob/master/modules/dream2nix/rust-crane/interface.nix">dream2nix/modules/dream2nix/rust-crane/interface.nix</a></td>
+    </tr></table>
+
+<h4 id="depsmkrusttoolchain">deps.mkRustToolchain<a class="headerlink" href="#depsmkrusttoolchain" title="Permanent link">&para;</a></h4>
+<p>Function to call that returns a rust toolchain using the provided nixpkgs instance</p>
+<table>
+    <tr>
+        <td>type</td>
+        <td>function that evaluates to a(n) package </td>
     </tr>
     <tr>
         <td>source</td>
