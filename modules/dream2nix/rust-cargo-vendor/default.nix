@@ -98,6 +98,7 @@ in {
     l.mapAttrs (_: l.mkOverride 998) {
       inherit
         (nixpkgs)
+        cargo
         jq
         moreutils
         python3Packages

@@ -133,6 +133,10 @@ in {
 
   deps = {nixpkgs, ...}:
     l.mkMerge [
+      {
+        # override cargo package to be the rust toolchain so that rust-cargo-vendor uses the custom provided toolchain if any
+        cargo = l.mkOverride 1001 rustToolchain;
+      }
       (l.mapAttrs (_: l.mkDefault) {
         craneSource = config.deps.fetchFromGitHub {
           owner = "ipetkov";
