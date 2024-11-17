@@ -53,15 +53,19 @@
     cargoVendorDir = "$TMPDIR/nix-vendor";
     installCargoArtifactsMode = "use-zstd";
 
+    checkCargoCommand = cfg.checkCommand;
+    buildCargoCommand = cfg.buildCommand;
     cargoBuildProfile = cfg.buildProfile;
-    cargoTestProfile = cfg.testProfile;
     cargoBuildFlags = cfg.buildFlags;
+    testCargoCommand = cfg.testCommand;
+    cargoTestProfile = cfg.testProfile;
     cargoTestFlags = cfg.testFlags;
     doCheck = cfg.runTests;
 
-    # Make sure cargo only builds & tests the package we want
-    cargoBuildCommand = "cargo build \${cargoBuildFlags:-} --profile \${cargoBuildProfile} --package ${pname}";
-    cargoTestCommand = "cargo test \${cargoTestFlags:-} --profile \${cargoTestProfile} --package ${pname}";
+    # Make sure cargo only checks & builds & tests the package we want
+    cargoCheckCommand = "cargo \${checkCargoCommand} \${cargoBuildFlags:-} --profile \${cargoBuildProfile} --package ${pname}";
+    cargoBuildCommand = "cargo \${buildCargoCommand} \${cargoBuildFlags:-} --profile \${cargoBuildProfile} --package ${pname}";
+    cargoTestCommand = "cargo \${testCargoCommand} \${cargoTestFlags:-} --profile \${cargoTestProfile} --package ${pname}";
   };
 
   # The deps-only derivation will use this as a prefix to the `pname`
@@ -79,8 +83,6 @@
     inherit (config.rust-cargo-lock) cargoLock;
     pname = l.mkOverride 99 pname;
     pnameSuffix = depsNameSuffix;
-    # Make sure cargo only checks the package we want
-    cargoCheckCommand = "cargo check \${cargoBuildFlags:-} --profile \${cargoBuildProfile} --package ${pname}";
     dream2nixVendorDir = config.rust-cargo-vendor.vendoredSources;
   };
 
