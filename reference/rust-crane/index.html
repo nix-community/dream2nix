@@ -2262,6 +2262,15 @@
 </li>
           
             <li class="md-nav__item">
+    <a href="#rust-cranebuildcommand" class="md-nav__link">
+      <span class="md-ellipsis">
+        rust-crane.<wbr>buildCommand
+      </span>
+    </a>
+    
+</li>
+          
+            <li class="md-nav__item">
     <a href="#rust-cranebuildflags" class="md-nav__link">
       <span class="md-ellipsis">
         rust-crane.<wbr>buildFlags
@@ -2274,6 +2283,15 @@
     <a href="#rust-cranebuildprofile" class="md-nav__link">
       <span class="md-ellipsis">
         rust-crane.<wbr>buildProfile
+      </span>
+    </a>
+    
+</li>
+          
+            <li class="md-nav__item">
+    <a href="#rust-cranecheckcommand" class="md-nav__link">
+      <span class="md-ellipsis">
+        rust-crane.<wbr>checkCommand
       </span>
     </a>
     
@@ -3597,6 +3615,15 @@
     <a href="#rust-craneruntests" class="md-nav__link">
       <span class="md-ellipsis">
         rust-crane.<wbr>runTests
+      </span>
+    </a>
+    
+</li>
+          
+            <li class="md-nav__item">
+    <a href="#rust-cranetestcommand" class="md-nav__link">
+      <span class="md-ellipsis">
+        rust-crane.<wbr>testCommand
       </span>
     </a>
     
@@ -6227,6 +6254,15 @@
 </li>
           
             <li class="md-nav__item">
+    <a href="#rust-cranebuildcommand" class="md-nav__link">
+      <span class="md-ellipsis">
+        rust-crane.<wbr>buildCommand
+      </span>
+    </a>
+    
+</li>
+          
+            <li class="md-nav__item">
     <a href="#rust-cranebuildflags" class="md-nav__link">
       <span class="md-ellipsis">
         rust-crane.<wbr>buildFlags
@@ -6239,6 +6275,15 @@
     <a href="#rust-cranebuildprofile" class="md-nav__link">
       <span class="md-ellipsis">
         rust-crane.<wbr>buildProfile
+      </span>
+    </a>
+    
+</li>
+          
+            <li class="md-nav__item">
+    <a href="#rust-cranecheckcommand" class="md-nav__link">
+      <span class="md-ellipsis">
+        rust-crane.<wbr>checkCommand
       </span>
     </a>
     
@@ -7562,6 +7607,15 @@
     <a href="#rust-craneruntests" class="md-nav__link">
       <span class="md-ellipsis">
         rust-crane.<wbr>runTests
+      </span>
+    </a>
+    
+</li>
+          
+            <li class="md-nav__item">
+    <a href="#rust-cranetestcommand" class="md-nav__link">
+      <span class="md-ellipsis">
+        rust-crane.<wbr>testCommand
       </span>
     </a>
     
@@ -10237,8 +10291,25 @@ Can be build with nix-build or <code>nix build</code>.</p>
         <td><a href="https://github.com/nix-community/dream2nix/blob/master/modules/dream2nix/core/docs">dream2nix/modules/dream2nix/core/docs</a></td>
     </tr></table>
 
+<h4 id="rust-cranebuildcommand">rust-crane.buildCommand<a class="headerlink" href="#rust-cranebuildcommand" title="Permanent link">&para;</a></h4>
+<p>The cargo subcommand to use when building the crate (instead of 'build' in 'cargo build')</p>
+<table>
+    <tr>
+        <td>type</td>
+        <td>string </td>
+    </tr>
+    <tr>
+        <td>source</td>
+        <td><a href="https://github.com/nix-community/dream2nix/blob/master/modules/dream2nix/rust-crane/interface.nix">dream2nix/modules/dream2nix/rust-crane/interface.nix</a></td>
+    </tr><tr>
+        <td>default</td>
+        <td><div class="highlight"><pre><span></span><span class="s2">&quot;build&quot;</span>
+</pre></div>
+</td>
+    </tr></table>
+
 <h4 id="rust-cranebuildflags">rust-crane.buildFlags<a class="headerlink" href="#rust-cranebuildflags" title="Permanent link">&para;</a></h4>
-<p>Flags to add when running <code>cargo build</code> and <code>cargo check</code></p>
+<p>Flags to add when building &amp; checking</p>
 <table>
     <tr>
         <td>type</td>
@@ -10255,7 +10326,7 @@ Can be build with nix-build or <code>nix build</code>.</p>
     </tr></table>
 
 <h4 id="rust-cranebuildprofile">rust-crane.buildProfile<a class="headerlink" href="#rust-cranebuildprofile" title="Permanent link">&para;</a></h4>
-<p>The profile to use when running <code>cargo build</code> and <code>cargo check</code></p>
+<p>The profile to use when building &amp; checking</p>
 <table>
     <tr>
         <td>type</td>
@@ -10269,6 +10340,30 @@ Can be build with nix-build or <code>nix build</code>.</p>
         <td><div class="highlight"><pre><span></span><span class="s2">&quot;release&quot;</span>
 </pre></div>
 </td>
+    </tr></table>
+
+<h4 id="rust-cranecheckcommand">rust-crane.checkCommand<a class="headerlink" href="#rust-cranecheckcommand" title="Permanent link">&para;</a></h4>
+<p>The cargo subcommand to use when checking the crate (instead of 'check' in 'cargo check')</p>
+<table>
+    <tr>
+        <td>type</td>
+        <td>string </td>
+    </tr>
+    <tr>
+        <td>source</td>
+        <td><a href="https://github.com/nix-community/dream2nix/blob/master/modules/dream2nix/rust-crane/interface.nix">dream2nix/modules/dream2nix/rust-crane/interface.nix</a></td>
+    </tr><tr>
+        <td>default</td>
+        <td><div class="highlight"><pre><span></span><span class="s2">&quot;check&quot;</span>
+</pre></div>
+</td>
+    </tr><tr>
+        <td>example</td>
+        <td>
+            <div class="highlight"><pre><span></span><span class="s2">&quot;clippy&quot;</span>
+</pre></div>
+
+        </td>
     </tr></table>
 
 <h4 id="rust-cranedepsdrv">rust-crane.depsDrv<a class="headerlink" href="#rust-cranedepsdrv" title="Permanent link">&para;</a></h4>
@@ -12629,8 +12724,25 @@ Can be build with nix-build or <code>nix build</code>.</p>
 </td>
     </tr></table>
 
+<h4 id="rust-cranetestcommand">rust-crane.testCommand<a class="headerlink" href="#rust-cranetestcommand" title="Permanent link">&para;</a></h4>
+<p>The cargo subcommand to use when testing the crate (instead of 'test' in 'cargo test')</p>
+<table>
+    <tr>
+        <td>type</td>
+        <td>string </td>
+    </tr>
+    <tr>
+        <td>source</td>
+        <td><a href="https://github.com/nix-community/dream2nix/blob/master/modules/dream2nix/rust-crane/interface.nix">dream2nix/modules/dream2nix/rust-crane/interface.nix</a></td>
+    </tr><tr>
+        <td>default</td>
+        <td><div class="highlight"><pre><span></span><span class="s2">&quot;test&quot;</span>
+</pre></div>
+</td>
+    </tr></table>
+
 <h4 id="rust-cranetestflags">rust-crane.testFlags<a class="headerlink" href="#rust-cranetestflags" title="Permanent link">&para;</a></h4>
-<p>Flags to add when running <code>cargo test</code></p>
+<p>Flags to add when testing the crate</p>
 <table>
     <tr>
         <td>type</td>
@@ -12647,7 +12759,7 @@ Can be build with nix-build or <code>nix build</code>.</p>
     </tr></table>
 
 <h4 id="rust-cranetestprofile">rust-crane.testProfile<a class="headerlink" href="#rust-cranetestprofile" title="Permanent link">&para;</a></h4>
-<p>The profile to use when running <code>cargo test</code></p>
+<p>The profile to use when testing the crate</p>
 <table>
     <tr>
         <td>type</td>
