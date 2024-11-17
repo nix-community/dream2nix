@@ -24,24 +24,40 @@ in {
       description = "Whether to run tests via `cargo test`";
       default = true;
     };
+    checkCommand = {
+      type = t.str;
+      description = "The cargo subcommand to use when checking the crate (instead of 'check' in 'cargo check')";
+      default = "check";
+      example = "clippy";
+    };
+    buildCommand = {
+      type = t.str;
+      description = "The cargo subcommand to use when building the crate (instead of 'build' in 'cargo build')";
+      default = "build";
+    };
     buildProfile = {
       type = t.str;
-      description = "The profile to use when running `cargo build` and `cargo check`";
-      default = "release";
-    };
-    testProfile = {
-      type = t.str;
-      description = "The profile to use when running `cargo test`";
+      description = "The profile to use when building & checking";
       default = "release";
     };
     buildFlags = {
       type = t.listOf t.str;
-      description = "Flags to add when running `cargo build` and `cargo check`";
+      description = "Flags to add when building & checking";
       default = [];
+    };
+    testCommand = {
+      type = t.str;
+      description = "The cargo subcommand to use when testing the crate (instead of 'test' in 'cargo test')";
+      default = "test";
+    };
+    testProfile = {
+      type = t.str;
+      description = "The profile to use when testing the crate";
+      default = "release";
     };
     testFlags = {
       type = t.listOf t.str;
-      description = "Flags to add when running `cargo test`";
+      description = "Flags to add when testing the crate";
       default = [];
     };
     depsDrv = {
