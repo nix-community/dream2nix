@@ -140,6 +140,7 @@ in {
         cargo = l.mkOverride 1001 rustToolchain;
       }
       (l.mapAttrs (_: l.mkDefault) {
+        inherit crane;
         craneSource = config.deps.fetchFromGitHub {
           owner = "ipetkov";
           repo = "crane";
