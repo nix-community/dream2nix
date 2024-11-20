@@ -42,7 +42,7 @@
       mkdir ./download
 
       mkdir -p ./etc/apt
-      echo "deb http://deb.debian.org/debian bullseye main" >> ./etc/apt/sources.list
+      echo "deb http://http.kali.org/kali kali-rolling main contrib non-free non-free-firmware" >> ./etc/apt/sources.list
 
       export NAME=$pkgsName
       python3 ${./generate_dream_lock.py}
