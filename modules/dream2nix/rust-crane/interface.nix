@@ -8,6 +8,11 @@
   t = l.types;
 in {
   options.deps = {
+    crane = l.mkOption {
+      type = t.attrs;
+      readOnly = true;
+      description = "The crane lib that was instantiated from `craneSource`";
+    };
     craneSource = l.mkOption {
       type = t.path;
       description = "Source to use for crane functions";
