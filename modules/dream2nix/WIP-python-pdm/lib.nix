@@ -196,7 +196,7 @@
   mkExtrasKey = dep @ {extras ? [], ...}:
     if extras == []
     then "default"
-    else lib.concatStringsSep "," extras;
+    else lib.concatStringsSep "," (lib.naturalSort extras);
 
   # Constructs dependency entry for internal use.
   # We could use the pyproject.nix representation directly instead, but it seems
