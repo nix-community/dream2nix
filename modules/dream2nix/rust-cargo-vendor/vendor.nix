@@ -94,16 +94,16 @@ in rec {
           exit 1
         fi
       else
-        # we need to patch dependencies with `workspace = true` (workspace inheritance)
-        workspaceDependencies="$(cat "$tree/Cargo.toml" | ${tomlToJson} | ${jq} -cr '.workspace.dependencies')"
-        if [[ "$workspaceDependencies" != "null" ]]; then
+        # we need to patch manifest attributes with `workspace = true` (workspace inheritance)
+        workspaceAttrs="$(cat "$tree/Cargo.toml" | ${tomlToJson} | ${jq} -cr '.workspace')"
+        if [[ "$workspaceAttrs" != "null" ]]; then
           tree="$(pwd)/${pkg.name}-${pkg.version}"
           cp -prd --no-preserve=mode,ownership "$(dirname $crateCargoTOML)" "$tree"
           crateCargoTOML="$tree/Cargo.toml"
           cat "$crateCargoTOML" \
           | ${tomlToJson} \
-          | ${jq} -cr --argjson workspaceDependencies "$workspaceDependencies" \
-            --from-file ${./patch-workspace-deps.jq} \
+          | ${jq} -cr --argjson workspaceAttrs "$workspaceAttrs" \
+            --from-file ${./patch-workspace.jq} \
           | ${jsonToToml} \
           | ${sponge} "$crateCargoTOML"
         fi
