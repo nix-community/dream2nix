@@ -49,7 +49,9 @@
         l.map
         (
           memberName: let
-            components = l.splitString "/" memberName;
+            _components = l.splitString "/" memberName;
+            # remove leading period, its not necessary (it also causes issues with getNodeFromPath for some reason)
+            components = l.filter (c: c != ".") _components;
           in
             # Resolve globs if there are any
             if l.last components == "*"
@@ -60,7 +62,7 @@
               l.mapAttrsToList
               (name: _: "${parentDirRel}/${name}")
               dirs
-            else memberName
+            else l.concatStringsSep "/" components
         )
         (rootToml.value.workspace.members or [])
       );
