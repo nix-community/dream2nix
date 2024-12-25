@@ -20,6 +20,10 @@ in {
       pyproject = l.mkOption {
         type = t.path;
       };
+      useUvResolver = l.mkOption {
+        type = t.bool;
+        default = false;
+      };
 
       sourceSelector = import ./sourceSelectorOption.nix {inherit lib;};
     };
