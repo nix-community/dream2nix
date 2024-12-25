@@ -6,7 +6,11 @@
 }: let
   pdmConfig = config.deps.writeText "pdm-config.toml" ''
     check_update = false
-    use_uv = true
+    use_uv = ${
+      if (config.pdm.useUvResolver)
+      then "true"
+      else "false"
+    }
     [python]
     use_venv = false
   '';
@@ -15,12 +19,14 @@
     #!${config.deps.bash}/bin/bash
     set -Eeuo pipefail
 
-    export PATH="$PATH:${lib.makeBinPath [
-      config.deps.coreutils
-      config.deps.pdm
-      config.deps.yq
-      config.deps.uv
-    ]}"
+    export PATH="$PATH:${lib.makeBinPath ([
+        config.deps.coreutils
+        config.deps.pdm
+        config.deps.yq
+      ]
+      ++ lib.optionals config.pdm.useUvResolver [
+        config.deps.uv
+      ])}"
     export TMPDIR=$(${config.deps.coreutils}/bin/mktemp -d)
     trap "${config.deps.coreutils}/bin/chmod -R +w '$TMPDIR'; ${config.deps.coreutils}/bin/rm -rf '$TMPDIR'" EXIT
 
