@@ -8,13 +8,15 @@
 }: let
   l = lib // builtins;
 
+  rawPackage = config.package-func.result;
+
   # outputs needed to assemble a package as proposed in
   #   https://github.com/NixOS/nix/issues/6507
   outputs = l.unique config.package-func.outputs;
 
   outputDrvs =
     l.genAttrs outputs
-    (output: config.package-func.result.${output});
+    (output: rawPackage.${output});
 
   outputPaths = l.mapAttrs (_: drv: "${drv}") outputDrvs;
 
@@ -23,16 +25,20 @@
 
   isSingleDrvPackage = (l.length (l.unique outputDrvsContexts)) == 1;
 
-  nonSingleDrvError = ''
-    The package ${config.name} consists of multiple outputs that are built by distinct derivations. It can't be understood as a single derivation.
-    This problem is causes by referencing the package directly. Instead, reference one of its output attributes:
+  nonSingleDrvWarning = ''
+    The package ${config.name} consists of multiple outputs that are built by distinct derivations.
+    The first output declared in the package's outputs or the default output is used as the top-level output of the package.
+
+    If the package has not explicitly specified an output, prefer directly referencing one of its output attributes:
       - .${l.concatStringsSep "\n  - ." outputs}
   '';
 
-  throwIfMultiDrvOr = returnVal:
+  warnIfMultiDrvOr = returnVal:
     if isSingleDrvPackage
     then returnVal
-    else throw nonSingleDrvError;
+    else l.warn nonSingleDrvWarning returnVal;
+
+  defaultOutput = l.getFirstOutput outputs rawPackage;
 
   public =
     # out, lib, bin, etc...
@@ -41,9 +47,9 @@
     // {
       inherit outputs;
       inherit config extendModules;
-      drvPath = throwIfMultiDrvOr outputDrvs.out.drvPath;
-      outPath = throwIfMultiDrvOr outputDrvs.out.outPath;
-      outputName = throwIfMultiDrvOr outputDrvs.out.outputName;
+      drvPath = warnIfMultiDrvOr defaultOutput.drvPath;
+      outPath = warnIfMultiDrvOr defaultOutput.outPath;
+      outputName = warnIfMultiDrvOr defaultOutput.outputName;
       type = "derivation";
     };
 in {
