@@ -37,19 +37,20 @@ are the packages name, `default` instead of `hello`:
       "x86_64-linux"
     ];
   in {
-  packages = eachSystem (system: {
-    default = dream2nix.lib.evalModules { # (1)
-      packageSets.nixpkgs = nixpkgs.legacyPackages.${system};
-      modules = [
-        ./default.nix # (2)
-        {
-          paths.projectRoot = ./.;
-          paths.projectRootFile = "flake.nix";
-          paths.package = ./.;
-        }
-      ];
-    };
-  });
+    packages = eachSystem (system: {
+      default = dream2nix.lib.evalModules { # (1)
+        packageSets.nixpkgs = nixpkgs.legacyPackages.${system};
+        modules = [
+          ./default.nix # (2)
+          {
+            paths.projectRoot = ./.;
+            paths.projectRootFile = "flake.nix";
+            paths.package = ./.;
+          }
+        ];
+      };
+    });
+  };
 }
 ```
 
