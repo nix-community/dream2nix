@@ -206,7 +206,7 @@
     extras,
     ...
   }: {
-    extras = extras;
+    extras = lib.naturalSort extras;
     sources = parsed_lock_data.${name}.${mkExtrasKey {inherit extras;}}.sources;
     version = parsed_lock_data.${name}.${mkExtrasKey {inherit extras;}}.version;
   };
