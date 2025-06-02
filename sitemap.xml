@@ -49,10 +49,6 @@
          <lastmod>1980-01-01</lastmod>
     </url>
     <url>
-         <loc>https://dream2nix.dev/reference/WIP-python-pdm/</loc>
-         <lastmod>1980-01-01</lastmod>
-    </url>
-    <url>
          <loc>https://dream2nix.dev/reference/WIP-python-pyproject/</loc>
          <lastmod>1980-01-01</lastmod>
     </url>
@@ -146,6 +142,10 @@
     </url>
     <url>
          <loc>https://dream2nix.dev/reference/pip/</loc>
+         <lastmod>1980-01-01</lastmod>
+    </url>
+    <url>
+         <loc>https://dream2nix.dev/reference/python-pdm/</loc>
          <lastmod>1980-01-01</lastmod>
     </url>
     <url>
