@@ -4,7 +4,7 @@
   dream2nix ? (import ../../../.),
   inputs ? (import ../../../.).inputs,
 }: let
-  libpdm = (import ../../../modules/dream2nix/WIP-python-pdm/lib.nix) {
+  libpdm = (import ../../../modules/dream2nix/python-pdm/lib.nix) {
     inherit lib libpyproject;
     python3 = pkgs.python310;
     targetPlatform = lib.systems.elaborate "x86_64-linux";
