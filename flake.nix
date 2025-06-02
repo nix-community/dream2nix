@@ -57,7 +57,13 @@
     in
       allModules
       // {
-        dream2nix = allModules.dream2nix or {} // coreModules;
+        dream2nix =
+          allModules.dream2nix
+          or {}
+          // coreModules
+          // {
+            WIP-python-pdm = ./aliases/WIP-python-pdm.nix;
+          };
       };
 
     lib = import ./lib {
