@@ -198,8 +198,10 @@ in {
               file = source.file;
               hash = source.hash;
               urls =
+                # use user-specified sources first
+                lib.optionals (lib.hasAttrByPath ["tool" "pdm" "source"] pyproject.pyproject) (builtins.map (source: source.url) pyproject.pyproject.tool.pdm.source)
                 # if there is a tool.pdm.source with name=pypi, the user would like to exclude the default url
-                (lib.optionals
+                ++ (lib.optionals
                   (
                     !(lib.hasAttrByPath ["tool" "pdm" "source"] pyproject)
                     || !(builtins.elem
@@ -208,8 +210,7 @@ in {
                         (source: source.name)
                         pyproject.tool.pdm.source))
                   )
-                  ["https://pypi.org/simple"])
-                ++ lib.optionals (lib.hasAttrByPath ["tool" "pdm" "source"] pyproject.pyproject) (builtins.map (source: source.url) pyproject.pyproject.tool.pdm.source);
+                  ["https://pypi.org/simple"]);
             });
             propagatedBuildInputs =
               lib.mapAttrsToList
