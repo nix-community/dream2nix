@@ -10,7 +10,7 @@
   deps = {nixpkgs, ...}:
     lib.mapAttrs (_: opt: lib.mkOverride 1003 opt) {
       python3 = nixpkgs.python3;
-      replaceVars = nixpkgs.replaceVars;
+      replaceVarsWith = nixpkgs.replaceVarsWith;
     };
   paths = {
     lockFileAbs =
@@ -21,10 +21,13 @@
     # - identify the root by searching for the marker config.paths.projectRootFile in the current dir and parents
     # - if the marker file is not found, raise an error
     findRoot = let
-      program = config.deps.replaceVars ./find-root.py {
-        projectRootFile = config.paths.projectRootFile;
-        python3 = config.deps.python3;
-        postInstall = "chmod +x $out";
+      program = config.deps.replaceVarsWith {
+        replacements = {
+          projectRootFile = config.paths.projectRootFile;
+          python3 = config.deps.python3;
+        };
+        isExecutable = true;
+        src = ./find-root.py;
       };
     in "${program}";
   };
