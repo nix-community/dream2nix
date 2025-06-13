@@ -4,6 +4,7 @@ import sys
 import subprocess
 import tempfile
 import json
+import shutil
 from pathlib import Path
 
 from .lock_file_from_report import lock_file_from_report
@@ -27,6 +28,33 @@ def prepare_venv(venv_path, pip_version, wheel_version, python_interpreter: Path
         stderr=sys.stderr,
     )
     return venv_path
+
+
+def ensure_path_writable(path: Path, tmpdir: Path):
+    """
+    Check if a path is writable. If not, copy it to a writable location.
+
+    Args:
+        path: The path to check
+        tmpdir: Temporary directory to use for copying if needed
+
+    Returns:
+        Path: The writable path (original or copied)
+    """
+    if os.access(path, os.W_OK):
+        return path
+
+    # Create a subdirectory in tmpdir for the copy
+    copy_dest = tmpdir / path.name
+    shutil.copytree(path, copy_dest)
+
+    # Make the copied path writable recursively
+    for root, dirs, files in os.walk(copy_dest):
+        os.chmod(root, 0o755)
+        for file in files:
+            os.chmod(os.path.join(root, file), 0o644)
+
+    return copy_dest
 
 
 def fetch_pip_metadata():
@@ -54,6 +82,7 @@ def fetch_pip_metadata():
 
     with tempfile.TemporaryDirectory() as home:
         home = Path(home)
+        path_mappings = {}  # Track original -> writable path mappings
 
         venv_path = prepare_venv(
             (home / ".venv").absolute(),
@@ -70,7 +99,13 @@ def fetch_pip_metadata():
         ]
         for req in json_args["requirementsList"]:
             if req:
-                flags.append(req)
+                # if dependency is a path, make sure it is writable
+                if Path(req).exists():
+                    writable_path = ensure_path_writable(Path(req), home)
+                    path_mappings[str(writable_path)] = str(Path(req))
+                    flags.append(str(writable_path))
+                else:
+                    flags.append(req)
         for req in json_args["requirementsFiles"]:
             if req:
                 flags += ["-r", req]
@@ -92,5 +127,10 @@ def fetch_pip_metadata():
             report = json.load(f)
 
         with open(os.getenv("out"), "w") as f:
-            lock = lock_file_from_report(report, project_root=args.project_root)
+            lock = lock_file_from_report(
+                report,
+                project_root=args.project_root,
+                temp_dir=home,
+                path_mappings=path_mappings,
+            )
             json.dump(lock, f, indent=2, sort_keys=True)
