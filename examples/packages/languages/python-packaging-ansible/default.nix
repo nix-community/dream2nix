@@ -9,7 +9,7 @@
   ];
 
   deps = {nixpkgs, ...}: {
-    python = nixpkgs.python39;
+    python = nixpkgs.python313;
   };
 
   name = "ansible";

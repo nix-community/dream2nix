@@ -21,7 +21,7 @@ in {
       git
       fetchFromGitHub
       ;
-    python = nixpkgs.python310;
+    python = nixpkgs.python313;
   };
 
   name = "apache-airflow";
@@ -65,6 +65,11 @@ in {
         # transitive dependencies (i.e. typing-extensions) are
         # compatible with the rest of our lock file.
         mkDerivation.buildInputs = [config.pip.drvs.setuptools-scm.public];
+      };
+      google-re2 = {
+        imports = [
+          dream2nix.modules.dream2nix.nixpkgs-overrides
+        ];
       };
     };
   };
