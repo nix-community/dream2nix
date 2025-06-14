@@ -5,7 +5,7 @@
     lib,
     ...
   }: let
-    python3 = pkgs.python310;
+    python3 = pkgs.python313;
   in {
     devShells.fetch-pip-metadata = let
       package = self'.packages.fetch-pip-metadata-package;

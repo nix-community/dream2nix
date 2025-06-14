@@ -11,7 +11,7 @@
   ];
 
   deps = {nixpkgs, ...}: {
-    python = nixpkgs.python311;
+    python = nixpkgs.python313;
     inherit
       (nixpkgs)
       pkg-config

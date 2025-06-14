@@ -31,6 +31,7 @@
   fetchFromGitHub,
   fetchurl,
   rustPlatform,
+  coreutils,
 }: let
   package = import ./package.nix {
     inherit
@@ -41,7 +42,7 @@
       ;
   };
 
-  path = [nix gitMinimal openssh] ++ nativeBuildInputs;
+  path = [coreutils nix gitMinimal openssh] ++ nativeBuildInputs;
 
   args = writeText "pip-args" (builtins.toJSON {
     # add some variables to the derivation to integrate them into finalAttrs

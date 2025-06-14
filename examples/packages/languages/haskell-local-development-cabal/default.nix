@@ -12,7 +12,7 @@
   version = "1.0.0";
 
   deps = {nixpkgs, ...}: {
-    haskell-compiler = nixpkgs.haskell.compiler.ghc946;
+    haskell-compiler = nixpkgs.haskell.compiler.ghc98;
     inherit (nixpkgs) zlib;
   };
 
