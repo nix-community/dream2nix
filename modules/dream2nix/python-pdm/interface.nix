@@ -24,6 +24,10 @@ in {
         type = t.bool;
         default = false;
       };
+      group = l.mkOption {
+        type = t.str;
+        default = "default";
+      };
 
       sourceSelector = import ./sourceSelectorOption.nix {inherit lib;};
     };

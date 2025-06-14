@@ -13,13 +13,17 @@
     # loadPyProject does not check for existence of additional
     # paths so we need to do that here.
     tool_pdm_path = ["tool" "pdm" "dev-dependencies"];
-    withPdmGroups = lib.hasAttrByPath tool_pdm_path pyproject-data;
+    pep_735_path = ["dependency-groups"];
+    extrasAttrPaths =
+      []
+      ++ lib.optional (lib.hasAttrByPath tool_pdm_path pyproject-data) (lib.concatStringsSep "." tool_pdm_path)
+      ++ lib.optional (lib.hasAttrByPath pep_735_path pyproject-data) (lib.concatStringsSep "." pep_735_path);
   in
     libpyproject.project.loadPyproject ({
         pyproject = pyproject-data;
       }
-      // lib.optionalAttrs withPdmGroups {
-        extrasAttrPaths = [(lib.concatStringsSep "." tool_pdm_path)];
+      // lib.optionalAttrs (builtins.length extrasAttrPaths > 0) {
+        inherit extrasAttrPaths;
       });
 
   getPdmPackages = {lock_data}:

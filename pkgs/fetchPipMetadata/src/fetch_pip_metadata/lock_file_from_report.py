@@ -38,7 +38,7 @@ def nix_prefetch_git(url, rev):
 def lock_info_from_fod(store_path, drv_json):
     drv_out = drv_json.get("outputs", {}).get("out", {})
     assert str(store_path) == drv_out.get("path")
-    assert "r:sha256" == drv_out.get("hashAlgo")
+    assert drv_out.get("hashAlgo") in ["r:sha256", "sha256"]
     url = drv_json.get("env", {}).get("urls")  # TODO multiple? commas?
     sha256 = drv_out.get("hash")
     if not (url and sha256):
@@ -49,11 +49,13 @@ def lock_info_from_fod(store_path, drv_json):
     return {"type": "url", "url": url, "sha256": sha256}
 
 
-def lock_info_from_file_url(download_info, project_root: Path):
+def lock_info_from_file_url(
+    download_info, project_root: Path, temp_dir: Path = None, path_mappings: dict = None
+):
     path = path_from_file_url(download_info["url"])
 
     if path is not None:
-        return lock_info_from_path(path, project_root)
+        return lock_info_from_path(path, project_root, temp_dir, path_mappings)
 
 
 def path_from_file_url(url):
@@ -63,7 +65,14 @@ def path_from_file_url(url):
         return Path(url[prefix_len:]).absolute()
 
 
-def lock_info_from_path(full_path, project_root: Path):
+def lock_info_from_path(
+    full_path, project_root: Path, temp_dir: Path = None, path_mappings: dict = None
+):
+    # Check if this is a temporary writable path that should be mapped back
+    if path_mappings and str(full_path) in path_mappings:
+        original_path = Path(path_mappings[str(full_path)])
+        return lock_info_from_path(original_path, project_root, temp_dir, path_mappings)
+
     # See whether the path is relative to our local repo
     if project_root in full_path.parents or project_root == full_path:
         return {
@@ -137,7 +146,9 @@ def lock_info_fallback(download_info):
     return {"type": "url", "url": download_info["url"], "sha256": None}
 
 
-def lock_entry_from_report_entry(install, project_root: Path):
+def lock_entry_from_report_entry(
+    install, project_root: Path, temp_dir: Path = None, path_mappings: dict = None
+):
     """
     Convert an entry of report['install'] to an object we want to store
     in our lock file, but don't add dependencies yet.
@@ -148,7 +159,9 @@ def lock_entry_from_report_entry(install, project_root: Path):
     for lock_info in (
         lock_info_from_archive,
         lock_info_from_vcs,
-        lambda download_info: lock_info_from_file_url(download_info, project_root),
+        lambda download_info: lock_info_from_file_url(
+            download_info, project_root, temp_dir, path_mappings
+        ),
     ):
         info = lock_info(download_info)
         if info is not None:
@@ -201,7 +214,9 @@ def evaluate_requirements(env, reqs, dependencies, root_name, extras, seen):
     return dependencies
 
 
-def lock_file_from_report(report, project_root: Path):
+def lock_file_from_report(
+    report, project_root: Path, temp_dir: Path = None, path_mappings: dict = None
+):
     """
     Pre-process pips report.json for easier consumation by nix.
     We extract name, version, url and hash of the source distribution or
@@ -237,7 +252,9 @@ def lock_file_from_report(report, project_root: Path):
     # iterate over all packages pip installed to find roots
     # of the tree and gather basic information, such as urls
     for install in report["install"]:
-        name, package = lock_entry_from_report_entry(install, project_root)
+        name, package = lock_entry_from_report_entry(
+            install, project_root, temp_dir, path_mappings
+        )
         packages[name] = package
         metadata = install["metadata"]
         requirements[name] = [Requirement(r) for r in metadata.get("requires_dist", [])]
