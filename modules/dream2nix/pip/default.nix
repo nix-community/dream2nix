@@ -137,7 +137,7 @@ in {
       fetchPipMetadataScript = import ../../../pkgs/fetchPipMetadata/script.nix {
         inherit lib;
         inherit (cfg) env pipFlags pipVersion requirementsList requirementsFiles nativeBuildInputs;
-        inherit (config.deps) writePureShellScript nix;
+        inherit (config.deps) coreutils nix writePureShellScript;
         inherit (config.paths) findRoot;
         inherit (nixpkgs) fetchFromGitHub fetchurl gitMinimal nix-prefetch-scripts openssh python3 rustPlatform writeText;
         pythonInterpreter = "${python}/bin/python";

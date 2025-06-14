@@ -9,7 +9,7 @@ edit_uri: edit/main/docs/src/
 
 plugins:
   - search
-  - awesome-pages
+  - awesome-nav
 
 hooks:
   - hooks/render_options.py

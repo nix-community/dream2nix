@@ -7,9 +7,8 @@
   src = config.deps.fetchFromGitHub {
     owner = "odoo";
     repo = "odoo";
-    # ref: 16.0
-    rev = "2d42fd69cada3b1f2716c3d0a20bec6170f9b226";
-    hash = "sha256-ZlPH+RaRZbWooe+kpiFYZtvuVmXtOMHeCW+Z74ZscXY=";
+    rev = "18.0";
+    hash = "sha256-iOGfxTuDyaG2+c/1xuO/5cp+A0L0zo7Q3OcokTramlY=";
   };
 in {
   imports = [
@@ -22,11 +21,11 @@ in {
       postgresql
       fetchFromGitHub
       ;
-    python = nixpkgs.python39;
+    python = nixpkgs.python311;
   };
 
   name = "odoo";
-  version = "16.0";
+  version = "18.0";
 
   mkDerivation = {
     inherit src;
@@ -42,7 +41,7 @@ in {
     # PEP 518 packages should not those, but some packages like psycopg2
     # require dependencies to be available during locking in order to execute
     # setup.py. This is fixed in psycopg3
-    nativeBuildInputs = [config.deps.postgresql];
+    nativeBuildInputs = [config.deps.postgresql.pg_config];
 
     # fix some builds via package-specific overrides
     overrides = {
