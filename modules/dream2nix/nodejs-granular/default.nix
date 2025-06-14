@@ -54,7 +54,6 @@
     (dreamLockInterface)
     getDependencies # name: version: -> [ {name=; version=; } ]
     # Attributes
-    
     subsystemAttrs # attrset
     packageVersions
     ;

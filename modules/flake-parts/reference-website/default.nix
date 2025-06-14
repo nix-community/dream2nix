@@ -101,7 +101,7 @@
         nativeBuildInputs = [
           pkgs.python3.pkgs.mkdocs
           pkgs.python3.pkgs.mkdocs-material
-          pkgs.python3.pkgs.mkdocs-awesome-pages-plugin
+          pkgs.python3.pkgs.mkdocs-awesome-nav
           optionsReference
         ];
       } ''
