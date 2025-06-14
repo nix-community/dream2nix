@@ -201,6 +201,7 @@ in {
                 # use user-specified sources first
                 lib.optionals (lib.hasAttrByPath ["tool" "pdm" "source"] pyproject.pyproject) (builtins.map (source: source.url) pyproject.pyproject.tool.pdm.source)
                 # if there is a tool.pdm.source with name=pypi, the user would like to exclude the default url
+                # see: https://pdm-project.org/latest/usage/config/#respect-the-order-of-the-sources
                 ++ (lib.optionals
                   (
                     !(lib.hasAttrByPath ["tool" "pdm" "source"] pyproject)
