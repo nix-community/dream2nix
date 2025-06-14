@@ -4,7 +4,7 @@ name = "my-project"
 version = "0.1.0"
 description = ""
 dependencies = [
-    "requests>=2.31.0",
+    "pi>=0.1.2",
 ]
 requires-python = ">=3.10"
 readme = "README.md"
@@ -15,7 +15,7 @@ my-script = "my_project:main"
 
 [project.optional-dependencies]
 dev = [
-    "pi>=0.1.2",
+    "requests>=2.31.0",
 ]
 
 [build-system]

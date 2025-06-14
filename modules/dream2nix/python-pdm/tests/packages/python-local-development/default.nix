@@ -13,6 +13,7 @@
   };
   pdm.lockfile = ./pdm.lock;
   pdm.pyproject = ./pyproject.toml;
+  pdm.group = "dev";
   mkDerivation = {
     src = ./.;
     buildInputs = [

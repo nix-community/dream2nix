@@ -42,8 +42,8 @@
     setuptools =
       if cfg.name == "setuptools"
       then config.deps.python.pkgs.setuptools
-      else if config.groups.default.packages ? setuptools
-      then (lib.head (lib.attrValues config.groups.default.packages.setuptools)).public
+      else if (config.groups.${config.pdm.group}.packages) ? setuptools
+      then (lib.head (lib.attrValues (config.groups.${config.pdm.group}.packages.setuptools))).public
       else config.deps.python.pkgs.setuptools;
   in {
     imports = [
@@ -113,7 +113,7 @@ in {
       map
       (x: (lib.head (lib.attrValues x)).public)
       # all packages attrs prefixed with version
-      (lib.attrValues config.groups.default.packages);
+      (lib.attrValues (config.groups.${config.pdm.group}.packages));
   };
 
   public.pyEnv = let
@@ -140,16 +140,16 @@ in {
     ];
     buildInputs =
       [
-        config.groups.default.packages.tomli.public or config.deps.python.pkgs.tomli
+        (config.groups.${config.pdm.group}.packages.tomli.public or config.deps.python.pkgs.tomli)
       ]
       ++ lib.flatten (
         lib.mapAttrsToList
-        (name: _path: config.groups.default.packages.${name}.evaluated.mkDerivation.buildInputs or [])
+        (name: _path: config.groups.${config.pdm.group}.packages.${name}.evaluated.mkDerivation.buildInputs or [])
         config.pdm.editables
       );
     nativeBuildInputs = lib.flatten (
       lib.mapAttrsToList
-      (name: _path: config.groups.default.packages.${name}.evaluated.mkDerivation.nativeBuildInputs or [])
+      (name: _path: config.groups.${config.pdm.group}.packages.${name}.evaluated.mkDerivation.nativeBuildInputs or [])
       config.pdm.editables
     );
   };
