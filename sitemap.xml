@@ -37,79 +37,7 @@
          <lastmod>1980-01-01</lastmod>
     </url>
     <url>
-         <loc>https://dream2nix.dev/reference/WIP-groups/</loc>
-         <lastmod>1980-01-01</lastmod>
-    </url>
-    <url>
-         <loc>https://dream2nix.dev/reference/WIP-haskell-cabal/</loc>
-         <lastmod>1980-01-01</lastmod>
-    </url>
-    <url>
-         <loc>https://dream2nix.dev/reference/WIP-nodejs-builder-v3/</loc>
-         <lastmod>1980-01-01</lastmod>
-    </url>
-    <url>
-         <loc>https://dream2nix.dev/reference/WIP-python-pyproject/</loc>
-         <lastmod>1980-01-01</lastmod>
-    </url>
-    <url>
-         <loc>https://dream2nix.dev/reference/WIP-spago/</loc>
-         <lastmod>1980-01-01</lastmod>
-    </url>
-    <url>
-         <loc>https://dream2nix.dev/reference/buildPythonPackage/</loc>
-         <lastmod>1980-01-01</lastmod>
-    </url>
-    <url>
-         <loc>https://dream2nix.dev/reference/buildPythonPackage-mixin/</loc>
-         <lastmod>1980-01-01</lastmod>
-    </url>
-    <url>
-         <loc>https://dream2nix.dev/reference/buildRustPackage/</loc>
-         <lastmod>1980-01-01</lastmod>
-    </url>
-    <url>
-         <loc>https://dream2nix.dev/reference/builtins-derivation/</loc>
-         <lastmod>1980-01-01</lastmod>
-    </url>
-    <url>
-         <loc>https://dream2nix.dev/reference/mkDerivation/</loc>
-         <lastmod>1980-01-01</lastmod>
-    </url>
-    <url>
-         <loc>https://dream2nix.dev/reference/mkDerivation-mixin/</loc>
-         <lastmod>1980-01-01</lastmod>
-    </url>
-    <url>
-         <loc>https://dream2nix.dev/reference/multi-derivation-package/</loc>
-         <lastmod>1980-01-01</lastmod>
-    </url>
-    <url>
-         <loc>https://dream2nix.dev/reference/nodejs-devshell/</loc>
-         <lastmod>1980-01-01</lastmod>
-    </url>
-    <url>
-         <loc>https://dream2nix.dev/reference/nodejs-devshell-v3/</loc>
-         <lastmod>1980-01-01</lastmod>
-    </url>
-    <url>
-         <loc>https://dream2nix.dev/reference/nodejs-granular/</loc>
-         <lastmod>1980-01-01</lastmod>
-    </url>
-    <url>
          <loc>https://dream2nix.dev/reference/nodejs-granular-v3/</loc>
-         <lastmod>1980-01-01</lastmod>
-    </url>
-    <url>
-         <loc>https://dream2nix.dev/reference/nodejs-node-modules/</loc>
-         <lastmod>1980-01-01</lastmod>
-    </url>
-    <url>
-         <loc>https://dream2nix.dev/reference/nodejs-node-modules-v3/</loc>
-         <lastmod>1980-01-01</lastmod>
-    </url>
-    <url>
-         <loc>https://dream2nix.dev/reference/nodejs-package-json/</loc>
          <lastmod>1980-01-01</lastmod>
     </url>
     <url>
@@ -117,19 +45,7 @@
          <lastmod>1980-01-01</lastmod>
     </url>
     <url>
-         <loc>https://dream2nix.dev/reference/nodejs-package-lock/</loc>
-         <lastmod>1980-01-01</lastmod>
-    </url>
-    <url>
          <loc>https://dream2nix.dev/reference/nodejs-package-lock-v3/</loc>
-         <lastmod>1980-01-01</lastmod>
-    </url>
-    <url>
-         <loc>https://dream2nix.dev/reference/overrides/</loc>
-         <lastmod>1980-01-01</lastmod>
-    </url>
-    <url>
-         <loc>https://dream2nix.dev/reference/package-func/</loc>
          <lastmod>1980-01-01</lastmod>
     </url>
     <url>
@@ -145,19 +61,103 @@
          <lastmod>1980-01-01</lastmod>
     </url>
     <url>
-         <loc>https://dream2nix.dev/reference/python-pdm/</loc>
+         <loc>https://dream2nix.dev/reference-%28experimental%29/WIP-haskell-cabal/</loc>
          <lastmod>1980-01-01</lastmod>
     </url>
     <url>
-         <loc>https://dream2nix.dev/reference/rust-cargo-lock/</loc>
+         <loc>https://dream2nix.dev/reference-%28experimental%29/WIP-nodejs-builder-v3/</loc>
          <lastmod>1980-01-01</lastmod>
     </url>
     <url>
-         <loc>https://dream2nix.dev/reference/rust-cargo-vendor/</loc>
+         <loc>https://dream2nix.dev/reference-%28experimental%29/WIP-python-pyproject/</loc>
          <lastmod>1980-01-01</lastmod>
     </url>
     <url>
-         <loc>https://dream2nix.dev/reference/rust-crane/</loc>
+         <loc>https://dream2nix.dev/reference-%28experimental%29/WIP-spago/</loc>
+         <lastmod>1980-01-01</lastmod>
+    </url>
+    <url>
+         <loc>https://dream2nix.dev/reference-%28experimental%29/python-pdm/</loc>
+         <lastmod>1980-01-01</lastmod>
+    </url>
+    <url>
+         <loc>https://dream2nix.dev/reference-%28experimental%29/rust-cargo-lock/</loc>
+         <lastmod>1980-01-01</lastmod>
+    </url>
+    <url>
+         <loc>https://dream2nix.dev/reference-%28experimental%29/rust-cargo-vendor/</loc>
+         <lastmod>1980-01-01</lastmod>
+    </url>
+    <url>
+         <loc>https://dream2nix.dev/reference-%28experimental%29/rust-crane/</loc>
+         <lastmod>1980-01-01</lastmod>
+    </url>
+    <url>
+         <loc>https://dream2nix.dev/reference-%28internal%29/WIP-groups/</loc>
+         <lastmod>1980-01-01</lastmod>
+    </url>
+    <url>
+         <loc>https://dream2nix.dev/reference-%28internal%29/buildPythonPackage-mixin/</loc>
+         <lastmod>1980-01-01</lastmod>
+    </url>
+    <url>
+         <loc>https://dream2nix.dev/reference-%28internal%29/buildPythonPackage/</loc>
+         <lastmod>1980-01-01</lastmod>
+    </url>
+    <url>
+         <loc>https://dream2nix.dev/reference-%28internal%29/buildRustPackage/</loc>
+         <lastmod>1980-01-01</lastmod>
+    </url>
+    <url>
+         <loc>https://dream2nix.dev/reference-%28internal%29/builtins-derivation/</loc>
+         <lastmod>1980-01-01</lastmod>
+    </url>
+    <url>
+         <loc>https://dream2nix.dev/reference-%28internal%29/mkDerivation-mixin/</loc>
+         <lastmod>1980-01-01</lastmod>
+    </url>
+    <url>
+         <loc>https://dream2nix.dev/reference-%28internal%29/mkDerivation/</loc>
+         <lastmod>1980-01-01</lastmod>
+    </url>
+    <url>
+         <loc>https://dream2nix.dev/reference-%28internal%29/multi-derivation-package/</loc>
+         <lastmod>1980-01-01</lastmod>
+    </url>
+    <url>
+         <loc>https://dream2nix.dev/reference-%28internal%29/nodejs-devshell-v3/</loc>
+         <lastmod>1980-01-01</lastmod>
+    </url>
+    <url>
+         <loc>https://dream2nix.dev/reference-%28internal%29/nodejs-devshell/</loc>
+         <lastmod>1980-01-01</lastmod>
+    </url>
+    <url>
+         <loc>https://dream2nix.dev/reference-%28internal%29/nodejs-granular/</loc>
+         <lastmod>1980-01-01</lastmod>
+    </url>
+    <url>
+         <loc>https://dream2nix.dev/reference-%28internal%29/nodejs-node-modules-v3/</loc>
+         <lastmod>1980-01-01</lastmod>
+    </url>
+    <url>
+         <loc>https://dream2nix.dev/reference-%28internal%29/nodejs-node-modules/</loc>
+         <lastmod>1980-01-01</lastmod>
+    </url>
+    <url>
+         <loc>https://dream2nix.dev/reference-%28internal%29/nodejs-package-json/</loc>
+         <lastmod>1980-01-01</lastmod>
+    </url>
+    <url>
+         <loc>https://dream2nix.dev/reference-%28internal%29/nodejs-package-lock/</loc>
+         <lastmod>1980-01-01</lastmod>
+    </url>
+    <url>
+         <loc>https://dream2nix.dev/reference-%28internal%29/overrides/</loc>
+         <lastmod>1980-01-01</lastmod>
+    </url>
+    <url>
+         <loc>https://dream2nix.dev/reference-%28internal%29/package-func/</loc>
          <lastmod>1980-01-01</lastmod>
     </url>
     <url>
