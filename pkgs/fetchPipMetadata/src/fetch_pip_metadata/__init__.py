@@ -30,20 +30,21 @@ def prepare_venv(venv_path, pip_version, wheel_version, python_interpreter: Path
     return venv_path
 
 
-def ensure_path_writable(path: Path, tmpdir: Path):
+def is_path_writable(path: Path) -> bool:
+    return os.access(path, os.W_OK)
+
+
+def make_path_writable(path: Path, tmpdir: Path):
     """
-    Check if a path is writable. If not, copy it to a writable location.
+    Copy a path to a writable location.
 
     Args:
         path: The path to check
         tmpdir: Temporary directory to use for copying if needed
 
     Returns:
-        Path: The writable path (original or copied)
+        Path: The writable copied path
     """
-    if os.access(path, os.W_OK):
-        return path
-
     # Create a subdirectory in tmpdir for the copy
     copy_dest = tmpdir / path.name
     shutil.copytree(path, copy_dest)
@@ -100,8 +101,8 @@ def fetch_pip_metadata():
         for req in json_args["requirementsList"]:
             if req:
                 # if dependency is a path, make sure it is writable
-                if Path(req).exists():
-                    writable_path = ensure_path_writable(Path(req), home)
+                if Path(req).exists() and not is_path_writable(Path(req)):
+                    writable_path = make_path_writable(Path(req), home)
                     path_mappings[str(writable_path)] = str(Path(req))
                     flags.append(str(writable_path))
                 else:
