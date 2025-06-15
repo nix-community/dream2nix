@@ -72,7 +72,7 @@ Check out the code below and don't miss the annotations, hidden behind those lit
 3. Create our package, called `hello` here, by *evaluating* the given dream2nix [modules](../modules.md).
 4. Pass the given instance of nixpkgs to build our package with as a *module argument*.
 5. Include our package definition from `hello.nix`. See below for its contents!
-6. Define relative paths to aid dream2nix to find lock files and so on during *evaluation time*. These settings should work for repos containing multiple python projects as simpler ones.
+6. Define relative paths to aid dream2nix to find potential lock files during *evaluation time*.
 7. We declare `hello` to be the default package. This allows us to just call i.e. `nix build .#` instead of `nix build .#hello`.
 
 ### `hello.nix`
