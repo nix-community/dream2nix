@@ -18,6 +18,10 @@
       ;
   };
 
+  env = lib.optionalAttrs config.deps.stdenv.hostPlatform.isDarwin {
+    NIX_LDFLAGS = "-liconv";
+  };
+
   mkDerivation = {
     src = builtins.fetchTarball {
       url = "https://ftp.gnu.org/gnu/hello/hello-${config.version}.tar.gz";
