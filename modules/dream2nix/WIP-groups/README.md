@@ -1,6 +1,6 @@
 ---
 title: "groups"
-state: internal
+state: "internal"
 maintainers:
   - DavHau
 ---
