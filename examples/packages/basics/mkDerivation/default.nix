@@ -29,6 +29,10 @@
 
   version = "2.12.1";
 
+  env = lib.optionalAttrs config.deps.stdenv.hostPlatform.isDarwin {
+    NIX_LDFLAGS = "-liconv";
+  };
+
   mkDerivation = {
     src = config.deps.fetchurl {
       url = "mirror://gnu/hello/${config.name}-${config.version}.tar.gz";
