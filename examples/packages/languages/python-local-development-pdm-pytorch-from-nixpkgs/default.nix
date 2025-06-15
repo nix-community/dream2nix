@@ -46,10 +46,8 @@ in {
     env.selectWheelFile = ''
       export src="$src/$(ls $src)"
     '';
-    mkDerivation.buildInputs = [
-      # The original build inputs of torch are required for the autoPatchelf phase
-      nixpkgsTorch.inputDerivation
-    ];
+    # The original build inputs of torch are required for the autoPatchelf phase
+    mkDerivation.buildInputs = nixpkgsTorch.buildInputs;
     buildPythonPackage = {
       format = "wheel";
       pyproject = null;
