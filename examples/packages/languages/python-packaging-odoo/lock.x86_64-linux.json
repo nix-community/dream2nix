@@ -10,10 +10,10 @@
       },
       "aiohttp": {
         "is_direct": false,
-        "sha256": "feaaaff61966b5f4b4eae0b79fc79427f49484e4cfa5ab7d138ecd933ab540a8",
+        "sha256": "d6946bae55fd36cfb8e4092c921075cde029c71c7cb571d72f1079d1e4e013bc",
         "type": "url",
-        "url": "https://files.pythonhosted.org/packages/55/85/6357166918ff5025602a7cc41332c1ae7a5b57f2fe3da4d755ae30f24bd0/aiohttp-3.12.12-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl",
-        "version": "3.12.12"
+        "url": "https://files.pythonhosted.org/packages/75/a5/472e25f347da88459188cdaadd1f108f6292f8a25e62d226e63f860486d1/aiohttp-3.12.13-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl",
+        "version": "3.12.13"
       },
       "aiosignal": {
         "is_direct": false,
@@ -59,10 +59,10 @@
       },
       "certifi": {
         "is_direct": false,
-        "sha256": "30350364dfe371162649852c63336a15c70c6510c2ad5015b21c2345311805f3",
+        "sha256": "2e0c7ce7cb5d8f8634ca55d2ba7e6ec2689a2fd6537d8dec1296a477a4910057",
         "type": "url",
-        "url": "https://files.pythonhosted.org/packages/4a/7e/3db2bd1b1f9e95f7cddca6d6e75e2f2bd9f51b1246e546d88addca0106bd/certifi-2025.4.26-py3-none-any.whl",
-        "version": "2025.4.26"
+        "url": "https://files.pythonhosted.org/packages/84/ae/320161bd181fc06471eed047ecce67b693fd7515b16d495d8932db763426/certifi-2025.6.15-py3-none-any.whl",
+        "version": "2025.6.15"
       },
       "cffi": {
         "is_direct": false,
@@ -213,9 +213,9 @@
       },
       "odoo": {
         "is_direct": true,
-        "sha256": "88e19fc53b83c9a1b6f9cff5c6e3bfe5ca7e0342f4ce8ed0dce728913ada9a56",
+        "sha256": "1c075fc214a44ab1512bf9252a09daaaf23af51ac5153e61d52344118aa869c9",
         "type": "url",
-        "url": "https://github.com/odoo/odoo/archive/18.0.tar.gz",
+        "url": "https://github.com/odoo/odoo/archive/f8c4250d71a74c9228eaa61abcfdb123c8cd3460.tar.gz",
         "version": "18.0"
       },
       "ofxparse": {
@@ -430,10 +430,10 @@
       },
       "xlrd": {
         "is_direct": false,
-        "sha256": "6a33ee89877bd9abc1158129f6e94be74e2679636b8a205b43b85206c3f0bbdd",
+        "sha256": "ea762c3d29f4cca48d82df517b6d89fbce4db3107f9d78713e48cd321d5c9aa9",
         "type": "url",
-        "url": "https://files.pythonhosted.org/packages/a6/0c/c2a72d51fe56e08a08acc85d13013558a2d793028ae7385448a6ccdfae64/xlrd-2.0.1-py2.py3-none-any.whl",
-        "version": "2.0.1"
+        "url": "https://files.pythonhosted.org/packages/1a/62/c8d562e7766786ba6587d09c5a8ba9f718ed3fa8af7f4553e8f91c36f302/xlrd-2.0.2-py2.py3-none-any.whl",
+        "version": "2.0.2"
       },
       "xlsxwriter": {
         "is_direct": false,
@@ -668,5 +668,5 @@
       }
     }
   },
-  "invalidationHash": "cf61a236c4b476661c112a349fa0eb5d56179229fe7cade742d5e502202f4384"
+  "invalidationHash": "09ea935cd54d46524b70b3a2c03152e1d0eda36bf39c42493360bee36c16be9c"
 }
