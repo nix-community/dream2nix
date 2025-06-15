@@ -65,6 +65,11 @@
     <label class="md-overlay" for="__drawer"></label>
     <div data-md-component="skip">
       
+        
+        <a href="#package-format" class="md-skip">
+          Skip to content
+        </a>
+      
     </div>
     <div data-md-component="announce">
       
@@ -1178,6 +1183,18 @@
       
       
       
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  <span class="md-ellipsis">
+    package-func
+    
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
       <a href="./" class="md-nav__link md-nav__link--active">
         
   
@@ -1188,6 +1205,41 @@
   
 
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+    <a href="#package-format" class="md-nav__link">
+      <span class="md-ellipsis">
+        Package format
+      </span>
+    </a>
+    
+</li>
+      
+        <li class="md-nav__item">
+    <a href="#top-level-output" class="md-nav__link">
+      <span class="md-ellipsis">
+        Top-level output
+      </span>
+    </a>
+    
+</li>
+      
+    </ul>
+  
+</nav>
       
     </li>
   
@@ -1590,6 +1642,32 @@
   
   
   
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+    <a href="#package-format" class="md-nav__link">
+      <span class="md-ellipsis">
+        Package format
+      </span>
+    </a>
+    
+</li>
+      
+        <li class="md-nav__item">
+    <a href="#top-level-output" class="md-nav__link">
+      <span class="md-ellipsis">
+        Top-level output
+      </span>
+    </a>
+    
+</li>
+      
+    </ul>
+  
 </nav>
                   </div>
                 </div>
@@ -1609,6 +1687,21 @@
 
   <h1>package-func</h1>
 
+<p>Module to provide an interface for integrating derivation builder functions like mkDerivation, buildPythonPackage, etc...</p>
+<h2 id="package-format">Package format<a class="headerlink" href="#package-format" title="Permanent link">&para;</a></h2>
+<p>package-func calls the derivation builder function <code>package-func.func</code> with arguments supplied in <code>package-func.args</code> and wraps the result into the a package that is exposed under <code>config.public</code>. The raw result is avaliable as <code>package-func.result</code>.</p>
+<p>The final package contains the following attributes:</p>
+<ul>
+<li><code>config</code>: the config used to product the existing package</li>
+<li><code>extendModules</code>: a helper function that allows to extend an existing package with another module</li>
+<li><code>outputPath</code>: the store path of the result of the default top-level output</li>
+<li><code>drvPath</code>; the store path of the instantiated derivation of top-level output</li>
+<li><code>outputName</code>: the name of the default top-level output</li>
+</ul>
+<p>In addition, it contains an attribute of the same name for each output declared in <code>package-func.outputs</code>, mapping the output name to the corresponding output of evaluated result.</p>
+<h2 id="top-level-output">Top-level output<a class="headerlink" href="#top-level-output" title="Permanent link">&para;</a></h2>
+<p>The top-level output exposed in the final package is selected from <code>package-func.outputs</code>.</p>
+<p>For a single-output derivations, the sole output is used as the top-level output. For multi-output derivations, the first output specified in outputs or the default output (if the attribute <code>outputSpecified</code> is true) is used as the top-level output.</p>
 <p>👉 <a href="/options/?scope=package-func">Browse Options</a></p>
 
 
