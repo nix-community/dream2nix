@@ -3,25 +3,25 @@
     "sources": {
       "certifi": {
         "is_direct": false,
-        "sha256": "922820b53db7a7257ffbda3f597266d435245903d80737e34f8a45ff3e3230d8",
+        "sha256": "2e0c7ce7cb5d8f8634ca55d2ba7e6ec2689a2fd6537d8dec1296a477a4910057",
         "type": "url",
-        "url": "https://files.pythonhosted.org/packages/12/90/3c9ff0512038035f59d279fddeb79f5f1eccd8859f06d6163c58798b9487/certifi-2024.8.30-py3-none-any.whl",
-        "version": "2024.8.30"
+        "url": "https://files.pythonhosted.org/packages/84/ae/320161bd181fc06471eed047ecce67b693fd7515b16d495d8932db763426/certifi-2025.6.15-py3-none-any.whl",
+        "version": "2025.6.15"
       },
       "charset-normalizer": {
         "is_direct": false,
-        "sha256": "55086ee1064215781fff39a1af09518bc9255b50d6333f2e4c74ca09fac6a8f6",
+        "sha256": "0c29de6a1a95f24b9a1aa7aefd27d2487263f00dfd55a77719b530788f75cff7",
         "type": "url",
-        "url": "https://files.pythonhosted.org/packages/3a/52/9f9d17c3b54dc238de384c4cb5a2ef0e27985b42a0e5cc8e8a31d918d48d/charset_normalizer-3.3.2-cp312-cp312-macosx_11_0_arm64.whl",
-        "version": "3.3.2"
+        "url": "https://files.pythonhosted.org/packages/d7/a4/37f4d6035c89cac7930395a35cc0f1b872e652eaafb76a6075943754f095/charset_normalizer-3.4.2-cp312-cp312-macosx_10_13_universal2.whl",
+        "version": "3.4.2"
       },
       "click": {
         "is_direct": true,
-        "rev": "4a758f5c38636ecd9d030356d85bcca3d8fbd0ca",
-        "sha256": "1w380r5r2fhih4wljx2yvipfnri83qj6yzr8zsn1r8l790bjg7yr",
+        "rev": "91ac02718af3a0b88dbe282501c06642da0785fe",
+        "sha256": "0a7mr2f30yziwx53iy00kxfffvr44m7rsn84bfhi0pbq2dp2h9z1",
         "type": "git",
         "url": "https://github.com/pallets/click.git",
-        "version": "8.2.0.dev0"
+        "version": "8.2.1"
       },
       "idna": {
         "is_direct": false,
@@ -32,24 +32,24 @@
       },
       "requests": {
         "is_direct": false,
-        "sha256": "70761cfe03c773ceb22aa2f671b4757976145175cdfca038c02654d061d6dcc6",
+        "sha256": "27babd3cda2a6d50b30443204ee89830707d396671944c998b5975b031ac2b2c",
         "type": "url",
-        "url": "https://files.pythonhosted.org/packages/f9/9b/335f9764261e915ed497fcdeb11df5dfd6f7bf257d4a6a2a686d80da4d54/requests-2.32.3-py3-none-any.whl",
-        "version": "2.32.3"
+        "url": "https://files.pythonhosted.org/packages/7c/e4/56027c4a6b4ae70ca9de302488c5ca95ad4a39e190093d6c1a8ace08341b/requests-2.32.4-py3-none-any.whl",
+        "version": "2.32.4"
       },
       "setuptools": {
         "is_direct": false,
-        "sha256": "35ab7fd3bcd95e6b7fd704e4a1539513edad446c097797f2985e0e4b960772f2",
+        "sha256": "062d34222ad13e0cc312a4c02d73f059e86a4acbfbdea8f8f76b28c99f306922",
         "type": "url",
-        "url": "https://files.pythonhosted.org/packages/ff/ae/f19306b5a221f6a436d8f2238d5b80925004093fa3edea59835b514d9057/setuptools-75.1.0-py3-none-any.whl",
-        "version": "75.1.0"
+        "url": "https://files.pythonhosted.org/packages/a3/dc/17031897dae0efacfea57dfd3a82fdd2a2aeb58e0ff71b77b87e44edc772/setuptools-80.9.0-py3-none-any.whl",
+        "version": "80.9.0"
       },
       "urllib3": {
         "is_direct": false,
-        "sha256": "ca899ca043dcb1bafa3e262d73aa25c465bfb49e0bd9dd5d59f1d0acba2f8fac",
+        "sha256": "4e16665048960a0900c702d4a66415956a584919c03361cac9f1df5c5dd7e813",
         "type": "url",
-        "url": "https://files.pythonhosted.org/packages/ce/d9/5f4c13cecde62396b0d3fe530a50ccea91e7dfc1ccf0e09c228841bb5ba8/urllib3-2.2.3-py3-none-any.whl",
-        "version": "2.2.3"
+        "url": "https://files.pythonhosted.org/packages/6b/11/cc635220681e93a0183390e26485430ca2c7b5f9d33b15c74c2861cb8091/urllib3-2.4.0-py3-none-any.whl",
+        "version": "2.4.0"
       }
     },
     "targets": {

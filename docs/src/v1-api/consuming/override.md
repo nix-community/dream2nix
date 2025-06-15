@@ -23,7 +23,7 @@
 
   # declare dependency on python3
   deps = {nixpkgs, ...}: {
-    python3 = nixpkgs.python39;
+    python3 = nixpkgs.python313;
   };
 
   nativeBuildInputs = [

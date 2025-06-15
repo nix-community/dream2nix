@@ -16,11 +16,12 @@
   # inherit all lib functions used below
   inherit
     (lib)
-    mapAttrs'
     filterAttrs
+    hasSuffix
+    mapAttrs'
+    mkOption
     nameValuePair
     removeSuffix
-    mkOption
     types
     ;
 
@@ -29,13 +30,22 @@
   moduleKinds =
     filterAttrs (_: type: type == "directory") (readDir modulesDir);
 
+  isModule = fname: type:
+    (fname != "default.nix")
+    && (fname != "test")
+    && (fname != "tests")
+    && (fname != "_template")
+    && (
+      (type == "regular" && hasSuffix ".nix" fname) || type == "directory"
+    );
+
   mapModules = kind:
     mapAttrs'
     (fn: _:
       nameValuePair
       (removeSuffix ".nix" fn)
       (modulesDir + "/${kind}/${fn}"))
-    (readDir (modulesDir + "/${kind}"));
+    (filterAttrs isModule (readDir (modulesDir + "/${kind}")));
 
   flakePartsModules = attrValues (
     filterAttrs

@@ -27,6 +27,10 @@ in {
       group = l.mkOption {
         type = t.str;
         default = "default";
+        description = ''
+          PDM supports multiple groups by specifying [project.optional-dependencies], [tool.pdm.dev-dependencies] or [dependency-groups] (pep 735).
+          All of these groups will get locked in the pdm.lock file and the user can specify which group name to use.
+        '';
       };
 
       sourceSelector = import ./sourceSelectorOption.nix {inherit lib;};

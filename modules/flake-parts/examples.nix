@@ -80,14 +80,25 @@ in {
     getPackage = flakeFile: let
       flake = importFlake flakeFile;
     in
-      flake.packages.${system}.default;
+      flake.packages.${system}.default or {};
+
+    allPackages' =
+      lib.mapAttrs
+      (_: flakeFile: getPackage flakeFile)
+      allExamples;
+
+    # remove all packages that are not available for the current system
+    allPackages =
+      lib.filterAttrs
+      (_: package: package != {})
+      allPackages';
 
     # map all modules in /examples to a package output in the flake.
     checks =
       lib.optionalAttrs
       (system == "x86_64-linux" || system == "aarch64-darwin")
       (
-        (lib.mapAttrs (_: flakeFile: getPackage flakeFile) allExamples)
+        allPackages
         // {
           repo-with-packages = let
             imported =

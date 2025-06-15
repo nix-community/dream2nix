@@ -22,6 +22,9 @@
       url = "github:numtide/devshell";
       flake = false;
     };
+
+    nuschtos.url = "github:NuschtOS/search";
+    nuschtos.inputs.nixpkgs.follows = "nixpkgs";
   };
 
   outputs = {
