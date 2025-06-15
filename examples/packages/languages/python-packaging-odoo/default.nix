@@ -7,8 +7,10 @@
   src = config.deps.fetchFromGitHub {
     owner = "odoo";
     repo = "odoo";
-    rev = "18.0";
-    hash = "sha256-iOGfxTuDyaG2+c/1xuO/5cp+A0L0zo7Q3OcokTramlY=";
+    # version 18.0
+    # Don't use tag as rev. It changes a lot
+    rev = "f8c4250d71a74c9228eaa61abcfdb123c8cd3460";
+    hash = "sha256-HAdfwhSkSrFRK/klKgnaqvI69RrFFT5h1SNEEYqoack=";
   };
 in {
   imports = [
