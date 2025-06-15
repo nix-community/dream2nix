@@ -23,6 +23,9 @@
   pdm.lockfile = ./pdm.lock;
   pdm.pyproject = ./pyproject.toml;
 
+  # specify which pyproject.toml group to use (examples: default, extra, test)
+  # pdm.group = "test";
+
   buildPythonPackage = {
     pythonImportsCheck = [
       "my_tool"
