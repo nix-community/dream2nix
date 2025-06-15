@@ -95,6 +95,11 @@ in {
     '';
   };
 
+  lock.invalidationData = {
+    ghcVersionMajor = lib.versions.major config.deps.haskell-compiler.version;
+    ghcVersionMinor = lib.versions.minor config.deps.haskell-compiler.version;
+  };
+
   lock.fields.haskell-cabal-lock.script =
     writers.writePureShellScript [
       config.deps.cabal-install
