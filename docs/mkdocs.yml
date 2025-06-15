@@ -11,8 +11,8 @@ plugins:
   - search
   - awesome-nav
 
-hooks:
-  - hooks/render_options.py
+# hooks:
+#   - hooks/render_options.py
 
 extra_css:
   - style.css
