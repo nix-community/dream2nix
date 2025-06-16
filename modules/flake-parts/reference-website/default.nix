@@ -72,7 +72,7 @@
 
     optionsReference = modules: let
       linkOptionsDocs = name: sourcePath: ''
-        [Browse Options](/options/?scope=${name})
+        <a href="/options/?scope=${name}" target="_blank">Browse Options</a>
       '';
 
       createReference = name: sourcePath: ''
