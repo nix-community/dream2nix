@@ -1842,7 +1842,7 @@ a mistake or if things are unclear!</p>
 <li>Create our package, called <code>hello</code> here, by <em>evaluating</em> the given dream2nix <a href="../../modules/">modules</a>.</li>
 <li>Pass the given instance of nixpkgs to build our package with as a <em>module argument</em>.</li>
 <li>Include our package definition from <code>hello.nix</code>. See below for its contents!</li>
-<li>Define relative paths to aid dream2nix to find lock files and so on during <em>evaluation time</em>. These settings should work for repos containing multiple python projects as simpler ones.</li>
+<li>Define relative paths to aid dream2nix to find potential lock files during <em>evaluation time</em>.</li>
 <li>We declare <code>hello</code> to be the default package. This allows us to just call i.e. <code>nix build .#</code> instead of <code>nix build .#hello</code>.</li>
 </ol>
 <h3 id="hellonix"><code>hello.nix</code><a class="headerlink" href="#hellonix" title="Permanent link">&para;</a></h3>
