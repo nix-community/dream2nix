@@ -197,6 +197,7 @@ in {
                   post = null;
                   pre = null;
                   release = [1 0 0];
+                  str = "1.0.0";
                 };
               }
             ];
