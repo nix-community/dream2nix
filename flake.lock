@@ -55,18 +55,21 @@
       }
     },
     "pyproject-nix": {
-      "flake": false,
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
       "locked": {
-        "lastModified": 1702448246,
-        "narHash": "sha256-hFg5s/hoJFv7tDpiGvEvXP0UfFvFEDgTdyHIjDVHu1I=",
-        "owner": "davhau",
+        "lastModified": 1752481895,
+        "narHash": "sha256-luVj97hIMpCbwhx3hWiRwjP2YvljWy8FM+4W9njDhLA=",
+        "owner": "pyproject-nix",
         "repo": "pyproject.nix",
-        "rev": "5a06a2697b228c04dd2f35659b4b659ca74f7aeb",
+        "rev": "16ee295c25107a94e59a7fc7f2e5322851781162",
         "type": "github"
       },
       "original": {
-        "owner": "davhau",
-        "ref": "dream2nix",
+        "owner": "pyproject-nix",
         "repo": "pyproject.nix",
         "type": "github"
       }
