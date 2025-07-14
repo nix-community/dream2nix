@@ -12,14 +12,6 @@
   };
 
   libpyproject = import (dream2nix.inputs.pyproject-nix + "/lib") {inherit lib;};
-  libpyproject-fetchers = import (dream2nix.inputs.pyproject-nix + "/fetchers") {
-    inherit lib;
-    curl = config.deps.curl;
-    jq = config.deps.jq;
-    python3 = config.deps.python;
-    runCommand = config.deps.runCommand;
-    stdenvNoCC = config.deps.stdenvNoCC;
-  };
 
   lock_data = lib.importTOML config.pdm.lockfile;
   environ = libpyproject.pep508.mkEnviron config.deps.python;
@@ -74,16 +66,14 @@ in {
       (nixpkgs)
       autoPatchelfHook
       buildPackages
-      curl
-      jq
       mkShell
       pdm
       uv
       runCommand
-      stdenvNoCC
       stdenv
       writeText
       unzip
+      fetchPypiLegacy
       ;
   };
   overrideType = {
@@ -193,26 +183,38 @@ in {
             else null
           );
           mkDerivation = {
-            src = lib.mkDefault (libpyproject-fetchers.fetchFromLegacy {
-              pname = name;
-              file = source.file;
-              hash = source.hash;
-              urls =
-                # use user-specified sources first
-                lib.optionals (lib.hasAttrByPath ["tool" "pdm" "source"] pyproject.pyproject) (builtins.map (source: source.url) pyproject.pyproject.tool.pdm.source)
-                # if there is a tool.pdm.source with name=pypi, the user would like to exclude the default url
-                # see: https://pdm-project.org/latest/usage/config/#respect-the-order-of-the-sources
-                ++ (lib.optionals
-                  (
-                    !(lib.hasAttrByPath ["tool" "pdm" "source"] pyproject)
-                    || !(builtins.elem
-                      "pypi"
-                      (builtins.map
-                        (source: source.name)
-                        pyproject.tool.pdm.source))
-                  )
-                  ["https://pypi.org/simple"]);
-            });
+            src = lib.mkDefault ((config.deps.fetchPypiLegacy {
+                pname = name;
+                file = source.file;
+                hash = source.hash;
+                urls =
+                  # use user-specified sources first
+                  lib.optionals (lib.hasAttrByPath ["tool" "pdm" "source"] pyproject.pyproject) (builtins.map (source: source.url) pyproject.pyproject.tool.pdm.source)
+                  # if there is a tool.pdm.source with name=pypi, the user would like to exclude the default url
+                  # see: https://pdm-project.org/latest/usage/config/#respect-the-order-of-the-sources
+                  ++ (lib.optionals
+                    (
+                      !(lib.hasAttrByPath ["tool" "pdm" "source"] pyproject)
+                      || !(builtins.elem
+                        "pypi"
+                        (builtins.map
+                          (source: source.name)
+                          pyproject.tool.pdm.source))
+                    )
+                    ["https://pypi.org/simple"]);
+              })
+              .overrideAttrs {
+                # fetchPypiLegacy does not support version attribute and we can not use fetchPypi due to missing mirror functionality - but we have the information available here
+
+                # pURL identifier for SBOM generation
+                meta = {
+                  identifiers.purlParts = {
+                    type = "pypi";
+                    # https://github.com/package-url/purl-spec/blob/main/PURL-TYPES.rst#pypi
+                    spec = "${name}@${pkg.version}";
+                  };
+                };
+              });
             propagatedBuildInputs =
               lib.mapAttrsToList
               (name: dep: (lib.head (lib.attrValues (config.groups.${groupname}.packages.${name}))).public)
