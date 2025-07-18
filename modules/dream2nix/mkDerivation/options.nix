@@ -189,6 +189,7 @@
     dontPruneLibtoolFiles = optNullOrBool;
     forceShare = optList;
     setupHook = optPackage;
+    runtimeDependencies = optList;
 
     # installCheck phase
     installCheckTarget = optNullOrStr;
