@@ -94,9 +94,6 @@ in {
       ${config.name} = config.paths.package;
     };
   };
-  buildPythonPackage = {
-    pyproject = lib.mkDefault true;
-  };
   mkDerivation = {
     buildInputs = map (name: config.deps.python.pkgs.${name}) buildSystemNames;
     propagatedBuildInputs =
@@ -181,6 +178,11 @@ in {
             if lib.hasSuffix ".whl" source.file
             then "wheel"
             else null
+          );
+          buildPythonPackage.pyproject = lib.mkDefault (
+            if lib.hasSuffix ".whl" source.file
+            then null
+            else true
           );
           mkDerivation = {
             src = lib.mkDefault ((config.deps.fetchPypiLegacy {
