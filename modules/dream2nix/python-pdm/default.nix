@@ -182,6 +182,11 @@ in {
             then "wheel"
             else null
           );
+          buildPythonPackage.pyproject = lib.mkDefault (
+            if lib.hasSuffix ".whl" source.file
+            then null
+            else true
+          );
           mkDerivation = {
             src = lib.mkDefault ((config.deps.fetchPypiLegacy {
                 pname = name;
