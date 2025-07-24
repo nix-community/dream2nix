@@ -1,6 +1,6 @@
 ---
 title: "python-pdm"
-state: "experimental"
+state: "released"
 maintainers:
   - DavHau
 ---
