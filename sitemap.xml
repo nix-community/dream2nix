@@ -61,6 +61,10 @@
          <lastmod>1980-01-01</lastmod>
     </url>
     <url>
+         <loc>https://dream2nix.dev/reference/python-pdm/</loc>
+         <lastmod>1980-01-01</lastmod>
+    </url>
+    <url>
          <loc>https://dream2nix.dev/reference-%28experimental%29/WIP-haskell-cabal/</loc>
          <lastmod>1980-01-01</lastmod>
     </url>
@@ -74,10 +78,6 @@
     </url>
     <url>
          <loc>https://dream2nix.dev/reference-%28experimental%29/WIP-spago/</loc>
-         <lastmod>1980-01-01</lastmod>
-    </url>
-    <url>
-         <loc>https://dream2nix.dev/reference-%28experimental%29/python-pdm/</loc>
          <lastmod>1980-01-01</lastmod>
     </url>
     <url>
