@@ -1,0 +1,21 @@
+[build-system]
+requires = [ "setuptools" ]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "my-tool"
+description = "my tool"
+version = "1.0.0"
+dependencies = [
+  "requests",
+]
+requires-python = ">=3.8"
+
+[project.optional-dependencies]
+extra = [
+    "simplejson>=3.19.2",
+]
+[tool.pdm.dev-dependencies]
+test = [
+    "pytest>=8.2.1",
+]
