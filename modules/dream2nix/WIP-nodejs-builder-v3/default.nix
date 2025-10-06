@@ -109,7 +109,7 @@
                       // {${pkg.info.initialPath} = true;};
                   };
               }
-          ) (entry.value);
+          ) entry.value;
       })
     {}
     # [{name=; value=;} ...]
@@ -232,7 +232,7 @@
         };
       };
     in {
-      name = name;
+      inherit name;
       value = {
         ${plent.version} = {
           dependencies = getDependencies lock path plent;
@@ -325,7 +325,7 @@ in {
   };
 
   public = l.mkForce (
-    (config.groups.all.packages.${config.name}.${config.version}.public)
+    config.groups.all.packages.${config.name}.${config.version}.public
     // {
       inherit config;
     }

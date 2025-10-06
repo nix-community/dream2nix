@@ -52,7 +52,7 @@
     if path == ""
     then {
       # Root level package
-      name = entry.name;
+      inherit (entry) name;
       value = {
         ${entry.version or ""} = {
           dependencies = getDependencies lock path entry;

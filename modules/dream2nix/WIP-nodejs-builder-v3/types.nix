@@ -46,13 +46,15 @@
     imports = [
       dream2nix.modules.dream2nix.public
     ];
-    options.dependencies = l.mkOption {
-      type = dependenciesType;
-    };
-    options.source = optOptionalPackage;
+    options = {
+      dependencies = l.mkOption {
+        type = dependenciesType;
+      };
+      source = optOptionalPackage;
 
-    options.prepared-dev = optOptionalPackage;
-    options.prepared-prod = optOptionalPackage;
+      prepared-dev = optOptionalPackage;
+      prepared-prod = optOptionalPackage;
+    };
 
     options.dist = optOptionalPackage;
 

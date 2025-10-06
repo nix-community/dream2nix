@@ -50,24 +50,22 @@
     filterTree ? {},
   }: let
     root = {
-      name = plent.name;
-      version = plent.version;
+      inherit (plent) name;
+      inherit (plent) version;
     };
     graph = pdefs;
   in
     graphUtils.sanitizeGraph {
       inherit root graph;
-      pred = (
-        e:
+      pred = e:
           l.foldlAttrs (
             res: name: value:
-              if res == false
+              if !res
               then false
               else value == e.${name}
           )
           true
-          filterTree
-      );
+          filterTree;
     };
 in {
   inherit getInfo getSanitizedGraph;

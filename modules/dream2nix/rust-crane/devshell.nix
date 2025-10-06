@@ -81,4 +81,4 @@
       nativeBuildInputs = _shellEnv.nativeBuildInputs ++ [cargo];
     };
 in
-  (mkShell.override {stdenv = mainDrv.out.stdenv;}) shellEnv
+  (mkShell.override {inherit (mainDrv.out) stdenv;}) shellEnv
