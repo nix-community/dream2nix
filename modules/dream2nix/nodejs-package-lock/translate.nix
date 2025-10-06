@@ -30,7 +30,7 @@
   } @ args: let
     b = builtins;
 
-    noDev = args.noDev;
+    inherit (args) noDev;
     name = projectName;
     tree = args.tree.getNodeFromPath projectRelPath;
     relPath = projectRelPath;
@@ -228,7 +228,7 @@
             url = dependencyObject.version;
             hash = dependencyObject.integrity;
           }
-          else if dependencyObject.resolved == false
+          else if !dependencyObject.resolved
           then
             (createMissingSource
               (getName dependencyObject)

@@ -36,15 +36,15 @@ in {
     ../package-func
   ];
 
-  config.package-func.outputs = cfg.outputs;
-
-  config.package-func.func = lib.mkDefault builtins.derivation;
-
-  config.package-func.args =
+  config.package-func = {
+    inherit (cfg) outputs;
+    func = lib.mkDefault builtins.derivation;
+    args =
     envChecked
     // finalArgs
     // {
       inherit outputs;
       inherit (config.public) name;
     };
+  };
 }

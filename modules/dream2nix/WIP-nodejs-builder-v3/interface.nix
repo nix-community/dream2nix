@@ -21,7 +21,7 @@ in {
     };
 
     trustedDeps = {
-      type = t.listOf (t.str);
+      type = t.listOf t.str;
       default = [];
       example = ["@babel/core"];
       description = ''

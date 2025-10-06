@@ -4,7 +4,7 @@
   dream2nix,
   ...
 }: let
-  python = config.deps.python;
+  inherit (config.deps) python;
 in {
   imports = [
     dream2nix.modules.dream2nix.pip

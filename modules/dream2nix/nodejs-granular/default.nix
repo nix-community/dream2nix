@@ -61,7 +61,7 @@
   isMainPackage = name: version:
     (dreamLockInterface.packages."${name}" or null) == version;
 
-  nodejs = config.deps.nodejs;
+  inherit (config.deps) nodejs;
 
   nodeSources = config.deps.runCommandLocal "node-sources" {} ''
     tar --no-same-owner --no-same-permissions -xf ${nodejs.src}

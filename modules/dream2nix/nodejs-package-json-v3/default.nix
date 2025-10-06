@@ -37,7 +37,7 @@ in {
           path
           writeScript
           ;
-        npm = nixpkgs.nodejs.pkgs.npm;
+        inherit (nixpkgs.nodejs.pkgs) npm;
       };
 
     lock.fields.package-lock.script =

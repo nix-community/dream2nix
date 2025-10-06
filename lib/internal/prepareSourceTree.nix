@@ -104,11 +104,7 @@
     in
       if path == ""
       then self
-      else if dir ? directories."${leaf}"
-      then dir.directories."${leaf}"
-      else if dir ? files."${leaf}"
-      then dir.files."${leaf}"
-      else error;
+      else dir.directories."${leaf}" or (dir.files."${leaf}" or error);
 
     self =
       {

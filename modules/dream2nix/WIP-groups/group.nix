@@ -83,33 +83,35 @@ in {
               version,
               ...
             }: {
-              options.module = lib.mkOption {
-                # this is a deferredModule type
-                type = packageType name;
-                description = ''
-                  The package configuration
-                '';
-                default = {};
-              };
-              options.evaluated = lib.mkOption {
-                type = t.submoduleWith {
-                  modules = [config.module];
-                  inherit specialArgs;
+              options = {
+                module = lib.mkOption {
+                  # this is a deferredModule type
+                  type = packageType name;
+                  description = ''
+                    The package configuration
+                  '';
+                  default = {};
                 };
-                description = ''
-                  The evaluated dream2nix package modules
-                '';
-                internal = true;
-                default = {};
-              };
-              options.public = lib.mkOption {
-                type = t.package;
-                description = ''
-                  The evaluated package ready to consume
-                '';
-                readOnly = true;
-                default = config.evaluated.public;
-                defaultText = lib.literalExpression "config.evaluated.public";
+                evaluated = lib.mkOption {
+                  type = t.submoduleWith {
+                    modules = [config.module];
+                    inherit specialArgs;
+                  };
+                  description = ''
+                    The evaluated dream2nix package modules
+                  '';
+                  internal = true;
+                  default = {};
+                };
+                public = lib.mkOption {
+                  type = t.package;
+                  description = ''
+                    The evaluated package ready to consume
+                  '';
+                  readOnly = true;
+                  default = config.evaluated.public;
+                  defaultText = lib.literalExpression "config.evaluated.public";
+                };
               };
             })
           ];

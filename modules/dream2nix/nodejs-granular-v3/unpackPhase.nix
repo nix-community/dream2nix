@@ -1,5 +1,4 @@
-{}: let
-in ''
+_: ''
   runHook preUnpack
 
   nodeModules=$(realpath ./package)

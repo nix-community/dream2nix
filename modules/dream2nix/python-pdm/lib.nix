@@ -15,8 +15,7 @@
     tool_pdm_path = ["tool" "pdm" "dev-dependencies"];
     pep_735_path = ["dependency-groups"];
     extrasAttrPaths =
-      []
-      ++ lib.optional (lib.hasAttrByPath tool_pdm_path pyproject-data) (lib.concatStringsSep "." tool_pdm_path)
+      lib.optional (lib.hasAttrByPath tool_pdm_path pyproject-data) (lib.concatStringsSep "." tool_pdm_path)
       ++ lib.optional (lib.hasAttrByPath pep_735_path pyproject-data) (lib.concatStringsSep "." pep_735_path);
   in
     libpyproject.project.loadPyproject ({
@@ -129,11 +128,9 @@
       targetPlatform
       python3
       wheels;
-  in (
-    if lib.length selected == 0
+  in if lib.length selected == 0
     then null
-    else (lib.head selected).filename
-  );
+    else (lib.head selected).filename;
 
   noValidFilenameError = filenames:
     throw ''
@@ -211,8 +208,8 @@
     ...
   }: {
     extras = lib.naturalSort extras;
-    sources = parsed_lock_data.${name}.${mkExtrasKey {inherit extras;}}.sources;
-    version = parsed_lock_data.${name}.${mkExtrasKey {inherit extras;}}.version;
+    inherit (parsed_lock_data.${name}.${mkExtrasKey {inherit extras;}}) sources;
+    inherit (parsed_lock_data.${name}.${mkExtrasKey {inherit extras;}}) version;
   };
 
   # Parse lockfile data.
@@ -252,7 +249,7 @@
     # `tool.pdm.dev-dependencies`.
     optional_dependencies =
       lib.mapAttrs
-      (name: value: requiredDeps' value)
+      (name: requiredDeps')
       pyproject.dependencies.extras;
 
     all_groups = {inherit default;} // optional_dependencies;
@@ -293,8 +290,8 @@
                 extras =
                   lib.sort (x: y: x > y)
                   (lib.unique (acc.${dep.name}.extras or [] ++ dep.extras));
-                version = dep.version;
-                sources = dep.sources;
+                inherit (dep) version;
+                inherit (dep) sources;
               };
           }
       )
@@ -321,7 +318,7 @@
     topLevelEntries =
       map
       (dep: {
-        name = dep.name;
+        inherit (dep) name;
         value = mkDepEntry parsed_lock_data dep;
       })
       deps_top_level;

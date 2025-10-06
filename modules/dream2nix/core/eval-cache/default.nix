@@ -8,7 +8,7 @@
 
   packageName = config.name;
 
-  filterTrue = l.filterAttrsRecursive (key: val: l.isAttrs val || val == true);
+  filterTrue = l.filterAttrsRecursive (key: val: l.isAttrs val || val);
 
   invalidationFields = filterTrue cfg.invalidationFields;
 
@@ -99,7 +99,7 @@
     then cacheInvalidError currentContent
     else mapCachePrio cache.content;
 
-  configIfEnabled = l.mkIf (cfg.enable) {
+  configIfEnabled = l.mkIf cfg.enable {
     eval-cache = {
       inherit
         newFile

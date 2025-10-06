@@ -38,7 +38,7 @@
   importFlake = flakeFile: let
     self' = (import flakeFile).outputs {
       dream2nix = dream2nixFlake;
-      nixpkgs = inputs.nixpkgs;
+      inherit (inputs) nixpkgs;
       self = self';
     };
   in
@@ -84,7 +84,7 @@ in {
 
     allPackages' =
       lib.mapAttrs
-      (_: flakeFile: getPackage flakeFile)
+      (_: getPackage)
       allExamples;
 
     # remove all packages that are not available for the current system

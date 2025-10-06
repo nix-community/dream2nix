@@ -33,8 +33,8 @@
       };
       config = {
         public.dist = config.dist.public;
-        out = {...}: fixtures.named-derivation "hello-out";
-        dist = {...}: fixtures.named-derivation "hello-dist";
+        out = _: fixtures.named-derivation "hello-out";
+        dist = _: fixtures.named-derivation "hello-dist";
       };
     }
   );

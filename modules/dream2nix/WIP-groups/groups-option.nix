@@ -9,7 +9,7 @@
     modules = [
       (import ./group.nix {
         inherit (config) overrideAll;
-        overrides = config.overrides;
+        inherit (config) overrides;
       })
     ];
     inherit specialArgs;

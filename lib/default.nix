@@ -32,9 +32,11 @@
               ++ [
                 (packagesDirPath + "/${module}")
                 {
-                  paths.projectRoot = projectRoot;
-                  paths.projectRootFile = projectRootFile;
-                  paths.package = packagesDir + "/${module}";
+                  paths = {
+                    inherit projectRoot;
+                    inherit projectRootFile;
+                    package = packagesDir + "/${module}";
+                  };
                 }
               ];
           })
@@ -69,9 +71,11 @@
             specialArgs
             // {inherit packageSets;}
             // {
-              dream2nix.modules.dream2nix = dream2nix.modules.dream2nix;
-              dream2nix.overrides = dream2nix.overrides;
-              dream2nix.lib.evalModules = evalModules;
+              dream2nix = {
+                modules.dream2nix = dream2nix.modules.dream2nix;
+                inherit (dream2nix) overrides;
+                lib.evalModules = evalModules;
+              };
               dream2nix.inputs = dream2nix.inputs;
             };
         }

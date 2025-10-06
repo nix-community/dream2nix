@@ -15,7 +15,7 @@
     importFlake = flakeFile: let
       self' = (import flakeFile).outputs {
         dream2nix = dream2nixFlake;
-        nixpkgs = inputs.nixpkgs;
+        inherit (inputs) nixpkgs;
         self = self';
       };
     in

@@ -5,8 +5,8 @@
   l = builtins // lib;
 
   nameVersionPair = name: version: {
-    name = name;
-    version = version;
+    inherit name;
+    inherit version;
   };
 
   findCycles = {

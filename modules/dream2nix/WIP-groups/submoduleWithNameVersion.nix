@@ -70,7 +70,7 @@
         ++ modules;
     };
 
-    freeformType = base._module.freeformType;
+    inherit (base._module) freeformType;
 
     name = "submodule";
   in
@@ -114,7 +114,7 @@
             modules = m;
           });
       nestedTypes = lib.optionalAttrs (freeformType != null) {
-        freeformType = freeformType;
+        inherit freeformType;
       };
       functor =
         defaultFunctor name

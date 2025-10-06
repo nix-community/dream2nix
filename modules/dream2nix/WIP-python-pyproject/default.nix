@@ -22,8 +22,8 @@ in {
     pyproject = true;
   };
 
-  name = pyproject.project.name;
-  version = pyproject.project.version;
+  inherit (pyproject.project) name;
+  inherit (pyproject.project) version;
 
   pip.requirementsList = pyproject.project.dependencies;
   pip.flattenDependencies = true;

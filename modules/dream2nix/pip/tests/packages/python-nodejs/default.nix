@@ -21,7 +21,7 @@
 
   deps = {nixpkgs, ...}: {
     jq = lib.mkForce nixpkgs.jq;
-    fetchFromGitHub = nixpkgs.fetchFromGitHub;
+    inherit (nixpkgs) fetchFromGitHub;
     python = nixpkgs.python310;
   };
 

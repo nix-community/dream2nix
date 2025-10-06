@@ -144,7 +144,7 @@ A collection of tools needed to interact with graphs (i.e. A dependencyTree)
               then
                 fileSystem
                 // getFileSystemInfo path pdef entry
-              else fileSystem) {} (entry.info.allPaths)
+              else fileSystem) {} entry.info.allPaths
         ) {}
         distVersions
     ) {}

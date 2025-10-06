@@ -22,7 +22,7 @@ in {
       ];
       WIP-nodejs-builder-v3.packageLockFile = ./package-lock.json;
     });
-    config = evaled.config;
+    inherit (evaled) config;
   in {
     expr = lib.generators.toPretty {} config.WIP-nodejs-builder-v3.pdefs."minimal"."1.0.0".dist;
     expected = "<derivation minimal-dist>";
@@ -35,7 +35,7 @@ in {
       ];
       WIP-nodejs-builder-v3.packageLockFile = ./package-lock.json;
     });
-    config = evaled.config;
+    inherit (evaled) config;
   in {
     expr = lib.generators.toPretty {} config.WIP-nodejs-builder-v3.pdefs."minimal"."1.0.0".prepared-dev;
     expected = "<derivation minimal-node_modules-dev>";
@@ -48,7 +48,7 @@ in {
       ];
       WIP-nodejs-builder-v3.packageLockFile = ./package-lock.json;
     });
-    config = evaled.config;
+    inherit (evaled) config;
   in {
     expr = {
       inherit
@@ -71,7 +71,7 @@ in {
       ];
       WIP-nodejs-builder-v3.packageLockFile = ./package-lock.json;
     });
-    config = evaled.config;
+    inherit (evaled) config;
   in {
     expr = lib.generators.toPretty {} config.WIP-nodejs-builder-v3.pdefs."minimal"."1.0.0".prepared-prod;
     expected = "<derivation minimal-node_modules-prod>";

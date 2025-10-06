@@ -221,7 +221,7 @@
 
     package = rec {
       toml = packageToml.value;
-      name = toml.package.name;
+      inherit (toml.package) name;
       version = getVersion toml.package;
     };
 
@@ -237,7 +237,7 @@
       else rawObj.version;
   in
     simpleTranslate2
-    ({...}: {
+    (_: {
       translatorName = "cargo-lock";
       # relative path of the project within the source tree.
       location = projectRelPath;
@@ -377,7 +377,7 @@
         dependencies = rawObj: finalObj:
           l.map
           (dep: {
-            name = dep.name;
+            inherit (dep) name;
             version = extractVersionFromDep dep;
           })
           (l.map parseDepEntry (rawObj.dependencies or []));
@@ -451,7 +451,7 @@
               maybeRef
               // {
                 type = "git";
-                url = parsed.url;
+                inherit (parsed) url;
                 rev = parsed.sha;
               };
 

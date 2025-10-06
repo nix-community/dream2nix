@@ -60,9 +60,13 @@ in {
   };
 
   # generates future flake outputs: `modules.<kind>.<module-name>`
-  config.flake.modules = mapAttrs (kind: _: mapModules kind) moduleKinds;
+  config = {
+    flake = {
+      modules = mapAttrs (kind: _: mapModules kind) moduleKinds;
 
-  # comapt to current schema: `nixosModules` / `darwinModules`
-  config.flake.nixosModules = config.flake.modules.nixos or {};
-  config.flake.darwinModules = config.flake.modules.darwin or {};
+      # comapt to current schema: `nixosModules` / `darwinModules`
+      nixosModules = config.flake.modules.nixos or {};
+      darwinModules = config.flake.modules.darwin or {};
+    };
+  };
 }

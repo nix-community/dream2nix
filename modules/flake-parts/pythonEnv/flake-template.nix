@@ -49,9 +49,11 @@
           modules = [
             module
             {
-              paths.projectRoot = ./.;
-              paths.projectRootFile = "flake.nix";
-              paths.package = ./.;
+              paths = {
+                projectRoot = ./.;
+                projectRootFile = "flake.nix";
+                package = ./.;
+              };
             }
           ];
         };

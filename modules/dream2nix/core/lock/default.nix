@@ -178,9 +178,7 @@
       (cfg.fields.${field}.default != null)
       && (! fileExists || ! fileContent ? ${field})
     then cfg.fields.${field}.default
-    else if fileContent ? ${field}
-    then fileContent.${field}
-    else throw (errorOutdatedField field);
+    else fileContent.${field} or (throw (errorOutdatedField field));
 
   loadedContent =
     if !isValid
@@ -200,26 +198,28 @@ in {
   ];
 
   config = {
-    lock.refresh = config.deps.writeScriptBin "refresh" ''
-      #!${config.deps.bash}/bin/bash
-      set -Eeuo pipefail
+    lock = {
+      refresh = config.deps.writeScriptBin "refresh" ''
+        #!${config.deps.bash}/bin/bash
+        set -Eeuo pipefail
 
-      ### Executing auto generated refresh script
+        ### Executing auto generated refresh script
 
-      currDir="$(${config.deps.coreutils}/bin/realpath .)"
-      ${generatedRefreshScript}/bin/refresh
-      cd "$currDir"
+        currDir="$(${config.deps.coreutils}/bin/realpath .)"
+        ${generatedRefreshScript}/bin/refresh
+        cd "$currDir"
 
 
-      ### Executing custom scripts defined via lock.extraScripts
+        ### Executing custom scripts defined via lock.extraScripts
 
-      ${lib.concatStringsSep "\n" (map toString cfg.extraScripts)}
-    '';
+        ${lib.concatStringsSep "\n" (map toString cfg.extraScripts)}
+      '';
 
-    lock.content = mkLazy loadedContent;
+      content = mkLazy loadedContent;
 
-    lock.isValid = isValid;
-    lock.lib = {inherit computeFODHash;};
+      inherit isValid;
+      lib = {inherit computeFODHash;};
+    };
 
     deps = {nixpkgs, ...}:
       l.mapAttrs (_: l.mkOverride 1004) {

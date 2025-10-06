@@ -20,8 +20,8 @@
   dreamLock = translate {
     projectName = cfg.composerJson.name;
     projectRelPath = "";
-    source = cfg.source;
-    tree = prepareSourceTree {source = cfg.source;};
+    inherit (cfg) source;
+    tree = prepareSourceTree {inherit (cfg) source;};
     noDev = ! cfg.withDevDependencies;
     # php = "unknown";
     inherit (cfg) composerJson composerLock;
