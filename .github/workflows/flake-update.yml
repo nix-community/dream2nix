@@ -17,5 +17,5 @@ jobs:
         with:
           pr-title: "Update nixpkgs"
           pr-labels: dependencies
-          inputs: nixpkgs
+          inputs: nixpkgs pyproject-nix purescript-overlay
           flake-dirs: . ./dev-flake
