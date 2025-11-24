@@ -10,7 +10,7 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd  # v5.0.1
+      - uses: actions/checkout@c2d88d3ecc89a9ef08eebf45d9637801dcee7eb5  # v5.0.1
 
       - name: Install nix
         uses: cachix/install-nix-action@3715ab1a11cac9e991980d7b4a28d80c7ebdd8f9  # v27
