@@ -29,7 +29,7 @@
           Top-level package ${config.name} is listed in the lockfile.
           Set `pip.flattenDependencies` to false to use only the top-level dependencies.
         ''
-      else l.attrNames (targets.default)
+      else l.attrNames targets.default
     else if ! targets.default ? ${config.name}
     then
       throw ''

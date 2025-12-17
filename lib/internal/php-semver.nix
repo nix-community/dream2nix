@@ -71,8 +71,7 @@
     mIn = l.match "${re.version} - *${re.version}" constraintStr;
     # There is no operators
     mNone = l.match "${re.version}" constraintStr;
-  in (
-    if mPre != null
+  in if mPre != null
     then {
       ops.t = l.elemAt mPre 0;
       v = orBlank (l.elemAt mPre reLengths.operators);
@@ -107,8 +106,7 @@
       ops.t = "==";
       v = orBlank (l.elemAt mNone 0);
     }
-    else throw ''Constraint "${constraintStr}" could not be parsed''
-  );
+    else throw ''Constraint "${constraintStr}" could not be parsed'';
 
   satisfiesSingleInternal = version: constraint: let
     inherit (parseConstraint constraint) ops v;

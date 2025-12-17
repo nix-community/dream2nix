@@ -1,7 +1,7 @@
 {dream2nixSource ? ../..}: let
   dream2nix = import dream2nixSource;
   nixpkgs = import dream2nix.inputs.nixpkgs {};
-  lib = nixpkgs.lib;
+  inherit (nixpkgs) lib;
 
   _callModule = module:
     nixpkgs.lib.evalModules {

@@ -7,7 +7,7 @@
   pdmConfig = config.deps.writeText "pdm-config.toml" ''
     check_update = false
     use_uv = ${
-      if (config.pdm.useUvResolver)
+      if config.pdm.useUvResolver
       then "true"
       else "false"
     }

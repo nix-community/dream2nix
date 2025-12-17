@@ -8,7 +8,7 @@
 
   cfg = config.rust-crane;
 
-  dreamLock = config.rust-cargo-lock.dreamLock;
+  inherit (config.rust-cargo-lock) dreamLock;
 
   readDreamLock = import ../../../lib/internal/readDreamLock.nix {inherit lib;};
 
@@ -30,7 +30,7 @@
   rustToolchain = config.deps.mkRustToolchain config.deps.cranePkgs;
 
   pname = config.name;
-  version = config.version;
+  inherit (config) version;
 
   replacePaths =
     config.rust-cargo-vendor.replaceRelativePathsWithAbsolute

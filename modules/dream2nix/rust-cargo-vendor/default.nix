@@ -7,7 +7,7 @@
   l = lib // builtins;
   cfg = config.rust-cargo-vendor;
 
-  dreamLock = config.rust-cargo-lock.dreamLock;
+  inherit (config.rust-cargo-lock) dreamLock;
 
   sourceRoot = config.mkDerivation.src;
 

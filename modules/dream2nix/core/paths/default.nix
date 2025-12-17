@@ -9,8 +9,8 @@
   ];
   deps = {nixpkgs, ...}:
     lib.mapAttrs (_: opt: lib.mkOverride 1003 opt) {
-      python3 = nixpkgs.python3;
-      replaceVarsWith = nixpkgs.replaceVarsWith;
+      inherit (nixpkgs) python3;
+      inherit (nixpkgs) replaceVarsWith;
     };
   paths = {
     lockFileAbs =
@@ -23,8 +23,8 @@
     findRoot = let
       program = config.deps.replaceVarsWith {
         replacements = {
-          projectRootFile = config.paths.projectRootFile;
-          python3 = config.deps.python3;
+          inherit (config.paths) projectRootFile;
+          inherit (config.deps) python3;
         };
         isExecutable = true;
         src = ./find-root.py;

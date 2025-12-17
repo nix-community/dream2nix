@@ -34,7 +34,7 @@
     default = null;
   };
   optAttrs = l.mkOption {
-    type = t.nullOr (t.attrs);
+    type = t.nullOr t.attrs;
     default = {};
   };
   optNullOrBool = l.mkOption {

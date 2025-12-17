@@ -48,23 +48,22 @@ in {
     dream2nix.modules.dream2nix.ui
   ];
 
-  config.package-func.outputs = cfg.outputs;
-
-  config.package-func.func = lib.mkDefault config.deps.stdenv.mkDerivation;
-
-  # add mkDerivation specific derivation attributes
-  config.public = public;
-
-  config.package-func.args =
-    envChecked
-    // finalArgs
-    // {
-      inherit outputs;
-      inherit (config.public) version;
-      pname = config.name;
+  config = {
+    package-func = {
+      inherit (cfg) outputs;
+      func = lib.mkDefault config.deps.stdenv.mkDerivation;
+      args =
+        envChecked
+        // finalArgs
+        // {
+          inherit outputs;
+          inherit (config.public) version;
+          pname = config.name;
+        };
     };
-
-  config.deps = {nixpkgs, ...}: {
-    stdenv = lib.mkOverride 1050 nixpkgs.stdenv;
+    inherit public;
+    deps = {nixpkgs, ...}: {
+      stdenv = lib.mkOverride 1050 nixpkgs.stdenv;
+    };
   };
 }

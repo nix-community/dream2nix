@@ -5,7 +5,7 @@
   ...
 }: let
   isSdist = lib.hasSuffix ".tar.gz" config.mkDerivation.src;
-  python = config.deps.python;
+  inherit (config.deps) python;
 in {
   buildPythonPackage.pyproject = lib.mkIf isSdist true;
   mkDerivation.nativeBuildInputs = lib.mkIf isSdist [python.pkgs.poetry-core];

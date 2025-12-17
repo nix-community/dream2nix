@@ -117,7 +117,7 @@
           l.mapAttrs
           (name: versions:
             l.mapAttrs
-            (version: pkgData: getDependencies pkgData)
+            (version: getDependencies)
             versions)
           allDependencies;
       in

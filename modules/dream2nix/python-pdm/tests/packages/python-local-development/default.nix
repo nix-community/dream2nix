@@ -11,9 +11,11 @@
   deps = {nixpkgs, ...}: {
     python = nixpkgs.python310;
   };
-  pdm.lockfile = ./pdm.lock;
-  pdm.pyproject = ./pyproject.toml;
-  pdm.group = "dev";
+  pdm = {
+    lockfile = ./pdm.lock;
+    pyproject = ./pyproject.toml;
+    group = "dev";
+  };
   mkDerivation = {
     src = ./.;
     buildInputs = [

@@ -22,7 +22,7 @@
     workspaces = [];
     workspaceParent = "";
     source = cfg.src;
-    tree = prepareSourceTree {source = cfg.source;};
+    tree = prepareSourceTree {inherit (cfg) source;};
     noDev = ! cfg.withDevDependencies;
     nodejs = "unknown";
     inherit (cfg) packageJson packageLock;

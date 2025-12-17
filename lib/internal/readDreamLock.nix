@@ -69,7 +69,7 @@
     comp
     // {
       decompressed = true;
-      cyclicDependencies = cyclicDependencies;
+      inherit cyclicDependencies;
       dependencies = dependencyGraphDecomp;
     };
 
@@ -103,14 +103,14 @@
           readDreamLock
           {dreamLock = "${dir}/${d}/dream-lock.json";});
 
-    packages = lock._generic.packages;
+    inherit (lock._generic) packages;
 
     defaultPackageName = lock._generic.defaultPackage;
     defaultPackageVersion = packages."${defaultPackageName}";
 
     subsystemAttrs = lock._subsystem;
 
-    sources = lock.sources;
+    inherit (lock) sources;
 
     dependencyGraph = lock.dependencies;
 
@@ -138,14 +138,14 @@
       dependencyGraph;
 
     packageVersions =
-      l.zipAttrsWith
+      builtins.zipAttrsWith
       (name: versions: l.unique (l.flatten versions))
       [
         allDependants
         allDependencies
       ];
 
-    cyclicDependencies = lock.cyclicDependencies;
+    inherit (lock) cyclicDependencies;
 
     getSourceSpec = pname: version:
       sources."${pname}"."${version}"

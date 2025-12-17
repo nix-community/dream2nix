@@ -9,7 +9,7 @@
     python3 = pkgs.python310;
     targetPlatform = lib.systems.elaborate "x86_64-linux";
   };
-  pyproject-nix = inputs.pyproject-nix;
+  inherit (inputs) pyproject-nix;
   libpyproject = import (pyproject-nix + "/lib") {inherit lib;};
 
   linux_environ = lib.importJSON ./environ.json;
@@ -293,15 +293,15 @@ in {
             name = "foo";
             version = "1.0.0";
             extras = [];
-            dependencies = expr.foo.default.dependencies;
-            sources = expr.foo.default.sources;
+            inherit (expr.foo.default) dependencies;
+            inherit (expr.foo.default) sources;
           };
           "extra1,extra2" = {
             name = "foo";
             version = "1.0.0";
             extras = ["extra1" "extra2"];
-            dependencies = expr.foo."extra1,extra2".dependencies;
-            sources = expr.foo."extra1,extra2".sources;
+            inherit (expr.foo."extra1,extra2") dependencies;
+            inherit (expr.foo."extra1,extra2") sources;
           };
         };
       };
