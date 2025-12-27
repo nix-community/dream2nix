@@ -15,6 +15,7 @@
       fetchFromGitHub
       stdenv
       ;
+    php = nixpkgs.php81;
   };
 
   name = "cowsay";
