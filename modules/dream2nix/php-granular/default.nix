@@ -68,10 +68,10 @@
 
   # php with required extensions
   php =
-    if satisfies config.deps.php81.version subsystemAttrs.phpSemver
+    if satisfies config.deps.php.version subsystemAttrs.phpSemver
     then
-      # config.deps.php81
-      config.deps.php81.withExtensions
+      # config.deps.php
+      config.deps.php.withExtensions
       (
         {
           all,
@@ -84,7 +84,7 @@
         Error: incompatible php versions.
         Package "${defaultPackageName}" defines required php version:
           "php": "${subsystemAttrs.phpSemver}"
-        Using php version "${config.deps.php81.version}" from attribute "config.deps.php81".
+        Using php version "${config.deps.php.version}" from attribute "config.deps.php".
       '';
   composer = php.packages.composer;
 
