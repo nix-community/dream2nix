@@ -40,12 +40,12 @@
       operators.">=" version v && operators."<" version upper;
   in {
     # Prefix operators
-    "==" = mkComparison 0;
+    "=" = mkComparison 0;
     ">" = mkComparison 1;
     "<" = mkComparison (-1);
-    "!=" = v: c: !operators."==" v c;
-    ">=" = v: c: operators."==" v c || operators.">" v c;
-    "<=" = v: c: operators."==" v c || operators."<" v c;
+    "!=" = v: c: !operators."=" v c;
+    ">=" = v: c: operators."=" v c || operators.">" v c;
+    "<=" = v: c: operators."=" v c || operators."<" v c;
     # Semver specific operators
     "~" = mkTildeComparison;
     "^" = mkCaretComparison;
@@ -104,7 +104,7 @@
     }
     else if mNone != null
     then {
-      ops.t = "==";
+      ops.t = "=";
       v = orBlank (l.elemAt mNone 0);
     }
     else throw ''Constraint "${constraintStr}" could not be parsed''
