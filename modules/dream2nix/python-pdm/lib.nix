@@ -178,7 +178,7 @@
 
   # TODO: validate against lock file version.
   parsePackage = environ: item: let
-    sources = sourcesToAttrs item.files;
+    sources = sourcesToAttrs (item.files or []);
     compatibleSources =
       lib.filterAttrs
       (
