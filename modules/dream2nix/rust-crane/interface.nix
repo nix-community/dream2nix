@@ -65,6 +65,11 @@ in {
       description = "Flags to add when testing the crate";
       default = [];
     };
+    testFlagsExtra = {
+      type = t.str;
+      description = "additional flags to be passed in the cargoTestCommand invocation";
+      default = "--no-run";
+    };
     depsDrv = {
       type = t.submoduleWith {
         modules = [dream2nix.modules.dream2nix.mkDerivation];
