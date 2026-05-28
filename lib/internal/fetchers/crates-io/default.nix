@@ -15,7 +15,7 @@
   }: let
     b = builtins;
     # See https://github.com/rust-lang/crates.io-index/blob/master/config.json#L2
-    url = "https://crates.io/api/v1/crates/${pname}/${version}/download";
+    url = "https://static.crates.io/crates/${pname}/${version}/download";
   in {
     calcHash = algo:
       hashFile algo (b.fetchurl {
