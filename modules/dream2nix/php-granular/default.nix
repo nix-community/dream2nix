@@ -40,6 +40,7 @@
     inherit defaultPackageName defaultPackageVersion;
     inherit (dreamLockLoaded.lock) sources;
     inherit fetchers;
+    sourceRoot = "${config.mkDerivation.src}";
   };
 
   getSource = getDreamLockSource fetchedSources;
