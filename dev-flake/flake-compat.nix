@@ -31,11 +31,11 @@
               else {}
             )
           );
-        rev = info.rev;
+        inherit (info) rev;
         shortRev = builtins.substring 0 7 info.rev;
-        lastModified = info.lastModified;
+        inherit (info) lastModified;
         lastModifiedDate = formatSecondsSinceEpoch info.lastModified;
-        narHash = info.narHash;
+        inherit (info) narHash;
       }
       else if info.type == "git"
       then
@@ -44,7 +44,7 @@
             builtins.fetchGit
             (
               {
-                url = info.url;
+                inherit (info) url;
                 shallow = true;
                 allRefs = true;
               }
@@ -59,14 +59,14 @@
                 else {}
               )
             );
-          lastModified = info.lastModified;
+          inherit (info) lastModified;
           lastModifiedDate = formatSecondsSinceEpoch info.lastModified;
-          narHash = info.narHash;
+          inherit (info) narHash;
         }
         // (
           if info ? rev
           then {
-            rev = info.rev;
+            inherit (info) rev;
             shortRev = builtins.substring 0 7 info.rev;
           }
           else {}
@@ -79,7 +79,7 @@
             then src + ("/" + info.path)
             else info.path;
         };
-        narHash = info.narHash;
+        inherit (info) narHash;
       }
       else if info.type == "tarball"
       then {

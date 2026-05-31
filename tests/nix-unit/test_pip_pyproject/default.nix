@@ -26,7 +26,7 @@ in {
       };
       pip.flattenDependencies = true;
     };
-    config = evaled.config;
+    inherit (evaled) config;
   in {
     expr = config.pip.rootDependencies;
     expected = {
@@ -48,7 +48,7 @@ in {
         fetchPipMetadata.targets.default.requests = [];
       };
     };
-    config = evaled.config;
+    inherit (evaled) config;
   in {
     expr = config.pip.targets.default ? requests;
     expected = false;
@@ -66,7 +66,7 @@ in {
         fetchPipMetadata.targets.default.requests = [];
       };
     };
-    config = evaled.config;
+    inherit (evaled) config;
   in {
     expr = config.pip.rootDependencies;
     expected = {

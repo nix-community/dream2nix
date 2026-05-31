@@ -31,12 +31,12 @@
   #   // in most cases this is a tarball (tar.gz) which needs to be unpacked by e.g. unpackPhase
   #   source :: Derivation | Path
   # }
-  pdefs = config.nodejs-package-lock-v3.pdefs;
+  inherit (config.nodejs-package-lock-v3) pdefs;
 
   defaultPackageName = config.nodejs-package-lock-v3.packageLock.name;
   defaultPackageVersion = config.nodejs-package-lock-v3.packageLock.version or "";
 
-  nodejs = config.deps.nodejs;
+  inherit (config.deps) nodejs;
 
   nodeSources = config.deps.runCommandLocal "node-sources" {} ''
     tar --no-same-owner --no-same-permissions -xf ${nodejs.src}
@@ -46,7 +46,7 @@
   # name: version: -> store-path
   getSource = name: version:
     extractSource {
-      source = pdefs.${name}.${version}.source;
+      inherit (pdefs.${name}.${version}) source;
     };
 
   # name: version: -> [ {name=; version=; } ]
@@ -61,8 +61,8 @@
         version: def:
           lib.mapAttrsToList
           (name: def: {
-            name = name;
-            version = def.version;
+            inherit name;
+            inherit (def) version;
           })
           def.dependencies
       )

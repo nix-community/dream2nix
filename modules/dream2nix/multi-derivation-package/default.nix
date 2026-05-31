@@ -10,8 +10,8 @@
     dream2nix.modules.dream2nix.core
   ];
   # make the core module happy
-  name = config.out.name;
-  version = config.out.version;
+  inherit (config.out) name;
+  inherit (config.out) version;
 
   # make the top-level look like a derivation under 'out'
   public = {

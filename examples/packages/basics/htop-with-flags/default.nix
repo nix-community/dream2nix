@@ -4,8 +4,8 @@
   dream2nix,
   ...
 }: let
-  deps = config.deps;
-  stdenv = deps.stdenv;
+  inherit (config) deps;
+  inherit (deps) stdenv;
 in {
   # select mkDerivation as a backend for this package
   imports = [
@@ -24,7 +24,7 @@ in {
         stdenv
         systemd
         ;
-      IOKit = nixpkgs.darwin.IOKit;
+      inherit (nixpkgs.darwin) IOKit;
     };
 
     # specify flags that this package provdes

@@ -40,7 +40,7 @@ in {
       # This needs to be set by the user / we can set this automatically later
       nodejs-package-lock-v3.pdefs."minimal"."1.0.0".source = "";
     };
-    config = evaled.config;
+    inherit (evaled) config;
   in {
     expr = config.nodejs-package-lock-v3.pdefs;
     expected = {
@@ -77,7 +77,7 @@ in {
         };
       };
     };
-    config = evaled.config;
+    inherit (evaled) config;
   in {
     expr = config.nodejs-package-lock-v3.pdefs."async"."0.2.10".source.type;
     expected = "derivation";
@@ -109,7 +109,7 @@ in {
         };
       };
     };
-    config = evaled.config;
+    inherit (evaled) config;
   in {
     expr = config.nodejs-package-lock-v3.pdefs."@org/lib"."1.0.0".source;
     expected = ./. + "/lib";
@@ -145,7 +145,7 @@ in {
         };
       };
     };
-    config = evaled.config;
+    inherit (evaled) config;
   in {
     expr = config.nodejs-package-lock-v3.pdefs."minimal"."1.0.0".dependencies;
     expected = {
@@ -190,7 +190,7 @@ in {
         };
       };
     };
-    config = evaled.config;
+    inherit (evaled) config;
   in {
     expr = config.nodejs-package-lock-v3.pdefs."foo"."1.0.0".dependencies;
     expected = {
@@ -230,7 +230,7 @@ in {
         };
       };
     };
-    config = evaled.config;
+    inherit (evaled) config;
   in {
     expr = config.nodejs-package-lock-v3.pdefs."foo"."1.0.0".dependencies;
     expected = {
@@ -270,7 +270,7 @@ in {
         };
       };
     };
-    config = evaled.config;
+    inherit (evaled) config;
   in {
     expr = config.nodejs-package-lock-v3.pdefs."foo"."1.0.0".dependencies;
     expected = {
@@ -288,7 +288,7 @@ in {
       ];
       nodejs-package-lock-v3.packageLockFile = ./multiple-versions-lock.json;
     };
-    config = evaled.config;
+    inherit (evaled) config;
   in {
     expr = lib.attrNames config.nodejs-package-lock-v3.pdefs.strip-ansi;
     expected = [

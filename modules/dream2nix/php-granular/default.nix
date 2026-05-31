@@ -8,7 +8,7 @@
 
   cfg = config.php-granular;
 
-  dreamLock = config.php-composer-lock.dreamLock;
+  inherit (config.php-composer-lock) dreamLock;
 
   fetchDreamLockSources =
     import ../../../lib/internal/fetchDreamLockSources.nix
@@ -86,7 +86,7 @@
           "php": "${subsystemAttrs.phpSemver}"
         Using php version "${config.deps.php81.version}" from attribute "config.deps.php81".
       '';
-  composer = php.packages.composer;
+  inherit (php.packages) composer;
 
   # packages to export
   # packages =

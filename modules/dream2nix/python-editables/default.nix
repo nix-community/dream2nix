@@ -4,7 +4,7 @@
   dream2nix,
   ...
 }: let
-  editables = lib.filterAttrs (_name: path: path != false) config.editables;
+  editables = lib.filterAttrs (_name: path: path) config.editables;
 in {
   imports = [
     ./interface.nix

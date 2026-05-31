@@ -18,7 +18,7 @@
 
   dreamLock = translate {
     projectRelPath = "";
-    tree = prepareSourceTree {source = cfg.source;};
+    tree = prepareSourceTree {inherit (cfg) source;};
   };
 
   cargoLock = import ./cargoLock.nix {

@@ -6,11 +6,11 @@
 }: let
   l = lib // builtins;
   cfg = config.pip;
-  python = config.deps.python;
+  inherit (config.deps) python;
   metadata = config.lock.content.fetchPipMetadata;
 
   # filter out ignored dependencies
-  targets = cfg.targets;
+  inherit (cfg) targets;
   isRootDrv = drv: cfg.rootDependencies.${drv.name} or false;
   isBuildInput = drv: cfg.buildDependencies.${drv.name} or false;
 
@@ -142,7 +142,7 @@ in {
         inherit (nixpkgs) fetchFromGitHub fetchurl gitMinimal nix-prefetch-scripts openssh python3 rustPlatform writeText;
         pythonInterpreter = "${python}/bin/python";
       };
-      setuptools = config.deps.python.pkgs.setuptools;
+      inherit (config.deps.python.pkgs) setuptools;
       inherit (nixpkgs) nix fetchgit fetchurl writeText;
       inherit (writers) writePureShellScript;
     };
@@ -177,7 +177,7 @@ in {
   };
 
   pip = {
-    drvs = drvs;
+    inherit drvs;
     inherit (config) name paths;
     inherit (config.public) pyEnv;
     # make root package always editable
@@ -206,48 +206,50 @@ in {
       l.map (drv: drv.public.out) (l.attrValues rootDeps);
   };
 
-  public.pyEnv = let
-    pyEnv' = config.deps.python.withPackages (
-      ps:
-        config.mkDerivation.propagatedBuildInputs
-        # the editableShellHook requires wheel and other build system deps.
-        ++ config.mkDerivation.buildInputs
-        ++ [config.deps.python.pkgs.wheel]
-    );
-  in
-    pyEnv'.override (old: {
-      postBuild =
-        old.postBuild
-        or ""
-        + ''
-          # Nixpkgs ships a sitecustomize.py with all of it's pyEnvs to add support for NIX_PYTHONPATH.
-          # This is unfortunate as sitecustomize is a regular module, so there can only be one.
-          # So we move nixpkgs to _sitecustomize.py, effectively removing it but allowing users
-          # to re-activate it by doing "import _sitecustomize".
-          # https://github.com/NixOS/nixpkgs/pull/297628 would fix this, but it was reverted for now in
-          # https://github.com/NixOS/nixpkgs/pull/302385
-          mv "$out/${pyEnv'.sitePackages}/sitecustomize.py" "$out/${pyEnv'.sitePackages}/_sitecustomize.py"
-        '';
-      ignoreCollisions = true;
-    });
+  public = {
+    pyEnv = let
+      pyEnv' = config.deps.python.withPackages (
+        ps:
+          config.mkDerivation.propagatedBuildInputs
+          # the editableShellHook requires wheel and other build system deps.
+          ++ config.mkDerivation.buildInputs
+          ++ [config.deps.python.pkgs.wheel]
+      );
+    in
+      pyEnv'.override (old: {
+        postBuild =
+          old.postBuild
+          or ""
+          + ''
+            # Nixpkgs ships a sitecustomize.py with all of it's pyEnvs to add support for NIX_PYTHONPATH.
+            # This is unfortunate as sitecustomize is a regular module, so there can only be one.
+            # So we move nixpkgs to _sitecustomize.py, effectively removing it but allowing users
+            # to re-activate it by doing "import _sitecustomize".
+            # https://github.com/NixOS/nixpkgs/pull/297628 would fix this, but it was reverted for now in
+            # https://github.com/NixOS/nixpkgs/pull/302385
+            mv "$out/${pyEnv'.sitePackages}/sitecustomize.py" "$out/${pyEnv'.sitePackages}/_sitecustomize.py"
+          '';
+        ignoreCollisions = true;
+      });
 
-  # a shell hook for composition purposes
-  public.shellHook = config.pip.editablesShellHook;
-  # a dev shell for development
-  public.devShell = config.deps.mkShell {
-    packages = [config.public.pyEnv];
+    # a shell hook for composition purposes
     shellHook = config.pip.editablesShellHook;
-    buildInputs =
-      [(config.drvs.tomli.public or config.deps.python.pkgs.tomli)]
-      ++ lib.flatten (
+    # a dev shell for development
+    devShell = config.deps.mkShell {
+      packages = [config.public.pyEnv];
+      shellHook = config.pip.editablesShellHook;
+      buildInputs =
+        [(config.drvs.tomli.public or config.deps.python.pkgs.tomli)]
+        ++ lib.flatten (
+          lib.mapAttrsToList
+          (name: _path: config.drvs.${name}.mkDerivation.buildInputs or [])
+          config.pip.editables
+        );
+      nativeBuildInputs = lib.flatten (
         lib.mapAttrsToList
-        (name: _path: config.drvs.${name}.mkDerivation.buildInputs or [])
+        (name: _path: config.drvs.${name}.mkDerivation.nativeBuildInputs or [])
         config.pip.editables
       );
-    nativeBuildInputs = lib.flatten (
-      lib.mapAttrsToList
-      (name: _path: config.drvs.${name}.mkDerivation.nativeBuildInputs or [])
-      config.pip.editables
-    );
+    };
   };
 }

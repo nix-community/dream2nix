@@ -7,7 +7,7 @@
   l = lib // builtins;
   t = l.types;
 
-  deps = config.deps;
+  inherit (config) deps;
 
   packageName = config.name;
 

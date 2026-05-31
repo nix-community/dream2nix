@@ -13,7 +13,7 @@
     ...
   }: let
     system = "x86_64-linux";
-    lib = nixpkgs.lib;
+    inherit (nixpkgs) lib;
   in {
     # all packages defined inside ./packages/
     packages = let
@@ -69,8 +69,8 @@
         };
       };
       evaled = lib.evalModules {modules = [module];};
-      packages = evaled.config.groups.python-set.public.packages;
-      env = evaled.config.packages-sets.python-set.public.env;
+      inherit (evaled.config.groups.python-set.public) packages;
+      inherit (evaled.config.packages-sets.python-set.public) env;
       symlinkedEnv = evaled.config.packge-sets.final-set.public.symlinked-env;
     in {
       inherit

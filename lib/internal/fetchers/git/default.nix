@@ -50,7 +50,7 @@ in {
         else if isRevGitRef != null
         then {ref = inp.rev;}
         # if the rev isn't a ref, then it is a rev, so add it there
-        else {rev = inp.rev;};
+        else {inherit (inp) rev;};
     in {
       calcHash = algo:
         hashPath algo

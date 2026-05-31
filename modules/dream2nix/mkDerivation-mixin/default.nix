@@ -53,12 +53,12 @@ in {
     dream2nix.modules.dream2nix.ui
   ];
 
-  config.package-func.outputs = cfg.outputs;
-
-  config.package-func.func = lib.mkDefault config.deps.stdenv.mkDerivation;
-
-  # add mkDerivation specific derivation attributes
-  config.public = public;
+  config = {
+    package-func.outputs = cfg.outputs;
+    package-func.func = lib.mkDefault config.deps.stdenv.mkDerivation;
+    # add mkDerivation specific derivation attributes
+    inherit public;
+  };
 
   config.package-func.args =
     envChecked

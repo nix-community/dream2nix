@@ -6,7 +6,7 @@
 }: let
   l = lib // builtins;
 
-  purescript-overlay = dream2nix.inputs.purescript-overlay;
+  inherit (dream2nix.inputs) purescript-overlay;
   inherit (purescript-overlay.packages.${config.deps.stdenv.system}) purs spago-unstable;
 
   registry-index = config.deps.fetchFromGitHub {

@@ -26,7 +26,7 @@
     };
 
   pname = config.name;
-  version = config.version;
+  inherit (config) version;
 
   src = config.rust-cargo-vendor.getRootSource pname version;
   replacePaths =
@@ -41,7 +41,7 @@
 
     inherit meta;
 
-    cargoBuildFlags = cargoBuildFlags;
+    inherit cargoBuildFlags;
     cargoTestFlags = cargoBuildFlags;
 
     cargoVendorDir = "../nix-vendor";

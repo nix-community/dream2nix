@@ -34,8 +34,8 @@
     setuptools =
       if cfg.name == "setuptools"
       then config.deps.python.pkgs.setuptools
-      else if (config.groups.${config.pdm.group}.packages) ? setuptools
-      then (lib.head (lib.attrValues (config.groups.${config.pdm.group}.packages.setuptools))).public
+      else if config.groups.${config.pdm.group}.packages ? setuptools
+      then (lib.head (lib.attrValues config.groups.${config.pdm.group}.packages.setuptools)).public
       else config.deps.python.pkgs.setuptools;
   in {
     imports = [
@@ -53,13 +53,11 @@ in {
     ./lock.nix
     commonModule
   ];
-  name = pyproject.pyproject.project.name;
+  inherit (pyproject.pyproject.project) name;
   version = lib.mkDefault (
-    if pyproject.pyproject.project ? version
-    then pyproject.pyproject.project.version
-    else if lib.elem "version" pyproject.pyproject.project.dynamic or []
+    pyproject.pyproject.project.version or (if lib.elem "version" pyproject.pyproject.project.dynamic or []
     then "dynamic"
-    else "unknown"
+    else "unknown")
   );
   deps = {nixpkgs, ...}: {
     inherit
@@ -103,33 +101,34 @@ in {
       map
       (x: (lib.head (lib.attrValues x)).public)
       # all packages attrs prefixed with version
-      (lib.attrValues (config.groups.${config.pdm.group}.packages));
+      (lib.attrValues config.groups.${config.pdm.group}.packages);
   };
 
-  public.pyEnv = let
-    pyEnv' = config.deps.python.withPackages (
-      ps:
-        config.mkDerivation.propagatedBuildInputs
-        # the editableShellHook requires wheel and other build system deps.
-        ++ config.mkDerivation.buildInputs
-        ++ [config.deps.python.pkgs.wheel]
-    );
-  in
-    pyEnv'.override (old: {
-      # namespaced packages are triggering a collision error, but this can be
-      # safely ignored. They are still set up correctly and can be imported.
-      ignoreCollisions = true;
-    });
-  public.shellHook = config.pdm.editablesShellHook;
+  public = {
+    pyEnv = let
+      pyEnv' = config.deps.python.withPackages (
+        ps:
+          config.mkDerivation.propagatedBuildInputs
+          # the editableShellHook requires wheel and other build system deps.
+          ++ config.mkDerivation.buildInputs
+          ++ [config.deps.python.pkgs.wheel]
+      );
+    in
+      pyEnv'.override (old: {
+        # namespaced packages are triggering a collision error, but this can be
+        # safely ignored. They are still set up correctly and can be imported.
+        ignoreCollisions = true;
+      });
+    shellHook = config.pdm.editablesShellHook;
 
-  public.devShell = config.deps.mkShell {
-    shellHook = config.public.shellHook;
-    packages = [
-      config.public.pyEnv
-      config.deps.pdm
-    ];
-    buildInputs =
-      [
+    devShell = config.deps.mkShell {
+      inherit (config.public) shellHook;
+      packages = [
+        config.public.pyEnv
+        config.deps.pdm
+      ];
+      buildInputs =
+        [
         (config.groups.${config.pdm.group}.packages.tomli.public or config.deps.python.pkgs.tomli)
       ]
       ++ lib.flatten (
@@ -142,6 +141,7 @@ in {
       (name: _path: config.groups.${config.pdm.group}.packages.${name}.evaluated.mkDerivation.nativeBuildInputs or [])
       config.pdm.editables
     );
+    };
   };
 
   groups = let
@@ -155,7 +155,7 @@ in {
       };
 
       packages = lib.flip lib.mapAttrs transitiveGroupDeps (name: pkg: {
-        ${pkg.version}.module = {...} @ depConfig: let
+        ${pkg.version}.module = depConfig: let
           cfg = depConfig.config;
           selector =
             if lib.isFunction cfg.sourceSelector
@@ -190,8 +190,8 @@ in {
           mkDerivation = {
             src = lib.mkDefault ((config.deps.fetchPypiLegacy {
                 pname = name;
-                file = source.file;
-                hash = source.hash;
+                inherit (source) file;
+                inherit (source) hash;
                 urls =
                   # use user-specified sources first
                   lib.optionals (lib.hasAttrByPath ["tool" "pdm" "source"] pyproject.pyproject) (builtins.map (source: source.url) pyproject.pyproject.tool.pdm.source)
@@ -222,7 +222,7 @@ in {
               });
             propagatedBuildInputs =
               lib.mapAttrsToList
-              (name: dep: (lib.head (lib.attrValues (config.groups.${groupname}.packages.${name}))).public)
+              (name: dep: (lib.head (lib.attrValues config.groups.${groupname}.packages.${name})).public)
               (libpdm.getClosure parsed_lock_data name pkg.extras);
             nativeBuildInputs =
               lib.optionals config.deps.stdenv.isLinux [config.deps.autoPatchelfHook];
