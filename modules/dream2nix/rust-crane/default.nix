@@ -60,6 +60,7 @@
     testCargoCommand = cfg.testCommand;
     cargoTestProfile = cfg.testProfile;
     cargoTestFlags = cfg.testFlags;
+    cargoTestExtraArgs = cfg.testFlagsExtra;
     doCheck = cfg.runTests;
 
     # Make sure cargo only checks & builds & tests the package we want
