@@ -1,0 +1,15 @@
+[project]
+name = "fetch_composer_metadata"
+version = "0.1.0"
+description = "Fetch composer metadata and prefetch git hashes for dream2nix"
+requires-python = ">=3.9"
+
+[project.scripts]
+fetch_composer_metadata = "fetch_composer_metadata:main"
+
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+where = ["."]

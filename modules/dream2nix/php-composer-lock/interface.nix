@@ -54,5 +54,12 @@ in {
         Usually it's a bad idea to disable this, as development dependencies can contain important build time dependencies.
       '';
     };
+    useLockFile = {
+      type = t.bool;
+      default = false;
+      description = ''
+        Whether to use a dream2nix lock file to cache prefetched git hashes.
+      '';
+    };
   };
 }
